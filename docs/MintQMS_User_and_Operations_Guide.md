@@ -140,8 +140,9 @@ signature**. To sign, you re-enter **your own** login email and password at the 
 If the email isn't yours or the password is wrong, the action is refused. An electronic signature here carries
 the same intent as a handwritten signature: it binds the signer, the meaning of the action, and the time.
 
-> Most workflow transitions require a signature. A few low-ceremony actions on reference data do not (these are
-> called out where relevant).
+> Most workflow transitions require a signature. Some lower-risk steps do not: for example, moving a regulatory
+> application or licence between its preparation stages, Signal Review moves, and sending a periodic report for
+> review. These are still recorded in the audit trail. Each module section states which of its steps are signed.
 
 ### 2.3 Record lifecycles & how work moves
 
@@ -240,16 +241,19 @@ relevant operational roles; final approval is more tightly restricted. Read-Only
 | CAPA | Quality, AP, Auditor, Ops, Commercial | **Admin / Quality Manager / AP** (accept & approve) |
 | Change Control | Quality, AP, Ops, Commercial | **Admin / Quality Manager / AP** (accept & approve) |
 | Audits | Quality, Auditor | **Admin / Quality Manager** (approve & close) |
-| Risk | broad (any non-Read-Only) | **Admin / Quality Manager / AP** (accept & close) |
+| Risk | Quality, Regulatory, AP, Auditor, Trainer | **Admin / Quality Manager / AP** (accept & close) |
 | Suppliers | Quality, AP, Ops, Commercial | **Admin / Quality Manager / AP** (approve/qualify) |
 | Maintenance | Quality, AP, **Operations** | **Admin / Quality Manager / AP** (review) |
 | Batch Release | Quality, AP, Operations | **Admin / Authorised Person** (certify) |
 | Disposal | — | **Administrator** (dispose) |
-| Pharmacovigilance / RI / Licences | Regulatory (RU/RM) | **Admin / Regulatory Manager / Regulatory User** |
+| Pharmacovigilance / RI / Licences | Regulatory (RU/RM) | **Admin / Regulatory Manager / Regulatory User** (Quality Manager can also move Signal Reviews and Periodic Reports) |
 | Documents | any user (author) | **Quality Manager / Authorised Person / Administrator** (approve/issue) |
 | Training | Admin/QM/RegM/Trainer/AP (assign); trainees (acknowledge) | Trainer/QM/Admin (verify competency) |
-| Reference data (Products, etc.) | Quality User / QM / Admin | **Quality Manager / Administrator** (approve) |
+| Reference data (Products, etc.) | Quality User / QM / Admin | **Quality Manager / Authorised Person / Administrator** (approve) |
 | Users / Roles / Settings | view: Admin/QM/RegM/Auditor | **Administrator only** (manage) |
+
+Operations User and Commercial User cannot open the Regulatory modules (Pharmacovigilance, Regulatory
+Intelligence, Licences & Certifications) or Audits.
 
 *(Full per-action role detail is given in each module section below.)*
 
@@ -509,92 +513,171 @@ Manager/AP/Admin decisions. On the Create/Edit screen a change can be tagged wit
 
 ### 5.2 Audits
 
-**Purpose & intent.** The Audits module plans and runs internal and external audits — from scheduling, through
-fieldwork and reporting, to review, approval and closure. Findings can be linked to CAPAs.
+**Purpose & intent.** The Audits module plans and records audits — internal (self-inspection), supplier,
+customer, regulatory inspections and certification audits — from scheduling through fieldwork and reporting to
+review, approval and closure. It records the findings by classification, the overall rating, the follow-up, and
+the CAPA raised from the audit.
 
-**Who can do what** (Read-Only views only; every transition below is electronically signed):
-
-| Action | Who can do it |
-|---|---|
-| Create / schedule an audit | Admin, Quality Manager, Quality User, Authorised Person, Auditor |
-| Edit (before review) | Admin, Quality Manager, Quality User, Authorised Person, Auditor |
-| Start; submit report draft; submit for review | **Admin, Quality Manager, Auditor** |
-| **Approve; Close** | **Admin, Quality Manager** (Auditor cannot) |
-| Return for revision; return to review | Admin, Quality Manager |
-| Delete | **Administrator** |
-| Administratively re-open | **Administrator** |
+**Who can do what.**
+- **View:** Administrator, Quality Manager, Quality User, Authorised Person, Auditor, Read-Only.
+- **Create and edit an audit, add attachments, raise a CAPA:** Administrator, Quality Manager, Quality User,
+  Authorised Person, Auditor.
+- **Start, Submit Report Draft, Submit for Review:** Administrator, Quality Manager, Auditor.
+- **Approve, Close, Return for Revision, Return to Review:** Administrator, Quality Manager. The Auditor cannot
+  approve their own audit.
+- **Administrative re-open, Delete:** Administrator.
+- **Electronically signed:** every workflow step.
 
 **Record lifecycle.** `Scheduled → In Progress → Report Draft → Under Review → Approved → Closed`.
 
 | Step | Move | Who |
 |---|---|---|
 | Start | Scheduled → In Progress | Admin/QM/Auditor |
-| Submit report draft | In Progress → Report Draft | Admin/QM/Auditor |
-| Submit for review | Report Draft → Under Review | Admin/QM/Auditor |
+| Submit Report Draft | In Progress → Report Draft | Admin/QM/Auditor |
+| Submit for Review | Report Draft → Under Review | Admin/QM/Auditor |
 | Approve | Under Review → Approved | **Admin/QM** |
+| Return for Revision | Under Review → Report Draft (reason required) | **Admin/QM** |
 | Close | Approved → Closed | **Admin/QM** |
+| Return to Review | Approved → Under Review (reason required) | **Admin/QM** |
+| Re-open | Closed → Approved (justification required) | Administrator |
 
 **Step-by-step walkthrough.**
-1. **Schedule.** *Quality Assurance → Audit Register → Create.* Set the audit type, scope and date — it starts
-   **Scheduled**.
-2. **Start** the audit and sign → **In Progress**. Conduct the fieldwork and record findings (attach evidence).
-3. **Submit report draft** and sign → **Report Draft**.
-4. **Submit for review** and sign → **Under Review**.
-5. **Approve.** A Manager (not the Auditor) reviews and **Approves**, signing → **Approved**.
-6. **Close** and sign → **Closed**.
+1. **Plan.** *Quality Assurance → Audit Register → Create.*
+   - Enter the title and description.
+   - Choose the **type** (internal, supplier, customer, regulatory, certification) and the **scope** (quality
+     system, manufacturing, laboratory, warehouse, IT/data integrity, training, equipment, documentation or
+     full GMP).
+   - Enter the planned start and end dates, location, lead auditor, audit team, auditee and auditee contact.
+   - Link the audited products, processes, assets, materials or suppliers. For a supplier audit, also link the
+     audit on the supplier's **Quality Records** page (§6.1), so it shows in the supplier's history.
+   - Record the audit plan, and attach the agenda.
+
+   The audit starts in **Scheduled**.
+2. **Start** (signed) when fieldwork begins → **In Progress**. Record the actual dates and attach evidence as you
+   go.
+3. **Write the report.** Record:
+   - the findings summary and the number of **critical**, **major** and **minor** findings and **observations**
+   - the **overall rating** (satisfactory, acceptable, needs improvement, unsatisfactory, critical)
+   - recommendations
+   - whether a **CAPA is required**, and the corrective action
+   - the follow-up date
+
+   Then **Submit Report Draft** (signed) → Report Draft. Attach the full report.
+4. **Submit for Review** (signed) → Under Review. Add the auditee's management response when received.
+5. **Approve** (QM/Admin, signed). If the report needs changes, **Return for Revision** instead, with a reason.
+6. **Raise the CAPA.** From the audit, **Create CAPA** opens a new CAPA already linked to this audit. This works
+   once the audit is underway and before it is closed. One CAPA is linked per audit; it can cover several
+   findings.
+7. **Follow up and close.** When follow-up is complete, tick *follow-up completed* and **Close** (signed). The
+   retention date is set on closure.
 
 **Handling exceptions.**
-- **Send back:** a Manager can **Return for Revision** (Under Review → Report Draft) or **Return to Review**
-  (Approved → Under Review). A reason is required and signed.
-- **Correcting details:** edit is blocked once the audit is Under Review, Approved or Closed.
-- **Re-opening:** an Administrator can administratively re-open a Closed audit back to Approved.
-- **Removing a record:** Administrator only; soft delete.
+- **Editing:** an audit can be edited until it goes Under Review. After that it is read-only unless returned.
+- **Attachments** cannot be added to a closed audit.
+- **Re-open:** an Administrator can re-open a closed audit to Approved, signed and with a justification.
+- **Delete:** Administrator only; the record is hidden, not erased.
 
-**Notes.** Separation of duties is clear: the **Auditor** conducts the audit and can drive it up to *Under
-Review*, but **cannot Approve or Close** — those are reserved for a Quality Manager/Administrator, keeping the
-approver independent of the auditor.
+**Dashboard and register.**
+- **Audit Dashboard** shows:
+  - open, closed and pending-review counts
+  - audits whose planned start date has passed but have not started
+  - upcoming scheduled audits
+  - follow-ups due within 14 days
+  - totals of critical, major and minor findings
+  - the number of audits needing a CAPA
+  - type and status summaries, and recent activity
+- **Register:** exports to Excel; each audit exports as PDF or CSV.
+- **No e-mail or on-screen alerts are sent.**
+
+**Notes.** Findings are recorded as counts and narrative in the audit report, not as separate records. Track
+each finding's corrective action in the linked CAPA.
 
 ---
 
 ### 5.3 Risk
 
-**Purpose & intent.** The Risk module records the identification, assessment, mitigation and closure of quality
-risks, with attachments and a full history.
+**Purpose & intent.** The Risk module records quality risks, in line with ICH Q9, from identification through
+assessment, mitigation and review to closure. Each risk is scored before and after mitigation, and the
+acceptance decision is documented with a justification.
 
-**Who can do what** (Read-Only views only; every transition below is electronically signed):
+**Who can do what.**
+- **View:** every role except Operations User and Commercial User.
+- **Create and edit a risk, Submit for Assessment, Submit for Review:** Administrator, Quality Manager, Quality
+  User, Regulatory Manager, Regulatory User, Authorised Person, Auditor, Trainer.
+- **Accept assessment, Return, Close:** Administrator, Quality Manager, Authorised Person.
+- **Administrative re-open, Delete:** Administrator.
+- **Electronically signed:** every workflow step.
 
-| Action | Who can do it |
+**Scoring.** Each risk is scored from **1 to 5** on three factors:
+- **Severity:** 1 Negligible, 2 Minor, 3 Moderate, 4 Major, 5 Critical.
+- **Probability:** 1 Rare, 2 Unlikely, 3 Possible, 4 Likely, 5 Almost certain.
+- **Detectability:** 1 High (easily detected) to 5 Low (hard to detect).
+
+The **RPN** (risk priority number) is Severity × Probability × Detectability, so it ranges from 1 to 125.
+MintQMS calculates it automatically and colour-codes it:
+
+| RPN | Band |
 |---|---|
-| Create / Edit a risk | Any signed-in user except Read-Only (broad — includes Quality, Regulatory, Trainer, Auditor) |
-| Submit for assessment; submit for review | Any signed-in user except Read-Only |
-| **Accept assessment; Close; Return** | **Admin, Quality Manager, Authorised Person** |
-| Delete | **Administrator** |
-| Administratively re-open | **Administrator** |
+| 80 or more | High (red) |
+| 40 to 79 | Medium (amber) |
+| Below 40 | Low (green) |
+
+After mitigation, the same three factors are scored again to give the **residual RPN**.
 
 **Record lifecycle.** `Identification → Pending Assessment → Mitigation → Pending Review → Closed`.
 
-| Step | Move | Who |
-|---|---|---|
-| Submit for assessment | Identification → Pending Assessment | any non-Read-Only |
-| Accept assessment | Pending Assessment → Mitigation | **Admin/QM/AP** |
-| Submit for review | Mitigation → Pending Review | any non-Read-Only |
-| Close | Pending Review → Closed | **Admin/QM/AP** |
+| Step | Move | Who | Requires |
+|---|---|---|---|
+| Submit for Assessment | Identification → Pending Assessment | any role above | |
+| Accept Assessment | Pending Assessment → Mitigation | Admin/QM/AP | Optional assessment notes |
+| Return | Pending Assessment → Identification | Admin/QM/AP | |
+| Submit for Review | Mitigation → Pending Review | any role above | Mitigation strategy, residual scores, acceptance decision and its justification |
+| Close | Pending Review → Closed | Admin/QM/AP | Review conclusion |
+| Return | Pending Review → Mitigation | Admin/QM/AP | |
+| Re-open | Closed → Mitigation | Administrator | Justification |
 
 **Step-by-step walkthrough.**
-1. **Identify.** *Quality Assurance → Risk Register → Create.* Describe the risk. It starts in **Identification**.
-2. **Submit for assessment** and sign → **Pending Assessment**.
-3. **Accept assessment.** A Manager/AP accepts, starting mitigation, and signs → **Mitigation**.
-4. **Record mitigation, then submit for review** and sign → **Pending Review**.
-5. **Close.** A Manager/AP reviews and **Closes** the risk, signing → **Closed**.
+1. **Identify.** *Quality Assurance → Risk Register → Create.*
+   - Enter the title, description and category: product quality, patient safety, data integrity, supply
+     chain, regulatory compliance, equipment, personnel or environmental.
+   - Give the initial severity, probability and detectability scores, and name the risk owner.
+   - Link the affected products, processes, assets, materials and suppliers.
+   - You can already record a planned mitigation strategy, target completion date (today or later), monitoring
+     plan and next review date.
+
+   The risk gets a number and starts in **Identification**.
+2. **Submit for Assessment** (signed). The risk can no longer be edited while it waits.
+3. **Accept Assessment** (Admin/QM/AP, signed, with optional assessment notes). The risk moves to
+   **Mitigation**. A manager who disagrees uses **Return** to send it back to Identification.
+4. **Mitigate.** Edit the risk to record:
+   - the mitigation strategy, target and actual completion dates
+   - the **residual** severity, probability and detectability (the residual RPN is calculated)
+   - the **acceptance decision**: is the residual risk acceptable? This needs a justification.
+   - the monitoring plan and next review date
+5. **Submit for Review** (signed). MintQMS refuses until the mitigation strategy, all three residual scores, the
+   acceptance decision and its justification are filled in.
+6. **Close** (Admin/QM/AP, signed, with a **review conclusion**). The risk is closed and its retention date is
+   set. A reviewer who is not satisfied uses **Return** to send it back to Mitigation.
 
 **Handling exceptions.**
-- **Send back:** a Manager/AP can **Return** from Pending Assessment to Identification, or from Pending Review
-  to Mitigation (signed).
-- **Re-opening:** an Administrator can administratively re-open a Closed risk back to Mitigation.
-- **Removing a record:** Administrator only; soft delete.
+- **Editing:** a risk can be edited only in Identification (all fields) and Mitigation (the mitigation,
+  residual and review fields). While pending assessment or review, or once closed, it is read-only.
+- **Re-open:** an Administrator can re-open a closed risk to Mitigation, signed and with a justification, e.g.
+  when its periodic review finds the controls no longer adequate.
+- **Delete:** Administrator only; the risk is hidden, not erased.
 
-**Notes.** Anyone (except Read-Only) can raise and progress a risk, but **acceptance and closure are reserved for
-Admin/Quality Manager/Authorised Person** — broad participation, controlled decisions.
+**Dashboard and register.**
+- **Risk Dashboard** shows:
+  - open, closed and pending-assessment counts
+  - High, Medium and Low RPN counts, with a list of high-RPN open risks
+  - risks past or approaching their target completion date
+  - category and status summaries
+  - recent activity
+- **Register:** exports to Excel; each risk exports as PDF or CSV.
+- **Next review date:** recorded on the risk; MintQMS does not send reminders for it.
+
+**Notes.** Attachments (e.g. FMEA worksheets) are added on the risk and keep their integrity fingerprint.
+Deleting one needs a reason, and the file remains retrievable. Every change and signature is in the audit trail.
 
 ---
 
@@ -703,49 +786,81 @@ history (see §2.8).
 
 ### 6.2 Maintenance
 
-**Purpose & intent.** The Maintenance module schedules and records equipment maintenance and calibration. It
-separates **doing the work** (operations) from **reviewing it** (quality), automatically schedules the next
-occurrence on review, and flags overdue items.
+**Purpose & intent.** The Maintenance module schedules and records work on equipment and facilities:
+preventive and corrective maintenance, calibration, qualification (IQ/OQ/PQ), cleaning and inspection. It
+separates **doing the work** (operations) from **reviewing it** (quality). Recurring work schedules itself: when
+a job is reviewed, the next one is created automatically.
 
-**Who can do what** (Read-Only views only; the work transitions are electronically signed):
+**Who can do what.**
+- **View:** Administrator, Quality Manager, Quality User, Authorised Person, Auditor, Trainer, Read-Only,
+  Operations User.
+- **Create (schedule) a job:** any of the above except Read-Only.
+- **Edit a job:** Administrator, Quality Manager, Authorised Person.
+- **Record Work** (work performed, parts used, cost, while the job is In Progress): Administrator, Quality
+  Manager, Quality User, Authorised Person, Operations User.
+- **Start Work, Complete Work, Send Back to Scheduled / In Progress:** Administrator, Quality Manager, Quality
+  User, Authorised Person, Operations User.
+- **Review Work, Send Back to Completed, Suspend, Reactivate:** Administrator, Quality Manager, Authorised
+  Person.
+- **Delete:** Administrator.
+- **Electronically signed:** every workflow step.
 
-| Action | Who can do it |
-|---|---|
-| Create / schedule | Broad (Quality, Authorised Person, Auditor, Trainer, Operations User) |
-| Edit | Admin, Quality Manager, Authorised Person |
-| **Start work; complete work** | **Admin, Quality Manager, Quality User, Authorised Person, Operations User** |
-| **Review work** (and auto-schedule next); suspend; reactivate | **Admin, Quality Manager, Authorised Person** |
-| Delete | **Administrator** |
-| Administratively re-open | **Administrator** |
+**Record lifecycle.** `Scheduled → In Progress → Completed → Reviewed`, plus **Suspended**.
 
-**Record lifecycle.** `Scheduled → In Progress → Completed → Reviewed → Approved`, plus **Overdue** (auto-flagged
-when past due) and **Suspended** (on hold).
-
-| Step | Move | Who |
-|---|---|---|
-| Start work | Scheduled/Overdue → In Progress | Admin/QM/QU/AP/Operations |
-| Complete work | In Progress → Completed | Admin/QM/QU/AP/Operations |
-| Review work | Completed → Reviewed (next occurrence auto-scheduled) | **Admin/QM/AP** |
+| Step | Move | Who | Notes |
+|---|---|---|---|
+| Start Work | Scheduled → In Progress | operations roles | Records who did the work and the start time |
+| Complete Work | In Progress → Completed | operations roles | Records the end time; downtime is calculated |
+| Send Back | In Progress → Scheduled | operations roles | Reason required |
+| Send Back | Completed → In Progress | operations roles | Reason required |
+| Review Work | Completed → Reviewed | Admin/QM/AP | Closes the job; schedules the next one |
+| Send Back to Completed | Reviewed → Completed | Admin/QM/AP | Reason required; cancels the auto-scheduled next job |
+| Suspend | Scheduled, In Progress or Completed → Suspended | Admin/QM/AP | Reason required |
+| Reactivate | Suspended → Scheduled | Admin/QM/AP | |
 
 **Step-by-step walkthrough.**
-1. **Schedule.** *Quality Operations → Maintenance Register → Create.* Set the equipment, task and due date — it
-   starts **Scheduled** (and becomes **Overdue** automatically if the due date passes).
-2. **Start work.** Operations (or quality) **Start** the maintenance and sign → **In Progress**.
-3. **Complete work** and sign → **Completed** (attach calibration certificates etc.).
-4. **Review.** A Manager/AP **Reviews** the completed work and signs → **Reviewed**; the next occurrence is
-   scheduled automatically.
+1. **Schedule.** *Quality Operations → Maintenance Register → Create.*
+   - Choose the **asset** (and process, if relevant) and enter the title and description.
+   - Choose the **type**: preventive, corrective, calibration, qualification, cleaning or inspection.
+   - Choose the **frequency**: one-time, weekly, monthly, quarterly, semi-annual, annual or as needed. Only
+     sensible combinations are allowed. For example, corrective work is one-time or as needed, and qualification
+     is never on a recurring schedule.
+   - Choose the **priority** and the **scheduled date** (today or later).
+   - Link any deviations or CAPAs that prompted the work.
+
+   The job starts in **Scheduled**, and the next due date is calculated from the frequency.
+2. **Start Work** (signed) when the work begins. MintQMS records who performed it and when it started.
+3. **Record the work.** While the job is In Progress, the person doing it fills in **Record Work** on the job's
+   page: work performed, parts used and cost. This can be saved as often as needed, and each save is recorded in
+   the audit trail. Attach calibration certificates, service reports or checklists.
+4. **Complete Work** (signed) when it is finished, with optional notes. MintQMS records the end time and
+   calculates the downtime.
+5. **Review Work** (Admin/QM/AP, signed). The reviewer checks the record and attachments, and the job moves to
+   **Reviewed** (its retention date is set). For recurring work, the next job is **created automatically**,
+   scheduled for the next due date. The confirmation message gives its number.
 
 **Handling exceptions.**
-- **Send back:** **Send Back to Scheduled / In Progress** (operations roles) or **Send Back to Completed**
-  (Manager/AP) returns the record for rework (signed).
-- **Suspend / Reactivate:** a Manager/AP can put maintenance on hold and bring it back (signed).
-- **Re-opening:** an Administrator can administratively re-open a record back to Reviewed.
-- **Removing a record:** Administrator only; soft delete.
+- **Send back:** at each stage the work can be sent back one step, signed and with a reason. Sending a reviewed
+  job back to Completed also cancels the next job that was created when it was reviewed. A new one is created
+  when it is reviewed again.
+- **Suspend / Reactivate:** put a job on hold, e.g. equipment out of service (signed, reason required).
+  Reactivating returns it to Scheduled.
+- **Editing:** a job can be edited while Scheduled, In Progress, Completed or Suspended; once Reviewed it is
+  read-only.
+- **Delete:** Administrator only, and only before work has started; the record is hidden, not erased.
 
-**Notes.** Operations staff carry out the work (Start/Complete); **the quality review and approval are reserved
-for Admin/Quality Manager/Authorised Person** — execution is separated from quality oversight. A maintenance
-record can be linked to the **deviation(s) and CAPA(s)** that prompted or resulted from it; the linked records
-appear under *Linked Records* on the maintenance (see §2.8).
+**Overdue work.** A job whose scheduled date has passed before work starts is shown as **overdue** on the
+dashboard and register; its status stays *Scheduled*. The dashboard also lists work due within the
+**maintenance warning period** (*Settings → System Settings*, 30 days by default).
+**No e-mail or on-screen alert is sent**, so review the dashboard regularly.
+
+**Dashboard and register.**
+- **Maintenance Dashboard:** overdue jobs, jobs due within the maintenance warning period, status and type
+  summaries, and recent activity.
+- **Register:** exports to Excel; each job exports as PDF or CSV.
+
+**Notes.** Linked deviations and CAPAs appear under *Linked Records* (§2.8). Records with the older status
+*Approved* (from before the current workflow) can be re-opened by an Administrator.
 
 ---
 
@@ -821,195 +936,458 @@ Person may Certify or Reject** a batch. Quality staff prepare; operations enter 
 
 ## 7. Regulatory
 
-> **Access pattern for the whole Regulatory group.** Viewing the regulatory registers is open broadly (most
-> roles can read them). **Performing actions — creating, editing and moving records through their workflow — is
-> restricted to the regulatory roles: Administrator, Regulatory Manager and Regulatory User** (Signal Review and
-> Periodic Reports also allow Quality Manager). Read-Only can view but never change. All workflow transitions are
-> electronically signed.
+> **Access pattern for the whole Regulatory group.** Every role except Operations User and Commercial User can
+> view the regulatory modules. **Creating, editing and moving records through their workflow is restricted to
+> the regulatory roles: Administrator, Regulatory Manager and Regulatory User.** Quality Manager can also move
+> Signal Reviews and Periodic Reports through their workflow. Read-Only can view but never change. Each module
+> section states which steps are electronically signed.
+>
+> **Deadlines in this group.** MintQMS calculates and displays regulatory deadlines (TGA reporting clocks,
+> decision dates, expiries, renewals, conditions, report due dates) and highlights them on the dashboards. It
+> does **not** send e-mail or on-screen alerts for them, so make checking the dashboards part of your
+> procedures.
 
 ### 7.1 Pharmacovigilance — Adverse Events
 
-**Purpose & intent.** Manages adverse-event safety cases from intake through medical review, approval and
-closure. It generates the internationally recognised **CIOMS** safety form and records regulatory (e.g. TGA)
-submissions. Adverse-event records are locked once finalised, and can be linked to complaints.
+**Purpose & intent.** Manages individual adverse-event safety cases (ICSRs) from intake through medical review,
+approval and closure. It works out the TGA reporting deadline for serious cases, records the regulatory
+submission, produces the **CIOMS I** form, and supports follow-up reports. Cases can be linked to complaints,
+CAPAs and periodic reports (PSURs). A case locks when it is approved.
 
-**Who can do what.** Viewing: broad. **All case actions: Administrator, Regulatory Manager, Regulatory User.**
-Delete of supporting attachments retains the file (soft delete).
+**Who can do what.**
+- **View** the register, dashboard and cases: every role except Operations User and Commercial User.
+- **Create, edit, move through the workflow, record the TGA submission, link complaints, create follow-ups and
+  void cases:** Administrator, Regulatory Manager, Regulatory User.
+- **Electronically signed:** every workflow move (Submit for Review, Complete Evaluation, Send Back, Approve,
+  Reject, Close) and Create Follow-up.
 
-**Record lifecycle.** `Draft → Under Medical Review → Pending Approval → Approved → Closed`, with **Voided** as an
-exception/void outcome.
+**Record lifecycle.** `Draft → Under Medical Review → Pending Approval → Approved → Closed`, plus **Voided**.
 
-| Step | Move | Who |
+| Step | Move | Rule |
 |---|---|---|
-| Submit for review | Draft → Under Medical Review | Admin/RegM/RegU |
-| Complete evaluation | Under Medical Review → Pending Approval | Admin/RegM/RegU |
-| Approve | Pending Approval → Approved | Admin/RegM/RegU |
-| Close case | Approved → Closed | Admin/RegM/RegU |
+| Submit for Review | Draft → Under Medical Review | Needs the four minimum case elements (below); serious cases also need Day 0 |
+| Complete Evaluation | Under Medical Review → Pending Approval | Needs the medical narrative; blocked if a reportable serious case has passed its TGA deadline with no submission date recorded |
+| Send Back | Under Medical Review or Pending Approval → Draft | Optional comment |
+| Reject | Pending Approval → Under Medical Review | Optional comment |
+| Approve | Pending Approval → Approved | Locks the case |
+| Close Case | Approved → Closed | |
+| Void | Any unlocked case → Voided | Approved and closed cases cannot be voided |
+
+**Seriousness and the reporting clock.**
+- **Seriousness criteria:** death, life-threatening, hospitalisation, disability, congenital anomaly, medically
+  important. Ticking any of them makes the case **serious**.
+- **Day 0** is the date your organisation first received the minimum information for a valid case.
+- **TGA deadline**, calculated automatically from Day 0:
+  - **7 calendar days** for fatal or life-threatening cases
+  - **15 calendar days** for other serious cases
+- If you change the seriousness or Day 0, the deadline is recalculated.
 
 **Step-by-step walkthrough.**
-1. **Log the case.** *Regulatory → Pharmacovigilance → Adverse Events → Create.* Capture the patient, reporter,
-   product and event details. It starts in **Draft**.
-2. **Submit for medical review** and sign → **Under Medical Review**. Record the medical assessment.
-3. **Complete the evaluation** and sign → **Pending Approval**.
-4. **Approve** and sign → **Approved** (generate the CIOMS form; log any regulatory submission).
-5. **Close the case** and sign → **Closed**.
+1. **Log the case.** *Regulatory → Pharmacovigilance → Adverse Events → Create.* The form has numbered
+   sections:
+   1. **Report Info:** report type (initial or follow-up), source (spontaneous, literature, clinical study,
+      post-market study, digital media, regulatory authority, other), Day 0, and any Special Access Scheme
+      reference.
+   2. **Patient:** identifier (initials or code, never a full name), date of birth or age, sex, weight, height,
+      medical history, concomitant medicines, pregnancy.
+   3. **Suspect Product:** choose the product (name and ARTG number fill in), batch, route, dose and frequency,
+      indication, treatment dates, action taken, and dechallenge and rechallenge results.
+   4. **AE Details:** description, MedDRA preferred term and system organ class, start and end dates, outcome,
+      seriousness criteria.
+   5. **Case Assessment:** severity, causality (certain to unclassifiable), expectedness, medical narrative,
+      evaluator and date, and whether it points to a possible signal.
+   6. **Regulatory:** whether the case is reportable to the TGA and why, submission method and date, ADRS
+      reference, overseas reporting, whether to include it in the next PSUR, and significant safety issue.
+   7. **Attachments.**
+
+   The reporter's details (name, type, qualification, institution and contact details) are recorded too. The
+   case gets a number **AE-YYYY-NNNN** and starts in **Draft**.
+2. **Submit for Review** (signed). The case must have the four minimum elements of a valid case: an
+   identifiable reporter, an identifiable patient, a suspect product and a description of the event. Serious
+   cases also need Day 0.
+3. **Medical review.** Complete the **Case Assessment** (causality, expectedness, severity and the medical
+   narrative), then **Complete Evaluation** (signed) → Pending Approval.
+4. **Report to the TGA if required.** On the **Regulatory** tab, record the decision and, once submitted, use
+   **Log TGA Submission** to record the date, method and ADRS reference. Do this **before the deadline**:
+   MintQMS will not let a reportable serious case move to Pending Approval after its deadline unless the
+   submission date is recorded.
+5. **Approve** (signed). The case locks. **Export CIOMS** produces the CIOMS I form as a PDF at any stage.
+6. **Close Case** (signed) when all actions are complete.
+
+**Follow-ups and links.**
+- **Follow-up report:** new information on an approved or closed case is added with **Create Follow-up**
+  (signed). This creates a new Draft case linked to the original, numbered from it (e.g. AE-2026-0012/F1). It
+  copies the case, reporter, patient and product details, and starts a new reporting clock with Day 0 set to
+  today.
+- **Complaint:** **Link Complaint** connects the case to a complaint, e.g. a product complaint that involved an
+  adverse event. Allowed while the case is unlocked.
+- **CAPA:** an approved case can raise a linked CAPA (**Create CAPA**).
+- **PSUR:** cases marked *include in next PSUR* can be linked to a periodic report (§7.4).
 
 **Handling exceptions.**
-- **Send back:** **Send Back** returns the case to an earlier stage for rework (signed).
-- **Reject / Void:** a case can be rejected from Pending Approval, or **Voided** where it should not proceed.
-- **Linking:** link the case to a related complaint for traceability. A case also carries its **suspect
-  product(s)** and can reference a **parent case** where it follows on from an earlier adverse event.
+- **Send Back / Reject:** return the case for rework (signed, with an optional comment).
+- **Void:** for a case logged in error or a duplicate. The case stays in the system, marked Voided, and is
+  excluded from the dashboard. Approved and closed cases cannot be voided.
+- **Locked case:** an approved or closed case cannot be edited. New information goes into a follow-up.
 
-**Notes.** Because the record locks when finalised, post-approval changes follow the controlled regulatory
-workflow rather than a free edit. (A known limitation when editing a case that already has child records is
-tracked separately by the project team.)
+**Dashboard.** *Regulatory → PV Dashboard* shows:
+- open, serious and non-serious case counts
+- cases approaching or past their TGA deadline
+- cases submitted this month
+- possible signals flagged on cases
+- a status chart and recent activity
+
+The deadline is shown on each case. **No e-mail or on-screen alert is sent**, so check the dashboard daily.
+
+**Notes.** Every change, transition, link, upload and deletion is recorded on the **Audit Trail** tab.
+Attachments removed with a reason remain retrievable, marked as deleted.
 
 ---
 
 ### 7.2 PV Literature Monitoring
 
-**Purpose & intent.** A register for tracking published-literature monitoring for safety signals. It is a simple
-log — there is no multi-step approval workflow.
+**Purpose & intent.** A log of the literature searches you carry out to detect safety information about your
+products in published literature. Each entry records one search, so you can show that monitoring is done at the
+frequency your procedures require. It is a register, with no approval workflow.
 
-**Who can do what.** Viewing: broad. **Create / Edit / Delete: Administrator, Regulatory Manager, Regulatory
-User.** Every entry is audit-logged.
+**Who can do what.**
+- **View:** every role except Operations User and Commercial User.
+- **Create and edit entries:** Administrator, Regulatory Manager, Regulatory User.
 
-**Step-by-step walkthrough.** *Regulatory → Literature Monitoring → Create.* Record the literature reference and
-your monitoring assessment, and save. Edit or remove entries as the monitoring record requires. Entries document
-ongoing surveillance and can support signal and case work.
+Entries cannot be deleted; correct them by editing. Every change is audit-logged.
 
-**Notes.** No states or transitions — this is a record-keeping register, not a workflow.
+**Step-by-step walkthrough.**
+1. *Regulatory → Literature Monitoring → Create.*
+2. Record:
+   - the search date and who searched
+   - the databases searched (e.g. PubMed, Embase)
+   - the search terms
+   - the date range covered
+   - the number of results, how many were relevant, and how many adverse events were identified
+   - notes
+3. Save.
+4. If the search found a reportable case, log it as an adverse event (§7.1), with source *Literature*.
+
+**Notes.** Keep the search terms consistent between searches, so the log shows continuous coverage.
 
 ---
 
 ### 7.3 PV Signal Review
 
-**Purpose & intent.** Manages the formal review and disposition of potential safety signals.
+**Purpose & intent.** Records the evaluation of potential safety signals and their outcome.
 
-**Who can do what.** Viewing: broad. Create/Edit: Admin/RegM/RegU. **Moving a signal through its workflow:
-Administrator, Quality Manager, Regulatory Manager, Regulatory User.**
+**Where signals come from.** You do not create signal reviews by hand. Once a day MintQMS looks at the adverse
+events reported in the last 90 days (voided cases excluded). When **three or more cases share the same MedDRA
+preferred term**, it opens a signal review for that term, unless an open review for it already exists. The review
+records the term, the date it was detected and the number of cases.
 
-**Record lifecycle.** `Open → Under Review → {Confirmed | Refuted} → Closed`.
+**Who can do what.**
+- **View:** every role except Operations User and Commercial User.
+- **Edit** (assignee, assessment notes, conclusion): Administrator, Regulatory Manager, Regulatory User.
+- **Move through the workflow:** Administrator, Quality Manager, Regulatory Manager, Regulatory User. Moves are
+  audit-logged but not electronically signed.
+
+**Record lifecycle.**
+
+| From | Can move to |
+|---|---|
+| Open | Under Review |
+| Under Review | Open (back), Confirmed, Refuted |
+| Confirmed | Closed |
+| Refuted | Closed |
 
 **Step-by-step walkthrough.**
-1. **Open a signal.** *Regulatory → Signal Reviews → Create.* It starts **Open**.
-2. **Move to Under Review** and assess the signal.
-3. **Confirm or Refute** the signal based on the review. (If a confirmed signal needs action, use **Create
-   CAPA** to raise and link one.)
-4. **Close** the signal review.
+1. Open the review: *Regulatory → Signal Reviews*. Its page lists the cases that triggered it.
+2. **Assign** it to a reviewer and move it to **Under Review**.
+3. **Assess** the cases (and literature) and record your assessment notes.
+4. **Conclude:**
+   - **Confirmed** if there is a new or changed risk
+   - **Refuted** if there is not
 
-**Notes.** Confirmation/refutation and closure are recorded with the actor and time; signals can draw on
-literature and adverse-event data. A signal review can raise a single linked **CAPA** when a confirmed signal
-warrants a corrective or preventive action.
+   If you need more data first, set the conclusion to **Ongoing Monitoring** (via Edit) and keep the review
+   Under Review. MintQMS records who reviewed it and when.
+5. **Act on a confirmed signal.** **Create CAPA** raises a linked CAPA, e.g. for a label update or risk
+   management plan change. A confirmed signal may also need reporting to the TGA under your procedures, outside
+   MintQMS.
+6. **Close** the review.
+
+**Notes.**
+- **Threshold:** the automatic three-cases-in-90-days rule is a screening aid only. Your PV procedures may
+  require other signal-detection methods (e.g. reviewing literature and periodic data).
+- **Closed or refuted reviews:** once a term's review is closed or refuted, a new review opens if the threshold
+  is met again.
 
 ---
 
 ### 7.4 PV Periodic Reports (PSUR)
 
-**Purpose & intent.** Manages periodic safety reports (PSUR/PBRER) — preparation, review, submission and
-acceptance — with linked adverse-event cases, attachments and deadline monitoring.
+**Purpose & intent.** Manages periodic safety reports (PSUR/PBRER) for a product: preparing the report for a
+reporting period, linking the adverse-event cases it covers, review, submission to the authority and acceptance.
 
-**Who can do what.** Viewing: broad. Create/Edit/Link cases: Admin/RegM/RegU. **Moving a report through its
-workflow (including Submit and Accept): Administrator, Quality Manager, Regulatory Manager, Regulatory User.**
-Transitions are electronically signed; attachments are retained on deletion (soft delete).
+**Who can do what.**
+- **View:** every role except Operations User and Commercial User.
+- **Create, edit, link cases, and add or remove attachments:** Administrator, Regulatory Manager, Regulatory User.
+- **Move through the workflow:** Administrator, Quality Manager, Regulatory Manager, Regulatory User.
+- **Electronically signed:** Submit and Accept.
 
-**Record lifecycle.** `In Preparation → Under Review → Submitted → Accepted`.
+**Record lifecycle.**
+
+| Step | Move | Signed? |
+|---|---|---|
+| Send for review | In Preparation → Under Review (and back) | No |
+| Submit Report | Under Review → Submitted (sets the submission date if empty) | **Yes** |
+| Accept Report | Submitted → Accepted (report locked) | **Yes** |
 
 **Step-by-step walkthrough.**
-1. **Create the report.** *Regulatory → PSUR / Periodic Reports → Create.* Link the relevant adverse-event cases and
-   attach the report. It starts **In Preparation**.
-2. **Move to Under Review** and review the content.
-3. **Submit the report** (to the authority) and sign → **Submitted**.
-4. **Accept** once acknowledged → **Accepted**.
+1. **Create the report.** *Regulatory → PSUR / Periodic Reports → Create.* Choose the product (approved
+   products only), the title, the reporting period (start and end) and the **due date**. It starts **In
+   Preparation**.
+2. **Link the cases.** The report page lists adverse-event cases marked *include in next PSUR* (on the case's
+   Regulatory tab) that are not yet in a report. **Link** each one to this report.
+3. **Write the content.** Record the exposure data and the benefit–risk conclusion. **Export PSUR Data**
+   produces an Excel workbook of the report details and all linked cases (seriousness, causality,
+   expectedness, regulatory status), as input to the report document. Upload the report and supporting files
+   under **Attachments**.
+4. **Under Review:** move it for review; send it back to In Preparation if changes are needed.
+5. **Submit Report** (signed) when sent to the authority. Then record the TGA reference number.
+6. **Accept Report** (signed) when the authority acknowledges or accepts it. The report is then locked: it can
+   no longer be edited and attachments cannot be added.
 
-**Notes.** Deadline monitoring helps ensure periodic reports are not missed.
+**Deadlines.** The register shows each report's due date and flags reports past their due date with no
+submission date. **No e-mail or on-screen alert is sent**, so check the register as part of your procedures.
 
 ---
 
 ### 7.5 Regulatory Intelligence
 
-**Purpose & intent.** Tracks product registrations and applications across their full regulatory life — from
-strategy and dossier preparation, through submission and authority review, to approval, conditions, variations
-and renewals. Approved records are locked. The module also manages conditions of approval, agency milestones
-(with templates), variations, renewals, access pathways and periodic reports.
+**Purpose & intent.** Tracks each product registration or application through its whole regulatory life: strategy
+and dossier preparation, submission and authority review, the decision, then conditions, variations, renewals,
+suspension or withdrawal. One record is one application for one product in one jurisdiction. Approved records are
+locked so that a live authorisation cannot be changed casually; changes go through a variation or renewal. The
+module also holds the record's milestones (with standard templates per authority), conditions of approval,
+variations, special-access pathways and their six-monthly supply reports, and supporting documents.
 
-**Who can do what.** Viewing: broad. **All actions and transitions: Administrator, Regulatory Manager,
-Regulatory User.** Delete: Administrator. All transitions are electronically signed.
+**Who can do what.**
+- **View** the register, dashboard and records: every role except Operations User and Commercial User.
+- **Create, edit, move through the workflow, and manage milestones, conditions, variations, access pathways,
+  reports and documents:** Administrator, Regulatory Manager, Regulatory User.
+- **Delete** a record: Administrator only.
+- **Electronically signed:** Approve, Reject, Withdraw and Suspend. Other moves (e.g. Advance to Preparation,
+  Mark Submitted, Clock Stop) are recorded in the audit log but not signed.
 
-**Record lifecycle (main path).** `Strategy → Preparation → Submitted → Under Review → Approved`. From **Under
-Review**, the authority decision can lead to **Approved**, **Conditions Active** (when conditions apply),
-**Rejected**, a **Clock Stop** (review paused), or **Withdrawn**. After **Approved**, the record can move to
-**Variation Required** (a post-approval change), **Renewal Due** (approaching expiry), **Suspended** or
-**Withdrawn**.
+**Record lifecycle.**
+`Strategy → Preparation → Submitted → Under Review → Approved`, with these branches:
 
-| Key step | Move | Who |
+| From | Can move to | Notes |
 |---|---|---|
-| Prepare dossier | Strategy → Preparation → Submitted | Admin/RegM/RegU |
-| Authority review | Submitted → Under Review | Admin/RegM/RegU |
-| Approve | Under Review → Approved (locks) | Admin/RegM/RegU |
-| Manage conditions | Under Review → Conditions Active → Approved (when all conditions closed) | Admin/RegM/RegU |
-| Variation | Approved → Variation Required → Under Review/Approved | Admin/RegM/RegU |
-| Renewal | Approved → Renewal Due → Submitted | Admin/RegM/RegU |
+| Strategy | Preparation | |
+| Preparation | Strategy (back), Submitted | Submitted sets the submission date if empty |
+| Submitted | Preparation (back), Under Review, Withdrawn | Under Review sets **Day 0** (the regulatory clock start) if empty |
+| Under Review | Clock Stop, Approved, Conditions Active, Rejected, Withdrawn | Clock Stop = authority questions; the clock is paused |
+| Clock Stop | Under Review | **Restart Clock** when you respond |
+| Approved | Variation Required, Renewal Due, Suspended, Withdrawn | Approved **locks** the record |
+| Conditions Active | Approved, Suspended, Withdrawn | Approval only when every condition is Closed or Waived |
+| Variation Required | Under Review, Approved | Record unlocked while the variation is handled |
+| Renewal Due | Submitted, Withdrawn | Record unlocked for the renewal submission |
+| Suspended | Under Review (reinstatement), Withdrawn | Suspended records are locked |
+| Rejected, Withdrawn | — | Closed: the record can no longer be edited |
+
+Reject, Withdraw and Suspend need a reason.
 
 **Step-by-step walkthrough.**
-1. **Start the application.** *Regulatory → RI Register → Create.* It starts in **Strategy**.
-2. **Prepare** the dossier (→ Preparation), then **Submit** to the authority (→ Submitted).
-3. **Under Review.** Track the authority's review; add milestones (manually or from an agency template) and
-   record any clock stops.
-4. **Decision.** **Approve** (→ Approved, record locks) or record **Conditions Active** if conditions apply —
-   manage and close each condition (a condition can raise a CAPA), then approve once all are closed.
-5. **Maintain.** Raise **Variations** for post-approval changes and **Renewals** as expiry approaches — each
-   re-enters the review cycle and stamps an approval snapshot for that cycle.
+1. **Create the record.** *Regulatory → RI Register → Create.* Choose the **product** (its name, active
+   substance, dosage form and strength fill in automatically), the **jurisdiction** and the **application type**
+   (the list depends on the jurisdiction, e.g. TGA Category 1, Priority Review, Provisional Approval). Add the
+   indication, submission method, any expedited flags (orphan, priority review, breakthrough, PRIME, conditional
+   approval), key dates, fees and contacts. The record gets a number **RI-YYYY-NNNN** and starts in **Strategy**.
+2. **Strategy → Preparation.** Use **Advance to Preparation** while the dossier is assembled. Record the
+   strategy notes, pre-submission meeting and dossier lock dates. Upload documents on the **Attachments** tab.
+3. **Submit.** **Mark Submitted** when the dossier goes to the authority. Enter the authority reference number
+   (e.g. the ARTG or submission number) and acknowledgement date when you receive them.
+4. **Under Review.** Use **Under Review (set Day 0)** when the authority starts its assessment. MintQMS sets the
+   **target decision date** from Day 0 plus the application type's standard clock (where one is defined).
+   - **Milestones tab:** **Apply Standard Template** adds the authority's usual milestones with planned dates
+     counted from Day 0. Templates exist for the ten pre-loaded jurisdictions: Australia (TGA), New Zealand
+     (Medsafe), EU (EMA), US (FDA), Canada, Singapore, Malaysia, Brazil, Mexico and Colombia. You can also add
+     milestones by hand. Update each one with its actual date and status (Pending, In Progress, Completed,
+     Overdue, Skipped). A template can only be applied while the record has no milestones.
+   - **Clock stop:** when the authority issues questions, use **Clock Stop**; when you respond, **Restart Clock**
+     (back to Under Review).
+5. **Decision.**
+   - **Approve:** sign. If the record is flagged *conditional approval*, it goes to **Conditions Active**;
+     otherwise to **Approved**, which sets the approval and decision dates, locks the record and takes an
+     **approval snapshot** (see Notes).
+   - **Reject** or **Withdraw:** sign and give the reason.
+6. **Conditions of approval** (**Conditions** tab). Add each condition the authority imposed: type (REMS, RMP,
+   confirmatory study, supply report, label update, PSUR schedule, safety study, other), description and due
+   date. Move it through Outstanding → In Progress → Submitted, then **Close Condition** with completion notes,
+   or mark it Waived. **Raise CAPA** creates a CAPA linked to the condition. When every condition is Closed or
+   Waived, **Approve (Conditions Met)** moves the record to Approved.
+7. **After approval.**
+   - **Variations** (**Variations** tab): add each post-approval change with its type (EU Type IA/IB/II,
+     extension; major/minor variation; US PAS, CBE-30, supplements; Canadian and other types), description and
+     dates. Use **Variation Required** to unlock the record while a variation is under assessment, then return
+     to Approved or Under Review.
+   - **Renewal:** as the expiry date approaches, use **Initiate Renewal** (a reason is required). The record
+     moves to **Renewal Due** and unlocks; **Submit Renewal** sends it back to Submitted, and approval starts a
+     new approval cycle.
+   - **Suspend** (signed, reason required) when the authority suspends the authorisation; **Reinstate
+     (Re-review)** returns it to Under Review.
+8. **Access pathways** (**Access Pathways** tab). For supply outside the normal registration, e.g. TGA Special
+   Access Scheme A/B/C, Authorised Prescriber, CTN/CTA clinical trials, expanded access or named-patient supply,
+   add a pathway record. It gets a number **AP-YYYY-NNNN** and holds the pathway type, patient identifier or
+   prescriber, approval letter number, approval and expiry dates, status (Requested → Eligibility Assessment →
+   Submitted → Approved → Active → Suspended Pending Renewal / Closed / Rejected), clinical justification, and
+   whether adverse-event reporting applies.
+   - **Six-monthly supply reports:** on the pathway record, add each report with its period, quantity supplied,
+     the date sent to the authority and the authority's reference. The next report due date moves to six
+     months after the period end.
+9. **Licences & Certs tab.** Lists any licences or certificates that depend on this application. The link is
+   made from the licence record (*Licences & Certifications → Dependencies tab*).
 
 **Handling exceptions.**
-- **Withdraw / Suspend / Reject:** these require a documented reason and are signed; they move the record to the
-  corresponding state.
-- The full, exact list of permitted moves is in **Appendix B — State-transition reference**.
+- **Locked record:** an Approved or Suspended record cannot be edited. Use Variation Required, Initiate Renewal,
+  Suspend, Withdraw or Reinstate as appropriate.
+- **Closed record:** Rejected and Withdrawn records are frozen and cannot be edited.
+- **Wrong step taken:** the "back" moves (Back to Strategy, Back to Preparation, Back to Under Review) correct
+  early-stage mistakes; later decisions are corrected through the workflow, not by editing.
+- **Deleting:** Administrator only. The record is hidden, not erased. Uploaded documents can be removed with a
+  reason; they remain retrievable, marked as deleted.
 
-**Notes.** A registration's entire regulatory history — every cycle, condition and supporting document (with its
-integrity fingerprint) — is preserved, supporting periodic evaluation and inspection.
+**Deadlines and the dashboard.** *Regulatory → RI Dashboard* shows active and under-review counts, decisions
+due soon, approvals expiring soon, open conditions, overdue milestones and six-monthly reports, expiring access
+pathways, status and jurisdiction summaries, and recent activity. MintQMS checks these deadlines daily (decision
+due within 30 days, expiry within 90 days, condition due within 30 days, access pathway expiry within 60 days,
+six-monthly report within 30 days, clock stops longer than 90 days). **These checks are written to the server
+log only; no e-mail or on-screen alert is sent.** Review the dashboard regularly (e.g. weekly) as part of your
+procedures.
+
+**Notes.**
+- **Approval history.** Each time a record is approved, MintQMS saves a complete snapshot of the record, its
+  conditions and the documents current at that approval (**Approval History** tab). The documents are tagged
+  with that approval cycle, so each cycle's dossier stays identifiable through renewals and variations.
+- **Register and exports.** The RI Register can be filtered by jurisdiction, status and year. Applications and
+  access pathways can each be exported to Excel.
+- **Retention.** A retention date is set when the record is approved, rejected, withdrawn or suspended, using
+  the Regulatory Intelligence retention period in *Settings → System Settings*.
+- **Audit Log tab:** every change, transition, upload and deletion, with old and new values.
 
 ---
 
 ### 7.6 Licences & Certifications
 
-**Purpose & intent.** Tracks the company's own licences and certificates through their life — application,
-assessment, issue, renewal, variation, suspension, withdrawal and expiry — including conditions, dependencies on
-regulatory applications, and lead-time renewal alerts. Records lock when issued/expired/suspended/withdrawn.
+**Purpose & intent.** Tracks the licences, permits and certificates the business depends on, through their whole
+life: application, assessment, issue, renewal, variation, suspension, withdrawal and expiry. It covers three
+categories:
+- **Regulatory licences:** federal and state licences and permits, e.g. TGA wholesale, import and manufacturing
+  licences, ODC import/export licences and permits, state wholesale licences. These are pre-loaded as licence
+  types.
+- **ISO and private certifications**, e.g. ISO 9001 certificates.
+- **Third-party site approvals**, e.g. GMP clearances for overseas manufacturers, via the MRA, Compliance
+  Verification or TGA-inspection pathways.
 
-**Who can do what.** Viewing: broad. **All actions and transitions: Administrator, Regulatory Manager,
-Regulatory User.** Delete: Administrator. All transitions are electronically signed.
+A record can be held by your **own company** or by a **third party** (an external manufacturing or supply site,
+linked to a supplier). Issued records are locked; changes go through a variation or renewal.
 
-**Record lifecycle (main path).** `Draft → Applied → Under Assessment → Issued / Active`. From **Issued/Active**,
-the record can move to **Renewal Due**, **Expired**, **Variation Required**, **Suspended** or **Withdrawn**. A
-record can also be marked **Not Applicable** (with justification) where a licence is confirmed not required.
-Active records carry any post-issue **conditions** as a flag while remaining Issued/Active.
+**Who can do what.**
+- **View** the register, dashboard, calendar and records: every role except Operations User and Commercial User.
+- **Create, edit, move through the workflow, and manage conditions, documents and dependencies:**
+  Administrator, Regulatory Manager, Regulatory User.
+- **Delete** a record: Administrator only.
+- **Electronically signed:** Issue, Suspend and Withdraw. Other moves are recorded in the audit log but not
+  signed.
 
-| Key step | Move | Who |
+**Record lifecycle.**
+`Draft → Applied → Under Assessment → Issued / Active`, with these branches:
+
+| From | Can move to | Notes |
 |---|---|---|
-| Apply | Draft → Applied | Admin/RegM/RegU |
-| Assessment | Applied → Under Assessment | Admin/RegM/RegU |
-| Issue | Under Assessment → Issued/Active (locks) | Admin/RegM/RegU |
-| Renew | Issued/Active → Renewal Due → Applied | Admin/RegM/RegU |
-| Suspend / Withdraw | Issued/Active → Suspended / Withdrawn (reason required) | Admin/RegM/RegU |
+| Draft | Applied, Not Applicable | Not Applicable needs a justification (licence confirmed not required) |
+| Applied | Draft (back), Under Assessment, Withdrawn | |
+| Under Assessment | Applied (back), Issued / Active, Suspended, Withdrawn | Issue needs the licence number and issue date |
+| Issued / Active | Renewal Due, Expired, Variation Required, Suspended, Withdrawn | Issued **locks** the record |
+| Variation Required | Under Assessment, Issued / Active | Unlocked while the change is handled |
+| Renewal Due | Applied, Expired, Suspended | Unlocked for the renewal application |
+| Expired | Applied | Restart with a new application |
+| Suspended | Applied | Reinstatement application |
+| Withdrawn | Draft | Re-open |
+| Not Applicable | Draft | Re-open |
+
+Suspend and Withdraw need a reason.
 
 **Step-by-step walkthrough.**
-1. **Create the record.** *Regulatory → LC Register → Create.* It starts in **Draft**.
-2. **Apply** (→ Applied), then move to **Under Assessment** while the authority/cert body reviews.
-3. **Issue** the licence (→ Issued/Active; the record locks). Record any conditions; complete or waive each. A
-   condition can **raise a CAPA** (**Raise CAPA**) where it needs a tracked corrective action.
-4. **Maintain.** Link dependencies on regulatory applications; raise **Variations**; initiate **Renewal** as
-   expiry approaches (lead-time alerts warn you in advance).
+1. **Create the record.** *Regulatory → LC Register → Create.*
+   - **Classification:** choose the holder type (own company or third party) and the category. For a third
+     party, link the supplier and the site address and country.
+   - **Licence type:** choose from the list for that category. The issuing body and default renewal lead time
+     fill in from the licence type.
+   - The record gets a number **LC-YYYY-NNNN** and starts in **Draft**.
+2. **Fill in the details** across the tabs:
+   - **Licence Details:** licence or certificate number, scope, application, issue and expiry dates, next
+     renewal due and renewal lead time (in days).
+   - **GMP / ISO**, for third-party GMP clearances: pathway (MRA, Compliance Verification or TGA inspection),
+     site country, manufacturing steps covered, last inspection date and authority, requests for information
+     (RFI date, response due, response sent), letter of access. For ISO certificates: certification body and
+     its accreditation, standard version, certificate scope, next surveillance audit and recertification dates.
+   - **Contacts:** internal responsible person, external consultant, authority contact and portal user name.
+   - **Fees.**
+3. **Apply** when the application goes to the authority or certification body (→ Applied). Move to **Under
+   Assessment** while it is reviewed. Upload the application form and correspondence on **Attachments**.
+4. **Issue** (signed) when the licence or certificate is granted. The licence number and issue date must be
+   filled in first. The record moves to **Issued / Active** and locks, the documents current at that point are
+   tagged with this approval cycle, and an **approval snapshot** is saved (see Notes).
+5. **Conditions** (**Conditions** tab). Add any conditions imposed on the licence, with a due date. Complete
+   each one (**Mark Complete**, with notes) or waive it (**Confirm Waiver**, with a reason). **Raise CAPA**
+   creates a CAPA linked to the condition.
+6. **Dependencies** (**Dependencies** tab). **Link Application** connects the licence to the Regulatory
+   Intelligence applications that rely on it, e.g. a GMP clearance that a registration depends on. Linked
+   licences then appear on the application's *Licences & Certs* tab, so an expiring licence can be traced to
+   the products it affects.
+7. **Keep it current.**
+   - **Renewal:** **Initiate Renewal** (a reason is required) moves the record to Renewal Due and unlocks it.
+     Then move it to **Applied** when the renewal application is lodged, and Issue again when granted, which
+     starts a new approval cycle.
+   - **Variation:** use **Variation Required** for a change to an issued licence, then return it to Under
+     Assessment or Issued / Active.
+   - **Expiry:** if a licence lapses, use **Mark Expired**. Records are **not** expired automatically.
 
 **Handling exceptions.**
-- **Suspend / Withdraw:** require a documented reason and signature; the record locks.
-- **Reinstate:** a suspended record re-enters via *Applied → Under Assessment → Issued/Active* (each approval
-  cycle is snapshotted).
-- **Not Applicable:** requires a documented justification.
-- The full, exact list of permitted moves is in **Appendix B — State-transition reference**.
+- **Suspend or Withdraw** (signed, reason required): use when the authority suspends the licence, or you
+  surrender it. Both lock the record. A suspended licence is reinstated through a new application (→ Applied).
+- **Not Applicable:** records a documented decision that a licence is not needed. **Revert to Draft** re-opens
+  it.
+- **Locked record:** issued, expired, suspended and withdrawn records cannot be edited, and documents cannot be
+  added. Use the workflow actions above.
+- **Deleting:** Administrator only. The record is hidden, not erased. Uploaded documents can be removed with a
+  reason; they remain retrievable, marked as deleted.
 
-**Notes.** Lead-time monitoring is designed to ensure the business never unknowingly operates on a lapsed
-licence.
+**Deadlines, calendar and dashboard.**
+- **LC Dashboard** shows:
+  - active, renewal-due and expired counts
+  - records expiring within the **LC expiry warning period** (*Settings → System Settings*, 90 days by default);
+    the home page shows the same list
+  - open conditions
+  - overdue responses to authority questions (RFIs)
+  - ISO surveillance audits due within 60 days
+  - status and category summaries
+- **LC Calendar** shows expiry dates, renewal start dates (expiry minus the lead time), ISO surveillance audits,
+  RFI response deadlines and condition due dates.
+- **Expiry report** lists records expiring within a chosen number of days (the LC expiry warning period by
+  default). The register can be
+  filtered by category, holder type, status, licence type and expiry window, and exported to Excel.
+- **Daily check:** MintQMS checks each active licence against its renewal lead time (90 days if none is set)
+  and flags expired ones. **These checks are written to the server log only; no e-mail or on-screen alert is
+  sent, and the status does not change automatically.** Review the dashboard and calendar regularly as part of
+  your procedures.
+
+**Notes.**
+- **Approval history.** Each issue saves a complete snapshot of the record, its conditions and the documents
+  current at that time (**Approval History** tab).
+- **Document types:** certificate, inspection report, GMP evidence package, authority letter, application form,
+  site master file, quality agreement, surveillance audit report, other.
+- **Retention:** a retention date is set when a record expires, is suspended or is withdrawn, using the
+  Licences & Certifications retention period in *Settings → System Settings*.
+- **Audit Log tab:** every change, transition, upload and deletion.
 
 ---
 
@@ -1136,6 +1514,10 @@ everyone what they owe, and compliance views let managers see who is outstanding
 
 **Notes.** A trainee can only act on **their own** assignment — no one can acknowledge training on someone else's
 behalf. Trainers and managers confirm competency; administrators manage exceptions.
+
+**Dashboard.** *Training → Training Dashboard* lists overdue trainings and trainings due within the **training
+warning period** (*Settings → System Settings*, 30 days by default), together with recently completed trainings.
+Each person sees their own assignments under *Training → My Training*.
 
 ---
 
@@ -1267,8 +1649,9 @@ eligibility), password policy and cool-down periods — and the **batch-release 
 
 **How to use.** *Settings → System Settings* to review configuration; an Administrator makes and saves changes,
 which are recorded in the settings audit log. The page covers the organisation's name, address and logo; display
-preferences; warning periods and default resolution times; password expiry, password history and idle
-time-out; the e-mail (SMTP) server used for account confirmation and password resets; and retention periods.
+preferences; the **warning periods** that decide what the dashboards show as due soon (licence and certificate
+expiry, maintenance, training); default resolution times; password expiry, password history and idle time-out;
+the e-mail (SMTP) server used for account confirmation and password resets; and retention periods.
 **Display Preferences → Site Time Zone** sets the time zone in which every date/time is shown — screens, audit
 trails, exports and watermarks — and the "today" used for due and overdue flags; stored time-stamps are not
 changed. Set it to your site's own time zone (the initial value is Brisbane). Release-certification statement
@@ -1336,7 +1719,7 @@ before anyone else uses it:
 1. **Sign in** as `admin@trial.local` with the password chosen at installation. You are asked to set a new
    password immediately.
 2. **System Settings** (*Settings → System Settings*): enter the organisation name, address and logo; set the
-   site time zone and date format; enter the e-mail (SMTP) server and sender address; review password expiry,
+   site time zone; enter the e-mail (SMTP) server and sender address; review password expiry,
    idle time-out, warning periods, default resolution times and retention periods against your procedures.
 3. **Release Certification Statements** (*Settings → Release Certification Statements*): review the wording used
    on batch-release certificates.

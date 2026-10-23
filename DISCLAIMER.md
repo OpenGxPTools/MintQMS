@@ -15,8 +15,8 @@ The automated tests in this repository show what was checked during development.
 own validation.
 
 **No endorsement or affiliation.** MintQMS is not endorsed by, or affiliated with, the Therapeutic Goods
-Administration (TGA) or any other regulator, or C-realize IT Services SRL (the authors of OpenQMS, on which
-MintQMS is based). Using MintQMS does not by itself make your quality system compliant with any law,
+Administration (TGA) or any other regulator, or C-realize IT Services SRL (the authors of OpenQMS, the open-source
+project from which MintQMS was originally developed). Using MintQMS does not by itself make your quality system compliant with any law,
 regulation, standard or guideline.
 
 **Not professional advice.** The workflows, terminology and documentation reflect common practice in

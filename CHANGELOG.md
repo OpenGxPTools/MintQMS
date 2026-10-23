@@ -2,7 +2,7 @@
 
 ## MintQMS 1.0.0 — first public release (unreleased)
 
-MintQMS is based on the free AGPLv3 release of OpenQMS 1.3.0 (see the bottom of this file), which provided
+MintQMS was originally developed from the free AGPLv3 release of OpenQMS 1.3.0 (see the bottom of this file), which provided
 Deviations, CAPA, Change Control, controlled documents, training, products, materials, processes, assets, and
 users and roles. Compared with that release, MintQMS adds the following.
 

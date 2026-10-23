@@ -255,9 +255,10 @@ sudo ufw allow OpenSSH && sudo ufw allow 80,443/tcp && sudo ufw enable
 2. **Remove `SeedAdminPW`** from `/etc/mintqms/mintqms.env` and run `sudo systemctl restart mintqms`.
 3. Under **Settings → System Settings**, set at least:
    - organisation name, address and logo (the logo appears on certificates and reports);
-   - **site time zone** and date format — every date and time is shown in this zone;
+   - **site time zone** — every date and time is shown in this zone;
    - **e-mail (SMTP)** server and sender address — needed for account confirmation and password resets;
-   - retention periods, password expiry and idle time-out to match your procedures.
+   - retention periods, password expiry, idle time-out and the warning periods used by the dashboards, to
+     match your procedures.
 4. Under **Settings → Release Certification Statements**, review the batch-release certification statements.
 5. Create user accounts: **Settings → Users → Create New User**, then **Manage Roles** to give each
    person the roles they need. Each new user confirms their e-mail address before first login (while
