@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest an improvement or a new capability
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What do you need to do?
+      description: The quality or regulatory task, and what makes it hard today.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like MintQMS to do?
+    validations:
+      required: true
+  - type: input
+    id: guideline
+    attributes:
+      label: Related guideline or requirement (if any)
+      placeholder: e.g. PIC/S PE 009 Chapter 8, ICH Q9, GVP Module VI, TGO 92
+  - type: input
+    id: module
+    attributes:
+      label: Module

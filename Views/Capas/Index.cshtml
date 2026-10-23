@@ -1,0 +1,149 @@
+@model IEnumerable<OpenQMS.Models.Capa>
+@using OpenQMS.Authorization
+
+@{
+    ViewData["Title"] = "CAPA Register";
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        var table = $('#capaTable').DataTable({ stateSave: true,
+            initComplete: function () {
+                $('.status-filter').on('click', function () {
+                    $('.status-filter').removeClass('active');
+                    $(this).addClass('active');
+                    var val = $(this).data('status');
+                    table.column(7).search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+                $('.status-filter[data-status=""]').addClass('active');
+            },
+            columns: [
+                null, null, null, null,
+                { visible: false },
+                { visible: false },
+                null, null, null
+            ],
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            order: [[0, 'asc']],
+            displayLength: 10,
+            buttons: [
+                'colvis',
+                { extend: 'pdf', footer: false, exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
+                { extend: 'excel', footer: false, exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">CAPA Register</h4>
+    @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.QualityUserRole))
+    {
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New CAPA</a>
+    }
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Determination">Determination</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="Assessment">Assessment</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending Acceptance">Pending Acceptance</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Implementation">Implementation</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending Approval">Pending Approval</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">Approved</button>
+</div>
+
+<table id="capaTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>CAPA ID</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Linked To</th>
+            <th>Determined By</th>
+            <th>Determined On</th>
+            <th>Target Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var statusLabel = EnumHelper.Display(item.Status);
+            var statusBadge = item.Status switch
+            {
+                Capa.CapaStatus.Determination     => "bg-secondary",
+                Capa.CapaStatus.Assessment        => "bg-info text-dark",
+                Capa.CapaStatus.PendingAssessment => "bg-primary text-white",
+                Capa.CapaStatus.Implementation    => "bg-warning text-dark",
+                Capa.CapaStatus.PendingApproval   => "bg-primary text-white",
+                Capa.CapaStatus.Approved          => "bg-success",
+                _                                 => "bg-secondary"
+            };
+            var iLinked = new List<string>();
+            if (item.LinkedProducts?.Any()   == true) iLinked.AddRange(item.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedProcesses?.Any()  == true) iLinked.AddRange(item.LinkedProcesses.Select(x => x.Process?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedAssets?.Any()     == true) iLinked.AddRange(item.LinkedAssets.Select(x => x.Asset?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedMaterials?.Any()  == true) iLinked.AddRange(item.LinkedMaterials.Select(x => x.Material?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedSuppliers?.Any()  == true) iLinked.AddRange(item.LinkedSuppliers.Select(x => x.Supplier?.LegalName ?? "").Where(n => n != ""));
+            if (item.LinkedDeviations?.Any() == true) iLinked.AddRange(item.LinkedDeviations.Select(x => x.Deviation?.DeviationId ?? "").Where(n => n != ""));
+            if (item.LinkedComplaints?.Any() == true) iLinked.AddRange(item.LinkedComplaints.Select(x => x.Complaint?.ComplaintId ?? "").Where(n => n != ""));
+            if (item.LinkedAudits?.Any()     == true) iLinked.AddRange(item.LinkedAudits.Select(x => x.Audit?.AuditId ?? "").Where(n => n != ""));
+            if (!iLinked.Any())
+            {
+                if (item.Product   != null) iLinked.Add(item.Product.Name);
+                if (item.Deviation != null) iLinked.Add(item.Deviation.DeviationId);
+            }
+            <tr>
+                <td>@item.CapaId</td>
+                <td>@item.Title</td>
+                <td>
+                    @{
+                        var typeBadge = item.Type switch
+                        {
+                            Capa.CapaType.Recall                 => "bg-danger",
+                            Capa.CapaType.ImprovementOpportunity => "bg-info text-dark",
+                            _                                    => "bg-secondary"
+                        };
+                    }
+                    <span class="badge @typeBadge">@EnumHelper.Display(item.Type)</span>
+                </td>
+                <td>@string.Join(", ", iLinked)</td>
+                <td>@item.DeterminedBy</td>
+                <td>@item.DeterminedOn.ToSite().ToString("dd/MM/yyyy")</td>
+                <td>@(item.TargetCompletionDate.HasValue ? item.TargetCompletionDate.Value.ToShortDateString() : "")</td>
+                <td><span class="badge @statusBadge">@statusLabel</span></td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (item.Status != Capa.CapaStatus.Approved
+                         && item.Status != Capa.CapaStatus.PendingAssessment
+                         && item.Status != Capa.CapaStatus.PendingApproval
+                         && !User.IsInRole(Constants.ReadOnlyRole)
+                         && (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.QualityUserRole)))
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if (User.IsInRole(Constants.AdministratorsRole)
+                         && item.Status != Capa.CapaStatus.PendingAssessment
+                         && item.Status != Capa.CapaStatus.Implementation
+                         && item.Status != Capa.CapaStatus.PendingApproval
+                         && item.Status != Capa.CapaStatus.Approved)
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

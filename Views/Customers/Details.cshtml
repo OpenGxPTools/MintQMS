@@ -1,0 +1,373 @@
+@model OpenQMS.Models.Customer
+
+@{
+    ViewData["Title"] = "Customer Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isLocked = Model.IsLocked == true;
+    var statusBadge = Model.Status switch {
+        OpenQMS.Models.Customer.CustomerStatus.Approved    => "bg-success",
+        OpenQMS.Models.Customer.CustomerStatus.Obsolete    => "bg-secondary",
+        OpenQMS.Models.Customer.CustomerStatus.UnderReview => "bg-info text-dark",
+        _ => "bg-warning text-dark"
+    };
+    int docCount = Model.Documents?.Count ?? 0;
+    int complaintCount = Model.Complaints?.Count ?? 0;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Customer &mdash; <span class="fw-bold">@Model.CustomerId</span></h4>
+        <small class="text-muted">@Model.LegalName</small>
+    </div>
+    <span class="badge @statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+</div>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["WorkflowError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Customer.CustomerStatus.Draft
+     && (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.QualityUserRole)))
+{
+    <div class="card border-primary mb-3">
+        <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> Workflow Actions</div>
+        <div class="card-body d-flex gap-2 flex-wrap">
+            <form asp-action="SubmitForReview" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-info btn-sm">
+                    <i class="fas fa-paper-plane me-1"></i>Submit for Review
+                </button>
+            </form>
+        </div>
+    </div>
+}
+@if ((User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole)) && Model.Status == OpenQMS.Models.Customer.CustomerStatus.UnderReview)
+{
+    <div class="card border-primary mb-3">
+        <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> Workflow Actions</div>
+        <div class="card-body d-flex gap-2 flex-wrap">
+            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveModal">
+                <i class="fas fa-check-circle me-1"></i>Approve Customer
+            </button>
+            <form asp-action="SendBackToDraft" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-warning btn-sm"
+                        onclick="return confirm('Send this customer back to Draft for rework?')">
+                    <i class="fas fa-undo me-1"></i>Send Back to Draft
+                </button>
+            </form>
+        </div>
+    </div>
+}
+
+<ul class="nav nav-tabs mb-3" id="detailTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-overview" data-bs-toggle="tab" data-bs-target="#pane-overview" type="button" role="tab">Overview</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-complaints" data-bs-toggle="tab" data-bs-target="#pane-complaints" type="button" role="tab">
+            Complaints <span class="badge bg-secondary ms-1">@complaintCount</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-docs" data-bs-toggle="tab" data-bs-target="#pane-docs" type="button" role="tab">
+            Attachments <span class="badge bg-secondary ms-1">@docCount</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-auditlog" data-bs-toggle="tab" data-bs-target="#pane-auditlog" type="button" role="tab">
+            Audit Log <span class="badge bg-secondary ms-1">@((ViewBag.AuditLogs as IEnumerable<OpenQMS.Models.MasterDataAuditLog>)?.Count() ?? 0)</span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <!-- Overview Tab -->
+    <div class="tab-pane fade show active" id="pane-overview" role="tabpanel">
+        <div class="card mb-3">
+            <div class="card-header">Identity</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Customer ID</dt>
+                    <dd class="col-sm-8">@Model.CustomerId</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8"><span class="badge @statusBadge">@EnumHelper.Display(Model.Status)</span></dd>
+
+                    <dt class="col-sm-4">Version</dt>
+                    <dd class="col-sm-8">@Model.Version</dd>
+
+                    <dt class="col-sm-4">Legal Name</dt>
+                    <dd class="col-sm-8">@Model.LegalName</dd>
+
+                    <dt class="col-sm-4">Trading Name</dt>
+                    <dd class="col-sm-8">@(Model.TradingName ?? "-")</dd>
+
+                    <dt class="col-sm-4">Customer Type</dt>
+                    <dd class="col-sm-8">@Model.CustomerType</dd>
+
+                    <dt class="col-sm-4">Industry / Sector</dt>
+                    <dd class="col-sm-8">@(Model.Industry ?? "-")</dd>
+
+                    <dt class="col-sm-4">Legal ID</dt>
+                    <dd class="col-sm-8">@(Model.LegalId ?? "-")</dd>
+
+                    <dt class="col-sm-4">Website</dt>
+                    <dd class="col-sm-8">@(Model.Website ?? "-")</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">Address</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Street</dt>
+                    <dd class="col-sm-8">@(Model.Street ?? "-")</dd>
+
+                    <dt class="col-sm-4">City</dt>
+                    <dd class="col-sm-8">@(Model.City ?? "-")</dd>
+
+                    <dt class="col-sm-4">State</dt>
+                    <dd class="col-sm-8">@(Model.State ?? "-")</dd>
+
+                    <dt class="col-sm-4">Post Code</dt>
+                    <dd class="col-sm-8">@(Model.PostCode ?? "-")</dd>
+
+                    <dt class="col-sm-4">Country</dt>
+                    <dd class="col-sm-8">@(Model.Country ?? "-")</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">Primary Contact</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Contact Name</dt>
+                    <dd class="col-sm-8">@(Model.ContactName ?? "-")</dd>
+
+                    <dt class="col-sm-4">Contact Email</dt>
+                    <dd class="col-sm-8">@(Model.ContactEmail ?? "-")</dd>
+
+                    <dt class="col-sm-4">Contact Phone</dt>
+                    <dd class="col-sm-8">@(Model.ContactPhone ?? "-")</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">Commercial</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Account Number</dt>
+                    <dd class="col-sm-8">@(Model.AccountNumber ?? "-")</dd>
+
+                    <dt class="col-sm-4">Contract Reference</dt>
+                    <dd class="col-sm-8">@(Model.ContractReference ?? "-")</dd>
+
+                    <dt class="col-sm-4">Contract Expiry Date</dt>
+                    <dd class="col-sm-8">@(Model.ContractExpiryDate.HasValue ? Model.ContractExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</dd>
+                </dl>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.SpecialRequirements))
+        {
+            <div class="card mb-3">
+                <div class="card-header">Notes</div>
+                <div class="card-body">
+                    <p class="mb-0">@Model.SpecialRequirements</p>
+                </div>
+            </div>
+        }
+
+        <div class="card mb-3">
+            <div class="card-header">Related Documents</div>
+            <div class="card-body">
+                @if (Model.RelatedDocuments?.Any() == true)
+                {
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var rd in Model.RelatedDocuments)
+                        {
+                            <li><span class="fw-semibold">@rd.Document?.DocumentId</span> v@rd.LinkedVersion.ToString("0.00") — @rd.Document?.Title</li>
+                        }
+                    </ul>
+                }
+                else { <span class="text-muted">No related documents linked.</span> }
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">Workflow Trail</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Edited By</dt>
+                    <dd class="col-sm-8">@(Model.EditedBy ?? "-")</dd>
+
+                    <dt class="col-sm-4">Edited On</dt>
+                    <dd class="col-sm-8">@Model.EditedOn.ToSite().ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-4">Approved By</dt>
+                    <dd class="col-sm-8">@(Model.ApprovedBy ?? "-")</dd>
+
+                    <dt class="col-sm-4">Approved On</dt>
+                    <dd class="col-sm-8">@(Model.ApprovedOn.HasValue ? Model.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy HH:mm") : "-")</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="mt-3 d-flex gap-2">
+            <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
+            <a asp-action="ExportCustomerDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+        </div>
+    </div>
+
+    <!-- Complaints Tab -->
+    <div class="tab-pane fade" id="pane-complaints" role="tabpanel">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Linked Complaints</span>
+                <span class="badge bg-secondary">@complaintCount</span>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Complaints != null && Model.Complaints.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr><th>ID</th><th>Title</th><th>Severity</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var complaint in Model.Complaints)
+                            {
+                                <tr>
+                                    <td><a asp-controller="Complaints" asp-action="Details" asp-route-id="@complaint.Id">@complaint.ComplaintId</a></td>
+                                    <td>@complaint.Title</td>
+                                    <td>@complaint.Severity</td>
+                                    <td>@EnumHelper.Display(complaint.Status)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <p class="text-muted p-3 mb-0">No complaints linked to this customer.</p> }
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents Tab -->
+    <div class="tab-pane fade" id="pane-docs" role="tabpanel">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Attachments</span>
+                <a asp-action="Documents" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">Manage Attachments</a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Documents != null && Model.Documents.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr><th>File Name</th><th>Description</th><th>Issue Date</th><th>Expiry Date</th><th>Status</th><th>Uploaded By</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var doc in Model.Documents.OrderByDescending(d => d.UploadedDate))
+                            {
+                                var rowCls = doc.DocumentStatus == OpenQMS.Models.CustomerDocumentStatus.Expired ? "table-danger"
+                                           : doc.DocumentStatus == OpenQMS.Models.CustomerDocumentStatus.Expiring ? "table-warning" : "";
+                                <tr class="@rowCls">
+                                    <td>@doc.FileName</td>
+                                    <td>@(doc.Description ?? "-")</td>
+                                    <td>@(doc.IssueDate.HasValue ? doc.IssueDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                                    <td>@(doc.ExpiryDate.HasValue ? doc.ExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                                    <td>@doc.DocumentStatus</td>
+                                    <td>@doc.UploadedBy</td>
+                                    <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary">Download</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <p class="text-muted p-3 mb-0">No documents uploaded yet.</p> }
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit Log Tab -->
+    <div class="tab-pane fade" id="pane-auditlog" role="tabpanel">
+        @{
+            var auditLogs = (ViewBag.AuditLogs as IEnumerable<OpenQMS.Models.MasterDataAuditLog>)
+                            ?? Enumerable.Empty<OpenQMS.Models.MasterDataAuditLog>();
+        }
+        @await Html.PartialAsync("_AuditLogTable",
+            auditLogs.Select(l => new OpenQMS.ViewModels.AuditLogRow(l.PerformedOn, l.PerformedBy, l.Action, l.FromStatus, l.ToStatus, l.Notes)))
+    </div>
+</div>
+
+<div class="mt-3 d-flex gap-3">
+    @if (!isLocked && Model.Status != OpenQMS.Models.Customer.CustomerStatus.UnderReview)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+    }
+    <a asp-action="Documents" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-folder-open me-1"></i>Attachments</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+</div>
+
+<!-- Approve Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-action="Details" asp-route-id="@Model.Id">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="approveModalLabel">Approve Customer</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>You are approving <strong>@Model.CustomerId — @Model.LegalName</strong>.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="InputEmail" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="InputPassword" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Confirm Approval</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    var tab = '@TempData["ActiveTab"]';
+    if (tab) {
+        var el = document.getElementById('tab-' + tab);
+        if (el) bootstrap.Tab.getOrCreateInstance(el).show();
+    }
+})();
+</script>
+}

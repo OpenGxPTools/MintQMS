@@ -1,0 +1,226 @@
+@model OpenQMS.Models.Supplier
+@{
+    ViewData["Title"] = "Quality Records";
+    bool isLocked = Model.Status == OpenQMS.Models.SupplierStatus.Approved
+                 || Model.Status == OpenQMS.Models.SupplierStatus.Qualified
+                 || Model.Status == OpenQMS.Models.SupplierStatus.Suspended
+                 || Model.Status == OpenQMS.Models.SupplierStatus.Cancelled;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Simple string dictionaries: id -> "CODE||Title"
+    var deviations = (ViewBag.Deviations as Dictionary<int, string>) ?? new Dictionary<int, string>();
+    var capas = (ViewBag.Capas as Dictionary<int, string>) ?? new Dictionary<int, string>();
+    var changes = (ViewBag.Changes as Dictionary<int, string>) ?? new Dictionary<int, string>();
+    var complaints = (ViewBag.Complaints as Dictionary<int, string>) ?? new Dictionary<int, string>();
+    var risks = (ViewBag.Risks as Dictionary<int, string>) ?? new Dictionary<int, string>();
+    var audits = (ViewBag.Audits as Dictionary<int, string>) ?? new Dictionary<int, string>();
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Quality Records — @Model.SupplierCode</h4>
+        <small class="text-muted">@Model.LegalName</small>
+    </div>
+</div>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!isLocked)
+{
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Link Quality Record</div>
+        <div class="card-body">
+            <form asp-action="LinkQualityRecord" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="supplierId" value="@Model.Id" />
+                <input type="hidden" name="deviationId" id="deviationId" />
+                <input type="hidden" name="capaId" id="capaId" />
+                <input type="hidden" name="changeId" id="changeId" />
+                <input type="hidden" name="complaintId" id="complaintId" />
+                <input type="hidden" name="riskId" id="riskId" />
+                <input type="hidden" name="auditId" id="auditId" />
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Record Type</label>
+                        <select name="recordType" class="form-select" id="recordType"
+                                asp-items="Html.GetEnumSelectList<OpenQMS.Models.QualityRecordType>()">
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Quality Record</label>
+                        <select id="qualityRecordSelect" class="form-select">
+                            <option value="">-- Select Record Type first --</option>
+                        </select>
+                        <small class="text-muted">Select record type above to load available records.</small>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Notes</label>
+                        <textarea name="notes" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-outline-primary btn-sm">Link Record</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary">Quality records can only be linked while the supplier is not locked.</div>
+}
+
+<h6 class="text-muted text-uppercase small mt-3">Linked Records</h6>
+
+@if (Model.QualityRecords == null || !Model.QualityRecords.Any())
+{
+    <p class="text-muted">No quality records linked yet.</p>
+}
+else
+{
+    <table class="table table-striped" id="qrTable">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Notes</th>
+                <th>Linked By</th>
+                <th>Linked On</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var qr in Model.QualityRecords.OrderByDescending(q => q.LinkedOn))
+            {
+                string code = "-";
+                string title = "-";
+                string detailsUrl = "#";
+
+                string[] parts;
+                if (qr.RecordType == OpenQMS.Models.QualityRecordType.Deviation && qr.DeviationId.HasValue && deviations.ContainsKey(qr.DeviationId.Value))
+                {
+                    parts = deviations[qr.DeviationId.Value].Split("||");
+                    code = parts[0]; title = parts.Length > 1 ? parts[1] : "-";
+                    detailsUrl = "/Deviations/Details/" + qr.DeviationId.Value;
+                }
+                else if (qr.RecordType == OpenQMS.Models.QualityRecordType.CAPA && qr.CapaId.HasValue && capas.ContainsKey(qr.CapaId.Value))
+                {
+                    parts = capas[qr.CapaId.Value].Split("||");
+                    code = parts[0]; title = parts.Length > 1 ? parts[1] : "-";
+                    detailsUrl = "/Capas/Details/" + qr.CapaId.Value;
+                }
+                else if (qr.RecordType == OpenQMS.Models.QualityRecordType.Change && qr.ChangeId.HasValue && changes.ContainsKey(qr.ChangeId.Value))
+                {
+                    parts = changes[qr.ChangeId.Value].Split("||");
+                    code = parts[0]; title = parts.Length > 1 ? parts[1] : "-";
+                    detailsUrl = "/Changes/Details/" + qr.ChangeId.Value;
+                }
+                else if (qr.RecordType == OpenQMS.Models.QualityRecordType.Complaint && qr.ComplaintId.HasValue && complaints.ContainsKey(qr.ComplaintId.Value))
+                {
+                    parts = complaints[qr.ComplaintId.Value].Split("||");
+                    code = parts[0]; title = parts.Length > 1 ? parts[1] : "-";
+                    detailsUrl = "/Complaints/Details/" + qr.ComplaintId.Value;
+                }
+                else if (qr.RecordType == OpenQMS.Models.QualityRecordType.Risk && qr.RiskId.HasValue && risks.ContainsKey(qr.RiskId.Value))
+                {
+                    parts = risks[qr.RiskId.Value].Split("||");
+                    code = parts[0]; title = parts.Length > 1 ? parts[1] : "-";
+                    detailsUrl = "/Risks/Details/" + qr.RiskId.Value;
+                }
+                else if (qr.RecordType == OpenQMS.Models.QualityRecordType.Audit && qr.AuditId.HasValue && audits.ContainsKey(qr.AuditId.Value))
+                {
+                    parts = audits[qr.AuditId.Value].Split("||");
+                    code = parts[0]; title = parts.Length > 1 ? parts[1] : "-";
+                    detailsUrl = "/Audits/Details/" + qr.AuditId.Value;
+                }
+
+                <tr>
+                    <td>@qr.RecordType</td>
+                    <td><a href="@detailsUrl">@code</a></td>
+                    <td>@title</td>
+                    <td>@(qr.Notes ?? "-")</td>
+                    <td>@qr.LinkedBy</td>
+                    <td>@qr.LinkedOn.ToSite().ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @if (!isLocked)
+                        {
+                            <form asp-action="DeleteQualityRecord" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@qr.Id" />
+                                <input type="hidden" name="supplierId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-link p-0 text-danger"
+                                        onclick="return confirm('Remove this linked record?')">Remove</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="mt-3 d-flex gap-2">
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Details</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list me-1"></i>Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            function loadRecords() {
+                var type = $('#recordType').val();
+                var select = $('#qualityRecordSelect');
+                select.html('<option value="">-- Loading... --</option>');
+                $('#deviationId, #capaId, #changeId, #complaintId, #riskId, #auditId').val('');
+
+                $.getJSON('/Suppliers/GetQualityRecords', { type: type }, function (data) {
+                    select.html('<option value="">-- Select a record --</option>');
+                    if (data.length === 0) {
+                        select.html('<option value="">-- No records found --</option>');
+                        return;
+                    }
+                    $.each(data, function (i, item) {
+                        select.append('<option value="' + item.id + '">' + item.code + ' — ' + item.title + '</option>');
+                    });
+                });
+            }
+
+            function setHiddenId() {
+                var type = parseInt($('#recordType').val());
+                var id = $('#qualityRecordSelect').val();
+                $('#deviationId, #capaId, #changeId, #complaintId, #riskId, #auditId').val('');
+                if (!id) return;
+                var fields = ['deviationId', 'capaId', 'changeId', 'complaintId', 'riskId', 'auditId'];
+                if (type >= 0 && type < fields.length) {
+                    $('#' + fields[type]).val(id);
+                }
+            }
+
+            $('#recordType').on('change', loadRecords);
+            $('#qualityRecordSelect').on('change', setHiddenId);
+            loadRecords();
+
+            $('#qrTable').DataTable({
+                dom: 'lBfrtip',
+                buttons: ['colvis', 'pdf', 'excel'],
+                order: [[5, 'desc']]
+            });
+        });
+    </script>
+}

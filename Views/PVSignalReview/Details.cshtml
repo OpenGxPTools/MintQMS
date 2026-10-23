@@ -1,0 +1,295 @@
+@model OpenQMS.Models.PVSignalReview
+@{
+    ViewData["Title"] = $"Signal Review — {Model.MedDRAPT}";
+    var linkedAEs  = ViewBag.LinkedAEs  as IEnumerable<OpenQMS.Models.AdverseEvent> ?? Enumerable.Empty<OpenQMS.Models.AdverseEvent>();
+    var linkedCapa = ViewBag.LinkedCapa as OpenQMS.Models.Capa;
+
+    var statusClass = Model.Status switch
+    {
+        PVSignalReview.SignalStatus.Open         => "danger",
+        PVSignalReview.SignalStatus.UnderReview  => "warning",
+        PVSignalReview.SignalStatus.Confirmed    => "dark",
+        PVSignalReview.SignalStatus.Refuted      => "secondary",
+        PVSignalReview.SignalStatus.Closed       => "success",
+        _                                        => "secondary"
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">
+        <i class="fas fa-broadcast-tower me-2 text-warning"></i>
+        Signal Review — <em>@Model.MedDRAPT</em>
+        <span class="badge bg-@statusClass ms-2">@EnumHelper.Display(Model.Status)</span>
+    </h4>
+    <div>
+        @if (Model.Status != PVSignalReview.SignalStatus.Closed &&
+             Model.Status != PVSignalReview.SignalStatus.Refuted)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
+                <i class="fas fa-edit me-1"></i>Assess Signal
+            </a>
+        }
+        @if (Model.Status == PVSignalReview.SignalStatus.Confirmed && Model.LinkedCapaId == null)
+        {
+            <a asp-controller="Capas" asp-action="Create" asp-route-signalId="@Model.Id" class="btn btn-warning btn-sm ms-2">
+                <i class="fas fa-plus me-1"></i>Create CAPA
+            </a>
+        }
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm ms-2">
+            <i class="fas fa-arrow-left me-1"></i>Back
+        </a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- ── Workflow Actions ──────────────────────────────────────────────── -->
+<div class="card mb-3 border-primary">
+    <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center py-2">
+        <i class="fas fa-exchange-alt me-2 text-primary"></i>
+        <strong class="text-primary">Workflow Actions</strong>
+        <span class="ms-2 text-muted small">Current status: <strong>@EnumHelper.Display(Model.Status)</strong></span>
+    </div>
+    <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
+        @if (Model.Status == PVSignalReview.SignalStatus.Open)
+        {
+            <form asp-action="Transition" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="newStatus" value="UnderReview" />
+                <button type="submit" class="btn btn-sm btn-warning"><i class="fas fa-search me-1"></i>Start Review</button>
+            </form>
+        }
+        else if (Model.Status == PVSignalReview.SignalStatus.UnderReview)
+        {
+            <form asp-action="Transition" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="newStatus" value="Confirmed" />
+                <button type="submit" class="btn btn-sm btn-dark"><i class="fas fa-exclamation-triangle me-1"></i>Confirm Signal</button>
+            </form>
+            <form asp-action="Transition" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="newStatus" value="Refuted" />
+                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="fas fa-times me-1"></i>Refute Signal</button>
+            </form>
+            <form asp-action="Transition" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="newStatus" value="Open" />
+                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Back to Open</button>
+            </form>
+        }
+        else if (Model.Status == PVSignalReview.SignalStatus.Confirmed || Model.Status == PVSignalReview.SignalStatus.Refuted)
+        {
+            <form asp-action="Transition" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="newStatus" value="Closed" />
+                <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check-circle me-1"></i>Close Signal</button>
+            </form>
+        }
+        else
+        {
+            <span class="text-success mb-0"><i class="fas fa-lock me-1"></i>This signal review is closed.</span>
+        }
+    </div>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-0" id="signalTabs">
+    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-review">Review</a></li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#tab-audit">
+            Audit Trail
+            @if ((Model.AuditLogs?.Count ?? 0) > 0) { <span class="badge bg-secondary">@Model.AuditLogs!.Count</span> }
+        </a>
+    </li>
+</ul>
+<div class="tab-content border border-top-0 rounded-bottom p-3 mb-3">
+<div class="tab-pane fade show active" id="tab-review">
+
+<div class="row g-3 mb-4">
+    <!-- Signal Details -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-warning text-dark fw-bold">
+                <i class="fas fa-info-circle me-1"></i>Signal Details
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">MedDRA PT</dt>
+                    <dd class="col-sm-7"><strong>@Model.MedDRAPT</strong></dd>
+
+                    <dt class="col-sm-5">Detected On</dt>
+                    <dd class="col-sm-7">@Model.DetectedOn.ToSite().ToString("dd MMM yyyy")</dd>
+
+                    <dt class="col-sm-5">Detected By</dt>
+                    <dd class="col-sm-7">@Model.DetectedBy</dd>
+
+                    <dt class="col-sm-5">Trigger Count</dt>
+                    <dd class="col-sm-7">
+                        <span class="badge bg-warning text-dark fs-6">@Model.TriggerCount cases</span>
+                        <small class="text-muted ms-1">(≥3 in 90 days)</small>
+                    </dd>
+
+                    <dt class="col-sm-5">Status</dt>
+                    <dd class="col-sm-7"><span class="badge bg-@statusClass">@EnumHelper.Display(Model.Status)</span></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assessment -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-bold">
+                <i class="fas fa-clipboard-check me-1"></i>Assessment
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Assigned To</dt>
+                    <dd class="col-sm-7">@(ViewBag.AssignedToName as string ?? Model.AssignedTo ?? "—")</dd>
+
+                    <dt class="col-sm-5">Conclusion</dt>
+                    <dd class="col-sm-7">
+                        @if (Model.Conclusion.HasValue)
+                        {
+                            var cc = Model.Conclusion == PVSignalReview.SignalConclusion.Confirmed ? "danger"
+                                   : Model.Conclusion == PVSignalReview.SignalConclusion.Refuted   ? "secondary"
+                                   : "info";
+                            <span class="badge bg-@cc">@Model.Conclusion</span>
+                        }
+                        else { <span class="text-muted">Pending</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Reviewed On</dt>
+                    <dd class="col-sm-7">@(Model.ReviewedOn.ToSite()?.ToString("dd MMM yyyy") ?? "—")</dd>
+
+                    <dt class="col-sm-5">Reviewed By</dt>
+                    <dd class="col-sm-7">@(Model.ReviewedBy ?? "—")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.AssessmentNotes))
+{
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold"><i class="fas fa-sticky-note me-1"></i>Assessment Notes</div>
+        <div class="card-body" style="white-space:pre-wrap">@Model.AssessmentNotes</div>
+    </div>
+}
+
+<!-- Linked CAPA -->
+@if (linkedCapa != null)
+{
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold"><i class="fas fa-tasks me-1 text-warning"></i>Linked CAPA</div>
+        <div class="card-body">
+            <a asp-controller="Capas" asp-action="Details" asp-route-id="@linkedCapa.Id" class="fw-bold">
+                @linkedCapa.CapaId
+            </a>
+            — @linkedCapa.Title
+            <span class="badge bg-secondary ms-2">@EnumHelper.Display(linkedCapa.Status)</span>
+        </div>
+    </div>
+}
+
+<!-- Triggering AE Cases -->
+<div class="card shadow-sm">
+    <div class="card-header fw-bold">
+        <i class="fas fa-virus me-1 text-danger"></i>
+        Adverse Events with MedDRA PT: <em>@Model.MedDRAPT</em>
+        <span class="badge bg-secondary ms-2">@linkedAEs.Count() cases</span>
+    </div>
+    <div class="card-body p-0">
+        @if (linkedAEs.Any())
+        {
+            <table class="table table-sm table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>AE Number</th>
+                        <th>Report Date</th>
+                        <th>Serious</th>
+                        <th>Outcome</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ae in linkedAEs)
+                    {
+                        <tr>
+                            <td><strong>@ae.AENumber</strong></td>
+                            <td>@(SiteTime.ToSite((DateTime)ae.ReportDate).ToString("dd MMM yyyy"))</td>
+                            <td>
+                                @if (ae.IsSerious) { <span class="badge bg-danger">Serious</span> }
+                                else { <span class="text-muted">No</span> }
+                            </td>
+                            <td>@(ae.Outcome?.ToString() ?? "—")</td>
+                            <td><span class="badge bg-secondary">@EnumHelper.Display(ae.Status)</span></td>
+                            <td>
+                                <a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@ae.Id"
+                                   class="btn btn-sm btn-outline-primary">View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted p-3 mb-0">No active AE records found for this term.</p>
+        }
+    </div>
+</div>
+
+</div><!-- end tab-review -->
+
+<div class="tab-pane fade" id="tab-audit">
+    <div class="card shadow-sm">
+        <div class="card-header fw-bold">
+            <i class="fas fa-history me-1"></i>Audit Trail
+            <span class="badge bg-secondary ms-2">@(Model.AuditLogs?.Count ?? 0)</span>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.AuditLogs != null && Model.AuditLogs.Any())
+            {
+                <table class="table table-sm table-bordered mb-0">
+                    <thead class="table-light">
+                        <tr><th>Date/Time <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>Action</th><th>From</th><th>To</th><th>Performed By</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model.AuditLogs.OrderByDescending(l => l.PerformedOn))
+                        {
+                            <tr>
+                                <td>@log.PerformedOn.ToSite().ToString("dd MMM yyyy HH:mm")</td>
+                                <td>@log.Action</td>
+                                <td>@(log.FromStatus ?? "-")</td>
+                                <td>@(log.ToStatus ?? "-")</td>
+                                <td>@log.PerformedBy</td>
+                                <td>@(log.Notes ?? "-")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else { <p class="text-muted p-3 mb-0">No audit log entries yet.</p> }
+        </div>
+    </div>
+</div><!-- end tab-audit -->
+</div><!-- end tab-content -->

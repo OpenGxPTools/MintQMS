@@ -1,0 +1,203 @@
+@model OpenQMS.Models.Release.ReleaseRecord
+@using OpenQMS.Models.Release
+@using OpenQMS.Models
+@using OpenQMS.Authorization
+
+@{
+    var canIssueCert = (Model.Status == ReleaseStatus.Certified || Model.Status == ReleaseStatus.Released)
+                     && Model.ReleaseType != ReleaseType.QualityOversight
+                     && (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole));
+
+    var canIssueQO = (Model.Status == ReleaseStatus.Certified || Model.Status == ReleaseStatus.Released)
+                   && Model.ReleaseType == ReleaseType.QualityOversight
+                   && (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole));
+
+    bool hasFailedTests = Model.TestResults?.Any(t => t.Status == TestResultStatus.Fail) == true;
+
+    // Default issuance statements per certificate type
+    string stmtCoAPass     = "I hereby certify that the analytical results reported herein are accurate and have been generated in accordance with the approved test methods and specification. All results comply with the stated acceptance criteria.";
+    string stmtCoAFail     = "I hereby certify that the analytical results reported herein are accurate and represent the as-found analytical data for this batch. One or more results fall outside the approved acceptance criteria; this certificate is issued for documentation and reporting purposes only.";
+    string stmtCoC         = "I hereby certify that this batch has been reviewed and conforms to the approved specification and all applicable quality, regulatory, and contractual requirements.";
+    string stmtCombPass    = "I hereby certify that the analytical results reported herein are accurate and have been generated in accordance with the approved test methods, and that this batch conforms to the approved specification and all applicable quality and regulatory requirements. All analytical results comply with the stated acceptance criteria.";
+    string stmtCombFail    = "I hereby certify that the analytical results reported herein are accurate and represent the as-found analytical data for this batch. One or more analytical results fall outside the approved acceptance criteria. The conformance review has been completed as documented.";
+    string stmtQO          = Model.APCertificationStatement ?? "I hereby confirm that quality oversight activities have been completed and reviewed in accordance with applicable GMP, regulatory, and internal quality requirements. All relevant records, documentation, and quality metrics reviewed were found compliant. No unresolved quality issues were identified at the time of this review. This Quality Oversight Report does not constitute a batch release certification for supply.";
+}
+
+@if (canIssueCert)
+{
+    <div class="mb-3">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#issueCertModal">Issue Certificate</button>
+    </div>
+}
+@if (canIssueQO)
+{
+    <div class="mb-3">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#issueQOModal">Issue QO Report</button>
+    </div>
+}
+
+@if (Model.Certificates == null || !Model.Certificates.Any())
+{
+    <p class="text-muted">No certificates issued yet.</p>
+}
+else
+{
+    <table class="table table-sm">
+        <thead class="table-light">
+            <tr>
+                <th>Certificate No.</th>
+                <th>Type</th>
+                <th>Version</th>
+                <th>Status</th>
+                <th>Issued By</th>
+                <th>Issued Date</th>
+                <th>Signed By</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cert in Model.Certificates.OrderByDescending(c => c.IssuedDate))
+            {
+                var cbadge = cert.Status switch
+                {
+                    CertificateStatus.Issued     => "bg-success",
+                    CertificateStatus.Superseded => "bg-secondary",
+                    CertificateStatus.Withdrawn  => "bg-danger",
+                    _                            => "bg-secondary"
+                };
+                <tr>
+                    <td>@cert.CertificateNumber</td>
+                    <td>@cert.CertificateType</td>
+                    <td>v@cert.Version</td>
+                    <td><span class="badge @cbadge">@EnumHelper.Display(cert.Status)</span></td>
+                    <td><small>@cert.IssuedBy</small></td>
+                    <td>@cert.IssuedDate.ToSite().ToString("dd-MMM-yyyy")</td>
+                    <td><small>@cert.APFullNameQualification</small></td>
+                    <td>
+                        <a asp-action="ViewCertificate" asp-route-certificateId="@cert.Id" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (canIssueCert)
+{
+    <!-- Issue Certificate Modal -->
+    <div class="modal fade" id="issueCertModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="IssueCertificate" asp-route-releaseRecordId="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Issue Certificate — Electronic Signature</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info small">Issuing a certificate constitutes an electronic signature. Your email and password confirm your identity.</div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Certificate Type</label>
+                        <select name="type" id="certTypeSelect" class="form-select">
+                            @if (Model.ReleaseType == ReleaseType.ReleaseForSupply ||
+                                 Model.ReleaseType == ReleaseType.ReleaseUnderQuarantine ||
+                                 Model.ReleaseType == ReleaseType.ReleaseForFurtherProcessing)
+                            {
+                                <option value="@((int)CertificateType.CoA)">CoA — Certificate of Analysis</option>
+                                <option value="@((int)CertificateType.Combined)">Combined CoA + CoC</option>
+                            }
+                            <option value="@((int)CertificateType.CoC)">CoC — Certificate of Conformance</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Certificate Statement</label>
+                        <textarea name="statement" id="certStatement" class="form-control" rows="5" required></textarea>
+                        <div class="form-text">This statement will appear on the issued certificate. Edit as required before signing.</div>
+                    </div>
+
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to sign this certificate.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Issue Certificate</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <script>
+    (function() {
+        var hasFailedTests = @(hasFailedTests ? "true" : "false");
+        var stmts = {
+            @((int)CertificateType.CoA):      hasFailedTests ? @Html.Raw(System.Text.Json.JsonSerializer.Serialize(stmtCoAFail))     : @Html.Raw(System.Text.Json.JsonSerializer.Serialize(stmtCoAPass)),
+            @((int)CertificateType.Combined):  hasFailedTests ? @Html.Raw(System.Text.Json.JsonSerializer.Serialize(stmtCombFail))   : @Html.Raw(System.Text.Json.JsonSerializer.Serialize(stmtCombPass)),
+            @((int)CertificateType.CoC):       @Html.Raw(System.Text.Json.JsonSerializer.Serialize(stmtCoC)),
+        };
+
+        var sel  = document.getElementById('certTypeSelect');
+        var area = document.getElementById('certStatement');
+
+        function updateStatement() {
+            area.value = stmts[sel.value] || '';
+        }
+
+        sel.addEventListener('change', updateStatement);
+
+        // Populate on modal open
+        document.getElementById('issueCertModal').addEventListener('show.bs.modal', function() {
+            updateStatement();
+        });
+    })();
+    </script>
+}
+
+@if (canIssueQO)
+{
+    <!-- Issue QO Report Modal -->
+    <div class="modal fade" id="issueQOModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="IssueCertificate" asp-route-releaseRecordId="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="type" value="@((int)CertificateType.CoC)" />
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Issue Quality Oversight Report — Electronic Signature</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info small">Issuing this report constitutes an electronic signature. Your email and password confirm your identity.</div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Report Statement</label>
+                        <textarea name="statement" class="form-control" rows="5" required>@stmtQO</textarea>
+                        <div class="form-text">This statement will appear on the issued Quality Oversight Report. Edit as required before signing.</div>
+                    </div>
+
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to sign this report.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Issue QO Report</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}

@@ -1,0 +1,68 @@
+@model OpenQMS.Models.PVPeriodicReport
+@{
+    ViewData["Title"] = "Edit PSUR";
+    var productItems = ViewData["ProductId"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+
+<h4 class="mb-0"><i class="fas fa-edit me-2 text-secondary"></i>Edit PSUR — @Model.Title</h4>
+<hr />
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="CreatedBy" />
+    <input type="hidden" asp-for="CreatedOn" />
+
+    <div class="row g-3">
+        <div class="col-md-12">
+            <label asp-for="Title" class="form-label fw-bold"></label>
+            <input asp-for="Title" class="form-control" required />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="ProductId" class="form-label fw-bold">Product</label>
+            <select asp-for="ProductId" asp-items="productItems" class="form-select">
+                <option value="">— All Products —</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="PeriodStart" class="form-label fw-bold"></label>
+            <input asp-for="PeriodStart" type="date" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="PeriodEnd" class="form-label fw-bold"></label>
+            <input asp-for="PeriodEnd" type="date" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="DueDate" class="form-label fw-bold"></label>
+            <input asp-for="DueDate" type="date" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="SubmissionDate" class="form-label fw-bold"></label>
+            <input asp-for="SubmissionDate" type="date" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Status</label>
+            <div><span class="badge bg-secondary fs-6">@EnumHelper.Display(Model.Status)</span></div>
+            <small class="text-muted">Changed via the workflow actions on the Details page.</small>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="TGAReferenceNumber" class="form-label fw-bold"></label>
+            <input asp-for="TGAReferenceNumber" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label asp-for="ExposureData" class="form-label fw-bold"></label>
+            <input asp-for="ExposureData" class="form-control" />
+        </div>
+        <div class="col-md-12">
+            <label asp-for="BenefitRiskConclusion" class="form-label fw-bold"></label>
+            <textarea asp-for="BenefitRiskConclusion" class="form-control" rows="5"></textarea>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-1"></i>Save Changes
+        </button>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </div>
+</form>

@@ -1,0 +1,227 @@
+@*
+This file is part of the OpenQMS.net project (https://github.com/C-realize/OpenQMS).
+Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
+
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://www.c-realize.com/contact.  For AGPL licensing, see below.
+
+AGPL:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+*@
+
+@using System.Linq
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+@{
+    // Highlight the top-level menu matching the controller of the current page.
+    var _curCtrl = (ViewContext.RouteData.Values["controller"] as string) ?? "";
+    string Active(params string[] ctrls) =>
+        ctrls.Any(c => string.Equals(c, _curCtrl, StringComparison.OrdinalIgnoreCase)) ? "active" : "";
+
+    // Permission-aware menu visibility. These lists MIRROR the controllers' [Authorize]
+    // attributes so the menu never offers a link the user can't open. Items not listed
+    // here use bare [Authorize] (any authenticated user) and are always shown.
+    bool InAny(params string[] roles) => roles.Any(r => User.IsInRole(r));
+    bool Can(string key) => key switch
+    {
+        "Audits"            => InAny("Administrator", "QualityManager", "QualityUser", "AuthorisedPerson", "Auditor", "ReadOnly"),
+        "Risks"             => InAny("Administrator", "QualityManager", "QualityUser", "RegulatoryManager", "RegulatoryUser", "AuthorisedPerson", "Auditor", "Trainer", "ReadOnly"),
+        "Maintenances"      => InAny("Administrator", "QualityManager", "QualityUser", "AuthorisedPerson", "Auditor", "Trainer", "ReadOnly", "OperationsUser"),
+        "Release"           => InAny("Administrator", "QualityManager", "QualityUser", "RegulatoryManager", "RegulatoryUser", "AuthorisedPerson", "Auditor", "Trainer", "ReadOnly", "OperationsUser"),
+        "Regulatory"        => InAny("Administrator", "QualityManager", "QualityUser", "RegulatoryManager", "RegulatoryUser", "AuthorisedPerson", "Auditor", "Trainer", "ReadOnly"),
+        "Reports"           => InAny("Administrator", "QualityManager", "QualityUser", "AuthorisedPerson", "Auditor", "Trainer", "ReadOnly"),
+        "TrainingDashboard" => InAny("Administrator", "QualityManager", "RegulatoryManager", "Trainer", "AuthorisedPerson", "Auditor"),
+        _                   => true,
+    };
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark mint-navbar mb-3">
+            <div class="container-fluid">
+                <div class="d-flex flex-column align-items-start me-3">
+                    <a class="navbar-brand mb-0 pb-0" asp-area="" asp-controller="Home" asp-action="Index">MintQMS</a>
+                    <a class="nav-link p-0" style="font-size:0.75rem;" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                </div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <a class="nav-link px-2 @Active("Home")" asp-area="" asp-controller="Home" asp-action="Index" aria-label="Home"><i class="bi bi-house-fill" style="font-size:1.6rem;"></i></a>
+                    <ul class="navbar-nav justify-content-center flex-grow-1">
+                        <li class="nav-item dropdown @Active("Deviations", "Complaints", "Capas")">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="bi bi-exclamation-triangle me-1"></i>Quality Events <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Deviations" asp-action="Index"><i class="bi bi-exclamation-circle me-1 text-muted"></i>Deviation Register</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Deviations" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Deviation Dashboard</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Complaints" asp-action="Index"><i class="bi bi-chat-square-text me-1 text-muted"></i>Complaint Register</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Complaints" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Complaint Dashboard</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Capas" asp-action="Index"><i class="bi bi-arrow-repeat me-1 text-muted"></i>CAPA Register</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Capas" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>CAPA Dashboard</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown @Active("Changes", "Audits", "Risks")">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="bi bi-shield-check me-1"></i>Quality Assurance <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Changes" asp-action="Index"><i class="bi bi-arrow-left-right me-1 text-muted"></i>Change Register</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Changes" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Change Dashboard</a></li>
+                                @if (Can("Audits"))
+                                {
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Audits" asp-action="Index"><i class="bi bi-clipboard2-check me-1 text-muted"></i>Audit Register</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Audits" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Audit Dashboard</a></li>
+                                }
+                                @if (Can("Risks"))
+                                {
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Risks" asp-action="Index"><i class="bi bi-shield-exclamation me-1 text-muted"></i>Risk Register</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Risks" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Risk Dashboard</a></li>
+                                }
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown @Active("Suppliers", "Maintenances", "Release")">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="bi bi-tools me-1"></i>Quality Operations <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Suppliers" asp-action="Index"><i class="bi bi-truck me-1 text-muted"></i>Supplier Register</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Suppliers" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Supplier Dashboard</a></li>
+                                @if (Can("Maintenances"))
+                                {
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Maintenances" asp-action="Index"><i class="bi bi-wrench me-1 text-muted"></i>Maintenance Register</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Maintenances" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Maintenance Dashboard</a></li>
+                                }
+                                @if (Can("Release"))
+                                {
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Release" asp-action="Register"><i class="bi bi-box-seam me-1 text-muted"></i>Release Register</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Release" asp-action="Index"><i class="bi bi-list-ul me-1 text-muted"></i>Release Records</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Release" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Release Dashboard</a></li>
+                                }
+                            </ul>
+                        </li>
+                        @if (Can("Regulatory"))
+                        {
+                        <li class="nav-item dropdown @Active("Pharmacovigilance", "PVPeriodicReports", "PVLiterature", "PVSignalReview", "RegulatoryIntelligence", "LicencesCertifications")">
+                            <a class="regulatory nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="bi bi-clipboard2-pulse me-1"></i>Regulatory <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><h6 class="dropdown-header text-uppercase small"><i class="bi bi-heart-pulse me-1 text-danger"></i>Pharmacovigilance</h6></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Pharmacovigilance" asp-action="Index"><i class="bi bi-exclamation-triangle me-1 text-muted"></i>Adverse Events</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Pharmacovigilance" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>PV Dashboard</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="PVPeriodicReports" asp-action="Index"><i class="bi bi-file-earmark-bar-graph me-1 text-muted"></i>PSUR / Periodic Reports</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="PVLiterature" asp-action="Index"><i class="bi bi-journal-text me-1 text-muted"></i>Literature Monitoring</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="PVSignalReview" asp-action="Index"><i class="bi bi-graph-up-arrow me-1 text-muted"></i>Signal Reviews</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header text-uppercase small"><i class="bi bi-globe2 me-1 text-primary"></i>Regulatory Intelligence</h6></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="RegulatoryIntelligence" asp-action="Index"><i class="bi bi-table me-1 text-muted"></i>RI Register</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="RegulatoryIntelligence" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>RI Dashboard</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header text-uppercase small"><i class="bi bi-patch-check me-1 text-success"></i>Licences &amp; Certifications</h6></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="LicencesCertifications" asp-action="Index"><i class="bi bi-table me-1 text-muted"></i>LC Register</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="LicencesCertifications" asp-action="Calendar"><i class="bi bi-calendar3 me-1 text-muted"></i>LC Calendar</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="LicencesCertifications" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>LC Dashboard</a></li>
+                            </ul>
+                        </li>
+                        }
+                        <li class="nav-item dropdown @Active("AppDocuments")">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="bi bi-file-earmark-text me-1"></i>Documents <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="AppDocuments" asp-action="Index"><i class="bi bi-table me-1 text-muted"></i>Document Register</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="AppDocuments" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Doc Dashboard</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="AppDocuments" asp-action="Library"><i class="bi bi-collection me-1"></i>Document Library</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown @Active("Trainings")">
+                            <a class="people nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="bi bi-mortarboard me-1"></i>Training <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Trainings" asp-action="Index"><i class="bi bi-table me-1 text-muted"></i>Training Register</a></li>
+                                @if (Can("TrainingDashboard"))
+                                {
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Trainings" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Training Dashboard</a></li>
+                                }
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Trainings" asp-action="MyTraining"><i class="bi bi-person-check me-1"></i>My Training</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown @Active("Products", "Processes", "Assets", "Materials", "Services", "Customers")">
+                            <a class="plant nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="bi bi-database me-1"></i>Reference Data <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="Index"><i class="bi bi-box me-1 text-muted"></i>Products</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Processes" asp-action="Index"><i class="bi bi-diagram-3 me-1 text-muted"></i>Processes</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Assets" asp-action="Index"><i class="bi bi-building me-1 text-muted"></i>Assets</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Materials" asp-action="Index"><i class="bi bi-layers me-1 text-muted"></i>Materials</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Services" asp-action="Index"><i class="bi bi-headset me-1 text-muted"></i>Services</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Customers" asp-action="Index"><i class="bi bi-people me-1 text-muted"></i>Customers</a></li>
+                                <li><a class="dropdown-item ps-4" asp-area="" asp-controller="Customers" asp-action="Dashboard"><i class="bi bi-speedometer2 me-1 text-muted"></i>Customer Dashboard</a></li>
+                            </ul>
+                        </li>
+                        @if (Can("Reports"))
+                        {
+                        <li class="nav-item dropdown @Active("Reports")">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="bi bi-bar-chart-line me-1"></i>Reports</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Reports" asp-action="ManagementReview"><i class="bi bi-person-workspace me-1 text-muted"></i>Management Review</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Reports" asp-action="TrainingCompliance"><i class="bi bi-clipboard2-data me-1 text-muted"></i>Training Compliance</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Reports" asp-action="OverdueItems"><i class="bi bi-clock-history me-1 text-muted"></i>Overdue Items</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Reports" asp-action="SupportingDocumentExpiry"><i class="bi bi-calendar-x me-1 text-muted"></i>Record Attachments — Expiry Register</a></li>
+                            </ul>
+                        </li>
+                        }
+                        @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole))
+                        {
+                            <li class="nav-item dropdown @Active("Settings", "ReleaseCertSettings", "AppUsers", "AppRoles", "LoginAudit", "Disposal")">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="bi bi-sliders me-1"></i>Settings</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Settings" asp-action="Index"><i class="bi bi-gear me-1 text-muted"></i>System Settings</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="ReleaseCertSettings" asp-action="Index"><i class="bi bi-file-earmark-check me-1 text-muted"></i>Release Certification Statements</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="AppUsers" asp-action="Index"><i class="bi bi-people me-1 text-muted"></i>Users</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="AppRoles" asp-action="Index"><i class="bi bi-key me-1 text-muted"></i>Roles</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="LoginAudit" asp-action="Index"><i class="bi bi-clock-history me-1 text-muted"></i>Login History</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Disposal" asp-action="Index"><i class="bi bi-trash3 me-1 text-muted"></i>Data Disposal</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserAsync(User).Result.FirstName!</a>
+                        </li>
+                        <li class="nav-item">
+                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button type="submit" class="nav-link btn btn-link">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+}
+@*else
+{
+    <ul class="navbar-nav">
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    </ul>
+}*@

@@ -1,0 +1,91 @@
+@model OpenQMS.Models.Change
+
+@{
+    ViewData["Title"] = "Attachments";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Attachments</h4>
+        <small class="text-muted">@Model.ChangeId — @Model.Title</small>
+    </div>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Change</a>
+</div>
+<hr />
+
+@if (Model.Status != OpenQMS.Models.Change.ChangeStatus.Approved)
+{
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Upload New Attachment</div>
+        <div class="card-body">
+            <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="changeId" value="@Model.Id" />
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label class="form-label">Select File</label>
+                        <input type="file" class="form-control" name="file" required />
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">Description (optional)</label>
+                        <input type="text" class="form-control" name="description" placeholder="e.g., Validation Protocol" />
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <strong>Record Approved:</strong> This change is approved. No new attachments can be uploaded.
+    </div>
+}
+
+<h5>Attached Files (@(Model.Attachments?.Count ?? 0))</h5>
+
+@if (Model.Attachments != null && Model.Attachments.Any())
+{
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>File Name</th>
+                <th>Description</th>
+                <th>Size</th>
+                <th>Uploaded By</th>
+                <th>Uploaded Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var attachment in Model.Attachments.OrderByDescending(a => a.UploadedDate))
+            {
+                <tr>
+                    <td>@attachment.FileName</td>
+                    <td>@(attachment.Description ?? "-")</td>
+                    <td>@((attachment.FileSize / 1024.0).ToString("N2")) KB</td>
+                    <td>@attachment.UploadedBy</td>
+                    <td>@attachment.UploadedDate.ToSite().ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        <a asp-action="ViewAttachment" asp-route-id="@attachment.Id" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-eye me-1"></i>View</a>
+                        <a asp-action="DownloadAttachment" asp-route-id="@attachment.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                        @if (Model.Status != OpenQMS.Models.Change.ChangeStatus.Approved)
+                        {
+                            <form asp-action="DeleteAttachment" method="post" style="display:inline;" data-delete-reason="attachment">
+                                <input type="hidden" name="id" value="@attachment.Id" />
+                                <input type="hidden" name="changeId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-muted">No attachments yet.</p>
+}

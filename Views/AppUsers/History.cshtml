@@ -1,0 +1,91 @@
+@*
+This file is part of the OpenQMS.net project (https://github.com/C-realize/OpenQMS).
+Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
+
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://www.c-realize.com/contact.  For AGPL licensing, see below.
+
+AGPL:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+*@
+
+@model IEnumerable<OpenQMS.Models.UserAuditLog>
+
+@{
+    ViewData["Title"] = "User Audit Log";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">User Audit Log</h4>
+        <p class="text-muted mb-0">@ViewBag.UserName &mdash; @ViewBag.Email</p>
+    </div>
+    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to Users</a>
+</div>
+<hr />
+
+@if (!Model.Any())
+{
+    <p class="text-muted fst-italic">No audit log entries yet.</p>
+}
+else
+{
+    <table class="table table-sm table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Date / Time (UTC)</th>
+                <th>Action</th>
+                <th>Detail</th>
+                <th>Performed By</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in Model)
+            {
+                <tr>
+                    <td>@entry.PerformedOn.ToSite().ToString("dd MMM yyyy HH:mm")</td>
+                    <td>
+                        @if (entry.Action == "User Created")
+                        {
+                            <span class="badge bg-success">@entry.Action</span>
+                        }
+                        else if (entry.Action == "Role Added")
+                        {
+                            <span class="badge bg-primary">@entry.Action</span>
+                        }
+                        else if (entry.Action == "Role Removed")
+                        {
+                            <span class="badge bg-warning text-dark">@entry.Action</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@entry.Action</span>
+                        }
+                    </td>
+                    <td>
+                        @if (entry.Action == "Role Added" || entry.Action == "Role Removed")
+                        {
+                            @EnumHelper.RoleName(entry.Detail)
+                        }
+                        else
+                        {
+                            @(entry.Detail ?? "-")
+                        }
+                    </td>
+                    <td>@entry.PerformedBy</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

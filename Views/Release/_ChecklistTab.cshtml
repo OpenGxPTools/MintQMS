@@ -1,0 +1,189 @@
+@model OpenQMS.Models.Release.ReleaseRecord
+@using OpenQMS.Models.Release
+@using OpenQMS.Models
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+
+@functions {
+    static string StatusDisplayName(ChecklistItemStatus s)
+    {
+        var attr = s.GetType().GetField(s.ToString())
+                    ?.GetCustomAttribute<DisplayAttribute>();
+        return attr?.Name ?? s.ToString();
+    }
+
+    static (string Label, string BadgeClass) ChecklistTypeInfo(ProductType? productType, string? rawMaterialTypeCategory)
+    {
+        if (productType == ProductType.MedicalDevice)
+            return ("Medical Device Checklist", "bg-info text-dark");
+        if (productType == ProductType.RawMaterial)
+        {
+            var cat = rawMaterialTypeCategory?.Trim() ?? "";
+            if (cat == "Device Part" || cat == "Device Subcomponent")
+                return ("Medical Device Checklist", "bg-info text-dark");
+            if (cat == "Consumable")
+                return ("Consumable Checklist", "bg-secondary");
+        }
+        return ("Standard GMP Release Checklist", "bg-primary");
+    }
+}
+
+@{
+    var outstanding = Model.ChecklistItems?.Count(i => i.Status == ChecklistItemStatus.Outstanding) ?? 0;
+    var blockingOutstanding = Model.ChecklistItems?.Count(i =>
+        i.IsBlocking && (
+            i.Status == ChecklistItemStatus.Outstanding ||
+            i.Status == ChecklistItemStatus.NotApplicable
+        )) ?? 0;
+    var grouped = Model.ChecklistItems?
+        .OrderBy(i => i.DisplayOrder)
+        .GroupBy(i => i.Category ?? "General")
+        .ToList();
+    var checklistLocked = Model.IsLocked || Model.Status == ReleaseStatus.PendingAPDecision || Model.Status == ReleaseStatus.Rejected;
+    var (typeLabel, typeBadge) = ChecklistTypeInfo(Model.ProductType, Model.RawMaterialTypeCategory);
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <span class="badge @typeBadge">@typeLabel</span>
+    <small class="text-muted">@(Model.ChecklistItems?.Count ?? 0) items</small>
+</div>
+
+@if (blockingOutstanding > 0)
+{
+    <div class="alert alert-danger">
+        <strong>&#9888; @blockingOutstanding Blocking Outstanding item(s)</strong> — AP submission is blocked until these are resolved.
+    </div>
+}
+else if (outstanding > 0)
+{
+    <div class="alert alert-warning">
+        <strong>&#9888; @outstanding Outstanding item(s)</strong> — Non-blocking; AP submission is not prevented but items should be addressed.
+    </div>
+}
+
+@if (grouped == null || !grouped.Any())
+{
+    <p class="text-muted">No checklist items found.</p>
+}
+else
+{
+    foreach (var group in grouped)
+    {
+        <h6 class="mt-3 fw-bold text-uppercase text-muted border-bottom pb-1">@group.Key</h6>
+        <table class="table table-sm table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th style="width:45%">Item</th>
+                    <th style="width:20%">Status</th>
+                    <th>Comment</th>
+                    <th style="width:12%">Reviewed By</th>
+                    <th style="width:8%">Date</th>
+                    @if (!checklistLocked)
+                    {
+                        <th></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in group)
+                {
+                    var rowClass = item.Status == ChecklistItemStatus.Outstanding ? "table-danger"
+                                : item.Status == ChecklistItemStatus.Satisfactory ? "table-success"
+                                : item.Status == ChecklistItemStatus.SatisfactoryWithComment ? "table-success"
+                                : item.Status == ChecklistItemStatus.NotApplicable ? "table-secondary"
+                                : "";
+                    <tr class="@rowClass" id="row-@item.Id">
+                        <td>
+                            @item.ItemText
+                            @if (item.IsBlocking)
+                            {
+                                <span class="badge bg-warning text-dark ms-1 small">Blocking</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!checklistLocked)
+                            {
+                                <select class="form-select form-select-sm checklist-status" data-item-id="@item.Id" data-row="row-@item.Id">
+                                    @foreach (ChecklistItemStatus s in Enum.GetValues(typeof(ChecklistItemStatus)))
+                                    {
+                                        <option value="@((int)s)" selected="@(item.Status == s)">@StatusDisplayName(s)</option>
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <span>@StatusDisplayName(item.Status)</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!checklistLocked)
+                            {
+                                <textarea class="form-control form-control-sm checklist-comment" data-item-id="@item.Id" rows="1">@item.Comment</textarea>
+                            }
+                            else
+                            {
+                                <span>@item.Comment</span>
+                            }
+                        </td>
+                        <td><small>@item.ReviewedBy</small></td>
+                        <td><small>@item.ReviewedDate.ToSite()?.ToString("dd-MMM")</small></td>
+                        @if (!checklistLocked)
+                        {
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-primary save-checklist-item" data-item-id="@item.Id">Save</button>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@if (!checklistLocked)
+{
+    @Html.AntiForgeryToken()
+
+    <script>
+    document.querySelectorAll('.save-checklist-item').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var itemId = this.dataset.itemId;
+            var statusEl = document.querySelector('.checklist-status[data-item-id="' + itemId + '"]');
+            var commentEl = document.querySelector('.checklist-comment[data-item-id="' + itemId + '"]');
+            var status = statusEl ? statusEl.value : 0;
+            var comment = commentEl ? commentEl.value : '';
+            var token = document.querySelector('[name="__RequestVerificationToken"]').value;
+
+            fetch('/Release/UpdateChecklistItem', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'itemId=' + itemId + '&status=' + status + '&comment=' + encodeURIComponent(comment) + '&__RequestVerificationToken=' + encodeURIComponent(token)
+            })
+            .then(function(r) {
+                if (!r.ok) throw new Error('Server error: ' + r.status);
+                return r.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    var row = document.getElementById('row-' + itemId);
+                    if (row) {
+                        row.classList.remove('table-danger', 'table-success', 'table-secondary');
+                        if (status == '5') row.classList.add('table-danger');
+                        else if (status == '2' || status == '3') row.classList.add('table-success');
+                        else if (status == '4') row.classList.add('table-secondary');
+                    }
+                    btn.textContent = 'Saved ✓';
+                    setTimeout(function(){ btn.textContent = 'Save'; }, 2000);
+                } else {
+                    alert('Save failed: ' + (data.error || 'Unknown error'));
+                    btn.textContent = 'Save';
+                }
+            })
+            .catch(function(err) {
+                alert('Save failed: ' + err.message);
+                btn.textContent = 'Save';
+            });
+        });
+    });
+    </script>
+}

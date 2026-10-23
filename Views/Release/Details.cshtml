@@ -1,0 +1,542 @@
+@model OpenQMS.Models.Release.ReleaseRecord
+@using OpenQMS.Models.Release
+@using OpenQMS.Models
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+
+@functions {
+    static string EnumDisplay<T>(T value) where T : Enum
+    {
+        var fi = value.GetType().GetField(value.ToString()!);
+        var attr = fi?.GetCustomAttribute<DisplayAttribute>();
+        return attr?.Name ?? value.ToString()!;
+    }
+
+    static string ReleaseStatusLabel(ReleaseStatus s) =>
+        s == ReleaseStatus.Closed ? "Released" : EnumDisplay(s);
+
+    static string ReleaseTypeDisplayName(ReleaseType? rt)
+    {
+        if (rt == null) return "-";
+        return EnumDisplay(rt.Value);
+    }
+
+    static string? XrefUrl(IUrlHelper url, string moduleType, int? linkedRecordId)
+    {
+        if (!linkedRecordId.HasValue) return null;
+        return moduleType switch
+        {
+            "Deviation"  => url.Action("Details", "Deviations",             new { id = linkedRecordId }),
+            "Complaint"  => url.Action("Details", "Complaints",             new { id = linkedRecordId }),
+            "CAPA"       => url.Action("Details", "Capas",                  new { id = linkedRecordId }),
+            "Change"     => url.Action("Details", "Changes",                new { id = linkedRecordId }),
+            "Audit"      => url.Action("Details", "Audits",                 new { id = linkedRecordId }),
+            "Risk"       => url.Action("Details", "Risks",                  new { id = linkedRecordId }),
+            "Supplier"   => url.Action("Details", "Suppliers",              new { id = linkedRecordId }),
+            "LicCert"    => url.Action("Details", "LicencesCertifications", new { id = linkedRecordId }),
+            "Document"   => url.Action("Details", "AppDocuments",           new { id = linkedRecordId }),
+            _            => null
+        };
+    }
+}
+
+@{
+    ViewData["Title"] = $"Release — {Model.RecordNumber}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var statusBadge = Model.Status switch
+    {
+        ReleaseStatus.Draft             => "bg-secondary",
+        ReleaseStatus.UnderReview       => "bg-info text-dark",
+        ReleaseStatus.OnHold            => "bg-warning text-dark",
+        ReleaseStatus.PendingAPDecision => "bg-primary",
+        ReleaseStatus.Certified         => "bg-success",
+        ReleaseStatus.Released          => "bg-success",
+        ReleaseStatus.Rejected          => "bg-danger",
+        ReleaseStatus.Closed            => "bg-success",
+        ReleaseStatus.Cancelled         => "bg-secondary",
+        _                               => "bg-secondary"
+    };
+
+    var checklistCount = Model.ChecklistItems?.Count ?? 0;
+    var testCount      = Model.TestResults?.Count ?? 0;
+    var docCount       = Model.Documents?.Count ?? 0;
+    var certCount      = Model.Certificates?.Count ?? 0;
+    var auditCount     = Model.AuditEntries?.Count ?? 0;
+    var xrefCount      = Model.CrossReferences?.Count ?? 0;
+}
+
+<!-- Header -->
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Release Record &mdash; <span class="fw-bold">@Model.RecordNumber</span></h4>
+        <small class="text-muted">@Model.ProductName &mdash; Batch @Model.BatchNumber</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <span class="badge bg-secondary fs-6">@ReleaseTypeDisplayName(Model.ReleaseType)</span>
+        <span class="badge @statusBadge fs-6">@ReleaseStatusLabel(Model.Status)</span>
+        @if (Model.IsLocked)
+        {
+            <span class="badge bg-dark fs-6">&#128274; Locked</span>
+        }
+    </div>
+</div>
+<hr />
+
+<!-- TempData alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Success"]</div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["WorkflowError"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Error"]</div>
+}
+
+<!-- Hold banner -->
+@if (Model.Status == ReleaseStatus.OnHold && !string.IsNullOrEmpty(Model.HoldReason))
+{
+    <div class="alert alert-warning">
+        <strong>On Hold</strong> since @(Model.HoldDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "unknown")
+        @if (!string.IsNullOrEmpty(Model.HoldBy)) { <text> by @Model.HoldBy</text> }
+        <br /><em>@Model.HoldReason</em>
+    </div>
+}
+
+<!-- Rejection banner -->
+@if (Model.Status == ReleaseStatus.Rejected && !string.IsNullOrEmpty(Model.RejectionReason))
+{
+    <div class="alert alert-danger">
+        <strong>Rejected</strong> on @(Model.RejectionDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "unknown")
+        @if (!string.IsNullOrEmpty(Model.RejectedBy)) { <text> by @Model.RejectedBy</text> }
+        <br /><em>@Model.RejectionReason</em>
+    </div>
+}
+
+<!-- Workflow actions -->
+@await Html.PartialAsync("_WorkflowActions", Model)
+
+@{
+    var isAdminReopenable = Model.IsLocked &&
+        (Model.Status == ReleaseStatus.Closed ||
+         Model.Status == ReleaseStatus.Released ||
+         Model.Status == ReleaseStatus.Cancelled);
+}
+@if (isAdminReopenable && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="card mb-3 border-danger">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+        </div>
+        <div class="card-body py-2">
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
+                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="detailTabs">
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">Overview</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabChecklist">Checklist <span class="badge bg-secondary">@checklistCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabTests">Analytical Results <span class="badge bg-secondary">@testCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabDocs">Attachments <span class="badge bg-secondary">@docCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabCerts">Certificates <span class="badge bg-secondary">@certCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabLinked">Linked Records <span class="badge bg-secondary">@xrefCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAudit">Audit Log <span class="badge bg-secondary">@auditCount</span></button></li>
+</ul>
+
+<div class="tab-content">
+    <!-- Overview -->
+    <div class="tab-pane fade show active" id="tabOverview">
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-muted small border-bottom pb-1">Product Identification</h6>
+                @{
+                    var rpt = Model.ProductType;
+                }
+                <dl class="row">
+                    <dt class="col-sm-5">Product Name</dt><dd class="col-sm-7">@Model.ProductName</dd>
+                    @if (rpt.HasValue)
+                    {
+                        var rptLabel = rpt switch {
+                            ProductType.MedicalDevice  => "Medical Device",
+                            ProductType.ConsumerHealth => "Consumer Health",
+                            ProductType.RawMaterial    => "Raw Material",
+                            _ => rpt.ToString()
+                        };
+                        <dt class="col-sm-5">Product Type</dt><dd class="col-sm-7"><span class="badge bg-info text-dark">@rptLabel</span></dd>
+                    }
+                    @if (!rpt.HasValue || rpt == ProductType.Pharmaceutical || rpt == ProductType.Biological || rpt == ProductType.ConsumerHealth)
+                    {
+                        <dt class="col-sm-5">INN / Generic</dt><dd class="col-sm-7">@(Model.InnName ?? "-")</dd>
+                        <dt class="col-sm-5">Dosage Form</dt><dd class="col-sm-7">@(Model.DosageForm ?? "-")</dd>
+                        <dt class="col-sm-5">Strength / Presentation</dt><dd class="col-sm-7">@(Model.Strength ?? "-")</dd>
+                    }
+                    @if (rpt == ProductType.Cosmetic)
+                    {
+                        <dt class="col-sm-5">INCI Name / Ingredient Ref.</dt><dd class="col-sm-7">@(Model.InciName ?? "-")</dd>
+                        <dt class="col-sm-5">Presentation / Form</dt><dd class="col-sm-7">@(Model.PresentationForm ?? "-")</dd>
+                        <dt class="col-sm-5">Strength / Presentation</dt><dd class="col-sm-7">@(Model.Strength ?? "-")</dd>
+                    }
+                    @if (rpt == ProductType.MedicalDevice)
+                    {
+                        <dt class="col-sm-5">Device Type / Category</dt><dd class="col-sm-7">@(Model.DeviceTypeCategory ?? "-")</dd>
+                        <dt class="col-sm-5">Model / Version</dt><dd class="col-sm-7">@(Model.ModelVersion ?? "-")</dd>
+                    }
+                    @if (rpt == ProductType.RawMaterial)
+                    {
+                        <dt class="col-sm-5">Standard / Scientific Name</dt><dd class="col-sm-7">@(Model.StandardScientificName ?? "-")</dd>
+                        <dt class="col-sm-5">Material Type / Category</dt><dd class="col-sm-7">@(Model.RawMaterialTypeCategory ?? "-")</dd>
+                        <dt class="col-sm-5">Grade</dt><dd class="col-sm-7">@(Model.Grade ?? "-")</dd>
+                        <dt class="col-sm-5">Presentation / Form</dt><dd class="col-sm-7">@(Model.PresentationForm ?? "-")</dd>
+                    }
+                    <dt class="col-sm-5">Brand Name</dt><dd class="col-sm-7">@(Model.BrandName ?? "-")</dd>
+                    <dt class="col-sm-5">ARTG Reference</dt><dd class="col-sm-7">@(Model.ArtgReference ?? "-")</dd>
+                    <dt class="col-sm-5">Specification Ref.</dt><dd class="col-sm-7">@(Model.SpecificationReference ?? "-")</dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-muted small border-bottom pb-1">Batch Details</h6>
+                <dl class="row">
+                    <dt class="col-sm-5">Batch Number</dt><dd class="col-sm-7">@Model.BatchNumber</dd>
+                    <dt class="col-sm-5">Batch Size</dt><dd class="col-sm-7">@(Model.BatchSize ?? "-")</dd>
+                    <dt class="col-sm-5">Pack Size</dt><dd class="col-sm-7">@(Model.PackSize ?? "-")</dd>
+                    <dt class="col-sm-5">Mfg Date</dt><dd class="col-sm-7">@(Model.ManufacturingDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                    <dt class="col-sm-5">Expiry Date</dt><dd class="col-sm-7">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                    <dt class="col-sm-5">Retest Date</dt><dd class="col-sm-7">@(Model.RetestDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-muted small border-bottom pb-1">Sites</h6>
+                <dl class="row">
+                    <dt class="col-sm-5">Mfg Site</dt><dd class="col-sm-7">@Model.ManufacturingSite</dd>
+                    <dt class="col-sm-5">Mfg GMP Ref.</dt><dd class="col-sm-7">@(Model.ManufacturingSiteGmpRef ?? "-")</dd>
+                    <dt class="col-sm-5">Packaging Site</dt><dd class="col-sm-7">@(Model.PackagingSite ?? "-")</dd>
+                    <dt class="col-sm-5">Pkg GMP Ref.</dt><dd class="col-sm-7">@(Model.PackagingSiteGmpRef ?? "-")</dd>
+                    <dt class="col-sm-5">Testing Lab(s)</dt>
+                    <dd class="col-sm-7">
+                        @if (Model.TestingLabs != null && Model.TestingLabs.Any()) {
+                            @foreach (var lab in Model.TestingLabs) {
+                                <div>@lab.LaboratoryName @(string.IsNullOrEmpty(lab.GmpLicenceRef) ? "" : $"[{lab.GmpLicenceRef}]")</div>
+                            }
+                        } else { <span>-</span> }
+                    </dd>
+                    <dt class="col-sm-5">Releasing Company</dt><dd class="col-sm-7">@(Model.ReleasingCompany ?? "-")</dd>
+                    <dt class="col-sm-5">TGA Licence / Clearance</dt><dd class="col-sm-7">@(Model.ReleasingCompanyLicenceRef ?? "-")</dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-muted small border-bottom pb-1">Release Decision</h6>
+                <dl class="row">
+                    <dt class="col-sm-5">Release Type</dt><dd class="col-sm-7">@ReleaseTypeDisplayName(Model.ReleaseType)</dd>
+                    <dt class="col-sm-5">AP</dt><dd class="col-sm-7">@(Model.APFullNameQualification ?? "-")</dd>
+                    <dt class="col-sm-5">Certification Date</dt><dd class="col-sm-7">@(Model.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                    <dt class="col-sm-5">Register Ref.</dt><dd class="col-sm-7">@(Model.ReleaseRegisterRef ?? "-")</dd>
+                    <dt class="col-sm-5">Storage Conditions</dt><dd class="col-sm-7">@(Model.StorageConditions ?? "-")</dd>
+                    <dt class="col-sm-5">Distribution</dt><dd class="col-sm-7">@(Model.DistributionConditions ?? "-")</dd>
+                </dl>
+                @if (!string.IsNullOrEmpty(Model.OpenDeviationsNotes))
+                {
+                    <div class="alert alert-warning small mt-2"><strong>Open Deviations / Exceptions:</strong><br />@Model.OpenDeviationsNotes</div>
+                }
+                @if (!string.IsNullOrEmpty(Model.LimitationsNotes))
+                {
+                    <div class="alert alert-info small mt-2"><strong>Limitations / Conditions on Release:</strong><br />@Model.LimitationsNotes</div>
+                }
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <div class="mt-3">
+                <h6 class="text-uppercase text-muted small border-bottom pb-1">General Notes</h6>
+                <p>@Model.Notes</p>
+            </div>
+        }
+        <div class="mt-3">
+            <h6 class="text-uppercase text-muted small border-bottom pb-1">Record Metadata</h6>
+            <dl class="row">
+                <dt class="col-sm-3">Created By</dt><dd class="col-sm-9">@Model.CreatedBy — @Model.CreatedDate.ToSite().ToString("dd-MMM-yyyy HH:mm")</dd>
+                @if (Model.LastModifiedDate.HasValue)
+                {
+                    <dt class="col-sm-3">Last Modified</dt><dd class="col-sm-9">@(Model.LastModifiedBy ?? "Unknown") — @Model.LastModifiedDate.Value.ToSite().ToString("dd-MMM-yyyy HH:mm")</dd>
+                }
+            </dl>
+        </div>
+    </div>
+
+    <!-- Checklist -->
+    <div class="tab-pane fade" id="tabChecklist">
+        @await Html.PartialAsync("_ChecklistTab", Model)
+    </div>
+
+    <!-- Analytical Results -->
+    <div class="tab-pane fade" id="tabTests">
+        @await Html.PartialAsync("_TestResultsTab", Model)
+    </div>
+
+    <!-- Documents -->
+    <div class="tab-pane fade" id="tabDocs">
+        @await Html.PartialAsync("_DocumentsTab", Model)
+    </div>
+
+    <!-- Certificates -->
+    <div class="tab-pane fade" id="tabCerts">
+        @await Html.PartialAsync("_CertificatesTab", Model)
+    </div>
+
+    <!-- Linked Records -->
+    <div class="tab-pane fade" id="tabLinked">
+        @if (!Model.IsLocked)
+        {
+            <form id="xrefForm" asp-action="AddCrossReference" asp-route-releaseRecordId="@Model.Id" method="post" class="card mb-3 p-3 bg-light">
+                @Html.AntiForgeryToken()
+                <h6 class="mb-2">Add Cross-Reference</h6>
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small mb-1">Module</label>
+                        <select id="xrefModule" name="moduleType" class="form-select form-select-sm" required>
+                            <option value="">-- Select Module --</option>
+                            <option value="Deviation">Deviation</option>
+                            <option value="Complaint">Complaint</option>
+                            <option value="CAPA">CAPA</option>
+                            <option value="Change">Change</option>
+                            <option value="Audit">Audit</option>
+                            <option value="Risk">Risk</option>
+                            <option value="Supplier">Supplier</option>
+                            <option value="LicCert">Licences &amp; Certifications</option>
+                            <option value="Document">Document</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small mb-1">Record</label>
+                        <select id="xrefRecord" class="form-select form-select-sm" disabled required>
+                            <option value="">-- Select Module first --</option>
+                        </select>
+                        <input type="hidden" name="linkedRecordId"     id="xrefRecordId" />
+                        <input type="hidden" name="linkedRecordNumber" id="xrefRecordNumber" />
+                        <input type="hidden" name="linkedRecordTitle"  id="xrefRecordTitle" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small mb-1">Notes (optional)</label>
+                        <input name="notes" class="form-control form-control-sm" placeholder="e.g. Related deviation" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" id="xrefAddBtn" class="btn btn-sm btn-primary w-100" disabled>Add</button>
+                    </div>
+                </div>
+            </form>
+        }
+
+        @if (Model.CrossReferences == null || !Model.CrossReferences.Any())
+        {
+            <p class="text-muted">No linked records.</p>
+        }
+        else
+        {
+            <table class="table table-sm">
+                <thead class="table-light"><tr><th>Module</th><th>Record</th><th>Notes</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var x in Model.CrossReferences)
+                    {
+                        var xrefUrl = XrefUrl(Url, x.ModuleType, x.LinkedRecordId);
+                        <tr>
+                            <td><span class="badge bg-primary">@x.ModuleType</span></td>
+                            <td>
+                                @if (xrefUrl != null)
+                                {
+                                    <a href="@xrefUrl" target="_blank" class="text-decoration-none">
+                                        <strong>@x.LinkedRecordNumber</strong>
+                                        @if (!string.IsNullOrEmpty(x.LinkedRecordTitle))
+                                        {
+                                            <span class="text-muted ms-1">— @x.LinkedRecordTitle</span>
+                                        }
+                                        <i class="bi bi-box-arrow-up-right ms-1 small"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>@x.LinkedRecordNumber @(!string.IsNullOrEmpty(x.LinkedRecordTitle) ? $"— {x.LinkedRecordTitle}" : "")</span>
+                                }
+                            </td>
+                            <td><small>@x.Notes</small></td>
+                            <td>
+                                @if (!Model.IsLocked)
+                                {
+                                    <form asp-action="DeleteCrossReference" asp-route-id="@x.Id" method="post" style="display:inline" onsubmit="return confirm('Remove this link?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- Audit Log -->
+    <div class="tab-pane fade" id="tabAudit">
+        @await Html.PartialAsync("_AuditTab", Model)
+    </div>
+</div>
+
+<!-- Action buttons — below tabs, matching other modules -->
+<div class="mt-3 d-flex gap-3 flex-wrap">
+    @if (!Model.IsLocked && Model.Status != ReleaseStatus.Rejected && Model.Status != ReleaseStatus.PendingAPDecision)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil me-1"></i>Edit Record</a>
+    }
+    <a asp-action="ExportDetailCsv" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
+    <a asp-action="ExportDetailPdf" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+    <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
+</div>
+
+@if (isAdminReopenable && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    var reopenTarget = Model.Status == ReleaseStatus.Cancelled ? "Draft" : "Certified";
+    var certWarning  = (Model.Status == ReleaseStatus.Closed || Model.Status == ReleaseStatus.Released)
+        && (Model.Certificates?.Any(c => c.Status == CertificateStatus.Issued) == true);
+
+    <div class="modal fade" id="adminReopenModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong>Warning:</strong> This action reverts the record to <strong>@reopenTarget</strong> stage. It is logged in the audit trail and requires your credentials. Use only when a correction is necessary after formal completion.
+                    </div>
+                    @if (certWarning)
+                    {
+                        <div class="alert alert-warning">
+                            <strong>Certificate Withdrawal:</strong> One or more issued certificates associated with this record will be automatically set to <strong>Withdrawn</strong>.
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Linked Deviation Reference
+                            @if (certWarning) { <span class="text-danger">*</span> }
+                            else { <text>(optional)</text> }
+                        </label>
+                        <input type="text" name="deviationRef" class="form-control" required="@certWarning" placeholder="e.g. DEV-2026-0042" />
+                        <div class="form-text">Enter the Deviation record number documenting why this release record is being reopened.</div>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Hash-based tab activation
+        var hash = window.location.hash;
+        if (hash) {
+            var btn = document.querySelector('[data-bs-target="' + hash + '"]');
+            if (btn) bootstrap.Tab.getOrCreateInstance(btn).show();
+        }
+
+        // Cross-reference record picker
+        var moduleEl  = document.getElementById('xrefModule');
+        var recordEl  = document.getElementById('xrefRecord');
+        var addBtn    = document.getElementById('xrefAddBtn');
+        var hiddenId  = document.getElementById('xrefRecordId');
+        var hiddenNum = document.getElementById('xrefRecordNumber');
+        var hiddenTit = document.getElementById('xrefRecordTitle');
+
+        if (!moduleEl) return;
+
+        moduleEl.addEventListener('change', function () {
+            var mod = this.value;
+            recordEl.innerHTML = '<option value="">-- Loading... --</option>';
+            recordEl.disabled = true;
+            addBtn.disabled = true;
+            hiddenId.value = ''; hiddenNum.value = ''; hiddenTit.value = '';
+
+            if (!mod) {
+                recordEl.innerHTML = '<option value="">-- Select Module first --</option>';
+                return;
+            }
+
+            fetch('/Release/GetLinkedRecords?moduleType=' + encodeURIComponent(mod))
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    recordEl.innerHTML = '<option value="">-- Select Record --</option>';
+                    if (!data.length) {
+                        recordEl.innerHTML = '<option value="">No records found</option>';
+                        return;
+                    }
+                    data.forEach(function(item) {
+                        var label = item.recordNumber + (item.title ? ' — ' + item.title : '');
+                        var opt = document.createElement('option');
+                        opt.value = item.id;
+                        opt.dataset.num = item.recordNumber;
+                        opt.dataset.title = item.title || '';
+                        opt.textContent = label;
+                        recordEl.appendChild(opt);
+                    });
+                    recordEl.disabled = false;
+                })
+                .catch(function() {
+                    recordEl.innerHTML = '<option value="">Error loading records</option>';
+                });
+        });
+
+        recordEl.addEventListener('change', function () {
+            var sel = this.options[this.selectedIndex];
+            if (this.value) {
+                hiddenId.value  = this.value;
+                hiddenNum.value = sel.dataset.num || '';
+                hiddenTit.value = sel.dataset.title || '';
+                addBtn.disabled = false;
+            } else {
+                hiddenId.value = ''; hiddenNum.value = ''; hiddenTit.value = '';
+                addBtn.disabled = true;
+            }
+        });
+    });
+
+    @if (TempData["ActiveTab"] != null)
+    {
+        <text>
+        (function() {
+            var tabId = '@TempData["ActiveTab"]';
+            var el = document.querySelector('[data-bs-target="#' + tabId + '"]');
+            if (el) bootstrap.Tab.getOrCreateInstance(el).show();
+        })();
+        </text>
+    }
+</script>
+}

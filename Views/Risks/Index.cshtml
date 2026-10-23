@@ -1,0 +1,145 @@
+@model IEnumerable<OpenQMS.Models.Risk>
+
+@{
+    ViewData["Title"] = "Risks";
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        var table = $('#risksTable').DataTable({ stateSave: true,
+            initComplete: function () {
+                $('.status-filter').on('click', function () {
+                    $('.status-filter').removeClass('active');
+                    $(this).addClass('active');
+                    var val = $(this).data('status');
+                    table.column(7).search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+                $('.status-filter[data-status=""]').addClass('active');
+            },
+            "columns": [
+                null,
+                null,
+                { "visible": false },
+                null,
+                null,
+                { "visible": false },
+                null,
+                null,
+                null
+            ],
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[0, 'asc']],
+            displayLength: 10,
+            buttons: [
+                'colvis',
+                {
+                    extend: 'pdf',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 3, 4, 6, 7] }
+                },
+                {
+                    extend: 'excel',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 3, 4, 6, 7] }
+                }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Risks</h4>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Risk</a>
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Identification">Identification</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Assessment">Assessment</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="Pending Assessment">Pending Assessment</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Mitigation">Mitigation</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending Review">Pending Review</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Review">Review</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Closed">Closed</button>
+</div>
+
+<table id="risksTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Risk ID</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Linked To</th>
+            <th>Initial RPN</th>
+            <th>Identified On</th>
+            <th>Target Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var iLinked = new List<string>();
+            if (item.LinkedProducts?.Any()  == true) iLinked.AddRange(item.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedProcesses?.Any() == true) iLinked.AddRange(item.LinkedProcesses.Select(x => x.Process?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedAssets?.Any()    == true) iLinked.AddRange(item.LinkedAssets.Select(x => x.Asset?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedMaterials?.Any() == true) iLinked.AddRange(item.LinkedMaterials.Select(x => x.Material?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedSuppliers?.Any() == true) iLinked.AddRange(item.LinkedSuppliers.Select(x => x.Supplier?.LegalName ?? "").Where(n => n != ""));
+            if (!iLinked.Any())
+            {
+                if (item.Product  != null) iLinked.Add(item.Product.Name);
+                if (item.Process  != null) iLinked.Add(item.Process.Name);
+                if (item.Asset    != null) iLinked.Add(item.Asset.Name);
+                if (item.Material != null) iLinked.Add(item.Material.Name);
+                if (item.Supplier != null) iLinked.Add(item.Supplier.LegalName);
+            }
+            var statusLabel = EnumHelper.Display(item.Status);
+            var statusBadge = item.Status switch
+            {
+                OpenQMS.Models.Risk.RiskStatus.Identification    => "bg-secondary",
+                OpenQMS.Models.Risk.RiskStatus.Assessment        => "bg-warning text-dark",
+                OpenQMS.Models.Risk.RiskStatus.PendingAssessment => "bg-info text-dark",
+                OpenQMS.Models.Risk.RiskStatus.Mitigation        => "bg-warning text-dark",
+                OpenQMS.Models.Risk.RiskStatus.PendingReview     => "bg-primary",
+                OpenQMS.Models.Risk.RiskStatus.Review            => "bg-primary",
+                OpenQMS.Models.Risk.RiskStatus.Closed            => "bg-success",
+                _                                                 => "bg-secondary"
+            };
+            var canEdit = item.Status == OpenQMS.Models.Risk.RiskStatus.Identification
+                       || item.Status == OpenQMS.Models.Risk.RiskStatus.Assessment
+                       || item.Status == OpenQMS.Models.Risk.RiskStatus.Mitigation;
+            <tr>
+                <td>@item.RiskId</td>
+                <td>@item.Title</td>
+                <td>@Html.DisplayFor(_ => item.Category)</td>
+                <td>@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</td>
+                <td>@item.InitialRPN</td>
+                <td>@item.IdentifiedOn.ToSite().ToShortDateString()</td>
+                <td>@(item.TargetCompletionDate?.ToShortDateString() ?? "-")</td>
+                <td><span class="badge @statusBadge">@statusLabel</span></td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (canEdit)
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if (User.IsInRole("Administrator") && item.Status == OpenQMS.Models.Risk.RiskStatus.Identification)
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

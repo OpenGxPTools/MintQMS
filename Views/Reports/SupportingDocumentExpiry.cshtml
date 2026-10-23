@@ -1,0 +1,151 @@
+@model OpenQMS.Models.ViewModels.SupportingDocExpiryViewModel
+
+@{
+    ViewData["Title"] = "Record Attachments — Expiry Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var today = SiteTime.Today;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Record Attachments — Expiry Register</h4>
+    <a asp-action="Index" class="btn btn-outline-secondary">Reports Hub</a>
+</div>
+
+<p class="text-muted mb-3">
+    Supporting documents attached to master data records (Products, Materials, Processes, Assets, Services,
+    Customers, and Suppliers) that have an assigned expiry date. Organised by module and parent record.
+    Generated: @Model.GeneratedAt.ToSite().ToString("dd MMM yyyy HH:mm") UTC.
+</p>
+
+@* Summary banner *@
+@if (Model.TotalExpired == 0 && Model.TotalExpiringSoon == 0 && !Model.Modules.Any())
+{
+    <div class="alert alert-success d-flex align-items-center mb-4">
+        <strong class="me-2">No supporting documents with expiry dates found.</strong>
+        <span>All modules are clear or no expiry dates have been assigned.</span>
+    </div>
+}
+else
+{
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-md-3">
+            <div class="card border-0 shadow-sm text-center @(Model.TotalExpired > 0 ? "border-danger" : "")" style="border-left: 4px solid @(Model.TotalExpired > 0 ? "#dc3545" : "#6c757d") !important;">
+                <div class="card-body py-3">
+                    <p class="text-uppercase text-muted small fw-semibold mb-1">Expired</p>
+                    <h2 class="fw-bold mb-0 @(Model.TotalExpired > 0 ? "text-danger" : "")">@Model.TotalExpired</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card border-0 shadow-sm text-center" style="border-left: 4px solid @(Model.TotalExpiringSoon > 0 ? "#fd7e14" : "#6c757d") !important;">
+                <div class="card-body py-3">
+                    <p class="text-uppercase text-muted small fw-semibold mb-1">Expiring Soon</p>
+                    <h2 class="fw-bold mb-0 @(Model.TotalExpiringSoon > 0 ? "text-warning" : "")">@Model.TotalExpiringSoon</h2>
+                    <p class="text-muted small mb-0">within reminder period</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card border-0 shadow-sm text-center" style="border-left: 4px solid #0d6efd !important;">
+                <div class="card-body py-3">
+                    <p class="text-uppercase text-muted small fw-semibold mb-1">Modules</p>
+                    <h2 class="fw-bold mb-0">@Model.Modules.Count</h2>
+                    <p class="text-muted small mb-0">with expiring docs</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card border-0 shadow-sm text-center" style="border-left: 4px solid #198754 !important;">
+                <div class="card-body py-3">
+                    <p class="text-uppercase text-muted small fw-semibold mb-1">Total Documents</p>
+                    <h2 class="fw-bold mb-0">@Model.Modules.Sum(m => m.Parents.Sum(p => p.Documents.Count))</h2>
+                    <p class="text-muted small mb-0">with expiry date</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-light border small mb-4">
+        <strong>Colour coding:</strong>
+        <span class="badge bg-danger me-1">Red</span> Expired (past expiry date) &nbsp;
+        <span class="badge bg-warning text-dark me-1">Amber</span> Expiring soon (within per-document reminder days) &nbsp;
+        <span class="badge bg-success me-1">Green</span> Valid (not yet in reminder period)
+    </div>
+}
+
+@* Per-module sections *@
+@foreach (var module in Model.Modules)
+{
+    var moduleHasIssues = module.ExpiredCount > 0 || module.ExpiringSoonCount > 0;
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center @(module.ExpiredCount > 0 ? "bg-danger text-white" : module.ExpiringSoonCount > 0 ? "bg-warning text-dark" : "bg-secondary text-white")">
+            <span class="fw-semibold fs-6">@module.ModuleName</span>
+            <span>
+                @if (module.ExpiredCount > 0)
+                {
+                    <span class="badge bg-white text-danger me-1">@module.ExpiredCount expired</span>
+                }
+                @if (module.ExpiringSoonCount > 0)
+                {
+                    <span class="badge bg-white text-warning me-1">@module.ExpiringSoonCount expiring soon</span>
+                }
+                <span class="badge bg-white text-dark">@module.Parents.Sum(p => p.Documents.Count) total</span>
+            </span>
+        </div>
+        <div class="card-body p-0">
+            @foreach (var parent in module.Parents)
+            {
+                <div class="border-bottom px-3 pt-3 pb-2">
+                    <p class="fw-semibold mb-1">
+                        <a asp-controller="@module.Controller" asp-action="Details" asp-route-id="@parent.ParentId" class="text-decoration-none">
+                            @parent.ParentIdentifier — @parent.ParentName
+                        </a>
+                    </p>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Document</th>
+                                    <th>Description</th>
+                                    <th class="text-nowrap">Expiry Date</th>
+                                    <th class="text-nowrap">Days</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var doc in parent.Documents.OrderBy(d => d.ExpiryDate))
+                                {
+                                    var rowClass = doc.IsExpired ? "table-danger" : doc.IsExpiringSoon ? "table-warning" : "";
+                                    var daysText = doc.IsExpired
+                                        ? $"{(int)(today - doc.ExpiryDate!.Value.Date).TotalDays}d overdue"
+                                        : $"{(int)(doc.ExpiryDate!.Value.Date - today).TotalDays}d remaining";
+                                    var badgeClass = doc.IsExpired ? "bg-danger" : doc.IsExpiringSoon ? "bg-warning text-dark" : "bg-success";
+                                    var statusText = doc.IsExpired ? "Expired" : doc.IsExpiringSoon ? "Expiring Soon" : "Valid";
+                                    <tr class="@rowClass">
+                                        <td class="text-truncate" style="max-width:220px;">
+                                            <i class="fas fa-file-alt text-muted me-1"></i>@doc.FileName
+                                        </td>
+                                        <td class="text-truncate text-muted small" style="max-width:180px;">@(doc.Description ?? "—")</td>
+                                        <td class="text-nowrap fw-semibold">@doc.ExpiryDate!.Value.ToString("dd MMM yyyy")</td>
+                                        <td class="text-nowrap small @(doc.IsExpired ? "text-danger" : doc.IsExpiringSoon ? "text-warning" : "text-muted")">@daysText</td>
+                                        <td><span class="badge @badgeClass">@statusText</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@if (!Model.Modules.Any())
+{
+    <div class="card mb-4">
+        <div class="card-body text-muted text-center py-5">
+            <i class="fas fa-check-circle text-success fs-3 d-block mb-2"></i>
+            No supporting documents with expiry dates are currently tracked.
+        </div>
+    </div>
+}

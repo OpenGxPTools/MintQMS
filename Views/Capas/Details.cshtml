@@ -1,0 +1,723 @@
+@*
+This file is part of the OpenQMS.net project (https://github.com/C-realize/OpenQMS).
+Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
+*@
+
+@model OpenQMS.Models.Capa
+@using OpenQMS.Authorization
+
+@{
+    ViewData["Title"] = $"CAPA — {Model.CapaId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var isLocked     = Model.Status == Capa.CapaStatus.Approved;
+    var isEditLocked = isLocked
+        || Model.Status == Capa.CapaStatus.PendingAssessment
+        || Model.Status == Capa.CapaStatus.PendingApproval;
+    var attachCount  = Model.Attachments?.Count ?? 0;
+    var auditCount   = Model.AuditLogs?.Count ?? 0;
+    var activeTab    = TempData["ActiveTab"]?.ToString() ?? "overview";
+
+    var statusLabel = EnumHelper.Display(Model.Status);
+    var badgeClass = Model.Status switch
+    {
+        Capa.CapaStatus.Determination   => "bg-secondary",
+        Capa.CapaStatus.Assessment      => "bg-info text-dark",
+        Capa.CapaStatus.PendingAssessment => "bg-primary text-white",
+        Capa.CapaStatus.Accepted        => "bg-warning text-dark",
+        Capa.CapaStatus.Implementation  => "bg-warning text-dark",
+        Capa.CapaStatus.PendingApproval => "bg-primary text-white",
+        Capa.CapaStatus.Approved        => "bg-success",
+        _                               => "bg-secondary"
+    };
+
+    bool isOverdue    = Model.TargetCompletionDate.HasValue && Model.TargetCompletionDate.Value < SiteTime.Today && !isLocked;
+    bool isApproaching = !isOverdue && Model.TargetCompletionDate.HasValue
+                        && Model.TargetCompletionDate.Value <= SiteTime.Today.AddDays(14) && !isLocked;
+
+    bool isQM = User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AuthorisedPersonRole);
+    bool isQU = isQM || User.IsInRole(Constants.QualityUserRole);
+
+    bool canSubmitForAcceptance = isQU && (Model.Status == Capa.CapaStatus.Determination || Model.Status == Capa.CapaStatus.Assessment);
+    bool canAccept              = isQM && Model.Status == Capa.CapaStatus.PendingAssessment;
+    bool canSubmitForApproval   = isQU && Model.Status == Capa.CapaStatus.Implementation;
+    bool canApprove             = isQM && Model.Status == Capa.CapaStatus.PendingApproval;
+    bool canReturn              = isQM && (Model.Status == Capa.CapaStatus.PendingAssessment
+                                        || Model.Status == Capa.CapaStatus.PendingApproval
+                                        || Model.Status == Capa.CapaStatus.Implementation);
+}
+
+<!-- Header -->
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">CAPA &mdash; <span class="fw-bold">@Model.CapaId</span></h4>
+        <small class="text-muted">@Model.Title</small>
+    </div>
+    <span class="badge @badgeClass fs-6">@statusLabel</span>
+</div>
+<hr />
+
+<!-- TempData alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["WorkflowError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (isOverdue)
+{
+    <div class="alert alert-danger d-flex align-items-center gap-2 mb-3">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>Target completion date <strong>@Model.TargetCompletionDate!.Value.ToString("dd MMM yyyy")</strong> is overdue.</span>
+    </div>
+}
+else if (isApproaching)
+{
+    <div class="alert alert-warning d-flex align-items-center gap-2 mb-3">
+        <i class="fas fa-clock"></i>
+        <span>Target completion date <strong>@Model.TargetCompletionDate!.Value.ToString("dd MMM yyyy")</strong> is approaching (within 14 days).</span>
+    </div>
+}
+
+@if (Model.LinkedAdverseEvent != null)
+{
+    <div class="alert alert-info d-flex align-items-center gap-2 mb-3">
+        <i class="fas fa-shield-virus"></i>
+        <span>Linked Adverse Event:
+            <a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@Model.LinkedAdverseEventId" class="fw-bold">
+                @Model.LinkedAdverseEvent.AENumber
+            </a>
+            <span class="badge bg-secondary ms-1">@EnumHelper.Display(Model.LinkedAdverseEvent.Status)</span>
+        </span>
+    </div>
+}
+
+<!-- Workflow action panel -->
+@if (canSubmitForAcceptance || canAccept || canSubmitForApproval || canApprove || canReturn)
+{
+    <div class="card mb-3">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-tasks me-2"></i>Workflow Actions</strong>
+            <span class="small">Current: @statusLabel</span>
+        </div>
+        <div class="card-body py-2 d-flex flex-wrap gap-2">
+            @if (canSubmitForAcceptance)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitForAcceptanceModal">
+                    <i class="fas fa-paper-plane me-1"></i>Submit for Acceptance
+                </button>
+            }
+            @if (canAccept)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#acceptModal">
+                    <i class="fas fa-check-circle me-1"></i>Accept CAPA
+                </button>
+            }
+            @if (canSubmitForApproval)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitForApprovalModal">
+                    <i class="fas fa-paper-plane me-1"></i>Submit for Approval
+                </button>
+            }
+            @if (canApprove)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveModal">
+                    <i class="fas fa-thumbs-up me-1"></i>Approve CAPA
+                </button>
+            }
+            @if (canReturn)
+            {
+                <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#returnModal">
+                    <i class="fas fa-undo me-1"></i>Return for Rework
+                </button>
+            }
+        </div>
+    </div>
+}
+
+@if (isLocked && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="card mb-3 border-danger">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+        </div>
+        <div class="card-body py-2">
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
+                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="capaTabs">
+    <li class="nav-item"><button class="nav-link @(activeTab == "overview" ? "active" : "")" type="button" data-bs-toggle="tab" data-bs-target="#pane-overview">Overview</button></li>
+    <li class="nav-item">
+        <button class="nav-link @(activeTab == "attachments" ? "active" : "")" type="button" data-bs-toggle="tab" data-bs-target="#pane-attachments">
+            Attachments <span class="badge bg-secondary">@attachCount</span>
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link @(activeTab == "auditlog" ? "active" : "")" type="button" data-bs-toggle="tab" data-bs-target="#pane-auditlog">
+            Audit Log <span class="badge bg-secondary">@auditCount</span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <!-- Overview Tab -->
+    <div class="tab-pane fade @(activeTab == "overview" ? "show active" : "")" id="pane-overview">
+        <div class="row">
+
+            <!-- Left column: record details + linked records + exports -->
+            <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small mb-2">CAPA Details</h6>
+                <dl class="row">
+                    <dt class="col-sm-4">CAPA ID</dt>
+                    <dd class="col-sm-8">@Model.CapaId</dd>
+
+                    <dt class="col-sm-4">CAPA Type</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            var dTypeBadge = Model.Type switch
+                            {
+                                Capa.CapaType.Recall                 => "bg-danger",
+                                Capa.CapaType.ImprovementOpportunity => "bg-info text-dark",
+                                _                                    => "bg-secondary"
+                            };
+                        }
+                        <span class="badge @dTypeBadge">@EnumHelper.Display(Model.Type)</span>
+                    </dd>
+
+                    <dt class="col-sm-4">Title</dt>
+                    <dd class="col-sm-8">@Model.Title</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8"><span class="badge @badgeClass">@statusLabel</span></dd>
+
+                    <dt class="col-sm-4">Target Completion</dt>
+                    <dd class="col-sm-8 @(isOverdue ? "text-danger fw-bold" : isApproaching ? "text-warning fw-bold" : "")">
+                        @(Model.TargetCompletionDate.HasValue ? Model.TargetCompletionDate.Value.ToString("dd MMM yyyy") : "-")
+                    </dd>
+                </dl>
+
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">Linked Records</h6>
+                <dl class="row">
+                    <dt class="col-sm-4">Products</dt>
+                    <dd class="col-sm-8">
+                        @{ var dProds = Model.LinkedProducts?.Where(x => x.Product != null).ToList(); }
+                        @if (dProds?.Any() == true)
+                        { foreach (var lp in dProds) { <a href="/Products/Details/@lp.ProductId" class="d-block">@lp.Product!.Name</a> } }
+                        else if (Model.Product != null) { <a href="/Products/Details/@Model.ProductId">@Model.Product.Name</a> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Processes</dt>
+                    <dd class="col-sm-8">
+                        @{ var dProcs = Model.LinkedProcesses?.Where(x => x.Process != null).ToList(); }
+                        @if (dProcs?.Any() == true)
+                        { foreach (var lp in dProcs) { <a href="/Processes/Details/@lp.ProcessId" class="d-block">@lp.Process!.Name</a> } }
+                        else if (Model.Process != null) { <a href="/Processes/Details/@Model.ProcessId">@Model.Process.Name</a> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Assets</dt>
+                    <dd class="col-sm-8">
+                        @{ var dAssets = Model.LinkedAssets?.Where(x => x.Asset != null).ToList(); }
+                        @if (dAssets?.Any() == true)
+                        { foreach (var la in dAssets) { <a href="/Assets/Details/@la.AssetId" class="d-block">@la.Asset!.Name</a> } }
+                        else if (Model.Asset != null) { <a href="/Assets/Details/@Model.AssetId">@Model.Asset.Name</a> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Materials</dt>
+                    <dd class="col-sm-8">
+                        @{ var dMats = Model.LinkedMaterials?.Where(x => x.Material != null).ToList(); }
+                        @if (dMats?.Any() == true)
+                        { foreach (var lm in dMats) { <a href="/Materials/Details/@lm.MaterialId" class="d-block">@lm.Material!.Name</a> } }
+                        else if (Model.Material != null) { <a href="/Materials/Details/@Model.MaterialId">@Model.Material.Name</a> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Suppliers</dt>
+                    <dd class="col-sm-8">
+                        @{ var dSupps = Model.LinkedSuppliers?.Where(x => x.Supplier != null).ToList(); }
+                        @if (dSupps?.Any() == true)
+                        { foreach (var ls in dSupps) { <a href="/Suppliers/Details/@ls.SupplierId" class="d-block">@ls.Supplier!.LegalName</a> } }
+                        else if (Model.Supplier != null) { <a href="/Suppliers/Details/@Model.SupplierId">@Model.Supplier.LegalName</a> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Deviations</dt>
+                    <dd class="col-sm-8">
+                        @{ var dDevs = Model.LinkedDeviations?.Where(x => x.Deviation != null).ToList(); }
+                        @if (dDevs?.Any() == true)
+                        { foreach (var ld in dDevs) { <a href="/Deviations/Details/@ld.DeviationId" class="d-block">@ld.Deviation!.DeviationId — @ld.Deviation.Title</a> } }
+                        else if (Model.Deviation != null) { <a href="/Deviations/Details/@Model.DeviationId">@Model.Deviation.DeviationId — @Model.Deviation.Title</a> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Complaints</dt>
+                    <dd class="col-sm-8">
+                        @{ var dComps = Model.LinkedComplaints?.Where(x => x.Complaint != null).ToList(); }
+                        @if (dComps?.Any() == true)
+                        { foreach (var lc in dComps) { <a href="/Complaints/Details/@lc.ComplaintId" class="d-block">@lc.Complaint!.ComplaintId — @lc.Complaint.Title</a> } }
+                        else if (Model.Complaint != null) { <a href="/Complaints/Details/@Model.ComplaintId">@Model.Complaint.ComplaintId — @Model.Complaint.Title</a> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Audits</dt>
+                    <dd class="col-sm-8">
+                        @{ var dAuds = Model.LinkedAudits?.Where(x => x.Audit != null).ToList(); }
+                        @if (dAuds?.Any() == true)
+                        { foreach (var la in dAuds) { <a href="/Audits/Details/@la.AuditId" class="d-block">@la.Audit!.AuditId — @la.Audit.Title</a> } }
+                        else if (Model.Audit != null) { <a href="/Audits/Details/@Model.AuditId">@Model.Audit.AuditId — @Model.Audit.Title</a> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                </dl>
+
+                @if (Model.Changes != null && Model.Changes.Any())
+                {
+                    <h6 class="text-muted text-uppercase small mb-2 mt-3">Linked Changes</h6>
+                    <table class="table table-sm table-hover">
+                        <thead class="table-light">
+                            <tr><th>ID</th><th>Title</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ch in Model.Changes)
+                            {
+                                <tr>
+                                    <td><a href="/Changes/Details/@ch.Id">@ch.ChangeId</a></td>
+                                    <td>@ch.Title</td>
+                                    <td>@EnumHelper.Display(ch.Status)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+                <div class="mt-3 d-flex gap-2">
+                    <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
+                    <a asp-action="ExportCAPADetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+                </div>
+            </div>
+
+            <!-- Right column: content sections + workflow trail -->
+            <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small mb-2">Corrective Action</h6>
+                <div class="p-3 bg-light rounded mb-3">@(Model.CorrectiveAction ?? "-")</div>
+
+                <h6 class="text-muted text-uppercase small mb-2">Preventive Action</h6>
+                <div class="p-3 bg-light rounded mb-3">@(Model.PreventiveAction ?? "-")</div>
+
+                @if (!string.IsNullOrEmpty(Model.Assessment) || Model.Status > Capa.CapaStatus.Determination)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Assessment</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.Assessment ?? "-")</div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Implementation) || Model.Status == Capa.CapaStatus.Implementation || Model.Status == Capa.CapaStatus.PendingApproval || Model.Status == Capa.CapaStatus.Approved)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Implementation</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.Implementation ?? "-")</div>
+                }
+
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">Workflow Trail</h6>
+                <dl class="row">
+                    <dt class="col-sm-5">Determined By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.DeterminedBy))
+                        { <span>@Model.DeterminedBy <span class="text-muted small">@Model.DeterminedOn.ToSite().ToString("dd MMM yyyy")</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Submitted for Acceptance By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.AssessedBy))
+                        { <span>@Model.AssessedBy <span class="text-muted small">@Model.AssessedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Accepted By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.AcceptedBy))
+                        { <span>@Model.AcceptedBy <span class="text-muted small">@Model.AcceptedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Submitted for Approval By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.ImplementedBy))
+                        { <span>@Model.ImplementedBy <span class="text-muted small">@Model.ImplementedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Approved By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.ApprovedBy))
+                        { <span>@Model.ApprovedBy <span class="text-muted small">@Model.ApprovedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                </dl>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Attachments Tab -->
+    <div class="tab-pane fade @(activeTab == "attachments" ? "show active" : "")" id="pane-attachments">
+        @if (!isLocked)
+        {
+            <div class="card mb-3">
+                <div class="card-header">Upload Attachment</div>
+                <div class="card-body">
+                    <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data" class="row g-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="capaId" value="@Model.Id" />
+                        <div class="col-md-5">
+                            <input type="file" class="form-control" name="file" required
+                                   accept="@UploadRules.Accept" />
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="description" placeholder="Description (optional)" />
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-secondary">Record is approved — no new attachments can be added.</div>
+        }
+
+        @if (Model.Attachments != null && Model.Attachments.Any())
+        {
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>File Name</th><th>Description</th><th>Size</th><th>Uploaded By</th><th>Date</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var att in Model.Attachments.OrderByDescending(a => a.UploadedDate))
+                    {
+                        <tr>
+                            <td><a asp-action="DownloadAttachment" asp-route-id="@att.Id">@att.FileName</a></td>
+                            <td>@(att.Description ?? "-")</td>
+                            <td>@((att.FileSize / 1024.0).ToString("N1")) KB</td>
+                            <td>@att.UploadedBy</td>
+                            <td>@att.UploadedDate.ToSite().ToString("dd MMM yyyy")</td>
+                            <td>
+                                @if (!isLocked)
+                                {
+                                    <form asp-action="DeleteAttachment" method="post" style="display:inline" data-delete-reason="attachment">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@att.Id" />
+                                        <input type="hidden" name="capaId" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">No attachments uploaded yet.</p>
+        }
+        <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
+    </div>
+
+    <!-- Audit Log Tab -->
+    <div class="tab-pane fade @(activeTab == "auditlog" ? "show active" : "")" id="pane-auditlog">
+        @await Html.PartialAsync("_AuditLogTable", (Model.AuditLogs ?? Enumerable.Empty<OpenQMS.Models.CapaAuditLog>())
+            .Select(l => new OpenQMS.ViewModels.AuditLogRow(l.PerformedOn, l.PerformedBy, l.Action, l.FromStatus, l.ToStatus, l.Notes)))
+    </div>
+
+</div>
+
+<!-- Bottom action links -->
+<div class="mt-3 d-flex gap-2">
+    @if (!isEditLocked && isQU && !User.IsInRole(Constants.ReadOnlyRole))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">
+            <i class="fas fa-edit me-1"></i>Edit
+        </a>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to List
+    </a>
+    @if (User.IsInRole(Constants.AdministratorsRole)
+         && Model.Status != Capa.CapaStatus.PendingAssessment
+         && Model.Status != Capa.CapaStatus.Implementation
+         && Model.Status != Capa.CapaStatus.PendingApproval
+         && Model.Status != Capa.CapaStatus.Approved)
+    {
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm">
+            <i class="fas fa-trash me-1"></i>Delete
+        </a>
+    }
+</div>
+
+<!-- Submit for Acceptance Modal -->
+@if (canSubmitForAcceptance)
+{
+    <div class="modal fade" id="submitForAcceptanceModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="SubmitForAcceptance" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Submit for Acceptance</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>This will lock the CAPA for Quality Manager review. Corrective Action, Preventive Action and Assessment must all be completed.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Your Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes (optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit for Acceptance</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Accept Modal -->
+@if (canAccept)
+{
+    <div class="modal fade" id="acceptModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="AcceptCapa" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">Accept CAPA</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Accepting moves this CAPA from <strong>Pending Assessment</strong> to <strong>Implementation</strong>. Implementation can begin immediately.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Your Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes (optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Accept CAPA</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Submit for Approval Modal -->
+@if (canSubmitForApproval)
+{
+    <div class="modal fade" id="submitForApprovalModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="SubmitForApproval" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Submit for Approval</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>This will lock the CAPA for Quality Manager approval (<strong>Implementation</strong> → <strong>Pending Approval</strong>).</p>
+                        <div class="mb-3">
+                            <label class="form-label">Your Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes (optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit for Approval</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Approve Modal -->
+@if (canApprove)
+{
+    <div class="modal fade" id="approveModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="ApproveCapa" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">Approve CAPA</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Approving moves this CAPA from <strong>Pending Approval</strong> to <strong>Approved</strong>.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Your Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes (optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Approve CAPA</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Return for Rework Modal -->
+@if (canReturn)
+{
+    <div class="modal fade" id="returnModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="ReturnCapa" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title">Return for Rework</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        @if (Model.Status == Capa.CapaStatus.PendingAssessment)
+                        {
+                            <p>This will return the CAPA to <strong>Determination</strong> for revision. The submitted-for-acceptance stamp will be cleared.</p>
+                        }
+                        else if (Model.Status == Capa.CapaStatus.PendingApproval)
+                        {
+                            <p>This will return the CAPA to <strong>Implementation</strong> for revision. The submitted-for-approval stamp will be cleared.</p>
+                        }
+                        else if (Model.Status == Capa.CapaStatus.Implementation)
+                        {
+                            <p>This will return the CAPA to <strong>Determination</strong> for full rework. The acceptance and assessment stamps will be cleared.</p>
+                        }
+                        <div class="mb-3">
+                            <label class="form-label">Your Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Reason for Return <span class="text-danger">*</span></label>
+                            <textarea name="notes" class="form-control" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning">Return for Rework</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isLocked && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="modal fade" id="adminReopenModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong>Warning:</strong> Administratively reopening a completed record reverts it to the Implementation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var tabMap = { 'overview': '#pane-overview', 'attachments': '#pane-attachments', 'auditlog': '#pane-auditlog' };
+            var target = tabMap['@activeTab'] || '#pane-overview';
+            var triggerEl = document.querySelector('[data-bs-target="' + target + '"]');
+            if (triggerEl) new bootstrap.Tab(triggerEl).show();
+        });
+    </script>
+}

@@ -1,0 +1,355 @@
+@model OpenQMS.Models.Capa
+
+@{
+    ViewData["Title"] = "New CAPA";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var products   = (List<SelectListItem>)ViewData["Products"];
+    var processes  = (List<SelectListItem>)ViewData["Processes"];
+    var assets     = (List<SelectListItem>)ViewData["Assets"];
+    var materials  = (List<SelectListItem>)ViewData["Materials"];
+    var suppliers  = (List<SelectListItem>)ViewData["Suppliers"];
+    var deviations = (List<SelectListItem>)ViewData["Deviations"];
+    var complaints = (List<SelectListItem>)ViewData["Complaints"];
+    var audits     = (List<SelectListItem>)ViewData["Audits"];
+
+    var selProductIds   = (List<int>?)ViewBag.SelectedProductIds   ?? new List<int>();
+    var selProcessIds   = (List<int>?)ViewBag.SelectedProcessIds   ?? new List<int>();
+    var selAssetIds     = (List<int>?)ViewBag.SelectedAssetIds     ?? new List<int>();
+    var selMaterialIds  = (List<int>?)ViewBag.SelectedMaterialIds  ?? new List<int>();
+    var selSupplierIds  = (List<int>?)ViewBag.SelectedSupplierIds  ?? new List<int>();
+    var selDeviationIds = (List<int>?)ViewBag.SelectedDeviationIds ?? new List<int>();
+    var selComplaintIds = (List<int>?)ViewBag.SelectedComplaintIds ?? new List<int>();
+    var selAuditIds     = (List<int>?)ViewBag.SelectedAuditIds     ?? new List<int>();
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">New CAPA</h4>
+        <small class="text-muted">Corrective and Preventive Action — define the actions required to address the root cause and prevent recurrence.</small>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- ── Determination ─────────────────────────────────────────────── -->
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Determination</div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Define the corrective and preventive actions, link to source quality records, and set a target completion date.</p>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Type" class="form-label">
+                                CAPA Type
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="capatype" aria-label="CAPA Type guidance">?</button>
+                            </label>
+                            <select asp-for="Type" asp-items="Html.GetEnumSelectList<OpenQMS.Models.Capa.CapaType>()" class="form-select"></select>
+                            <span asp-validation-for="Type" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="TargetCompletionDate" class="form-label"></label>
+                            <input asp-for="TargetCompletionDate" class="form-control" type="date" />
+                            <span asp-validation-for="TargetCompletionDate" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Products -->
+                        <div class="col-md-6">
+                            <label class="form-label">Products</label>
+                            <select id="productDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Product --</option>
+                                @foreach (var item in products)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="productTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="productHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Processes -->
+                        <div class="col-md-6">
+                            <label class="form-label">Processes</label>
+                            <select id="processDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Process --</option>
+                                @foreach (var item in processes)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="processTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="processHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Assets -->
+                        <div class="col-md-6">
+                            <label class="form-label">Assets</label>
+                            <select id="assetDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Asset --</option>
+                                @foreach (var item in assets)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="assetTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="assetHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Materials -->
+                        <div class="col-md-6">
+                            <label class="form-label">Materials</label>
+                            <select id="materialDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Material --</option>
+                                @foreach (var item in materials)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="materialTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="materialHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Suppliers -->
+                        <div class="col-md-6">
+                            <label class="form-label">Suppliers</label>
+                            <select id="supplierDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Supplier --</option>
+                                @foreach (var item in suppliers)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="supplierTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="supplierHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Deviations -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Linked Deviations
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="qualityrecord" aria-label="Quality Record guidance">?</button>
+                            </label>
+                            <select id="deviationDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Deviation --</option>
+                                @foreach (var item in deviations)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="deviationTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="deviationHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Complaints -->
+                        <div class="col-md-6">
+                            <label class="form-label">Linked Complaints</label>
+                            <select id="complaintDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Complaint --</option>
+                                @foreach (var item in complaints)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="complaintTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="complaintHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Audits -->
+                        <div class="col-md-6">
+                            <label class="form-label">Linked Audits</label>
+                            <select id="auditDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Audit --</option>
+                                @foreach (var item in audits)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="auditTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="auditHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Linked Adverse Event (single FK, stays as-is) -->
+                        <input type="hidden" asp-for="LinkedAdverseEventId" value="@ViewBag.LinkedAEId" />
+                        @if (ViewBag.LinkedAEId != null)
+                        {
+                            <div class="col-12">
+                                <small class="text-info"><i class="fas fa-shield-virus me-1"></i>Linked from Adverse Event: <strong>@ViewBag.LinkedAETitle</strong></small>
+                            </div>
+                        }
+
+                        <!-- Linked Signal Review (back-reference set on the signal after save) -->
+                        @if (ViewBag.LinkedSignalId != null)
+                        {
+                            <input type="hidden" name="signalId" value="@ViewBag.LinkedSignalId" />
+                            <div class="col-12">
+                                <small class="text-info"><i class="fas fa-broadcast-tower me-1"></i>Linked from Signal Review: <strong>@ViewBag.LinkedSignalTitle</strong></small>
+                            </div>
+                        }
+
+                        <div class="col-12">
+                            <label asp-for="CorrectiveAction" class="form-label">
+                                Corrective Action <span class="text-danger">*</span>
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="corrective" aria-label="Corrective action guidance">?</button>
+                            </label>
+                            <textarea asp-for="CorrectiveAction" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="CorrectiveAction" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="PreventiveAction" class="form-label">
+                                Preventive Action <span class="text-danger">*</span>
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="preventive" aria-label="Preventive action guidance">?</button>
+                            </label>
+                            <textarea asp-for="PreventiveAction" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="PreventiveAction" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+            </div>
+        </form>
+
+<!-- Popover help content (hidden, read by JS) -->
+<div class="d-none">
+    <div id="help-capatype">
+        <p class="mb-0">Recall / Market Action makes this CAPA the master record for a recall; Improvement Opportunity is a planned business improvement, not a response to a problem.</p>
+    </div>
+    <div id="help-qualityrecord">
+        <p class="mb-0">Link this CAPA to its source quality record — a Deviation, Complaint, or Audit finding. Multiple records can be linked.</p>
+    </div>
+    <div id="help-corrective">
+        <p class="mb-1"><strong>Corrective Action must include:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>A description of each action to eliminate the identified root cause</li>
+            <li>The person responsible for each action</li>
+            <li>Target completion date for each action</li>
+            <li>How effectiveness will be verified</li>
+        </ul>
+    </div>
+    <div id="help-preventive">
+        <p class="mb-1"><strong>Preventive Action must include:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>Actions to prevent recurrence of this or similar issues</li>
+            <li>Systemic or process improvements proposed</li>
+            <li>Review of related processes, procedures, or controls</li>
+            <li>Training or documentation updates required</li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+        var selected = {};
+        preselected = preselected || [];
+
+        function renderTags() {
+            var tagsDiv  = document.getElementById(tagsId);
+            var hiddenDiv = document.getElementById(hiddenId);
+            tagsDiv.innerHTML  = '';
+            hiddenDiv.innerHTML = '';
+            Object.keys(selected).forEach(function(id) {
+                var text = selected[id];
+                var chip = document.createElement('span');
+                chip.style.cssText = 'display:inline-block;background:#0d6efd;color:white;padding:2px 8px;border-radius:12px;margin:2px;font-size:12px;cursor:pointer;';
+                chip.innerHTML = text + ' &times;';
+                chip.title = 'Click to remove';
+                chip.addEventListener('click', function() {
+                    delete selected[id];
+                    var opt = document.querySelector('#' + dropdownId + ' option[value="' + id + '"]');
+                    if (opt) opt.disabled = false;
+                    renderTags();
+                });
+                tagsDiv.appendChild(chip);
+                var hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = inputName;
+                hidden.value = id;
+                hiddenDiv.appendChild(hidden);
+            });
+        }
+
+        preselected.forEach(function(item) {
+            selected[item.id] = item.text;
+            var opt = document.querySelector('#' + dropdownId + ' option[value="' + item.id + '"]');
+            if (opt) opt.disabled = true;
+        });
+        renderTags();
+
+        document.getElementById(dropdownId).addEventListener('change', function() {
+            var dd   = document.getElementById(dropdownId);
+            var id   = dd.value;
+            var text = dd.options[dd.selectedIndex].dataset.text;
+            if (id && !selected[id]) {
+                selected[id] = text;
+                dd.options[dd.selectedIndex].disabled = true;
+                renderTags();
+            }
+            dd.value = '';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var selProducts   = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            products.Where(x => selProductIds.Contains(int.Parse(x.Value)))
+                    .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selProcesses  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            processes.Where(x => selProcessIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selAssets     = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            assets.Where(x => selAssetIds.Contains(int.Parse(x.Value)))
+                  .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selMaterials  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            materials.Where(x => selMaterialIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selSuppliers  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            suppliers.Where(x => selSupplierIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selDeviations = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            deviations.Where(x => selDeviationIds.Contains(int.Parse(x.Value)))
+                      .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selComplaints = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            complaints.Where(x => selComplaintIds.Contains(int.Parse(x.Value)))
+                      .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selAudits     = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            audits.Where(x => selAuditIds.Contains(int.Parse(x.Value)))
+                  .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+
+        setupPicker('productDropdown',   'productTags',   'productHidden',   'selectedProducts',   selProducts);
+        setupPicker('processDropdown',   'processTags',   'processHidden',   'selectedProcesses',  selProcesses);
+        setupPicker('assetDropdown',     'assetTags',     'assetHidden',     'selectedAssets',     selAssets);
+        setupPicker('materialDropdown',  'materialTags',  'materialHidden',  'selectedMaterials',  selMaterials);
+        setupPicker('supplierDropdown',  'supplierTags',  'supplierHidden',  'selectedSuppliers',  selSuppliers);
+        setupPicker('deviationDropdown', 'deviationTags', 'deviationHidden', 'selectedDeviations', selDeviations);
+        setupPicker('complaintDropdown', 'complaintTags', 'complaintHidden', 'selectedComplaints', selComplaints);
+        setupPicker('auditDropdown',     'auditTags',     'auditHidden',     'selectedAudits',     selAudits);
+
+        document.querySelectorAll('.help-btn').forEach(function (btn) {
+            var contentEl = document.getElementById('help-' + btn.dataset.help);
+            new bootstrap.Popover(btn, {
+                html: true, trigger: 'click', placement: 'right',
+                content: contentEl ? contentEl.innerHTML : '',
+                title: '', container: 'body'
+            });
+        });
+        document.addEventListener('click', function (e) {
+            if (!e.target.classList.contains('help-btn')) {
+                document.querySelectorAll('.help-btn').forEach(function (btn) {
+                    var pop = bootstrap.Popover.getInstance(btn);
+                    if (pop) pop.hide();
+                });
+            }
+        });
+    });
+    </script>
+}

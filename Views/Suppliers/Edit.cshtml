@@ -1,0 +1,298 @@
+@model OpenQMS.Models.Supplier
+
+@{
+    ViewData["Title"] = "Edit Supplier";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var selectedProducts = (ViewBag.SelectedProducts as List<int>) ?? new List<int>();
+    var selectedMaterials = (ViewBag.SelectedMaterials as List<int>) ?? new List<int>();
+    var selectedServices = (ViewBag.SelectedServices as List<int>) ?? new List<int>();
+    var selectedProductsJson = System.Text.Json.JsonSerializer.Serialize(selectedProducts);
+    var selectedMaterialsJson = System.Text.Json.JsonSerializer.Serialize(selectedMaterials);
+    var selectedServicesJson = System.Text.Json.JsonSerializer.Serialize(selectedServices);
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Edit Supplier — @Model.SupplierCode</h4>
+    </div>
+</div>
+<hr />
+<partial name="_ReReviewBanner" model="Model" />
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="SupplierCode" />
+    <input type="hidden" asp-for="Status" />
+    <input type="hidden" asp-for="CreatedBy" />
+    <input type="hidden" asp-for="CreatedOn" />
+    <input type="hidden" asp-for="TestingRequirement" />
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Identity</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="LegalName" class="form-label"></label>
+                    <input asp-for="LegalName" class="form-control" required />
+                    <span asp-validation-for="LegalName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="TradingName" class="form-label"></label>
+                    <input asp-for="TradingName" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="LegalId" class="form-label"></label>
+                    <input asp-for="LegalId" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Website" class="form-label"></label>
+                    <input asp-for="Website" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Primary Address</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Street" class="form-label"></label>
+                    <input asp-for="Street" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="State" class="form-label"></label>
+                    <input asp-for="State" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="PostCode" class="form-label"></label>
+                    <input asp-for="PostCode" class="form-control" />
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="Country" class="form-label"></label>
+                    <input asp-for="Country" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Primary Contact</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="ContactName" class="form-label"></label>
+                    <input asp-for="ContactName" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContactEmail" class="form-label"></label>
+                    <input asp-for="ContactEmail" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContactPhone" class="form-label"></label>
+                    <input asp-for="ContactPhone" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Classification</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="SupplierType" class="form-label"></label>
+                    <select asp-for="SupplierType" id="supplierTypeSelect" class="form-select"
+                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.SupplierType>()"></select>
+                </div>
+                <div id="productsGroup" style="display:none;" class="col-12">
+                    <label class="form-label">Products Supplied</label>
+                    <div id="productTags" class="mb-2" style="min-height:32px;"></div>
+                    <select id="productDropdown" class="form-select">
+                        <option value="">-- Select a Product to Add --</option>
+                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Products)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+                    <div id="productHidden"></div>
+                </div>
+                <div id="materialsGroup" style="display:none;" class="col-12">
+                    <label class="form-label">Materials Supplied</label>
+                    <div id="materialTags" class="mb-2" style="min-height:32px;"></div>
+                    <select id="materialDropdown" class="form-select">
+                        <option value="">-- Select a Material to Add --</option>
+                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Materials)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+                    <div id="materialHidden"></div>
+                </div>
+                <div id="servicesGroup" style="display:none;" class="col-12">
+                    <label class="form-label">Services Provided</label>
+                    <div id="serviceTags" class="mb-2" style="min-height:32px;"></div>
+                    <select id="serviceDropdown" class="form-select">
+                        <option value="">-- Select a Service to Add --</option>
+                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Services)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+                    <div id="serviceHidden"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Assessment</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="RiskLevel" class="form-label"></label>
+                    <select asp-for="RiskLevel" class="form-select"
+                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.SupplierRiskLevel>()"></select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ReviewFrequency" class="form-label"></label>
+                    <select asp-for="ReviewFrequency" id="reviewFreqSelect" class="form-select"
+                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.ReviewFrequency>()"></select>
+                </div>
+                <div class="col-md-6" id="nextReviewDateGroup" style="display:none">
+                    <label asp-for="NextReviewDate" class="form-label"></label>
+                    <input type="date" name="NextReviewDate" class="form-control"
+                           value="@(Model.NextReviewDate.HasValue ? Model.NextReviewDate.Value.ToString("yyyy-MM-dd") : "")" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="RiskJustification" class="form-label"></label>
+                    <textarea asp-for="RiskJustification" class="form-control" rows="2"></textarea>
+                </div>
+                @if (Model.ApprovalStatus != null)
+                {
+                <div class="col-md-4">
+                    <label asp-for="QualificationRequired" class="form-label"></label>
+                    <select asp-for="QualificationRequired" id="qualReqSelect" class="form-select">
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                    </select>
+                </div>
+                <div class="col-12" id="qualJustGroup" style="display:none">
+                    <label asp-for="QualificationJustification" class="form-label"></label>
+                    <textarea asp-for="QualificationJustification" class="form-control" rows="2"></textarea>
+                </div>
+                }
+                <div class="col-12">
+                    <label asp-for="ApprovalComments" class="form-label"></label>
+                    <textarea asp-for="ApprovalComments" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Details</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        var preSelectedProducts = @Html.Raw(selectedProductsJson);
+        var preSelectedMaterials = @Html.Raw(selectedMaterialsJson);
+        var preSelectedServices = @Html.Raw(selectedServicesJson);
+
+        function updateMultiSelect() {
+            var type = document.getElementById('supplierTypeSelect').value;
+            document.getElementById('productsGroup').style.display = (type === 'Product' || type === '0') ? 'block' : 'none';
+            document.getElementById('materialsGroup').style.display = (type === 'Material' || type === '1') ? 'block' : 'none';
+            document.getElementById('servicesGroup').style.display = (type === 'Service' || type === '2') ? 'block' : 'none';
+        }
+        document.getElementById('supplierTypeSelect').addEventListener('change', updateMultiSelect);
+        updateMultiSelect();
+
+        function setupPicker(dropdownId, tagsId, hiddenId, inputName, preSelected) {
+            var selected = {};
+
+            // Pre-populate existing selections
+            var dd = document.getElementById(dropdownId);
+            preSelected.forEach(function(id) {
+                var opt = dd.querySelector('option[value="' + id + '"]');
+                if (opt) {
+                    selected[id] = opt.text;
+                    opt.disabled = true;
+                }
+            });
+
+            function renderTags() {
+                var tagsDiv = document.getElementById(tagsId);
+                var hiddenDiv = document.getElementById(hiddenId);
+                tagsDiv.innerHTML = '';
+                hiddenDiv.innerHTML = '';
+                Object.keys(selected).forEach(function(id) {
+                    var text = selected[id];
+                    var chip = document.createElement('span');
+                    chip.style.cssText = 'display:inline-block;background:#0d6efd;color:white;padding:3px 8px;border-radius:12px;margin:2px;font-size:13px;cursor:pointer;';
+                    chip.innerHTML = text + ' &times;';
+                    chip.title = 'Click to remove';
+                    chip.addEventListener('click', function() {
+                        delete selected[id];
+                        var opt = dd.querySelector('option[value="' + id + '"]');
+                        if (opt) opt.disabled = false;
+                        renderTags();
+                    });
+                    tagsDiv.appendChild(chip);
+                    var hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = inputName;
+                    hidden.value = id;
+                    hiddenDiv.appendChild(hidden);
+                });
+            }
+
+            dd.addEventListener('change', function() {
+                var id = dd.value;
+                var opt = dd.options[dd.selectedIndex];
+                if (id && !selected[id]) {
+                    selected[id] = opt.text;
+                    opt.disabled = true;
+                    renderTags();
+                }
+                dd.value = '';
+            });
+
+            renderTags();
+        }
+
+        setupPicker('productDropdown', 'productTags', 'productHidden', 'selectedProducts', preSelectedProducts);
+        setupPicker('materialDropdown', 'materialTags', 'materialHidden', 'selectedMaterials', preSelectedMaterials);
+        setupPicker('serviceDropdown', 'serviceTags', 'serviceHidden', 'selectedServices', preSelectedServices);
+
+        // Review frequency → next review date toggle
+        var reviewFreqSel = document.getElementById('reviewFreqSelect');
+        function toggleNextReview() {
+            var grp = document.getElementById('nextReviewDateGroup');
+            if (grp) grp.style.display = (reviewFreqSel.value === 'Discretional' || reviewFreqSel.value === '3') ? 'block' : 'none';
+        }
+        reviewFreqSel.addEventListener('change', toggleNextReview);
+        toggleNextReview();
+
+        // Qualification required → justification toggle
+        var qualReqSel = document.getElementById('qualReqSelect');
+        if (qualReqSel) {
+            function toggleQualJust() {
+                var grp = document.getElementById('qualJustGroup');
+                if (grp) grp.style.display = qualReqSel.value === 'true' ? 'block' : 'none';
+            }
+            qualReqSel.addEventListener('change', toggleQualJust);
+            toggleQualJust();
+        }
+    </script>
+}

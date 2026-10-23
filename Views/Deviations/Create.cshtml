@@ -1,0 +1,249 @@
+@model OpenQMS.Models.Deviation
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "New Deviation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var products  = ViewData["Products"]  as List<SelectListItem> ?? new();
+    var processes = ViewData["Processes"] as List<SelectListItem> ?? new();
+    var assets    = ViewData["Assets"]    as List<SelectListItem> ?? new();
+    var materials = ViewData["Materials"] as List<SelectListItem> ?? new();
+    var suppliers = ViewData["Suppliers"] as List<SelectListItem> ?? new();
+
+    var selProductIds  = (List<int>?)ViewBag.SelectedProductIds  ?? new List<int>();
+    var selProcessIds  = (List<int>?)ViewBag.SelectedProcessIds  ?? new List<int>();
+    var selAssetIds    = (List<int>?)ViewBag.SelectedAssetIds    ?? new List<int>();
+    var selMaterialIds = (List<int>?)ViewBag.SelectedMaterialIds ?? new List<int>();
+    var selSupplierIds = (List<int>?)ViewBag.SelectedSupplierIds ?? new List<int>();
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">New Deviation</h4>
+        <small class="text-muted">Record what happened, classify the event, and submit for evaluation.</small>
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-md-9">
+        <form asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- ── Identification Details ───────────────────────────────────── -->
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Identification</div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Record what happened, when, where, and the immediate actions taken.</p>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="EventType" class="form-label">
+                                Event Type
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="eventtype"
+                                        aria-label="Event Type guidance">?</button>
+                            </label>
+                            <select asp-for="EventType" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<OpenQMS.Models.DeviationEventType>()">
+                                <option value="">-- Select Event Type --</option>
+                            </select>
+                            <span asp-validation-for="EventType" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Severity" class="form-label">
+                                Severity
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="severity"
+                                        aria-label="Severity guidance">?</button>
+                            </label>
+                            <select asp-for="Severity" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<OpenQMS.Models.DeviationSeverity>()">
+                                <option value="">-- Select Severity --</option>
+                            </select>
+                        </div>
+
+                        <!-- Products picker -->
+                        <div class="col-md-6">
+                            <label class="form-label">Products</label>
+                            <select id="productDropdown" class="form-select">
+                                <option value="">-- Add Product --</option>
+                                @foreach (var p in products)
+                                { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                            </select>
+                            <div id="productTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="productHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Processes picker -->
+                        <div class="col-md-6">
+                            <label class="form-label">Processes</label>
+                            <select id="processDropdown" class="form-select">
+                                <option value="">-- Add Process --</option>
+                                @foreach (var p in processes)
+                                { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                            </select>
+                            <div id="processTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="processHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Assets picker -->
+                        <div class="col-md-6">
+                            <label class="form-label">Assets</label>
+                            <select id="assetDropdown" class="form-select">
+                                <option value="">-- Add Asset --</option>
+                                @foreach (var p in assets)
+                                { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                            </select>
+                            <div id="assetTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="assetHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Materials picker -->
+                        <div class="col-md-6">
+                            <label class="form-label">Materials</label>
+                            <select id="materialDropdown" class="form-select">
+                                <option value="">-- Add Material --</option>
+                                @foreach (var p in materials)
+                                { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                            </select>
+                            <div id="materialTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="materialHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Suppliers picker -->
+                        <div class="col-md-6">
+                            <label class="form-label">Suppliers</label>
+                            <select id="supplierDropdown" class="form-select">
+                                <option value="">-- Add Supplier --</option>
+                                @foreach (var p in suppliers)
+                                { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                            </select>
+                            <div id="supplierTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="supplierHidden" class="d-none"></div>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Identification" class="form-label">
+                                Identification
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="identification"
+                                        aria-label="Identification guidance">?</button>
+                            </label>
+                            <textarea asp-for="Identification" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Identification" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Popover help content (hidden, read by JS) -->
+<div class="d-none">
+    <div id="help-eventtype">
+        <p class="mb-1"><strong>Event Type Definitions</strong></p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Process Deviation</strong> — Deviation from stipulated process, procedure or relevant quality documentation</li>
+            <li><strong>Supplier Non-conformance</strong> — Quality issues identified in sourced materials, products or outsourced activities</li>
+            <li><strong>Quality Incident</strong> — Unexpected event or accident impacting quality</li>
+            <li><strong>Equipment Failure</strong> — Facility, equipment, hardware or utility failure impacting quality</li>
+            <li><strong>OOS</strong> — Laboratory testing result (analytical, measurement or observation) that fails acceptance criteria</li>
+            <li><strong>Adverse Trend</strong> — A confirmed trend with negative quality impact or risk, out of trend results or repeated quality events (typically 3 similar events in the last 12 months)</li>
+            <li><strong>Near Miss</strong> — Unplanned event or "close call" that did not result in a Deviation but had the potential to impact quality</li>
+        </ul>
+    </div>
+    <div id="help-severity">
+        <p class="mb-1"><strong>Severity Definitions</strong></p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Critical</strong> — Directly impacts patient safety, product sterility or efficacy. May require immediate batch quarantine, recall or regulatory reporting.</li>
+            <li><strong>Major</strong> — Significant departure from GMP or SOPs. Indirect potential impact on product quality. Requires full investigation and CAPA.</li>
+            <li><strong>Minor</strong> — Low-risk departure with no direct impact on product quality or patient safety. Administrative or documentation in nature.</li>
+        </ul>
+    </div>
+    <div id="help-identification">
+        <p class="mb-0">A clear, factual description of a deviation, outlining what occurred, when and where it happened, how it was detected, and the immediate actions taken. Attach supporting documentation and photos, where relevant.</p>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+        var selected = {};
+        preselected.forEach(function (item) { selected[item.id] = item.text; });
+        function render() {
+            var tagsDiv   = document.getElementById(tagsId);
+            var hiddenDiv = document.getElementById(hiddenId);
+            tagsDiv.innerHTML = ''; hiddenDiv.innerHTML = '';
+            Object.keys(selected).forEach(function (id) {
+                var badge = document.createElement('span');
+                badge.className = 'badge bg-primary d-flex align-items-center gap-1';
+                badge.textContent = selected[id];
+                var btn = document.createElement('button');
+                btn.type = 'button'; btn.className = 'btn-close btn-close-white btn-sm ms-1';
+                btn.style.fontSize = '0.6rem';
+                btn.addEventListener('click', function () { delete selected[id]; render(); });
+                badge.appendChild(btn); tagsDiv.appendChild(badge);
+                var input = document.createElement('input');
+                input.type = 'hidden'; input.name = inputName; input.value = id;
+                hiddenDiv.appendChild(input);
+            });
+        }
+        document.getElementById(dropdownId).addEventListener('change', function () {
+            var id = this.value, text = this.options[this.selectedIndex].dataset.text;
+            if (id && !selected[id]) { selected[id] = text; render(); }
+            this.value = '';
+        });
+        render();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.help-btn').forEach(function (btn) {
+            var contentEl = document.getElementById('help-' + btn.dataset.help);
+            new bootstrap.Popover(btn, {
+                html: true, trigger: 'click', placement: 'right',
+                content: contentEl ? contentEl.innerHTML : '', title: '', container: 'body'
+            });
+        });
+        document.addEventListener('click', function (e) {
+            if (!e.target.classList.contains('help-btn')) {
+                document.querySelectorAll('.help-btn').forEach(function (btn) {
+                    var pop = bootstrap.Popover.getInstance(btn);
+                    if (pop) pop.hide();
+                });
+            }
+        });
+
+        var selProducts  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            products.Where(x => selProductIds.Contains(int.Parse(x.Value)))
+                    .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selProcesses = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            processes.Where(x => selProcessIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selAssets    = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            assets.Where(x => selAssetIds.Contains(int.Parse(x.Value)))
+                  .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selMaterials = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            materials.Where(x => selMaterialIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selSuppliers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            suppliers.Where(x => selSupplierIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+
+        setupPicker('productDropdown',  'productTags',  'productHidden',  'selectedProducts',  selProducts);
+        setupPicker('processDropdown',  'processTags',  'processHidden',  'selectedProcesses', selProcesses);
+        setupPicker('assetDropdown',    'assetTags',    'assetHidden',    'selectedAssets',    selAssets);
+        setupPicker('materialDropdown', 'materialTags', 'materialHidden', 'selectedMaterials', selMaterials);
+        setupPicker('supplierDropdown', 'supplierTags', 'supplierHidden', 'selectedSuppliers', selSuppliers);
+    });
+    </script>
+}

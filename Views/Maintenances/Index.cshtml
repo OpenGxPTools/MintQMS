@@ -1,0 +1,116 @@
+@model IEnumerable<OpenQMS.Models.Maintenance>
+
+@{
+    ViewData["Title"] = "Maintenances";
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        var table = $('#maintenancesTable').DataTable({ stateSave: true,
+            initComplete: function () {
+                $('.status-filter').on('click', function () {
+                    $('.status-filter').removeClass('active');
+                    $(this).addClass('active');
+                    var val = $(this).data('status');
+                    table.column(5).search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+                $('.status-filter[data-status=""]').addClass('active');
+            },
+            "columns": [
+                null,
+                null,
+                null,
+                { "visible": false },
+                null,
+                null,
+                null
+            ],
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[0, 'asc']],
+            displayLength: 10,
+            buttons: [
+                'colvis',
+                {
+                    extend: 'pdf',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] }
+                },
+                {
+                    extend: 'excel',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] }
+                }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Maintenances</h4>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Schedule Maintenance</a>
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Scheduled">Scheduled</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="In Progress">In Progress</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Completed">Completed</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Reviewed">Reviewed</button>
+    <button class="btn btn-outline-danger btn-sm status-filter" data-status="Overdue">Overdue</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Suspended">Suspended</button>
+</div>
+
+<table id="maintenancesTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Asset</th>
+            <th>Type</th>
+            <th>Scheduled Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaintenanceId</td>
+                <td>@item.Title</td>
+                <td>@(item.Asset?.Name ?? "-")</td>
+                <td>@item.Type</td>
+                <td>@item.ScheduledDate.ToShortDateString()</td>
+                <td>@EnumHelper.Display(item.Status)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Reviewed
+                      && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Approved
+                      && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Overdue
+                      && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Suspended)
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if ((User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole))
+                         && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.InProgress
+                         && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Completed
+                         && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Reviewed
+                         && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Approved)
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

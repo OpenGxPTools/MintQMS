@@ -1,0 +1,209 @@
+@model OpenQMS.Models.Supplier
+
+@{
+    ViewData["Title"] = "Create Supplier";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">New Supplier</h4>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Identity</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="LegalName" class="form-label"></label>
+                    <input asp-for="LegalName" class="form-control" required />
+                    <span asp-validation-for="LegalName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="TradingName" class="form-label"></label>
+                    <input asp-for="TradingName" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="LegalId" class="form-label"></label>
+                    <input asp-for="LegalId" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Website" class="form-label"></label>
+                    <input asp-for="Website" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Address</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Street" class="form-label"></label>
+                    <input asp-for="Street" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="State" class="form-label"></label>
+                    <input asp-for="State" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="PostCode" class="form-label"></label>
+                    <input asp-for="PostCode" class="form-control" />
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="Country" class="form-label"></label>
+                    <input asp-for="Country" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Primary Contact</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="ContactName" class="form-label"></label>
+                    <input asp-for="ContactName" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContactEmail" class="form-label"></label>
+                    <input asp-for="ContactEmail" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContactPhone" class="form-label"></label>
+                    <input asp-for="ContactPhone" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Classification</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="SupplierType" class="form-label"></label>
+                    <select asp-for="SupplierType" id="supplierTypeSelect" class="form-select"
+                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.SupplierType>()"></select>
+                </div>
+                <div id="productsGroup" style="display:none;" class="col-12">
+                    <label class="form-label">Products Supplied</label>
+                    <div id="productTags" class="mb-2" style="min-height:32px;"></div>
+                    <select id="productDropdown" class="form-select">
+                        <option value="">-- Select a Product to Add --</option>
+                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Products)
+                        {
+                            <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                        }
+                    </select>
+                    <div id="productHidden"></div>
+                </div>
+                <div id="materialsGroup" style="display:none;" class="col-12">
+                    <label class="form-label">Materials Supplied</label>
+                    <div id="materialTags" class="mb-2" style="min-height:32px;"></div>
+                    <select id="materialDropdown" class="form-select">
+                        <option value="">-- Select a Material to Add --</option>
+                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Materials)
+                        {
+                            <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                        }
+                    </select>
+                    <div id="materialHidden"></div>
+                </div>
+                <div id="servicesGroup" style="display:none;" class="col-12">
+                    <label class="form-label">Services Provided</label>
+                    <div id="serviceTags" class="mb-2" style="min-height:32px;"></div>
+                    <select id="serviceDropdown" class="form-select">
+                        <option value="">-- Select a Service to Add --</option>
+                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Services)
+                        {
+                            <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                        }
+                    </select>
+                    <div id="serviceHidden"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        // Show/hide the correct group based on supplier type
+        function updateMultiSelect() {
+            var type = document.getElementById('supplierTypeSelect').value;
+            document.getElementById('productsGroup').style.display = (type === 'Product' || type === '0') ? 'block' : 'none';
+            document.getElementById('materialsGroup').style.display = (type === 'Material' || type === '1') ? 'block' : 'none';
+            document.getElementById('servicesGroup').style.display = (type === 'Service' || type === '2') ? 'block' : 'none';
+        }
+        document.getElementById('supplierTypeSelect').addEventListener('change', updateMultiSelect);
+        updateMultiSelect();
+
+        // Tag picker logic
+        function setupPicker(dropdownId, tagsId, hiddenId, inputName) {
+            var selected = {}; // id -> text
+
+            function renderTags() {
+                var tagsDiv = document.getElementById(tagsId);
+                var hiddenDiv = document.getElementById(hiddenId);
+                tagsDiv.innerHTML = '';
+                hiddenDiv.innerHTML = '';
+                Object.keys(selected).forEach(function(id) {
+                    var text = selected[id];
+                    // Chip
+                    var chip = document.createElement('span');
+                    chip.style.cssText = 'display:inline-block;background:#0d6efd;color:white;padding:3px 8px;border-radius:12px;margin:2px;font-size:13px;cursor:pointer;';
+                    chip.innerHTML = text + ' &times;';
+                    chip.title = 'Click to remove';
+                    chip.addEventListener('click', function() {
+                        delete selected[id];
+                        // Re-enable option in dropdown
+                        var opt = document.querySelector('#' + dropdownId + ' option[value="' + id + '"]');
+                        if (opt) opt.disabled = false;
+                        renderTags();
+                    });
+                    tagsDiv.appendChild(chip);
+                    // Hidden input
+                    var hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = inputName;
+                    hidden.value = id;
+                    hiddenDiv.appendChild(hidden);
+                });
+            }
+
+            document.getElementById(dropdownId).addEventListener('change', function() {
+                var dd = document.getElementById(dropdownId);
+                var id = dd.value;
+                var text = dd.options[dd.selectedIndex].dataset.text;
+                if (id && !selected[id]) {
+                    selected[id] = text;
+                    dd.options[dd.selectedIndex].disabled = true; // hide from dropdown
+                    renderTags();
+                }
+                dd.value = ''; // reset dropdown
+            });
+        }
+
+        setupPicker('productDropdown', 'productTags', 'productHidden', 'selectedProducts');
+        setupPicker('materialDropdown', 'materialTags', 'materialHidden', 'selectedMaterials');
+        setupPicker('serviceDropdown', 'serviceTags', 'serviceHidden', 'selectedServices');
+    </script>
+}

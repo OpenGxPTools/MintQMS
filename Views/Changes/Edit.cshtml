@@ -1,0 +1,518 @@
+@model OpenQMS.Models.Change
+@using OpenQMS.Authorization
+
+@{
+    ViewData["Title"] = $"Edit — {Model.ChangeId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var products  = (List<SelectListItem>)ViewData["Products"];
+    var processes = (List<SelectListItem>)ViewData["Processes"];
+    var assets    = (List<SelectListItem>)ViewData["Assets"];
+    var materials = (List<SelectListItem>)ViewData["Materials"];
+    var suppliers = (List<SelectListItem>)ViewData["Suppliers"];
+    var capas     = (List<SelectListItem>)ViewData["Capas"];
+
+    var selProductIds  = (List<int>)(ViewBag.SelectedProductIds  ?? new List<int>());
+    var selProcessIds  = (List<int>)(ViewBag.SelectedProcessIds  ?? new List<int>());
+    var selAssetIds    = (List<int>)(ViewBag.SelectedAssetIds    ?? new List<int>());
+    var selMaterialIds = (List<int>)(ViewBag.SelectedMaterialIds ?? new List<int>());
+    var selSupplierIds = (List<int>)(ViewBag.SelectedSupplierIds ?? new List<int>());
+    var selCapaIds     = (List<int>)(ViewBag.SelectedCapaIds     ?? new List<int>());
+
+    var s                = Model.Status;
+    var isProposal       = s == Change.ChangeStatus.Proposal;
+    var isAssessment     = s == Change.ChangeStatus.Assessment;
+    var isImplementation = s == Change.ChangeStatus.Implementation;
+
+    var proposalEditable = isProposal || isAssessment;
+
+    var badgeClass = s switch
+    {
+        Change.ChangeStatus.Proposal          => "bg-secondary",
+        Change.ChangeStatus.Assessment        => "bg-info text-dark",
+        Change.ChangeStatus.PendingAssessment => "bg-primary",
+        Change.ChangeStatus.Accepted          => "bg-primary",
+        Change.ChangeStatus.Implementation    => "bg-warning text-dark",
+        Change.ChangeStatus.PendingApproval   => "bg-warning text-dark",
+        Change.ChangeStatus.Approved          => "bg-success",
+        _                                     => "bg-secondary"
+    };
+
+    var statusLabel = s switch
+    {
+        Change.ChangeStatus.PendingAssessment => "Pending Acceptance",
+        Change.ChangeStatus.PendingApproval   => "Pending Approval",
+        _                                     => s.ToString()
+    };
+
+    // Build display strings for locked linked records
+    var allProducts  = Model.LinkedProducts?.Select(x => x.Product?.Name).Where(n => n != null).ToList()
+                    ?? (Model.Product  != null ? new List<string?> { Model.Product.Name  } : new List<string?>());
+    var allProcesses = Model.LinkedProcesses?.Select(x => x.Process?.Name).Where(n => n != null).ToList()
+                    ?? new List<string?>();
+    var allAssets    = Model.LinkedAssets?.Select(x => x.Asset?.Name).Where(n => n != null).ToList()
+                    ?? new List<string?>();
+    var allMaterials = Model.LinkedMaterials?.Select(x => x.Material?.Name).Where(n => n != null).ToList()
+                    ?? new List<string?>();
+    var allSuppliers = Model.LinkedSuppliers?.Select(x => x.Supplier?.LegalName).Where(n => n != null).ToList()
+                    ?? (Model.Supplier != null ? new List<string?> { Model.Supplier.LegalName } : new List<string?>());
+    var allCapas     = Model.LinkedCapas?.Select(x => x.Capa != null ? $"{x.Capa.CapaId} — {x.Capa.Title}" : null).Where(n => n != null).ToList()
+                    ?? (Model.Capa != null ? new List<string?> { $"{Model.Capa.CapaId} — {Model.Capa.Title}" } : new List<string?>());
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Edit Change — <span class="fw-bold">@Model.ChangeId</span></h4>
+        <small class="text-muted">@Model.Title</small>
+    </div>
+    <span class="badge @badgeClass fs-6">@statusLabel</span>
+</div>
+<hr />
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- ── Section 1: Proposal Details ───────────────────────────── -->
+            <div class="card mb-4">
+                <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                    Proposal Details
+                    @if (!proposalEditable)
+                    {
+                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                    }
+                </div>
+                <div class="card-body">
+                    @if (!proposalEditable)
+                    {
+                        <dl class="row mb-0">
+                            <dt class="col-sm-3">Title</dt>
+                            <dd class="col-sm-9">@Model.Title</dd>
+
+                            <dt class="col-sm-3">Products</dt>
+                            <dd class="col-sm-9">@(allProducts.Any() ? string.Join(", ", allProducts) : "-")</dd>
+
+                            <dt class="col-sm-3">Processes</dt>
+                            <dd class="col-sm-9">@(allProcesses.Any() ? string.Join(", ", allProcesses) : "-")</dd>
+
+                            <dt class="col-sm-3">Assets</dt>
+                            <dd class="col-sm-9">@(allAssets.Any() ? string.Join(", ", allAssets) : "-")</dd>
+
+                            <dt class="col-sm-3">Materials</dt>
+                            <dd class="col-sm-9">@(allMaterials.Any() ? string.Join(", ", allMaterials) : "-")</dd>
+
+                            <dt class="col-sm-3">Suppliers</dt>
+                            <dd class="col-sm-9">@(allSuppliers.Any() ? string.Join(", ", allSuppliers) : "-")</dd>
+
+                            <dt class="col-sm-3">Linked CAPAs</dt>
+                            <dd class="col-sm-9">@(allCapas.Any() ? string.Join(", ", allCapas) : "-")</dd>
+
+                            <dt class="col-sm-3">Target Date</dt>
+                            <dd class="col-sm-9">@(Model.TargetImplementationDate.HasValue ? Model.TargetImplementationDate.Value.ToString("dd MMM yyyy") : "-")</dd>
+
+                            <dt class="col-sm-3">Proposal</dt>
+                            <dd class="col-sm-9">@(Model.Proposal ?? "-")</dd>
+                        </dl>
+                    }
+                    else
+                    {
+                        <fieldset>
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <label class="form-label">Title <span class="text-danger">*</span></label>
+                                    <input name="Title" value="@Model.Title" class="form-control" required />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Target Implementation Date</label>
+                                    <input name="TargetImplementationDate" type="date"
+                                           value="@(Model.TargetImplementationDate.HasValue ? Model.TargetImplementationDate.Value.ToString("yyyy-MM-dd") : "")"
+                                           class="form-control" />
+                                </div>
+
+                                <!-- Products -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Products</label>
+                                    <select id="productDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add Product --</option>
+                                        @foreach (var item in products)
+                                        {
+                                            <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                        }
+                                    </select>
+                                    <div id="productTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="productHidden" class="d-none"></div>
+                                </div>
+
+                                <!-- Processes -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Processes</label>
+                                    <select id="processDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add Process --</option>
+                                        @foreach (var item in processes)
+                                        {
+                                            <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                        }
+                                    </select>
+                                    <div id="processTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="processHidden" class="d-none"></div>
+                                </div>
+
+                                <!-- Assets -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Assets</label>
+                                    <select id="assetDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add Asset --</option>
+                                        @foreach (var item in assets)
+                                        {
+                                            <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                        }
+                                    </select>
+                                    <div id="assetTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="assetHidden" class="d-none"></div>
+                                </div>
+
+                                <!-- Materials -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Materials</label>
+                                    <select id="materialDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add Material --</option>
+                                        @foreach (var item in materials)
+                                        {
+                                            <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                        }
+                                    </select>
+                                    <div id="materialTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="materialHidden" class="d-none"></div>
+                                </div>
+
+                                <!-- Suppliers -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Suppliers</label>
+                                    <select id="supplierDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add Supplier --</option>
+                                        @foreach (var item in suppliers)
+                                        {
+                                            <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                        }
+                                    </select>
+                                    <div id="supplierTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="supplierHidden" class="d-none"></div>
+                                </div>
+
+                                <!-- CAPAs -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Linked CAPAs</label>
+                                    <select id="capaDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add CAPA --</option>
+                                        @foreach (var item in capas)
+                                        {
+                                            <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                        }
+                                    </select>
+                                    <div id="capaTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="capaHidden" class="d-none"></div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        Proposal <span class="text-danger">*</span>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="proposal"
+                                                aria-label="Proposal guidance">?</button>
+                                    </label>
+                                    <textarea name="Proposal" class="form-control" rows="5" required>@Model.Proposal</textarea>
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
+                </div>
+            </div>
+
+            <!-- ── Section 2: Assessment ──────────────────────────────────── -->
+            @if (!isProposal)
+            {
+                <div class="card mb-4">
+                    <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                        Assessment
+                        @if (isAssessment)
+                        {
+                            <span class="badge bg-info text-dark">In Progress</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (isAssessment)
+                        {
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">
+                                        Risk Classification
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="classification"
+                                                aria-label="Risk classification guidance">?</button>
+                                    </label>
+                                    <select asp-for="RiskClassification" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.ChangeRiskClassification>()">
+                                        <option value="">-- Select --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label">
+                                        Change Type
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="changetype"
+                                                aria-label="Change type guidance">?</button>
+                                    </label>
+                                    <select asp-for="ChangeType" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.ChangeTypeCategory>()">
+                                        <option value="">-- Select --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">
+                                        Nature
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="nature"
+                                                aria-label="Change nature guidance">?</button>
+                                    </label>
+                                    <select asp-for="Nature" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.ChangeNature>()">
+                                        <option value="">-- Select --</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        Assessment
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="assessment"
+                                                aria-label="Assessment guidance">?</button>
+                                    </label>
+                                    <textarea name="Assessment" class="form-control" rows="5">@Model.Assessment</textarea>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="DetailedActionPlanRequired"
+                                               value="true" id="detailedActionPlanRequired"
+                                               @(Model.DetailedActionPlanRequired ? "checked" : "") />
+                                        <label class="form-check-label" for="detailedActionPlanRequired">
+                                            Detailed Action Plan Required
+                                            <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="actionplan"
+                                                    aria-label="Action plan guidance">?</button>
+                                        </label>
+                                    </div>
+                                    <div class="form-text">
+                                        Tick to track structured pre-implementation tasks on a dedicated <strong>Action Plan</strong> tab.
+                                        Leave unticked to document the plan in the Assessment field above (for a simple change).
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <dl class="row mb-0">
+                                <dt class="col-sm-3">Risk Classification</dt>
+                                <dd class="col-sm-9">@(Model.RiskClassification.HasValue ? EnumHelper.Display(Model.RiskClassification.Value) : "-")</dd>
+                                <dt class="col-sm-3">Change Type</dt>
+                                <dd class="col-sm-9">@(Model.ChangeType.HasValue ? EnumHelper.Display(Model.ChangeType.Value) : "-")</dd>
+                                <dt class="col-sm-3">Nature</dt>
+                                <dd class="col-sm-9">@(Model.Nature.HasValue ? EnumHelper.Display(Model.Nature.Value) : "-")</dd>
+                                <dt class="col-sm-3">Assessment</dt>
+                                <dd class="col-sm-9">@(Model.Assessment ?? "-")</dd>
+                                <dt class="col-sm-3">Detailed Action Plan</dt>
+                                <dd class="col-sm-9">@(Model.DetailedActionPlanRequired ? "Required" : "Not required")</dd>
+                            </dl>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- ── Section 3: Implementation ─────────────────────────────── -->
+            @if (isImplementation)
+            {
+                <div class="card mb-4">
+                    <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                        Implementation
+                        <span class="badge bg-warning text-dark">Action Required</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">
+                                    Implementation
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="implementation"
+                                            aria-label="Implementation guidance">?</button>
+                                </label>
+                                <textarea name="Implementation" class="form-control" rows="5">@Model.Implementation</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">View Details</a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+            </div>
+        </form>
+
+<!-- Popover help content (hidden, read by JS) -->
+<div class="d-none">
+    <div id="help-proposal">
+        <p class="mb-1"><strong>Proposal must include:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>A clear description of what is changing and why</li>
+            <li>The expected benefit (quality, regulatory, efficiency)</li>
+            <li>Potential risks or impacts on product quality, validated processes, or GMP compliance</li>
+            <li>Whether regulatory notification or approval is required</li>
+        </ul>
+    </div>
+    <div id="help-classification">
+        <p class="mb-1"><strong>Risk classification</strong> sets the depth of assessment and the action plan:</p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Minor</strong> — no impact on approved requirements, product quality or validated state (e.g. like-for-like, editorial)</li>
+            <li><strong>Major</strong> — affects a specification, process, validated state, supplier or requirement, within the existing registration</li>
+            <li><strong>Critical</strong> — may affect safety/efficacy, a registration or condition, or GMP compliance (e.g. new API source, site change)</li>
+        </ul>
+    </div>
+    <div id="help-changetype">
+        <p class="mb-1"><strong>Change type</strong> identifies the primary area affected.</p>
+        <p class="mb-0">It drives the <em>suggested actions</em> you can load onto the Action Plan tab (the SOP's per-type candidate actions). Pick the closest fit; add any further actions manually.</p>
+    </div>
+    <div id="help-nature">
+        <p class="mb-1"><strong>Nature</strong> of the change:</p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Permanent</strong> — a lasting change</li>
+            <li><strong>Temporary</strong> — in force for a defined period or number of batches, with a defined expiry/reversion</li>
+            <li><strong>Emergency</strong> — implemented urgently to prevent a greater risk; formalised here without delay</li>
+        </ul>
+    </div>
+    <div id="help-assessment">
+        <p class="mb-1"><strong>Assessment must address:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>Impact on product quality, safety, and efficacy</li>
+            <li>Impact on validated processes, equipment, or analytical methods</li>
+            <li>Regulatory impact — whether a variation, notification or condition applies</li>
+            <li>Impact on materials, suppliers, agreements, documents and training</li>
+            <li>The required pre-implementation actions (capture them in the Action Plan tab if a detailed plan is needed)</li>
+        </ul>
+    </div>
+    <div id="help-actionplan">
+        <p class="mb-1"><strong>Detailed Action Plan Required</strong></p>
+        <p class="mb-0">Tick this when a change needs several tracked pre-implementation tasks. An <strong>Action Plan</strong> tab appears where you list each task (owner, target/completed dates, status, evidence) and can load the suggested actions for the selected change type. Every applicable action must be completed before the change can be submitted for approval. Leave unticked for a simple change and describe the plan in the Assessment field.</p>
+    </div>
+    <div id="help-implementation">
+        <p class="mb-1"><strong>Implementation must document:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>All actions completed, with reference to evidence (e.g. SOP revised on [date], training completed by [names] on [date])</li>
+            <li>Any deviations from the approved implementation plan</li>
+            <li>Confirmation that all pre-implementation requirements were met</li>
+            <li>Effectiveness check — confirm the change achieved the intended outcome</li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+        var selected = {};
+        preselected = preselected || [];
+
+        function renderTags() {
+            var tagsDiv = document.getElementById(tagsId);
+            var hiddenDiv = document.getElementById(hiddenId);
+            if (!tagsDiv || !hiddenDiv) return;
+            tagsDiv.innerHTML = '';
+            hiddenDiv.innerHTML = '';
+            Object.keys(selected).forEach(function(id) {
+                var text = selected[id];
+                var chip = document.createElement('span');
+                chip.style.cssText = 'display:inline-block;background:#0d6efd;color:white;padding:2px 8px;border-radius:12px;margin:2px;font-size:12px;cursor:pointer;';
+                chip.innerHTML = text + ' &times;';
+                chip.title = 'Click to remove';
+                chip.addEventListener('click', function() {
+                    delete selected[id];
+                    var opt = document.querySelector('#' + dropdownId + ' option[value="' + id + '"]');
+                    if (opt) opt.disabled = false;
+                    renderTags();
+                });
+                tagsDiv.appendChild(chip);
+                var hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = inputName;
+                hidden.value = id;
+                hiddenDiv.appendChild(hidden);
+            });
+        }
+
+        preselected.forEach(function(item) {
+            selected[item.id] = item.text;
+            var opt = document.querySelector('#' + dropdownId + ' option[value="' + item.id + '"]');
+            if (opt) opt.disabled = true;
+        });
+        renderTags();
+
+        var dd = document.getElementById(dropdownId);
+        if (dd) {
+            dd.addEventListener('change', function() {
+                var id = dd.value;
+                var text = dd.options[dd.selectedIndex].dataset.text;
+                if (id && !selected[id]) {
+                    selected[id] = text;
+                    dd.options[dd.selectedIndex].disabled = true;
+                    renderTags();
+                }
+                dd.value = '';
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var selProducts  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            products.Where(x => selProductIds.Contains(int.Parse(x.Value)))
+                    .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selProcesses = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            processes.Where(x => selProcessIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selAssets    = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            assets.Where(x => selAssetIds.Contains(int.Parse(x.Value)))
+                  .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selMaterials = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            materials.Where(x => selMaterialIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selSuppliers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            suppliers.Where(x => selSupplierIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selCapas     = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            capas.Where(x => selCapaIds.Contains(int.Parse(x.Value)))
+                 .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+
+        setupPicker('productDropdown',  'productTags',  'productHidden',  'selectedProducts',  selProducts);
+        setupPicker('processDropdown',  'processTags',  'processHidden',  'selectedProcesses', selProcesses);
+        setupPicker('assetDropdown',    'assetTags',    'assetHidden',    'selectedAssets',    selAssets);
+        setupPicker('materialDropdown', 'materialTags', 'materialHidden', 'selectedMaterials', selMaterials);
+        setupPicker('supplierDropdown', 'supplierTags', 'supplierHidden', 'selectedSuppliers', selSuppliers);
+        setupPicker('capaDropdown',     'capaTags',     'capaHidden',     'selectedCapas',     selCapas);
+
+        document.querySelectorAll('.help-btn').forEach(function (btn) {
+            var contentEl = document.getElementById('help-' + btn.dataset.help);
+            new bootstrap.Popover(btn, {
+                html: true,
+                trigger: 'click',
+                placement: 'right',
+                content: contentEl ? contentEl.innerHTML : '',
+                title: '',
+                container: 'body'
+            });
+        });
+        document.addEventListener('click', function (e) {
+            if (!e.target.classList.contains('help-btn')) {
+                document.querySelectorAll('.help-btn').forEach(function (btn) {
+                    var pop = bootstrap.Popover.getInstance(btn);
+                    if (pop) pop.hide();
+                });
+            }
+        });
+    });
+    </script>
+}

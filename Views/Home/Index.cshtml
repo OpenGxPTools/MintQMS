@@ -1,0 +1,1097 @@
+@*
+This file is part of the OpenQMS.net project (https://github.com/C-realize/OpenQMS).
+Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
+
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://www.c-realize.com/contact.  For AGPL licensing, see below.
+
+AGPL:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+*@
+
+@model OpenQMS.Models.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Home";
+
+    string Badge(string cls) => cls == "warning" ? "bg-warning text-dark" : "bg-" + cls;
+}
+
+@* ── Page header ──────────────────────────────────────────────── *@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Quality Overview</h2>
+    <span class="text-muted small">@SiteTime.Today.ToString("dddd, d MMMM yyyy")</span>
+</div>
+
+@* ══════════════════════════════════════════════════════════════════
+   MY ITEMS  (personalised)
+   ══════════════════════════════════════════════════════════════════ *@
+
+<p class="text-uppercase text-muted fw-semibold small mb-2">My Items</p>
+<div class="row g-3 mb-3">
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #fd7e14 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">My Open CAPAs</p>
+                <h2 class="fw-bold mb-0">@Model.MyCAPAs</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #fd7e14 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">My Open Deviations</p>
+                <h2 class="fw-bold mb-0">@Model.MyDeviations</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #6c757d !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">My Documents</p>
+                <h2 class="fw-bold mb-0">@Model.MyDocuments</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #198754 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">My Trainings</p>
+                <h2 class="fw-bold mb-0">@Model.MyTrainings</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0d6efd !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">My Open Changes</p>
+                <h2 class="fw-bold mb-0">@Model.MyChanges</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #dc3545 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">My Open Risks</p>
+                <h2 class="fw-bold mb-0">@Model.MyRisks</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@if (Model.MyCAPAs > 0 || Model.MyDeviations > 0 || Model.MyDocuments > 0 || Model.MyTrainings > 0 || Model.MyChanges > 0 || Model.MyRisks > 0)
+{
+    <div class="row g-4 mb-5">
+
+        @if (Model.MyRecentCAPAs.Any())
+        {
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">My Open CAPAs</span>
+                        <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.MyRecentCAPAs)
+                                {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.MyRecentDeviations.Any())
+        {
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">My Open Deviations</span>
+                        <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.MyRecentDeviations)
+                                {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.MyRecentDocuments.Any())
+        {
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">My Documents for Review</span>
+                        <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Authored</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.MyRecentDocuments)
+                                {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.MyRecentTrainings.Any())
+        {
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">My Scheduled Trainings</span>
+                        <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Name</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.MyRecentTrainings)
+                                {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Trainings" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.MyRecentChanges.Any())
+        {
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">My Open Changes</span>
+                        <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Proposed</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.MyRecentChanges)
+                                {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Changes" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.MyRecentRisks.Any())
+        {
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">My Open Risks</span>
+                        <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Identified</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.MyRecentRisks)
+                                {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+}
+else
+{
+    <p class="text-muted small mb-5">Nothing currently assigned to you.</p>
+}
+
+@* ══════════════════════════════════════════════════════════════════
+   PENDING MY ACTION  (Quality Manager / Regulatory Manager)
+   ══════════════════════════════════════════════════════════════════ *@
+
+@if (Model.IsQualityManager || Model.IsRegulatoryManager)
+{
+    <p class="text-uppercase text-muted fw-semibold small mb-3">Pending My Action</p>
+    <div class="row g-4 mb-5">
+
+        @* ── Quality Manager tables ── *@
+        @if (Model.IsQualityManager)
+        {
+            @* Pending CAPAs *@
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">CAPAs Pending Action</span>
+                        <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    @if (!Model.PendingCAPAs.Any()) { <div class="card-body text-muted small">No CAPAs pending your action.</div> }
+                    else {
+                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Date</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.PendingCAPAs) {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table></div>
+                    }
+                </div>
+            </div>
+
+            @* Pending Deviations *@
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Deviations Pending Action</span>
+                        <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    @if (!Model.PendingDeviations.Any()) { <div class="card-body text-muted small">No deviations pending your action.</div> }
+                    else {
+                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Date</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.PendingDeviations) {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table></div>
+                    }
+                </div>
+            </div>
+
+            @* Pending Changes *@
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Changes Pending Action</span>
+                        <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    @if (!Model.PendingChanges.Any()) { <div class="card-body text-muted small">No changes pending your action.</div> }
+                    else {
+                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Date</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.PendingChanges) {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Changes" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table></div>
+                    }
+                </div>
+            </div>
+
+            @* Pending Audits *@
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Audits Pending Action</span>
+                        <a asp-controller="Audits" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    @if (!Model.PendingAudits.Any()) { <div class="card-body text-muted small">No audits pending action.</div> }
+                    else {
+                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Scheduled</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.PendingAudits) {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Audits" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table></div>
+                    }
+                </div>
+            </div>
+
+            @* Pending Documents *@
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Documents Pending Approval</span>
+                        <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    @if (!Model.PendingDocuments.Any()) { <div class="card-body text-muted small">No documents pending approval.</div> }
+                    else {
+                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Authored</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.PendingDocuments) {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table></div>
+                    }
+                </div>
+            </div>
+
+            @* Pending Complaints *@
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Complaints Pending Action</span>
+                        <a asp-controller="Complaints" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    @if (!Model.PendingComplaints.Any()) { <div class="card-body text-muted small">No complaints pending your action.</div> }
+                    else {
+                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Received</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.PendingComplaints) {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Complaints" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table></div>
+                    }
+                </div>
+            </div>
+
+            @* Pending Risks *@
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Risks Pending Action</span>
+                        <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    @if (!Model.PendingRisks.Any()) { <div class="card-body text-muted small">No risks pending your action.</div> }
+                    else {
+                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Identified</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.PendingRisks) {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table></div>
+                    }
+                </div>
+            </div>
+        }
+
+        @* ── Regulatory Manager tables ── *@
+        @if (Model.IsRegulatoryManager)
+        {
+            @* Pending Adverse Events *@
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Adverse Events Pending Approval</span>
+                        <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    @if (!Model.PendingAdverseEvents.Any()) { <div class="card-body text-muted small">No adverse events pending approval.</div> }
+                    else {
+                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">AE#</th><th>MedDRA Term</th><th>Action Required</th><th class="pe-3">Deadline</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.PendingAdverseEvents) {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table></div>
+                    }
+                </div>
+            </div>
+
+            @* Pending Signal Reviews *@
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Confirmed Signals — Action Required</span>
+                        <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    @if (!Model.PendingSignalReviews.Any()) { <div class="card-body text-muted small">No confirmed signals requiring action.</div> }
+                    else {
+                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">SIG#</th><th>MedDRA Term</th><th>Action Required</th><th class="pe-3">Detected</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.PendingSignalReviews) {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="PVSignalReview" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table></div>
+                    }
+                </div>
+            </div>
+
+            @* Pending LC Renewals *@
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Licences &amp; Certs — Renewal Due</span>
+                        <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                    </div>
+                    @if (!Model.PendingLCRenewals.Any()) { <div class="card-body text-muted small">No licences or certifications with renewal due.</div> }
+                    else {
+                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th class="ps-3">LC#</th><th>Holder</th><th>Action Required</th><th class="pe-3">Expiry</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.PendingLCRenewals) {
+                                    <tr>
+                                        <td class="ps-3"><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table></div>
+                    }
+                </div>
+            </div>
+        }
+
+    </div>
+}
+
+@* ══════════════════════════════════════════════════════════════════
+   QUALITY EVENTS
+   ══════════════════════════════════════════════════════════════════ *@
+
+<p class="text-uppercase text-muted fw-semibold small mb-2">Quality Events</p>
+<div class="row g-3 mb-4">
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #fd7e14 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Open CAPAs</p>
+                <h2 class="fw-bold mb-0">@Model.OpenCAPAs</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #fd7e14 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Deviations</p>
+                <h2 class="fw-bold mb-0">@Model.OpenDeviations</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #dc3545 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Complaints</p>
+                <h2 class="fw-bold mb-0">@Model.OpenComplaints</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Complaints" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0d6efd !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Changes</p>
+                <h2 class="fw-bold mb-0">@Model.OpenChanges</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@* ══════════════════════════════════════════════════════════════════
+   QUALITY SYSTEMS
+   ══════════════════════════════════════════════════════════════════ *@
+
+<p class="text-uppercase text-muted fw-semibold small mb-2">Quality Systems</p>
+<div class="row g-3 mb-4">
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0dcaf0 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Active Audits</p>
+                <h2 class="fw-bold mb-0">@Model.ActiveAudits</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Audits" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #dc3545 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Risks</p>
+                <h2 class="fw-bold mb-0">@Model.OpenRisks</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #198754 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Scheduled Trainings</p>
+                <h2 class="fw-bold mb-0">@Model.ScheduledTrainings</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #6c757d !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Documents in Progress</p>
+                <h2 class="fw-bold mb-0">@Model.DocumentsForReview</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid @(Model.DocsReviewOverdue > 0 ? "#dc3545" : "#6c757d") !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Docs Overdue for Review</p>
+                <h2 class="fw-bold mb-0 @(Model.DocsReviewOverdue > 0 ? "text-danger" : "")">@Model.DocsReviewOverdue</h2>
+                @if (Model.DocsReviewDueSoon > 0)
+                {
+                    <p class="text-warning small mb-0 mt-1">@Model.DocsReviewDueSoon due within 30 days</p>
+                }
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="AppDocuments" asp-action="Dashboard" class="small text-muted text-decoration-none">View document dashboard &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@* ══════════════════════════════════════════════════════════════════
+   SUPPORTING DOCUMENTS
+   ══════════════════════════════════════════════════════════════════ *@
+
+<p class="text-uppercase text-muted fw-semibold small mb-2">Record Attachments</p>
+<div class="row g-3 mb-5">
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid @(Model.SupportingDocsExpired > 0 ? "#dc3545" : "#6c757d") !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Record Attachments Expired</p>
+                <h2 class="fw-bold mb-0 @(Model.SupportingDocsExpired > 0 ? "text-danger" : "")">@Model.SupportingDocsExpired</h2>
+                @if (Model.SupportingDocsExpiringSoon > 0)
+                {
+                    <p class="text-warning small mb-0 mt-1">@Model.SupportingDocsExpiringSoon expiring soon</p>
+                }
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Reports" asp-action="SupportingDocumentExpiry" class="small text-muted text-decoration-none">View expiry register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@* ══════════════════════════════════════════════════════════════════
+   ACTIVE ITEMS  (global)
+   ══════════════════════════════════════════════════════════════════ *@
+
+<p class="text-uppercase text-muted fw-semibold small mb-3">Active Items</p>
+<div class="row g-4 mb-5">
+
+    @* Open CAPAs *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Open CAPAs</span>
+                <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.RecentCAPAs.Any()) { <div class="card-body text-muted small">No open CAPAs.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentCAPAs) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+    @* Open Deviations *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Open Deviations</span>
+                <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.RecentDeviations.Any()) { <div class="card-body text-muted small">No open deviations.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentDeviations) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+    @* Open Complaints *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Open Complaints</span>
+                <a asp-controller="Complaints" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.RecentComplaints.Any()) { <div class="card-body text-muted small">No open complaints.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Received</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentComplaints) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="Complaints" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+    @* Open Risks *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Open Risks</span>
+                <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.RecentRisks.Any()) { <div class="card-body text-muted small">No open risks.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Identified</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentRisks) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+    @* Active Audits *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Active Audits</span>
+                <a asp-controller="Audits" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.RecentAudits.Any()) { <div class="card-body text-muted small">No active audits.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Scheduled</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentAudits) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="Audits" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+    @* Documents for Review *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Documents for Review</span>
+                <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.RecentDocuments.Any()) { <div class="card-body text-muted small">No documents pending review.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Authored</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentDocuments) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+    @* Scheduled Trainings *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Scheduled Trainings</span>
+                <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.RecentTrainings.Any()) { <div class="card-body text-muted small">No scheduled trainings.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Name</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentTrainings) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="Trainings" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+</div>
+
+<hr class="my-5" />
+
+@* ══════════════════════════════════════════════════════════════════
+   REGULATORY OVERVIEW
+   ══════════════════════════════════════════════════════════════════ *@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Regulatory Overview</h2>
+    <span class="text-muted small">@SiteTime.Today.ToString("dddd, d MMMM yyyy")</span>
+</div>
+
+<p class="text-uppercase text-muted fw-semibold small mb-2">Key Metrics</p>
+<div class="row g-3 mb-5">
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #dc3545 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Adverse Events</p>
+                <h2 class="fw-bold mb-0">@Model.OpenAdverseEvents</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #ffc107 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">LC Renewals Due</p>
+                <h2 class="fw-bold mb-0">@Model.LCRenewalsDue</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0d6efd !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Active RI Applications</p>
+                <h2 class="fw-bold mb-0">@Model.ActiveRIApplications</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="RegulatoryIntelligence" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #6f42c1 !important;">
+            <div class="card-body pb-2">
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Signal Reviews</p>
+                <h2 class="fw-bold mb-0">@Model.OpenSignalReviews</h2>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@* ══════════════════════════════════════════════════════════════════
+   REGULATORY ITEMS
+   ══════════════════════════════════════════════════════════════════ *@
+
+<p class="text-uppercase text-muted fw-semibold small mb-3">Regulatory Items</p>
+<div class="row g-4">
+
+    @* Open Adverse Events *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Open Adverse Events</span>
+                <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.RecentAdverseEvents.Any()) { <div class="card-body text-muted small">No open adverse events.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">AE#</th><th>MedDRA Term</th><th>Status</th><th class="pe-3">Deadline</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentAdverseEvents) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+    @* LC Expiring Soon *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Licences &amp; Certs Expiring (90 days)</span>
+                <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.LCExpiringSoon.Any()) { <div class="card-body text-muted small">No licences or certifications expiring within 90 days.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">LC#</th><th>Holder</th><th>Status</th><th class="pe-3">Expiry</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.LCExpiringSoon) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+    @* Active RI Applications *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Active RI Applications</span>
+                <a asp-controller="RegulatoryIntelligence" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.RecentRIApplications.Any()) { <div class="card-body text-muted small">No active regulatory applications.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">RI#</th><th>Product</th><th>Status</th><th class="pe-3">Target</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentRIApplications) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="RegulatoryIntelligence" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+    @* Open Signal Reviews *@
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Open Signal Reviews</span>
+                <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+            </div>
+            @if (!Model.RecentSignalReviews.Any()) { <div class="card-body text-muted small">No open signal reviews.</div> }
+            else {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>MedDRA Term</th><th>Status</th><th class="pe-3">Detected</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.RecentSignalReviews) {
+                            <tr>
+                                <td class="ps-3"><a asp-controller="PVSignalReview" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:180px;">@item.Title</td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+    </div>
+
+</div>

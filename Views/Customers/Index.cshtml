@@ -1,0 +1,144 @@
+@model IEnumerable<OpenQMS.Models.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        var table = $('#customersTable').DataTable({ stateSave: true,
+            initComplete: function () {
+                $('.status-filter').on('click', function () {
+                    $('.status-filter').removeClass('active');
+                    $(this).addClass('active');
+                    var val = $(this).data('status');
+                    table.column(3).search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+                $('.status-filter[data-status=""]').addClass('active');
+            },
+            "columns": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                { "visible": false },
+                { "visible": false },
+                { "visible": false },
+                { "visible": false },
+                { "visible": false },
+                { "visible": false },
+                { "visible": false },
+                { "visible": false },
+                null
+            ],
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[0, 'asc']],
+            displayLength: 10,
+            buttons: [
+                'colvis',
+                {
+                    extend: 'pdf',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }
+                },
+                {
+                    extend: 'excel',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }
+                }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Customers</h4>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Customer</a>
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Draft">Draft</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">Approved</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Obsolete">Obsolete</button>
+</div>
+
+<table id="customersTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Customer ID</th>
+            <th>Legal Name</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Contract Expiry</th>
+            <th>Industry</th>
+            <th>Contact Name</th>
+            <th>Contact Email</th>
+            <th>Version</th>
+            <th>Edited By</th>
+            <th>Edited On</th>
+            <th>Approved By</th>
+            <th>Approved On</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CustomerId</td>
+                <td>@item.LegalName</td>
+                <td>@item.CustomerType</td>
+                <td>@EnumHelper.Display(item.Status)</td>
+                <td>
+                @if (item.ContractExpiryDate.HasValue)
+                {
+                    var days = (item.ContractExpiryDate.Value.Date - SiteTime.Today).Days;
+                    var badge = days < 0    ? "danger"
+                              : days <= 30  ? "warning"
+                              : days <= 90  ? "info"
+                              : "success";
+                    var label = days < 0 ? $"Expired {Math.Abs(days)}d ago"
+                              : days == 0  ? "Expires today"
+                              : $"{item.ContractExpiryDate.Value:dd/MM/yyyy}";
+                    <span class="badge bg-@badge">@label</span>
+                }
+                else
+                {
+                    <span class="text-muted">-</span>
+                }
+                </td>
+                <td>@(item.Industry ?? "-")</td>
+                <td>@(item.ContactName ?? "-")</td>
+                <td>@(item.ContactEmail ?? "-")</td>
+                <td>@item.Version</td>
+                <td>@(item.EditedBy ?? "")</td>
+                <td>@item.EditedOn.ToSite().ToString("dd/MM/yyyy")</td>
+                <td>@(item.ApprovedBy ?? "")</td>
+                <td>@(item.ApprovedOn.HasValue ? item.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy") : "")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (item.IsLocked != true)
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if (item.Status != OpenQMS.Models.Customer.CustomerStatus.Approved && item.Status != OpenQMS.Models.Customer.CustomerStatus.Obsolete)
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

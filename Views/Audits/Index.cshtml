@@ -1,0 +1,149 @@
+@model IEnumerable<OpenQMS.Models.Audit>
+
+@{
+    ViewData["Title"] = "Audits";
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        var table = $('#auditsTable').DataTable({ stateSave: true,
+            initComplete: function () {
+                $('.status-filter').on('click', function () {
+                    $('.status-filter').removeClass('active');
+                    $(this).addClass('active');
+                    var val = $(this).data('status');
+                    table.column(7).search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+                $('.status-filter[data-status=""]').addClass('active');
+            },
+            "columns": [
+                null,
+                null,
+                { "visible": false },
+                { "visible": false },
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[0, 'asc']],
+            displayLength: 10,
+            buttons: [
+                'colvis',
+                {
+                    extend: 'pdf',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 4, 5, 6, 7] }
+                },
+                {
+                    extend: 'excel',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 4, 5, 6, 7] }
+                }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Audits</h4>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Audit</a>
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Scheduled">Scheduled</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="In Progress">In Progress</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Report Draft">Report Draft</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Under Review">Under Review</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Approved">Approved</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Closed">Closed</button>
+</div>
+
+<table id="auditsTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Audit ID</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Lead Auditor</th>
+            <th>Linked To</th>
+            <th>Planned Start</th>
+            <th>Rating</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var iLinked = new List<string>();
+            if (item.LinkedProducts?.Any()  == true) iLinked.AddRange(item.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedProcesses?.Any() == true) iLinked.AddRange(item.LinkedProcesses.Select(x => x.Process?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedAssets?.Any()    == true) iLinked.AddRange(item.LinkedAssets.Select(x => x.Asset?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedMaterials?.Any() == true) iLinked.AddRange(item.LinkedMaterials.Select(x => x.Material?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedSuppliers?.Any() == true) iLinked.AddRange(item.LinkedSuppliers.Select(x => x.Supplier?.LegalName ?? "").Where(n => n != ""));
+            if (!iLinked.Any())
+            {
+                if (item.Product  != null) iLinked.Add(item.Product.Name);
+                if (item.Process  != null) iLinked.Add(item.Process.Name);
+                if (item.Asset    != null) iLinked.Add(item.Asset.Name);
+                if (item.Material != null) iLinked.Add(item.Material.Name);
+                if (item.Supplier != null) iLinked.Add(item.Supplier.LegalName);
+            }
+            var statusBadge = item.Status switch
+            {
+                OpenQMS.Models.Audit.AuditStatus.Scheduled   => "bg-secondary",
+                OpenQMS.Models.Audit.AuditStatus.InProgress  => "bg-info text-dark",
+                OpenQMS.Models.Audit.AuditStatus.ReportDraft => "bg-warning text-dark",
+                OpenQMS.Models.Audit.AuditStatus.UnderReview => "bg-warning text-dark",
+                OpenQMS.Models.Audit.AuditStatus.Approved    => "bg-primary",
+                OpenQMS.Models.Audit.AuditStatus.Closed      => "bg-success",
+                _                                             => "bg-secondary"
+            };
+            var statusLabel = EnumHelper.Display(item.Status);
+            var ratingLabel = item.OverallRating switch
+            {
+                OpenQMS.Models.Audit.AuditRating.NeedsImprovement => "Needs Improvement",
+                null                                               => "-",
+                _                                                  => item.OverallRating.ToString()!
+            };
+            var canEdit = item.Status == OpenQMS.Models.Audit.AuditStatus.Scheduled
+                       || item.Status == OpenQMS.Models.Audit.AuditStatus.InProgress
+                       || item.Status == OpenQMS.Models.Audit.AuditStatus.ReportDraft;
+            <tr>
+                <td>@item.AuditId</td>
+                <td>@item.Title</td>
+                <td>@item.Type</td>
+                <td>@(item.LeadAuditor ?? "-")</td>
+                <td>@string.Join(", ", iLinked)</td>
+                <td>@(item.PlannedStartDate?.ToShortDateString() ?? "-")</td>
+                <td>@ratingLabel</td>
+                <td><span class="badge @statusBadge">@statusLabel</span></td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (canEdit)
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if (User.IsInRole("Administrator") && item.Status == OpenQMS.Models.Audit.AuditStatus.Scheduled)
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

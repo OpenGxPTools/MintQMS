@@ -1,0 +1,236 @@
+@model OpenQMS.Models.Audit
+@{
+    ViewData["Title"] = "New Audit";
+    var products  = ViewData["Products"]  as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var processes = ViewData["Processes"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var assets    = ViewData["Assets"]    as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var materials = ViewData["Materials"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var suppliers = ViewData["Suppliers"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+
+    var selProductIds  = (List<int>?)ViewBag.SelectedProductIds  ?? new List<int>();
+    var selProcessIds  = (List<int>?)ViewBag.SelectedProcessIds  ?? new List<int>();
+    var selAssetIds    = (List<int>?)ViewBag.SelectedAssetIds    ?? new List<int>();
+    var selMaterialIds = (List<int>?)ViewBag.SelectedMaterialIds ?? new List<int>();
+    var selSupplierIds = (List<int>?)ViewBag.SelectedSupplierIds ?? new List<int>();
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">New Audit</h4>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Create">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Basic Information</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Type" class="form-label"></label>
+                            <select asp-for="Type" id="auditTypeSelect" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<OpenQMS.Models.Audit.AuditType>()"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Scope" class="form-label"></label>
+                            <select asp-for="Scope" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<OpenQMS.Models.Audit.AuditScope>()"></select>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Scheduling</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="PlannedStartDate" class="form-label"></label>
+                            <input asp-for="PlannedStartDate" class="form-control" type="date" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PlannedEndDate" class="form-label"></label>
+                            <input asp-for="PlannedEndDate" class="form-control" type="date" />
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="AuditLocation" class="form-label"></label>
+                            <input asp-for="AuditLocation" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Audit Team</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="LeadAuditor" class="form-label"></label>
+                            <input asp-for="LeadAuditor" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="AuditTeam" class="form-label"></label>
+                            <textarea asp-for="AuditTeam" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Auditee" class="form-label"></label>
+                            <input asp-for="Auditee" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="AuditeeContact" class="form-label"></label>
+                            <input asp-for="AuditeeContact" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Links to Master Data</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Products</label>
+                            <select id="productDropdown" class="form-select">
+                                <option value="">-- Add Product --</option>
+                                @foreach (var p in products)
+                                { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                            </select>
+                            <div id="productTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="productHidden" class="d-none"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Processes</label>
+                            <select id="processDropdown" class="form-select">
+                                <option value="">-- Add Process --</option>
+                                @foreach (var p in processes)
+                                { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                            </select>
+                            <div id="processTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="processHidden" class="d-none"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Assets</label>
+                            <select id="assetDropdown" class="form-select">
+                                <option value="">-- Add Asset --</option>
+                                @foreach (var p in assets)
+                                { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                            </select>
+                            <div id="assetTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="assetHidden" class="d-none"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Materials</label>
+                            <select id="materialDropdown" class="form-select">
+                                <option value="">-- Add Material --</option>
+                                @foreach (var p in materials)
+                                { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                            </select>
+                            <div id="materialTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="materialHidden" class="d-none"></div>
+                        </div>
+                        <div class="col-md-6" id="supplierPickerRow" style="display:none;">
+                            <label class="form-label">Suppliers</label>
+                            <select id="supplierDropdown" class="form-select">
+                                <option value="">-- Add Supplier --</option>
+                                @foreach (var p in suppliers)
+                                { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                            </select>
+                            <div id="supplierTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="supplierHidden" class="d-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Audit Plan</div>
+                <div class="card-body">
+                    <label asp-for="AuditPlan" class="form-label"></label>
+                    <textarea asp-for="AuditPlan" class="form-control" rows="4"></textarea>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+            </div>
+        </form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+        var selected = {};
+        preselected.forEach(function (item) { selected[item.id] = item.text; });
+        function render() {
+            var tagsDiv   = document.getElementById(tagsId);
+            var hiddenDiv = document.getElementById(hiddenId);
+            tagsDiv.innerHTML = ''; hiddenDiv.innerHTML = '';
+            Object.keys(selected).forEach(function (id) {
+                var badge = document.createElement('span');
+                badge.className = 'badge bg-primary d-flex align-items-center gap-1';
+                badge.textContent = selected[id];
+                var btn = document.createElement('button');
+                btn.type = 'button'; btn.className = 'btn-close btn-close-white btn-sm ms-1';
+                btn.style.fontSize = '0.6rem';
+                btn.addEventListener('click', function () { delete selected[id]; render(); });
+                badge.appendChild(btn); tagsDiv.appendChild(badge);
+                var input = document.createElement('input');
+                input.type = 'hidden'; input.name = inputName; input.value = id;
+                hiddenDiv.appendChild(input);
+            });
+        }
+        document.getElementById(dropdownId).addEventListener('change', function () {
+            var id = this.value, text = this.options[this.selectedIndex].dataset.text;
+            if (id && !selected[id]) { selected[id] = text; render(); }
+            this.value = '';
+        });
+        render();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var typeSelect    = document.getElementById('auditTypeSelect');
+        var supplierRow   = document.getElementById('supplierPickerRow');
+        function toggleSupplier() {
+            supplierRow.style.display = typeSelect.value === '1' ? '' : 'none';
+        }
+        typeSelect.addEventListener('change', toggleSupplier);
+        toggleSupplier();
+
+        var selProducts  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            products.Where(x => selProductIds.Contains(int.Parse(x.Value)))
+                    .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selProcesses = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            processes.Where(x => selProcessIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selAssets    = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            assets.Where(x => selAssetIds.Contains(int.Parse(x.Value)))
+                  .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selMaterials = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            materials.Where(x => selMaterialIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selSuppliers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            suppliers.Where(x => selSupplierIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+
+        setupPicker('productDropdown',  'productTags',  'productHidden',  'selectedProducts',  selProducts);
+        setupPicker('processDropdown',  'processTags',  'processHidden',  'selectedProcesses', selProcesses);
+        setupPicker('assetDropdown',    'assetTags',    'assetHidden',    'selectedAssets',    selAssets);
+        setupPicker('materialDropdown', 'materialTags', 'materialHidden', 'selectedMaterials', selMaterials);
+        setupPicker('supplierDropdown', 'supplierTags', 'supplierHidden', 'selectedSuppliers', selSuppliers);
+    });
+    </script>
+}

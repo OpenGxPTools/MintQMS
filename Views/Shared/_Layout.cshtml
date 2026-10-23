@@ -1,0 +1,235 @@
+﻿@*
+This file is part of the OpenQMS.net project (https://github.com/C-realize/OpenQMS).
+Copyright (C) 2022-2024  C-realize IT Services SRL (https://www.c-realize.com)
+
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://www.c-realize.com/contact.  For AGPL licensing, see below.
+
+AGPL:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+*@
+@inject OpenQMS.Data.ApplicationDbContext _layoutDb
+@inject Microsoft.Extensions.Configuration.IConfiguration _layoutConfig
+@{ var _layoutSettings = await _layoutDb.SystemSettings.FindAsync(1); }
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MintQMS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @* Icon libraries vendored locally (wwwroot/lib) so the app renders fully in air-gapped
+       GMP deployments. Bootstrap Icons drive the navbar; FontAwesome (fas fa-*) is used by
+       hundreds of icons across the module views. *@
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/OpenQMS.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <partial name="_LoginPartial" />
+    <div class="container-fluid px-4">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <footer class="border-top footer text-muted">
+        <div class="container-fluid px-4">
+            &copy; 2026 MintQMS contributors &middot; Free software (AGPLv3), provided without warranty and not
+            validated for regulated use &middot; <a asp-area="" asp-controller="Home" asp-action="About">About &amp; disclaimer</a>
+            @if (!string.IsNullOrWhiteSpace(_layoutConfig["SourceCodeUrl"]))
+            {
+                <text>&middot; <a href="@_layoutConfig["SourceCodeUrl"]" target="_blank" rel="noopener">Source code</a></text>
+            }
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        window.qmsPageSize      = @(_layoutSettings?.DefaultPageSize ?? 25);
+        window.qmsIdleTimeout   = @(_layoutSettings?.IdleTimeoutMinutes ?? 0);
+    </script>
+
+    <link href="~/lib/DataTables/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/lib/DataTables/Buttons/css/buttons.dataTables.min.css" rel="stylesheet" />
+
+    <script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/DataTables/Buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/lib/DataTables/Buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/DataTables/Buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/DataTables/Buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/lib/DataTables/JSZip/jszip.min.js"></script>
+    <script src="~/lib/DataTables/pdfmake/pdfmake.min.js"></script>
+    <script src="~/lib/DataTables/pdfmake/vfs_fonts.js"></script>
+
+    <script src="~/lib/ChartJs/chart.min.js"></script>
+
+@*     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
+ *@    @await RenderSectionAsync("Scripts", required: false)
+
+@* ── Gap 7: Idle session timeout ────────────────────────────────────────── *@
+@if (User.Identity?.IsAuthenticated == true && (_layoutSettings?.IdleTimeoutMinutes ?? 0) > 0)
+{
+    <form id="idle-logout-form" method="post"
+          asp-area="Identity" asp-page="/Account/Logout"
+          asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
+    </form>
+
+    <div class="modal fade" id="idleWarningModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="idleWarningLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="idleWarningLabel">
+                        <i class="fas fa-clock me-2"></i>Session Expiring
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <p>You have been inactive for a while. For security, you will be logged out in:</p>
+                    <p class="text-center fs-3 fw-bold" id="idle-countdown"></p>
+                    <p class="text-muted small mb-0">Click <strong>Stay Signed In</strong> to continue your session.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="idle-stay-btn">Stay Signed In</button>
+                    <button type="button" class="btn btn-outline-secondary"
+                            onclick="document.getElementById('idle-logout-form').submit()">Log Out Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        const TIMEOUT_MS  = window.qmsIdleTimeout * 60 * 1000;
+        const WARNING_MS  = 60 * 1000;   // show warning 60 s before logout
+        const TICK_MS     = 1000;
+
+        let idleTimer, countdownTimer;
+        const modal       = new bootstrap.Modal(document.getElementById('idleWarningModal'), {});
+        const countdownEl = document.getElementById('idle-countdown');
+        const stayBtn     = document.getElementById('idle-stay-btn');
+
+        function formatTime(ms) {
+            const s = Math.ceil(ms / 1000);
+            return s >= 60
+                ? Math.floor(s / 60) + 'm ' + (s % 60) + 's'
+                : s + 's';
+        }
+
+        function doLogout() {
+            clearInterval(countdownTimer);
+            document.getElementById('idle-logout-form').submit();
+        }
+
+        function showWarning() {
+            let remaining = WARNING_MS;
+            countdownEl.textContent = formatTime(remaining);
+            modal.show();
+            countdownTimer = setInterval(function () {
+                remaining -= TICK_MS;
+                countdownEl.textContent = formatTime(remaining);
+                if (remaining <= 0) {
+                    clearInterval(countdownTimer);
+                    doLogout();
+                }
+            }, TICK_MS);
+        }
+
+        function resetTimer() {
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(showWarning, TIMEOUT_MS - WARNING_MS);
+        }
+
+        stayBtn.addEventListener('click', function () {
+            clearInterval(countdownTimer);
+            modal.hide();
+            resetTimer();
+        });
+
+        ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function (evt) {
+            document.addEventListener(evt, resetTimer, { passive: true });
+        });
+
+        resetTimer();
+    })();
+    </script>
+}
+
+@* ── Attachment soft delete: shared reason prompt ──────────────────────────
+   Any form with data-delete-reason="<item label>" asks for a mandatory reason
+   before submitting; the reason is posted as "deletionReason" (enforced server-side too). *@
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="modal fade" id="deleteReasonModal" tabindex="-1" aria-labelledby="deleteReasonLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteReasonLabel">Delete <span id="delete-reason-item"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted">The file is removed from the list but retained in the system for traceability. The deletion and its reason are recorded in the audit trail.</p>
+                    <label for="delete-reason-text" class="form-label">Reason for deletion <span class="text-danger">*</span></label>
+                    <textarea id="delete-reason-text" class="form-control" rows="3" maxlength="1000"></textarea>
+                    <div class="invalid-feedback">A reason is required.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="delete-reason-confirm">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        const modalEl  = document.getElementById('deleteReasonModal');
+        const modal    = new bootstrap.Modal(modalEl, {});
+        const textEl   = document.getElementById('delete-reason-text');
+        const itemEl   = document.getElementById('delete-reason-item');
+        let pendingForm = null;
+
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (!form.matches || !form.matches('form[data-delete-reason]')) return;
+            e.preventDefault();
+            pendingForm = form;
+            itemEl.textContent = form.getAttribute('data-delete-reason') || 'attachment';
+            textEl.value = '';
+            textEl.classList.remove('is-invalid');
+            modal.show();
+        });
+
+        modalEl.addEventListener('shown.bs.modal', function () { textEl.focus(); });
+
+        document.getElementById('delete-reason-confirm').addEventListener('click', function () {
+            const reason = textEl.value.trim();
+            if (!reason) { textEl.classList.add('is-invalid'); return; }
+            let input = pendingForm.querySelector('input[name="deletionReason"]');
+            if (!input) {
+                input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'deletionReason';
+                pendingForm.appendChild(input);
+            }
+            input.value = reason;
+            modal.hide();
+            pendingForm.submit();   // native submit — does not re-trigger the listener
+        });
+    })();
+    </script>
+}
+</body>
+</html>

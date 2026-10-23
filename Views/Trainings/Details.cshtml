@@ -1,0 +1,623 @@
+@model OpenQMS.Models.Training
+@using OpenQMS.Authorization
+@using OpenQMS.Models.Navigation
+
+@{
+    ViewData["Title"] = $"Training — {Model.TrainingId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var statusBadge = Model.Status switch {
+        Training.TrainingStatus.Completed                 => "bg-success",
+        Training.TrainingStatus.Cancelled                 => "bg-secondary",
+        Training.TrainingStatus.PendingTrainerConfirmation => "bg-info text-dark",
+        Training.TrainingStatus.InProgress                => "bg-warning text-dark",
+        _                                                 => "bg-warning text-dark"
+    };
+
+    bool isCA = Model.TrainingType == TrainingType.CompetencyAssessment;
+    string? currentUserName = User.Identity?.Name;
+
+    int traineeCount = Model.Trainees?.Count ?? 0;
+    bool isManagerOrAdmin = User.IsInRole(Constants.AdministratorsRole) ||
+                            User.IsInRole(Constants.QualityManagerRole) ||
+                            User.IsInRole(Constants.RegulatoryManagerRole) ||
+                            User.IsInRole(Constants.TrainerRole);
+    bool isTrainingLocked = Model.Status == Training.TrainingStatus.Completed
+                         || Model.Status == Training.TrainingStatus.Cancelled;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Training &mdash; <span class="fw-bold">@Model.TrainingId</span></h4>
+        <small class="text-muted">@Model.Name</small>
+    </div>
+    <span class="badge @statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+</div>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["WorkflowError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (isManagerOrAdmin && Model.Status == Training.TrainingStatus.Scheduled)
+{
+    <div class="card border-primary mb-3">
+        <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> Workflow Actions</div>
+        <div class="card-body d-flex gap-2 flex-wrap">
+            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#completeModal">
+                <i class="fas fa-check-circle me-1"></i>Mark as Completed
+            </button>
+            <button class="btn btn-outline-danger btn-sm ms-auto" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                <i class="fas fa-ban me-1"></i>Cancel Training
+            </button>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole(Constants.AdministratorsRole) && Model.Status == Training.TrainingStatus.Completed)
+{
+    <div class="card border-danger mb-3">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+        </div>
+        <div class="card-body py-2">
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
+                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+            </button>
+        </div>
+    </div>
+}
+
+<ul class="nav nav-tabs mb-3" id="detailTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-overview" data-bs-toggle="tab" data-bs-target="#pane-overview" type="button" role="tab">Overview</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-trainees" data-bs-toggle="tab" data-bs-target="#pane-trainees" type="button" role="tab">
+            Trainees <span class="badge bg-secondary ms-1">@traineeCount</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-auditlog" data-bs-toggle="tab" data-bs-target="#pane-auditlog" type="button" role="tab">
+            Audit Log <span class="badge bg-secondary ms-1">@((ViewBag.AuditLogs as IEnumerable<OpenQMS.Models.MasterDataAuditLog>)?.Count() ?? 0)</span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <!-- Overview Tab -->
+    <div class="tab-pane fade show active" id="pane-overview" role="tabpanel">
+        <div class="card mb-3">
+            <div class="card-header">Training Details</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Training ID</dt>
+                    <dd class="col-sm-9">@Model.TrainingId</dd>
+
+                    <dt class="col-sm-3">Name</dt>
+                    <dd class="col-sm-9">@Model.Name</dd>
+
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9">@(Model.Description ?? "-")</dd>
+
+                    <dt class="col-sm-3">Date Created</dt>
+                    <dd class="col-sm-9">@Model.CreatedOn.ToSite().ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-3">Document</dt>
+                    <dd class="col-sm-9">
+                        @{
+                            var policyDoc = ViewBag.PolicyDocument as OpenQMS.Models.AppDocument;
+                            var docVersion = Model.SourceDocumentVersion ?? policyDoc?.Version;
+                        }
+                        @if (policyDoc != null)
+                        {
+                            <a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@Model.PolicyId">
+                                @policyDoc.DocumentId — @policyDoc.Title
+                            </a>
+                            <span class="badge bg-light text-dark border ms-2">v@(docVersion!.Value.ToString("0.00"))</span>
+                        }
+                        else
+                        {
+                            <span>@Model.PolicyTitle</span>
+                            @if (docVersion.HasValue)
+                            {
+                                <span class="badge bg-light text-dark border ms-2">v@(docVersion.Value.ToString("0.00"))</span>
+                            }
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Trainer</dt>
+                    <dd class="col-sm-9">@(Model.TrainerEmail ?? "-")</dd>
+
+                    <dt class="col-sm-3">Due Date</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.DueDate.HasValue)
+                        {
+                            var isOverdue = Model.DueDate.Value.Date < SiteTime.Today
+                                         && Model.Status != Training.TrainingStatus.Completed
+                                         && Model.Status != Training.TrainingStatus.Cancelled;
+                            <span class="@(isOverdue ? "text-danger fw-semibold" : "")">
+                                @Model.DueDate.Value.ToString("dd/MM/yyyy")
+                                @if (isOverdue) { <span class="badge bg-danger ms-1">Overdue</span> }
+                            </span>
+                        }
+                        else { <span class="text-muted">—</span> }
+                    </dd>
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9"><span class="badge @statusBadge">@EnumHelper.Display(Model.Status)</span></dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">Completion</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Completed By</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.CompletedByUser != null)
+                        {
+                            @Model.CompletedByUser.UserName
+                        }
+                        else if (Model.CompletedOn.HasValue)
+                        {
+                            <span class="text-muted fst-italic">Auto-completed</span>
+                        }
+                        else { <span>-</span> }
+                    </dd>
+
+                    <dt class="col-sm-3">Completed On</dt>
+                    <dd class="col-sm-9">@(Model.CompletedOn.HasValue ? Model.CompletedOn.Value.ToSite().ToString("dd/MM/yyyy HH:mm") : "-")</dd>
+
+                    <dt class="col-sm-3">Completion Notes</dt>
+                    <dd class="col-sm-9">@(Model.CompletionNotes ?? "-")</dd>
+
+                    <dt class="col-sm-3">Retain Until</dt>
+                    <dd class="col-sm-9">@(Model.RetainUntil.HasValue ? Model.RetainUntil.Value.ToString("dd/MM/yyyy") : "-")</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="mt-3 d-flex gap-2">
+            @if (isManagerOrAdmin)
+            {
+                <a asp-action="ExportTrainingAttendance" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-file-pdf me-1"></i>Completion Record
+                </a>
+            }
+            else
+            {
+                <a asp-action="ExportTrainingCertificate" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm" target="_blank">
+                    <i class="fas fa-certificate me-1"></i>My Certificate
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Trainees Tab -->
+    <div class="tab-pane fade" id="pane-trainees" role="tabpanel">
+        @if (TempData["TraineeSuccess"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show mb-3">
+                @TempData["TraineeSuccess"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (Model.Trainees != null && Model.Trainees.Any())
+        {
+            var latestByTrainee = Model.Trainees
+                .GroupBy(ut => ut.TraineeId)
+                .Select(g => g.OrderByDescending(ut => ut.Id).First())
+                .OrderBy(ut => ut.Trainee.UserName)
+                .ToList();
+
+            <table class="table table-sm align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Trainee</th>
+                        <th>Training Status</th>
+                        @if (isCA) { <th>Doc Read</th> }
+                        <th>@(isCA ? "Verified On" : "Acknowledged On")</th>
+                        @if (isCA) { <th>Notes</th> }
+                        <th>Attachments</th>
+                        @if (isManagerOrAdmin && isCA) { <th>Actions</th> }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ut in latestByTrainee)
+                    {
+                        var utBadge = ut.Status switch {
+                            UserTrainingStatus.Completed                 => "bg-success",
+                            UserTrainingStatus.Failed                    => "bg-danger",
+                            UserTrainingStatus.PendingTrainerConfirmation => "bg-info text-dark",
+                            UserTrainingStatus.InProgress                => "bg-warning text-dark",
+                            _                                            => "bg-secondary"
+                        };
+                        var completedOn = isCA
+                            ? ut.CompetencyVerifiedOn.ToSite()?.ToString("dd MMM yyyy")
+                            : ut.ReadAcknowledgedOn.ToSite()?.ToString("dd MMM yyyy");
+
+                        <tr>
+                            <td>
+                                <strong>@(ut.Trainee.UserName)</strong><br />
+                                <small class="text-muted">@ut.Trainee.Email</small>
+                            </td>
+                            <td><span class="badge @utBadge">@EnumHelper.Display(ut.Status)</span></td>
+                            @if (isCA)
+                            {
+                                @if (ut.ReadAcknowledgedOn.HasValue)
+                                {
+                                    <td>
+                                        <span class="badge bg-success">Read</span><br />
+                                        <small class="text-muted">@ut.ReadAcknowledgedOn.Value.ToSite().ToString("dd MMM yyyy")</small>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td><span class="badge bg-warning text-dark">Not Read</span></td>
+                                }
+                            }
+                            <td>@(completedOn ?? "—")</td>
+                            @if (isCA)
+                            {
+                                <td><small>@(ut.CompetencyNotes ?? "—")</small></td>
+                            }
+                            <td>
+                                @if (ut.Attachments != null && ut.Attachments.Any())
+                                {
+                                    <ul class="list-unstyled mb-1">
+                                        @foreach (var att in ut.Attachments)
+                                        {
+                                            <li>
+                                                <a asp-action="DownloadAttachment" asp-route-id="@att.Id"
+                                                   class="small text-decoration-none">
+                                                    <i class="bi bi-paperclip me-1"></i>@att.FileName
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                @if (!isTrainingLocked && (isManagerOrAdmin || ut.Trainee.UserName == currentUserName))
+                                {
+                                    <button class="btn btn-outline-secondary btn-sm upload-btn"
+                                            data-bs-toggle="modal" data-bs-target="#uploadModal"
+                                            data-ut-id="@ut.Id">
+                                        <i class="bi bi-upload me-1"></i>Upload
+                                    </button>
+                                }
+                                @if (isTrainingLocked && (ut.Attachments == null || !ut.Attachments.Any()))
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            @if (isManagerOrAdmin && isCA)
+                            {
+                                <td>
+                                    @if (ut.Status == UserTrainingStatus.PendingTrainerConfirmation)
+                                    {
+                                        <button class="btn btn-success btn-sm me-1"
+                                                data-bs-toggle="modal" data-bs-target="#verifyModal"
+                                                data-ut-id="@ut.Id"
+                                                data-trainee="@ut.Trainee.UserName"
+                                                data-passed="true">
+                                            <i class="bi bi-check2-circle me-1"></i>Pass
+                                        </button>
+                                        <button class="btn btn-danger btn-sm"
+                                                data-bs-toggle="modal" data-bs-target="#verifyModal"
+                                                data-ut-id="@ut.Id"
+                                                data-trainee="@ut.Trainee.UserName"
+                                                data-passed="false">
+                                            <i class="bi bi-x-circle me-1"></i>Fail
+                                        </button>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted p-3 mb-0">No trainees assigned.</p>
+        }
+    </div>
+
+    <!-- Audit Log Tab -->
+    <div class="tab-pane fade" id="pane-auditlog" role="tabpanel">
+        @{
+            var auditLogs = (ViewBag.AuditLogs as IEnumerable<OpenQMS.Models.MasterDataAuditLog>)
+                            ?? Enumerable.Empty<OpenQMS.Models.MasterDataAuditLog>();
+        }
+        @await Html.PartialAsync("_AuditLogTable",
+            auditLogs.Select(l => new OpenQMS.ViewModels.AuditLogRow(l.PerformedOn, l.PerformedBy, l.Action, l.FromStatus, l.ToStatus, l.Notes)))
+    </div>
+</div>
+
+<div class="mt-3 d-flex gap-3">
+    @if (isManagerOrAdmin && Model.Status != Training.TrainingStatus.Completed)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+</div>
+
+<!-- Complete Modal -->
+@if (isManagerOrAdmin && Model.Status == Training.TrainingStatus.Scheduled)
+{
+    <div class="modal fade" id="completeModal" tabindex="-1" aria-labelledby="completeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" asp-action="Complete" asp-route-id="@Model.Id" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="completeModalLabel">Mark Training as Completed</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You are marking <strong>@Model.TrainingId — @Model.Name</strong> as Completed.</p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Completion Notes <span class="text-danger">*</span></label>
+                            <textarea name="CompletionNotes" class="form-control" rows="4" required
+                                      placeholder="Describe the training conducted, outcomes, and any relevant observations…"></textarea>
+                            <div class="invalid-feedback">Completion Notes are required.</div>
+                        </div>
+                        <hr />
+                        <p class="text-muted small mb-2">Enter your credentials to sign this action.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success" id="completeSubmitBtn">
+                            <i class="fas fa-check-circle me-1"></i>Confirm Completion
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole(Constants.AdministratorsRole) && Model.Status == Training.TrainingStatus.Completed)
+{
+    <div class="modal fade" id="adminReopenModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong>Warning:</strong> Administratively reopening a completed training reverts it to Scheduled, clears the completion record, and removes the retention date. This action is logged in the audit trail and requires your credentials.
+                    </div>
+                    @if (Model.RetentionExtended == true)
+                    {
+                        <div class="alert alert-warning">
+                            <strong>Note:</strong> A retention hold is active on this record. Reopening will clear the retention date — ensure this is compliant with your retention policy.
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this training record..."></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@* Verify Competency Modal *@
+@if (isManagerOrAdmin && isCA)
+{
+    <div class="modal fade" id="verifyModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="VerifyCompetency" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="vcUserTrainingId" name="userTrainingId" />
+                    <input type="hidden" id="vcPassed" name="passed" />
+                    <div class="modal-header" id="vcModalHeader">
+                        <h5 class="modal-title" id="vcModalTitle">Verify Competency</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="vcModalBody"></p>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea name="Notes" class="form-control" rows="3"
+                                      placeholder="Optional notes on competency assessment outcome…"></textarea>
+                        </div>
+                        <hr />
+                        <p class="text-muted small mb-2">Enter your credentials to confirm.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="InputEmail" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="InputPassword" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" id="vcSubmitBtn" class="btn btn-success">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@* Cancel Modal *@
+@if (isManagerOrAdmin && Model.Status == Training.TrainingStatus.Scheduled)
+{
+    <div class="modal fade" id="cancelModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="Cancel" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title"><i class="fas fa-ban me-2"></i>Cancel Training</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You are cancelling <strong>@Model.TrainingId — @Model.Name</strong>. This action cannot be undone.</p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label>
+                            <textarea name="reason" class="form-control" rows="3" required placeholder="Provide a reason for cancellation..."></textarea>
+                        </div>
+                        <hr />
+                        <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="pwd" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger"><i class="fas fa-ban me-1"></i>Confirm Cancellation</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@* Upload Attachment Modal *@
+<div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="uploadUserTrainingId" name="userTrainingId" />
+                <div class="modal-header bg-secondary text-white">
+                    <h5 class="modal-title"><i class="bi bi-upload me-1"></i>Upload Attachment</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">File <span class="text-danger">*</span></label>
+                        <input type="file" name="file" class="form-control" accept="@UploadRules.Accept" required />
+                        <div class="form-text">Max 10 MB. Accepted: @UploadRules.AcceptedLabel.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-cloud-upload me-1"></i>Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    var tab = '@TempData["ActiveTab"]';
+    if (tab) {
+        var el = document.getElementById('tab-' + tab);
+        if (el) bootstrap.Tab.getOrCreateInstance(el).show();
+    }
+    if (@(TempData["ScrollToTrainees"] != null ? "true" : "false")) {
+        var el = document.getElementById('tab-trainees');
+        if (el) bootstrap.Tab.getOrCreateInstance(el).show();
+    }
+})();
+
+var verifyModal = document.getElementById('verifyModal');
+if (verifyModal) {
+    verifyModal.addEventListener('show.bs.modal', function (e) {
+        var btn    = e.relatedTarget;
+        var utId   = btn.getAttribute('data-ut-id');
+        var name   = btn.getAttribute('data-trainee');
+        var passed = btn.getAttribute('data-passed') === 'true';
+
+        document.getElementById('vcUserTrainingId').value = utId;
+        document.getElementById('vcPassed').value = passed ? 'true' : 'false';
+
+        var header = document.getElementById('vcModalHeader');
+        var title  = document.getElementById('vcModalTitle');
+        var body   = document.getElementById('vcModalBody');
+        var btn2   = document.getElementById('vcSubmitBtn');
+
+        if (passed) {
+            header.className = 'modal-header bg-success text-white';
+            title.textContent  = 'Pass Competency — ' + name;
+            body.textContent   = 'You are marking this competency assessment as PASSED for ' + name + '.';
+            btn2.className     = 'btn btn-success';
+            btn2.textContent   = 'Confirm Pass';
+        } else {
+            header.className = 'modal-header bg-danger text-white';
+            title.textContent  = 'Fail Competency — ' + name;
+            body.textContent   = 'You are marking this competency assessment as FAILED for ' + name + '. A new attempt will be created.';
+            btn2.className     = 'btn btn-danger';
+            btn2.textContent   = 'Confirm Fail';
+        }
+    });
+}
+
+var uploadModal = document.getElementById('uploadModal');
+if (uploadModal) {
+    uploadModal.addEventListener('show.bs.modal', function (e) {
+        document.getElementById('uploadUserTrainingId').value = e.relatedTarget.getAttribute('data-ut-id');
+    });
+}
+
+var completeModal = document.getElementById('completeModal');
+if (completeModal) {
+    completeModal.addEventListener('hidden.bs.modal', function () {
+        this.querySelector('form').reset();
+        this.querySelectorAll('.is-invalid').forEach(function (el) { el.classList.remove('is-invalid'); });
+    });
+    completeModal.querySelector('#completeSubmitBtn')?.addEventListener('click', function (e) {
+        var form  = completeModal.querySelector('form');
+        var notes = form.querySelector('[name="CompletionNotes"]');
+        if (!notes.value.trim()) {
+            notes.classList.add('is-invalid');
+            e.preventDefault();
+        } else {
+            notes.classList.remove('is-invalid');
+        }
+    });
+}
+</script>
+}

@@ -1,0 +1,155 @@
+@model IEnumerable<OpenQMS.Models.Deviation>
+@using OpenQMS.Authorization
+
+@{
+    ViewData["Title"] = "Deviations";
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        var table = $('#deviationsTable').DataTable({ stateSave: true,
+            initComplete: function () {
+                $('.status-filter').on('click', function () {
+                    $('.status-filter').removeClass('active');
+                    $(this).addClass('active');
+                    var val = $(this).data('status');
+                    table.column(7).search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+                $('.status-filter[data-status=""]').addClass('active');
+            },
+            "columns": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                { "visible": false },
+                { "visible": false },
+                null,
+                null
+            ],
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[0, 'asc']],
+            displayLength: 10,
+            buttons: [
+                'colvis',
+                {
+                    extend: 'pdf',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 7] }
+                },
+                {
+                    extend: 'excel',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 7] }
+                }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Deviations</h4>
+    @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.QualityUserRole))
+    {
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Deviation</a>
+    }
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Identification">Identification</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="Evaluation">Evaluation</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending Acceptance">Pending Acceptance</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Accepted">Accepted</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Resolution">Resolution</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">Approved</button>
+</div>
+
+<table id="deviationsTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Deviation ID</th>
+            <th>Title</th>
+            <th>Event Type</th>
+            <th>Severity</th>
+            <th>Linked To</th>
+            <th>Identified By</th>
+            <th>Identified On</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var sevBadge = item.Severity switch {
+                OpenQMS.Models.DeviationSeverity.Critical => "bg-danger",
+                OpenQMS.Models.DeviationSeverity.Major    => "bg-warning text-dark",
+                OpenQMS.Models.DeviationSeverity.Minor    => "bg-secondary",
+                _ => ""
+            };
+            var iLinked = new List<string>();
+            if (item.LinkedProducts?.Any()  == true) iLinked.AddRange(item.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedProcesses?.Any() == true) iLinked.AddRange(item.LinkedProcesses.Select(x => x.Process?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedAssets?.Any()    == true) iLinked.AddRange(item.LinkedAssets.Select(x => x.Asset?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedMaterials?.Any() == true) iLinked.AddRange(item.LinkedMaterials.Select(x => x.Material?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedSuppliers?.Any() == true) iLinked.AddRange(item.LinkedSuppliers.Select(x => x.Supplier?.LegalName ?? "").Where(n => n != ""));
+            if (!iLinked.Any())
+            {
+                if (item.Product  != null) iLinked.Add(item.Product.Name);
+                if (item.Process  != null) iLinked.Add(item.Process.Name);
+                if (item.Asset    != null) iLinked.Add(item.Asset.Name);
+                if (item.Material != null) iLinked.Add(item.Material.Name);
+                if (item.Supplier != null) iLinked.Add(item.Supplier.LegalName);
+            }
+            <tr>
+                <td>@item.DeviationId</td>
+                <td>@item.Title</td>
+                <td>
+                    @if (item.EventType.HasValue)
+                    { <span>@Html.DisplayFor(m => item.EventType)</span> }
+                    else { <span class="text-muted">-</span> }
+                </td>
+                <td>
+                    @if (item.Severity.HasValue)
+                    { <span class="badge @sevBadge">@item.Severity.Value</span> }
+                    else { <span class="text-muted">-</span> }
+                </td>
+                <td>@string.Join(", ", iLinked)</td>
+                <td>@item.IdentifiedBy</td>
+                <td>@item.IdentifiedOn.ToSite().ToShortDateString()</td>
+                <td>@EnumHelper.Display(item.Status)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (item.Status != OpenQMS.Models.Deviation.DeviationStatus.Approved
+                         && item.Status != OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance
+                         && item.Status != OpenQMS.Models.Deviation.DeviationStatus.Resolution
+                         && !User.IsInRole(Constants.ReadOnlyRole)
+                         && (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.QualityUserRole)))
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if (User.IsInRole(Constants.AdministratorsRole)
+                         && item.Status != OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance
+                         && item.Status != OpenQMS.Models.Deviation.DeviationStatus.Accepted
+                         && item.Status != OpenQMS.Models.Deviation.DeviationStatus.Resolution
+                         && item.Status != OpenQMS.Models.Deviation.DeviationStatus.Approved)
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

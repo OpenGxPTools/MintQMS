@@ -1,0 +1,54 @@
+@model OpenQMS.Models.Audit
+
+@{
+    ViewData["Title"] = "Delete Audit";
+
+    var iLinked = new List<string>();
+    if (Model.LinkedProducts?.Any()  == true) iLinked.AddRange(Model.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedProcesses?.Any() == true) iLinked.AddRange(Model.LinkedProcesses.Select(x => x.Process?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedAssets?.Any()    == true) iLinked.AddRange(Model.LinkedAssets.Select(x => x.Asset?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedMaterials?.Any() == true) iLinked.AddRange(Model.LinkedMaterials.Select(x => x.Material?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedSuppliers?.Any() == true) iLinked.AddRange(Model.LinkedSuppliers.Select(x => x.Supplier?.LegalName ?? "").Where(n => n != ""));
+    if (!iLinked.Any())
+    {
+        if (Model.Product  != null) iLinked.Add(Model.Product.Name);
+        if (Model.Process  != null) iLinked.Add(Model.Process.Name);
+        if (Model.Asset    != null) iLinked.Add(Model.Asset.Name);
+        if (Model.Material != null) iLinked.Add(Model.Material.Name);
+        if (Model.Supplier != null) iLinked.Add(Model.Supplier.LegalName);
+    }
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Delete Audit</h4>
+    </div>
+</div>
+<hr />
+<h5 class="text-danger">Are you sure you want to delete this?</h5>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">Audit ID</dt>
+            <dd class="col-sm-8">@Model.AuditId</dd>
+            <dt class="col-sm-4">Title</dt>
+            <dd class="col-sm-8">@Model.Title</dd>
+            <dt class="col-sm-4">Type</dt>
+            <dd class="col-sm-8">@Model.Type</dd>
+            <dt class="col-sm-4">Linked Records</dt>
+            <dd class="col-sm-8">@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</dd>
+            <dt class="col-sm-4">Status</dt>
+            <dd class="col-sm-8">@EnumHelper.Display(Model.Status)</dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div class="d-flex gap-2">
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+    </div>
+</form>

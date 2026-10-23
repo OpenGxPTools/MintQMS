@@ -1,0 +1,1215 @@
+@model OpenQMS.Models.LC.LicenceCertificationRecord
+@using OpenQMS.Models.LC
+@{
+    ViewData["Title"] = Model.LCNumber;
+
+    string statusBadge = Model.Status switch
+    {
+        LCStatus.IssuedActive      => "bg-success",
+        LCStatus.ConditionsApplied => "bg-warning text-dark",
+        LCStatus.RenewalDue        => "bg-warning text-dark",
+        LCStatus.VariationRequired => "bg-warning text-dark",
+        LCStatus.Expired           => "bg-danger",
+        LCStatus.Suspended         => "bg-danger",
+        LCStatus.Withdrawn         => "bg-secondary",
+        LCStatus.Draft             => "bg-light text-dark border",
+        LCStatus.Applied           => "bg-info text-dark",
+        LCStatus.UnderAssessment   => "bg-info text-dark",
+        LCStatus.NotApplicable     => "bg-secondary",
+        _                          => "bg-secondary"
+    };
+
+    int expiryDays = (int?)ViewBag.ExpiryDays ?? 9999;
+    string expiryBand = (string?)ViewBag.ExpiryBand ?? "success";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h4 class="mb-0">
+            @Model.LCNumber
+            <span class="badge @statusBadge ms-2">@EnumHelper.Display(Model.Status)</span>
+            @{
+                bool hasOpenConditions = Model.Conditions.Any(c => !c.IsDeleted && c.Status == LCConditionStatus.Active);
+            }
+            @if (hasOpenConditions)
+            {
+                <span class="badge bg-warning text-dark ms-1" title="This record has open conditions that require action."><i class="fas fa-exclamation-triangle me-1"></i>Conditions</span>
+            }
+            @if (Model.IsLocked)
+            {
+                <span class="badge bg-dark ms-1"><i class="bi bi-lock me-1"></i>Locked</span>
+            }
+        </h4>
+        <small class="text-muted">@Model.LicenceType?.DisplayName &bull; @Model.HolderName</small>
+    </div>
+    <div class="d-flex gap-2">
+        @if (!Model.IsLocked)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+        }
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Register</a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<!-- Expiry Alert Banner -->
+@if (Model.ExpiryDate.HasValue)
+{
+    @if (expiryDays < 0)
+    {
+        <div class="alert alert-danger d-flex align-items-center mb-3">
+            <i class="fas fa-exclamation-triangle me-2 fa-lg"></i>
+            <strong>EXPIRED</strong> — This licence/certification expired on @Model.ExpiryDate.Value.ToString("dd MMM yyyy") (@Math.Abs(expiryDays) days ago). Immediate action required.
+        </div>
+    }
+    else if (expiryDays <= 30)
+    {
+        <div class="alert alert-danger d-flex align-items-center mb-3">
+            <i class="fas fa-clock me-2 fa-lg"></i>
+            <strong>CRITICAL:</strong>&nbsp;Expires in <strong>@expiryDays days</strong> (@Model.ExpiryDate.Value.ToString("dd MMM yyyy")).
+        </div>
+    }
+    else if (expiryDays <= 90)
+    {
+        <div class="alert alert-warning d-flex align-items-center mb-3">
+            <i class="fas fa-exclamation-circle me-2 fa-lg"></i>
+            <strong>Renewal Due Soon:</strong>&nbsp;Expires in @expiryDays days (@Model.ExpiryDate.Value.ToString("dd MMM yyyy")).
+        </div>
+    }
+}
+
+<!-- Workflow Action Panel -->
+@{
+    var availableTransitions = OpenQMS.Services.LicCertWorkflowService.GetAvailableTransitions(Model.Status).ToList();
+}
+@if (availableTransitions.Any())
+{
+    <div class="card mb-3 border-primary">
+        <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center py-2">
+            <i class="fas fa-exchange-alt me-2 text-primary"></i>
+            <strong class="text-primary">Workflow Actions</strong>
+            <span class="ms-2 text-muted small">Current status: <strong>@EnumHelper.Display(Model.Status)</strong></span>
+        </div>
+        <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
+            @foreach (var target in availableTransitions)
+            {
+                string btnClass = target switch
+                {
+                    LCStatus.IssuedActive      => "btn-success",
+                    LCStatus.ConditionsApplied => "btn-warning",
+                    LCStatus.Suspended         => "btn-danger",
+                    LCStatus.Withdrawn         => "btn-outline-dark",
+                    LCStatus.Expired           => "btn-outline-danger",
+                    LCStatus.RenewalDue        => "btn-warning",
+                    LCStatus.VariationRequired => "btn-outline-warning",
+                    LCStatus.Applied           => "btn-outline-primary",
+                    LCStatus.UnderAssessment   => "btn-info",
+                    LCStatus.Draft             => "btn-outline-secondary",
+                    LCStatus.NotApplicable     => "btn-outline-secondary",
+                    _                          => "btn-outline-secondary"
+                };
+                string label = target switch
+                {
+                    LCStatus.Applied          => "Submit Application",
+                    LCStatus.UnderAssessment  => "Mark Under Assessment",
+                    LCStatus.IssuedActive     => "Issue / Activate",
+                    LCStatus.ConditionsApplied=> "Apply Conditions",
+                    LCStatus.RenewalDue       => "Mark Renewal Due",
+                    LCStatus.VariationRequired=> "Variation Required",
+                    LCStatus.Expired          => "Mark Expired",
+                    LCStatus.Suspended        => "Suspend",
+                    LCStatus.Withdrawn        => "Withdraw",
+                    LCStatus.NotApplicable    => "Mark Not Applicable",
+                    LCStatus.Draft            => "Revert to Draft",
+                    _                         => target.ToString()
+                };
+
+                if (target == LCStatus.IssuedActive)
+                {
+                    <button class="btn btn-sm @btnClass" data-bs-toggle="modal" data-bs-target="#issueModal">
+                        <i class="fas fa-check-circle me-1"></i>@label
+                    </button>
+                }
+                else if (target == LCStatus.Suspended)
+                {
+                    <button class="btn btn-sm @btnClass" data-bs-toggle="modal" data-bs-target="#suspendModal">
+                        <i class="fas fa-pause-circle me-1"></i>@label
+                    </button>
+                }
+                else if (target == LCStatus.Withdrawn)
+                {
+                    <button class="btn btn-sm @btnClass" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                        <i class="fas fa-times-circle me-1"></i>@label
+                    </button>
+                }
+                else if (target == LCStatus.NotApplicable)
+                {
+                    <button class="btn btn-sm @btnClass" data-bs-toggle="modal" data-bs-target="#notApplicableModal">
+                        <i class="fas fa-ban me-1"></i>@label
+                    </button>
+                }
+                else if (target == LCStatus.RenewalDue)
+                {
+                    // Renewal is started manually — captures a justification via modal.
+                    // The background service only sends lead-time reminders; it never
+                    // changes status (consistent with the RegIntel module).
+                    <button type="button" class="btn btn-sm @btnClass" data-bs-toggle="modal" data-bs-target="#initiateRenewalModal"
+                            title="Start the renewal cycle for this record.">
+                        <i class="fas fa-sync me-1"></i>Initiate Renewal Now
+                    </button>
+                }
+                else if (target == LCStatus.Expired)
+                {
+                    <form asp-action="Transition" method="post" class="d-inline"
+                          onsubmit="return confirm('Mark this record as Expired? It will be locked.');">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <input type="hidden" name="newStatus" value="@target" />
+                        <button type="submit" class="btn btn-sm @btnClass">@label</button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="Transition" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <input type="hidden" name="newStatus" value="@target" />
+                        <button type="submit" class="btn btn-sm @btnClass">@label</button>
+                    </form>
+                }
+            }
+        </div>
+    </div>
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-0" id="detailsTabs" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dtab1" type="button"><i class="fas fa-fingerprint me-1"></i>Identification</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab2" type="button"><i class="fas fa-tag me-1"></i>Classification</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab3" type="button"><i class="fas fa-calendar-alt me-1"></i>Licence Details</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab4" type="button"><i class="fas fa-microscope me-1"></i>GMP / ISO</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab5" type="button"><i class="fas fa-user me-1"></i>Contacts</button></li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab6" type="button">
+            <i class="fas fa-tasks me-1"></i>Conditions
+            @{ var openConds = Model.Conditions.Count(c => c.Status == LCConditionStatus.Active); }
+            @if (openConds > 0) { <span class="badge bg-warning text-dark ms-1">@openConds</span> }
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab7" type="button">
+            <i class="fas fa-paperclip me-1"></i>Attachments
+            @if (Model.Documents.Any()) { <span class="badge bg-secondary ms-1">@Model.Documents.Count</span> }
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab8" type="button">
+            <i class="fas fa-link me-1"></i>Dependencies
+            @{ var depCount = Model.Dependencies.Count; }
+            @if (depCount > 0) { <span class="badge bg-primary ms-1">@depCount</span> }
+        </button>
+    </li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab9" type="button"><i class="fas fa-history me-1"></i>Audit Log</button></li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab10" type="button">
+            <i class="fas fa-layer-group me-1"></i>Approval History
+            @if (Model.ApprovalSnapshots.Any()) { <span class="badge bg-secondary ms-1">@Model.ApprovalSnapshots.Count</span> }
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content border border-top-0 rounded-bottom p-4 mb-3">
+
+    <!-- ── Tab 1: Identification ───────────────────────────────────────── -->
+    <div class="tab-pane fade show active" id="dtab1" role="tabpanel">
+        <div class="row g-3">
+            <div class="col-md-4"><label class="form-label text-muted small">LC Number</label><p class="fw-bold">@Model.LCNumber</p></div>
+            <div class="col-md-4"><label class="form-label text-muted small">Holder Type</label><p>@Model.HolderType</p></div>
+            <div class="col-md-4"><label class="form-label text-muted small">Holder Name</label><p class="fw-bold">@Model.HolderName</p></div>
+            @if (Model.Supplier != null)
+            {
+                <div class="col-md-6"><label class="form-label text-muted small">Linked Supplier</label>
+                    <p><a asp-controller="Suppliers" asp-action="Details" asp-route-id="@Model.SupplierId">@Model.Supplier.LegalName</a></p>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.LinkedSiteCountry))
+            {
+                <div class="col-md-4"><label class="form-label text-muted small">Site Country</label><p>@Model.LinkedSiteCountry</p></div>
+            }
+            @if (!string.IsNullOrEmpty(Model.LinkedSiteAddress))
+            {
+                <div class="col-12"><label class="form-label text-muted small">Site Address</label><p>@Model.LinkedSiteAddress</p></div>
+            }
+            <div class="col-md-4"><label class="form-label text-muted small">Created By</label><p>@Model.CreatedBy &bull; @Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm") UTC</p></div>
+            @if (Model.ModifiedAt.HasValue)
+            {
+                <div class="col-md-4"><label class="form-label text-muted small">Last Modified</label><p>@Model.ModifiedBy &bull; @Model.ModifiedAt.Value.ToSite().ToString("dd MMM yyyy HH:mm") UTC</p></div>
+            }
+        </div>
+    </div>
+
+    <!-- ── Tab 2: Classification ───────────────────────────────────────── -->
+    <div class="tab-pane fade" id="dtab2" role="tabpanel">
+        <div class="row g-3">
+            <div class="col-md-4"><label class="form-label text-muted small">Category</label>
+                <p>@(Model.Category == LCCategory.RegulatoryLicence ? "Regulatory Licence" :
+                     Model.Category == LCCategory.ISOPrivateCertification ? "ISO / Private Certification" :
+                     "Third-Party Site Approval")</p></div>
+            <div class="col-md-8"><label class="form-label text-muted small">Licence / Certification Type</label><p class="fw-bold">@Model.LicenceType?.DisplayName</p></div>
+            @if (!string.IsNullOrEmpty(Model.IssuingBody))
+            {
+                <div class="col-md-6"><label class="form-label text-muted small">Issuing Body</label><p>@Model.IssuingBody</p></div>
+            }
+            @if (!string.IsNullOrEmpty(Model.IssuingBodyUrl))
+            {
+                <div class="col-md-6"><label class="form-label text-muted small">Issuing Body URL</label>
+                    <p><a href="@Model.IssuingBodyUrl" target="_blank">@Model.IssuingBodyUrl</a></p></div>
+            }
+            @if (!string.IsNullOrEmpty(Model.IssuingBodyPortal))
+            {
+                <div class="col-md-8"><label class="form-label text-muted small">Authority Portal / Login URL</label>
+                    <p><a href="@Model.IssuingBodyPortal" target="_blank">@Model.IssuingBodyPortal</a></p></div>
+            }
+            @if (!string.IsNullOrEmpty(Model.AuthorityPortalUsername))
+            {
+                <div class="col-md-4"><label class="form-label text-muted small">Portal Username</label>
+                    <p>@Model.AuthorityPortalUsername</p></div>
+            }
+        </div>
+    </div>
+
+    <!-- ── Tab 3: Licence Details ──────────────────────────────────────── -->
+    <div class="tab-pane fade" id="dtab3" role="tabpanel">
+        <div class="row g-3">
+            @if (!string.IsNullOrEmpty(Model.LicenceNumber))
+            {
+                <div class="col-md-4"><label class="form-label text-muted small">Licence / Certificate Number</label><p class="fw-bold">@Model.LicenceNumber</p></div>
+            }
+            @if (Model.ApplicationDate.HasValue)
+            {
+                <div class="col-md-4"><label class="form-label text-muted small">Application Date</label><p>@Model.ApplicationDate.Value.ToString("dd MMM yyyy")</p></div>
+            }
+            @if (Model.IssueDate.HasValue)
+            {
+                <div class="col-md-4"><label class="form-label text-muted small">Issue Date</label><p>@Model.IssueDate.Value.ToString("dd MMM yyyy")</p></div>
+            }
+            @if (Model.ExpiryDate.HasValue)
+            {
+                <div class="col-md-4">
+                    <label class="form-label text-muted small">Expiry Date</label>
+                    <p class="@(expiryBand == "danger" ? "text-danger fw-bold" : expiryBand == "warning" ? "text-warning fw-bold" : "")">
+                        @Model.ExpiryDate.Value.ToString("dd MMM yyyy")
+                        @if (expiryDays >= 0) { <small class="text-muted">(@expiryDays days)</small> }
+                    </p>
+                </div>
+            }
+            @if (Model.NextRenewalDue.HasValue)
+            {
+                <div class="col-md-4"><label class="form-label text-muted small">Next Renewal Due</label><p>@Model.NextRenewalDue.Value.ToString("dd MMM yyyy")</p></div>
+            }
+            <div class="col-md-4"><label class="form-label text-muted small">Renewal Lead Time</label><p>@Model.RenewalLeadTimeDays days</p></div>
+            @if (!string.IsNullOrEmpty(Model.Scope))
+            {
+                <div class="col-12"><label class="form-label text-muted small">Scope</label><p class="border rounded p-2 bg-light">@Model.Scope</p></div>
+            }
+        </div>
+    </div>
+
+    <!-- ── Tab 4: GMP / ISO Specifics ─────────────────────────────────── -->
+    <div class="tab-pane fade" id="dtab4" role="tabpanel">
+        @if (Model.Category == LCCategory.ThirdPartySiteApproval)
+        {
+            <h6 class="text-uppercase small text-muted border-bottom pb-1 mb-3"><i class="fas fa-shield-alt me-1"></i>GMP Clearance Details</h6>
+            <div class="row g-3">
+                @if (Model.GmcPathway.HasValue)
+                { <div class="col-md-4"><label class="form-label text-muted small">GMP Clearance Pathway</label><p>@Model.GmcPathway</p></div> }
+                @if (!string.IsNullOrEmpty(Model.SiteCountry))
+                { <div class="col-md-4"><label class="form-label text-muted small">Site Country</label><p>@Model.SiteCountry</p></div> }
+                @if (!string.IsNullOrEmpty(Model.InspectionAuthority))
+                { <div class="col-md-4"><label class="form-label text-muted small">Inspection Authority</label><p>@Model.InspectionAuthority</p></div> }
+                @if (Model.LastInspectionDate.HasValue)
+                { <div class="col-md-4"><label class="form-label text-muted small">Last Inspection Date</label><p>@Model.LastInspectionDate.Value.ToString("dd MMM yyyy")</p></div> }
+                @if (Model.RFIDate.HasValue)
+                { <div class="col-md-4"><label class="form-label text-muted small">RFI Issued</label><p>@Model.RFIDate.Value.ToString("dd MMM yyyy")</p></div> }
+                @if (Model.RFIResponseDueDate.HasValue)
+                { <div class="col-md-4"><label class="form-label text-muted small">RFI Response Due</label>
+                    <p class="@(Model.RFIResponseSubmittedDate == null && Model.RFIResponseDueDate < SiteTime.Today ? "text-danger fw-bold" : "")">
+                        @Model.RFIResponseDueDate.Value.ToString("dd MMM yyyy")</p></div> }
+                @if (Model.RFIResponseSubmittedDate.HasValue)
+                { <div class="col-md-4"><label class="form-label text-muted small">RFI Response Submitted</label><p class="text-success">@Model.RFIResponseSubmittedDate.Value.ToString("dd MMM yyyy")</p></div> }
+                @if (!string.IsNullOrEmpty(Model.ManufacturingStepsScope))
+                { <div class="col-12"><label class="form-label text-muted small">Manufacturing Steps Scope</label><p>@Model.ManufacturingStepsScope</p></div> }
+                <div class="col-md-4"><label class="form-label text-muted small">Letter of Access Available</label>
+                    <p>@(Model.LetterOfAccessAvailable ? "Yes" : "No")</p></div>
+            </div>
+        }
+        else if (Model.Category == LCCategory.ISOPrivateCertification)
+        {
+            <h6 class="text-uppercase small text-muted border-bottom pb-1 mb-3"><i class="fas fa-certificate me-1"></i>ISO / Certification Details</h6>
+            <div class="row g-3">
+                @if (!string.IsNullOrEmpty(Model.CertificationBody))
+                { <div class="col-md-6"><label class="form-label text-muted small">Certification Body</label><p>@Model.CertificationBody</p></div> }
+                @if (!string.IsNullOrEmpty(Model.CertificationBodyAccreditation))
+                { <div class="col-md-6"><label class="form-label text-muted small">Accreditation No.</label><p>@Model.CertificationBodyAccreditation</p></div> }
+                @if (!string.IsNullOrEmpty(Model.StandardVersion))
+                { <div class="col-md-4"><label class="form-label text-muted small">Standard Version</label><p>@Model.StandardVersion</p></div> }
+                @if (Model.Stage1AuditDate.HasValue)
+                { <div class="col-md-4"><label class="form-label text-muted small">Stage 1 Audit</label><p>@Model.Stage1AuditDate.Value.ToString("dd MMM yyyy")</p></div> }
+                @if (Model.Stage2AuditDate.HasValue)
+                { <div class="col-md-4"><label class="form-label text-muted small">Stage 2 Audit</label><p>@Model.Stage2AuditDate.Value.ToString("dd MMM yyyy")</p></div> }
+                @if (Model.NextSurveillanceAuditDate.HasValue)
+                {
+                    int survDays = (Model.NextSurveillanceAuditDate.Value.Date - SiteTime.Today).Days;
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small">Next Surveillance Audit</label>
+                        <p class="@(survDays < 0 ? "text-danger fw-bold" : survDays <= 60 ? "text-warning" : "")">
+                            @Model.NextSurveillanceAuditDate.Value.ToString("dd MMM yyyy")
+                            @if (survDays >= 0) { <small class="text-muted">(@survDays days)</small> }
+                        </p>
+                    </div>
+                }
+                @if (Model.RecertificationDueDate.HasValue)
+                { <div class="col-md-4"><label class="form-label text-muted small">Recertification Due</label><p>@Model.RecertificationDueDate.Value.ToString("dd MMM yyyy")</p></div> }
+                @if (!string.IsNullOrEmpty(Model.CertificateScope))
+                { <div class="col-12"><label class="form-label text-muted small">Certificate Scope</label><p class="border rounded p-2 bg-light">@Model.CertificateScope</p></div> }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">GMP / ISO specific details are shown for Third-Party Site Approvals and ISO Certifications.</p>
+        }
+    </div>
+
+    <!-- ── Tab 5: Contacts ────────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="dtab5" role="tabpanel">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="form-label text-muted small">Internal Responsible Person</label>
+                <p>@(ViewBag.ResponsiblePersonName ?? Model.InternalResponsiblePersonId ?? "—")</p></div>
+            <div class="col-md-6"><label class="form-label text-muted small">External Consultant</label>
+                <p>@(string.IsNullOrEmpty(Model.ExternalConsultant) ? "—" : Model.ExternalConsultant)</p></div>
+            <div class="col-md-6"><label class="form-label text-muted small">Authority Contact Email</label>
+                <p>@if (!string.IsNullOrEmpty(Model.AuthorityContactEmail))
+                { <a href="mailto:@Model.AuthorityContactEmail">@Model.AuthorityContactEmail</a> }
+                else { <text>—</text> }</p></div>
+            @if (Model.ApplicationFee.HasValue)
+            {
+                <div class="col-md-3"><label class="form-label text-muted small">Application Fee</label>
+                    <p>@Model.ApplicationFee.Value.ToString("N2") @Model.FeeCurrency</p></div>
+            }
+            @if (Model.FeePaidDate.HasValue)
+            {
+                <div class="col-md-3"><label class="form-label text-muted small">Fee Paid</label>
+                    <p>@Model.FeePaidDate.Value.ToString("dd MMM yyyy")</p></div>
+            }
+            @if (!string.IsNullOrEmpty(Model.FeeReference))
+            {
+                <div class="col-md-6"><label class="form-label text-muted small">Fee Reference</label><p>@Model.FeeReference</p></div>
+            }
+        </div>
+    </div>
+
+    <!-- ── Tab 6: Conditions ──────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="dtab6" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="text-uppercase small text-muted mb-0">Conditions of Licence / Certification
+                @{ var activeConds = Model.Conditions.Count(c => c.Status == LCConditionStatus.Active); }
+                @if (activeConds > 0) { <span class="badge bg-warning text-dark ms-1">@activeConds open</span> }
+            </h6>
+            @if (!Model.IsLocked)
+            {
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addConditionModal">
+                    <i class="fas fa-plus me-1"></i>Add Condition
+                </button>
+            }
+        </div>
+
+        @if (!Model.Conditions.Any())
+        {
+            <p class="text-muted">No conditions recorded for this licence / certification.</p>
+        }
+        else
+        {
+            <table class="table table-sm table-hover">
+                <thead class="table-light">
+                    <tr><th>Description</th><th>Due Date</th><th>Status</th><th>Linked CAPA</th><th>Completed</th><th class="text-center">Actions</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var cond in Model.Conditions.OrderBy(c => c.DueDate))
+                    {
+                        bool overdueCond = cond.Status == LCConditionStatus.Active && cond.DueDate.HasValue && cond.DueDate < SiteTime.Today;
+                        string condBadge = cond.Status switch {
+                            LCConditionStatus.Active    => overdueCond ? "bg-danger" : "bg-warning text-dark",
+                            LCConditionStatus.Completed => "bg-success",
+                            LCConditionStatus.Waived    => "bg-secondary",
+                            LCConditionStatus.Closed    => "bg-secondary",
+                            _                           => "bg-secondary"
+                        };
+                        <tr class="@(overdueCond ? "table-danger" : "")">
+                            <td>@cond.ConditionDescription
+                                @if (!string.IsNullOrEmpty(cond.CompletionNotes))
+                                { <br /><small class="text-muted">@cond.CompletionNotes</small> }
+                            </td>
+                            <td>@(cond.DueDate.HasValue ? cond.DueDate.Value.ToString("dd MMM yyyy") : "—")</td>
+                            <td><span class="badge @condBadge">@EnumHelper.Display(cond.Status)</span></td>
+                            <td>
+                                @if (cond.LinkedCAPAId.HasValue)
+                                {
+                                    <a asp-controller="Capas" asp-action="Details" asp-route-id="@cond.LinkedCAPAId">View CAPA</a>
+                                }
+                                else { <text>—</text> }
+                            </td>
+                            <td>
+                                @if (cond.CompletedAt.HasValue)
+                                { <small>@cond.CompletedAt.Value.ToSite().ToString("dd MMM yyyy")<br />@cond.CompletedBy</small> }
+                                else { <text>—</text> }
+                            </td>
+                            <td class="text-center">
+                                @if (cond.Status == LCConditionStatus.Active && !Model.IsLocked)
+                                {
+                                    <button class="btn btn-sm btn-outline-secondary"
+                                            data-bs-toggle="modal" data-bs-target="#editConditionModal"
+                                            data-id="@cond.Id"
+                                            data-desc="@Html.Raw(System.Text.Json.JsonSerializer.Serialize(cond.ConditionDescription))"
+                                            data-due="@(cond.DueDate.HasValue ? cond.DueDate.Value.ToString("yyyy-MM-dd") : "")">
+                                        <i class="fas fa-edit me-1"></i>Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success ms-1"
+                                            data-bs-toggle="modal" data-bs-target="#completeConditionModal"
+                                            data-id="@cond.Id">
+                                        <i class="fas fa-check me-1"></i>Mark Complete
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-info ms-1"
+                                            data-bs-toggle="modal" data-bs-target="#waiveConditionModal"
+                                            data-id="@cond.Id">
+                                        <i class="fas fa-ban me-1"></i>Waive
+                                    </button>
+                                    @if (!cond.LinkedCAPAId.HasValue)
+                                    {
+                                        <form asp-action="CreateCAPAFromCondition" method="post" class="d-inline ms-1"
+                                              onsubmit="return confirm('Create a CAPA from this condition?')">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="conditionId" value="@cond.Id" />
+                                            <input type="hidden" name="recordId" value="@Model.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-warning">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>Raise CAPA
+                                            </button>
+                                        </form>
+                                    }
+                                    <form asp-action="DeleteCondition" method="post" class="d-inline ms-1"
+                                          onsubmit="return confirm('Delete this condition?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="conditionId" value="@cond.Id" />
+                                        <input type="hidden" name="recordId" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- ── Tab 7: Documents ───────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="dtab7" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="text-uppercase small text-muted mb-0">Attachments</h6>
+            @if (!Model.IsLocked)
+            {
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#uploadDocModal">
+                    <i class="fas fa-upload me-1"></i>Upload Document
+                </button>
+            }
+        </div>
+
+        @{
+            var pendingDocs = Model.Documents.Where(d => d.ApprovalCycle == null).OrderByDescending(d => d.UploadedAt).ToList();
+            var cycleGroups = Model.Documents.Where(d => d.ApprovalCycle != null)
+                .GroupBy(d => d.ApprovalCycle!.Value)
+                .OrderByDescending(g => g.Key)
+                .ToList();
+        }
+
+        @if (!pendingDocs.Any() && !cycleGroups.Any())
+        {
+            <p class="text-muted">No documents uploaded. Upload certificates, inspection reports, evidence packages, and authority correspondence here.</p>
+        }
+
+        @if (pendingDocs.Any())
+        {
+            <h6 class="text-uppercase small text-muted mt-2 mb-1">Current (Pending Approval)</h6>
+            <table class="table table-sm table-hover mb-3">
+                <thead class="table-light">
+                    <tr><th>File Name</th><th>Type</th><th>Description</th><th>Uploaded By</th><th>Date</th><th>Size</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var doc in pendingDocs)
+                    {
+                        <tr>
+                            <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id"><i class="fas fa-file me-1 text-muted"></i>@doc.FileName</a></td>
+                            <td><span class="badge bg-light text-dark border small">@doc.DocumentType</span></td>
+                            <td><small class="text-muted">@doc.Description</small></td>
+                            <td><small>@doc.UploadedById</small></td>
+                            <td><small>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy")</small></td>
+                            <td><small>@(doc.FileSizeBytes > 1024 ? $"{doc.FileSizeBytes / 1024:N0} KB" : $"{doc.FileSizeBytes} B")</small></td>
+                            <td class="text-nowrap">
+                                <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>Download</a>
+                                <form asp-action="DeleteDocument" method="post" class="d-inline ms-1" data-delete-reason="document">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="docId" value="@doc.Id" />
+                                    <input type="hidden" name="recordId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash me-1"></i>Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @foreach (var group in cycleGroups)
+        {
+            var snap = Model.ApprovalSnapshots.FirstOrDefault(s => s.RenewalCycle == group.Key);
+            <h6 class="text-uppercase small text-muted mt-3 mb-1">
+                <i class="fas fa-check-circle text-success me-1"></i>
+                Cycle @group.Key
+                @if (snap != null) { <span class="fw-normal">— Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy")</span> }
+            </h6>
+            <table class="table table-sm table-hover mb-3">
+                <thead class="table-light">
+                    <tr><th>File Name</th><th>Type</th><th>Description</th><th>Uploaded By</th><th>Date</th><th>Size</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var doc in group.OrderByDescending(d => d.UploadedAt))
+                    {
+                        <tr>
+                            <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id"><i class="fas fa-file me-1 text-muted"></i>@doc.FileName</a></td>
+                            <td><span class="badge bg-light text-dark border small">@doc.DocumentType</span></td>
+                            <td><small class="text-muted">@doc.Description</small></td>
+                            <td><small>@doc.UploadedById</small></td>
+                            <td><small>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy")</small></td>
+                            <td><small>@(doc.FileSizeBytes > 1024 ? $"{doc.FileSizeBytes / 1024:N0} KB" : $"{doc.FileSizeBytes} B")</small></td>
+                            <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>Download</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Accepted: @UploadRules.AcceptedLabel. Max 25 MB per file.</small>
+        <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadDocument", Noun: "documents")' />
+    </div>
+
+    <!-- ── Tab 8: Dependencies ────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="dtab8" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <h6 class="text-uppercase small text-muted mb-0">Linked RegIntel Product Applications</h6>
+                <p class="text-muted small mb-0">Product registrations that depend on this credential being current.</p>
+            </div>
+            @if (!Model.IsLocked)
+            {
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addDependencyModal">
+                    <i class="fas fa-link me-1"></i>Link Application
+                </button>
+            }
+        </div>
+
+        @if (Model.Status == LCStatus.Expired || Model.Status == LCStatus.Suspended)
+        {
+            <div class="alert alert-danger mb-2">
+                <i class="fas fa-exclamation-triangle me-1"></i>
+                <strong>Supply Credential At Risk:</strong> This record is <strong>@EnumHelper.Display(Model.Status)</strong>. All @Model.Dependencies.Count linked product application(s) may be affected.
+            </div>
+        }
+
+        @if (!Model.Dependencies.Any())
+        {
+            <p class="text-muted mt-2">No RegIntel applications linked. Use "Link Application" to create a dependency record.</p>
+        }
+        else
+        {
+            <table class="table table-sm table-hover mt-2">
+                <thead class="table-light">
+                    <tr><th>RI Number</th><th>Product Name</th><th>App Status</th><th>Linked Since</th><th>Notes</th><th class="text-center">Actions</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var dep in Model.Dependencies.OrderBy(d => d.LinkedSince))
+                    {
+                        var riApp = dep.RegulatoryApplication;
+                        <tr>
+                            <td><a asp-controller="RegulatoryIntelligence" asp-action="Details" asp-route-id="@dep.RegulatoryApplicationId" class="fw-bold">@riApp?.RINumber</a></td>
+                            <td>@riApp?.ProductName</td>
+                            <td><span class="badge bg-secondary small">@EnumHelper.Display(riApp?.Status)</span></td>
+                            <td><small>@dep.LinkedSince.ToSite().ToString("dd MMM yyyy")</small></td>
+                            <td><small class="text-muted">@dep.Notes</small></td>
+                            <td class="text-center">
+                                @if (!Model.IsLocked)
+                                {
+                                    <form asp-action="RemoveDependency" method="post" class="d-inline"
+                                          onsubmit="return confirm('Remove this dependency link?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="dependencyId" value="@dep.Id" />
+                                        <input type="hidden" name="recordId" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-xs btn-outline-danger btn-sm py-0 px-1"><i class="fas fa-unlink me-1"></i>Unlink</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- ── Tab 9: Audit Log ───────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="dtab9" role="tabpanel">
+        @if (!Model.AuditLogs.Any())
+        {
+            <p class="text-muted">No audit log entries.</p>
+        }
+        else
+        {
+            <table class="table table-sm">
+                <thead class="table-light"><tr><th>Timestamp (UTC)</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+                <tbody>
+                    @foreach (var log in Model.AuditLogs.OrderByDescending(l => l.Timestamp))
+                    {
+                        <tr>
+                            <td><small>@log.Timestamp.ToSite().ToString("dd MMM yyyy HH:mm")</small></td>
+                            <td><small>@log.UserName</small></td>
+                            <td>@log.Action</td>
+                            <td><small class="text-muted">@log.Details</small></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- ── Tab 10: Approval History ─────────────────────────────────────── -->
+    <div class="tab-pane fade" id="dtab10" role="tabpanel">
+        @if (!Model.ApprovalSnapshots.Any())
+        {
+            <p class="text-muted">No approval cycles recorded yet. A snapshot is captured automatically each time this record is transitioned to <strong>Issued / Active</strong>.</p>
+        }
+        else
+        {
+            @foreach (var snap in Model.ApprovalSnapshots.OrderByDescending(s => s.RenewalCycle))
+            {
+                var data = System.Text.Json.JsonDocument.Parse(snap.SnapshotJson).RootElement;
+
+                // Returns the string value of a snapshot property, or null when absent/empty.
+                Func<System.Text.Json.JsonElement, string, string?> getVal = (el, key) =>
+                    el.TryGetProperty(key, out var p) && p.ValueKind != System.Text.Json.JsonValueKind.Null
+                        ? (string.IsNullOrWhiteSpace(p.ToString()) ? null : p.ToString())
+                        : null;
+
+                // Field layout grouped to mirror the record's tabs. Only populated fields render.
+                var lcSections = new (string Title, (string Label, string Key)[] Fields)[]
+                {
+                    ("Identification", new [] { ("LC Number","LCNumber"), ("Holder Type","HolderType"), ("Holder Name","HolderName"), ("Linked Site Address","LinkedSiteAddress"), ("Linked Site Country","LinkedSiteCountry") }),
+                    ("Classification", new [] { ("Category","Category"), ("Licence Type","LicenceType"), ("Issuing Body","IssuingBody"), ("Issuing Body URL","IssuingBodyUrl"), ("Issuing Body Portal","IssuingBodyPortal") }),
+                    ("Licence Details", new [] { ("Licence / Cert Number","LicenceNumber"), ("Scope","Scope"), ("Application Date","ApplicationDate"), ("Issue Date","IssueDate"), ("Expiry Date","ExpiryDate"), ("Next Renewal Due","NextRenewalDue"), ("Renewal Lead Time (days)","RenewalLeadTimeDays") }),
+                    ("GMP Clearance", new [] { ("GMP Clearance Pathway","GmcPathway"), ("Site Country","SiteCountry"), ("Manufacturing Steps (Scope)","ManufacturingStepsScope"), ("Last Inspection Date","LastInspectionDate"), ("Inspection Authority","InspectionAuthority"), ("RFI Date","RFIDate"), ("RFI Response Due","RFIResponseDueDate"), ("RFI Response Submitted","RFIResponseSubmittedDate"), ("Letter of Access Available","LetterOfAccessAvailable") }),
+                    ("ISO / Certification", new [] { ("Certification Body","CertificationBody"), ("Body Accreditation","CertificationBodyAccreditation"), ("Standard Version","StandardVersion"), ("Certificate Scope","CertificateScope"), ("Stage 1 Audit Date","Stage1AuditDate"), ("Stage 2 Audit Date","Stage2AuditDate"), ("Next Surveillance Audit","NextSurveillanceAuditDate"), ("Recertification Due","RecertificationDueDate") }),
+                    ("Contacts", new [] { ("Internal Responsible Person","InternalResponsiblePerson"), ("External Consultant","ExternalConsultant"), ("Authority Contact Email","AuthorityContactEmail"), ("Authority Portal Username","AuthorityPortalUsername") }),
+                    ("Fees", new [] { ("Application Fee","ApplicationFee"), ("Fee Currency","FeeCurrency"), ("Fee Paid Date","FeePaidDate"), ("Fee Reference","FeeReference") }),
+                    ("Notes", new [] { ("Justification / Reason","JustificationReason"), ("Regulatory Action Notes","RegulatoryActionNotes") }),
+                };
+
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="fw-bold"><i class="fas fa-check-circle text-success me-2"></i>Cycle @snap.RenewalCycle</span>
+                        <small class="text-muted">Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy HH:mm") UTC</small>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var grp in lcSections)
+                        {
+                            var pairs = grp.Fields
+                                .Select(f => (f.Label, Val: getVal(data, f.Key)))
+                                .Where(x => !string.IsNullOrEmpty(x.Val))
+                                .ToList();
+                            if (pairs.Any())
+                            {
+                                <h6 class="small text-uppercase text-muted border-bottom pb-1 mb-2">@grp.Title</h6>
+                                <div class="row g-2 mb-3">
+                                    @foreach (var p in pairs)
+                                    {
+                                        <div class="col-md-3"><small class="text-muted d-block">@p.Label</small><span class="text-wrap">@p.Val</span></div>
+                                    }
+                                </div>
+                            }
+                        }
+
+                        @if (data.TryGetProperty("Documents", out var docArr) && docArr.GetArrayLength() > 0)
+                        {
+                            <h6 class="small text-uppercase text-muted mb-1">Documents at Approval</h6>
+                            <table class="table table-sm table-bordered mb-2">
+                                <thead class="table-light"><tr><th>File Name</th><th>Type</th><th>SHA-256</th></tr></thead>
+                                <tbody>
+                                    @foreach (var doc in docArr.EnumerateArray())
+                                    {
+                                        <tr>
+                                            <td>@(doc.TryGetProperty("FileName", out var fn) ? fn.GetString() : "—")</td>
+                                            <td><span class="badge bg-light text-dark border small">@(doc.TryGetProperty("Type", out var dt) ? dt.GetString() : "—")</span></td>
+                                            <td><code class="small text-muted">@(doc.TryGetProperty("FileHash", out var fh) && fh.ValueKind != System.Text.Json.JsonValueKind.Null ? fh.GetString()?[..Math.Min(16, fh.GetString()?.Length ?? 0)] + "…" : "—")</code></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                        @if (data.TryGetProperty("Conditions", out var condArr) && condArr.GetArrayLength() > 0)
+                        {
+                            <h6 class="small text-uppercase text-muted mb-1">Conditions at Approval</h6>
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var cond in condArr.EnumerateArray())
+                                {
+                                    <li class="small"><i class="fas fa-circle text-muted me-1" style="font-size:0.5em;vertical-align:middle"></i>
+                                        @(cond.TryGetProperty("ConditionDescription", out var cd) ? cd.GetString() : "")
+                                        <span class="badge bg-light text-dark border ms-1">@(cond.TryGetProperty("Status", out var cs) ? cs.GetString() : "")</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+</div><!-- end tab-content -->
+
+<!-- Quick notes / regulatory action -->
+@if (!string.IsNullOrEmpty(Model.RegulatoryActionNotes))
+{
+    <div class="alert alert-warning mt-2">
+        <strong><i class="fas fa-exclamation-triangle me-1"></i>Regulatory Action Notes:</strong><br />
+        @Model.RegulatoryActionNotes
+    </div>
+}
+@if (!string.IsNullOrEmpty(Model.JustificationReason))
+{
+    <div class="alert alert-info mt-2">
+        <strong>Justification / Reason:</strong> @Model.JustificationReason
+    </div>
+}
+
+<!-- ── Add Condition Modal ─────────────────────────────────────────────── -->
+<div class="modal fade" id="addConditionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="AddCondition" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="recordId" value="@Model.Id" />
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title"><i class="fas fa-tasks me-2"></i>Add Condition</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Condition Description <span class="text-danger">*</span></label>
+                        <textarea name="conditionDescription" class="form-control" rows="4"
+                                  placeholder="Describe the condition imposed by the authority or certification body..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Due Date</label>
+                        <input type="date" name="dueDate" class="form-control" />
+                        <small class="text-muted">Date by which the condition must be satisfied.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning"><i class="fas fa-plus me-1"></i>Add Condition</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Edit Condition Modal ────────────────────────────────────────────── -->
+<div class="modal fade" id="editConditionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="UpdateCondition" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="recordId" value="@Model.Id" />
+                <input type="hidden" name="conditionId" id="editConditionId" />
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Condition</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Condition Description <span class="text-danger">*</span></label>
+                        <textarea name="conditionDescription" id="editConditionDesc" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Due Date</label>
+                        <input type="date" name="dueDate" id="editConditionDue" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Complete Condition Modal ────────────────────────────────────────── -->
+<div class="modal fade" id="completeConditionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="CompleteCondition" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="recordId" value="@Model.Id" />
+                <input type="hidden" name="conditionId" id="completeConditionId" />
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Mark Condition Complete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Completion Notes</label>
+                        <textarea name="completionNotes" class="form-control" rows="3"
+                                  placeholder="Describe how the condition was satisfied, reference evidence submitted..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>Mark Complete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Waive Condition Modal ────────────────────────────────────────────── -->
+<div class="modal fade" id="waiveConditionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="WaiveCondition" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="recordId" value="@Model.Id" />
+                <input type="hidden" name="conditionId" id="waiveConditionId" />
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title"><i class="fas fa-ban me-2"></i>Waive Condition</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info small"><i class="fas fa-info-circle me-1"></i>A waiver records that this condition will not be formally fulfilled. Document the authority's or management's approval below.</div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Waiver Justification <span class="text-danger">*</span></label>
+                        <textarea name="waiverReason" class="form-control" rows="3"
+                                  placeholder="Authority waiver reference, management approval, documented justification..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info text-white"><i class="fas fa-ban me-1"></i>Confirm Waiver</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Upload Document Modal ───────────────────────────────────────────── -->
+<div class="modal fade" id="uploadDocModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="UploadDocument" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="recordId" value="@Model.Id" />
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-upload me-2"></i>Upload Document</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Document Type <span class="text-danger">*</span></label>
+                        <select name="documentType" class="form-select" required>
+                            @foreach (var dt in Enum.GetValues<LCDocumentType>())
+                            {
+                                <option value="@dt">@dt</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">File <span class="text-danger">*</span></label>
+                        <input type="file" name="file" class="form-control" required
+                               accept="@UploadRules.Accept" />
+                        <small class="text-muted">Accepted: @UploadRules.AcceptedLabel. Max 25 MB.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Description (optional)</label>
+                        <input type="text" name="description" class="form-control"
+                               placeholder="Brief description of this document's purpose" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-upload me-1"></i>Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Add Dependency Modal ────────────────────────────────────────────── -->
+<div class="modal fade" id="addDependencyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="AddDependency" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="recordId" value="@Model.Id" />
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-link me-2"></i>Link RegIntel Application</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small">Select a product registration that depends on this licence/certification being current.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">RegIntel Application <span class="text-danger">*</span></label>
+                        <select name="regulatoryApplicationId" asp-items='@(ViewBag.RIApplicationsList as SelectList)'
+                                class="form-select select2-ri" required>
+                            <option value="">— Search for application —</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Notes (optional)</label>
+                        <input type="text" name="notes" class="form-control"
+                               placeholder="e.g. GMP Clearance required for ARTG 123456 supply" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-link me-1"></i>Link Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Issue Modal (password-gated) ─────────────────────────────────────── -->
+<!-- ── Initiate Renewal Modal (early / unscheduled renewal, reason required) ── -->
+<div class="modal fade" id="initiateRenewalModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="InitiateRenewal" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title"><i class="fas fa-sync me-2"></i>Initiate Renewal Now</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This will move <strong>@Model.LCNumber</strong> to <strong class="text-warning-emphasis">Renewal Due</strong> so the renewal application can be progressed.</p>
+                    @if (Model.ExpiryDate.HasValue)
+                    {
+                        <div class="alert alert-info small mb-3">
+                            <i class="fas fa-info-circle me-1"></i>This record would otherwise be transitioned automatically within @(Model.RenewalLeadTimeDays > 0 ? Model.RenewalLeadTimeDays : 90) day(s) of its expiry (@Model.ExpiryDate.Value.ToString("dd MMM yyyy")). Use this to start the renewal early.
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Reason for early renewal <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="e.g. authority advised early resubmission, scheduling ahead of lead time, change in supply arrangements..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning"><i class="fas fa-sync me-1"></i>Initiate Renewal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="issueModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="IssueRecord" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Issue / Activate Licence</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This will mark <strong>@Model.LCNumber</strong> as <strong class="text-success">Issued &amp; Active</strong>.</p>
+                    <p class="text-muted small">Ensure the Licence Number and Issue Date are recorded in Edit before proceeding.</p>
+                    <div class="alert alert-warning small"><i class="fas fa-lock me-1"></i>This action requires Licence Manager credentials.</div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Your Email Address</label>
+                        <input type="email" name="email" class="form-control" placeholder="manager@company.com" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Your Password</label>
+                        <input type="password" name="pwd" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle me-1"></i>Confirm Issue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Suspend Modal (password-gated, reason required) ──────────────────── -->
+<div class="modal fade" id="suspendModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="SuspendRecord" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-pause-circle me-2"></i>Suspend Licence / Certification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This will mark <strong>@Model.LCNumber</strong> as <strong class="text-danger">Suspended</strong> and lock the record.</p>
+                    <div class="alert alert-danger small"><i class="fas fa-exclamation-triangle me-1"></i>All linked product applications will be flagged as Supply Credential At Risk.</div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Suspension Reason <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="Regulatory action, inspection finding, authority-directed suspension..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Your Email Address</label>
+                        <input type="email" name="email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Your Password</label>
+                        <input type="password" name="pwd" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-pause-circle me-1"></i>Confirm Suspension</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Withdraw Modal (password-gated, reason required) ─────────────────── -->
+<div class="modal fade" id="withdrawModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="WithdrawRecord" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title"><i class="fas fa-times-circle me-2"></i>Withdraw Licence / Certification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This will mark <strong>@Model.LCNumber</strong> as <strong>Withdrawn</strong> and lock the record.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Withdrawal Reason <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="Voluntary surrender, business model change, superseded by new record..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Your Email Address</label>
+                        <input type="email" name="email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Your Password</label>
+                        <input type="password" name="pwd" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark"><i class="fas fa-times-circle me-1"></i>Confirm Withdrawal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Not Applicable Modal (reason required, no password) ───────────────── -->
+<div class="modal fade" id="notApplicableModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Transition" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="newStatus" value="NotApplicable" />
+                <div class="modal-header bg-secondary text-white">
+                    <h5 class="modal-title"><i class="fas fa-ban me-2"></i>Mark as Not Applicable</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This will mark <strong>@Model.LCNumber</strong> as <strong>Not Applicable</strong> with documented justification.</p>
+                    <div class="alert alert-info small"><i class="fas fa-info-circle me-1"></i>Recording N/A with justification is compliance-positive and demonstrates considered determination during TGA inspections.</div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Justification <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" placeholder="Reason this licence type is not required for the current operating model..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-secondary"><i class="fas fa-ban me-1"></i>Confirm Not Applicable</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Select2 for Add Dependency modal RI application lookup
+            $('.select2-ri').select2({ theme: 'classic', width: '100%', dropdownParent: $('#addDependencyModal') });
+
+            // Wire Edit Condition modal data-attributes
+            $('#editConditionModal').on('show.bs.modal', function (e) {
+                var btn = $(e.relatedTarget);
+                $('#editConditionId').val(btn.data('id'));
+                var desc = btn.data('desc');
+                try { desc = JSON.parse(desc); } catch(ex) {}
+                $('#editConditionDesc').val(desc);
+                $('#editConditionDue').val(btn.data('due'));
+            });
+
+            // Wire Complete Condition modal
+            $('#completeConditionModal').on('show.bs.modal', function (e) {
+                var btn = $(e.relatedTarget);
+                $('#completeConditionId').val(btn.data('id'));
+            });
+
+            // Wire Waive Condition modal
+            $('#waiveConditionModal').on('show.bs.modal', function (e) {
+                var btn = $(e.relatedTarget);
+                $('#waiveConditionId').val(btn.data('id'));
+            });
+        });
+
+        @if (TempData["ActiveTab"] != null)
+        {
+            <text>
+            (function() {
+                var tabId = @Json.Serialize(TempData["ActiveTab"]!.ToString());
+                var el = document.querySelector('[data-bs-target="#' + tabId + '"]');
+                if (el) bootstrap.Tab.getOrCreateInstance(el).show();
+            })();
+            </text>
+        }
+    </script>
+}

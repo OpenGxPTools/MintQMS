@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Reports</h4>
+</div>
+
+<p class="text-muted mb-4">
+    Cross-module reports for management review, compliance monitoring, and operational planning.
+    These reports aggregate data from all quality system modules and can be exported to Excel for sharing with auditors and regulators.
+</p>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <div class="mb-3">
+                    <span class="badge bg-primary fs-6 px-3 py-2">Management</span>
+                </div>
+                <h5 class="card-title">Management Review Input</h5>
+                <p class="card-text text-muted flex-grow-1">
+                    Aggregated KPIs across all quality modules for a selected date range — CAPAs, deviations,
+                    changes, complaints, audits, and risks. Required input for ISO 13485 / GMP management review meetings.
+                    Exportable to Excel.
+                </p>
+                <a asp-action="ManagementReview" class="btn btn-primary mt-3">View Report</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <div class="mb-3">
+                    <span class="badge bg-success fs-6 px-3 py-2">Compliance</span>
+                </div>
+                <h5 class="card-title">Training Compliance</h5>
+                <p class="card-text text-muted flex-grow-1">
+                    Training session completion rates by session and by individual user for a selected period.
+                    Demonstrates workforce competency for regulatory audits.
+                    Exportable to Excel with per-session and per-user sheets.
+                </p>
+                <a asp-action="TrainingCompliance" class="btn btn-success mt-3">View Report</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <div class="mb-3">
+                    <span class="badge bg-danger fs-6 px-3 py-2">Operational</span>
+                </div>
+                <h5 class="card-title">Overdue Items</h5>
+                <p class="card-text text-muted flex-grow-1">
+                    A single cross-module view of everything currently overdue — CAPAs, changes, audits, risks,
+                    deviations, and complaints. Refreshed in real time. Intended as a daily operational
+                    tool for QA managers.
+                </p>
+                <a asp-action="OverdueItems" class="btn btn-danger mt-3">View Report</a>
+            </div>
+        </div>
+    </div>
+</div>

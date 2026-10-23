@@ -1,0 +1,192 @@
+@using OpenQMS.Models
+@using OpenQMS.Models.Navigation
+@{
+    ViewData["Title"] = "Training Compliance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var from = (DateTime)ViewBag.From;
+    var to = (DateTime)ViewBag.To;
+    var trainings = (List<Training>)ViewBag.Trainings;
+    var pct = (int)ViewBag.CompliancePct;
+
+    // Compute per-user stats in view from eager-loaded data
+    var userStats = trainings
+        .SelectMany(t => t.Trainees
+            .Select(ut => new { ut.Trainee, TrainingStatus = t.Status }))
+        .GroupBy(x => x.Trainee?.Email ?? "Unknown")
+        .Select(g => new
+        {
+            Name = $"{g.First().Trainee?.FirstName} {g.First().Trainee?.LastName}".Trim(),
+            Email = g.Key,
+            Total = g.Count(),
+            Completed = g.Count(x => x.TrainingStatus == Training.TrainingStatus.Completed)
+        })
+        .OrderBy(x => x.Name)
+        .ToList();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Training Compliance Report</h4>
+    <div class="d-flex gap-2">
+        <a asp-action="ExportTrainingCompliance"
+           asp-route-from="@from.ToString("yyyy-MM-dd")"
+           asp-route-to="@to.ToString("yyyy-MM-dd")"
+           class="btn btn-outline-success">Export Excel</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Reports Hub</a>
+    </div>
+</div>
+
+<p class="text-muted mb-3">
+    Training session completion rates for the selected period, by session and by individual user.
+</p>
+
+@* Date range filter *@
+<form method="get" class="card card-body mb-4">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">From</label>
+            <input type="date" name="from" class="form-control" value="@from.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">To</label>
+            <input type="date" name="to" class="form-control" value="@to.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-success w-100">Apply</button>
+        </div>
+    </div>
+</form>
+
+<p class="text-muted small mb-4">
+    Showing period: <strong>@from.ToString("dd MMM yyyy")</strong> to <strong>@to.ToString("dd MMM yyyy")</strong>
+</p>
+
+@* KPI Cards *@
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-primary">@ViewBag.TotalTrainings</div>
+                <div class="text-muted">Total Sessions</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-success">@ViewBag.CompletedTrainings</div>
+                <div class="text-muted">Completed</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold @(ViewBag.TotalTrainings - ViewBag.CompletedTrainings > 0 ? "text-warning" : "text-success")">
+                    @(ViewBag.TotalTrainings - ViewBag.CompletedTrainings)
+                </div>
+                <div class="text-muted">Not Completed</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold @(pct >= 80 ? "text-success" : pct >= 60 ? "text-warning" : "text-danger")">
+                    @pct%
+                </div>
+                <div class="text-muted">Compliance Rate</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!trainings.Any())
+{
+    <div class="alert alert-info">No training sessions found in this period.</div>
+}
+else
+{
+    @* Sessions Table *@
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Sessions</div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Training ID</th>
+                        <th>Name</th>
+                        <th>Due Date</th>
+                        <th>Attendees</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in trainings)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Trainings" asp-action="Details" asp-route-id="@t.Id">@t.TrainingId</a>
+                            </td>
+                            <td>@t.Name</td>
+                            <td>@(t.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
+                            <td>@(t.Trainees?.Count ?? 0)</td>
+                            <td>
+                                @if (t.Status == Training.TrainingStatus.Completed)
+                                {
+                                    <span class="badge bg-success">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Scheduled</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* Per-User Table *@
+    @if (userStats.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Compliance by User</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Sessions Attended</th>
+                            <th>Sessions Completed</th>
+                            <th>Compliance %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var u in userStats)
+                        {
+                            var userPct = u.Total > 0 ? (int)Math.Round(u.Completed * 100.0 / u.Total) : 0;
+                            <tr>
+                                <td>@u.Name</td>
+                                <td>@u.Email</td>
+                                <td>@u.Total</td>
+                                <td>@u.Completed</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height: 8px;">
+                                            <div class="progress-bar @(userPct >= 80 ? "bg-success" : userPct >= 60 ? "bg-warning" : "bg-danger")"
+                                                 style="width: @userPct%"></div>
+                                        </div>
+                                        <span class="small @(userPct >= 80 ? "text-success" : userPct >= 60 ? "text-warning" : "text-danger")">@userPct%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}

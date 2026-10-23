@@ -1,0 +1,155 @@
+@model OpenQMS.Models.Supplier
+
+@{
+    ViewData["Title"] = "Supplier Attachments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isLocked = Model.Status == OpenQMS.Models.SupplierStatus.Approved
+                    || Model.Status == OpenQMS.Models.SupplierStatus.Qualified
+                    || Model.Status == OpenQMS.Models.SupplierStatus.Suspended
+                    || Model.Status == OpenQMS.Models.SupplierStatus.Cancelled
+                    || Model.Status == OpenQMS.Models.SupplierStatus.Rejected;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Attachments — @Model.SupplierCode</h4>
+        <small class="text-muted">@Model.LegalName</small>
+    </div>
+</div>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!isLocked)
+{
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Upload Document</div>
+        <div class="card-body">
+            <form asp-action="UploadDocument" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="supplierId" value="@Model.Id" />
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Document Type</label>
+                        <select name="documentType" class="form-select"
+                                asp-items="Html.GetEnumSelectList<OpenQMS.Models.SupplierDocumentType>()"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">File <span class="text-danger">*</span></label>
+                        <input type="file" name="file" class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Description</label>
+                        <input type="text" name="description" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Issue Date</label>
+                        <input type="date" name="issueDate" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="date" name="expiryDate" class="form-control" />
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-outline-primary btn-sm"><i class="fas fa-upload me-1"></i>Upload</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary">
+        <i class="bi bi-lock me-1"></i>Documents are locked while the supplier is <strong>@EnumHelper.Display(Model.Status)</strong>.
+        To add or replace documents (for example a renewed certificate), start a new review from
+        <a asp-action="Reviews" asp-route-id="@Model.Id">Review History</a> — the documents reopen while the review is in progress.
+    </div>
+}
+
+<h6 class="text-muted text-uppercase small mt-3">Uploaded Attachments</h6>
+
+@if (Model.Documents == null || !Model.Documents.Any())
+{
+    <p class="text-muted">No documents uploaded yet.</p>
+}
+else
+{
+    <table class="table table-striped" id="docsTable">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>File Name</th>
+                <th>Description</th>
+                <th>Issue Date</th>
+                <th>Expiry Date</th>
+                <th>Status</th>
+                <th>Uploaded By</th>
+                <th>Uploaded Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var doc in Model.Documents.OrderByDescending(d => d.UploadedDate))
+            {
+                var rowClass = doc.DocumentStatus == OpenQMS.Models.SupplierDocumentStatus.Expired ? "table-danger"
+                             : doc.DocumentStatus == OpenQMS.Models.SupplierDocumentStatus.Expiring ? "table-warning"
+                             : "";
+                <tr class="@rowClass">
+                    <td>@doc.DocumentType</td>
+                    <td>@doc.FileName</td>
+                    <td>@(doc.Description ?? "-")</td>
+                    <td>@(doc.IssueDate.HasValue ? doc.IssueDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                    <td>@(doc.ExpiryDate.HasValue ? doc.ExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                    <td>@doc.DocumentStatus</td>
+                    <td>@doc.UploadedBy</td>
+                    <td>@doc.UploadedDate.ToSite().ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a asp-action="DownloadDocument" asp-route-id="@doc.Id">Download</a>
+                        @if (!isLocked)
+                        {
+                            <span> | </span>
+                            <form asp-action="DeleteDocument" method="post" style="display:inline;" data-delete-reason="document">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@doc.Id" />
+                                <input type="hidden" name="supplierId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-link p-0 text-danger">Delete</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadDocument", Noun: "documents")' />
+
+<div class="mt-3 d-flex gap-2">
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Details</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list me-1"></i>Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#docsTable').DataTable({
+                dom: 'lBfrtip',
+                buttons: ['colvis', 'pdf', 'excel'],
+                order: [[7, 'desc']]
+            });
+        });
+    </script>
+}

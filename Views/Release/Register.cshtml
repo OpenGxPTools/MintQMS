@@ -1,0 +1,86 @@
+@model IEnumerable<OpenQMS.Models.Release.ReleaseCertificate>
+@using OpenQMS.Models.Release
+
+@{
+    ViewData["Title"] = "Release Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        $('#registerTable').DataTable({
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+            order: [[8, 'desc']],
+            buttons: [
+                'colvis',
+                { extend: 'excel', title: 'Release Register', exportOptions: { columns: ':visible' } },
+                { extend: 'pdf',   title: 'Release Register', exportOptions: { columns: ':visible' } }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">AP Release Register</h4>
+    <div class="d-flex gap-2">
+        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">Export Excel</a>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">Dashboard</a>
+    </div>
+</div>
+<p class="text-muted small">Formal AP register — all issued certificates. Required by PIC/S Annex 16 section 1.10.</p>
+<hr />
+
+<table id="registerTable" class="table" style="width:100%">
+    <thead>
+        <tr>
+            <th>Certificate No.</th>
+            <th>Record No.</th>
+            <th>Product</th>
+            <th>Batch No.</th>
+            <th>Release Type</th>
+            <th>Cert Type</th>
+            <th>AP Name</th>
+            <th>Cert. Date</th>
+            <th>Issue Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            var cbadge = c.Status switch
+            {
+                CertificateStatus.Issued     => "bg-success",
+                CertificateStatus.Superseded => "bg-secondary",
+                CertificateStatus.Withdrawn  => "bg-danger",
+                _                            => "bg-secondary"
+            };
+            <tr>
+                <td>@c.CertificateNumber</td>
+                <td>
+                    @if (c.ReleaseRecord != null)
+                    {
+                        <a asp-action="Details" asp-route-id="@c.ReleaseRecord.Id">@c.ReleaseRecord.RecordNumber</a>
+                    }
+                </td>
+                <td>@c.ReleaseRecord?.ProductName</td>
+                <td>@c.ReleaseRecord?.BatchNumber</td>
+                <td>@c.ReleaseRecord?.ReleaseType</td>
+                <td>@c.CertificateType</td>
+                <td>@c.APFullNameQualification</td>
+                <td>@(c.ReleaseRecord?.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</td>
+                <td>@c.IssuedDate.ToSite().ToString("dd-MMM-yyyy")</td>
+                <td><span class="badge @cbadge">@EnumHelper.Display(c.Status)</span></td>
+                <td>
+                    <a asp-action="ViewCertificate" asp-route-certificateId="@c.Id" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

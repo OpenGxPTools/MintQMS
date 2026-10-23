@@ -1,0 +1,301 @@
+@using OpenQMS.Models
+@using OpenQMS.Models.Navigation
+
+@{
+    ViewData["Title"] = "My Training";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var outstanding        = ViewBag.Outstanding        as List<UserTraining>              ?? new();
+    var completed          = ViewBag.Completed          as List<UserTraining>              ?? new();
+    var linkedDocs         = ViewBag.LinkedDocs         as Dictionary<int, AppDocument>    ?? new();
+    var latestEffectiveDocs = ViewBag.LatestEffectiveDocs as Dictionary<int, AppDocument> ?? new();
+}
+
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <h4 class="mb-0">My Training</h4>
+    @if (outstanding.Any(r => r.Training?.DueDate.HasValue == true && r.Training.DueDate!.Value.Date < SiteTime.Today))
+    {
+        <span class="badge bg-danger fs-6"><i class="bi bi-exclamation-circle me-1"></i>Overdue items</span>
+    }
+</div>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["WorkflowInfo"] != null)
+{
+    <div class="alert alert-info alert-dismissible fade show">
+        <i class="bi bi-info-circle me-1"></i>@TempData["WorkflowInfo"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["WorkflowError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* OUTSTANDING *@
+<h6 class="fw-semibold text-uppercase text-muted small mb-2">Outstanding (@outstanding.Count)</h6>
+@if (outstanding.Any())
+{
+    <div class="table-responsive mb-4">
+        <table class="table table-sm align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Training ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Source Document</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in outstanding)
+                {
+                    var training  = row.Training!;
+                    var isOverdue = training.DueDate.HasValue && training.DueDate.Value.Date < SiteTime.Today;
+                    var dueCls    = isOverdue ? "text-danger fw-semibold" : "";
+                    AppDocument? doc = training.PolicyId > 0 ? linkedDocs.GetValueOrDefault(training.PolicyId) : null;
+                    AppDocument? effectiveDoc = doc == null ? null
+                        : (doc.Status == AppDocument.DocumentStatus.Effective || doc.Status == AppDocument.DocumentStatus.Approved)
+                            ? doc
+                            : latestEffectiveDocs.GetValueOrDefault(doc.Id);
+
+                    var statusBadge = row.Status switch {
+                        UserTrainingStatus.PendingTrainerConfirmation => "bg-info text-dark",
+                        UserTrainingStatus.InProgress                 => "bg-warning text-dark",
+                        _                                              => "bg-secondary"
+                    };
+
+                    <tr>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@training.Id">@training.TrainingId</a>
+                        </td>
+                        <td>@training.Name</td>
+                        <td>
+                            <span class="badge @(training.TrainingType == TrainingType.CompetencyAssessment ? "bg-primary" : "bg-info text-dark")">
+                                @(training.TrainingType == TrainingType.CompetencyAssessment ? "Competency" : "Read & Ack")
+                            </span>
+                        </td>
+                        <td>
+                            @if (doc != null)
+                            {
+                                var displayVersion = training.SourceDocumentVersion.HasValue
+                                    ? training.SourceDocumentVersion.Value
+                                    : (effectiveDoc ?? doc).Version;
+                                <div>
+                                    @doc.DocumentId — @doc.Title
+                                    <span class="badge bg-light text-dark border ms-1">v@(displayVersion.ToString("0.00"))</span>
+                                </div>
+                                @if (effectiveDoc != null)
+                                {
+                                    <a asp-controller="AppDocuments" asp-action="ViewFile" asp-route-id="@effectiveDoc.Id"
+                                       class="btn btn-outline-primary btn-sm mt-1" target="_blank" rel="noopener">
+                                        <i class="bi bi-file-earmark-text me-1"></i>Open Document
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary mt-1">Superseded</span>
+                                }
+                            }
+                            else if (training.PolicyId > 0)
+                            {
+                                <span class="text-muted small">ID: @training.PolicyId</span>
+                            }
+                            else { <span class="text-muted">—</span> }
+                        </td>
+                        <td class="@dueCls">
+                            @if (training.DueDate.HasValue)
+                            {
+                                @training.DueDate.Value.ToString("dd MMM yyyy")
+                                @if (isOverdue)
+                                {
+                                    <span class="badge bg-danger ms-1">Overdue</span>
+                                }
+                            }
+                            else { <span class="text-muted">—</span> }
+                        </td>
+                        <td><span class="badge @statusBadge">@EnumHelper.Display(row.Status)</span></td>
+                        <td>
+                            @if (row.Status == UserTrainingStatus.Scheduled)
+                            {
+                                var docRef = doc != null
+                                    ? $"{doc.DocumentId} v{(training.SourceDocumentVersion ?? (effectiveDoc ?? doc).Version).ToString("0.00")} — {doc.Title}"
+                                    : training.PolicyTitle ?? string.Empty;
+                                <button class="btn btn-success btn-sm"
+                                        data-bs-toggle="modal" data-bs-target="#acknowledgeModal"
+                                        data-ut-id="@row.Id"
+                                        data-training-name="@training.Name"
+                                        data-training-type="@((int)training.TrainingType)"
+                                        data-doc-ref="@docRef">
+                                    <i class="bi bi-pen me-1"></i>
+                                    Acknowledge
+                                </button>
+                            }
+                            else if (row.Status == UserTrainingStatus.PendingTrainerConfirmation)
+                            {
+                                <span class="text-muted small">Awaiting trainer</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-success mb-4">
+        <i class="bi bi-check-circle me-1"></i>No outstanding training items. Well done!
+    </div>
+}
+
+@* COMPLETED *@
+<h6 class="fw-semibold text-uppercase text-muted small mb-2">Completed (@completed.Count)</h6>
+@if (completed.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Training ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Source Document</th>
+                    <th>Completed / Acknowledged</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in completed)
+                {
+                    var training = row.Training!;
+                    AppDocument? doc = training.PolicyId > 0 ? linkedDocs.GetValueOrDefault(training.PolicyId) : null;
+                    AppDocument? effectiveDocC = doc == null ? null
+                        : (doc.Status == AppDocument.DocumentStatus.Effective || doc.Status == AppDocument.DocumentStatus.Approved)
+                            ? doc
+                            : latestEffectiveDocs.GetValueOrDefault(doc.Id);
+                    var completedOn = training.TrainingType == TrainingType.CompetencyAssessment
+                        ? SiteTime.ToSite((DateTime?)row.CompetencyVerifiedOn)?.ToString("dd MMM yyyy")
+                        : SiteTime.ToSite((DateTime?)row.ReadAcknowledgedOn)?.ToString("dd MMM yyyy");
+                    <tr>
+                        <td><a asp-action="Details" asp-route-id="@training.Id">@training.TrainingId</a></td>
+                        <td>@training.Name</td>
+                        <td>
+                            <span class="badge @(training.TrainingType == TrainingType.CompetencyAssessment ? "bg-primary" : "bg-info text-dark")">
+                                @(training.TrainingType == TrainingType.CompetencyAssessment ? "Competency" : "Read & Ack")
+                            </span>
+                        </td>
+                        <td>
+                            @if (doc != null)
+                            {
+                                var displayVersionC = training.SourceDocumentVersion.HasValue
+                                    ? training.SourceDocumentVersion.Value
+                                    : (effectiveDocC ?? doc).Version;
+                                <div>
+                                    @doc.DocumentId — @doc.Title
+                                    <span class="badge bg-light text-dark border ms-1">v@(displayVersionC.ToString("0.00"))</span>
+                                </div>
+                                @if (effectiveDocC != null)
+                                {
+                                    <a asp-controller="AppDocuments" asp-action="DownloadFile" asp-route-id="@effectiveDocC.Id"
+                                       class="btn btn-outline-secondary btn-sm mt-1" target="_blank">
+                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>Open Document
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary mt-1">Superseded</span>
+                                }
+                            }
+                            else { <span class="text-muted">—</span> }
+                        </td>
+                        <td>
+                            <span class="badge bg-success me-1"><i class="bi bi-check2"></i></span>
+                            @(completedOn ?? "—")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p class="text-muted">No completed training records yet.</p>
+}
+
+@* Acknowledge Reading Modal *@
+<div class="modal fade" id="acknowledgeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="AcknowledgeReading" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="ackUserTrainingId" name="userTrainingId" />
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="ackModalTitle">Acknowledge Reading</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="ackModalBody">
+                        I confirm that I have read and understood the content of this document.
+                    </p>
+                    <div class="alert alert-info py-2 px-3 mb-0" id="ackDocRef" style="display:none;">
+                        <i class="bi bi-file-earmark-text me-1"></i><span id="ackDocRefText"></span>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to sign this acknowledgement.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success" id="ackSubmitBtn">Acknowledge</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var acknowledgeModal = document.getElementById('acknowledgeModal');
+        acknowledgeModal.addEventListener('show.bs.modal', function (e) {
+            var btn    = e.relatedTarget;
+            var utId   = btn.getAttribute('data-ut-id');
+            var name   = btn.getAttribute('data-training-name');
+            var docRef = btn.getAttribute('data-doc-ref') || '';
+
+            document.getElementById('ackUserTrainingId').value = utId;
+            document.getElementById('ackModalBody').textContent = 'I confirm that I have read and understood the content of: ' + name;
+
+            var docRefEl = document.getElementById('ackDocRef');
+            if (docRef) {
+                document.getElementById('ackDocRefText').textContent = docRef;
+                docRefEl.style.display = '';
+            } else {
+                docRefEl.style.display = 'none';
+            }
+        });
+        document.getElementById('acknowledgeModal').addEventListener('hidden.bs.modal', function () {
+            this.querySelector('form').reset();
+        });
+    </script>
+}

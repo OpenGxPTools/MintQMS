@@ -1,0 +1,396 @@
+@model OpenQMS.Models.Risk
+@{
+    ViewData["Title"] = $"Edit Risk — {Model.RiskId}";
+
+    var isIdentificationStage = Model.Status == OpenQMS.Models.Risk.RiskStatus.Identification
+                             || Model.Status == OpenQMS.Models.Risk.RiskStatus.Assessment;
+    var isMitigationStage = Model.Status == OpenQMS.Models.Risk.RiskStatus.Mitigation;
+
+    var products  = ViewData["Products"]  as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var processes = ViewData["Processes"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var assets    = ViewData["Assets"]    as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var materials = ViewData["Materials"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var suppliers = ViewData["Suppliers"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+
+    var selProducts  = (ViewBag.SelectedProductIds  as List<int>) ?? new List<int>();
+    var selProcesses = (ViewBag.SelectedProcessIds  as List<int>) ?? new List<int>();
+    var selAssets    = (ViewBag.SelectedAssetIds    as List<int>) ?? new List<int>();
+    var selMaterials = (ViewBag.SelectedMaterialIds as List<int>) ?? new List<int>();
+    var selSuppliers = (ViewBag.SelectedSupplierIds as List<int>) ?? new List<int>();
+
+    var stageLabel = isIdentificationStage ? "Identification" : "Mitigation";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Edit Risk &mdash; <span class="fw-bold">@Model.RiskId</span></h4>
+        <span class="text-muted small">Stage: @stageLabel</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">Details</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Edit" asp-route-id="@Model.Id">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    @if (isIdentificationStage)
+    {
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Basic Information</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="Title" class="form-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Category" class="form-label"></label>
+                        <select asp-for="Category" class="form-select"
+                                asp-items="Html.GetEnumSelectList<OpenQMS.Models.Risk.RiskCategory>()"></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="RiskOwner" class="form-label"></label>
+                        <input asp-for="RiskOwner" class="form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Links to Reference Data</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Products</label>
+                        <select id="productDropdown" class="form-select">
+                            <option value="">-- Add Product --</option>
+                            @foreach (var p in products)
+                            { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                        </select>
+                        <div id="productTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                        <div id="productHidden" class="d-none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Processes</label>
+                        <select id="processDropdown" class="form-select">
+                            <option value="">-- Add Process --</option>
+                            @foreach (var p in processes)
+                            { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                        </select>
+                        <div id="processTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                        <div id="processHidden" class="d-none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Assets</label>
+                        <select id="assetDropdown" class="form-select">
+                            <option value="">-- Add Asset --</option>
+                            @foreach (var p in assets)
+                            { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                        </select>
+                        <div id="assetTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                        <div id="assetHidden" class="d-none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Materials</label>
+                        <select id="materialDropdown" class="form-select">
+                            <option value="">-- Add Material --</option>
+                            @foreach (var p in materials)
+                            { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                        </select>
+                        <div id="materialTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                        <div id="materialHidden" class="d-none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Suppliers</label>
+                        <select id="supplierDropdown" class="form-select">
+                            <option value="">-- Add Supplier --</option>
+                            @foreach (var p in suppliers)
+                            { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
+                        </select>
+                        <div id="supplierTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                        <div id="supplierHidden" class="d-none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Initial Risk Assessment</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="Severity" class="form-label"></label>
+                        <select asp-for="Severity" class="form-select">
+                            <option value="1">1 - Negligible</option>
+                            <option value="2">2 - Minor</option>
+                            <option value="3">3 - Moderate</option>
+                            <option value="4">4 - Major</option>
+                            <option value="5">5 - Critical</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Probability" class="form-label"></label>
+                        <select asp-for="Probability" class="form-select">
+                            <option value="1">1 - Rare</option>
+                            <option value="2">2 - Unlikely</option>
+                            <option value="3">3 - Possible</option>
+                            <option value="4">4 - Likely</option>
+                            <option value="5">5 - Almost Certain</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Detectability" class="form-label"></label>
+                        <select asp-for="Detectability" class="form-select">
+                            <option value="1">1 - High (Easily Detected)</option>
+                            <option value="2">2 - Medium-High</option>
+                            <option value="3">3 - Medium</option>
+                            <option value="4">4 - Medium-Low</option>
+                            <option value="5">5 - Low (Hard to Detect)</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <div class="alert alert-info small py-2 mb-0">
+                            Initial RPN is calculated automatically as Severity &times; Probability &times; Detectability (range: 1&ndash;125).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Mitigation &amp; Monitoring</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="MitigationStrategy" class="form-label"></label>
+                        <textarea asp-for="MitigationStrategy" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="TargetCompletionDate" class="form-label"></label>
+                        <input asp-for="TargetCompletionDate" class="form-control" type="date" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="MonitoringPlan" class="form-label"></label>
+                        <textarea asp-for="MonitoringPlan" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="NextReviewDate" class="form-label"></label>
+                        <input asp-for="NextReviewDate" class="form-control" type="date" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (isMitigationStage)
+    {
+        <div class="card mb-4 border-secondary">
+            <div class="card-header fw-semibold bg-light">Risk Summary</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Title</dt>
+                    <dd class="col-sm-9">@Model.Title</dd>
+                    <dt class="col-sm-3">Category</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(m => m.Category)</dd>
+                    <dt class="col-sm-3">Risk Owner</dt>
+                    <dd class="col-sm-9">@(Model.RiskOwner ?? "—")</dd>
+                    <dt class="col-sm-3">Initial RPN</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge @(Model.InitialRPN >= 75 ? "bg-danger" : Model.InitialRPN >= 30 ? "bg-warning text-dark" : "bg-success")">
+                            @Model.InitialRPN
+                        </span>
+                        <span class="text-muted small ms-1">(@Model.Severity &times; @Model.Probability &times; @Model.Detectability)</span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Mitigation</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="MitigationStrategy" class="form-label">
+                            @Html.DisplayNameFor(m => m.MitigationStrategy) <span class="text-danger">*</span>
+                        </label>
+                        <textarea asp-for="MitigationStrategy" class="form-control" rows="4"></textarea>
+                        <span class="form-text text-muted small">Required before submitting for review.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="TargetCompletionDate" class="form-label"></label>
+                        <input asp-for="TargetCompletionDate" class="form-control" type="date" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ActualCompletionDate" class="form-label"></label>
+                        <input asp-for="ActualCompletionDate" class="form-control" type="date" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Residual Risk Assessment (After Mitigation)</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="ResidualSeverity" class="form-label">
+                            @Html.DisplayNameFor(m => m.ResidualSeverity) <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="ResidualSeverity" class="form-select">
+                            <option value="">-- Not Assessed --</option>
+                            <option value="1">1 - Negligible</option>
+                            <option value="2">2 - Minor</option>
+                            <option value="3">3 - Moderate</option>
+                            <option value="4">4 - Major</option>
+                            <option value="5">5 - Critical</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="ResidualProbability" class="form-label">
+                            @Html.DisplayNameFor(m => m.ResidualProbability) <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="ResidualProbability" class="form-select">
+                            <option value="">-- Not Assessed --</option>
+                            <option value="1">1 - Rare</option>
+                            <option value="2">2 - Unlikely</option>
+                            <option value="3">3 - Possible</option>
+                            <option value="4">4 - Likely</option>
+                            <option value="5">5 - Almost Certain</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="ResidualDetectability" class="form-label">
+                            @Html.DisplayNameFor(m => m.ResidualDetectability) <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="ResidualDetectability" class="form-select">
+                            <option value="">-- Not Assessed --</option>
+                            <option value="1">1 - High (Easily Detected)</option>
+                            <option value="2">2 - Medium-High</option>
+                            <option value="3">3 - Medium</option>
+                            <option value="4">4 - Medium-Low</option>
+                            <option value="5">5 - Low (Hard to Detect)</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <div class="alert alert-info small py-2 mb-0">
+                            All three residual scores are required before submitting for review.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Risk Acceptance</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="RiskAcceptable" class="form-label">
+                            @Html.DisplayNameFor(m => m.RiskAcceptable) <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="RiskAcceptable" class="form-select">
+                            <option value="">-- Not Decided --</option>
+                            <option value="true">Yes — Risk is Acceptable</option>
+                            <option value="false">No — Further Action Required</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Justification" class="form-label">
+                            @Html.DisplayNameFor(m => m.Justification) <span class="text-danger">*</span>
+                        </label>
+                        <textarea asp-for="Justification" class="form-control" rows="3"></textarea>
+                        <span class="form-text text-muted small">Required before submitting for review.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Monitoring</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="MonitoringPlan" class="form-label"></label>
+                        <textarea asp-for="MonitoringPlan" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="NextReviewDate" class="form-label"></label>
+                        <input asp-for="NextReviewDate" class="form-control" type="date" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="d-flex gap-2">
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Details</a>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @if (isIdentificationStage)
+    {
+        <script>
+        function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+            var selected = {};
+            preselected.forEach(function (item) { selected[item.id] = item.text; });
+            function render() {
+                var tagsDiv   = document.getElementById(tagsId);
+                var hiddenDiv = document.getElementById(hiddenId);
+                tagsDiv.innerHTML = ''; hiddenDiv.innerHTML = '';
+                Object.keys(selected).forEach(function (id) {
+                    var badge = document.createElement('span');
+                    badge.className = 'badge bg-primary d-flex align-items-center gap-1';
+                    badge.textContent = selected[id];
+                    var btn = document.createElement('button');
+                    btn.type = 'button'; btn.className = 'btn-close btn-close-white btn-sm ms-1';
+                    btn.style.fontSize = '0.6rem';
+                    btn.addEventListener('click', function () { delete selected[id]; render(); });
+                    badge.appendChild(btn); tagsDiv.appendChild(badge);
+                    var input = document.createElement('input');
+                    input.type = 'hidden'; input.name = inputName; input.value = id;
+                    hiddenDiv.appendChild(input);
+                });
+            }
+            document.getElementById(dropdownId).addEventListener('change', function () {
+                var id = this.value, text = this.options[this.selectedIndex].dataset.text;
+                if (id && !selected[id]) { selected[id] = text; render(); }
+                this.value = '';
+            });
+            render();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var productsData  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                products.Where(p => selProducts.Contains(int.Parse(p.Value))).Select(p => new { id = p.Value, text = p.Text }).ToList()));
+            var processesData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                processes.Where(p => selProcesses.Contains(int.Parse(p.Value))).Select(p => new { id = p.Value, text = p.Text }).ToList()));
+            var assetsData    = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                assets.Where(p => selAssets.Contains(int.Parse(p.Value))).Select(p => new { id = p.Value, text = p.Text }).ToList()));
+            var materialsData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                materials.Where(p => selMaterials.Contains(int.Parse(p.Value))).Select(p => new { id = p.Value, text = p.Text }).ToList()));
+            var suppliersData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                suppliers.Where(p => selSuppliers.Contains(int.Parse(p.Value))).Select(p => new { id = p.Value, text = p.Text }).ToList()));
+
+            setupPicker('productDropdown',  'productTags',  'productHidden',  'selectedProducts',  productsData);
+            setupPicker('processDropdown',  'processTags',  'processHidden',  'selectedProcesses', processesData);
+            setupPicker('assetDropdown',    'assetTags',    'assetHidden',    'selectedAssets',    assetsData);
+            setupPicker('materialDropdown', 'materialTags', 'materialHidden', 'selectedMaterials', materialsData);
+            setupPicker('supplierDropdown', 'supplierTags', 'supplierHidden', 'selectedSuppliers', suppliersData);
+        });
+        </script>
+    }
+}

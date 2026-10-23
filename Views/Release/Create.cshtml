@@ -1,0 +1,528 @@
+@model OpenQMS.Models.Release.ReleaseRecord
+@using OpenQMS.Models.Release
+
+@{
+    ViewData["Title"] = "New Release Record";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">New Release Record</h4>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Create" id="createReleaseForm">
+    <div asp-validation-summary="All" class="text-danger mb-3" id="validationSummary"></div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Release Type</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="ReleaseType" class="form-label"></label>
+                    <select asp-for="ReleaseType" class="form-select"
+                            asp-items="Html.GetEnumSelectList<ReleaseType>()">
+                    </select>
+                    <span asp-validation-for="ReleaseType" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Product Identification</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="ProductName" class="form-label"></label>
+                    <select asp-for="ProductName" class="form-select" asp-items="ViewBag.ProductsList">
+                        <option value="">-- Select Product --</option>
+                    </select>
+                    <span asp-validation-for="ProductName" class="text-danger small"></span>
+                    <input type="hidden" id="LinkedProductId" name="LinkedProductId" value="" />
+                    <input type="hidden" id="ProductType" name="ProductType" value="" />
+                    <small id="specsNotice" class="text-info d-none mt-1 d-block">
+                        <i class="bi bi-info-circle me-1"></i>This product has specifications — Analytical Results will be pre-populated on save.
+                    </small>
+                </div>
+
+                <!-- Pharma / Bio / Consumer Health -->
+                <div class="col-md-6 rel-group" data-rpt="Pharmaceutical,Biological,ConsumerHealth" style="display:none">
+                    <label asp-for="InnName" class="form-label"></label>
+                    <input asp-for="InnName" class="form-control" />
+                </div>
+
+                <!-- Cosmetic -->
+                <div class="col-md-6 rel-group" data-rpt="Cosmetic" style="display:none">
+                    <label asp-for="InciName" class="form-label"></label>
+                    <input asp-for="InciName" class="form-control" />
+                </div>
+
+                <!-- Medical Device -->
+                <div class="col-md-6 rel-group" data-rpt="MedicalDevice" style="display:none">
+                    <label asp-for="DeviceTypeCategory" class="form-label"></label>
+                    <input asp-for="DeviceTypeCategory" class="form-control" readonly />
+                </div>
+                <div class="col-md-6 rel-group" data-rpt="MedicalDevice" style="display:none">
+                    <label asp-for="ModelVersion" class="form-label"></label>
+                    <input asp-for="ModelVersion" class="form-control" readonly />
+                </div>
+
+                <!-- Raw Material -->
+                <div class="col-md-6 rel-group" data-rpt="RawMaterial" style="display:none">
+                    <label asp-for="StandardScientificName" class="form-label"></label>
+                    <input asp-for="StandardScientificName" class="form-control" readonly />
+                </div>
+                <div class="col-md-6 rel-group" data-rpt="RawMaterial" style="display:none">
+                    <label asp-for="RawMaterialTypeCategory" class="form-label"></label>
+                    <input asp-for="RawMaterialTypeCategory" class="form-control" readonly />
+                </div>
+                <div class="col-md-6 rel-group" data-rpt="RawMaterial" style="display:none">
+                    <label asp-for="Grade" class="form-label"></label>
+                    <input asp-for="Grade" class="form-control" readonly />
+                </div>
+                <div class="col-md-6 rel-group" data-rpt="Cosmetic,RawMaterial" style="display:none">
+                    <label asp-for="PresentationForm" class="form-label"></label>
+                    <input asp-for="PresentationForm" class="form-control" readonly />
+                </div>
+
+                <!-- Brand — all types (shown after product selected) -->
+                <div class="col-md-6">
+                    <label asp-for="BrandName" class="form-label"></label>
+                    <input asp-for="BrandName" class="form-control" />
+                </div>
+
+                <!-- Dosage Form — Pharma / Bio / Consumer -->
+                <div class="col-md-6 rel-group" data-rpt="Pharmaceutical,Biological,ConsumerHealth" style="display:none">
+                    <label asp-for="DosageForm" class="form-label"></label>
+                    <input asp-for="DosageForm" class="form-control" readonly />
+                </div>
+
+                <!-- Strength / Presentation — Pharma / Bio / Consumer / Cosmetic -->
+                <div class="col-md-6 rel-group" data-rpt="Pharmaceutical,Biological,ConsumerHealth,Cosmetic" style="display:none">
+                    <label asp-for="Strength" class="form-label">Strength / Presentation</label>
+                    <select asp-for="Strength" id="Strength" class="form-select">
+                        <option value="">-- Select product first --</option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="ArtgReference" class="form-label"></label>
+                    <input asp-for="ArtgReference" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Batch Details</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="BatchNumber" class="form-label"></label>
+                    <input asp-for="BatchNumber" class="form-control" />
+                    <span asp-validation-for="BatchNumber" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="BatchSize" class="form-label"></label>
+                    <input asp-for="BatchSize" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="PackSize" class="form-label"></label>
+                    <input asp-for="PackSize" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ManufacturingDate" class="form-label"></label>
+                    <input asp-for="ManufacturingDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ExpiryDate" class="form-label"></label>
+                    <input asp-for="ExpiryDate" type="date" class="form-control" />
+                    <span asp-validation-for="ExpiryDate" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="RetestDate" class="form-label"></label>
+                    <input asp-for="RetestDate" type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Manufacturing &amp; Testing Sites</div>
+        <div class="card-body">
+            <div class="row g-3">
+
+                <!-- Manufacturing Site -->
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Manufacturing Site <span class="text-danger">*</span></label>
+                    <select id="mfgSiteSel" class="form-select mb-1" onchange="handleSite(this,'mfgSiteOther','ManufacturingSite')">
+                        <option value="">-- Select Approved Manufacturer --</option>
+                        @foreach (var s in (ViewBag.ManufacturingSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
+                        <option value="__OTHER__">Other (specify below)</option>
+                    </select>
+                    <input id="mfgSiteOther" type="text" class="form-control mb-1" placeholder="Enter manufacturing site name" style="display:none" oninput="document.getElementById('ManufacturingSite').value=this.value" />
+                    <input type="hidden" asp-for="ManufacturingSite" id="ManufacturingSite" />
+                    <span asp-validation-for="ManufacturingSite" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="ManufacturingSiteGmpRef" class="form-label"></label>
+                    <input asp-for="ManufacturingSiteGmpRef" class="form-control" />
+                </div>
+
+                <!-- Packaging Site -->
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Packaging Site</label>
+                    <select id="pkgSiteSel" class="form-select mb-1" onchange="handleSite(this,'pkgSiteOther','PackagingSite')">
+                        <option value="">-- Select Approved Supplier (Service) --</option>
+                        @foreach (var s in (ViewBag.ServiceSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
+                        <option value="__OTHER__">Other (specify below)</option>
+                    </select>
+                    <input id="pkgSiteOther" type="text" class="form-control mb-1" placeholder="Enter packaging site name" style="display:none" oninput="document.getElementById('PackagingSite').value=this.value" />
+                    <input type="hidden" asp-for="PackagingSite" id="PackagingSite" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="PackagingSiteGmpRef" class="form-label"></label>
+                    <input asp-for="PackagingSiteGmpRef" class="form-control" />
+                </div>
+
+                <!-- Testing Laboratories (multiple) -->
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Testing Laboratory / Laboratories</label>
+                    <div id="labsContainer"></div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary mt-1" onclick="addLabRow()">
+                        <i class="bi bi-plus-circle me-1"></i>Add Testing Laboratory
+                    </button>
+                </div>
+
+                <!-- Releasing Company -->
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Releasing Company</label>
+                    <select id="relCoSel" class="form-select mb-1" onchange="handleSite(this,'relCoOther','ReleasingCompany')">
+                        <option value="">-- Select --</option>
+                        @if (!string.IsNullOrEmpty(ViewBag.OwnCompanyName as string)) { <option value="@ViewBag.OwnCompanyName">@ViewBag.OwnCompanyName (Own Company)</option> }
+                        @foreach (var s in (ViewBag.ReleasingSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
+                        <option value="__OTHER__">Other (specify below)</option>
+                    </select>
+                    <input id="relCoOther" type="text" class="form-control mb-1" placeholder="Enter releasing company name" style="display:none" oninput="document.getElementById('ReleasingCompany').value=this.value" />
+                    <input type="hidden" asp-for="ReleasingCompany" id="ReleasingCompany" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="ReleasingCompanyLicenceRef" class="form-label"></label>
+                    <input asp-for="ReleasingCompanyLicenceRef" class="form-control" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Conditional: shown for ReleaseToCustomer and RFFP -->
+    <div id="finalReleaseSection">
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Delegation / Technical Agreement</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="FinalReleaseParty" class="form-label"></label>
+                        <input asp-for="FinalReleaseParty" class="form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="TechnicalAgreementRef" class="form-label"></label>
+                        <input asp-for="TechnicalAgreementRef" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Specification &amp; Storage</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="SpecificationReference" class="form-label"></label>
+                    <input asp-for="SpecificationReference" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="StorageConditions" class="form-label"></label>
+                    <input asp-for="StorageConditions" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="DistributionConditions" class="form-label"></label>
+                    <textarea asp-for="DistributionConditions" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Notes</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Notes" class="form-label"></label>
+                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <input type="submit" value="Create Release Record" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    // ── Site field helpers ────────────────────────────────────────────────
+    function handleSite(sel, otherId, hiddenId) {
+        var other = document.getElementById(otherId);
+        var hidden = document.getElementById(hiddenId);
+        if (sel.value === '__OTHER__') {
+            other.style.display = '';
+            hidden.value = other.value;
+        } else {
+            other.style.display = 'none';
+            hidden.value = sel.value;
+        }
+        if (hidden.value.trim()) sel.classList.remove('is-invalid');
+    }
+
+    // ── Testing labs (multiple) ───────────────────────────────────────────
+    var labSuppliers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ServiceSuppliers as List<string> ?? new List<string>()));
+
+    function buildLabOptions() {
+        var html = '<option value="">-- Select Approved Lab --</option>';
+        labSuppliers.forEach(function(s) { html += '<option value="' + s.replace(/"/g, '&quot;') + '">' + s + '</option>'; });
+        html += '<option value="__OTHER__">Other (specify below)</option>';
+        return html;
+    }
+
+    function addLabRow(initName, initRef) {
+        var container = document.getElementById('labsContainer');
+        var div = document.createElement('div');
+        div.className = 'lab-row border rounded p-2 mb-2';
+        div.innerHTML =
+            '<div class="row g-2 align-items-end">' +
+                '<div class="col-md-5">' +
+                    '<label class="form-label small mb-1">Laboratory Name</label>' +
+                    '<select class="form-select form-select-sm lab-sel">' + buildLabOptions() + '</select>' +
+                    '<input type="text" class="form-control form-control-sm lab-other mt-1" placeholder="Enter laboratory name" style="display:none" />' +
+                    '<input type="hidden" class="lab-name" name="labNames" />' +
+                '</div>' +
+                '<div class="col-md-5">' +
+                    '<label class="form-label small mb-1">Testing Site GMP Licence / Clearance No.</label>' +
+                    '<input type="text" class="form-control form-control-sm" name="labRefs" placeholder="e.g. GMP 12345" />' +
+                '</div>' +
+                '<div class="col-md-2 d-flex align-items-end">' +
+                    '<button type="button" class="btn btn-sm btn-outline-danger w-100" onclick="removeLabRow(this)">Remove</button>' +
+                '</div>' +
+            '</div>';
+        container.appendChild(div);
+        var sel = div.querySelector('.lab-sel');
+        var other = div.querySelector('.lab-other');
+        var hidden = div.querySelector('.lab-name');
+        var refInput = div.querySelector('input[name="labRefs"]');
+        sel.addEventListener('change', function() {
+            if (sel.value === '__OTHER__') { other.style.display = ''; hidden.value = other.value; }
+            else { other.style.display = 'none'; hidden.value = sel.value; }
+        });
+        other.addEventListener('input', function() { hidden.value = this.value; });
+        if (initName) {
+            var found = false;
+            for (var i = 0; i < sel.options.length; i++) {
+                if (sel.options[i].value === initName) { sel.value = initName; hidden.value = initName; found = true; break; }
+            }
+            if (!found) { sel.value = '__OTHER__'; other.value = initName; other.style.display = ''; hidden.value = initName; }
+        }
+        if (initRef) refInput.value = initRef;
+    }
+    function removeLabRow(btn) { btn.closest('.lab-row').remove(); }
+
+    // ── Release type conditional section ──────────────────────────────────
+    function toggleFinalRelease() {
+        var type = parseInt(document.getElementById('ReleaseType').value);
+        var show = (type === 3 || type === 4);
+        document.getElementById('finalReleaseSection').style.display = show ? '' : 'none';
+    }
+    document.getElementById('ReleaseType').addEventListener('change', toggleFinalRelease);
+    toggleFinalRelease();
+
+    // ── Expiry / Retest date mutual exclusion ─────────────────────────────
+    (function () {
+        var expiry = document.getElementById('ExpiryDate');
+        var retest = document.getElementById('RetestDate');
+        function applyExclusion() {
+            if (expiry.value) {
+                retest.value = '';
+                retest.disabled = true;
+            } else if (retest.value) {
+                expiry.value = '';
+                expiry.disabled = true;
+            } else {
+                expiry.disabled = false;
+                retest.disabled = false;
+            }
+        }
+        expiry.addEventListener('change', function () {
+            retest.disabled = false;
+            applyExclusion();
+        });
+        retest.addEventListener('change', function () {
+            expiry.disabled = false;
+            applyExclusion();
+        });
+    })();
+
+    // ── Product selection — auto-populate fields from master data ─────────
+    var typesWithStrength = ['Pharmaceutical','Biological','ConsumerHealth','Cosmetic'];
+
+    function applyReleaseProductType(type) {
+        document.querySelectorAll('.rel-group').forEach(function(el) {
+            var types = (el.dataset.rpt || '').split(',');
+            el.style.display = (type && types.includes(type)) ? '' : 'none';
+        });
+    }
+
+    function fetchProductDetails(name, selectStrength) {
+        var strengthSel = document.getElementById('Strength');
+        if (!name) {
+            ['InnName','BrandName','DosageForm','ArtgReference','InciName','PresentationForm',
+             'DeviceTypeCategory','ModelVersion','StandardScientificName','RawMaterialTypeCategory','Grade']
+                .forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+            document.getElementById('LinkedProductId').value = '';
+            document.getElementById('ProductType').value = '';
+            document.getElementById('specsNotice').classList.add('d-none');
+            if (strengthSel) strengthSel.innerHTML = '<option value="">-- Select product first --</option>';
+            applyReleaseProductType('');
+            return;
+        }
+        fetch('/Release/GetProductDetails?name=' + encodeURIComponent(name))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (!data) return;
+                document.getElementById('InnName').value               = data.innName               || '';
+                document.getElementById('BrandName').value             = data.brandName             || '';
+                document.getElementById('DosageForm').value            = data.dosageForm            || '';
+                document.getElementById('ArtgReference').value         = data.artgReference         || '';
+                document.getElementById('InciName').value              = data.inciName              || '';
+                document.getElementById('PresentationForm').value      = data.presentationForm      || '';
+                document.getElementById('DeviceTypeCategory').value    = data.deviceTypeCategory    || '';
+                document.getElementById('ModelVersion').value          = data.modelVersion          || '';
+                document.getElementById('StandardScientificName').value= data.standardScientificName|| '';
+                document.getElementById('RawMaterialTypeCategory').value=data.rawMaterialTypeCategory||'';
+                document.getElementById('Grade').value                 = data.grade                 || '';
+                document.getElementById('LinkedProductId').value       = data.productId             || '';
+                document.getElementById('ProductType').value           = data.productType           || '';
+                applyReleaseProductType(data.productType || '');
+                var notice = document.getElementById('specsNotice');
+                if (data.hasSpecs) { notice.classList.remove('d-none'); }
+                else               { notice.classList.add('d-none'); }
+                strengthSel.innerHTML = '';
+                if (data.strengths && data.strengths.length > 0) {
+                    var placeholder = document.createElement('option');
+                    placeholder.value = '';
+                    placeholder.textContent = '-- Select Strength --';
+                    strengthSel.appendChild(placeholder);
+                    data.strengths.forEach(function(s) {
+                        var opt = document.createElement('option');
+                        opt.value = s;
+                        opt.textContent = s;
+                        strengthSel.appendChild(opt);
+                    });
+                    if (selectStrength) strengthSel.value = selectStrength;
+                } else {
+                    var opt = document.createElement('option');
+                    opt.value = '';
+                    opt.textContent = '-- No strengths defined in master data --';
+                    strengthSel.appendChild(opt);
+                }
+            })
+            .catch(function(err) { console.error('Product details fetch failed:', err); });
+    }
+    document.getElementById('ProductName').addEventListener('change', function () {
+        fetchProductDetails(this.value, null);
+    });
+
+    // ── Restore state after POST validation failure ───────────────────────
+    (function () {
+        // Restore Strength dropdown (JS-populated options are lost on re-render)
+        var savedProduct  = '@Html.Raw(Model?.ProductName?.Replace("'", "\\'") ?? "")';
+        var savedStrength = '@Html.Raw(Model?.Strength?.Replace("'", "\\'") ?? "")';
+        if (savedProduct) fetchProductDetails(savedProduct, savedStrength);
+
+        // Restore visible site dropdowns from the hidden input values
+        function restoreSite(selId, otherId, hiddenId) {
+            var hidden = document.getElementById(hiddenId);
+            if (!hidden || !hidden.value) return;
+            var val = hidden.value;
+            var sel = document.getElementById(selId);
+            for (var i = 0; i < sel.options.length; i++) {
+                if (sel.options[i].value === val) { sel.value = val; return; }
+            }
+            sel.value = '__OTHER__';
+            var other = document.getElementById(otherId);
+            other.value = val;
+            other.style.display = '';
+        }
+        restoreSite('mfgSiteSel', 'mfgSiteOther', 'ManufacturingSite');
+        restoreSite('pkgSiteSel', 'pkgSiteOther', 'PackagingSite');
+        restoreSite('relCoSel',   'relCoOther',   'ReleasingCompany');
+
+        // Restore testing labs (lost on re-render because they are JS-generated)
+        var existingLabNames = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ExistingLabNames as string[] ?? Array.Empty<string>()));
+        var existingLabRefs  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ExistingLabRefs  as string[] ?? Array.Empty<string>()));
+        var labsToRestore = existingLabNames.filter(function(n) { return n && n.trim() !== ''; });
+        if (labsToRestore.length > 0) {
+            existingLabNames.forEach(function(name, i) {
+                if (name && name.trim() !== '') addLabRow(name, existingLabRefs[i] || null);
+            });
+        } else {
+            addLabRow();
+        }
+    })();
+
+    // ── Pre-submit validation for hidden required fields ──────────────────
+    // jQuery Validation ignores type="hidden" by default, so ManufacturingSite
+    // can silently submit as empty. This guard catches it client-side.
+    document.getElementById('createReleaseForm').addEventListener('submit', function (e) {
+        var errors = [];
+        var mfgSite = document.getElementById('ManufacturingSite');
+        if (!mfgSite || !mfgSite.value.trim()) {
+            errors.push('Manufacturing Site is required — please select a site or choose "Other" and enter a name.');
+            if (mfgSite) {
+                document.getElementById('mfgSiteSel').classList.add('is-invalid');
+                document.getElementById('mfgSiteSel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        if (errors.length > 0) {
+            e.preventDefault();
+            var summary = document.getElementById('validationSummary');
+            summary.innerHTML = '<strong>Please fix the following before saving:</strong><ul class="mb-0 mt-1">' +
+                errors.map(function(m){ return '<li>' + m + '</li>'; }).join('') + '</ul>';
+            summary.className = 'alert alert-danger mb-3';
+            summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+
+    // ── Scroll to validation errors on POST failure ───────────────────────
+    (function () {
+        var summary = document.getElementById('validationSummary');
+        var hasServerErrors = summary && summary.querySelector('ul');
+        if (hasServerErrors) {
+            summary.className = 'alert alert-danger mb-3';
+            summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Only highlight ManufacturingSite as invalid if this is a re-render after a POST
+            var mfgHidden = document.getElementById('ManufacturingSite');
+            if (mfgHidden && !mfgHidden.value.trim()) {
+                var mfgSel = document.getElementById('mfgSiteSel');
+                if (mfgSel) mfgSel.classList.add('is-invalid');
+            }
+        }
+    })();
+</script>
+}

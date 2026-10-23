@@ -1,0 +1,108 @@
+@model OpenQMS.Models.SupplierReview
+
+@{
+    ViewData["Title"] = "Start New Review";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isReassessment = ViewBag.IsReassessment ?? false;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Start New Review — @ViewBag.SupplierCode</h4>
+        <small class="text-muted">@ViewBag.LegalName &middot; Current Status: <strong>@ViewBag.CurrentStatus</strong></small>
+    </div>
+</div>
+<hr />
+
+<form asp-action="CreateReview" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="supplierId" value="@ViewBag.SupplierId" />
+    <input type="hidden" name="linkedQRId" id="linkedQRId" />
+    <input type="hidden" name="linkedQRCode" id="linkedQRCode" />
+    <input type="hidden" name="linkedQRTitle" id="linkedQRTitle" />
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Review Details</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="ReviewTrigger" class="form-label"></label>
+                    <select asp-for="ReviewTrigger" class="form-select" id="reviewTrigger">
+                        <option value="0">Scheduled</option>
+                        <option value="1">Deviation</option>
+                        <option value="2">Complaint</option>
+                        <option value="3">Audit</option>
+                        <option value="4">Risk</option>
+                        <option value="5">Change</option>
+                        <option value="6">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6" id="qualityRecordSection" style="display:none;">
+                    <label class="form-label">Linked Quality Record</label>
+                    <select id="linkedRecordDropdown" class="form-select">
+                        <option value="">-- Select a record --</option>
+                    </select>
+                    <small class="text-muted">Select the specific record that triggered this review.</small>
+                </div>
+                <div class="col-12">
+                    <label asp-for="ReviewSummary" class="form-label">Reason for Review</label>
+                    <textarea asp-for="ReviewSummary" class="form-control" rows="4"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <input type="submit" value="Start New Review" class="btn btn-primary" />
+        <a asp-action="Reviews" asp-route-id="@ViewBag.SupplierId" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Reviews</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        $(document).ready(function () {
+            // Triggers that have linked quality records (1=Deviation,2=Complaint,3=Audit,4=Risk,5=Change)
+            var recordTriggers = [1, 2, 3, 4, 5];
+
+            function updateQRSection() {
+                var trigger = parseInt($('#reviewTrigger').val());
+                if (recordTriggers.includes(trigger)) {
+                    $('#qualityRecordSection').show();
+                    loadRecordsForTrigger(trigger);
+                } else {
+                    $('#qualityRecordSection').hide();
+                    $('#linkedQRId').val('');
+                    $('#linkedQRCode').val('');
+                    $('#linkedQRTitle').val('');
+                }
+            }
+
+            function loadRecordsForTrigger(trigger) {
+                // Map trigger value to QualityRecordType enum value
+                // Deviation=0, CAPA=1, Change=2, Complaint=3, Risk=4, Audit=5
+                var typeMap = { 1: 0, 2: 3, 3: 5, 4: 4, 5: 2 };
+                var qrType = typeMap[trigger];
+                var dd = $('#linkedRecordDropdown');
+                dd.html('<option value="">-- Loading... --</option>');
+
+                $.getJSON('/Suppliers/GetQualityRecords', { type: qrType }, function (data) {
+                    dd.html('<option value="">-- Select a record --</option>');
+                    $.each(data, function (i, item) {
+                        dd.append('<option value="' + item.id + '" data-code="' + item.code + '" data-title="' + item.title + '">' + item.code + ' — ' + item.title + '</option>');
+                    });
+                });
+            }
+
+            $('#linkedRecordDropdown').on('change', function () {
+                var opt = $(this).find('option:selected');
+                $('#linkedQRId').val(opt.val());
+                $('#linkedQRCode').val(opt.data('code'));
+                $('#linkedQRTitle').val(opt.data('title'));
+            });
+
+            $('#reviewTrigger').on('change', updateQRSection);
+            updateQRSection();
+        });
+    </script>
+}

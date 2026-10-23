@@ -1,0 +1,182 @@
+@model OpenQMS.Models.Training
+@using OpenQMS.Models.Navigation
+@inject OpenQMS.Data.ApplicationDbContext _certDb
+
+@{
+    var trainee      = ViewBag.Trainee     as OpenQMS.Models.AppUser;
+    var ut           = ViewBag.UserTraining as UserTraining;
+    var policyDoc    = ViewBag.PolicyDocument as OpenQMS.Models.AppDocument;
+    var settings     = await _certDb.SystemSettings.FindAsync(1);
+    var isCA         = Model.TrainingType == TrainingType.CompetencyAssessment;
+
+    var completedDate = (isCA ? ut?.CompetencyVerifiedOn : ut?.ReadAcknowledgedOn).ToSite();
+    var docVersion    = Model.SourceDocumentVersion ?? policyDoc?.Version;
+    var traineeName   = trainee != null
+        ? $"{trainee.FirstName} {trainee.LastName}".Trim()
+        : Model.Trainees.FirstOrDefault(t => t.Trainee.UserName == trainee?.UserName)?.Trainee.UserName ?? "-";
+    if (string.IsNullOrWhiteSpace(traineeName) && trainee != null)
+        traineeName = trainee.UserName ?? "-";
+
+    ViewData["Title"] = $"Training Certificate — {Model.TrainingId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    @@media print {
+        .navbar, header, footer, .no-print, .btn, nav, .alert { display: none !important; }
+        .card { border: 1px solid #dee2e6 !important; box-shadow: none !important; }
+        body { font-size: 11pt; }
+        .cert-watermark { opacity: 0.06; }
+    }
+    .cert-header   { border-bottom: 3px solid #0d6efd; padding-bottom: 12px; }
+    .cert-section  { border-top: 1px solid #dee2e6; padding-top: 12px; margin-top: 12px; }
+    .cert-signature { border: 1px solid #333; padding: 16px; margin-top: 24px; background: #f8f9fa; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-3 no-print">
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to Training
+    </a>
+    <button onclick="window.print()" class="btn btn-outline-primary btn-sm">
+        <i class="fas fa-print me-1"></i>Print / Save as PDF
+    </button>
+</div>
+
+<div class="card p-4" id="certificate-content">
+
+    @* Organisation Header *@
+    @if (!string.IsNullOrEmpty(settings?.LogoPath) || !string.IsNullOrEmpty(settings?.OrganisationName))
+    {
+        <div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+            <div>
+                @if (!string.IsNullOrEmpty(settings?.LogoPath))
+                {
+                    <img src="@settings.LogoPath" alt="@(settings.OrganisationName ?? "Organisation")"
+                         style="max-height:60px; max-width:200px;" />
+                }
+            </div>
+            <div class="text-end">
+                @if (!string.IsNullOrEmpty(settings?.OrganisationName))
+                {
+                    <div class="fw-bold fs-6">@settings.OrganisationName</div>
+                }
+                @if (!string.IsNullOrEmpty(settings?.OrganisationAddress))
+                {
+                    <div class="small text-muted" style="white-space: pre-line;">@settings.OrganisationAddress</div>
+                }
+            </div>
+        </div>
+    }
+
+    @* Title *@
+    <div class="cert-header d-flex justify-content-between align-items-start">
+        <div>
+            <h3 class="mb-1">Training Completion Certificate</h3>
+            <div><strong>Training ID:</strong> @Model.TrainingId</div>
+            <div><strong>Date of Issue:</strong> @SiteTime.Today.ToString("dd-MMM-yyyy")</div>
+        </div>
+        <div class="text-end">
+            <span class="badge @(isCA ? "bg-primary" : "bg-info text-dark") fs-6">
+                @(isCA ? "Competency Assessment" : "Read & Acknowledge")
+            </span>
+        </div>
+    </div>
+
+    @* Trainee *@
+    <div class="cert-section">
+        <h6 class="text-uppercase text-muted small mb-2">Trainee</h6>
+        <div class="row">
+            <div class="col-md-6"><strong>Name:</strong> @traineeName</div>
+            <div class="col-md-6"><strong>Email:</strong> @(trainee?.Email ?? "-")</div>
+        </div>
+    </div>
+
+    @* Training Details *@
+    <div class="cert-section">
+        <h6 class="text-uppercase text-muted small mb-2">Training Details</h6>
+        <div class="row">
+            <div class="col-md-12"><strong>Training Name:</strong> @Model.Name</div>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="row mt-1">
+                <div class="col-md-12"><strong>Description:</strong> @Model.Description</div>
+            </div>
+        }
+        <div class="row mt-1">
+            <div class="col-md-6">
+                <strong>@(isCA ? "Competency Verified On:" : "Acknowledged On:")</strong>
+                @(completedDate?.ToString("dd-MMM-yyyy") ?? "-")
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.TrainerEmail))
+        {
+            <div class="row mt-1">
+                <div class="col-md-6"><strong>Trainer:</strong> @Model.TrainerEmail</div>
+            </div>
+        }
+    </div>
+
+    @* Source Document *@
+    <div class="cert-section">
+        <h6 class="text-uppercase text-muted small mb-2">Source Document</h6>
+        @if (policyDoc != null)
+        {
+            <div class="row">
+                <div class="col-md-3"><strong>Document ID:</strong> @policyDoc.DocumentId</div>
+                <div class="col-md-6"><strong>Title:</strong> @policyDoc.Title</div>
+                <div class="col-md-3">
+                    <strong>Version:</strong>
+                    v@(docVersion!.Value.ToString("0.00"))
+                </div>
+            </div>
+        }
+        else
+        {
+            <div>@(Model.PolicyTitle ?? "-")</div>
+        }
+    </div>
+
+    @* Competency Notes (CA only) *@
+    @if (isCA && !string.IsNullOrEmpty(ut?.CompetencyNotes))
+    {
+        <div class="cert-section">
+            <h6 class="text-uppercase text-muted small mb-2">Assessor Notes</h6>
+            <p>@ut.CompetencyNotes</p>
+        </div>
+    }
+
+    @* Certification Statement *@
+    <div class="cert-signature mt-4">
+        <h6 class="text-uppercase small mb-3">Certification</h6>
+        <p>
+            @if (isCA)
+            {
+                <text>This is to certify that <strong>@traineeName</strong> has successfully completed and passed the competency assessment for
+                <strong>@(policyDoc != null ? $"{policyDoc.DocumentId} v{docVersion?.ToString("0.00")} — {policyDoc.Title}" : Model.PolicyTitle)</strong>
+                on <strong>@(completedDate?.ToString("dd-MMM-yyyy") ?? "-")</strong>.</text>
+            }
+            else
+            {
+                <text>This is to certify that <strong>@traineeName</strong> has read and acknowledged
+                <strong>@(policyDoc != null ? $"{policyDoc.DocumentId} v{docVersion?.ToString("0.00")} — {policyDoc.Title}" : Model.PolicyTitle)</strong>
+                on <strong>@(completedDate?.ToString("dd-MMM-yyyy") ?? "-")</strong>.</text>
+            }
+        </p>
+        <div class="row mt-3">
+            <div class="col-md-5">
+                <strong>Trainee:</strong><br />
+                @traineeName
+            </div>
+            <div class="col-md-4">
+                <strong>Completion Date:</strong><br />
+                @(completedDate?.ToString("dd-MMM-yyyy") ?? "-")
+            </div>
+            <div class="col-md-3">
+                <strong>Training ID:</strong><br />
+                @Model.TrainingId
+            </div>
+        </div>
+    </div>
+
+</div>

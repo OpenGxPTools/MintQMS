@@ -1,0 +1,206 @@
+@model OpenQMS.Models.AppDocument
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isNewVersion = Model.Status == AppDocument.DocumentStatus.Approved;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">
+            @if (isNewVersion)
+            {
+                <span>Document &mdash; New Version (<span class="fw-bold">@Model.DocumentId</span>)</span>
+            }
+            else
+            {
+                <span>Document &mdash; Edit (<span class="fw-bold">@Model.DocumentId</span>)</span>
+            }
+        </h4>
+        <small class="text-muted">
+            @if (isNewVersion)
+            {
+                <span class="text-warning"><i class="fas fa-info-circle me-1"></i>Saving will create a new draft and lock the current approved version.</span>
+            }
+            else
+            {
+                <text>@Model.Title</text>
+            }
+        </small>
+    </div>
+</div>
+<hr />
+
+<form enctype="multipart/form-data" asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="DocumentId" />
+    <input type="hidden" asp-for="GeneratedFrom" />
+    <input type="hidden" asp-for="Version" />
+    <input type="hidden" asp-for="FileType" />
+    <input type="hidden" asp-for="FileExtension" />
+    <input type="hidden" asp-for="AuthoredBy" />
+    <input type="hidden" asp-for="AuthoredOn" />
+    <input type="hidden" asp-for="ApprovedBy" />
+    <input type="hidden" asp-for="ApprovedOn" />
+    <input type="hidden" asp-for="IsLocked" />
+    <input type="hidden" asp-for="Status" />
+    <input type="hidden" asp-for="IsExternal" />
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Document Details</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Category" class="form-label"></label>
+                    <select asp-for="Category" id="categorySelect" class="form-control"
+                            asp-items='@(ViewData["CategoryList"] as SelectList)'>
+                        <option value="">-- Select category --</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="DocType" class="form-label"></label>
+                    <select asp-for="DocType" id="docTypeSelect" class="form-control"
+                            asp-items='@(ViewData["DocTypeList"] as SelectList)'>
+                        <option value="">-- Select type --</option>
+                    </select>
+                </div>
+                @if (isNewVersion)
+                {
+                    <div class="col-12">
+                        <label asp-for="ReasonForChange" class="form-label">Reason for Change <span class="text-danger">*</span></label>
+                        <textarea asp-for="ReasonForChange" class="form-control" rows="3" required
+                                  placeholder="Describe why this document is being revised..."></textarea>
+                        <span asp-validation-for="ReasonForChange" class="text-danger small"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-12">
+                        <label asp-for="ReasonForChange" class="form-label"></label>
+                        <textarea asp-for="ReasonForChange" class="form-control" rows="2"
+                                  placeholder="Optional — describe any changes made to this draft."></textarea>
+                    </div>
+                }
+                <div class="col-md-6">
+                    <div class="form-check mt-4">
+                        <input asp-for="PeriodicReviewRequired" class="form-check-input" type="checkbox" />
+                        <label asp-for="PeriodicReviewRequired" class="form-check-label">Periodic Review Required</label>
+                        <small class="d-block text-muted">Review date is automatically set when the document becomes effective.</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check mt-4">
+                        <input asp-for="TrainingRequired" class="form-check-input" type="checkbox" />
+                        <label asp-for="TrainingRequired" class="form-check-label">Training Required on Approval</label>
+                    </div>
+                </div>
+                @if (Model.IsExternal)
+                {
+                    <div class="col-12">
+                        <div class="card border-warning mt-2">
+                            <div class="card-header bg-warning bg-opacity-25 fw-semibold"><i class="fas fa-file-import me-1"></i>Document Provenance</div>
+                            <div class="card-body">
+                                <p class="text-muted small mb-3">Original authorship and approval details as they appear on the document.</p>
+                                <div class="row g-3">
+                                    @{
+                                        var systemUsersEdit = ViewData["SystemUsers"] as IEnumerable<string> ?? Enumerable.Empty<string>();
+                                    }
+                                    <datalist id="systemUsersList">
+                                        @foreach (var u in systemUsersEdit)
+                                        {
+                                            <option value="@u"></option>
+                                        }
+                                    </datalist>
+                                    <div class="col-md-6">
+                                        <label asp-for="ExternalSource" class="form-label">Source / Origin</label>
+                                        <input asp-for="ExternalSource" class="form-control" placeholder="e.g. Acme Pharma Ltd, ISO, TGA" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="ExternalVersion" class="form-label">Original Version / Reference</label>
+                                        <input asp-for="ExternalVersion" class="form-control" placeholder="e.g. Rev C, v2.1" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="ExternalAuthorName" class="form-label">Original Author</label>
+                                        <input asp-for="ExternalAuthorName" class="form-control" list="systemUsersList" placeholder="Type name or select from system users…" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="ExternalAuthoredOn" class="form-label">Originally Authored On</label>
+                                        <input asp-for="ExternalAuthoredOn" class="form-control" type="date" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="ExternalApproverName" class="form-label">Original Approver</label>
+                                        <input asp-for="ExternalApproverName" class="form-control" list="systemUsersList" placeholder="Type name or select from system users…" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="ExternalApprovedOn" class="form-label">Originally Approved On</label>
+                                        <input asp-for="ExternalApprovedOn" class="form-control" type="date" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="col-12">
+                    <label class="form-label">Replace File <span class="text-muted small fw-normal">(optional — leave blank to keep existing file)</span></label>
+                    <input name="file" type="file" class="form-control"
+                           accept="@UploadRules.Accept" />
+                    <small class="form-text text-muted">Accepted: @UploadRules.AcceptedLabel &middot; Max 25 MB</small>
+                    <span class="text-danger small">@(ViewData.ModelState["file"]?.Errors.FirstOrDefault()?.ErrorMessage)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <input type="submit" value="@(isNewVersion ? "Create New Version" : "Save Changes")" class="btn btn-primary" />
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info btn-sm"><i class="fas fa-eye me-1"></i>View Details</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var preselectedType = '@Model.DocType?.ToString()';
+
+            $('#categorySelect').select2({ theme: 'classic', width: '100%', placeholder: '-- Select category --', allowClear: true });
+            $('#docTypeSelect').select2({ theme: 'classic', width: '100%', placeholder: '-- Select type --', allowClear: true });
+
+            $('#categorySelect').on('change', function () {
+                var cat = $(this).val();
+                var $typeSelect = $('#docTypeSelect');
+                $typeSelect.empty().append('<option value="">-- Select type --</option>');
+                if (!cat) { $typeSelect.trigger('change.select2'); return; }
+                $.getJSON('@Url.Action("GetDocumentTypes", "AppDocuments")', { category: cat }, function (data) {
+                    $.each(data, function (i, item) {
+                        $typeSelect.append($('<option>').val(item.value).text(item.text));
+                    });
+                    if (preselectedType) {
+                        $typeSelect.val(preselectedType);
+                        preselectedType = null;
+                    }
+                    $typeSelect.trigger('change.select2');
+                });
+            });
+
+            if ($('#categorySelect').val()) {
+                $('#categorySelect').trigger('change');
+            }
+        });
+    </script>
+}

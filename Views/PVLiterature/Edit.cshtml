@@ -1,0 +1,63 @@
+@model OpenQMS.Models.PVLiteratureSearch
+@{
+    ViewData["Title"] = "Edit Literature Search";
+}
+
+<h4 class="mb-0"><i class="fas fa-edit me-2 text-secondary"></i>Edit Literature Search</h4>
+<hr />
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label asp-for="SearchDate" class="form-label fw-bold"></label>
+            <input asp-for="SearchDate" type="date" class="form-control" required />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="SearchedBy" class="form-label fw-bold"></label>
+            <input asp-for="SearchedBy" class="form-control" required />
+        </div>
+        <div class="col-md-6">
+            <label asp-for="DatabasesSearched" class="form-label fw-bold"></label>
+            <input asp-for="DatabasesSearched" class="form-control" />
+        </div>
+        <div class="col-md-12">
+            <label asp-for="SearchTerms" class="form-label fw-bold"></label>
+            <textarea asp-for="SearchTerms" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="DateRangeFrom" class="form-label fw-bold"></label>
+            <input asp-for="DateRangeFrom" type="date" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="DateRangeTo" class="form-label fw-bold"></label>
+            <input asp-for="DateRangeTo" type="date" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="ResultsCount" class="form-label fw-bold"></label>
+            <input asp-for="ResultsCount" type="number" min="0" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="RelevantResults" class="form-label fw-bold"></label>
+            <input asp-for="RelevantResults" type="number" min="0" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="AEsIdentified" class="form-label fw-bold"></label>
+            <input asp-for="AEsIdentified" type="number" min="0" class="form-control" />
+        </div>
+        <div class="col-md-12">
+            <label asp-for="Notes" class="form-label fw-bold">Findings / Notes</label>
+            <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-1"></i>Save Changes
+        </button>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">View Details</a>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </div>
+</form>

@@ -1,0 +1,350 @@
+@model OpenQMS.Models.Maintenance
+
+@{
+    ViewData["Title"] = $"Edit — {Model.MaintenanceId}";
+    var assets     = ViewData["Assets"]     as List<OpenQMS.Models.Asset>;
+    var processes  = ViewData["Processes"]  as List<OpenQMS.Models.Process>;
+    var deviations = ViewData["Deviations"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var capas      = ViewData["Capas"]      as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+
+    var selDeviations = (ViewBag.SelectedDeviationIds as List<int>) ?? new List<int>();
+    var selCapas      = (ViewBag.SelectedCapaIds      as List<int>) ?? new List<int>();
+
+    bool isScheduled  = Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Scheduled;
+    bool isInProgress = Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.InProgress;
+    bool isCompleted  = Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Completed;
+
+    var linkedDevDisplay  = Model.LinkedDeviations?.Any() == true
+        ? string.Join("; ", Model.LinkedDeviations.Select(x => x.Deviation != null ? x.Deviation.DeviationId + " — " + x.Deviation.Title : "").Where(s => s != ""))
+        : (Model.Deviation != null ? Model.Deviation.DeviationId + " — " + Model.Deviation.Title : "-");
+    var linkedCapaDisplay = Model.LinkedCapas?.Any() == true
+        ? string.Join("; ", Model.LinkedCapas.Select(x => x.Capa != null ? x.Capa.CapaId + " — " + x.Capa.Title : "").Where(s => s != ""))
+        : (Model.Capa != null ? Model.Capa.CapaId + " — " + Model.Capa.Title : "-");
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Edit Maintenance &mdash; <span class="fw-bold">@Model.MaintenanceId</span></h4>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Edit" asp-route-id="@Model.Id">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="MaintenanceId" />
+            <input type="hidden" asp-for="Status" />
+            <input type="hidden" asp-for="ScheduledBy" />
+            <input type="hidden" asp-for="ScheduledOn" />
+            <input type="hidden" asp-for="PerformedBy" />
+            <input type="hidden" asp-for="PerformedOn" />
+            <input type="hidden" asp-for="ActualStartTime" />
+            <input type="hidden" asp-for="ActualEndTime" />
+            <input type="hidden" asp-for="DowntimeHours" />
+            <input type="hidden" asp-for="ReviewedBy" />
+            <input type="hidden" asp-for="ReviewedOn" />
+            <input type="hidden" asp-for="ApprovedBy" />
+            <input type="hidden" asp-for="ApprovedOn" />
+            <input type="hidden" asp-for="NextScheduledDate" />
+
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Basic Information</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Title" class="form-label"></label>
+                            @if (isScheduled)
+                            {
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="Title" />
+                                <input class="form-control" value="@Model.Title" readonly style="background-color:#e9ecef;" />
+                            }
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label"></label>
+                            @if (isScheduled)
+                            {
+                                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="Description" />
+                                <textarea class="form-control" rows="3" readonly style="background-color:#e9ecef;">@Model.Description</textarea>
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Asset</label>
+                            @if (isScheduled)
+                            {
+                                <select asp-for="AssetId" class="form-select"
+                                        asp-items="@(new SelectList(assets, "Id", "Name", Model.AssetId))">
+                                </select>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="AssetId" />
+                                <input class="form-control" value="@(Model.Asset?.AssetId) - @(Model.Asset?.Name)" readonly style="background-color:#e9ecef;" />
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Process</label>
+                            @if (isScheduled)
+                            {
+                                <select asp-for="ProcessId" class="form-select"
+                                        asp-items="@(new SelectList(processes, "Id", "Name", Model.ProcessId))">
+                                    <option value="">-- Select Process --</option>
+                                </select>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="ProcessId" />
+                                <input class="form-control" value="@(Model.Process != null ? Model.Process.ProcessId + " - " + Model.Process.Name : "-")" readonly style="background-color:#e9ecef;" />
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Type" class="form-label"></label>
+                            @if (isScheduled)
+                            {
+                                <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<OpenQMS.Models.Maintenance.MaintenanceType>()"></select>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="Type" />
+                                <input class="form-control" value="@Model.Type" readonly style="background-color:#e9ecef;" />
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Frequency" class="form-label"></label>
+                            @if (isScheduled)
+                            {
+                                <select asp-for="Frequency" class="form-select" asp-items="Html.GetEnumSelectList<OpenQMS.Models.Maintenance.MaintenanceFrequency>()"></select>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="Frequency" />
+                                <input class="form-control" value="@Model.Frequency" readonly style="background-color:#e9ecef;" />
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ScheduledDate" class="form-label"></label>
+                            @if (isScheduled)
+                            {
+                                <input asp-for="ScheduledDate" type="date" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="ScheduledDate" />
+                                <input class="form-control" value="@Model.ScheduledDate.ToString("yyyy-MM-dd")" readonly style="background-color:#e9ecef;" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Related QMS Records</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Related Deviations</label>
+                            @if (isScheduled)
+                            {
+                                <select id="deviationDropdown" class="form-select">
+                                    <option value="">-- Add Deviation --</option>
+                                    @foreach (var d in deviations)
+                                    { <option value="@d.Value" data-text="@d.Text">@d.Text</option> }
+                                </select>
+                                <div id="deviationTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                <div id="deviationHidden" class="d-none"></div>
+                            }
+                            else
+                            {
+                                <input class="form-control" value="@linkedDevDisplay" readonly style="background-color:#e9ecef;" />
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Related CAPAs</label>
+                            @if (isScheduled)
+                            {
+                                <select id="capaDropdown" class="form-select">
+                                    <option value="">-- Add CAPA --</option>
+                                    @foreach (var c in capas)
+                                    { <option value="@c.Value" data-text="@c.Text">@c.Text</option> }
+                                </select>
+                                <div id="capaTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                <div id="capaHidden" class="d-none"></div>
+                            }
+                            else
+                            {
+                                <input class="form-control" value="@linkedCapaDisplay" readonly style="background-color:#e9ecef;" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (!isScheduled)
+            {
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Work Details</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="WorkPerformed" class="form-label"></label>
+                            @if (isInProgress)
+                            {
+                                <textarea asp-for="WorkPerformed" class="form-control" rows="4"></textarea>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="WorkPerformed" />
+                                <textarea class="form-control" rows="4" readonly style="background-color:#e9ecef;">@Model.WorkPerformed</textarea>
+                            }
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="PartsUsed" class="form-label"></label>
+                            @if (isInProgress)
+                            {
+                                <textarea asp-for="PartsUsed" class="form-control" rows="2"></textarea>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="PartsUsed" />
+                                <textarea class="form-control" rows="2" readonly style="background-color:#e9ecef;">@Model.PartsUsed</textarea>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Cost" class="form-label"></label>
+                            @if (isInProgress)
+                            {
+                                <input asp-for="Cost" type="number" step="0.01" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="Cost" />
+                                <input class="form-control" value="@(Model.Cost.HasValue ? "$" + Model.Cost.Value.ToString("N2") : "-")" readonly style="background-color:#e9ecef;" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+
+            @if (isCompleted)
+            {
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Review</div>
+                <div class="card-body">
+                    <div class="col-12">
+                        <label asp-for="ReviewComments" class="form-label"></label>
+                        @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole))
+                        {
+                            <textarea asp-for="ReviewComments" class="form-control" rows="3"></textarea>
+                        }
+                        else
+                        {
+                            <input type="hidden" asp-for="ReviewComments" />
+                            <textarea class="form-control" rows="3" readonly style="background-color:#e9ecef;">@Model.ReviewComments</textarea>
+                        }
+                    </div>
+                </div>
+            </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="ReviewComments" />
+            }
+
+            <div class="d-flex gap-2 mt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">View Details</a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+            </div>
+        </form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @if (isScheduled)
+    {
+        <script>
+        function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+            var selected = {};
+            preselected.forEach(function (item) { selected[item.id] = item.text; });
+            function render() {
+                var tagsDiv   = document.getElementById(tagsId);
+                var hiddenDiv = document.getElementById(hiddenId);
+                tagsDiv.innerHTML = ''; hiddenDiv.innerHTML = '';
+                Object.keys(selected).forEach(function (id) {
+                    var badge = document.createElement('span');
+                    badge.className = 'badge bg-primary d-flex align-items-center gap-1';
+                    badge.textContent = selected[id];
+                    var btn = document.createElement('button');
+                    btn.type = 'button'; btn.className = 'btn-close btn-close-white btn-sm ms-1';
+                    btn.style.fontSize = '0.6rem';
+                    btn.addEventListener('click', function () { delete selected[id]; render(); });
+                    badge.appendChild(btn); tagsDiv.appendChild(badge);
+                    var input = document.createElement('input');
+                    input.type = 'hidden'; input.name = inputName; input.value = id;
+                    hiddenDiv.appendChild(input);
+                });
+            }
+            document.getElementById(dropdownId).addEventListener('change', function () {
+                var id = this.value, text = this.options[this.selectedIndex].dataset.text;
+                if (id && !selected[id]) { selected[id] = text; render(); }
+                this.value = '';
+            });
+            render();
+        }
+
+        // Frequency filter — same map as Create view
+        var ALLOWED_FREQ = {
+            0: new Set([0,1,2,3,4,5]),
+            1: new Set([0,6]),
+            2: new Set([0,1,2,3,4,5]),
+            3: new Set([0,6]),
+            4: new Set([0,1,2,3,4,5]),
+            5: new Set([0,1,2,3,4,5,6])
+        };
+        var allFreqOptions;
+        function filterFrequency() {
+            var typeEl = document.getElementById('Type');
+            var freqEl = document.getElementById('Frequency');
+            if (!typeEl || !freqEl) return;
+            var allowed = ALLOWED_FREQ[parseInt(typeEl.value)] || new Set([0,1,2,3,4,5,6]);
+            var current = freqEl.value;
+            freqEl.innerHTML = '';
+            var firstVal = null;
+            allFreqOptions.forEach(function(o) {
+                if (allowed.has(parseInt(o.value))) {
+                    var opt = document.createElement('option');
+                    opt.value = o.value; opt.text = o.text;
+                    freqEl.appendChild(opt);
+                    if (firstVal === null) firstVal = o.value;
+                }
+            });
+            freqEl.value = allowed.has(parseInt(current)) ? current : firstVal;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var devsData  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                deviations.Where(d => selDeviations.Contains(int.Parse(d.Value))).Select(d => new { id = d.Value, text = d.Text }).ToList()));
+            var capasData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                capas.Where(c => selCapas.Contains(int.Parse(c.Value))).Select(c => new { id = c.Value, text = c.Text }).ToList()));
+
+            setupPicker('deviationDropdown', 'deviationTags', 'deviationHidden', 'selectedDeviations', devsData);
+            setupPicker('capaDropdown',      'capaTags',      'capaHidden',      'selectedCapas',      capasData);
+
+            var freqEl = document.getElementById('Frequency');
+            allFreqOptions = Array.from(freqEl.options).map(function(o) { return { value: o.value, text: o.text }; });
+            document.getElementById('Type').addEventListener('change', filterFrequency);
+            filterFrequency();
+        });
+        </script>
+    }
+}

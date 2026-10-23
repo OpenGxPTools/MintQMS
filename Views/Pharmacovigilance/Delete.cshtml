@@ -1,0 +1,24 @@
+@model OpenQMS.Models.AdverseEvent
+@{
+    ViewData["Title"] = "Void Adverse Event";
+}
+
+<h4 class="mb-0">Void Adverse Event</h4>
+<div class="alert alert-warning">
+    Are you sure you want to void <strong>@Model.AENumber</strong>? The record will be marked as Voided and will no longer appear in active lists.
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">AE Number</dt>
+    <dd class="col-sm-9">@Model.AENumber</dd>
+    <dt class="col-sm-3">Status</dt>
+    <dd class="col-sm-9">@EnumHelper.Display(Model.Status)</dd>
+    <dt class="col-sm-3">Report Date</dt>
+    <dd class="col-sm-9">@Model.ReportDate.ToSite().ToString("dd MMM yyyy")</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Confirm Void</button>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">Cancel</a>
+</form>

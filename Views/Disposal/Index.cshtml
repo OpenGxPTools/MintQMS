@@ -1,0 +1,300 @@
+@model IEnumerable<OpenQMS.Models.ViewModels.DisposalEligibleItem>
+@using OpenQMS.Authorization
+@{
+    ViewData["Title"] = "Data Disposal Management";
+    bool isAdmin = User.IsInRole(Constants.AdministratorsRole);
+}
+
+<h4 class="mb-0">Data Disposal Management</h4>
+<p class="text-muted">
+    Records listed below have passed their minimum retention period.
+    Records with a Retention Hold cannot be disposed until the hold is removed and the cooldown period elapses.
+</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["Warning"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show">@TempData["Warning"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<div class="mb-3 d-flex gap-2">
+    <a asp-action="ExportReport" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-file-earmark-excel"></i> Export Report
+    </a>
+    <a asp-action="AuditLog" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-journal-text"></i> Disposal Audit Log
+    </a>
+</div>
+
+<form asp-action="Dispose" method="post" id="disposeForm">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="InputEmail" id="disposeEmail" />
+    <input type="hidden" name="InputPassword" id="disposePassword" />
+
+    @if (isAdmin)
+    {
+        <div class="mb-2">
+            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDispose()">
+                Dispose Selected
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm ms-1" onclick="selectAll(true)">Select All Eligible</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectAll(false)">Clear Selection</button>
+        </div>
+    }
+
+    <table class="table table-sm table-bordered table-hover" id="disposalTable">
+        <thead class="table-dark">
+            <tr>
+                @if (isAdmin) { <th style="width:30px"></th> }
+                <th>Module</th>
+                <th>Reference</th>
+                <th>Title</th>
+                <th>Terminal Status</th>
+                <th>Terminal Date</th>
+                <th>Retain Until</th>
+                <th>Hold</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            string rowClass = item.RetentionExtended ? "table-warning"
+                            : item.CooldownActive    ? "table-info"
+                            : "";
+            <tr class="@rowClass">
+                @if (isAdmin)
+                {
+                    <td>
+                        @if (item.IsEligibleForDisposal)
+                        {
+                            <input type="checkbox" name="selections" value="@item.Module:@item.RecordId"
+                                   class="form-check-input eligible-checkbox" />
+                        }
+                        else
+                        {
+                            <i class="bi bi-lock-fill text-warning" title="@(item.RetentionExtended ? "Retention Hold active" : "Cooldown period active")"></i>
+                        }
+                    </td>
+                }
+                <td>@item.Module</td>
+                <td><strong>@item.RecordReference</strong></td>
+                <td>@item.Title</td>
+                <td>@item.TerminalStatus</td>
+                <td>@item.TerminalDate.ToSite().ToString("dd MMM yyyy")</td>
+                <td>@item.RetainUntil.ToString("dd MMM yyyy")</td>
+                <td>
+                    @if (item.RetentionExtended)
+                    {
+                        <span class="badge bg-warning text-dark" title="@item.RetentionExtendedComments">
+                            @item.RetentionExtendedReason — @item.RetentionExtendedBy (@item.RetentionExtendedOn?.ToString("dd MMM yyyy"))
+                        </span>
+                    }
+                    else if (item.CooldownActive)
+                    {
+                        <span class="badge bg-info text-dark">
+                            Cooldown until @item.RetentionHoldCooldownUntil?.ToString("dd MMM yyyy")
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">None</span>
+                    }
+                </td>
+                <td>
+                    @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole))
+                    {
+                        @if (!item.RetentionExtended)
+                        {
+                            <button type="button" class="btn btn-warning btn-sm"
+                                    onclick="openSetHold('@item.Module', @item.RecordId, '@item.RecordReference')">
+                                Set Hold
+                            </button>
+                        }
+                        else if (isAdmin)
+                        {
+                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                    onclick="openRemoveHold('@item.Module', @item.RecordId, '@item.RecordReference')">
+                                Remove Hold
+                            </button>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</form>
+
+<!-- Set Hold Modal -->
+<div class="modal fade" id="setHoldModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="SetHold" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="module" id="holdModule" />
+                <input type="hidden" name="recordId" id="holdRecordId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Set Retention Hold — <span id="holdRef"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Reason <span class="text-danger">*</span></label>
+                        <select name="reason" class="form-select" required>
+                            <option value="1">Legal</option>
+                            <option value="2">Regulatory</option>
+                            <option value="3">Business Requirements</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Comments</label>
+                        <textarea name="comments" class="form-control" rows="3"
+                                  placeholder="Provide context for this retention hold..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Apply Hold</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Hold Modal (Admin + e-sig) -->
+<div class="modal fade" id="removeHoldModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="RemoveHold" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="module" id="removeModule" />
+                <input type="hidden" name="recordId" id="removeRecordId" />
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Remove Retention Hold — <span id="removeRef"></span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        Removing a retention hold starts a <strong>@ViewBag.CooldownDays-day cooldown</strong>
+                        before the record becomes eligible for disposal.
+                        This action requires your electronic signature and is permanently logged.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reason for removing hold <span class="text-danger">*</span></label>
+                        <textarea name="removalReason" class="form-control" rows="3" required
+                                  placeholder="Provide documented justification for removing this hold..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Your Email (electronic signature) <span class="text-danger">*</span></label>
+                        <input type="email" name="InputEmail" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Your Password <span class="text-danger">*</span></label>
+                        <input type="password" name="InputPassword" class="form-control" required />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="confirmRemoval" required />
+                        <label class="form-check-label" for="confirmRemoval">
+                            I confirm this retention hold removal has been formally authorised
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Remove Hold</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Dispose Confirmation Modal -->
+<div class="modal fade" id="disposeConfirmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Disposal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>You have selected <strong id="selectedCount">0</strong> record(s) for disposal.</p>
+                <p class="text-danger">This action will soft-delete the selected records. It cannot be undone without direct database access.</p>
+                <p>Records with an active retention hold will be automatically skipped.</p>
+                <div class="alert alert-warning mb-3">
+                    This action requires your electronic signature and is permanently logged.
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Your Email (electronic signature) <span class="text-danger">*</span></label>
+                    <input type="email" id="modalDisposeEmail" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Your Password <span class="text-danger">*</span></label>
+                    <input type="password" id="modalDisposePassword" class="form-control" />
+                </div>
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="checkbox" id="confirmDisposal" />
+                    <label class="form-check-label" for="confirmDisposal">
+                        I confirm this disposal has been formally authorised
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="submitDispose()">
+                    Confirm Disposal
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        $('#disposalTable').DataTable({ stateSave: true, pageLength: 25, order: [[5, 'asc']] });
+    });
+
+    function openSetHold(module, id, ref) {
+        document.getElementById('holdModule').value   = module;
+        document.getElementById('holdRecordId').value = id;
+        document.getElementById('holdRef').textContent = ref;
+        new bootstrap.Modal(document.getElementById('setHoldModal')).show();
+    }
+
+    function openRemoveHold(module, id, ref) {
+        document.getElementById('removeModule').value   = module;
+        document.getElementById('removeRecordId').value = id;
+        document.getElementById('removeRef').textContent = ref;
+        new bootstrap.Modal(document.getElementById('removeHoldModal')).show();
+    }
+
+    function confirmDispose() {
+        const checked = document.querySelectorAll('.eligible-checkbox:checked').length;
+        if (checked === 0) { alert('No records selected.'); return; }
+        document.getElementById('selectedCount').textContent = checked;
+        new bootstrap.Modal(document.getElementById('disposeConfirmModal')).show();
+    }
+
+    function submitDispose() {
+        const email = document.getElementById('modalDisposeEmail').value.trim();
+        const pwd   = document.getElementById('modalDisposePassword').value;
+        if (!email || !pwd) { alert('Electronic signature (email and password) is required.'); return; }
+        if (!document.getElementById('confirmDisposal').checked) { alert('Please confirm the disposal is authorised.'); return; }
+        document.getElementById('disposeEmail').value    = email;
+        document.getElementById('disposePassword').value = pwd;
+        document.getElementById('disposeForm').submit();
+    }
+
+    function selectAll(state) {
+        document.querySelectorAll('.eligible-checkbox').forEach(cb => cb.checked = state);
+    }
+</script>
+}

@@ -1,0 +1,121 @@
+@*
+This file is part of the OpenQMS.net project (https://github.com/C-realize/OpenQMS).
+Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
+
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://www.c-realize.com/contact.  For AGPL licensing, see below.
+
+AGPL:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+*@
+
+@model IEnumerable<OpenQMS.Models.LoginAuditLog>
+
+@{
+    ViewData["Title"] = "Login History";
+
+    string ActionBadge(string action) => action switch
+    {
+        "Login"        => "bg-success",
+        "Logout"       => "bg-secondary",
+        "Failed Login" => "bg-danger",
+        "Locked Out"   => "bg-warning text-dark",
+        _              => "bg-secondary"
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Login History</h4>
+    <span class="text-muted small">@Model.Count() records shown</span>
+</div>
+
+@* ── Filter bar ── *@
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-sm-4 col-lg-3">
+                <label class="form-label small fw-semibold text-uppercase text-muted">Username</label>
+                <input type="text" name="userName" value="@ViewBag.UserName" class="form-control form-control-sm" placeholder="Filter by username" />
+            </div>
+            <div class="col-sm-4 col-lg-2">
+                <label class="form-label small fw-semibold text-uppercase text-muted">Action</label>
+                <select name="actionFilter" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option value="Login"        selected="@(ViewBag.ActionFilter == "Login"        ? "selected" : null)">Login</option>
+                    <option value="Logout"       selected="@(ViewBag.ActionFilter == "Logout"       ? "selected" : null)">Logout</option>
+                    <option value="Failed Login" selected="@(ViewBag.ActionFilter == "Failed Login" ? "selected" : null)">Failed Login</option>
+                    <option value="Locked Out"   selected="@(ViewBag.ActionFilter == "Locked Out"   ? "selected" : null)">Locked Out</option>
+                </select>
+            </div>
+            <div class="col-sm-4 col-lg-2">
+                <label class="form-label small fw-semibold text-uppercase text-muted">From</label>
+                <input type="date" name="from" value="@ViewBag.From" class="form-control form-control-sm" />
+            </div>
+            <div class="col-sm-4 col-lg-2">
+                <label class="form-label small fw-semibold text-uppercase text-muted">To</label>
+                <input type="date" name="to" value="@ViewBag.To" class="form-control form-control-sm" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary ms-1">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* ── Table ── *@
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table id="loginAuditTable" class="table table-sm table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-3">Timestamp (UTC)</th>
+                    <th>Username</th>
+                    <th>Action</th>
+                    <th>IP Address</th>
+                    <th class="pe-3">Browser / User Agent</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td class="ps-3 text-nowrap">@log.Timestamp.ToSite().ToString("dd MMM yyyy HH:mm:ss")</td>
+                        <td>@log.UserName</td>
+                        <td><span class="badge @ActionBadge(log.Action)">@log.Action</span></td>
+                        <td class="font-monospace">@log.IpAddress</td>
+                        <td class="text-muted small pe-3" style="max-width:320px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="@log.UserAgent">@log.UserAgent</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="card-body text-muted small">No records found for the selected filters.</div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#loginAuditTable').DataTable({ stateSave: true,
+                order: [[0, 'desc']],
+                pageLength: window.qmsPageSize ?? 25,
+                dom: 'Bfrtip',
+                buttons: ['csv', 'excel', 'print', 'colvis']
+            });
+        });
+    </script>
+}

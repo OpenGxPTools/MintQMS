@@ -1,0 +1,247 @@
+@model OpenQMS.Models.Release.ReleaseRecord
+@using OpenQMS.Models.Release
+
+@{
+    var passCount = Model.TestResults?.Count(t => t.Status == TestResultStatus.Pass) ?? 0;
+    var failCount = Model.TestResults?.Count(t => t.Status == TestResultStatus.Fail) ?? 0;
+    var pendingCount = Model.TestResults?.Count(t => t.Status == TestResultStatus.Pending) ?? 0;
+    var locked = Model.IsLocked || Model.Status >= ReleaseStatus.PendingAPDecision;
+}
+
+@if (Model.TestResults?.Any() == true)
+{
+    <div class="d-flex gap-3 mb-3">
+        <span class="badge bg-success fs-6">Pass: @passCount</span>
+        <span class="badge bg-danger fs-6">Fail: @failCount</span>
+        <span class="badge bg-secondary fs-6">Pending: @pendingCount</span>
+    </div>
+}
+
+@{
+    var linkedSpecs = ViewBag.LinkedProductSpecs as IList<OpenQMS.Models.ProductSpecLine>;
+}
+@if (!locked && linkedSpecs != null && linkedSpecs.Count > 0)
+{
+    <div class="alert alert-info d-flex align-items-center justify-content-between py-2 mb-3">
+        <span><i class="bi bi-clipboard-data me-1"></i>This release is linked to a product with <strong>@linkedSpecs.Count</strong> specification line(s).</span>
+        <form asp-action="ImportSpecsFromProduct" asp-route-releaseRecordId="@Model.Id" method="post" class="mb-0">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-sm btn-info"
+                    onclick="return confirm('Import @linkedSpecs.Count spec line(s) from product master? Lines already present will be skipped.')">
+                <i class="bi bi-cloud-download me-1"></i>Import from Product Specs
+            </button>
+        </form>
+    </div>
+}
+
+@if (!locked)
+{
+    <form asp-action="AddTestResult" asp-route-releaseRecordId="@Model.Id" method="post" class="card mb-4 p-3 bg-light">
+        @Html.AntiForgeryToken()
+        <h6 class="mb-3">Add Test Result</h6>
+        <div class="row g-2">
+            <div class="col-md-3">
+                <input name="testParameter" class="form-control form-control-sm" placeholder="Test Parameter *" required />
+            </div>
+            <div class="col-md-2">
+                <input name="testMethod" class="form-control form-control-sm" placeholder="Method" />
+            </div>
+            <div class="col-md-3">
+                <input name="acceptanceCriterion" class="form-control form-control-sm" placeholder="Acceptance Criterion *" required />
+            </div>
+            <div class="col-md-2">
+                <input name="result" class="form-control form-control-sm" placeholder="Result" />
+            </div>
+            <div class="col-md-2">
+                <select name="status" class="form-select form-select-sm">
+                    @foreach (TestResultStatus s in Enum.GetValues(typeof(TestResultStatus)))
+                    {
+                        <option value="@s">@s</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row g-2 mt-1">
+            <div class="col-md-8">
+                <input name="comment" class="form-control form-control-sm" placeholder="Comment (optional)" />
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-sm btn-primary">Add Result</button>
+            </div>
+        </div>
+    </form>
+}
+
+@if (Model.TestResults == null || !Model.TestResults.Any())
+{
+    <p class="text-muted">No test results recorded yet.</p>
+}
+else
+{
+    <table class="table table-sm">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Test Parameter</th>
+                <th>Test Method</th>
+                <th>Acceptance Criterion</th>
+                <th>Result</th>
+                <th>Status</th>
+                <th>Comment</th>
+                @if (!locked)
+                {
+                    <th>Actions</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var t in Model.TestResults.OrderBy(x => x.DisplayOrder))
+            {
+                var rowClass = t.Status == TestResultStatus.Fail ? "table-danger"
+                             : t.Status == TestResultStatus.Pass ? "table-success"
+                             : "";
+                <tr class="@rowClass">
+                    <td>@t.DisplayOrder</td>
+                    <td>
+                        <span class="tr-param-text">@t.TestParameter</span>
+                        @if (!locked)
+                        {
+                            <input type="text" class="form-control form-control-sm tr-param-input d-none"
+                                   id="param-@t.Id" value="@t.TestParameter" />
+                        }
+                    </td>
+                    <td>
+                        <small class="tr-method-text">@t.TestMethod</small>
+                        @if (!locked)
+                        {
+                            <input type="text" class="form-control form-control-sm tr-method-input d-none"
+                                   id="method-@t.Id" value="@t.TestMethod" />
+                        }
+                    </td>
+                    <td>
+                        <span class="tr-criterion-text">@t.AcceptanceCriterion</span>
+                        @if (!locked)
+                        {
+                            <input type="text" class="form-control form-control-sm tr-criterion-input d-none"
+                                   id="criterion-@t.Id" value="@t.AcceptanceCriterion" />
+                        }
+                    </td>
+                    <td>
+                        @if (!locked)
+                        {
+                            <input type="text" class="form-control form-control-sm" style="max-width:120px"
+                                   id="result-@t.Id" value="@t.Result" />
+                        }
+                        else
+                        {
+                            @t.Result
+                        }
+                    </td>
+                    <td>
+                        @if (!locked)
+                        {
+                            <select class="form-select form-select-sm" style="max-width:120px" id="status-@t.Id">
+                                @foreach (TestResultStatus s in Enum.GetValues(typeof(TestResultStatus)))
+                                {
+                                    <option value="@s" selected="@(t.Status == s)">@s</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            var tbadge = t.Status == TestResultStatus.Pass ? "bg-success"
+                                       : t.Status == TestResultStatus.Fail ? "bg-danger"
+                                       : "bg-secondary";
+                            <span class="badge @tbadge">@EnumHelper.Display(t.Status)</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!locked)
+                        {
+                            <input type="text" class="form-control form-control-sm" id="comment-@t.Id" value="@t.Comment" />
+                        }
+                        else
+                        {
+                            @t.Comment
+                        }
+                    </td>
+                    @if (!locked)
+                    {
+                        <td class="text-nowrap">
+                            <button type="button" class="btn btn-xs btn-outline-secondary btn-sm me-1 edit-result" data-id="@t.Id" title="Edit parameter, method and criterion">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-xs btn-outline-primary btn-sm me-1 save-result" data-id="@t.Id">Save</button>
+                            <form asp-action="DeleteTestResult" asp-route-resultId="@t.Id" method="post" style="display:inline" onsubmit="return confirm('Delete this result?')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-xs btn-outline-danger btn-sm">Del</button>
+                            </form>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (!locked)
+    {
+        @Html.AntiForgeryToken()
+        <script>
+        document.querySelectorAll('.edit-result').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var id = this.dataset.id;
+                var row = this.closest('tr');
+                var texts = row.querySelectorAll('.tr-param-text, .tr-method-text, .tr-criterion-text');
+                var inputs = row.querySelectorAll('.tr-param-input, .tr-method-input, .tr-criterion-input');
+                var editing = !document.getElementById('param-' + id).classList.contains('d-none');
+                texts.forEach(el => el.classList.toggle('d-none', !editing ? true : false));
+                inputs.forEach(el => el.classList.toggle('d-none', editing));
+                var icon = this.querySelector('i');
+                if (editing) {
+                    icon.classList.replace('bi-x-lg', 'bi-pencil');
+                } else {
+                    icon.classList.replace('bi-pencil', 'bi-x-lg');
+                }
+            });
+        });
+
+        document.querySelectorAll('.save-result').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var id = this.dataset.id;
+                var result = document.getElementById('result-' + id)?.value || '';
+                var status = document.getElementById('status-' + id)?.value || 'Pending';
+                var comment = document.getElementById('comment-' + id)?.value || '';
+                var param = document.getElementById('param-' + id)?.value || '';
+                var method = document.getElementById('method-' + id)?.value || '';
+                var criterion = document.getElementById('criterion-' + id)?.value || '';
+                var token = document.querySelector('[name="__RequestVerificationToken"]').value;
+
+                fetch('/Release/UpdateTestResult', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'resultId=' + id
+                        + '&testParameter=' + encodeURIComponent(param)
+                        + '&testMethod=' + encodeURIComponent(method)
+                        + '&acceptanceCriterion=' + encodeURIComponent(criterion)
+                        + '&result=' + encodeURIComponent(result)
+                        + '&status=' + encodeURIComponent(status)
+                        + '&comment=' + encodeURIComponent(comment)
+                        + '&__RequestVerificationToken=' + encodeURIComponent(token)
+                })
+                .then(r => r.json())
+                .then(function(data) {
+                    if (data.success) {
+                        // Update display spans with new values
+                        var row = btn.closest('tr');
+                        row.querySelector('.tr-param-text').textContent = param;
+                        row.querySelector('.tr-method-text').textContent = method;
+                        row.querySelector('.tr-criterion-text').textContent = criterion;
+                        btn.textContent = 'Saved ✓';
+                        setTimeout(function() { btn.textContent = 'Save'; }, 2000);
+                    }
+                });
+            });
+        });
+        </script>
+    }
+}

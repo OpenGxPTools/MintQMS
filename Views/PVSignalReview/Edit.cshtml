@@ -1,0 +1,81 @@
+@model OpenQMS.Models.PVSignalReview
+@{
+    ViewData["Title"] = $"Assess Signal — {Model.MedDRAPT}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="fas fa-broadcast-tower me-2 text-warning"></i>Assess Signal — <em>@Model.MedDRAPT</em></h4>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back
+    </a>
+</div>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-header bg-warning text-dark fw-bold">
+        <i class="fas fa-info-circle me-1"></i>Signal Summary
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">MedDRA Preferred Term</dt>
+            <dd class="col-sm-9"><strong>@Model.MedDRAPT</strong></dd>
+            <dt class="col-sm-3">Detected</dt>
+            <dd class="col-sm-9">@Model.DetectedOn.ToSite().ToString("dd MMM yyyy") by @Model.DetectedBy</dd>
+            <dt class="col-sm-3">Trigger Count</dt>
+            <dd class="col-sm-9"><span class="badge bg-warning text-dark">@Model.TriggerCount cases in 90 days</span></dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="MedDRAPT" />
+    <input type="hidden" asp-for="DetectedOn" />
+    <input type="hidden" asp-for="DetectedBy" />
+    <input type="hidden" asp-for="TriggerCount" />
+    <input type="hidden" asp-for="CreatedOn" />
+    <input type="hidden" asp-for="ReviewedOn" />
+    <input type="hidden" asp-for="ReviewedBy" />
+    <input type="hidden" asp-for="LinkedCapaId" />
+
+    <div class="card shadow-sm">
+        <div class="card-header fw-bold"><i class="fas fa-clipboard-check me-1"></i>Assessment</div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label fw-bold" asp-for="AssignedTo">Assigned To</label>
+                <select asp-for="AssignedTo" asp-items='@(ViewBag.UsersList as SelectList)' class="form-select">
+                    <option value="">— Unassigned —</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Status</label>
+                <div><span class="badge bg-secondary fs-6">@EnumHelper.Display(Model.Status)</span></div>
+                <small class="text-muted">Changed via the workflow actions on the Details page.</small>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold" asp-for="Conclusion">Conclusion</label>
+                <select asp-for="Conclusion" class="form-select">
+                    <option value="">— Pending —</option>
+                    @foreach (var c in Enum.GetValues<PVSignalReview.SignalConclusion>())
+                    {
+                        <option value="@c" selected="@(Model.Conclusion == c)">@c</option>
+                    }
+                </select>
+                <div class="form-text">Select conclusion once assessment is complete.</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold" asp-for="AssessmentNotes">Assessment Notes</label>
+                <textarea asp-for="AssessmentNotes" class="form-control" rows="6"
+                          placeholder="Document the assessment rationale, data reviewed, and basis for conclusion..."></textarea>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i>Save Assessment
+            </button>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
+    </div>
+</form>

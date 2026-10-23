@@ -1,0 +1,189 @@
+@model OpenQMS.Models.Maintenance
+
+@{
+    ViewData["Title"] = "Schedule Maintenance";
+    var assets     = ViewData["Assets"]     as List<OpenQMS.Models.Asset>;
+    var processes  = ViewData["Processes"]  as List<OpenQMS.Models.Process>;
+    var deviations = ViewData["Deviations"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var capas      = ViewData["Capas"]      as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+
+    var selDeviations = (ViewBag.SelectedDeviationIds as List<int>) ?? new List<int>();
+    var selCapas      = (ViewBag.SelectedCapaIds      as List<int>) ?? new List<int>();
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Schedule New Maintenance</h4>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Basic Information</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="AssetId" class="form-label">Asset (Required)</label>
+                            <select asp-for="AssetId" class="form-select">
+                                <option value="">-- Select Asset --</option>
+                                @foreach (var asset in assets ?? new())
+                                { <option value="@asset.Id">@asset.AssetId - @asset.Name</option> }
+                            </select>
+                            <span asp-validation-for="AssetId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ProcessId" class="form-label">Process (Optional)</label>
+                            <select asp-for="ProcessId" class="form-select">
+                                <option value="">-- Select Process --</option>
+                                @foreach (var p in processes ?? new())
+                                { <option value="@p.Id">@p.ProcessId - @p.Name</option> }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Type" class="form-label"></label>
+                            <select asp-for="Type" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<OpenQMS.Models.Maintenance.MaintenanceType>()"></select>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Frequency" class="form-label"></label>
+                            <select asp-for="Frequency" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<OpenQMS.Models.Maintenance.MaintenanceFrequency>()"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ScheduledDate" class="form-label"></label>
+                            <input asp-for="ScheduledDate" type="date" class="form-control" />
+                            <span asp-validation-for="ScheduledDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Related QMS Records (Optional)</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Related Deviations</label>
+                            <select id="deviationDropdown" class="form-select">
+                                <option value="">-- Add Deviation --</option>
+                                @foreach (var d in deviations)
+                                { <option value="@d.Value" data-text="@d.Text">@d.Text</option> }
+                            </select>
+                            <div id="deviationTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="deviationHidden" class="d-none"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Related CAPAs</label>
+                            <select id="capaDropdown" class="form-select">
+                                <option value="">-- Add CAPA --</option>
+                                @foreach (var c in capas)
+                                { <option value="@c.Value" data-text="@c.Text">@c.Text</option> }
+                            </select>
+                            <div id="capaTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="capaHidden" class="d-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Schedule Maintenance" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+            </div>
+        </form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    // Frequency options allowed per maintenance type
+    // Type:      Preventive=0, Corrective=1, Calibration=2, Qualification=3, Cleaning=4, Inspection=5
+    // Frequency: OneTime=0, Weekly=1, Monthly=2, Quarterly=3, SemiAnnual=4, Annual=5, AsNeeded=6
+    var ALLOWED_FREQ = {
+        0: new Set([0,1,2,3,4,5]),   // Preventive: no AsNeeded
+        1: new Set([0,6]),             // Corrective: OneTime, AsNeeded only
+        2: new Set([0,1,2,3,4,5]),    // Calibration: no AsNeeded
+        3: new Set([0,6]),             // Qualification: OneTime, AsNeeded only
+        4: new Set([0,1,2,3,4,5]),    // Cleaning: no AsNeeded
+        5: new Set([0,1,2,3,4,5,6])   // Inspection: all
+    };
+
+    var allFreqOptions;
+    function filterFrequency() {
+        var typeEl = document.getElementById('Type');
+        var freqEl = document.getElementById('Frequency');
+        if (!typeEl || !freqEl) return;
+        var allowed = ALLOWED_FREQ[parseInt(typeEl.value)] || new Set([0,1,2,3,4,5,6]);
+        var current = freqEl.value;
+        freqEl.innerHTML = '';
+        var firstVal = null;
+        allFreqOptions.forEach(function(o) {
+            if (allowed.has(parseInt(o.value))) {
+                var opt = document.createElement('option');
+                opt.value = o.value; opt.text = o.text;
+                freqEl.appendChild(opt);
+                if (firstVal === null) firstVal = o.value;
+            }
+        });
+        freqEl.value = allowed.has(parseInt(current)) ? current : firstVal;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var freqEl = document.getElementById('Frequency');
+        allFreqOptions = Array.from(freqEl.options).map(function(o) { return { value: o.value, text: o.text }; });
+        document.getElementById('Type').addEventListener('change', filterFrequency);
+        filterFrequency();
+    });
+
+    function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+        var selected = {};
+        preselected.forEach(function (item) { selected[item.id] = item.text; });
+        function render() {
+            var tagsDiv   = document.getElementById(tagsId);
+            var hiddenDiv = document.getElementById(hiddenId);
+            tagsDiv.innerHTML = ''; hiddenDiv.innerHTML = '';
+            Object.keys(selected).forEach(function (id) {
+                var badge = document.createElement('span');
+                badge.className = 'badge bg-primary d-flex align-items-center gap-1';
+                badge.textContent = selected[id];
+                var btn = document.createElement('button');
+                btn.type = 'button'; btn.className = 'btn-close btn-close-white btn-sm ms-1';
+                btn.style.fontSize = '0.6rem';
+                btn.addEventListener('click', function () { delete selected[id]; render(); });
+                badge.appendChild(btn); tagsDiv.appendChild(badge);
+                var input = document.createElement('input');
+                input.type = 'hidden'; input.name = inputName; input.value = id;
+                hiddenDiv.appendChild(input);
+            });
+        }
+        document.getElementById(dropdownId).addEventListener('change', function () {
+            var id = this.value, text = this.options[this.selectedIndex].dataset.text;
+            if (id && !selected[id]) { selected[id] = text; render(); }
+            this.value = '';
+        });
+        render();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var devsData  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            deviations.Where(d => selDeviations.Contains(int.Parse(d.Value))).Select(d => new { id = d.Value, text = d.Text }).ToList()));
+        var capasData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            capas.Where(c => selCapas.Contains(int.Parse(c.Value))).Select(c => new { id = c.Value, text = c.Text }).ToList()));
+
+        setupPicker('deviationDropdown', 'deviationTags', 'deviationHidden', 'selectedDeviations', devsData);
+        setupPicker('capaDropdown',      'capaTags',      'capaHidden',      'selectedCapas',      capasData);
+    });
+    </script>
+}

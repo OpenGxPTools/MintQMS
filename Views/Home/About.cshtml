@@ -1,0 +1,62 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Config
+@{
+    ViewData["Title"] = "About MintQMS";
+    Layout = null;
+    var sourceUrl = Config["SourceCodeUrl"];
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About MintQMS</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 0 20px;
+            color: #333;
+            line-height: 1.7;
+        }
+        h1 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+        h2 { font-size: 1.15rem; margin-top: 1.8rem; }
+        a { color: #0066cc; }
+    </style>
+</head>
+<body>
+    <h1>About MintQMS</h1>
+    <p>
+        MintQMS is an independent fork of the public, AGPLv3 release of
+        <a href="https://github.com/C-realize/OpenQMS" target="_blank" rel="noopener">OpenQMS</a>
+        (&copy; C-realize IT Services SRL), with substantial additional modules and modifications.
+        It is not affiliated with or derived from C-realize's commercial/paid version.
+    </p>
+    <p>
+        &copy; 2022&ndash;2025 <a href="https://www.c-realize.com" target="_blank" rel="noopener">C-realize IT Services SRL</a> (original OpenQMS)<br />
+        &copy; 2026 MintQMS contributors
+    </p>
+    <p>
+        This software is licensed under the GNU Affero General Public License v3 (AGPLv3).
+        @if (!string.IsNullOrWhiteSpace(sourceUrl))
+        {
+            <br />
+            <text>The complete source code of this version is available at
+            <a href="@sourceUrl" target="_blank" rel="noopener">@sourceUrl</a>.</text>
+        }
+    </p>
+    <h2>Disclaimer</h2>
+    <p>
+        MintQMS is provided free, &ldquo;as is&rdquo;, without warranty of any kind, under the GNU AGPL version 3.
+        It is <strong>not validated</strong> for any regulated use. Each organisation that uses it is solely
+        responsible for its own computerised system validation (for example PIC/S Annex 11, GAMP&nbsp;5,
+        21&nbsp;CFR Part&nbsp;11), configuration, data, backups and regulatory compliance. It is not endorsed by,
+        or affiliated with, the TGA, any regulator, or C-realize IT Services SRL. To the maximum extent permitted
+        by law, the authors accept no liability for any loss arising from its use. Nothing here excludes rights
+        that cannot be excluded under the Australian Consumer Law.
+    </p>
+    <p>
+        For the full license, see: <a href="https://www.gnu.org/licenses/" target="_blank" rel="noopener">https://www.gnu.org/licenses/</a>
+    </p>
+</body>
+</html>

@@ -1,0 +1,141 @@
+@model IEnumerable<OpenQMS.Models.Complaint>
+@using OpenQMS.Authorization
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        var table = $('#complaintsTable').DataTable({ stateSave: true,
+            initComplete: function () {
+                $('.status-filter').on('click', function () {
+                    $('.status-filter').removeClass('active');
+                    $(this).addClass('active');
+                    var val = $(this).data('status');
+                    table.column(6).search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+                $('.status-filter[data-status=""]').addClass('active');
+            },
+            "columns": [
+                null,
+                null,
+                null,
+                null,
+                { "visible": false },
+                { "visible": false },
+                null,
+                null
+            ],
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[0, 'asc']],
+            displayLength: 10,
+            buttons: [
+                'colvis',
+                {
+                    extend: 'pdf',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 6] }
+                },
+                {
+                    extend: 'excel',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 6] }
+                }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Complaints</h4>
+    @if (User.IsInRole("Administrator") || User.IsInRole("QualityManager") || User.IsInRole("QualityUser"))
+    {
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Complaint</a>
+    }
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Received">Received</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="Evaluation">Evaluation</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending Acceptance">Pending Acceptance</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Accepted">Accepted</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Resolution">Resolution</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Closed">Closed</button>
+</div>
+
+<table id="complaintsTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Complaint ID</th>
+            <th>Title</th>
+            <th>Severity</th>
+            <th>Linked To</th>
+            <th>Customer</th>
+            <th>Received On</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var sevBadge = item.Severity switch {
+                OpenQMS.Models.Complaint.ComplaintSeverity.Critical => "bg-danger",
+                OpenQMS.Models.Complaint.ComplaintSeverity.Major    => "bg-warning text-dark",
+                _ => "bg-secondary"
+            };
+            var iLinked = new List<string>();
+            if (item.LinkedProducts?.Any()  == true) iLinked.AddRange(item.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedProcesses?.Any() == true) iLinked.AddRange(item.LinkedProcesses.Select(x => x.Process?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedMaterials?.Any() == true) iLinked.AddRange(item.LinkedMaterials.Select(x => x.Material?.Name ?? "").Where(n => n != ""));
+            if (item.LinkedSuppliers?.Any() == true) iLinked.AddRange(item.LinkedSuppliers.Select(x => x.Supplier?.LegalName ?? "").Where(n => n != ""));
+            if (!iLinked.Any())
+            {
+                if (item.Product  != null) iLinked.Add(item.Product.Name);
+                if (item.Process  != null) iLinked.Add(item.Process.Name);
+                if (item.Material != null) iLinked.Add(item.Material.Name);
+                if (item.Supplier != null) iLinked.Add(item.Supplier.LegalName);
+            }
+            <tr>
+                <td>@item.ComplaintId</td>
+                <td>@item.Title</td>
+                <td><span class="badge @sevBadge">@item.Severity</span></td>
+                <td>@string.Join(", ", iLinked)</td>
+                <td>@(item.Customer?.LegalName ?? "-")</td>
+                <td>@item.ReceivedOn.ToSite().ToShortDateString()</td>
+                <td>@EnumHelper.Display(item.Status)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (item.Status != OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance
+                         && item.Status != OpenQMS.Models.Complaint.ComplaintStatus.Resolution
+                         && item.Status != OpenQMS.Models.Complaint.ComplaintStatus.Closed
+                         && !User.IsInRole(OpenQMS.Authorization.Constants.ReadOnlyRole)
+                         && (User.IsInRole("Administrator") || User.IsInRole("QualityManager") || User.IsInRole("QualityUser")))
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if (User.IsInRole("Administrator")
+                         && item.Status != OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance
+                         && item.Status != OpenQMS.Models.Complaint.ComplaintStatus.Accepted
+                         && item.Status != OpenQMS.Models.Complaint.ComplaintStatus.Resolution
+                         && item.Status != OpenQMS.Models.Complaint.ComplaintStatus.Closed)
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,48 @@
+@model OpenQMS.Models.Change
+
+@{
+    ViewData["Title"] = "Delete Change";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var delLinked = new List<string>();
+    if (Model.LinkedProducts?.Any()  == true) delLinked.AddRange(Model.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedProcesses?.Any() == true) delLinked.AddRange(Model.LinkedProcesses.Select(x => x.Process?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedAssets?.Any()    == true) delLinked.AddRange(Model.LinkedAssets.Select(x => x.Asset?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedMaterials?.Any() == true) delLinked.AddRange(Model.LinkedMaterials.Select(x => x.Material?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedSuppliers?.Any() == true) delLinked.AddRange(Model.LinkedSuppliers.Select(x => x.Supplier?.LegalName ?? "").Where(n => n != ""));
+    if (Model.LinkedCapas?.Any()     == true) delLinked.AddRange(Model.LinkedCapas.Select(x => x.Capa?.CapaId ?? "").Where(n => n != ""));
+    if (!delLinked.Any() && Model.Product != null) delLinked.Add(Model.Product.Name);
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Delete Change</h4>
+    </div>
+</div>
+<hr />
+<h5 class="text-danger">Are you sure you want to delete this?</h5>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.ChangeId)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.ChangeId)</dd>
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Title)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Title)</dd>
+            <dt class="col-sm-4">Linked Records</dt>
+            <dd class="col-sm-8">@(delLinked.Any() ? string.Join(", ", delLinked) : "-")</dd>
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.ProposedBy)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.ProposedBy)</dd>
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Status)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Status)</dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <div class="d-flex gap-2">
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+    </div>
+</form>

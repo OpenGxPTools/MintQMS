@@ -1,0 +1,102 @@
+@*
+This file is part of the OpenQMS.net project (https://github.com/C-realize/OpenQMS).
+Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
+
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://www.c-realize.com/contact.  For AGPL licensing, see below.
+
+AGPL:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+*@
+
+@using OpenQMS.Models.ViewModels
+@model ManageUserRolesViewModel
+
+@{
+    ViewData["Title"] = "Manage Roles";
+}
+
+<h4>Manage Roles — @Model.UserName</h4>
+<p class="text-muted">@Model.Email</p>
+<hr />
+
+<form asp-action="ManageRoles" method="post">
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="UserName" />
+    <input type="hidden" asp-for="Email" />
+
+    <div class="mb-3">
+        <label asp-for="APQualification" class="form-label fw-semibold">AP Qualification</label>
+        <input asp-for="APQualification" class="form-control" placeholder="e.g. BPharm, MPS" />
+        <div class="form-text">Used to pre-fill the AP Full Name &amp; Qualification field on the certification modal. Only applies when this user holds the Authorised Person role.</div>
+    </div>
+    <hr />
+
+    <div class="mb-3">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" asp-for="IsActive" id="isActiveToggle" />
+            <label class="form-check-label" for="isActiveToggle">
+                <span id="isActiveLabel"
+                      class="fw-semibold @(Model.IsActive ? "text-success" : "text-danger")">
+                    @(Model.IsActive ? "Active" : "Inactive (account locked)")
+                </span>
+            </label>
+        </div>
+        <div class="form-text">Inactive users cannot log in. All their records are preserved.</div>
+    </div>
+    <hr />
+
+    <script>
+        document.getElementById('isActiveToggle').addEventListener('change', function () {
+            var label = document.getElementById('isActiveLabel');
+            if (this.checked) {
+                label.textContent = 'Active';
+                label.className = 'fw-semibold text-success';
+            } else {
+                label.textContent = 'Inactive (account locked)';
+                label.className = 'fw-semibold text-danger';
+            }
+        });
+    </script>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width:40px"></th>
+                <th>Role</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Roles.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input type="hidden" asp-for="Roles[i].RoleName" />
+                        <input type="hidden" asp-for="Roles[i].Description" />
+                        <input class="form-check-input" type="checkbox"
+                               asp-for="Roles[i].IsSelected" />
+                    </td>
+                    <td><strong>@EnumHelper.RoleName(Model.Roles[i].RoleName)</strong></td>
+                    <td class="text-muted small">@Model.Roles[i].Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+    </div>
+</form>

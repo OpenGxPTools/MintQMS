@@ -1,0 +1,34 @@
+@model OpenQMS.Models.Release.ReleaseRecord
+
+@if (Model.AuditEntries == null || !Model.AuditEntries.Any())
+{
+    <p class="text-muted">No audit entries.</p>
+}
+else
+{
+    <table class="table table-sm table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Timestamp <span class="fw-normal text-muted">(@SiteTime.Label)</span></th>
+                <th>Action</th>
+                <th>Details</th>
+                <th>From Status</th>
+                <th>To Status</th>
+                <th>Performed By</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in Model.AuditEntries.OrderByDescending(a => a.Timestamp))
+            {
+                <tr>
+                    <td><small>@entry.Timestamp.ToSite().ToString("dd-MMM-yyyy HH:mm")</small></td>
+                    <td><strong>@entry.Action</strong></td>
+                    <td><small>@entry.Details</small></td>
+                    <td><small>@entry.FromStatus</small></td>
+                    <td><small>@entry.ToStatus</small></td>
+                    <td><small>@entry.PerformedBy</small></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,422 @@
+@model OpenQMS.Models.LC.LicenceCertificationRecord
+@using OpenQMS.Models.LC
+@{
+    ViewData["Title"] = "New Licence / Certification Record";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="fas fa-plus-circle me-2 text-primary"></i>New Licence / Certification Record</h4>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to Register
+    </a>
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger" id="saveErrorBanner">
+        <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-1"></i>The record was not created</h6>
+        <p class="mb-2 small">Please correct the following and submit again. Fields needing attention may be on other tabs.</p>
+        <div asp-validation-summary="All" class="mb-0"></div>
+    </div>
+}
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- 6-Tab Navigation -->
+    <ul class="nav nav-tabs mb-0" id="lcTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button"><i class="fas fa-fingerprint me-1"></i>Identification</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button"><i class="fas fa-tag me-1"></i>Classification</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button"><i class="fas fa-calendar-alt me-1"></i>Licence Details</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button"><i class="fas fa-microscope me-1"></i>GMP / ISO Specifics</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button"><i class="fas fa-user me-1"></i>Contacts</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button"><i class="fas fa-dollar-sign me-1"></i>Fees &amp; Notes</button>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 rounded-bottom p-4 mb-3">
+
+        <!-- ── Tab 1: Identification ─────────────────────────────────────── -->
+        <div class="tab-pane fade show active" id="tab1" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">LC Number</label>
+                    <input type="text" class="form-control" value="Auto-generated on save" disabled />
+                    <input type="hidden" asp-for="LCNumber" value="PENDING" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="HolderType" class="form-label fw-bold"></label>
+                    <select asp-for="HolderType" class="form-select" id="holderTypeSelect">
+                        <option value="OwnCompany">Own Company</option>
+                        <option value="ThirdParty">Third Party / CMO / CDMO</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="HolderName" class="form-label fw-bold"></label>
+                    <input asp-for="HolderName" class="form-control" placeholder="Legal entity or site name" />
+                    <span asp-validation-for="HolderName" class="text-danger small"></span>
+                </div>
+
+                <!-- Third-party fields (shown when HolderType = ThirdParty) -->
+                <div class="col-md-6" id="supplierSection">
+                    <label asp-for="SupplierId" class="form-label fw-bold">Linked Supplier (optional)</label>
+                    <select asp-for="SupplierId" asp-items='@(ViewBag.SuppliersList as SelectList)' class="form-select select2-supplier">
+                        <option value="">— No linked supplier —</option>
+                    </select>
+                    <small class="text-muted">Select if this site has a Supplier record in OpenQMS.</small>
+                </div>
+                <div class="col-md-6" id="supplierSection2">
+                    <label asp-for="LinkedSiteCountry" class="form-label fw-bold"></label>
+                    <input asp-for="LinkedSiteCountry" class="form-control" placeholder="e.g. Germany, India, USA" />
+                </div>
+                <div class="col-12" id="supplierSection3">
+                    <label asp-for="LinkedSiteAddress" class="form-label fw-bold"></label>
+                    <input asp-for="LinkedSiteAddress" class="form-control" placeholder="Street address of the site" />
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Tab 2: Classification ─────────────────────────────────────── -->
+        <div class="tab-pane fade" id="tab2" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="Category" class="form-label fw-bold">Category
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="lccategory" aria-label="Category guidance">?</button>
+                    </label>
+                    <select asp-for="Category" class="form-select" id="categorySelect">
+                        <option value="">— Select Category —</option>
+                        <option value="RegulatoryLicence">Regulatory Licence</option>
+                        <option value="ISOPrivateCertification">ISO / Private Certification</option>
+                        <option value="ThirdPartySiteApproval">Third-Party Site Approval</option>
+                    </select>
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="LicenceTypeId" class="form-label fw-bold">Licence / Certification Type</label>
+                    <select asp-for="LicenceTypeId" asp-items='@(ViewBag.LicenceTypesList as SelectList)' class="form-select select2-type" id="licenceTypeSelect">
+                        <option value="">— Select Category first —</option>
+                    </select>
+                    <span asp-validation-for="LicenceTypeId" class="text-danger small"></span>
+                    <small id="typeHint" class="text-muted"></small>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="IssuingBody" class="form-label fw-bold"></label>
+                    <input asp-for="IssuingBody" class="form-control" id="issuingBodyInput" placeholder="Populated from type or enter manually" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="IssuingBodyUrl" class="form-label fw-bold"></label>
+                    <input asp-for="IssuingBodyUrl" class="form-control" placeholder="https://..." />
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="IssuingBodyPortal" class="form-label fw-bold">Authority Portal / Login URL</label>
+                    <input asp-for="IssuingBodyPortal" class="form-control" placeholder="Portal URL where applications are submitted or tracked" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="AuthorityPortalUsername" class="form-label fw-bold"></label>
+                    <input asp-for="AuthorityPortalUsername" class="form-control" placeholder="Your portal login username" />
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Tab 3: Licence Details ────────────────────────────────────── -->
+        <div class="tab-pane fade" id="tab3" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="LicenceNumber" class="form-label fw-bold"></label>
+                    <input asp-for="LicenceNumber" class="form-control" placeholder="Authority's reference number" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ApplicationDate" class="form-label fw-bold"></label>
+                    <input asp-for="ApplicationDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="IssueDate" class="form-label fw-bold"></label>
+                    <input asp-for="IssueDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4" id="expiryDateSection">
+                    <label asp-for="ExpiryDate" class="form-label fw-bold"></label>
+                    <input asp-for="ExpiryDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="NextRenewalDue" class="form-label fw-bold"></label>
+                    <input asp-for="NextRenewalDue" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="RenewalLeadTimeDays" class="form-label fw-bold"></label>
+                    <input asp-for="RenewalLeadTimeDays" type="number" class="form-control" min="0" max="730" />
+                    <small class="text-muted">Days before expiry to trigger renewal alert (populated from type default).</small>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Scope" class="form-label fw-bold"></label>
+                    <textarea asp-for="Scope" class="form-control" rows="4" placeholder="Activities, product types, dosage forms, or manufacturing steps covered by this licence/certification"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Tab 4: GMP / ISO Specifics ────────────────────────────────── -->
+        <div class="tab-pane fade" id="tab4" role="tabpanel">
+            <!-- GMP Clearance fields -->
+            <div id="gmpSection">
+                <h6 class="text-muted text-uppercase small mb-3 border-bottom pb-1"><i class="fas fa-shield-alt me-1"></i>GMP Clearance Details (Third-Party Site Approvals)</h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="GmcPathway" class="form-label fw-bold">GMP Clearance Pathway
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="gmcpathway" aria-label="GMP Clearance Pathway guidance">?</button>
+                        </label>
+                        <select asp-for="GmcPathway" class="form-select">
+                            <option value="">— Select Pathway —</option>
+                            <option value="MRA">MRA (Mutual Recognition Agreement)</option>
+                            <option value="CV">CV (Compliance Verification)</option>
+                            <option value="TGAInspection">TGA On-Site Inspection</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="SiteCountry" class="form-label fw-bold"></label>
+                        <input asp-for="SiteCountry" class="form-control" placeholder="Country where manufacturer is located" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="InspectionAuthority" class="form-label fw-bold"></label>
+                        <input asp-for="InspectionAuthority" class="form-control" placeholder="e.g. FDA, EMA, PMDA, MHRA" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="LastInspectionDate" class="form-label fw-bold"></label>
+                        <input asp-for="LastInspectionDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="RFIDate" class="form-label fw-bold">RFI Issued Date
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="rfi" aria-label="RFI guidance">?</button>
+                        </label>
+                        <input asp-for="RFIDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="RFIResponseDueDate" class="form-label fw-bold"></label>
+                        <input asp-for="RFIResponseDueDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="RFIResponseSubmittedDate" class="form-label fw-bold">RFI Response Submitted</label>
+                        <input asp-for="RFIResponseSubmittedDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-8">
+                        <label asp-for="ManufacturingStepsScope" class="form-label fw-bold"></label>
+                        <input asp-for="ManufacturingStepsScope" class="form-control" placeholder="e.g. API synthesis, formulation, fill-finish, packaging, QC testing" />
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check mt-4">
+                            <input asp-for="LetterOfAccessAvailable" class="form-check-input" type="checkbox" />
+                            <label asp-for="LetterOfAccessAvailable" class="form-check-label fw-bold">Letter of Access Available</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ISO Certification fields -->
+            <div id="isoSection" class="mt-4">
+                <h6 class="text-muted text-uppercase small mb-3 border-bottom pb-1"><i class="fas fa-certificate me-1"></i>ISO / Certification Body Details
+                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="isolifecycle" aria-label="ISO certification lifecycle guidance">?</button>
+                </h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="CertificationBody" class="form-label fw-bold"></label>
+                        <input asp-for="CertificationBody" class="form-control" placeholder="e.g. SAI Global, BSI Group, Intertek, TÜV Rheinland" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="CertificationBodyAccreditation" class="form-label fw-bold">Certification Body Accreditation No.</label>
+                        <input asp-for="CertificationBodyAccreditation" class="form-control" placeholder="JAS-ANZ accreditation number" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="StandardVersion" class="form-label fw-bold">Standard Version</label>
+                        <input asp-for="StandardVersion" class="form-control" placeholder="e.g. ISO 9001:2015" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Stage1AuditDate" class="form-label fw-bold"></label>
+                        <input asp-for="Stage1AuditDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Stage2AuditDate" class="form-label fw-bold"></label>
+                        <input asp-for="Stage2AuditDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="NextSurveillanceAuditDate" class="form-label fw-bold"></label>
+                        <input asp-for="NextSurveillanceAuditDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="RecertificationDueDate" class="form-label fw-bold"></label>
+                        <input asp-for="RecertificationDueDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="CertificateScope" class="form-label fw-bold"></label>
+                        <textarea asp-for="CertificateScope" class="form-control" rows="3" placeholder="Scope statement as printed on the certificate"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Tab 5: Contacts ───────────────────────────────────────────── -->
+        <div class="tab-pane fade" id="tab5" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="InternalResponsiblePersonId" class="form-label fw-bold">Internal Responsible Person</label>
+                    <select asp-for="InternalResponsiblePersonId" asp-items='@(ViewBag.UsersList as SelectList)' class="form-select select2-users">
+                        <option value="">— Select user —</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ExternalConsultant" class="form-label fw-bold"></label>
+                    <input asp-for="ExternalConsultant" class="form-control" placeholder="Regulatory consultant or CRO (if applicable)" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="AuthorityContactEmail" class="form-label fw-bold"></label>
+                    <input asp-for="AuthorityContactEmail" class="form-control" type="email" placeholder="case.manager@tga.gov.au" />
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Tab 6: Fees & Notes ───────────────────────────────────────── -->
+        <div class="tab-pane fade" id="tab6" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label asp-for="ApplicationFee" class="form-label fw-bold"></label>
+                    <input asp-for="ApplicationFee" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="FeeCurrency" class="form-label fw-bold"></label>
+                    <input asp-for="FeeCurrency" class="form-control" value="AUD" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="FeePaidDate" class="form-label fw-bold"></label>
+                    <input asp-for="FeePaidDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="FeeReference" class="form-label fw-bold"></label>
+                    <input asp-for="FeeReference" class="form-control" placeholder="Payment receipt or transaction reference" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="JustificationReason" class="form-label fw-bold">Justification / Reason</label>
+                    <textarea asp-for="JustificationReason" class="form-control bg-light" rows="3" readonly disabled></textarea>
+                    <div class="form-text"><i class="fas fa-info-circle me-1"></i>Set automatically when the record is Suspended, Withdrawn, or marked Not Applicable. Not editable here.</div>
+                </div>
+                <div class="col-12">
+                    <label asp-for="RegulatoryActionNotes" class="form-label fw-bold"></label>
+                    <textarea asp-for="RegulatoryActionNotes" class="form-control" rows="3" placeholder="Record any overseas regulatory authority actions (import alerts, warning letters, recalls) relevant to this site/credential"></textarea>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end tab-content -->
+
+    <div class="d-flex justify-content-end gap-2">
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Record</button>
+    </div>
+</form>
+
+<!-- Field-help popover content (hidden, read by field-help.js) -->
+<div class="d-none">
+    <div id="help-lccategory">
+        <p class="mb-1"><strong>What kind of credential this record tracks</strong> (this choice drives the GMP / ISO tab):</p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Regulatory Licence</strong> — a federal or state licence/permit (e.g. manufacturing licence, wholesale/import permit).</li>
+            <li><strong>ISO / Private Certification</strong> — a quality-system certification issued by a certification body (e.g. ISO 9001, ISO 13485).</li>
+            <li><strong>Third-Party Site Approval</strong> — a GMP clearance or approval for an external manufacturing/supply site.</li>
+        </ul>
+    </div>
+    <div id="help-gmcpathway">
+        <p class="mb-1"><strong>How the overseas GMP clearance is being obtained</strong> (TGA framework):</p>
+        <ul class="mb-0 ps-3">
+            <li><strong>MRA</strong> — Mutual Recognition Agreement: the site is in a country whose GMP inspections the TGA recognises.</li>
+            <li><strong>CV</strong> — Compliance Verification: clearance based on an inspection report from a recognised authority.</li>
+            <li><strong>TGA Inspection</strong> — an on-site TGA inspection, used where no MRA/CV pathway is available.</li>
+        </ul>
+    </div>
+    <div id="help-rfi">
+        <p class="mb-0"><strong>RFI = Request for Information.</strong> A formal query the authority issues during assessment asking for additional information or clarification. Record when it was <strong>issued</strong>, the <strong>response due</strong> date (the record flags it red if overdue and unanswered), and when your <strong>response was submitted</strong>.</p>
+    </div>
+    <div id="help-isolifecycle">
+        <p class="mb-1"><strong>The ISO certification cycle</strong> (typically a 3-year certificate):</p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Stage 1 Audit</strong> — readiness/documentation review by the certification body.</li>
+            <li><strong>Stage 2 Audit</strong> — the full on-site certification audit; passing it leads to the certificate being issued.</li>
+            <li><strong>Surveillance Audit</strong> — periodic (usually annual) checks that the system remains compliant.</li>
+            <li><strong>Recertification Due</strong> — the full re-audit before the certificate expires (end of the cycle).</li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/tab-form-validation.js" asp-append-version="true"></script>
+    <script src="~/js/field-help.js" asp-append-version="true"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.select2-users, .select2-supplier, .select2-type').select2({ theme: 'classic', width: '100%' });
+
+            var ownCompanyName = @Json.Serialize(ViewBag.OrganisationName ?? "");
+
+            // Show/hide third-party supplier section; auto-fill HolderName for OwnCompany
+            function toggleHolderSections() {
+                var isThirdParty = $('#holderTypeSelect').val() === 'ThirdParty';
+                $('#supplierSection, #supplierSection2, #supplierSection3').toggle(isThirdParty);
+                if (!isThirdParty && ownCompanyName) {
+                    $('#HolderName').val(ownCompanyName);
+                } else if (isThirdParty) {
+                    // Clear if it still holds the company name so they must enter the third-party site name
+                    if ($('#HolderName').val() === ownCompanyName) $('#HolderName').val('');
+                }
+            }
+            $('#holderTypeSelect').on('change', toggleHolderSections);
+            toggleHolderSections();
+
+            // Category → Licence Type cascade
+            $('#categorySelect').on('change', function () {
+                var category = $(this).val();
+                var holderType = $('#holderTypeSelect').val();
+                if (!category) return;
+
+                var catNum = { 'RegulatoryLicence': 1, 'ISOPrivateCertification': 2, 'ThirdPartySiteApproval': 3 }[category] || 1;
+
+                $.getJSON('@Url.Action("GetLicenceTypes")', { category: catNum }, function (data) {
+                    var $sel = $('#licenceTypeSelect');
+                    $sel.empty().append('<option value="">— Select Type —</option>');
+                    $.each(data, function (i, t) {
+                        $sel.append($('<option>').val(t.id).text(t.displayName)
+                            .data('lead', t.defaultRenewalLeadTimeDays)
+                            .data('requiresExpiry', t.requiresExpiryDate)
+                            .data('issuingBody', t.issuingBody || ''));
+                    });
+                    $sel.trigger('change');
+                });
+
+                // Show/hide GMP vs ISO specific sections
+                $('#gmpSection').toggle(category === 'ThirdPartySiteApproval');
+                $('#isoSection').toggle(category === 'ISOPrivateCertification');
+            });
+
+            // Licence type selection → populate defaults
+            $('#licenceTypeSelect').on('change', function () {
+                var $opt = $(this).find(':selected');
+                var lead = $opt.data('lead');
+                var issuingBody = $opt.data('issuingBody');
+                if (lead) $('#RenewalLeadTimeDays').val(lead);
+                if (issuingBody) $('#issuingBodyInput').val(issuingBody);
+                var requiresExpiry = $opt.data('requiresExpiry');
+                $('#expiryDateSection').toggle(requiresExpiry !== false);
+            });
+
+            // Initial state
+            $('#gmpSection').hide();
+            $('#isoSection').hide();
+        });
+    </script>
+}

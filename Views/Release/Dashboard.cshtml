@@ -1,0 +1,234 @@
+@model OpenQMS.ViewModels.Release.ReleaseDashboardViewModel
+@using OpenQMS.Models.Release
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+
+@functions {
+    static string EnumDisplay<T>(T value) where T : Enum
+    {
+        var fi = value.GetType().GetField(value.ToString()!);
+        var attr = fi?.GetCustomAttribute<DisplayAttribute>();
+        return attr?.Name ?? value.ToString()!;
+    }
+
+    static string ReleaseStatusLabel(ReleaseStatus s) =>
+        s == ReleaseStatus.Closed ? "Released" : EnumDisplay(s);
+}
+
+@{
+    ViewData["Title"] = "Release Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Release Dashboard</h4>
+    <div class="d-flex gap-2">
+        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">Export Register</a>
+        <a asp-action="Register" class="btn btn-outline-secondary btn-sm">AP Register</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Release Record</a>
+    </div>
+</div>
+
+@if (Model.PendingAPDecision > 0)
+{
+    <div class="alert alert-warning d-flex align-items-center mb-4">
+        <strong class="me-2">&#9888;</strong>
+        <span><strong>@Model.PendingAPDecision batch release record(s)</strong> are awaiting AP decision.</span>
+    </div>
+}
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-primary">@Model.TotalRecordsThisYear</div>
+                <div class="text-muted">Records This Year</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100 @(Model.PendingAPDecision > 0 ? "border-warning" : "")">
+            <div class="card-body">
+                <div class="display-5 fw-bold @(Model.PendingAPDecision > 0 ? "text-warning" : "text-secondary")">@Model.PendingAPDecision</div>
+                <div class="text-muted">Pending AP Decision</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-success">@Model.ReleasedYTD</div>
+                <div class="text-muted">Certified / Released (YTD)</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100 @(Model.OnHold > 0 ? "border-danger" : "")">
+            <div class="card-body">
+                <div class="display-5 fw-bold @(Model.OnHold > 0 ? "text-danger" : "text-secondary")">@Model.OnHold</div>
+                <div class="text-muted">On Hold</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 1 -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">Releases by Type (All Records)</div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="typeChart" style="max-height:240px"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">Records by Status</div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="statusChart" style="max-height:240px"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 2 -->
+<div class="row g-3 mb-4">
+    <div class="col-md-7">
+        <div class="card h-100">
+            <div class="card-header">Monthly Releases (Current Year)</div>
+            <div class="card-body">
+                <canvas id="monthlyChart" style="max-height:220px"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card h-100">
+            <div class="card-header">Status Summary</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Status</th><th>Count</th><th style="width:35%">Share</th></tr></thead>
+                    <tbody>
+                        @{
+                            var total = Model.ByStatus.Values.Sum();
+                        }
+                        @foreach (var kv in Model.ByStatus.OrderByDescending(x => x.Value))
+                        {
+                            var pct = total > 0 ? kv.Value * 100 / total : 0;
+                            <tr>
+                                <td>@kv.Key</td>
+                                <td>@kv.Value</td>
+                                <td><div class="progress" style="height:8px"><div class="progress-bar bg-primary" style="width:@pct%"></div></div></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Records Table -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Recent Release Records</strong>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">View All</a>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <thead>
+                <tr>
+                    <th>Record No.</th>
+                    <th>Product</th>
+                    <th>Batch</th>
+                    <th>Release Type</th>
+                    <th>Status</th>
+                    <th>AP</th>
+                    <th>Cert. Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.RecentRecords)
+                {
+                    var badge = r.Status switch
+                    {
+                        ReleaseStatus.Draft             => "bg-secondary",
+                        ReleaseStatus.UnderReview       => "bg-info text-dark",
+                        ReleaseStatus.OnHold            => "bg-warning text-dark",
+                        ReleaseStatus.PendingAPDecision => "bg-primary",
+                        ReleaseStatus.Certified         => "bg-success",
+                        ReleaseStatus.Released          => "bg-success",
+                        ReleaseStatus.Rejected          => "bg-danger",
+                        ReleaseStatus.Closed            => "bg-success",
+                        _                               => "bg-secondary"
+                    };
+                    <tr>
+                        <td><a asp-action="Details" asp-route-id="@r.Id">@r.RecordNumber</a></td>
+                        <td>@r.ProductName</td>
+                        <td>@r.BatchNumber</td>
+                        <td>@EnumDisplay(r.ReleaseType)</td>
+                        <td><span class="badge @badge">@ReleaseStatusLabel(r.Status)</span></td>
+                        <td>@(r.APFullNameQualification ?? "-")</td>
+                        <td>@(r.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</td>
+                        <td><a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Details</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // By Type doughnut
+    (function () {
+        var data = @Json.Serialize(Model.ByType);
+        var labels = Object.keys(data);
+        var values = Object.values(data);
+        var colors = ['#0d6efd','#198754','#ffc107','#dc3545','#6c757d'];
+        new Chart(document.getElementById('typeChart'), {
+            type: 'doughnut',
+            data: { labels: labels, datasets: [{ data: values, backgroundColor: colors }] },
+            options: { plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: true }
+        });
+    })();
+
+    // By Status doughnut
+    (function () {
+        var data = @Json.Serialize(Model.ByStatus);
+        var labels = Object.keys(data);
+        var values = Object.values(data);
+        var colors = ['#6c757d','#0dcaf0','#ffc107','#0d6efd','#198754','#157347','#dc3545','#adb5bd','#e9ecef'];
+        new Chart(document.getElementById('statusChart'), {
+            type: 'doughnut',
+            data: { labels: labels, datasets: [{ data: values, backgroundColor: colors }] },
+            options: { plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: true }
+        });
+    })();
+
+    // Monthly bar chart
+    (function () {
+        var trend = @Json.Serialize(Model.MonthlyTrend);
+        var labels = trend.map(function(d) { return d.monthLabel; });
+        new Chart(document.getElementById('monthlyChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'RFS',              data: trend.map(function(d){return d.rFS;}),              backgroundColor: '#0d6efd' },
+                    { label: 'Quarantine',        data: trend.map(function(d){return d.quarantine;}),       backgroundColor: '#ffc107' },
+                    { label: 'RFFP',              data: trend.map(function(d){return d.rFFP;}),             backgroundColor: '#198754' },
+                    { label: 'To Customer',       data: trend.map(function(d){return d.releaseToCustomer;}),backgroundColor: '#0dcaf0' },
+                    { label: 'Quality Oversight', data: trend.map(function(d){return d.qualityOversight;}), backgroundColor: '#6c757d' }
+                ]
+            },
+            options: {
+                scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } } },
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    })();
+</script>
+}

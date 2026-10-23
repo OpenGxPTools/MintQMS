@@ -1,0 +1,613 @@
+@model OpenQMS.Models.AdverseEvent
+@{
+    ViewData["Title"] = "New Adverse Event";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h4 class="mb-0">New Adverse Event</h4>
+        <p class="text-muted mb-0">AE number will be auto-generated on save.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <strong>Please correct the following errors:</strong>
+        <div asp-validation-summary="All" class="mb-0"></div>
+    </div>
+}
+
+@if (ViewBag.FromComplaint != null)
+{
+    <div class="alert alert-info mb-3">
+        <i class="fas fa-link me-1"></i>
+        Creating Adverse Event from Complaint <strong>@ViewBag.FromComplaint</strong>. Key fields have been pre-filled.
+    </div>
+}
+
+<form asp-action="Create" method="post" id="pvCreateForm" novalidate>
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="LinkedComplaintId" />
+
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs mb-0" id="aeTabs" role="tablist">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-report">1. Report Info</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-patient">2. Patient</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-product">3. Suspect Product</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-ae">4. AE Details</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-assessment">5. Case Assessment</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-regulatory">6. Regulatory</a></li>
+    </ul>
+
+    <div class="tab-content border border-top-0 rounded-bottom p-4 mb-3">
+
+        <!-- Tab 1: Report Info -->
+        <div class="tab-pane fade show active" id="tab-report">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Report Source</label>
+                    <select asp-for="ReportSource" asp-items="Html.GetEnumSelectList<OpenQMS.Models.AdverseEvent.AEReportSource>()" class="form-select"></select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Report Type</label>
+                    <select asp-for="ReportType" asp-items="Html.GetEnumSelectList<OpenQMS.Models.AdverseEvent.AEReportType>()" class="form-select"></select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="Day0Date">Day 0 Date <span class="text-muted small">(regulatory clock start)</span></label>
+                    <input asp-for="Day0Date" type="date" class="form-control" id="day0DateInput" />
+                    <span asp-validation-for="Day0Date" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">TGA Deadline <span class="text-muted small">(auto-calculated)</span></label>
+                    <div id="deadlineBadge" class="mt-1 text-muted">Enter Day 0 date above</div>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Reporter Name / Initials</label>
+                    <input type="text" name="reporter.ReporterName" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Reporter Type</label>
+                    <select name="reporter.Type" class="form-select">
+                        <option value="">--Select--</option>
+                        @foreach (var v in Enum.GetValues<OpenQMS.Models.AEReporter.ReporterType>())
+                        {
+                            <option value="@((int)v)">@v.ToString()</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Reporter Qualification</label>
+                    <select name="reporter.Qualification" class="form-select">
+                        <option value="">--Select--</option>
+                        @foreach (var v in Enum.GetValues<OpenQMS.Models.AEReporter.ReporterQualification>())
+                        {
+                            <option value="@((int)v)">@v.ToString()</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Reporter Institution</label>
+                    <input type="text" name="reporter.Institution" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Reporter Country</label>
+                    <input type="text" name="reporter.Country" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Reporter Email</label>
+                    <input type="email" name="reporter.Email" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Reporter Phone</label>
+                    <input type="text" name="reporter.Phone" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date Reported to Reporter</label>
+                    <input type="date" name="reporter.ReportDate" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Patient -->
+        <div class="tab-pane fade" id="tab-patient">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Patient Initials / ID <span class="text-danger">*</span></label>
+                    <input type="text" name="patient.PatientIdentifier" id="patientIdentifierInput" class="form-control" />
+                    <div class="invalid-feedback">Patient Initials / ID is required for a valid ICSR.</div>
+                    <div class="form-text">Required for valid ICSR. Do not enter full name.</div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Age</label>
+                    <input type="number" name="patient.Age" class="form-control" min="0" max="150" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Age Unit</label>
+                    <select name="patient.AgeUnit" class="form-select">
+                        <option value="">--</option>
+                        @foreach (var v in Enum.GetValues<OpenQMS.Models.AEPatient.PatientAgeUnit>())
+                        {
+                            <option value="@((int)v)">@v.ToString()</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" name="patient.DateOfBirth" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sex</label>
+                    <select name="patient.Sex" class="form-select">
+                        <option value="">--Select--</option>
+                        @foreach (var v in Enum.GetValues<OpenQMS.Models.AEPatient.PatientSex>())
+                        {
+                            <option value="@((int)v)">@v.ToString()</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" name="patient.WeightKg" class="form-control" step="0.1" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Height (cm)</label>
+                    <input type="number" name="patient.HeightCm" class="form-control" step="0.1" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Pregnant?</label>
+                    <select name="patient.IsPregnant" class="form-select">
+                        <option value="">Unknown</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Medical History</label>
+                    <textarea name="patient.MedicalHistory" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Concomitant Medications</label>
+                    <textarea name="patient.ConcomitantMedications" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Suspect Product -->
+        <div class="tab-pane fade" id="tab-product">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Product (from register)</label>
+                    <select name="suspectProduct.ProductId" id="suspectProductIdSelect" asp-items="ViewBag.ProductId" class="form-select">
+                        <option value="">--Select product or enter manually--</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Product Name <span class="text-danger">*</span></label>
+                    <input type="text" name="suspectProduct.ProductName" id="suspectProductNameInput" class="form-control" />
+                    <div class="invalid-feedback">Product Name is required for a valid ICSR.</div>
+                    <div class="form-text">Required for valid ICSR.</div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">ARTG Number</label>
+                    <input type="text" name="suspectProduct.ARTGNumber" id="artgNumberInput" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Batch / Lot Number</label>
+                    <input type="text" name="suspectProduct.BatchNumber" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Route of Administration</label>
+                    <input type="text" name="suspectProduct.RouteOfAdministration" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Dose</label>
+                    <input type="text" name="suspectProduct.Dose" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Dose Unit</label>
+                    <input type="text" name="suspectProduct.DoseUnit" class="form-control" placeholder="mg, mL, etc." />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Frequency</label>
+                    <input type="text" name="suspectProduct.DoseFrequency" class="form-control" placeholder="once daily, etc." />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Indication</label>
+                    <input type="text" name="suspectProduct.Indication" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Treatment Start Date</label>
+                    <input type="date" name="suspectProduct.TreatmentStartDate" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Treatment End Date</label>
+                    <input type="date" name="suspectProduct.TreatmentEndDate" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Action Taken</label>
+                    <select name="suspectProduct.ActionTaken" class="form-select">
+                        <option value="">--Select--</option>
+                        @foreach (var v in Enum.GetValues<OpenQMS.Models.AESuspectProduct.AEActionTaken>())
+                        {
+                            <option value="@((int)v)">@v.ToString()</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Dechallenge Result</label>
+                    <select name="suspectProduct.DechallengeResult" class="form-select">
+                        <option value="">--Select--</option>
+                        @foreach (var v in Enum.GetValues<OpenQMS.Models.AESuspectProduct.AEDechallengeResult>())
+                        {
+                            <option value="@((int)v)">@v.ToString()</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Rechallenge Result</label>
+                    <select name="suspectProduct.RechallengeResult" class="form-select">
+                        <option value="">--Select--</option>
+                        @foreach (var v in Enum.GetValues<OpenQMS.Models.AESuspectProduct.AEDechallengeResult>())
+                        {
+                            <option value="@((int)v)">@v.ToString()</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: AE Details -->
+        <div class="tab-pane fade" id="tab-ae">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" asp-for="AEDescription">AE Description <span class="text-danger">*</span></label>
+                    <textarea asp-for="AEDescription" class="form-control" rows="4" placeholder="Describe the adverse event in detail..."></textarea>
+                    <div class="invalid-feedback">AE Description is required.</div>
+                    <span asp-validation-for="AEDescription" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" asp-for="MedDRAPT">MedDRA Preferred Term <span class="text-danger">*</span>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="meddra" aria-label="MedDRA guidance">?</button>
+                    </label>
+                    <input asp-for="MedDRAPT" class="form-control" />
+                    <div class="invalid-feedback">MedDRA Preferred Term is required.</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" asp-for="MedDRASOC">MedDRA System Organ Class</label>
+                    <input asp-for="MedDRASOC" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="AEStartDate">AE Start Date</label>
+                    <input asp-for="AEStartDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="AEEndDate">AE End Date</label>
+                    <input asp-for="AEEndDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="Outcome">Outcome</label>
+                    <select asp-for="Outcome" asp-items="Html.GetEnumSelectList<OpenQMS.Models.AdverseEvent.AEOutcome>()" class="form-select">
+                        <option value="">--Select--</option>
+                    </select>
+                </div>
+
+                <!-- Seriousness -->
+                <div class="col-12">
+                    <div class="card border-danger">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <strong>Seriousness Criteria
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="seriousness" aria-label="Seriousness Criteria guidance">?</button>
+                            </strong>
+                            <span id="seriousBadge" class="badge bg-secondary">Non-Serious</span>
+                        </div>
+                        <div class="card-body">
+                            <input type="hidden" asp-for="SeriousnessCriteria" id="seriousnessValue" />
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input seriousness-cb" type="checkbox" data-value="1" id="cb_death" />
+                                        <label class="form-check-label" for="cb_death">Death</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input seriousness-cb" type="checkbox" data-value="2" id="cb_lifethreat" />
+                                        <label class="form-check-label" for="cb_lifethreat">Life-Threatening</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input seriousness-cb" type="checkbox" data-value="4" id="cb_hosp" />
+                                        <label class="form-check-label" for="cb_hosp">Hospitalisation</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input seriousness-cb" type="checkbox" data-value="8" id="cb_disability" />
+                                        <label class="form-check-label" for="cb_disability">Disability / Incapacity</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input seriousness-cb" type="checkbox" data-value="16" id="cb_congenital" />
+                                        <label class="form-check-label" for="cb_congenital">Congenital Anomaly / Birth Defect</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input seriousness-cb" type="checkbox" data-value="32" id="cb_medimportant" />
+                                        <label class="form-check-label" for="cb_medimportant">Medically Important</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="Causality">Causality
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="causality" aria-label="Causality guidance">?</button>
+                    </label>
+                    <select asp-for="Causality" asp-items="Html.GetEnumSelectList<OpenQMS.Models.AdverseEvent.AECausality>()" class="form-select">
+                        <option value="">--Select--</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="Severity">Severity</label>
+                    <select asp-for="Severity" asp-items="Html.GetEnumSelectList<OpenQMS.Models.AdverseEvent.AESeverity>()" class="form-select">
+                        <option value="">--Select--</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="Expectedness">Expectedness
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="expectedness" aria-label="Expectedness guidance">?</button>
+                    </label>
+                    <select asp-for="Expectedness" asp-items="Html.GetEnumSelectList<OpenQMS.Models.AdverseEvent.AEExpectedness>()" class="form-select">
+                        <option value="">--Select--</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Case Assessment -->
+        <div class="tab-pane fade" id="tab-assessment">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" asp-for="MedicalEvaluator">Medical Evaluator</label>
+                    <input asp-for="MedicalEvaluator" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" asp-for="EvaluationDate">Evaluation Date</label>
+                    <input asp-for="EvaluationDate" type="date" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label class="form-label" asp-for="MedicalNarrative">Medical Narrative</label>
+                    <textarea asp-for="MedicalNarrative" class="form-control" rows="6" placeholder="Enter the full medical narrative for this case..."></textarea>
+                    <div class="form-text">Required before the case can be submitted for approval.</div>
+                </div>
+                <div class="col-12">
+                    <div class="form-check form-switch">
+                        <input asp-for="SignalDetected" class="form-check-input" type="checkbox" />
+                        <label class="form-check-label" asp-for="SignalDetected">Signal Detected</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 6: Regulatory -->
+        <div class="tab-pane fade" id="tab-regulatory">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Reportable to TGA?</label>
+                    <select name="regulatoryReport.IsReportableToTGA" class="form-select">
+                        <option value="">Pending Assessment</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">TGA Submission Date</label>
+                    <input type="date" name="regulatoryReport.TGASubmissionDate" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Submission Method</label>
+                    <select name="regulatoryReport.SubmissionMethod" class="form-select">
+                        <option value="">--Select--</option>
+                        @foreach (var v in Enum.GetValues<OpenQMS.Models.AERegulatoryReport.TGASubmissionMethod>())
+                        {
+                            <option value="@((int)v)">@v.ToString()</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">TGA ADRS Reference Number</label>
+                    <input type="text" name="regulatoryReport.TGAADRSReferenceNumber" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">E2B Transmission Reference</label>
+                    <input type="text" name="regulatoryReport.E2BTransmissionReference" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Reporting Decision Rationale</label>
+                    <textarea name="regulatoryReport.ReportingDecisionRationale" class="form-control" rows="3"></textarea>
+                    <div class="form-text">Required if Reportable = No.</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Overseas Authorities</label>
+                    <input type="text" name="regulatoryReport.OverseasAuthorities" class="form-control" placeholder="EMA, FDA, etc." />
+                </div>
+                <div class="col-12">
+                    <div class="form-check form-switch">
+                        <input type="checkbox" name="regulatoryReport.OverseasReportingRequired" value="true" class="form-check-input" />
+                        <label class="form-check-label">Overseas Reporting Required</label>
+                    </div>
+                    <div class="form-check form-switch mt-2">
+                        <input type="checkbox" name="regulatoryReport.IncludeInNextPSUR" value="true" class="form-check-input" />
+                        <label class="form-check-label">Include in Next PSUR</label>
+                    </div>
+                    <div class="form-check form-switch mt-2">
+                        <input type="checkbox" name="regulatoryReport.SignificantSafetyIssue" value="true" class="form-check-input" />
+                        <label class="form-check-label">Significant Safety Issue (SSI)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end tab-content -->
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Save Adverse Event</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</form>
+
+<!-- Field-help popover content (hidden, read by field-help.js) -->
+<div class="d-none">
+    <div id="help-seriousness">
+        <p class="mb-1"><strong>ICH seriousness criteria.</strong> An event is <strong>serious</strong> if it meets one or more of these — and serious cases usually require expedited reporting:</p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Death</strong> — the event resulted in death.</li>
+            <li><strong>Life-Threatening</strong> — the patient was at immediate risk of death from the event.</li>
+            <li><strong>Hospitalisation</strong> — caused or prolonged inpatient hospitalisation.</li>
+            <li><strong>Disability</strong> — resulted in persistent or significant incapacity.</li>
+            <li><strong>Congenital Anomaly</strong> — a birth defect in the offspring.</li>
+            <li><strong>Other Medically Important</strong> — a significant medical event that may jeopardise the patient or require intervention to prevent one of the above.</li>
+        </ul>
+    </div>
+    <div id="help-meddra">
+        <p class="mb-0"><strong>MedDRA</strong> (Medical Dictionary for Regulatory Activities) is the standard terminology for coding events. The <strong>Preferred Term (PT)</strong> is the specific medical concept (e.g. "Nausea"); the <strong>System Organ Class (SOC)</strong> is its high-level grouping (e.g. "Gastrointestinal disorders"). Coding consistently lets cases be aggregated and signals detected.</p>
+    </div>
+    <div id="help-causality">
+        <p class="mb-0"><strong>Causality</strong> is the assessed likelihood that the suspect product caused the event — typically Certain / Probable / Possible / Unlikely / Unrelated (WHO-UMC) or Related / Not Related. Base it on temporal relationship, dechallenge/rechallenge, plausibility and alternative explanations.</p>
+    </div>
+    <div id="help-expectedness">
+        <p class="mb-0"><strong>Expectedness</strong> asks whether this event is already listed in the product's reference safety information (e.g. the approved PI / SmPC / CCDS). <strong>Unexpected</strong> = not listed, or more severe/specific than listed. A serious + unexpected + related case is typically what triggers expedited regulatory reporting.</p>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/tab-form-validation.js" asp-append-version="true"></script>
+    <script src="~/js/field-help.js" asp-append-version="true"></script>
+    <script>
+        // Seriousness flags checkboxes
+        document.querySelectorAll('.seriousness-cb').forEach(cb => {
+            cb.addEventListener('change', updateSeriousness);
+        });
+
+        function updateSeriousness() {
+            let combined = 0;
+            document.querySelectorAll('.seriousness-cb:checked').forEach(cb => {
+                combined |= parseInt(cb.dataset.value);
+            });
+            document.getElementById('seriousnessValue').value = combined;
+
+            const isSerious = combined > 0;
+            const badge = document.getElementById('seriousBadge');
+            badge.textContent = isSerious ? 'SERIOUS' : 'Non-Serious';
+            badge.className = isSerious ? 'badge bg-danger' : 'badge bg-secondary';
+        }
+
+        // TGA deadline calculator
+        const day0Input = document.getElementById('day0DateInput');
+        if (day0Input) {
+            day0Input.addEventListener('change', calculateDeadline);
+        }
+
+        function calculateDeadline() {
+            const day0 = day0Input.value;
+            if (!day0) return;
+
+            const isFatal = document.getElementById('cb_death')?.checked ||
+                            document.getElementById('cb_lifethreat')?.checked;
+
+            fetch(`/Pharmacovigilance/CalculateDeadline?day0Date=${day0}&isFatalOrLifeThreatening=${isFatal}`)
+                .then(r => r.json())
+                .then(data => {
+                    const el = document.getElementById('deadlineBadge');
+                    el.innerHTML = `<span class="badge bg-${data.statusClass} fs-6">${data.deadlineFormatted}</span>
+                                    <span class="badge bg-${data.statusClass} ms-1">${data.label}</span>`;
+                });
+        }
+
+        // Recalculate deadline if death/life-threatening changes
+        ['cb_death', 'cb_lifethreat'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', () => {
+                if (day0Input?.value) calculateDeadline();
+            });
+        });
+
+        // Auto-populate from product register
+        document.getElementById('suspectProductIdSelect')?.addEventListener('change', function () {
+            const id = this.value;
+            if (!id) return;
+            fetch(`@Url.Action("GetProductDetails", "Pharmacovigilance")?productId=${id}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (!data) return;
+                    const nameInput = document.getElementById('suspectProductNameInput');
+                    if (nameInput && !nameInput.value)
+                        nameInput.value = data.brandName || data.name || '';
+                    const artgInput = document.getElementById('artgNumberInput');
+                    if (artgInput && !artgInput.value && data.artgReference)
+                        artgInput.value = data.artgReference;
+                });
+        });
+
+        // Tab map for required field error navigation
+        const tabForField = {
+            'patientIdentifierInput':  'tab-patient',
+            'suspectProductNameInput': 'tab-product',
+            'AEDescription':           'tab-ae',
+            'MedDRAPT':                'tab-ae'
+        };
+
+        document.getElementById('pvCreateForm')?.addEventListener('submit', function (e) {
+            const fields = [
+                { id: 'patientIdentifierInput',  label: 'Patient Initials / ID (Tab 2)' },
+                { id: 'suspectProductNameInput', label: 'Product Name (Tab 3)' },
+                { id: 'AEDescription',           label: 'AE Description (Tab 4)' },
+                { id: 'MedDRAPT',                label: 'MedDRA Preferred Term (Tab 4)' }
+            ];
+
+            let missing = [];
+            let firstTab = null;
+
+            fields.forEach(f => {
+                const el = document.getElementById(f.id);
+                if (!el) return;
+                if (!el.value.trim()) {
+                    el.classList.add('is-invalid');
+                    missing.push(f.label);
+                    if (!firstTab) firstTab = tabForField[f.id];
+                } else {
+                    el.classList.remove('is-invalid');
+                }
+            });
+
+            if (missing.length > 0) {
+                e.preventDefault();
+                let banner = document.getElementById('pvValidationBanner');
+                if (!banner) {
+                    banner = document.createElement('div');
+                    banner.id = 'pvValidationBanner';
+                    banner.className = 'alert alert-danger alert-dismissible mb-3';
+                    banner.innerHTML = '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+                    document.getElementById('pvCreateForm').prepend(banner);
+                }
+                banner.innerHTML = `<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <strong>Please complete all required fields:</strong>
+                    <ul class="mb-0 mt-1">${missing.map(m => `<li>${m}</li>`).join('')}</ul>`;
+
+                if (firstTab) {
+                    const tabEl = document.querySelector(`[href="#${firstTab}"]`);
+                    if (tabEl) new bootstrap.Tab(tabEl).show();
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Clear is-invalid on input
+        ['patientIdentifierInput', 'suspectProductNameInput', 'AEDescription', 'MedDRAPT'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input', function () {
+                this.classList.remove('is-invalid');
+            });
+        });
+    </script>
+}

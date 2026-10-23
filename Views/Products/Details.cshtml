@@ -1,0 +1,600 @@
+@model OpenQMS.Models.Product
+@using OpenQMS.Models
+
+@{
+    ViewData["Title"] = "Product Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isLocked = Model.IsLocked == true;
+    var pt = Model.ProductType;
+    var statusBadge = Model.Status switch {
+        OpenQMS.Models.Product.ProductStatus.Approved    => "bg-success",
+        OpenQMS.Models.Product.ProductStatus.Obsolete    => "bg-secondary",
+        OpenQMS.Models.Product.ProductStatus.UnderReview => "bg-info text-dark",
+        _ => "bg-warning text-dark"
+    };
+    int docCount  = Model.Documents?.Count() ?? 0;
+    int specCount = Model.Specifications?.Count() ?? 0;
+    var aeCount   = ViewData["AECount"] is int c ? c : 0;
+    bool canEditSpecs = !isLocked
+        && Model.Status != OpenQMS.Models.Product.ProductStatus.UnderReview
+        && Model.Status != OpenQMS.Models.Product.ProductStatus.Approved
+        && Model.Status != OpenQMS.Models.Product.ProductStatus.Obsolete;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Product &mdash; <span class="fw-bold">@Model.ProductId</span></h4>
+        <small class="text-muted">@Model.Name</small>
+    </div>
+    <span class="badge @statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+</div>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["WorkflowError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (aeCount > 0)
+{
+    <div class="alert alert-warning d-flex align-items-center mb-3">
+        <strong class="me-2">&#9888;</strong>
+        <span>This product is linked to <strong>@aeCount adverse event@(aeCount != 1 ? "s" : "")</strong>.
+            <a asp-controller="Pharmacovigilance" asp-action="Index" class="alert-link ms-1">View Adverse Events</a>
+        </span>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Product.ProductStatus.Draft)
+{
+    <div class="card border-primary mb-3">
+        <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> Workflow Actions</div>
+        <div class="card-body d-flex gap-2 flex-wrap">
+            <form asp-action="SubmitForReview" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-info btn-sm">
+                    <i class="fas fa-paper-plane me-1"></i>Submit for Review
+                </button>
+            </form>
+        </div>
+    </div>
+}
+@if ((User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AuthorisedPersonRole)) && Model.Status == OpenQMS.Models.Product.ProductStatus.UnderReview)
+{
+    <div class="card border-primary mb-3">
+        <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> Workflow Actions</div>
+        <div class="card-body d-flex gap-2 flex-wrap">
+            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveModal">
+                <i class="fas fa-check-circle me-1"></i>Approve Product
+            </button>
+            <form asp-action="SendBackToDraft" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-warning btn-sm"
+                        onclick="return confirm('Send this product back to Draft for rework?')">
+                    <i class="fas fa-undo me-1"></i>Send Back to Draft
+                </button>
+            </form>
+        </div>
+    </div>
+}
+
+<ul class="nav nav-tabs mb-3" id="detailTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-overview" data-bs-toggle="tab" data-bs-target="#pane-overview" type="button" role="tab">Overview</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-specs" data-bs-toggle="tab" data-bs-target="#pane-specs" type="button" role="tab">
+            Specification <span class="badge bg-secondary ms-1">@specCount</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-linked" data-bs-toggle="tab" data-bs-target="#pane-linked" type="button" role="tab">Linked Records</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-docs" data-bs-toggle="tab" data-bs-target="#pane-docs" type="button" role="tab">
+            Attachments <span class="badge bg-secondary ms-1">@docCount</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-auditlog" data-bs-toggle="tab" data-bs-target="#pane-auditlog" type="button" role="tab">
+            Audit Log <span class="badge bg-secondary ms-1">@((ViewBag.AuditLogs as IEnumerable<OpenQMS.Models.MasterDataAuditLog>)?.Count() ?? 0)</span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <!-- Overview Tab -->
+    <div class="tab-pane fade show active" id="pane-overview" role="tabpanel">
+        <div class="card">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Product ID</dt>
+                    <dd class="col-sm-9">@Model.ProductId</dd>
+
+                    <dt class="col-sm-3">Name</dt>
+                    <dd class="col-sm-9">@Model.Name</dd>
+
+                    <dt class="col-sm-3">Product Type</dt>
+                    <dd class="col-sm-9">
+                        @if (pt.HasValue)
+                        {
+                            var label = pt switch {
+                                ProductType.MedicalDevice  => "Medical Device",
+                                ProductType.ConsumerHealth => "Consumer Health",
+                                ProductType.RawMaterial    => "Raw Material",
+                                _                          => pt.ToString()
+                            };
+                            <span class="badge bg-info text-dark">@label</span>
+                        }
+                        else { <text>-</text> }
+                    </dd>
+
+                    @if (pt == null || pt == ProductType.Pharmaceutical || pt == ProductType.Biological || pt == ProductType.ConsumerHealth)
+                    {
+                        <dt class="col-sm-3">INN / Generic Name</dt>
+                        <dd class="col-sm-9">@(Model.InnName ?? "-")</dd>
+                    }
+                    @if (pt == ProductType.Cosmetic)
+                    {
+                        <dt class="col-sm-3">INCI Name / Ingredient Decl. Ref.</dt>
+                        <dd class="col-sm-9">@(Model.InciName ?? "-")</dd>
+                    }
+                    @if (pt == ProductType.RawMaterial)
+                    {
+                        <dt class="col-sm-3">Standard / Scientific Name</dt>
+                        <dd class="col-sm-9">@(Model.StandardScientificName ?? "-")</dd>
+                        <dt class="col-sm-3">Material Type / Category</dt>
+                        <dd class="col-sm-9">@(Model.RawMaterialTypeCategory ?? "-")</dd>
+                    }
+                    @if (pt == ProductType.MedicalDevice)
+                    {
+                        <dt class="col-sm-3">Device Type / Category</dt>
+                        <dd class="col-sm-9">@(Model.DeviceTypeCategory ?? "-")</dd>
+                        <dt class="col-sm-3">Model / Version</dt>
+                        <dd class="col-sm-9">@(Model.ModelVersion ?? "-")</dd>
+                    }
+
+                    <dt class="col-sm-3">Brand / Trade Name</dt>
+                    <dd class="col-sm-9">@(Model.BrandName ?? "-")</dd>
+
+                    @if (pt == null || pt == ProductType.Pharmaceutical || pt == ProductType.Biological || pt == ProductType.ConsumerHealth)
+                    {
+                        <dt class="col-sm-3">Dosage Form</dt>
+                        <dd class="col-sm-9">@(Model.DosageForm ?? "-")</dd>
+                    }
+                    @if (pt == ProductType.Cosmetic || pt == ProductType.RawMaterial)
+                    {
+                        <dt class="col-sm-3">Presentation / Form</dt>
+                        <dd class="col-sm-9">@(Model.PresentationForm ?? "-")</dd>
+                    }
+                    @if (pt == ProductType.RawMaterial)
+                    {
+                        <dt class="col-sm-3">Grade (if applicable)</dt>
+                        <dd class="col-sm-9">@(Model.Grade ?? "-")</dd>
+                    }
+
+                    <dt class="col-sm-3">ARTG / Regulatory Ref.</dt>
+                    <dd class="col-sm-9">@(Model.ArtgReference ?? "-")</dd>
+
+                    @if (pt == null || pt == ProductType.Pharmaceutical || pt == ProductType.Biological || pt == ProductType.ConsumerHealth || pt == ProductType.Cosmetic)
+                    {
+                        <dt class="col-sm-3">Strength / Presentation</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Strengths != null && Model.Strengths.Any())
+                            {
+                                @string.Join(" · ", Model.Strengths.OrderBy(s => s.Value).Select(s => s.Value))
+                            }
+                            else { <text>-</text> }
+                        </dd>
+                    }
+
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9">@Model.Description</dd>
+
+                    <dt class="col-sm-3">Version</dt>
+                    <dd class="col-sm-9">@Model.Version</dd>
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9"><span class="badge @statusBadge">@EnumHelper.Display(Model.Status)</span></dd>
+
+                    <dt class="col-sm-3">Edited By</dt>
+                    <dd class="col-sm-9">@(Model.EditedBy ?? "-")</dd>
+
+                    <dt class="col-sm-3">Edited On</dt>
+                    <dd class="col-sm-9">@(Model.EditedOn.ToSite().ToString("dd/MM/yyyy HH:mm"))</dd>
+
+                    <dt class="col-sm-3">Approved By</dt>
+                    <dd class="col-sm-9">@(Model.ApprovedBy ?? "-")</dd>
+
+                    <dt class="col-sm-3">Approved On</dt>
+                    <dd class="col-sm-9">@(Model.ApprovedOn.HasValue ? Model.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy HH:mm") : "-")</dd>
+
+                    <dt class="col-sm-3">Linked Adverse Events</dt>
+                    <dd class="col-sm-9">
+                        @if (aeCount > 0)
+                        {
+                            <span class="badge bg-danger">@aeCount</span>
+                            <a asp-controller="Pharmacovigilance" asp-action="Index" class="ms-2 small">View AEs</a>
+                        }
+                        else { <text>0</text> }
+                    </dd>
+
+                    <dt class="col-sm-3">Related Documents</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.RelatedDocuments?.Any() == true)
+                        {
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var rd in Model.RelatedDocuments)
+                                {
+                                    <li><span class="fw-semibold">@rd.Document?.DocumentId</span> v@rd.LinkedVersion.ToString("0.00") — @rd.Document?.Title</li>
+                                }
+                            </ul>
+                        }
+                        else { <span>-</span> }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <div class="mt-3 d-flex gap-2">
+            <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
+            <a asp-action="ExportProductDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+        </div>
+    </div>
+
+    <!-- Specifications Tab -->
+    <div class="tab-pane fade" id="pane-specs" role="tabpanel">
+        @if (canEditSpecs)
+        {
+            <form asp-action="AddSpecLine" asp-route-productId="@Model.Id" method="post" class="card mb-4 p-3 bg-light">
+                @Html.AntiForgeryToken()
+                <h6 class="mb-3">Add Specification Line</h6>
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <input name="testParameter" class="form-control form-control-sm" placeholder="Test Parameter *" required />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="method" class="form-control form-control-sm" placeholder="Method" />
+                    </div>
+                    <div class="col-md-4">
+                        <input name="acceptanceCriterion" class="form-control form-control-sm" placeholder="Acceptance Criterion *" required />
+                    </div>
+                    <div class="col-md-3">
+                        <input name="comments" class="form-control form-control-sm" placeholder="Comments" />
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <button type="submit" class="btn btn-sm btn-primary">Add Line</button>
+                </div>
+            </form>
+        }
+
+        @if (Model.Specifications == null || !Model.Specifications.Any())
+        {
+            <p class="text-muted">No specification lines defined yet.</p>
+        }
+        else
+        {
+            <table class="table table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Test Parameter</th>
+                        <th>Test Method</th>
+                        <th>Acceptance Criterion</th>
+                        <th>Comments</th>
+                        @if (canEditSpecs) { <th>Actions</th> }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in Model.Specifications.OrderBy(x => x.DisplayOrder))
+                    {
+                        <tr>
+                            <td>@s.DisplayOrder</td>
+                            <td>
+                                <span class="sp-param-text">@s.TestParameter</span>
+                                @if (canEditSpecs)
+                                {
+                                    <input type="text" class="form-control form-control-sm sp-param-input d-none" id="sp-param-@s.Id" value="@s.TestParameter" />
+                                }
+                            </td>
+                            <td>
+                                <small class="sp-method-text">@s.Method</small>
+                                @if (canEditSpecs)
+                                {
+                                    <input type="text" class="form-control form-control-sm sp-method-input d-none" id="sp-method-@s.Id" value="@s.Method" />
+                                }
+                            </td>
+                            <td>
+                                <span class="sp-criterion-text">@s.AcceptanceCriterion</span>
+                                @if (canEditSpecs)
+                                {
+                                    <input type="text" class="form-control form-control-sm sp-criterion-input d-none" id="sp-criterion-@s.Id" value="@s.AcceptanceCriterion" />
+                                }
+                            </td>
+                            <td>
+                                <span class="sp-comments-text">@s.Comments</span>
+                                @if (canEditSpecs)
+                                {
+                                    <input type="text" class="form-control form-control-sm sp-comments-input d-none" id="sp-comments-@s.Id" value="@s.Comments" />
+                                }
+                            </td>
+                            @if (canEditSpecs)
+                            {
+                                <td class="text-nowrap">
+                                    <button type="button" class="btn btn-xs btn-outline-secondary btn-sm me-1 edit-spec" data-id="@s.Id" title="Edit line">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-xs btn-outline-primary btn-sm me-1 save-spec" data-id="@s.Id">Save</button>
+                                    <form asp-action="DeleteSpecLine" asp-route-specLineId="@s.Id" method="post" style="display:inline" onsubmit="return confirm('Delete this specification line?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-xs btn-outline-danger btn-sm">Del</button>
+                                    </form>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (canEditSpecs)
+            {
+                @Html.AntiForgeryToken()
+                <script>
+                document.querySelectorAll('.edit-spec').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var id = this.dataset.id;
+                        var editing = !document.getElementById('sp-param-' + id).classList.contains('d-none');
+                        var row = this.closest('tr');
+                        row.querySelectorAll('.sp-param-text,.sp-method-text,.sp-criterion-text,.sp-comments-text')
+                           .forEach(function(el) { el.classList.toggle('d-none', !editing); });
+                        row.querySelectorAll('.sp-param-input,.sp-method-input,.sp-criterion-input,.sp-comments-input')
+                           .forEach(function(el) { el.classList.toggle('d-none', editing); });
+                        var icon = this.querySelector('i');
+                        if (editing) { icon.classList.replace('bi-x-lg', 'bi-pencil'); }
+                        else         { icon.classList.replace('bi-pencil', 'bi-x-lg'); }
+                    });
+                });
+
+                document.querySelectorAll('.save-spec').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var id   = this.dataset.id;
+                        var param     = document.getElementById('sp-param-'     + id)?.value || '';
+                        var method    = document.getElementById('sp-method-'    + id)?.value || '';
+                        var criterion = document.getElementById('sp-criterion-' + id)?.value || '';
+                        var comments  = document.getElementById('sp-comments-'  + id)?.value || '';
+                        var token = document.querySelector('[name="__RequestVerificationToken"]').value;
+
+                        fetch('/Products/UpdateSpecLine', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'specLineId=' + id
+                                + '&testParameter='       + encodeURIComponent(param)
+                                + '&method='             + encodeURIComponent(method)
+                                + '&acceptanceCriterion=' + encodeURIComponent(criterion)
+                                + '&comments='           + encodeURIComponent(comments)
+                                + '&__RequestVerificationToken=' + encodeURIComponent(token)
+                        })
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) {
+                            if (data.success) {
+                                var row = btn.closest('tr');
+                                row.querySelector('.sp-param-text').textContent     = param;
+                                row.querySelector('.sp-method-text').textContent    = method;
+                                row.querySelector('.sp-criterion-text').textContent = criterion;
+                                row.querySelector('.sp-comments-text').textContent  = comments;
+                                btn.textContent = 'Saved ✓';
+                                setTimeout(function() { btn.textContent = 'Save'; }, 2000);
+                            }
+                        });
+                    });
+                });
+                </script>
+            }
+        }
+    </div>
+
+    <!-- Linked Records Tab -->
+    <div class="tab-pane fade" id="pane-linked" role="tabpanel">
+        <div class="card mb-3">
+            <div class="card-header">Changes</div>
+            <div class="card-body p-0">
+                @if (Model.Changes != null && Model.Changes.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>ID</th><th>Title</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.Changes)
+                            {
+                                <tr>
+                                    <td><a asp-controller="Changes" asp-action="Details" asp-route-id="@item.Id">@item.ChangeId</a></td>
+                                    <td>@item.Title</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <p class="text-muted p-3 mb-0">No linked changes.</p> }
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header">Deviations</div>
+            <div class="card-body p-0">
+                @if (Model.Deviations != null && Model.Deviations.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>ID</th><th>Title</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.Deviations)
+                            {
+                                <tr>
+                                    <td><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id">@item.DeviationId</a></td>
+                                    <td>@item.Title</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <p class="text-muted p-3 mb-0">No linked deviations.</p> }
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header">CAPAs</div>
+            <div class="card-body p-0">
+                @if (Model.Capas != null && Model.Capas.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>ID</th><th>Title</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.Capas)
+                            {
+                                <tr>
+                                    <td><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id">@item.CapaId</a></td>
+                                    <td>@item.Title</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <p class="text-muted p-3 mb-0">No linked CAPAs.</p> }
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Complaints</div>
+            <div class="card-body p-0">
+                @if (Model.LinkedComplaints != null && Model.LinkedComplaints.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>ID</th><th>Title</th><th>Severity</th><th>Status</th></tr></thead>
+                        <tbody>
+                            @foreach (var cp in Model.LinkedComplaints.Where(cp => cp.Complaint != null))
+                            {
+                                <tr>
+                                    <td><a asp-controller="Complaints" asp-action="Details" asp-route-id="@cp.Complaint!.Id">@cp.Complaint.ComplaintId</a></td>
+                                    <td>@cp.Complaint.Title</td>
+                                    <td>@cp.Complaint.Severity</td>
+                                    <td>@EnumHelper.Display(cp.Complaint.Status)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <p class="text-muted p-3 mb-0">No linked complaints.</p> }
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents Tab -->
+    <div class="tab-pane fade" id="pane-docs" role="tabpanel">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Attachments</span>
+                <a asp-action="Documents" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">Manage Attachments</a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Documents != null && Model.Documents.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr><th>File Name</th><th>Description</th><th>Issue Date</th><th>Expiry Date</th><th>Status</th><th>Uploaded By</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var doc in Model.Documents.OrderByDescending(d => d.UploadedDate))
+                            {
+                                var rowCls = doc.DocumentStatus == OpenQMS.Models.ProductDocumentStatus.Expired ? "table-danger"
+                                           : doc.DocumentStatus == OpenQMS.Models.ProductDocumentStatus.Expiring ? "table-warning" : "";
+                                <tr class="@rowCls">
+                                    <td>@doc.FileName</td>
+                                    <td>@(doc.Description ?? "-")</td>
+                                    <td>@(doc.IssueDate.HasValue ? doc.IssueDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                                    <td>@(doc.ExpiryDate.HasValue ? doc.ExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                                    <td>@doc.DocumentStatus</td>
+                                    <td>@doc.UploadedBy</td>
+                                    <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary">Download</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <p class="text-muted p-3 mb-0">No documents uploaded yet.</p> }
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit Log Tab -->
+    <div class="tab-pane fade" id="pane-auditlog" role="tabpanel">
+        @{
+            var auditLogs = (ViewBag.AuditLogs as IEnumerable<OpenQMS.Models.MasterDataAuditLog>)
+                            ?? Enumerable.Empty<OpenQMS.Models.MasterDataAuditLog>();
+        }
+        @await Html.PartialAsync("_AuditLogTable",
+            auditLogs.Select(l => new OpenQMS.ViewModels.AuditLogRow(l.PerformedOn, l.PerformedBy, l.Action, l.FromStatus, l.ToStatus, l.Notes)))
+    </div>
+</div>
+
+<div class="mt-3 d-flex gap-3">
+    @if (!isLocked && Model.Status != OpenQMS.Models.Product.ProductStatus.UnderReview)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+    }
+    <a asp-action="Documents" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-folder-open me-1"></i>Attachments</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+</div>
+
+<!-- Approve Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-action="Details" asp-route-id="@Model.Id">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="approveModalLabel">Approve Product</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>You are approving <strong>@Model.ProductId — @Model.Name</strong>.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="InputEmail" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="InputPassword" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Confirm Approval</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    var tab = '@TempData["ActiveTab"]';
+    if (tab) {
+        var el = document.getElementById('tab-' + tab);
+        if (el) bootstrap.Tab.getOrCreateInstance(el).show();
+    }
+})();
+</script>
+}

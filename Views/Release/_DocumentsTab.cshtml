@@ -1,0 +1,84 @@
+@model OpenQMS.Models.Release.ReleaseRecord
+
+@{
+    var categories = new[] { "BMR", "QC Report", "CoA (Manufacturer)", "Stability Report",
+                              "Deviation Record", "Technical Agreement", "GMP Clearance", "Other" };
+}
+
+@if (!Model.IsLocked)
+{
+    <form asp-action="UploadDocument" asp-route-releaseRecordId="@Model.Id" method="post" enctype="multipart/form-data" class="card mb-4 p-3 bg-light">
+        @Html.AntiForgeryToken()
+        <h6 class="mb-3">Upload Document</h6>
+        <div class="row g-2">
+            <div class="col-md-4">
+                <label class="form-label small">File <span class="text-danger">*</span></label>
+                <input type="file" name="file" class="form-control form-control-sm" required
+                       accept="@UploadRules.Accept" />
+                <small class="text-muted">@UploadRules.AcceptedLabel — max 25 MB</small>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small">Category</label>
+                <select name="category" class="form-select form-select-sm">
+                    <option value="">-- Select --</option>
+                    @foreach (var cat in categories)
+                    {
+                        <option>@cat</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small">Description</label>
+                <input name="description" class="form-control form-control-sm" placeholder="Optional description" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-sm btn-primary w-100">Upload</button>
+            </div>
+        </div>
+    </form>
+}
+
+@if (Model.Documents == null || !Model.Documents.Any())
+{
+    <p class="text-muted">No documents uploaded.</p>
+}
+else
+{
+    <table class="table table-sm">
+        <thead class="table-light">
+            <tr>
+                <th>File</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Size</th>
+                <th>Uploaded By</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var doc in Model.Documents.OrderByDescending(d => d.UploadedDate))
+            {
+                <tr>
+                    <td><span class="text-break">@doc.FileName</span></td>
+                    <td><span class="badge bg-secondary">@doc.DocumentCategory</span></td>
+                    <td><small>@doc.Description</small></td>
+                    <td><small>@(doc.FileSizeBytes > 0 ? $"{doc.FileSizeBytes / 1024:N0} KB" : "-")</small></td>
+                    <td><small>@doc.UploadedBy</small></td>
+                    <td><small>@doc.UploadedDate.ToSite().ToString("dd-MMM-yyyy")</small></td>
+                    <td class="text-nowrap">
+                        <a asp-action="DownloadDocument" asp-route-documentId="@doc.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                        @if (!Model.IsLocked)
+                        {
+                            <form asp-action="DeleteDocument" asp-route-documentId="@doc.Id" method="post" style="display:inline" data-delete-reason="document">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger ms-1">Delete</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadDocument", RouteKey: "documentId", Noun: "documents")' />

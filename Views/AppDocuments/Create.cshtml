@@ -1,0 +1,159 @@
+@model OpenQMS.Models.AppDocument
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Document &mdash; New</h4>
+        <small class="text-muted">Create a new controlled document</small>
+    </div>
+</div>
+<hr />
+
+<form enctype="multipart/form-data" asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Document Details</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Category" class="form-label"></label>
+                    <select asp-for="Category" id="categorySelect" class="form-control"
+                            asp-items='@(ViewData["CategoryList"] as SelectList)'>
+                        <option value="">-- Select category --</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="DocType" class="form-label"></label>
+                    <select asp-for="DocType" id="docTypeSelect" class="form-control"
+                            asp-items='@(ViewData["DocTypeList"] as SelectList)'>
+                        <option value="">-- Select type --</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check mt-4">
+                        <input asp-for="PeriodicReviewRequired" class="form-check-input" type="checkbox" />
+                        <label asp-for="PeriodicReviewRequired" class="form-check-label">Periodic Review Required</label>
+                        <small class="d-block text-muted">If checked, a review date will be automatically set when the document becomes effective.</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check mt-4">
+                        <input asp-for="TrainingRequired" class="form-check-input" type="checkbox" />
+                        <label asp-for="TrainingRequired" class="form-check-label">Training Required on Approval</label>
+                        <small class="d-block text-muted">If unchecked, document goes directly to Effective on approval with no training step.</small>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-check mt-2">
+                        <input asp-for="IsExternal" class="form-check-input" type="checkbox" id="isExternalCheck" />
+                        <label asp-for="IsExternal" class="form-check-label fw-semibold">This is an externally-sourced document</label>
+                        <small class="d-block text-muted">Check if this document was authored and approved outside this system (e.g. supplier document, regulatory guidance, legacy record).</small>
+                    </div>
+                </div>
+                <div class="col-12" id="externalProvenanceSection" style="display:none;">
+                    <div class="card border-warning mt-2">
+                        <div class="card-header bg-warning bg-opacity-25 fw-semibold"><i class="fas fa-file-import me-1"></i>Document Provenance</div>
+                        <div class="card-body">
+                            <p class="text-muted small mb-3">Record the original authorship and approval details as they appear on the document itself. These are separate from the system workflow records.</p>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label asp-for="ExternalSource" class="form-label">Source / Origin</label>
+                                    <input asp-for="ExternalSource" class="form-control" placeholder="e.g. Acme Pharma Ltd, ISO, TGA, Internal legacy" />
+                                    <small class="text-muted">Organisation or body that produced this document.</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="ExternalVersion" class="form-label">Original Version / Reference</label>
+                                    <input asp-for="ExternalVersion" class="form-control" placeholder="e.g. Rev C, v2.1, 2023 Edition" />
+                                    <small class="text-muted">Version as shown on the document. An internal version will also be assigned.</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="ExternalAuthorName" class="form-label">Original Author</label>
+                                    <input asp-for="ExternalAuthorName" class="form-control" list="systemUsersList" placeholder="Type name or select from system users…" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="ExternalAuthoredOn" class="form-label">Originally Authored On</label>
+                                    <input asp-for="ExternalAuthoredOn" class="form-control" type="date" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="ExternalApproverName" class="form-label">Original Approver</label>
+                                    <input asp-for="ExternalApproverName" class="form-control" list="systemUsersList" placeholder="Type name or select from system users…" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="ExternalApprovedOn" class="form-label">Originally Approved On</label>
+                                    <input asp-for="ExternalApprovedOn" class="form-control" type="date" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @{
+                        var systemUsers = ViewData["SystemUsers"] as IEnumerable<string> ?? Enumerable.Empty<string>();
+                    }
+                    <datalist id="systemUsersList">
+                        @foreach (var u in systemUsers)
+                        {
+                            <option value="@u"></option>
+                        }
+                    </datalist>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">File <span class="text-danger">*</span></label>
+                    <input name="file" type="file" class="form-control"
+                           accept="@UploadRules.Accept" required />
+                    <small class="form-text text-muted">Accepted: @UploadRules.AcceptedLabel &middot; Max 25 MB</small>
+                    <span class="text-danger small">@(ViewData.ModelState["file"]?.Errors.FirstOrDefault()?.ErrorMessage)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#categorySelect').select2({ theme: 'classic', width: '100%', placeholder: '-- Select category --', allowClear: true });
+            $('#docTypeSelect').select2({ theme: 'classic', width: '100%', placeholder: '-- Select type --', allowClear: true });
+
+            function toggleExternalSection() {
+                $('#externalProvenanceSection').toggle($('#isExternalCheck').is(':checked'));
+            }
+            $('#isExternalCheck').on('change', toggleExternalSection);
+            toggleExternalSection();
+
+            $('#categorySelect').on('change', function () {
+                var cat = $(this).val();
+                var $typeSelect = $('#docTypeSelect');
+                $typeSelect.empty().append('<option value="">-- Select type --</option>');
+                if (!cat) return;
+                $.getJSON('@Url.Action("GetDocumentTypes", "AppDocuments")', { category: cat }, function (data) {
+                    $.each(data, function (i, item) {
+                        $typeSelect.append($('<option>').val(item.value).text(item.text));
+                    });
+                    $typeSelect.trigger('change.select2');
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,293 @@
+@using static OpenQMS.Models.AppDocument
+@{
+    ViewData["Title"] = "Documents Dashboard";
+
+    var statusCounts     = ViewBag.StatusCounts      as Dictionary<DocumentStatus, int> ?? new();
+    var pendingApproval  = ViewBag.PendingApproval   as List<OpenQMS.Models.AppDocument> ?? new();
+    var recentlyApproved = ViewBag.RecentlyApproved as List<OpenQMS.Models.AppDocument> ?? new();
+    var recentActivity   = ViewBag.RecentActivity   as List<OpenQMS.Models.DocumentAuditLog> ?? new();
+    var recentDocMap     = ViewBag.RecentDocMap     as Dictionary<int, string> ?? new();
+    var reviewOverdue    = ViewBag.ReviewOverdue    as List<OpenQMS.Models.AppDocument> ?? new();
+    var reviewDueSoon    = ViewBag.ReviewDueSoon    as List<OpenQMS.Models.AppDocument> ?? new();
+}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Documents Dashboard</h4>
+    <div class="d-flex gap-2">
+        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">Export Register</a>
+        <a asp-action="ReviewRegister" class="btn btn-outline-info btn-sm">Review Register</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Document Register</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Document</a>
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm h-100 border-start border-success border-3">
+            <div class="card-body text-center">
+                <div class="fs-1 fw-bold text-success">@ViewBag.EffectiveCount</div>
+                <div class="text-muted small">Effective</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm h-100 border-start border-primary border-3">
+            <div class="card-body text-center">
+                <div class="fs-1 fw-bold text-primary">@ViewBag.ApprovedCount</div>
+                <div class="text-muted small">Approved</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm h-100 border-start border-warning border-3">
+            <div class="card-body text-center">
+                <div class="fs-1 fw-bold text-warning">@ViewBag.DraftCount</div>
+                <div class="text-muted small">Draft</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm h-100 border-start border-info border-3">
+            <div class="card-body text-center">
+                <div class="fs-1 fw-bold text-info">@ViewBag.UnderReviewCount</div>
+                <div class="text-muted small">Under Review</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm h-100 border-start border-danger border-3">
+            <div class="card-body text-center">
+                <div class="fs-1 fw-bold text-danger">@ViewBag.RejectedCount</div>
+                <div class="text-muted small">Rejected</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm h-100 border-start border-secondary border-3">
+            <div class="card-body text-center">
+                <div class="fs-1 fw-bold text-secondary">@ViewBag.ObsoleteCount</div>
+                <div class="text-muted small">Obsolete</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts row -->
+<div class="row g-3 mb-4">
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-semibold">Status Distribution</div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="statusDoughnut" style="max-height:220px;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-semibold">Status Counts</div>
+            <div class="card-body">
+                <canvas id="statusBar" style="max-height:220px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Review Alerts -->
+@if (reviewOverdue.Any() || reviewDueSoon.Any())
+{
+    <div class="row g-3 mb-4">
+        @if (reviewOverdue.Any())
+        {
+            <div class="col-md-6">
+                <div class="card border-danger border-0 shadow-sm h-100">
+                    <div class="card-header bg-danger text-white fw-semibold">
+                        <i class="fas fa-exclamation-circle me-1"></i>Review Overdue
+                        <span class="badge bg-white text-danger ms-1">@reviewOverdue.Count</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr><th>ID</th><th>Title</th><th>Review Due</th><th>Days Overdue</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var d in reviewOverdue)
+                                {
+                                    var daysOver = (int)(SiteTime.Today - d.ReviewDueDate!.Value.Date).TotalDays;
+                                    <tr class="table-danger">
+                                        <td>@d.DocumentId</td>
+                                        <td>@d.Title</td>
+                                        <td>@d.ReviewDueDate.Value.ToString("dd MMM yyyy")</td>
+                                        <td><span class="badge bg-danger">@daysOver days</span></td>
+                                        <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-danger btn-sm">View</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (reviewDueSoon.Any())
+        {
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-warning text-dark fw-semibold">
+                        <i class="fas fa-clock me-1"></i>Review Due Within 30 Days
+                        <span class="badge bg-dark ms-1">@reviewDueSoon.Count</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr><th>ID</th><th>Title</th><th>Review Due</th><th>Days Left</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var d in reviewDueSoon)
+                                {
+                                    var daysLeft = (int)(d.ReviewDueDate!.Value.Date - SiteTime.Today).TotalDays;
+                                    <tr class="table-warning">
+                                        <td>@d.DocumentId</td>
+                                        <td>@d.Title</td>
+                                        <td>@d.ReviewDueDate.Value.ToString("dd MMM yyyy")</td>
+                                        <td><span class="badge bg-warning text-dark">@daysLeft days</span></td>
+                                        <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">View</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Pending Approval + Recently Approved -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-info text-dark fw-semibold">
+                <i class="fas fa-eye me-1"></i>Awaiting Approval (Under Review)
+                <span class="badge bg-dark ms-1">@pendingApproval.Count</span>
+            </div>
+            <div class="card-body p-0">
+                @if (pendingApproval.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light">
+                            <tr><th>ID</th><th>Title</th><th>Version</th><th>Authored By</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var d in pendingApproval)
+                            {
+                                <tr>
+                                    <td>@d.DocumentId</td>
+                                    <td>@d.Title</td>
+                                    <td>@d.Version.ToString("0.00")</td>
+                                    <td>@d.AuthoredBy</td>
+                                    <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">View</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted p-3 mb-0">No documents awaiting approval.</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-success text-white fw-semibold">
+                <i class="fas fa-check-circle me-1"></i>Recently Approved
+            </div>
+            <div class="card-body p-0">
+                @if (recentlyApproved.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light">
+                            <tr><th>ID</th><th>Title</th><th>Version</th><th>Approved On</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var d in recentlyApproved)
+                            {
+                                <tr>
+                                    <td>@d.DocumentId</td>
+                                    <td>@d.Title</td>
+                                    <td>@d.Version.ToString("0.00")</td>
+                                    <td>@(d.ApprovedOn.HasValue ? SiteTime.ToSite((DateTime)d.ApprovedOn.Value).ToString("dd MMM yyyy") : "-")</td>
+                                    <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">View</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted p-3 mb-0">No approved documents yet.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white fw-semibold">
+        <i class="fas fa-history me-1"></i>Recent Activity
+    </div>
+    <div class="card-body p-0">
+        @if (recentActivity.Any())
+        {
+            <table class="table table-sm mb-0">
+                <thead class="table-light">
+                    <tr><th>Date/Time <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>Document</th><th>Action</th><th>From</th><th>To</th><th>Performed By</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in recentActivity)
+                    {
+                        var docId = recentDocMap.TryGetValue(log.AppDocumentId, out var did) ? did : $"#{log.AppDocumentId}";
+                        <tr>
+                            <td>@(SiteTime.ToSite((DateTime)log.PerformedOn).ToString("dd MMM yyyy HH:mm"))</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@log.AppDocumentId">@docId</a>
+                            </td>
+                            <td>@log.Action</td>
+                            <td>@(log.FromStatus ?? "-")</td>
+                            <td>@(log.ToStatus ?? "-")</td>
+                            <td>@log.PerformedBy</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted p-3 mb-0">No recent activity.</p>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+    <script>
+        var labels  = [@Html.Raw(string.Join(",", statusCounts.Keys.Select(k => $"'{k}'")))];
+        var counts  = [@string.Join(",", statusCounts.Values)];
+        var colors  = ['#ffc107','#198754','#dc3545','#6c757d'];
+
+        new Chart(document.getElementById('statusDoughnut'), {
+            type: 'doughnut',
+            data: { labels: labels, datasets: [{ data: counts, backgroundColor: colors, borderWidth: 1 }] },
+            options: { plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: false }
+        });
+
+        new Chart(document.getElementById('statusBar'), {
+            type: 'bar',
+            data: { labels: labels, datasets: [{ label: 'Documents', data: counts, backgroundColor: colors }] },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, maintainAspectRatio: false }
+        });
+    </script>
+}

@@ -1,0 +1,175 @@
+@{
+    ViewData["Title"] = "Customer Dashboard";
+    var today       = SiteTime.Today;
+    var expiring90  = ViewBag.Expiring90 as List<OpenQMS.Models.Customer> ?? new();
+    var expired     = ViewBag.Expired    as List<OpenQMS.Models.Customer> ?? new();
+    var typeCounts  = ViewBag.TypeCounts as Dictionary<string, int>       ?? new();
+}
+
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="fas fa-users me-2 text-primary"></i>Customer Dashboard</h4>
+        <div class="btn-group">
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>Register</a>
+            <a asp-action="ContractExpiryReport" asp-route-days="90" class="btn btn-outline-warning btn-sm"><i class="fas fa-file-excel me-1"></i>Expiry Report (90d)</a>
+            <a asp-action="ContractExpiryReport" asp-route-days="30" class="btn btn-outline-danger btn-sm"><i class="fas fa-file-excel me-1"></i>Expiry Report (30d)</a>
+        </div>
+    </div>
+
+    @* ── KPI Cards ── *@
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-secondary">@ViewBag.TotalCustomers</div>
+                    <div class="small text-muted">Total Customers</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100 bg-success bg-opacity-10">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-success">@ViewBag.ApprovedCount</div>
+                    <div class="small text-muted">Approved</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100 bg-primary bg-opacity-10">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-primary">@ViewBag.ActiveCount</div>
+                    <div class="small text-muted">Active Contracts</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100 bg-warning bg-opacity-10">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-warning">@ViewBag.ExpiringCount</div>
+                    <div class="small text-muted">Expiring (90d)</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100 bg-danger bg-opacity-10">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-danger">@ViewBag.ExpiredCount</div>
+                    <div class="small text-muted">Expired</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100 bg-secondary bg-opacity-10">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-secondary">@ViewBag.NoExpiryCount</div>
+                    <div class="small text-muted">No Expiry Set</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        @* Type distribution chart *@
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent fw-semibold">Customer Type Distribution</div>
+                <div class="card-body">
+                    <canvas id="typeChart" height="220"></canvas>
+                </div>
+            </div>
+        </div>
+
+        @* Expiring within 90 days *@
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-warning bg-opacity-10 fw-semibold">
+                    <i class="fas fa-clock me-1 text-warning"></i>Contracts Expiring Within 90 Days
+                    <span class="badge bg-warning text-dark ms-2">@expiring90.Count</span>
+                </div>
+                <div class="card-body p-0">
+                    @if (!expiring90.Any())
+                    {
+                        <p class="text-muted small p-3 mb-0">No contracts expiring within 90 days.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr><th>Customer ID</th><th>Legal Name</th><th>Expiry</th><th>Days</th><th>Type</th></tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var c in expiring90)
+                            {
+                                int d = (c.ContractExpiryDate!.Value.Date - today).Days;
+                                string rowCls = d <= 0 ? "table-danger" : d <= 30 ? "table-warning" : "";
+                                <tr class="@rowCls">
+                                    <td><a asp-action="Details" asp-route-id="@c.Id">@c.CustomerId</a></td>
+                                    <td>@c.LegalName</td>
+                                    <td>@c.ContractExpiryDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td>@(d <= 0 ? $"Expires today" : $"{d}d")</td>
+                                    <td><span class="badge bg-secondary">@c.CustomerType</span></td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (expired.Any())
+    {
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-danger text-white fw-semibold">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Expired Contracts
+                        <span class="badge bg-white text-danger ms-2">@expired.Count</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr><th>Customer ID</th><th>Legal Name</th><th>Expiry</th><th>Days Overdue</th><th>Type</th><th>Contact Email</th></tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var c in expired)
+                            {
+                                int d = (today - c.ContractExpiryDate!.Value.Date).Days;
+                                <tr class="table-danger">
+                                    <td><a asp-action="Details" asp-route-id="@c.Id">@c.CustomerId</a></td>
+                                    <td>@c.LegalName</td>
+                                    <td>@c.ContractExpiryDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td>@d days overdue</td>
+                                    <td><span class="badge bg-secondary">@c.CustomerType</span></td>
+                                    <td>@(c.ContactEmail ?? "-")</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    var typeLabels = @Json.Serialize(typeCounts.Keys.ToArray());
+    var typeData   = @Json.Serialize(typeCounts.Values.ToArray());
+    var colors     = ['#0d6efd','#198754','#ffc107','#dc3545','#6c757d','#0dcaf0','#fd7e14','#6610f2'];
+
+    new Chart(document.getElementById('typeChart'), {
+        type: 'doughnut',
+        data: {
+            labels: typeLabels,
+            datasets: [{ data: typeData, backgroundColor: colors.slice(0, typeLabels.length) }]
+        },
+        options: { plugins: { legend: { position: 'right' } }, maintainAspectRatio: false }
+    });
+})();
+</script>
+}

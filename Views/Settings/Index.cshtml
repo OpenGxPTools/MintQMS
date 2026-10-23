@@ -1,0 +1,525 @@
+@using OpenQMS.Authorization
+@model OpenQMS.Models.SystemSettings
+
+@{
+    ViewData["Title"] = "System Settings";
+    bool canEdit = ViewBag.CanEdit == true;
+    string? dis = canEdit ? null : "disabled";
+}
+
+<h4 class="mb-0">System Settings</h4>
+<hr />
+
+@if (!canEdit)
+{
+    <div class="alert alert-info" role="alert">
+        <i class="fas fa-info-circle me-2"></i>You have view-only access to system settings. Contact an Administrator to make changes.
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<form asp-action="Save" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    @* ── Organisation Profile ──────────────────────────────────── *@
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Organisation Profile</div>
+        <div class="card-body">
+            <div class="mb-3 row">
+                <label asp-for="OrganisationName" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-6">
+                    <input asp-for="OrganisationName" class="form-control" disabled="@dis" />
+                    <span asp-validation-for="OrganisationName" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="OrganisationAddress" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-6">
+                    <textarea asp-for="OrganisationAddress" class="form-control" rows="3" disabled="@dis"></textarea>
+                    <span asp-validation-for="OrganisationAddress" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-3 col-form-label">Logo</label>
+                <div class="col-sm-6">
+                    @if (!string.IsNullOrEmpty(Model.LogoPath))
+                    {
+                        <div class="mb-2">
+                            <img src="@Model.LogoPath" alt="Organisation Logo" style="max-height:80px; max-width:300px;" class="border rounded p-1" />
+                        </div>
+                    }
+                    @if (canEdit)
+                    {
+                        <input type="file" name="logoFile" class="form-control" accept=".png,.jpg,.jpeg,.gif" />
+                        <div class="form-text">PNG, JPG or GIF, max 2 MB. Replaces the current logo.</div>
+                        <span class="text-danger small">@(ViewData.ModelState["logoFile"]?.Errors.FirstOrDefault()?.ErrorMessage)</span>
+                    }
+                    else if (!string.IsNullOrEmpty(Model.LogoPath))
+                    {
+                        <div class="form-text text-muted">Logo is set. Administrator can replace it.</div>
+                    }
+                    else
+                    {
+                        <div class="form-text text-muted">No logo uploaded.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ── Display Preferences ───────────────────────────────────── *@
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Display Preferences</div>
+        <div class="card-body">
+            <div class="mb-3 row">
+                <label asp-for="DateFormat" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-4">
+                    @if (canEdit)
+                    {
+                        <select asp-for="DateFormat" class="form-select">
+                            <option value="dd/MM/yyyy">dd/MM/yyyy (e.g. 25/03/2026)</option>
+                            <option value="MM/dd/yyyy">MM/dd/yyyy (e.g. 03/25/2026)</option>
+                            <option value="yyyy-MM-dd">yyyy-MM-dd (ISO 8601)</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <input asp-for="DateFormat" class="form-control" disabled="@dis" />
+                    }
+                    <div class="form-text">Applied to reports and exports.</div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="TimeZoneId" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-5">
+                    @if (canEdit)
+                    {
+                        <select asp-for="TimeZoneId" class="form-select">
+                            @foreach (var z in SiteTime.Choices)
+                            {
+                                <option value="@z.Id">@z.Label</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <input asp-for="TimeZoneId" class="form-control" disabled="@dis" />
+                    }
+                    <span asp-validation-for="TimeZoneId" class="text-danger small"></span>
+                    <div class="form-text">Times are stored in UTC and shown in this zone on screens, exports and certificates.</div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="DefaultPageSize" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-3">
+                    @if (canEdit)
+                    {
+                        <select asp-for="DefaultPageSize" class="form-select">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <input asp-for="DefaultPageSize" class="form-control" disabled="@dis" />
+                    }
+                    <div class="form-text">Default rows per page in data tables.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ── Warning Thresholds ────────────────────────────────────── *@
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Expiry &amp; Due Warning Thresholds</div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">Records within these day thresholds will be highlighted as approaching expiry or due date.</p>
+            <div class="mb-3 row">
+                <label asp-for="LcExpiryWarningDays" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="LcExpiryWarningDays" class="form-control" type="number" min="1" max="365" disabled="@dis" />
+                        <span class="input-group-text">days</span>
+                    </div>
+                    <span asp-validation-for="LcExpiryWarningDays" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="MaintenanceDueWarningDays" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="MaintenanceDueWarningDays" class="form-control" type="number" min="1" max="365" disabled="@dis" />
+                        <span class="input-group-text">days</span>
+                    </div>
+                    <span asp-validation-for="MaintenanceDueWarningDays" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="TrainingDueWarningDays" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="TrainingDueWarningDays" class="form-control" type="number" min="1" max="365" disabled="@dis" />
+                        <span class="input-group-text">days</span>
+                    </div>
+                    <span asp-validation-for="TrainingDueWarningDays" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ── Default Resolution Deadlines ──────────────────────────── *@
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Default Resolution Deadlines</div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">These values pre-populate target completion dates when creating new records. Existing records are not affected.</p>
+            <div class="mb-3 row">
+                <label asp-for="DefaultCapaResolutionDays" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="DefaultCapaResolutionDays" class="form-control" type="number" min="1" max="365" disabled="@dis" />
+                        <span class="input-group-text">days</span>
+                    </div>
+                    <span asp-validation-for="DefaultCapaResolutionDays" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="DefaultDeviationResolutionDays" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="DefaultDeviationResolutionDays" class="form-control" type="number" min="1" max="365" disabled="@dis" />
+                        <span class="input-group-text">days</span>
+                    </div>
+                    <span asp-validation-for="DefaultDeviationResolutionDays" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="DefaultComplaintResolutionDays" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="DefaultComplaintResolutionDays" class="form-control" type="number" min="1" max="365" disabled="@dis" />
+                        <span class="input-group-text">days</span>
+                    </div>
+                    <span asp-validation-for="DefaultComplaintResolutionDays" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="CriticalComplaintResolutionDays" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="CriticalComplaintResolutionDays" class="form-control" type="number" min="1" max="90" disabled="@dis" />
+                        <span class="input-group-text">days</span>
+                    </div>
+                    <div class="form-text text-muted">GMP: Critical severity complaints require expedited resolution (typically 7 days).</div>
+                    <span asp-validation-for="CriticalComplaintResolutionDays" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ── Security Policy ──────────────────────────────────────���───── *@
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Security Policy</div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">Controls password expiry and reuse prevention (21 CFR 11.300 / EU Annex 11 §12). Set either value to 0 to disable that control.</p>
+            <div class="mb-3 row">
+                <label asp-for="PasswordExpiryDays" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="PasswordExpiryDays" class="form-control" type="number" min="0" max="365" disabled="@dis" />
+                        <span class="input-group-text">days</span>
+                    </div>
+                    <div class="form-text">Users will be required to change their password after this many days. 0 = no expiry.</div>
+                    <span asp-validation-for="PasswordExpiryDays" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="PasswordHistoryCount" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="PasswordHistoryCount" class="form-control" type="number" min="0" max="24" disabled="@dis" />
+                        <span class="input-group-text">passwords</span>
+                    </div>
+                    <div class="form-text">Number of previous passwords that cannot be reused. 0 = no restriction.</div>
+                    <span asp-validation-for="PasswordHistoryCount" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="IdleTimeoutMinutes" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="IdleTimeoutMinutes" class="form-control" type="number" min="0" max="480" disabled="@dis" />
+                        <span class="input-group-text">minutes</span>
+                    </div>
+                    <div class="form-text">Automatically logs out users after this many minutes of inactivity. 0 = disabled.</div>
+                    @if (Model.IdleTimeoutMinutes == 0)
+                    {
+                        <div class="form-text text-warning"><i class="bi bi-exclamation-triangle-fill"></i> GMP note: disabling idle timeout is not recommended under 21 CFR Part 11 / EU Annex 11.</div>
+                    }
+                    <span asp-validation-for="IdleTimeoutMinutes" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ── Email Configuration ────────────────────────────────────── *@
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Email Configuration</div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">
+                Used to send password reset and account confirmation emails.
+                @if (canEdit)
+                {
+                    <span>For Gmail, use <strong>smtp.gmail.com</strong>, port <strong>587</strong>, and an <a href="https://myaccount.google.com/apppasswords" target="_blank">App Password</a> (not your regular Gmail password).</span>
+                }
+            </p>
+            <div class="mb-3 row">
+                <label asp-for="EmailFromAddress" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-5">
+                    <input asp-for="EmailFromAddress" class="form-control" placeholder="e.g. qms@yourcompany.com" disabled="@dis" />
+                    <div class="form-text">The address emails are sent from.</div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="EmailFromName" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-5">
+                    <input asp-for="EmailFromName" class="form-control" placeholder="e.g. OpenQMS System" disabled="@dis" />
+                    <div class="form-text">Display name shown to email recipients.</div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="SmtpHost" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-5">
+                    <input asp-for="SmtpHost" class="form-control" placeholder="e.g. smtp.gmail.com" disabled="@dis" />
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="SmtpPort" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-2">
+                    <input asp-for="SmtpPort" class="form-control" type="number" min="1" max="65535" disabled="@dis" />
+                    <div class="form-text">Usually 587.</div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="SmtpUsername" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-5">
+                    <input asp-for="SmtpUsername" class="form-control" placeholder="e.g. qms@yourcompany.com" disabled="@dis" />
+                </div>
+            </div>
+            @if (canEdit)
+            {
+                <div class="mb-3 row">
+                    <label asp-for="SmtpPassword" class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-5">
+                        <input asp-for="SmtpPassword" type="password" class="form-control"
+                               autocomplete="new-password"
+                               placeholder="@(string.IsNullOrEmpty(Model.SmtpPassword) ? "Enter password" : "Leave blank to keep current password")" />
+                        <div class="form-text">Leave blank to keep the current password unchanged.</div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="mb-3 row">
+                    <label class="col-sm-3 col-form-label">SMTP Password</label>
+                    <div class="col-sm-5">
+                        <input type="password" class="form-control"
+                               value="@(string.IsNullOrEmpty(Model.SmtpPassword) ? "" : "placeholder")"
+                               disabled="disabled" />
+                        <div class="form-text text-muted">
+                            @(string.IsNullOrEmpty(Model.SmtpPassword) ? "Not set." : "Password is set.")
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @* ── Data Retention Periods (Gap 13) ──────────────────────────── *@
+    <div class="card mb-4">
+        <div class="card-header"><strong>Data Retention Periods</strong></div>
+        <div class="card-body">
+            <div class="mb-3 row">
+                <label asp-for="RetentionHoldCooldownDays" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-3">
+                    <input asp-for="RetentionHoldCooldownDays" type="number" class="form-control" min="1" max="365" disabled="@dis" />
+                    <div class="form-text">Days to wait after removing a Retention Hold before disposal is allowed.</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="mb-3 row">
+                        <label asp-for="CapaRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="CapaRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label asp-for="DeviationRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="DeviationRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label asp-for="ChangeRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="ChangeRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label asp-for="ComplaintRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="ComplaintRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label asp-for="RiskRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="RiskRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label asp-for="AuditRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="AuditRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="mb-3 row">
+                        <label asp-for="MaintenanceRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="MaintenanceRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label asp-for="TrainingRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="TrainingRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label asp-for="DocumentRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="DocumentRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label asp-for="RIRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="RIRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label asp-for="LCRetentionYears" class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-4"><input asp-for="LCRetentionYears" type="number" class="form-control" min="1" max="50" disabled="@dis" /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (canEdit)
+    {
+        <div class="mb-4">
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+            <a asp-action="AuditLog" class="btn btn-outline-secondary ms-2">View Audit Log</a>
+        </div>
+    }
+    else
+    {
+        <div class="mb-4">
+            <a asp-action="AuditLog" class="btn btn-outline-secondary">View Audit Log</a>
+        </div>
+    }
+</form>
+
+@{
+    var backup = ViewBag.BackupStatus as OpenQMS.Models.BackupStatusEntry;
+    bool backupOk     = backup != null && backup.Status == "success";
+    bool backupMissing = backup == null;
+    bool backupOverdue = backup != null && backup.Status == "success"
+                         && (DateTime.UtcNow - backup.TimestampUtc).TotalHours > 25;
+    bool backupFailed  = backup != null && backup.Status == "failure";
+
+    string cardClass    = (backupMissing || backupFailed) ? "border-danger"
+                        : backupOverdue                   ? "border-warning"
+                        : "border-success";
+    string headerClass  = (backupMissing || backupFailed) ? "bg-danger text-white"
+                        : backupOverdue                   ? "bg-warning text-dark"
+                        : "bg-success text-white";
+    string iconClass    = (backupMissing || backupFailed) ? "fa-circle-xmark"
+                        : backupOverdue                   ? "fa-triangle-exclamation"
+                        : "fa-circle-check";
+
+    string statusLabel  = backupMissing ? "No backup recorded"
+                        : backupFailed  ? "Last backup failed"
+                        : backupOverdue ? "Backup overdue"
+                        : "OK";
+
+    string? lastRun = backup != null
+        ? SiteTime.ToSite((DateTime)backup.TimestampUtc).ToString("yyyy-MM-dd HH:mm") + " " + SiteTime.Label
+        : "—";
+
+    string FormatSize(long bytes) => bytes <= 0 ? "—"
+        : bytes >= 1_048_576 ? $"{bytes / 1_048_576.0:F1} MB" : $"{bytes / 1_024.0:F1} KB";
+    string fileSize        = FormatSize(backup?.FileSizeBytes ?? 0);
+    string uploadsFileSize = FormatSize(backup?.UploadsFileSizeBytes ?? 0);
+}
+
+<div class="card mb-4 @cardClass">
+    <div class="card-header fw-semibold @headerClass">
+        <i class="fas @iconClass me-2"></i>System &amp; Backup Status
+        <span class="float-end small fw-normal">@statusLabel</span>
+    </div>
+    <div class="card-body">
+        @if (backupMissing)
+        {
+            <p class="text-muted mb-0">
+                No backup status file found. Once the backup script is deployed and has run at least once,
+                the last backup details will appear here.
+            </p>
+        }
+        else
+        {
+            <div class="row g-3">
+                <div class="col-sm-4">
+                    <div class="fw-semibold small text-muted text-uppercase mb-1">Last backup</div>
+                    <div>@lastRun</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="fw-semibold small text-muted text-uppercase mb-1">Database backup</div>
+                    <div class="text-truncate" title="@backup!.FileName">@(backup!.FileName ?? "—")</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="fw-semibold small text-muted text-uppercase mb-1">Database size</div>
+                    <div>@fileSize</div>
+                </div>
+                <div class="col-sm-4 offset-sm-4">
+                    <div class="fw-semibold small text-muted text-uppercase mb-1">Uploaded-files archive</div>
+                    <div class="text-truncate" title="@backup!.UploadsFileName">@(backup!.UploadsFileName ?? "—")</div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="fw-semibold small text-muted text-uppercase mb-1">Archive size</div>
+                    <div>@uploadsFileSize</div>
+                </div>
+            </div>
+
+            @if (backupFailed)
+            {
+                <div class="alert alert-danger mt-3 mb-0 small">
+                    <i class="fas fa-circle-xmark me-1"></i>
+                    The last backup run reported a failure.
+                    @if (!string.IsNullOrEmpty(backup!.ErrorMessage))
+                    {
+                        <span>Error: @backup.ErrorMessage</span>
+                    }
+                    <span>Check the server cron logs for details.</span>
+                </div>
+            }
+            else if (backupOverdue)
+            {
+                <div class="alert alert-warning mt-3 mb-0 small">
+                    <i class="fas fa-triangle-exclamation me-1"></i>
+                    No successful backup in the last 25 hours. Verify the cron job is running on the server.
+                </div>
+            }
+        }
+    </div>
+    <div class="card-footer text-muted small">
+        Backup is managed by a server-side cron job. This panel is read-only.
+        Contact your system administrator to investigate any issues.
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

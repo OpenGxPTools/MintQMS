@@ -1,0 +1,230 @@
+@model OpenQMS.Models.Customer
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">New Customer</h4>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Identity</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="LegalName" class="form-label"></label>
+                    <input asp-for="LegalName" class="form-control" required />
+                    <span asp-validation-for="LegalName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="TradingName" class="form-label"></label>
+                    <input asp-for="TradingName" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="CustomerType" class="form-label"></label>
+                    <select asp-for="CustomerType" class="form-select"
+                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.CustomerType>()"></select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Industry" class="form-label"></label>
+                    <select asp-for="Industry" class="form-select">
+                        <option value="">-- Select --</option>
+                        <optgroup label="Healthcare &amp; Clinical">
+                            <option>Hospital / Health Service</option>
+                            <option>Specialist Medical Practice</option>
+                            <option>General Practice / Primary Care</option>
+                            <option>Oncology Centre</option>
+                            <option>Aged Care Facility</option>
+                            <option>Community Pharmacy</option>
+                            <option>Hospital Pharmacy</option>
+                            <option>Compounding Pharmacy</option>
+                            <option>Pathology / Diagnostics</option>
+                        </optgroup>
+                        <optgroup label="Research &amp; Trials">
+                            <option>Contract Research Organisation (CRO)</option>
+                            <option>Academic / Research Institution</option>
+                            <option>Clinical Trial Site</option>
+                        </optgroup>
+                        <optgroup label="Life Sciences Industry">
+                            <option>Pharmaceutical</option>
+                            <option>Biotechnology</option>
+                            <option>Medical Devices</option>
+                        </optgroup>
+                        <optgroup label="Distribution &amp; Supply">
+                            <option>Pharmaceutical Wholesale / Distribution</option>
+                            <option>Medical Supply / Distribution</option>
+                        </optgroup>
+                        <optgroup label="Government &amp; Regulatory">
+                            <option>Government / Public Health</option>
+                            <option>Defence / Military Health</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option>Veterinary</option>
+                            <option>Other</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="LegalId" class="form-label"></label>
+                    <input asp-for="LegalId" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Website" class="form-label"></label>
+                    <input asp-for="Website" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Address</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Street" class="form-label"></label>
+                    <input asp-for="Street" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="State" class="form-label"></label>
+                    <input asp-for="State" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="PostCode" class="form-label"></label>
+                    <input asp-for="PostCode" class="form-control" />
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="Country" class="form-label"></label>
+                    <input asp-for="Country" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Primary Contact</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="ContactName" class="form-label"></label>
+                    <input asp-for="ContactName" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContactEmail" class="form-label"></label>
+                    <input asp-for="ContactEmail" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContactPhone" class="form-label"></label>
+                    <input asp-for="ContactPhone" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Commercial</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="AccountNumber" class="form-label"></label>
+                    <input asp-for="AccountNumber" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContractReference" class="form-label"></label>
+                    <input asp-for="ContractReference" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContractExpiryDate" class="form-label"></label>
+                    <input asp-for="ContractExpiryDate" type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Notes</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="SpecialRequirements" class="form-label"></label>
+                    <textarea asp-for="SpecialRequirements" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Related Documents</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Linked Approved Documents</label>
+                    <select id="relatedDocDropdown" class="form-select">
+                        <option value="">-- Add Document --</option>
+                        @foreach (var d in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
+                        {
+                            <option value="@d.Value" data-text="@d.Text">@d.Text</option>
+                        }
+                    </select>
+                    <div id="relatedDocTags" class="mt-2 d-flex flex-wrap gap-1"></div>
+                    <div id="relatedDocHidden" class="d-none"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+            var selected = {};
+            preselected.forEach(function (item) { selected[item.id] = item.text; });
+            function render() {
+                var tagsDiv = document.getElementById(tagsId);
+                var hiddenDiv = document.getElementById(hiddenId);
+                tagsDiv.innerHTML = ''; hiddenDiv.innerHTML = '';
+                Object.keys(selected).forEach(function (id) {
+                    var badge = document.createElement('span');
+                    badge.className = 'badge bg-primary d-flex align-items-center gap-1';
+                    badge.style.fontSize = '0.85rem';
+                    badge.textContent = selected[id];
+                    var btn = document.createElement('button');
+                    btn.type = 'button'; btn.className = 'btn-close btn-close-white btn-sm ms-1'; btn.style.fontSize = '0.6rem';
+                    btn.addEventListener('click', function () { delete selected[id]; render(); });
+                    badge.appendChild(btn); tagsDiv.appendChild(badge);
+                    var input = document.createElement('input');
+                    input.type = 'hidden'; input.name = inputName; input.value = id;
+                    hiddenDiv.appendChild(input);
+                });
+            }
+            document.getElementById(dropdownId).addEventListener('change', function () {
+                var id = this.value; var text = this.options[this.selectedIndex].dataset.text;
+                if (id && !selected[id]) { selected[id] = text; render(); }
+                this.value = '';
+            });
+            render();
+        }
+        var selRelatedDocs = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            ((List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
+                .Where(x => ((List<int>)ViewBag.SelectedRelatedDocIds).Contains(int.Parse(x.Value)))
+                .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        setupPicker('relatedDocDropdown', 'relatedDocTags', 'relatedDocHidden', 'selectedRelatedDocs', selRelatedDocs);
+    </script>
+}

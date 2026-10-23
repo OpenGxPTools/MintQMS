@@ -1,0 +1,80 @@
+@model IEnumerable<OpenQMS.Models.PVPeriodicReport>
+@{
+    ViewData["Title"] = "PSUR Periods";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="fas fa-file-medical-alt me-2 text-primary"></i>Periodic Safety Update Reports (PSUR)</h4>
+    @if (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser"))
+    {
+        <a asp-action="Create" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i>New PSUR Period
+        </a>
+    }
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<table class="table table-striped table-hover" id="psurTable">
+    <thead class="table-dark">
+        <tr>
+            <th>Title</th>
+            <th>Product</th>
+            <th>Period</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Submission Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            var statusClass = r.Status switch {
+                PVPeriodicReport.PSURStatus.InPreparation => "secondary",
+                PVPeriodicReport.PSURStatus.UnderReview   => "info",
+                PVPeriodicReport.PSURStatus.Submitted     => "primary",
+                PVPeriodicReport.PSURStatus.Accepted      => "success",
+                _ => "secondary"
+            };
+            var overdue = !r.SubmissionDate.HasValue && r.DueDate.HasValue && r.DueDate.Value.Date < SiteTime.Today;
+            <tr class="@(overdue ? "table-warning" : "")">
+                <td>
+                    <strong>@r.Title</strong>
+                    @if (overdue) { <span class="badge bg-danger ms-1">Overdue</span> }
+                </td>
+                <td>@if (r.Product?.Name != null) { @r.Product.Name } else { <span class="text-muted">All</span> }</td>
+                <td>
+                    @(r.PeriodStart?.ToString("dd MMM yyyy") ?? "—")
+                    @if (r.PeriodStart.HasValue && r.PeriodEnd.HasValue) { <span class="text-muted">→</span> }
+                    @(r.PeriodEnd?.ToString("dd MMM yyyy") ?? "")
+                </td>
+                <td>@(r.DueDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                <td><span class="badge bg-@statusClass">@r.Status</span></td>
+                <td>@(r.SubmissionDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                    <a asp-action="Edit"    asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <p class="text-muted text-center mt-4">No PSUR periods created yet.</p>
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        $('#psurTable').DataTable({ stateSave: true, order: [[3, 'asc']], language: { searchPlaceholder: 'Search within filtered results…', search: '' } });
+    });
+</script>
+}

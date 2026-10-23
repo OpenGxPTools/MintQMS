@@ -1,0 +1,311 @@
+@{
+    ViewData["Title"] = "LC Dashboard";
+    var today = SiteTime.Today;
+    var statusCounts   = ViewBag.StatusCounts   as Dictionary<string, int> ?? new();
+    var categoryCounts = ViewBag.CategoryCounts as Dictionary<string, int> ?? new();
+    var expiring90     = ViewBag.Expiring90     as List<OpenQMS.Models.LC.LicenceCertificationRecord> ?? new();
+    var renewalDue     = ViewBag.RenewalDue     as List<OpenQMS.Models.LC.LicenceCertificationRecord> ?? new();
+    var surveillanceDue = ViewBag.SurveillanceDue as List<OpenQMS.Models.LC.LicenceCertificationRecord> ?? new();
+    var overdueRFIs    = ViewBag.OverdueRFIs    as List<OpenQMS.Models.LC.LicenceCertificationRecord> ?? new();
+}
+
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="fas fa-id-card me-2 text-success"></i>Licences &amp; Certifications Dashboard</h4>
+        <div class="btn-group">
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>Register</a>
+            <a asp-action="Calendar" class="btn btn-outline-secondary btn-sm"><i class="fas fa-calendar me-1"></i>Calendar</a>
+            <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel me-1"></i>Export Register</a>
+            <a asp-action="ExpiryReport" asp-route-days="90" class="btn btn-outline-warning btn-sm"><i class="fas fa-file-excel me-1"></i>Expiry Report (90d)</a>
+        </div>
+    </div>
+
+    @* ── KPI Cards ── *@
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-secondary">@ViewBag.TotalRecords</div>
+                    <div class="small text-muted">Total Records</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100 bg-success bg-opacity-10">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-success">@ViewBag.ActiveCount</div>
+                    <div class="small text-muted">Active</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100 bg-warning bg-opacity-10">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-warning">@ViewBag.RenewalDueCount</div>
+                    <div class="small text-muted">Renewal Due</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100 bg-info bg-opacity-10">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-info">@ViewBag.ConditionsCount</div>
+                    <div class="small text-muted">Active w/ Conditions</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100 bg-danger bg-opacity-10">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-danger">@ViewBag.ExpiredCount</div>
+                    <div class="small text-muted">Expired</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center border-0 shadow-sm h-100 bg-secondary bg-opacity-10">
+                <div class="card-body py-3">
+                    <div class="fs-1 fw-bold text-secondary">@ViewBag.OpenConditionCount</div>
+                    <div class="small text-muted">Open Conditions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        @* Status distribution *@
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent fw-semibold">Status Distribution</div>
+                <div class="card-body">
+                    <canvas id="statusChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        @* Category distribution *@
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent fw-semibold">Category Distribution</div>
+                <div class="card-body">
+                    <canvas id="categoryChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        @* Expiring in 90 days *@
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-warning bg-opacity-10 fw-semibold">
+                    <i class="fas fa-clock me-1 text-warning"></i>Expiring Within 90 Days
+                    <span class="badge bg-warning text-dark ms-2">@expiring90.Count</span>
+                </div>
+                <div class="card-body p-0">
+                    @if (!expiring90.Any())
+                    {
+                        <p class="text-muted small p-3 mb-0">None expiring within 90 days.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th>LC Number</th><th>Expiry</th><th>Days</th><th>Status</th></tr></thead>
+                            <tbody>
+                            @foreach (var r in expiring90)
+                            {
+                                int d = (r.ExpiryDate!.Value.Date - today).Days;
+                                string rowCls = d <= 0 ? "table-danger" : d <= 30 ? "table-warning" : "";
+                                <tr class="@rowCls">
+                                    <td><a asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
+                                    <td>@r.ExpiryDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td>@(d < 0 ? $"Expired {Math.Abs(d)}d ago" : $"{d}d")</td>
+                                    <td><span class="badge bg-secondary">@EnumHelper.Display(r.Status)</span></td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @* Renewal due *@
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-warning bg-opacity-10 fw-semibold">
+                    <i class="fas fa-redo me-1 text-warning"></i>Renewal Due
+                    <span class="badge bg-warning text-dark ms-2">@renewalDue.Count</span>
+                </div>
+                <div class="card-body p-0">
+                    @if (!renewalDue.Any())
+                    {
+                        <p class="text-muted small p-3 mb-0">No records currently in Renewal Due status.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th>LC Number</th><th>Expiry</th><th>Category</th></tr></thead>
+                            <tbody>
+                            @foreach (var r in renewalDue)
+                            {
+                                <tr>
+                                    <td><a asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
+                                    <td>@(r.ExpiryDate.HasValue ? r.ExpiryDate.Value.ToString("dd MMM yyyy") : "—")</td>
+                                    <td><span class="badge bg-secondary">@r.Category</span></td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        @* Open conditions *@
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-info bg-opacity-10 fw-semibold">
+                    <i class="fas fa-exclamation-circle me-1 text-info"></i>Open Conditions
+                    <span class="badge bg-info text-dark ms-2">@ViewBag.OpenConditionCount</span>
+                </div>
+                <div class="card-body p-0">
+                    @{
+                        var openConditions = ViewBag.OpenConditions as
+                            List<(OpenQMS.Models.LC.LicenceCertificationRecord Record,
+                                  OpenQMS.Models.LC.LCCondition Condition)>
+                            ?? new();
+                    }
+                    @if (!openConditions.Any())
+                    {
+                        <p class="text-muted small p-3 mb-0">No open conditions.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th>LC Number</th><th>Condition</th><th>Due</th></tr></thead>
+                            <tbody>
+                            @foreach (var (rec, cond) in openConditions)
+                            {
+                                string desc = cond.ConditionDescription.Length > 50
+                                    ? cond.ConditionDescription[..50] + "…"
+                                    : cond.ConditionDescription;
+                                bool overdue = cond.DueDate.HasValue && cond.DueDate.Value.Date < today;
+                                <tr class="@(overdue ? "table-danger" : "")">
+                                    <td><a asp-action="Details" asp-route-id="@rec.Id">@rec.LCNumber</a></td>
+                                    <td>@desc</td>
+                                    <td>@(cond.DueDate.HasValue ? cond.DueDate.Value.ToString("dd MMM yyyy") : "—")</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @* ISO surveillance audits due *@
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-purple bg-opacity-10 fw-semibold" style="background-color:#f3e8ff">
+                    <i class="fas fa-search me-1" style="color:#6610f2"></i>ISO Surveillance Audits (60d)
+                    <span class="badge ms-2" style="background-color:#6610f2">@surveillanceDue.Count</span>
+                </div>
+                <div class="card-body p-0">
+                    @if (!surveillanceDue.Any())
+                    {
+                        <p class="text-muted small p-3 mb-0">No ISO surveillance audits due within 60 days.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light"><tr><th>LC Number</th><th>Audit Date</th><th>Days</th></tr></thead>
+                            <tbody>
+                            @foreach (var r in surveillanceDue)
+                            {
+                                int d = (r.NextSurveillanceAuditDate!.Value.Date - today).Days;
+                                string rowCls = d < 0 ? "table-danger" : d <= 14 ? "table-warning" : "";
+                                <tr class="@rowCls">
+                                    <td><a asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
+                                    <td>@r.NextSurveillanceAuditDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td>@(d < 0 ? $"Overdue {Math.Abs(d)}d" : $"{d}d")</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (overdueRFIs.Any())
+    {
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="card border-danger border-0 shadow-sm">
+                    <div class="card-header bg-danger text-white fw-semibold">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Overdue RFI Responses
+                        <span class="badge bg-white text-danger ms-2">@overdueRFIs.Count</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr><th>LC Number</th><th>RFI Due Date</th><th>Days Overdue</th><th>Status</th></tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var r in overdueRFIs)
+                            {
+                                int d = (today - r.RFIResponseDueDate!.Value.Date).Days;
+                                <tr class="table-danger">
+                                    <td><a asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
+                                    <td>@r.RFIResponseDueDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td>@d days overdue</td>
+                                    <td><span class="badge bg-danger">@EnumHelper.Display(r.Status)</span></td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    // Status chart
+    var statusLabels = @Json.Serialize(statusCounts.Keys.ToArray());
+    var statusData   = @Json.Serialize(statusCounts.Values.ToArray());
+    var statusColors = ['#198754','#6610f2','#ffc107','#dc3545','#6c757d','#0dcaf0','#fd7e14','#0d6efd','#20c997','#d63384'];
+
+    new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: { labels: statusLabels, datasets: [{ data: statusData, backgroundColor: statusColors.slice(0, statusLabels.length) }] },
+        options: { plugins: { legend: { position: 'right' } }, maintainAspectRatio: false }
+    });
+
+    // Category chart
+    var catLabels = @Json.Serialize(categoryCounts.Keys.ToArray());
+    var catData   = @Json.Serialize(categoryCounts.Values.ToArray());
+    var catColors = ['#0d6efd','#198754','#ffc107'];
+
+    new Chart(document.getElementById('categoryChart'), {
+        type: 'bar',
+        data: {
+            labels: catLabels,
+            datasets: [{ label: 'Records', data: catData, backgroundColor: catColors.slice(0, catLabels.length) }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+            maintainAspectRatio: false
+        }
+    });
+})();
+</script>
+}

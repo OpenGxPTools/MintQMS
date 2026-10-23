@@ -1,0 +1,133 @@
+@* Partial: _TrainingGroupCard
+   ViewData: Index (string), AllRoles (List<AppRole>), AllUsers (List<AppUser>),
+             TrainerUsers (List<AppUser>), RoleUserCounts (Dictionary<string,int>)
+*@
+@using OpenQMS.Models
+@using OpenQMS.Models.ViewModels
+
+@{
+    var idx      = ViewData["Index"]?.ToString() ?? "0";
+    var g        = Model as TrainingGroupViewModel ?? new TrainingGroupViewModel();
+    var roles    = ViewData["AllRoles"] as List<AppRole> ?? new();
+    var users    = ViewData["AllUsers"] as List<AppUser> ?? new();
+    var trainers = ViewData["TrainerUsers"] as List<AppUser> ?? new();
+    var rCounts  = ViewData["RoleUserCounts"] as Dictionary<string,int> ?? new();
+
+    var cardNum  = idx == "__IDX__" ? "?" : (int.Parse(idx) + 1).ToString();
+    var isCA     = g.TrainingType == TrainingType.CompetencyAssessment;
+}
+
+<div class="card mb-3 group-card">
+    <div class="card-header d-flex justify-content-between align-items-center bg-light">
+        <span class="fw-semibold">Group <span class="group-num">@cardNum</span></span>
+        <button type="button" class="btn btn-outline-danger btn-sm removeGroupBtn">
+            <i class="bi bi-trash me-1"></i>Remove
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <label class="form-label">Group Name <span class="text-danger">*</span></label>
+                <input type="text" name="TrainingGroups[@idx].Name" class="form-control"
+                       value="@g.Name" placeholder="e.g. All Staff — Document Awareness" required />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Training Type</label>
+                <select name="TrainingGroups[@idx].TrainingType" class="form-select training-type-select">
+                    @if (isCA)
+                    {
+                        <option value="1">Read &amp; Acknowledge</option>
+                        <option value="2" selected>Competency Assessment</option>
+                    }
+                    else
+                    {
+                        <option value="1" selected>Read &amp; Acknowledge</option>
+                        <option value="2">Competency Assessment</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Due Date</label>
+                <input type="date" name="TrainingGroups[@idx].DueDate" class="form-control"
+                       value="@(g.DueDate.HasValue ? g.DueDate.Value.ToString("yyyy-MM-dd") : "")" />
+            </div>
+
+            <div class="col-md-6 trainer-row" @(isCA ? "" : "style=\"display:none\"")>
+                <label class="form-label">Trainer</label>
+                <select name="TrainingGroups[@idx].TrainerId" class="form-select">
+                    <option value="">— None —</option>
+                    @foreach (var t in trainers)
+                    {
+                        @if (g.TrainerId == t.Id.ToString())
+                        {
+                            <option value="@t.Id" selected>@(t.UserName ?? t.Email)</option>
+                        }
+                        else
+                        {
+                            <option value="@t.Id">@(t.UserName ?? t.Email)</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Description</label>
+                <textarea name="TrainingGroups[@idx].Description" class="form-control" rows="2"
+                          placeholder="Optional notes…">@g.Description</textarea>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Assign by Role</label>
+                <div class="border rounded p-2" style="max-height:160px;overflow-y:auto">
+                    <div class="alert alert-warning role-zero-warning py-1 small mb-2" style="display:none">
+                        <i class="bi bi-exclamation-triangle me-1"></i>One or more selected roles have no active users.
+                    </div>
+                    @foreach (var role in roles)
+                    {
+                        var cnt    = rCounts.TryGetValue(role.Name ?? "", out var c) ? c : 0;
+                        var chkId  = $"role_{idx}_{role.Id}";
+                        var isRoleChecked = g.SelectedRoles?.Contains(role.Name ?? "") == true;
+                        <div class="form-check">
+                            @if (isRoleChecked)
+                            {
+                                <input class="form-check-input role-checkbox" type="checkbox" checked
+                                       name="TrainingGroups[@idx].SelectedRoles" value="@role.Name"
+                                       id="@chkId" data-user-count="@cnt" />
+                            }
+                            else
+                            {
+                                <input class="form-check-input role-checkbox" type="checkbox"
+                                       name="TrainingGroups[@idx].SelectedRoles" value="@role.Name"
+                                       id="@chkId" data-user-count="@cnt" />
+                            }
+                            <label class="form-check-label" for="@chkId">
+                                @role.Name <span class="text-muted small">(@cnt)</span>
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Assign Specific Users</label>
+                <select name="TrainingGroups[@idx].SelectedUserIds" class="form-select user-select2" multiple>
+                    @foreach (var u in users)
+                    {
+                        @if (g.SelectedUserIds?.Contains(u.Id) == true)
+                        {
+                            <option value="@u.Id" selected>@(u.UserName ?? u.Email)</option>
+                        }
+                        else
+                        {
+                            <option value="@u.Id">@(u.UserName ?? u.Email)</option>
+                        }
+                    }
+                </select>
+            </div>
+
+        </div>
+    </div>
+</div>

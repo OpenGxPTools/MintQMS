@@ -1,0 +1,276 @@
+@model OpenQMS.Models.Change
+
+@{
+    ViewData["Title"] = "New Change";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var products  = (List<SelectListItem>)ViewData["Products"];
+    var processes = (List<SelectListItem>)ViewData["Processes"];
+    var assets    = (List<SelectListItem>)ViewData["Assets"];
+    var materials = (List<SelectListItem>)ViewData["Materials"];
+    var suppliers = (List<SelectListItem>)ViewData["Suppliers"];
+    var capas     = (List<SelectListItem>)ViewData["Capas"];
+
+    var selProductIds  = (List<int>?)ViewBag.SelectedProductIds  ?? new List<int>();
+    var selProcessIds  = (List<int>?)ViewBag.SelectedProcessIds  ?? new List<int>();
+    var selAssetIds    = (List<int>?)ViewBag.SelectedAssetIds    ?? new List<int>();
+    var selMaterialIds = (List<int>?)ViewBag.SelectedMaterialIds ?? new List<int>();
+    var selSupplierIds = (List<int>?)ViewBag.SelectedSupplierIds ?? new List<int>();
+    var selCapaIds     = (List<int>?)ViewBag.SelectedCapaIds     ?? new List<int>();
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">New Change</h4>
+        <small class="text-muted">Propose a change, describe the rationale, and link to affected processes or products.</small>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- ── Change Details ─────────────────────────────────────────── -->
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Change Details</div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Provide a clear title, set a target implementation date, and link to all affected products, processes or other records (multiple selections allowed).</p>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="TargetImplementationDate" class="form-label"></label>
+                            <input asp-for="TargetImplementationDate" class="form-control" type="date" />
+                        </div>
+
+                        <!-- Products -->
+                        <div class="col-md-6">
+                            <label class="form-label">Products</label>
+                            <select id="productDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Product --</option>
+                                @foreach (var item in products)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="productTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="productHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Processes -->
+                        <div class="col-md-6">
+                            <label class="form-label">Processes</label>
+                            <select id="processDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Process --</option>
+                                @foreach (var item in processes)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="processTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="processHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Assets -->
+                        <div class="col-md-6">
+                            <label class="form-label">Assets</label>
+                            <select id="assetDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Asset --</option>
+                                @foreach (var item in assets)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="assetTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="assetHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Materials -->
+                        <div class="col-md-6">
+                            <label class="form-label">Materials</label>
+                            <select id="materialDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Material --</option>
+                                @foreach (var item in materials)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="materialTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="materialHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Suppliers -->
+                        <div class="col-md-6">
+                            <label class="form-label">Suppliers</label>
+                            <select id="supplierDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add Supplier --</option>
+                                @foreach (var item in suppliers)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="supplierTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="supplierHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- CAPAs -->
+                        <div class="col-md-6">
+                            <label class="form-label">Linked CAPAs</label>
+                            <select id="capaDropdown" class="form-select form-select-sm">
+                                <option value="">-- Add CAPA --</option>
+                                @foreach (var item in capas)
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                            <div id="capaTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="capaHidden" class="d-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Proposal ───────────────────────────────────────────────── -->
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Proposal</div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Describe the proposed change, its rationale, expected benefits, and potential risks or impacts on product quality, GMP compliance, or regulatory status.</p>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Proposal" class="form-label">
+                                Proposal
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="proposal"
+                                        aria-label="Proposal guidance">?</button>
+                            </label>
+                            <textarea asp-for="Proposal" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Proposal" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+            </div>
+        </form>
+
+<!-- Popover help content (hidden, read by JS) -->
+<div class="d-none">
+    <div id="help-proposal">
+        <p class="mb-1"><strong>Proposal must include:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>A clear description of what is changing and why</li>
+            <li>The expected benefit (quality, regulatory, efficiency)</li>
+            <li>Potential risks or impacts on product quality, validated processes, or GMP compliance</li>
+            <li>Whether regulatory notification or approval is required</li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+        var selected = {};
+        preselected = preselected || [];
+
+        function renderTags() {
+            var tagsDiv = document.getElementById(tagsId);
+            var hiddenDiv = document.getElementById(hiddenId);
+            tagsDiv.innerHTML = '';
+            hiddenDiv.innerHTML = '';
+            Object.keys(selected).forEach(function(id) {
+                var text = selected[id];
+                var chip = document.createElement('span');
+                chip.style.cssText = 'display:inline-block;background:#0d6efd;color:white;padding:2px 8px;border-radius:12px;margin:2px;font-size:12px;cursor:pointer;';
+                chip.innerHTML = text + ' &times;';
+                chip.title = 'Click to remove';
+                chip.addEventListener('click', function() {
+                    delete selected[id];
+                    var opt = document.querySelector('#' + dropdownId + ' option[value="' + id + '"]');
+                    if (opt) opt.disabled = false;
+                    renderTags();
+                });
+                tagsDiv.appendChild(chip);
+                var hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = inputName;
+                hidden.value = id;
+                hiddenDiv.appendChild(hidden);
+            });
+        }
+
+        // Pre-populate
+        preselected.forEach(function(item) {
+            selected[item.id] = item.text;
+            var opt = document.querySelector('#' + dropdownId + ' option[value="' + item.id + '"]');
+            if (opt) opt.disabled = true;
+        });
+        renderTags();
+
+        document.getElementById(dropdownId).addEventListener('change', function() {
+            var dd = document.getElementById(dropdownId);
+            var id = dd.value;
+            var text = dd.options[dd.selectedIndex].dataset.text;
+            if (id && !selected[id]) {
+                selected[id] = text;
+                dd.options[dd.selectedIndex].disabled = true;
+                renderTags();
+            }
+            dd.value = '';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var selProducts  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            products.Where(x => selProductIds.Contains(int.Parse(x.Value)))
+                    .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selProcesses = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            processes.Where(x => selProcessIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selAssets    = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            assets.Where(x => selAssetIds.Contains(int.Parse(x.Value)))
+                  .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selMaterials = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            materials.Where(x => selMaterialIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selSuppliers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            suppliers.Where(x => selSupplierIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selCapas     = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            capas.Where(x => selCapaIds.Contains(int.Parse(x.Value)))
+                 .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+
+        setupPicker('productDropdown',  'productTags',  'productHidden',  'selectedProducts',  selProducts);
+        setupPicker('processDropdown',  'processTags',  'processHidden',  'selectedProcesses', selProcesses);
+        setupPicker('assetDropdown',    'assetTags',    'assetHidden',    'selectedAssets',    selAssets);
+        setupPicker('materialDropdown', 'materialTags', 'materialHidden', 'selectedMaterials', selMaterials);
+        setupPicker('supplierDropdown', 'supplierTags', 'supplierHidden', 'selectedSuppliers', selSuppliers);
+        setupPicker('capaDropdown',     'capaTags',     'capaHidden',     'selectedCapas',     selCapas);
+
+        document.querySelectorAll('.help-btn').forEach(function (btn) {
+            var contentEl = document.getElementById('help-' + btn.dataset.help);
+            new bootstrap.Popover(btn, {
+                html: true,
+                trigger: 'click',
+                placement: 'right',
+                content: contentEl ? contentEl.innerHTML : '',
+                title: '',
+                container: 'body'
+            });
+        });
+        document.addEventListener('click', function (e) {
+            if (!e.target.classList.contains('help-btn')) {
+                document.querySelectorAll('.help-btn').forEach(function (btn) {
+                    var pop = bootstrap.Popover.getInstance(btn);
+                    if (pop) pop.hide();
+                });
+            }
+        });
+    });
+    </script>
+}

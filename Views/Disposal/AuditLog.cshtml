@@ -1,0 +1,54 @@
+@model IEnumerable<OpenQMS.Models.DisposalAuditLog>
+@{
+    ViewData["Title"] = "Disposal Audit Log";
+}
+
+<h4 class="mb-0">Disposal Audit Log</h4>
+<p class="text-muted">Immutable record of all data retention and disposal actions.</p>
+
+<a asp-action="Index" class="btn btn-outline-secondary btn-sm mb-3">
+    &larr; Back to Disposal Management
+</a>
+
+<table class="table table-sm table-bordered table-hover" id="auditTable">
+    <thead class="table-dark">
+        <tr>
+            <th>Date / Time (UTC)</th>
+            <th>Action</th>
+            <th>Module</th>
+            <th>Reference</th>
+            <th>By</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var entry in Model)
+    {
+        string badgeClass = entry.Action switch
+        {
+            "Disposed"               => "bg-danger",
+            "HoldSet"                => "bg-warning text-dark",
+            "HoldRemoved"            => "bg-info text-dark",
+            "DisposalAttemptBlocked" => "bg-secondary",
+            "ExportGenerated"        => "bg-success",
+            _                        => "bg-light text-dark"
+        };
+        <tr>
+            <td>@entry.ActionOn.ToSite().ToString("yyyy-MM-dd HH:mm") UTC</td>
+            <td><span class="badge @badgeClass">@entry.Action</span></td>
+            <td>@entry.Module</td>
+            <td><strong>@entry.RecordReference</strong></td>
+            <td>@entry.ActionBy</td>
+            <td><small>@entry.Notes</small></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        $('#auditTable').DataTable({ order: [[0, 'desc']], pageLength: 50 });
+    });
+</script>
+}

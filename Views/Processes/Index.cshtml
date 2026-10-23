@@ -1,0 +1,122 @@
+@model IEnumerable<OpenQMS.Models.Process>
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+
+@{
+    ViewData["Title"] = "Index";
+    string? CategoryDisplayName(OpenQMS.Models.Process.ProcessCategory? cat) {
+        if (cat == null) return null;
+        var member = cat.Value.GetType().GetField(cat.Value.ToString());
+        return member?.GetCustomAttribute<DisplayAttribute>()?.Name ?? cat.Value.ToString();
+    }
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        var table = $('#processesTable').DataTable({ stateSave: true,
+            initComplete: function () {
+                $('.status-filter').on('click', function () {
+                    $('.status-filter').removeClass('active');
+                    $(this).addClass('active');
+                    var val = $(this).data('status');
+                    table.column(3).search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+                $('.status-filter[data-status=""]').addClass('active');
+            },
+            "columns": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                { "visible": false },
+                { "visible": false },
+                { "visible": false },
+                { "visible": false },
+                null
+            ],
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[0, 'asc']],
+            displayLength: 10,
+            buttons: [
+                'colvis',
+                {
+                    extend: 'pdf',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8] }
+                },
+                {
+                    extend: 'excel',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8] }
+                }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Processes</h4>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Process</a>
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Draft">Draft</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">Approved</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Obsolete">Obsolete</button>
+</div>
+
+<table id="processesTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Process ID</th>
+            <th>Name</th>
+            <th>Version</th>
+            <th>Status</th>
+            <th>Type / Category</th>
+            <th>Edited By</th>
+            <th>Edited On</th>
+            <th>Approved By</th>
+            <th>Approved On</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ProcessId</td>
+                <td>@item.Name</td>
+                <td>@item.Version</td>
+                <td>@EnumHelper.Display(item.Status)</td>
+                <td>@(CategoryDisplayName(item.Category) ?? "")</td>
+                <td>@(item.EditedBy ?? "")</td>
+                <td>@item.EditedOn.ToSite().ToString("dd/MM/yyyy")</td>
+                <td>@(item.ApprovedBy ?? "")</td>
+                <td>@(item.ApprovedOn.HasValue ? item.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy") : "")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (item.IsLocked != true)
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if (item.Status != OpenQMS.Models.Process.ProcessStatus.Approved && item.Status != OpenQMS.Models.Process.ProcessStatus.Obsolete)
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

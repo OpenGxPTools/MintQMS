@@ -1,0 +1,390 @@
+@{
+    ViewData["Title"] = "Supplier Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var statusCounts  = (Dictionary<string, int>)ViewBag.StatusCounts;
+    var typeCounts    = (Dictionary<string, int>)ViewBag.TypeCounts;
+    var riskCounts    = (Dictionary<string, int>)ViewBag.RiskCounts;
+    var overdueReview  = (List<OpenQMS.Models.Supplier>)ViewBag.OverdueReview;
+    var approaching    = (List<OpenQMS.Models.Supplier>)ViewBag.ApproachingReview;
+    var pendingAppr    = (List<OpenQMS.Models.Supplier>)ViewBag.PendingApproval;
+    var expiredSups    = (List<OpenQMS.Models.Supplier>)ViewBag.ExpiredSuppliers;
+    var expiringSups   = (List<OpenQMS.Models.Supplier>)ViewBag.ExpiringSuppliers;
+    var recentLogs    = (List<OpenQMS.Models.SupplierAuditLog>)ViewBag.RecentActivity;
+    var recentSups    = ViewBag.RecentSuppliers as Dictionary<int, dynamic>;
+    var reReviews      = (List<OpenQMS.Models.Supplier>)ViewBag.ReReviews;
+    var reReviewStart  = (Dictionary<int, DateTime>)ViewBag.ReReviewStarted;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Supplier Dashboard</h4>
+    <div class="d-flex gap-2">
+        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">Export Excel</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Register</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Supplier</a>
+    </div>
+</div>
+
+@if ((int)ViewBag.OverdueReviewCount > 0)
+{
+    <div class="alert alert-danger d-flex align-items-center mb-2">
+        <strong class="me-2">&#9888;</strong>
+        <span><strong>@ViewBag.OverdueReviewCount supplier(s) overdue for review</strong> — immediate action required.</span>
+    </div>
+}
+@if ((int)ViewBag.ExpiredCount > 0)
+{
+    <div class="alert alert-danger d-flex align-items-center mb-4">
+        <strong class="me-2">&#9888;</strong>
+        <span><strong>@ViewBag.ExpiredCount supplier(s) with an expired approval</strong> — approval expiry date has passed.</span>
+    </div>
+}
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-primary">@ViewBag.Total</div>
+                <div class="text-muted">Total Suppliers</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-success">@((int)ViewBag.ApprovedCount + (int)ViewBag.QualifiedCount)</div>
+                <div class="text-muted">Approved / Qualified</div>
+                <small class="text-muted">@ViewBag.ApprovedCount approved, @ViewBag.QualifiedCount qualified</small>
+                @if (reReviews.Any())
+                {
+                    <div><small class="text-info">@reReviews.Count under re-review</small></div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-info">@ViewBag.PendingCount</div>
+                <div class="text-muted">Pending Approval</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100 @((int)ViewBag.OverdueReviewCount > 0 ? "border-danger" : "")">
+            <div class="card-body">
+                <div class="display-5 fw-bold @((int)ViewBag.OverdueReviewCount > 0 ? "text-danger" : "text-secondary")">@ViewBag.OverdueReviewCount</div>
+                <div class="text-muted">Overdue Reviews</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts + Risk Breakdown -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">Status Distribution</div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="statusChart" style="max-height:220px"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">By Supplier Type</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Type</th><th>Count</th><th style="width:35%">Progress</th></tr></thead>
+                    <tbody>
+                        @foreach (var kv in typeCounts.Where(k => k.Value > 0))
+                        {
+                            var pct = (int)ViewBag.Total > 0 ? (kv.Value * 100 / (int)ViewBag.Total) : 0;
+                            <tr>
+                                <td>@kv.Key</td>
+                                <td>@kv.Value</td>
+                                <td><div class="progress" style="height:8px"><div class="progress-bar bg-primary" style="width:@pct%"></div></div></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">Risk Level Breakdown (Approved/Qualified)</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Risk</th><th>Count</th></tr></thead>
+                    <tbody>
+                        @{ var rlColors = new Dictionary<string,string> {["Critical"]="danger",["High"]="warning text-dark",["Medium"]="info text-dark",["Low"]="secondary",["NotAssessed"]="secondary"}; }
+                        @foreach (var kv in riskCounts.Where(k => k.Value > 0))
+                        {
+                            <tr>
+                                <td><span class="badge bg-@rlColors[kv.Key]">@kv.Key</span></td>
+                                <td>@kv.Value</td>
+                            </tr>
+                        }
+                        @if (!riskCounts.Any(k => k.Value > 0))
+                        {
+                            <tr><td colspan="2" class="text-muted p-2">No approved/qualified suppliers yet.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overdue + Approaching Reviews -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        @if (overdueReview.Any())
+        {
+            <div class="card h-100 border-danger">
+                <div class="card-header bg-danger text-white d-flex justify-content-between">
+                    <span>Overdue for Review</span>
+                    <span class="badge bg-white text-danger">@overdueReview.Count</span>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>ID</th><th>Legal Name</th><th>Status</th><th>Next Review</th></tr></thead>
+                        <tbody>
+                            @foreach (var s in overdueReview)
+                            {
+                                var daysOver = (SiteTime.Today - s.NextReviewDate!.Value.Date).Days;
+                                <tr class="table-danger">
+                                    <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
+                                    <td>@s.LegalName</td>
+                                    <td>@s.ApprovalStatus</td>
+                                    <td><strong>@daysOver days ago</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between">
+                    <span>Overdue for Review</span><span class="badge bg-success">0</span>
+                </div>
+                <div class="card-body"><p class="text-muted mb-0">No suppliers overdue for review.</p></div>
+            </div>
+        }
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between">
+                <span>Review Due Within 30 Days</span>
+                <span class="badge bg-warning text-dark">@approaching.Count</span>
+            </div>
+            <div class="card-body p-0">
+                @if (approaching.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>ID</th><th>Legal Name</th><th>Status</th><th>Due Date</th></tr></thead>
+                        <tbody>
+                            @foreach (var s in approaching)
+                            {
+                                var daysLeft = (s.NextReviewDate!.Value.Date - SiteTime.Today).Days;
+                                var rc = daysLeft <= 7 ? "table-warning" : "";
+                                <tr class="@rc">
+                                    <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
+                                    <td>@s.LegalName</td>
+                                    <td>@s.ApprovalStatus</td>
+                                    <td>@s.NextReviewDate!.Value.ToString("dd/MM/yyyy")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <p class="text-muted p-3 mb-0">No reviews due within 30 days.</p> }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Re-reviews in progress (standing approval remains valid) -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between">
+        <span>Re-reviews in Progress <small class="text-muted">— supplier remains approved for use</small></span>
+        <span class="badge bg-info text-dark">@reReviews.Count</span>
+    </div>
+    <div class="card-body p-0">
+        @if (reReviews.Any())
+        {
+            <table class="table table-sm mb-0">
+                <thead><tr><th>ID</th><th>Legal Name</th><th>Standing Approval</th><th>Stage</th><th>Trigger</th><th>Started</th></tr></thead>
+                <tbody>
+                    @foreach (var s in reReviews.OrderBy(x => reReviewStart.TryGetValue(x.Id, out var d) ? d : DateTime.MaxValue))
+                    {
+                        <tr>
+                            <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
+                            <td>@s.LegalName</td>
+                            <td><span class="badge bg-success">@EnumHelper.Display(s.ApprovalStatus!.Value)</span></td>
+                            <td>@EnumHelper.Display(s.Status)</td>
+                            <td>@EnumHelper.Display(s.ReviewTrigger)</td>
+                            <td>@(reReviewStart.TryGetValue(s.Id, out var started) ? started.ToSite().ToString("dd/MM/yyyy") : "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else { <p class="text-muted p-3 mb-0">No re-reviews in progress.</p> }
+    </div>
+</div>
+
+<!-- Expiry Status -->
+@if (expiredSups.Any() || expiringSups.Any())
+{
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            @if (expiredSups.Any())
+            {
+                <div class="card h-100 border-danger">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between">
+                        <span>Approval Expired</span>
+                        <span class="badge bg-white text-danger">@expiredSups.Count</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm mb-0">
+                            <thead><tr><th>ID</th><th>Legal Name</th><th>Status</th><th>Approval Expiry</th></tr></thead>
+                            <tbody>
+                                @foreach (var s in expiredSups)
+                                {
+                                    <tr class="table-danger">
+                                        <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
+                                        <td>@s.LegalName</td>
+                                        <td>@s.ApprovalStatus</td>
+                                        <td><strong>@s.ExpiryDate!.Value.ToString("dd/MM/yyyy")</strong></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between">
+                        <span>Approval Expired</span><span class="badge bg-success">0</span>
+                    </div>
+                    <div class="card-body"><p class="text-muted mb-0">No expired supplier registrations.</p></div>
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between">
+                    <span>Approval Expiring Within 30 Days</span>
+                    <span class="badge bg-warning text-dark">@expiringSups.Count</span>
+                </div>
+                <div class="card-body p-0">
+                    @if (expiringSups.Any())
+                    {
+                        <table class="table table-sm mb-0">
+                            <thead><tr><th>ID</th><th>Legal Name</th><th>Status</th><th>Approval Expiry</th></tr></thead>
+                            <tbody>
+                                @foreach (var s in expiringSups)
+                                {
+                                    <tr class="table-warning">
+                                        <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
+                                        <td>@s.LegalName</td>
+                                        <td>@s.ApprovalStatus</td>
+                                        <td>@s.ExpiryDate!.Value.ToString("dd/MM/yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else { <p class="text-muted p-3 mb-0">No supplier registrations expiring within 30 days.</p> }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Pending Approval -->
+@if (pendingAppr.Any())
+{
+    <div class="card mb-4 border-warning">
+        <div class="card-header bg-warning d-flex justify-content-between">
+            <span>Pending Approval / Confirmation</span>
+            <span class="badge bg-dark">@pendingAppr.Count</span>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm mb-0">
+                <thead><tr><th>ID</th><th>Legal Name</th><th>Type</th><th>Workflow Status</th><th>Assessed By</th></tr></thead>
+                <tbody>
+                    @foreach (var s in pendingAppr)
+                    {
+                        <tr class="table-warning">
+                            <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
+                            <td>@s.LegalName</td>
+                            <td>@s.SupplierType</td>
+                            <td>@EnumHelper.Display(s.Status)</td>
+                            <td>@(s.AssessedBy ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<!-- Recent Activity -->
+<div class="card">
+    <div class="card-header">Recent Activity</div>
+    <div class="card-body p-0">
+        @if (recentLogs != null && recentLogs.Any())
+        {
+            <table class="table table-sm mb-0">
+                <thead><tr><th>Time</th><th>Supplier</th><th>Action</th><th>By</th></tr></thead>
+                <tbody>
+                    @foreach (var log in recentLogs)
+                    {
+                        dynamic? sup = null;
+                        if (recentSups != null) recentSups.TryGetValue(log.ParentId, out sup);
+                        <tr>
+                            <td class="text-nowrap text-muted small">@log.PerformedOn.ToSite().ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>
+                                @if (sup != null)
+                                {
+                                    <a asp-action="Details" asp-route-id="@log.ParentId">@sup.SupplierCode</a>
+                                    <text> — @sup.LegalName</text>
+                                }
+                                else { <text>SUP-@log.ParentId</text> }
+                            </td>
+                            <td>@log.Action</td>
+                            <td>@log.PerformedBy</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else { <p class="text-muted p-3 mb-0">No activity recorded yet.</p> }
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    var labels = @Json.Serialize(statusCounts.Keys.ToList());
+    var data   = @Json.Serialize(statusCounts.Values.ToList());
+    var colors = ['#6c757d','#198754','#0d6efd','#ffc107','#dc3545'];
+
+    new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: { labels: labels, datasets: [{ data: data, backgroundColor: colors }] },
+        options: { plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: true }
+    });
+})();
+</script>
+}

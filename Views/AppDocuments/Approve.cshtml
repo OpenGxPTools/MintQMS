@@ -1,0 +1,248 @@
+@model OpenQMS.Models.ViewModels.ApproveDocumentViewModel
+@using OpenQMS.Models
+@using OpenQMS.Models.ViewModels
+
+@{
+    ViewData["Title"] = "Approve Document";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var document      = ViewBag.Document as AppDocument;
+    var allRoles      = ViewBag.AllRoles as List<AppRole> ?? new();
+    var allUsers      = ViewBag.AllUsers as List<AppUser> ?? new();
+    var trainerUsers  = ViewBag.TrainerUsers as List<AppUser> ?? new();
+    var roleCounts    = ViewBag.RoleUserCounts as Dictionary<string,int> ?? new();
+
+    // ViewData already holds AllRoles/AllUsers/TrainerUsers/RoleUserCounts from the controller.
+    // We only need to add Index before each partial call — no copy needed.
+}
+
+@section Scripts {
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+var groupIndex = @Model.TrainingGroups.Count;
+
+$(document).ready(function () {
+    initAllSelect2();
+    $('.training-type-select').each(function () { toggleTrainer($(this)); });
+    updateRemoveButtons();
+
+    $('#addGroupBtn').on('click', function () {
+        var html = $('#groupTemplate').html();
+        html = html.replace(/__IDX__/g, groupIndex);
+        var $card = $(html);
+        $('#groupsContainer').append($card);
+        initSelect2($card.find('.user-select2'));
+        toggleTrainer($card.find('.training-type-select'));
+        $card.find('.group-num').text(groupIndex + 1);
+        groupIndex++;
+        updateRemoveButtons();
+    });
+
+    $(document).on('click', '.removeGroupBtn', function () {
+        $(this).closest('.group-card').remove();
+        updateRemoveButtons();
+    });
+    $(document).on('change', '.training-type-select', function () { toggleTrainer($(this)); });
+    $(document).on('change', '.role-checkbox', function () { checkRoleWarning($(this).closest('.group-card')); });
+});
+
+// Only initialise Select2 on real group cards — never on the hidden template
+function initAllSelect2() { $('#groupsContainer .user-select2').each(function () { initSelect2($(this)); }); }
+function initSelect2($el) {
+    $el.select2({ placeholder: 'Select users…', allowClear: true, width: '100%',
+        dropdownParent: $el.closest('.card') });
+}
+function toggleTrainer($sel) {
+    $sel.closest('.group-card').find('.trainer-row').toggle(parseInt($sel.val(), 10) === 2);
+}
+function checkRoleWarning($card) {
+    var warn = false;
+    $card.find('.role-checkbox:checked').each(function () {
+        if (parseInt($(this).data('user-count'), 10) === 0) warn = true;
+    });
+    $card.find('.role-zero-warning').toggle(warn);
+}
+function updateRemoveButtons() {
+    var cnt = $('.group-card').length;
+    $('.removeGroupBtn').prop('disabled', cnt <= 1);
+}
+</script>
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">
+            @(document?.IsExternal == true ? "Accept Document into QMS" : "Approve Document")
+            &mdash; <span class="fw-bold">@document?.DocumentId</span>
+        </h4>
+        <small class="text-muted">@document?.Title</small>
+    </div>
+    <a asp-action="Details" asp-route-id="@Model.DocumentId" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Back
+    </a>
+</div>
+<hr />
+
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" id="approveError">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>@TempData["WorkflowError"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <script>document.getElementById('approveError')?.scrollIntoView({ behavior: 'smooth', block: 'center' });</script>
+}
+
+<form asp-action="Approve" asp-route-id="@Model.DocumentId" method="post" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div class="card mb-4">
+        <div class="card-header bg-light fw-semibold"><i class="bi bi-file-earmark-text me-1"></i>Document</div>
+        <div class="card-body py-2 small">
+            <div class="row g-1">
+                <div class="col-sm-3 text-muted">Document ID</div>
+                <div class="col-sm-9">
+                    @document?.DocumentId
+                    @if (document?.IsExternal == true)
+                    {
+                        <span class="badge bg-warning text-dark ms-1"><i class="fas fa-file-import me-1"></i>External</span>
+                    }
+                </div>
+                <div class="col-sm-3 text-muted">Title</div><div class="col-sm-9">@document?.Title</div>
+                <div class="col-sm-3 text-muted">@(document?.IsExternal == true ? "Version after acceptance" : "Version after approval")</div>
+                <div class="col-sm-9"><strong>@(Math.Ceiling(document?.Version ?? 0).ToString("0.0"))</strong></div>
+                <div class="col-sm-3 text-muted">Training Required</div>
+                <div class="col-sm-9">
+                    @if (document?.TrainingRequired == true)
+                    {
+                        <span class="badge bg-warning text-dark">Yes — configure training groups below</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">No — document becomes Effective immediately</span>
+                    }
+                </div>
+                <div class="col-sm-3 text-muted">Periodic Review</div>
+                <div class="col-sm-9">
+                    @if (document?.PeriodicReviewRequired == true)
+                    {
+                        <span class="badge bg-info text-dark">Required — set review date below</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Not required</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (document?.IsExternal == true)
+    {
+        <div class="card mb-4 border-warning">
+            <div class="card-header bg-warning bg-opacity-25 fw-semibold"><i class="fas fa-file-import me-1"></i>Document Provenance</div>
+            <div class="card-body py-2 small">
+                <p class="text-muted mb-2">You are accepting this externally-sourced document into the QMS. The original authorship details below are recorded for audit purposes and are separate from the system acceptance record.</p>
+                <div class="row g-1">
+                    @if (!string.IsNullOrEmpty(document.ExternalSource))
+                    {
+                        <div class="col-sm-3 text-muted">Source / Origin</div><div class="col-sm-9">@document.ExternalSource</div>
+                    }
+                    @if (!string.IsNullOrEmpty(document.ExternalVersion))
+                    {
+                        <div class="col-sm-3 text-muted">Original Version / Ref</div><div class="col-sm-9"><span class="badge bg-secondary">@document.ExternalVersion</span></div>
+                    }
+                    <div class="col-sm-3 text-muted">Original Author</div><div class="col-sm-9">@(document.ExternalAuthorName ?? "-")</div>
+                    <div class="col-sm-3 text-muted">Originally Authored On</div><div class="col-sm-9">@(document.ExternalAuthoredOn?.ToString("dd MMM yyyy") ?? "-")</div>
+                    <div class="col-sm-3 text-muted">Original Approver</div><div class="col-sm-9">@(document.ExternalApproverName ?? "-")</div>
+                    <div class="col-sm-3 text-muted">Originally Approved On</div><div class="col-sm-9">@(document.ExternalApprovedOn?.ToString("dd MMM yyyy") ?? "-")</div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (document?.PeriodicReviewRequired == true)
+    {
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-dark fw-semibold">
+                <i class="bi bi-calendar-check me-1"></i>Periodic Review Date
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">
+                    This document is marked as requiring periodic review. You must set the next review date before approving.
+                </p>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="ReviewDueDate" class="form-label">Next Review Date <span class="text-danger">*</span></label>
+                        <input asp-for="ReviewDueDate" type="date" class="form-control" required
+                               min="@SiteTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="ReviewDueDate" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (document?.TrainingRequired == true)
+    {
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-people me-1"></i>Training Groups</h6>
+            <button type="button" id="addGroupBtn" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i>Add Group
+            </button>
+        </div>
+        <p class="text-muted small mb-3">
+            Each group creates one Training record. The document becomes <strong>Effective</strong> once all groups are completed.
+        </p>
+
+        <div id="groupsContainer">
+            @for (int gi = 0; gi < Model.TrainingGroups.Count; gi++)
+            {
+                ViewData["Index"] = gi.ToString();
+                @await Html.PartialAsync("_TrainingGroupCard", Model.TrainingGroups[gi], ViewData)
+            }
+        </div>
+
+        <div id="groupTemplate" style="display:none">
+            @{
+                ViewData["Index"] = "__IDX__";
+                @await Html.PartialAsync("_TrainingGroupCard", new TrainingGroupViewModel(), ViewData)
+            }
+        </div>
+    }
+
+    <div class="card border-primary mt-4">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-pen me-1"></i>Electronic Signature
+        </div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">
+                @if (document?.IsExternal == true)
+                {
+                    <text>By signing below you confirm this document has been reviewed and meets the requirements for inclusion in the QMS, and you accept it into the system at version <strong>@(Math.Ceiling(document?.Version ?? 0).ToString("0.0"))</strong>.</text>
+                }
+                else
+                {
+                    <text>By signing below you confirm this document meets all applicable quality and regulatory requirements and authorise its release at version <strong>@(Math.Ceiling(document?.Version ?? 0).ToString("0.0"))</strong>.</text>
+                }
+            </p>
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <label asp-for="InputEmail" class="form-label">Email <span class="text-danger">*</span></label>
+                    <input asp-for="InputEmail" type="email" class="form-control" autocomplete="username" required />
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="InputPassword" class="form-label">Password <span class="text-danger">*</span></label>
+                    <input asp-for="InputPassword" type="password" class="form-control" autocomplete="current-password" required />
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <a asp-action="Details" asp-route-id="@Model.DocumentId" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check2-circle me-1"></i>
+                @(document?.IsExternal == true ? "Accept into QMS & Sign" : "Approve & Sign")
+            </button>
+        </div>
+    </div>
+</form>

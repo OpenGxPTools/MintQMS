@@ -1,0 +1,236 @@
+@model OpenQMS.Models.SupplierSnapshot
+
+@{
+    ViewData["Title"] = "Review Snapshot";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Review Snapshot — @Model.SupplierCode</h4>
+        <small class="text-muted">@Model.LegalName &middot; Completed @Model.SnapshotDate.ToSite().ToString("dd/MM/yyyy HH:mm") by @Model.CompletedBy</small>
+    </div>
+</div>
+<hr />
+
+<div>
+
+        @{
+            var badgeClass = Model.ApprovalStatus switch
+            {
+                OpenQMS.Models.SupplierStatus.Approved => "badge bg-success fs-6",
+                OpenQMS.Models.SupplierStatus.Qualified => "badge bg-primary fs-6",
+                OpenQMS.Models.SupplierStatus.Suspended => "badge bg-warning text-dark fs-6",
+                OpenQMS.Models.SupplierStatus.Cancelled => "badge bg-secondary fs-6",
+                _ => "badge bg-light text-dark fs-6"
+            };
+        }
+        <div class="mb-3"><span class="@badgeClass">@Model.ApprovalStatus</span></div>
+
+        @if (Model.ReviewTrigger.HasValue)
+        {
+            <div class="alert alert-info">
+                <strong>Review Trigger:</strong> @Model.ReviewTrigger
+                @if (!string.IsNullOrEmpty(Model.ReasonForReview))
+                {
+                    <br /><strong>Reason for Review:</strong> @Model.ReasonForReview
+                }
+                @if (!string.IsNullOrEmpty(Model.LinkedQualityRecordCode))
+                {
+                    <br /><strong>Linked Record:</strong> @(Model.LinkedQualityRecordCode + " - " + Model.LinkedQualityRecordTitle)
+                }
+            </div>
+        }
+
+        <h5>Identity</h5>
+        <dl class="row">
+            <dt class="col-sm-4">Supplier ID</dt><dd class="col-sm-8">@Model.SupplierCode</dd>
+            <dt class="col-sm-4">Legal Name</dt><dd class="col-sm-8">@Model.LegalName</dd>
+            <dt class="col-sm-4">Trading Name</dt><dd class="col-sm-8">@(Model.TradingName ?? "-")</dd>
+            <dt class="col-sm-4">Legal ID</dt><dd class="col-sm-8">@(Model.LegalId ?? "-")</dd>
+            <dt class="col-sm-4">Website</dt><dd class="col-sm-8">@(Model.Website ?? "-")</dd>
+        </dl>
+
+        <hr />
+        <h5>Address</h5>
+        <dl class="row">
+            <dt class="col-sm-4">Street</dt><dd class="col-sm-8">@(Model.Street ?? "-")</dd>
+            <dt class="col-sm-4">City</dt><dd class="col-sm-8">@(Model.City ?? "-")</dd>
+            <dt class="col-sm-4">State</dt><dd class="col-sm-8">@(Model.State ?? "-")</dd>
+            <dt class="col-sm-4">Post Code</dt><dd class="col-sm-8">@(Model.PostCode ?? "-")</dd>
+            <dt class="col-sm-4">Country</dt><dd class="col-sm-8">@(Model.Country ?? "-")</dd>
+        </dl>
+
+        <hr />
+        <h5>Primary Contact</h5>
+        <dl class="row">
+            <dt class="col-sm-4">Contact Name</dt><dd class="col-sm-8">@(Model.ContactName ?? "-")</dd>
+            <dt class="col-sm-4">Contact Email</dt><dd class="col-sm-8">@(Model.ContactEmail ?? "-")</dd>
+            <dt class="col-sm-4">Contact Phone</dt><dd class="col-sm-8">@(Model.ContactPhone ?? "-")</dd>
+        </dl>
+
+        <hr />
+        <h5>Classification</h5>
+        <dl class="row">
+            <dt class="col-sm-4">Supplier Type</dt><dd class="col-sm-8">@Model.SupplierType</dd>
+            <dt class="col-sm-4">Products / Materials / Services</dt><dd class="col-sm-8">@(Model.LinkedItems ?? "-")</dd>
+        </dl>
+
+        <hr />
+        <h5>Assessment</h5>
+        <dl class="row">
+            <dt class="col-sm-4">Assessed By</dt><dd class="col-sm-8">@(Model.AssessedBy ?? "-")</dd>
+            <dt class="col-sm-4">Assessed On</dt><dd class="col-sm-8">@(Model.AssessedOn.HasValue ? Model.AssessedOn.Value.ToSite().ToString("dd/MM/yyyy HH:mm") : "-")</dd>
+        </dl>
+
+        <hr />
+        <h5>Approval</h5>
+        <dl class="row">
+            <dt class="col-sm-4">Risk Level</dt><dd class="col-sm-8">@Model.RiskLevel</dd>
+            <dt class="col-sm-4">Risk Justification</dt><dd class="col-sm-8">@(Model.RiskJustification ?? "-")</dd>
+            <dt class="col-sm-4">Review Frequency</dt><dd class="col-sm-8">@Model.ReviewFrequency</dd>
+            <dt class="col-sm-4">Qualification Required</dt><dd class="col-sm-8">@(Model.QualificationRequired ? "Yes" : "No")</dd>
+            <dt class="col-sm-4">Approved By</dt><dd class="col-sm-8">@(Model.ApprovedBy ?? "-")</dd>
+            <dt class="col-sm-4">Approved On</dt><dd class="col-sm-8">@(Model.ApprovedOn.HasValue ? Model.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy HH:mm") : "-")</dd>
+            <dt class="col-sm-4">Next Review Date</dt><dd class="col-sm-8">@(Model.NextReviewDate.HasValue ? Model.NextReviewDate.Value.ToString("dd/MM/yyyy") : "-")</dd>
+            <dt class="col-sm-4">Approval Expiry</dt><dd class="col-sm-8">@(Model.ExpiryDate.HasValue ? Model.ExpiryDate.Value.ToString("dd/MM/yyyy") : "None")</dd>
+            @if (Model.ExpiryDate.HasValue && !string.IsNullOrWhiteSpace(Model.ApprovalExpiryReason))
+            {
+                <dt class="col-sm-4">Expiry Reason</dt><dd class="col-sm-8">@Model.ApprovalExpiryReason</dd>
+            }
+            <dt class="col-sm-4">Approval Comments</dt><dd class="col-sm-8">@(Model.ApprovalComments ?? "-")</dd>
+        </dl>
+
+        @if (Model.QualifiedBy != null)
+        {
+            <hr />
+            <h5>Qualification</h5>
+            <dl class="row">
+                <dt class="col-sm-4">Qualified By</dt><dd class="col-sm-8">@Model.QualifiedBy</dd>
+                <dt class="col-sm-4">Qualified On</dt><dd class="col-sm-8">@(Model.QualifiedOn.HasValue ? Model.QualifiedOn.Value.ToSite().ToString("dd/MM/yyyy HH:mm") : "-")</dd>
+                <dt class="col-sm-4">Qualification Basis</dt><dd class="col-sm-8">@(Model.QualificationBasis.HasValue ? Model.QualificationBasis.ToString() : "-")</dd>
+                <dt class="col-sm-4">Qualification Justification</dt><dd class="col-sm-8">@(Model.QualificationJustification ?? "-")</dd>
+                <dt class="col-sm-4">Reference Document</dt><dd class="col-sm-8">@(Model.QualificationReferenceDoc ?? "-")</dd>
+                <dt class="col-sm-4">Qualification Comments</dt><dd class="col-sm-8">@(Model.QualificationComments ?? "-")</dd>
+            </dl>
+        }
+
+        @if (Model.SuspendedBy != null)
+        {
+            <hr />
+            <div class="alert alert-warning">
+                <strong>Suspended</strong> by @Model.SuspendedBy on @(Model.SuspendedOn.HasValue ? Model.SuspendedOn.Value.ToSite().ToString("dd/MM/yyyy") : "-")<br />
+                Reason: @(Model.SuspensionReason ?? "-")
+            </div>
+        }
+
+        @if (Model.CancelledBy != null)
+        {
+            <hr />
+            <div class="alert alert-secondary">
+                <strong>Cancelled</strong> by @Model.CancelledBy on @(Model.CancelledOn.HasValue ? Model.CancelledOn.Value.ToSite().ToString("dd/MM/yyyy") : "-")<br />
+                Reason: @(Model.CancellationReason ?? "-")
+            </div>
+        }
+
+        @if (Model.Addresses != null && Model.Addresses.Any())
+        {
+            <hr />
+            <h5>Additional Addresses</h5>
+            <table class="table table-sm">
+                <thead><tr><th>Street</th><th>City</th><th>State</th><th>Post Code</th><th>Country</th><th>Notes</th></tr></thead>
+                <tbody>
+                    @foreach (var addr in Model.Addresses)
+                    {
+                        <tr>
+                            <td>@(addr.Street ?? "-")</td>
+                            <td>@(addr.City ?? "-")</td>
+                            <td>@(addr.State ?? "-")</td>
+                            <td>@(addr.PostCode ?? "-")</td>
+                            <td>@(addr.Country ?? "-")</td>
+                            <td>@(addr.Notes ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (Model.Documents != null && Model.Documents.Any())
+        {
+            <hr />
+            <h5>Documents at Time of Completion</h5>
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>File Name</th>
+                        <th>Description</th>
+                        <th>Issue Date</th>
+                        <th>Expiry Date</th>
+                        <th>Uploaded By</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var doc in Model.Documents)
+                    {
+                        <tr>
+                            <td>@doc.DocumentType</td>
+                            <td>@doc.FileName</td>
+                            <td>@(doc.Description ?? "-")</td>
+                            <td>@(doc.IssueDate.HasValue ? doc.IssueDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                            <td>@(doc.ExpiryDate.HasValue ? doc.ExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                            <td>@(doc.UploadedBy ?? "-")</td>
+                            <td><a asp-action="DownloadSnapshotDocument" asp-route-id="@doc.Id">Download</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (Model.QualityRecords != null && Model.QualityRecords.Any())
+        {
+            <hr />
+            <h5>Quality Records at Time of Completion</h5>
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Notes</th>
+                        <th>Linked By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var qr in Model.QualityRecords)
+                    {
+                        var detailsUrl = qr.RecordType switch
+                        {
+                            OpenQMS.Models.QualityRecordType.Deviation => "/Deviations/Details/" + qr.DeviationId,
+                            OpenQMS.Models.QualityRecordType.CAPA => "/Capas/Details/" + qr.CapaId,
+                            OpenQMS.Models.QualityRecordType.Change => "/Changes/Details/" + qr.ChangeId,
+                            OpenQMS.Models.QualityRecordType.Complaint => "/Complaints/Details/" + qr.ComplaintId,
+                            OpenQMS.Models.QualityRecordType.Risk => "/Risks/Details/" + qr.RiskId,
+                            OpenQMS.Models.QualityRecordType.Audit => "/Audits/Details/" + qr.AuditId,
+                            _ => "#"
+                        };
+                        <tr>
+                            <td>@qr.RecordType</td>
+                            <td><a href="@detailsUrl">@(qr.RecordCode ?? "-")</a></td>
+                            <td>@(qr.RecordTitle ?? "-")</td>
+                            <td>@(qr.Notes ?? "-")</td>
+                            <td>@(qr.LinkedBy ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+</div>
+
+<div class="mt-3 d-flex gap-2">
+    <a asp-action="Reviews" asp-route-id="@Model.SupplierId" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Reviews</a>
+    <a asp-action="Details" asp-route-id="@Model.SupplierId" class="btn btn-outline-secondary btn-sm">Supplier Details</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list me-1"></i>Back to List</a>
+</div>

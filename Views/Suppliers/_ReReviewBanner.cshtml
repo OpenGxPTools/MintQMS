@@ -1,0 +1,35 @@
+@model OpenQMS.Models.Supplier
+@*
+    Shown while a supplier holding a standing approval (Approved / Qualified) is going through
+    a renewal or revision workflow: the standing approval remains valid for use until the new
+    workflow completes. Review start = the latest SupplierReview created by "Start Review".
+*@
+@{
+    bool holdsApproval = Model.ApprovalStatus == OpenQMS.Models.SupplierStatus.Approved
+                      || Model.ApprovalStatus == OpenQMS.Models.SupplierStatus.Qualified;
+    bool workflowOpen  = Model.Status == OpenQMS.Models.SupplierStatus.Pending
+                      || Model.Status == OpenQMS.Models.SupplierStatus.UnderAssessment;
+    var startedOn = Model.Reviews?.OrderByDescending(r => r.ReviewDate).FirstOrDefault()?.ReviewDate;
+}
+@if (holdsApproval && workflowOpen)
+{
+    <div class="alert alert-info d-flex align-items-start mb-3" role="status">
+        <i class="bi bi-arrow-repeat fs-5 me-2"></i>
+        <div>
+            <strong>Re-review in progress</strong> — this supplier remains
+            <strong>@EnumHelper.Display(Model.ApprovalStatus!.Value)</strong> for use until the new review is completed.
+            <div class="small mt-1">
+                Trigger: @EnumHelper.Display(Model.ReviewTrigger)
+                @if (startedOn.HasValue)
+                {
+                    <span> · Started @startedOn.Value.ToSite().ToString("dd MMM yyyy")</span>
+                }
+                <span> · Current stage: @EnumHelper.Display(Model.Status)</span>
+                @if (Model.ExpiryDate.HasValue)
+                {
+                    <span> · Approval expires @Model.ExpiryDate.Value.ToString("dd MMM yyyy")</span>
+                }
+            </div>
+        </div>
+    </div>
+}

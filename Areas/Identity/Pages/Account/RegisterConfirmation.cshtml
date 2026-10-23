@@ -1,0 +1,23 @@
+﻿@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Register confirmation";
+}
+
+<h1>@ViewData["Title"]</h1>
+@{
+    if (Model.DisplayConfirmAccountLink)
+    {
+        <div class="alert alert-warning">
+            <strong>Email is not configured yet.</strong> Once SMTP is set up in System Settings, confirmation emails will be sent automatically.
+            <br />For now, use this link to confirm the account: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-success">
+            A confirmation email has been sent to <strong>@Model.Email</strong>. The user must click the link in that email before they can log in.
+        </div>
+    }
+}
+

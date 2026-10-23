@@ -1,0 +1,46 @@
+name: Bug report
+description: Something in MintQMS does not work as described
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting. **Do not include real company, personal, patient or adverse-event data.**
+        Security problems: please follow SECURITY.md instead of opening an issue.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Sign in as a user with role …
+        2. Open …
+        3. Click …
+    validations:
+      required: true
+  - type: input
+    id: module
+    attributes:
+      label: Module
+      placeholder: e.g. Deviations, Suppliers, Documents
+  - type: input
+    id: version
+    attributes:
+      label: MintQMS version or commit
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, browser, and whether it runs behind nginx/Caddy.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error messages or log lines
+      description: From the page or from `journalctl -u mintqms`. Remove any personal data.
+      render: text

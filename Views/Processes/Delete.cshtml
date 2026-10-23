@@ -1,0 +1,222 @@
+﻿@*
+This file is part of the OpenQMS.net project (https://github.com/C-realize/OpenQMS).
+Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
+
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://www.c-realize.com/contact.  For AGPL licensing, see below.
+
+AGPL:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+*@
+
+@model OpenQMS.Models.Process
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Delete Process</h4>
+    </div>
+</div>
+<hr />
+<h5 class="text-danger">Are you sure you want to delete this?</h5>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.ProcessId)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.ProcessId)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-4">Products</dt>
+            <dd class="col-sm-8">
+                @if (Model.LinkedProducts?.Any() == true)
+                {
+                    @string.Join(", ", Model.LinkedProducts.Select(x => x.Product?.Name ?? ""))
+                }
+                else if (Model.Product != null)
+                {
+                    @Model.Product.Name
+                }
+                else { <text>-</text> }
+            </dd>
+            }
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Version)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Version)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.EditedBy)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.EditedBy)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.EditedOn)
+            </dt>
+            <dd class="col-sm-8">
+                @(Model.EditedOn.ToSite())
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Status)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div>
+
+    <h4>Changes</h4>
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Changes != null)
+                {
+                    @foreach (var item in Model.Changes)
+                    {
+                        <tr>
+                            <td><a href="/Changes/Details/@item.Id">@item.ChangeId</a></td>
+                            <td>@item.Title</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <br />
+
+    <h4>Deviations</h4>
+    <div class=" row">
+        <table class=" table table-border">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Deviations != null)
+                {
+                    @foreach (var item in Model.Deviations)
+                    {
+                        <tr>
+                            <td><a href="/Deviations/Details/@item.Id">@item.DeviationId</a></td>
+                            <td>@item.Title</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <br />
+    <h4>CAPA</h4>
+    <div class="row">
+        <table class="table table-border">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Capas != null)
+                {
+                    @foreach (var item in Model.Capas)
+                    {
+                        <tr>
+                            <td>
+                                <a href="/Capas/Details/@item.Id">@item.CapaId</a>
+                            </td>
+                            <td>@item.Title</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <h4>Documents</h4>
+    <div class="row">
+        <table class="table table-border">
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Description</th>
+                    <th>Uploaded By</th>
+                    <th>Uploaded Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Documents != null)
+                {
+                    @foreach (var item in Model.Documents)
+                    {
+                        <tr>
+                            <td>@item.FileName</td>
+                            <td>@(item.Description ?? "-")</td>
+                            <td>@item.UploadedBy</td>
+                            <td>@item.UploadedDate.ToSite().ToString("dd/MM/yyyy")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <br />
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    @if ((bool)ViewData["HasLinkedRecords"] == true)
+    {
+        <div class="alert alert-danger">This process has linked Changes, Deviations, CAPAs, or uploaded Documents. Remove them before deleting.</div>
+    }
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <div class="d-flex gap-2">
+            <input type="submit" value="Delete" class="btn btn-danger" disabled="@((bool)ViewData["HasLinkedRecords"] == true ? "disabled" : null)" />
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        </div>
+    </form>
+</div>

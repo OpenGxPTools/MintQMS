@@ -1,0 +1,162 @@
+@model IEnumerable<OpenQMS.Models.Training>
+@using OpenQMS.Authorization
+@{
+    var policyDocs = ViewBag.PolicyDocs as Dictionary<int, OpenQMS.Models.AppDocument> ?? new();
+}
+
+@{
+    ViewData["Title"] = "Trainings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var table = $('#trainingsTable').DataTable({ stateSave: true,
+                initComplete: function () {
+                    $('.status-filter').on('click', function () {
+                        $('.status-filter').removeClass('active');
+                        $(this).addClass('active');
+                        var val = $(this).data('status');
+                        table.column(8).search(val ? '^' + val + '$' : '', true, false).draw();
+                    });
+                    $('.status-filter[data-status=""]').addClass('active');
+                },
+                columns: [
+                    null,  // Training ID
+                    null,  // Name
+                    null,  // Type
+                    null,  // Date
+                    { visible: false }, // Source Document
+                    { visible: false }, // Trainer
+                    null,  // Due Date
+                    null,  // Completed On
+                    null,  // Status
+                    null   // Action
+                ],
+                paging: true,
+                orderCellsTop: true,
+                dom: 'lBfrtip',
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                order: [[0, 'asc']],
+                displayLength: 10,
+                buttons: [
+                    'colvis',
+                    { extend: 'pdf',   footer: false, exportOptions: { columns: [0,1,2,3,4,5] } },
+                    { extend: 'excel', footer: false, exportOptions: { columns: [0,1,2,3,4,5] } }
+                ]
+            });
+        });
+    </script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Trainings</h4>
+    @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole) || User.IsInRole(Constants.TrainerRole))
+    {
+        <div class="d-flex gap-2">
+            <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel me-1"></i>Export Register</a>
+            <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+            <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Training</a>
+        </div>
+    }
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Scheduled">Scheduled</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="In Progress">In Progress</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="Pending Trainer Confirmation">Pending Confirmation</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Completed">Completed</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Cancelled">Cancelled</button>
+    <a asp-action="MyTraining" class="btn btn-outline-success btn-sm ms-auto">
+        <i class="bi bi-person-check me-1"></i>My Training
+    </a>
+</div>
+
+<table id="trainingsTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Training ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Date Created</th>
+            <th>Source Document</th>
+            <th>Trainer</th>
+            <th>Due Date</th>
+            <th>Completed On</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var badge = item.Status switch {
+                Training.TrainingStatus.Scheduled                  => "bg-warning text-dark",
+                Training.TrainingStatus.InProgress                 => "bg-primary",
+                Training.TrainingStatus.PendingTrainerConfirmation => "bg-info text-dark",
+                Training.TrainingStatus.Completed                  => "bg-success",
+                Training.TrainingStatus.Cancelled                  => "bg-secondary",
+                _                                                  => "bg-secondary"
+            };
+            var isOverdue = item.DueDate.HasValue && item.DueDate.Value.Date < SiteTime.Today
+                            && item.Status != Training.TrainingStatus.Completed
+                            && item.Status != Training.TrainingStatus.Cancelled;
+            <tr>
+                <td>@item.TrainingId</td>
+                <td>@item.Name</td>
+                <td>
+                    <span class="badge @(item.TrainingType == TrainingType.CompetencyAssessment ? "bg-primary" : "bg-info text-dark")">
+                        @(item.TrainingType == TrainingType.CompetencyAssessment ? "CA" : "R&A")
+                    </span>
+                </td>
+                <td>@item.CreatedOn.ToSite().ToString("dd/MM/yyyy")</td>
+                <td>
+                    @{
+                        var pd = item.PolicyId > 0 ? policyDocs.GetValueOrDefault(item.PolicyId) : null;
+                        var pdVersion = item.SourceDocumentVersion ?? pd?.Version;
+                    }
+                    @if (pd != null)
+                    {
+                        <div>@pd.DocumentId — @pd.Title</div>
+                        <span class="badge bg-light text-dark border">v@(pdVersion!.Value.ToString("0.00"))</span>
+                    }
+                    else if (!string.IsNullOrEmpty(item.PolicyTitle))
+                    {
+                        @item.PolicyTitle
+                    }
+                    else { <span class="text-muted">—</span> }
+                </td>
+                <td>@(item.TrainerEmail ?? "—")</td>
+                <td class="@(isOverdue ? "text-danger fw-semibold" : "")">
+                    @if (item.DueDate.HasValue) { @item.DueDate.Value.ToString("dd/MM/yyyy") }
+                    else { <span class="text-muted">—</span> }
+                    @if (isOverdue) { <span class="badge bg-danger ms-1">Overdue</span> }
+                </td>
+                <td>
+                    @if (item.CompletedOn.HasValue) { @item.CompletedOn.Value.ToSite().ToString("dd/MM/yyyy") }
+                    else { <span class="text-muted">—</span> }
+                </td>
+                <td><span class="badge @badge">@EnumHelper.Display(item.Status)</span></td>
+                <td>
+                    @if ((User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole) || User.IsInRole(Constants.TrainerRole))
+                         && item.Status != Training.TrainingStatus.Completed
+                         && item.Status != Training.TrainingStatus.Cancelled)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Edit</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">Details</a>
+                    @if ((User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole) || User.IsInRole(Constants.TrainerRole))
+                         && item.Status == Training.TrainingStatus.Scheduled)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

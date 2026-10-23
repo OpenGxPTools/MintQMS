@@ -1,0 +1,204 @@
+@model IEnumerable<OpenQMS.Models.LC.LicenceCertificationRecord>
+@using OpenQMS.Models.LC
+@{
+    ViewData["Title"] = "Licences & Certifications Register";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="fas fa-id-card me-2 text-primary"></i>Licences &amp; Certifications Register</h4>
+    @if (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser"))
+    {
+        <a asp-action="Create" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i>New Record
+        </a>
+    }
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Filter Bar -->
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Holder Type</label>
+                <select name="holderType" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option value="OwnCompany" selected="@(ViewBag.SelectedHolderType == "OwnCompany")">Own Company</option>
+                    <option value="ThirdParty" selected="@(ViewBag.SelectedHolderType == "ThirdParty")">Third Party</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Category</label>
+                <select name="category" class="form-select form-select-sm">
+                    <option value="">All Categories</option>
+                    @foreach (var c in Enum.GetValues<LCCategory>())
+                    {
+                        <option value="@c" selected="@(ViewBag.SelectedCategory == c.ToString())">
+                            @(c == LCCategory.RegulatoryLicence ? "Regulatory Licence" :
+                              c == LCCategory.ISOPrivateCertification ? "ISO / Private Cert" :
+                              "Third-Party Site Approval")
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Status</label>
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All Statuses</option>
+                    @foreach (var s in Enum.GetValues<LCStatus>())
+                    {
+                        <option value="@s" selected="@(ViewBag.SelectedStatus == s.ToString())">@s</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Licence Type</label>
+                <select name="licenceTypeId" asp-items='@(ViewBag.LicenceTypes as SelectList)' class="form-select form-select-sm">
+                    <option value="">All Types</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Expiry Within</label>
+                <select name="expiryWindow" class="form-select form-select-sm">
+                    <option value="">Any</option>
+                    <option value="30" selected="@(ViewBag.SelectedExpiry == "30")">30 days</option>
+                    <option value="90" selected="@(ViewBag.SelectedExpiry == "90")">90 days</option>
+                    <option value="180" selected="@(ViewBag.SelectedExpiry == "180")">180 days</option>
+                    <option value="365" selected="@(ViewBag.SelectedExpiry == "365")">12 months</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2 align-items-end">
+                <button type="submit" class="btn btn-sm btn-outline-primary flex-fill"><i class="fas fa-search me-1"></i>Filter</button>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary flex-fill"><i class="fas fa-times me-1"></i>Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Register Table -->
+<div class="card">
+    <div class="card-body p-0">
+        <table id="lcTable" class="table table-hover table-sm mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>LC Number</th>
+                    <th>Holder / Site</th>
+                    <th>Category</th>
+                    <th>Licence Type</th>
+                    <th>Status</th>
+                    <th>Expiry Date</th>
+                    <th>Days to Expiry</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    var today = SiteTime.Today;
+                    int? daysToExpiry = r.ExpiryDate.HasValue
+                        ? (int?)(r.ExpiryDate.Value.Date - today).TotalDays
+                        : null;
+                    string expiryClass = daysToExpiry.HasValue
+                        ? (daysToExpiry < 0 ? "text-danger fw-bold" : daysToExpiry <= 30 ? "text-danger" : daysToExpiry <= 90 ? "text-warning" : "")
+                        : "";
+                    string statusBadge = r.Status switch
+                    {
+                        LCStatus.IssuedActive     => "bg-success",
+                        LCStatus.ConditionsApplied=> "bg-warning text-dark",
+                        LCStatus.RenewalDue       => "bg-warning text-dark",
+                        LCStatus.VariationRequired=> "bg-warning text-dark",
+                        LCStatus.Expired          => "bg-danger",
+                        LCStatus.Suspended        => "bg-danger",
+                        LCStatus.Withdrawn        => "bg-secondary",
+                        LCStatus.Draft            => "bg-light text-dark border",
+                        LCStatus.Applied          => "bg-info text-dark",
+                        LCStatus.UnderAssessment  => "bg-info text-dark",
+                        LCStatus.NotApplicable    => "bg-secondary",
+                        _                         => "bg-secondary"
+                    };
+                    var canEdit = !r.IsLocked && (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser"));
+                    <tr>
+                        <td><a asp-action="Details" asp-route-id="@r.Id" class="fw-bold text-decoration-none">@r.LCNumber</a></td>
+                        <td>
+                            @r.HolderName
+                            @if (r.Supplier != null)
+                            {
+                                <br /><small class="text-muted">@r.Supplier.LegalName</small>
+                            }
+                        </td>
+                        <td>
+                            <small>@(r.Category == LCCategory.RegulatoryLicence ? "Regulatory" :
+                                     r.Category == LCCategory.ISOPrivateCertification ? "ISO/Cert" :
+                                     "Third-Party")</small>
+                        </td>
+                        <td><small>@r.LicenceType?.DisplayName</small></td>
+                        <td>
+                            <span class="badge @statusBadge">@EnumHelper.Display(r.Status)</span>
+                            @if (r.Conditions.Any(c => c.Status == LCConditionStatus.Active))
+                            {
+                                <span class="badge bg-warning text-dark ms-1" title="Has open conditions"><i class="fas fa-exclamation-triangle"></i></span>
+                            }
+                        </td>
+                        <td>
+                            @if (r.ExpiryDate.HasValue)
+                            {
+                                <span class="@expiryClass">@r.ExpiryDate.Value.ToString("dd MMM yyyy")</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </td>
+                        <td class="@expiryClass">
+                            @if (daysToExpiry.HasValue)
+                            {
+                                @(daysToExpiry < 0 ? $"EXPIRED ({Math.Abs(daysToExpiry.Value)}d ago)" : $"{daysToExpiry}d")
+                            }
+                            else { <span class="text-muted">—</span> }
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@r.Id">Details</a>
+                            @if (canEdit)
+                            {
+                                <text> | </text>
+                                <a asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#lcTable').DataTable({ stateSave: true,
+                paging: true,
+                pageLength: 25,
+                order: [[5, 'asc']],
+                columnDefs: [{ orderable: false, targets: 7 }],
+                language: {
+                    emptyTable: 'No records found. <a href="/LicencesCertifications/Create">Create the first record.</a>',
+                    searchPlaceholder: 'Search within filtered results…',
+                    search: ''
+                }
+            });
+        });
+    </script>
+}

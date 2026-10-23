@@ -1,0 +1,829 @@
+@model OpenQMS.Models.Deviation
+@using OpenQMS.Authorization
+
+@{
+    ViewData["Title"] = $"Deviation — {Model.DeviationId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var isLocked     = Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Approved;
+    var isEditLocked = isLocked
+        || Model.Status == OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance
+        || Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Resolution;
+    var attachCount  = Model.Attachments?.Count ?? 0;
+    var auditCount   = Model.AuditLogs?.Count ?? 0;
+
+    var badgeClass = Model.Status switch
+    {
+        OpenQMS.Models.Deviation.DeviationStatus.Identification    => "bg-light text-dark border",
+        OpenQMS.Models.Deviation.DeviationStatus.Evaluation        => "bg-info text-dark",
+        OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance => "bg-primary text-white",
+        OpenQMS.Models.Deviation.DeviationStatus.Accepted          => "bg-warning text-dark",
+        OpenQMS.Models.Deviation.DeviationStatus.Resolution        => "bg-warning text-dark",
+        OpenQMS.Models.Deviation.DeviationStatus.Approved          => "bg-success",
+        _ => "bg-secondary"
+    };
+
+    var statusLabel = Model.Status switch
+    {
+        OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance => "Pending Acceptance",
+        _ => Model.Status.ToString()
+    };
+
+    var ageDays = (SiteTime.Today - Model.IdentifiedOn.Date).Days;
+    var isAged  = Model.Status != OpenQMS.Models.Deviation.DeviationStatus.Approved && ageDays > 30;
+
+    var isOverdue         = !isLocked && Model.TargetResolutionDate.HasValue && SiteTime.Today > Model.TargetResolutionDate.Value.Date;
+    var daysUntilDeadline = Model.TargetResolutionDate.HasValue ? (Model.TargetResolutionDate.Value.Date - SiteTime.Today).Days : (int?)null;
+    var isApproaching     = !isLocked && !isOverdue && daysUntilDeadline.HasValue && daysUntilDeadline.Value <= 7;
+
+    var severityBadge = Model.Severity switch {
+        OpenQMS.Models.DeviationSeverity.Critical => "bg-danger",
+        OpenQMS.Models.DeviationSeverity.Major    => "bg-warning text-dark",
+        OpenQMS.Models.DeviationSeverity.Minor    => "bg-secondary",
+        _ => ""
+    };
+
+    bool isQM = User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AuthorisedPersonRole);
+    bool isQU = isQM || User.IsInRole(Constants.QualityUserRole);
+
+    bool canForwardToEvaluation = isQU
+        && Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Identification;
+    bool canSubmitEvaluation = isQU
+        && Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Evaluation;
+    bool canAccept = isQM
+        && Model.Status == OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance;
+    bool canSubmitResolution = isQU && !User.IsInRole(Constants.ReadOnlyRole)
+        && Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Accepted;
+    bool canApprove = isQM
+        && Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Resolution;
+    bool canReturn  = isQM
+        && (Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Evaluation
+            || Model.Status == OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance
+            || Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Accepted
+            || Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Resolution);
+
+    // Audit log lookups for workflow trail
+    var evalStartLog = Model.AuditLogs?.FirstOrDefault(l => l.Action == "Submitted for Evaluation");
+}
+
+<!-- Header -->
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Deviation &mdash; <span class="fw-bold">@Model.DeviationId</span></h4>
+        <small class="text-muted">@Model.Title</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        @if (Model.Severity.HasValue)
+        {
+            <span class="badge @severityBadge fs-6">@Model.Severity.Value</span>
+        }
+        <span class="badge @badgeClass fs-6">@statusLabel</span>
+    </div>
+</div>
+<hr />
+
+<!-- TempData alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["WorkflowError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (isOverdue)
+{
+    <div class="alert alert-danger">
+        <strong>Overdue:</strong> Target resolution date was @Model.TargetResolutionDate!.Value.ToShortDateString()
+        (@Math.Abs(daysUntilDeadline!.Value) day(s) past deadline).
+    </div>
+}
+else if (isApproaching)
+{
+    <div class="alert alert-warning">
+        <strong>Deadline approaching:</strong> Target resolution date is @Model.TargetResolutionDate!.Value.ToShortDateString()
+        (@daysUntilDeadline day(s) remaining).
+    </div>
+}
+@if (isAged)
+{
+    <div class="alert alert-warning">
+        <strong>Aged Deviation:</strong> Identified @ageDays days ago and not yet approved.
+    </div>
+}
+
+
+<!-- Workflow action panel -->
+@if ((canForwardToEvaluation || canSubmitEvaluation || canAccept || canSubmitResolution || canApprove || canReturn) && !isLocked)
+{
+    <div class="card mb-3">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-tasks me-2"></i>Workflow Actions</strong>
+            <span class="small">Current: @statusLabel</span>
+        </div>
+        <div class="card-body py-2 d-flex flex-wrap gap-2">
+            @if (canForwardToEvaluation)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitEvaluationModal">
+                    <i class="fas fa-arrow-right me-1"></i>Submit for Evaluation
+                </button>
+            }
+            @if (canSubmitEvaluation)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitForAcceptanceModal">
+                    <i class="fas fa-paper-plane me-1"></i>Submit for Acceptance
+                </button>
+            }
+            @if (canAccept)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#acceptModal">
+                    <i class="fas fa-check-circle me-1"></i>Accept Deviation
+                </button>
+            }
+            @if (canSubmitResolution)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitResolutionModal">
+                    <i class="fas fa-arrow-right me-1"></i>Submit for Approval
+                </button>
+            }
+            @if (canApprove)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveModal">
+                    <i class="fas fa-thumbs-up me-1"></i>Approve Deviation
+                </button>
+            }
+            @if (canReturn)
+            {
+                <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#returnModal">
+                    <i class="fas fa-undo me-1"></i>Return for Rework
+                </button>
+            }
+        </div>
+    </div>
+}
+
+@if (isLocked && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="card mb-3 border-danger">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+        </div>
+        <div class="card-body py-2">
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
+                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="devTabs">
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#overview">Overview</button></li>
+    <li class="nav-item">
+        <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#attachments">
+            Attachments <span class="badge bg-secondary">@attachCount</span>
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#auditlog">
+            Audit Log <span class="badge bg-secondary">@auditCount</span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <!-- Overview Tab -->
+    <div class="tab-pane fade show active" id="overview">
+        <div class="row">
+            <!-- Left column: record details -->
+            <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small mb-2">Deviation Details</h6>
+                <dl class="row">
+                    <dt class="col-sm-4">Deviation ID</dt>
+                    <dd class="col-sm-8">@Model.DeviationId</dd>
+
+                    <dt class="col-sm-4">Title</dt>
+                    <dd class="col-sm-8">@Model.Title</dd>
+
+                    <dt class="col-sm-4">Event Type</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.EventType.HasValue)
+                        { <span>@Html.DisplayFor(m => m.EventType)</span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8"><span class="badge @badgeClass">@statusLabel</span></dd>
+
+                    <dt class="col-sm-4">Severity</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Severity.HasValue)
+                        { <span class="badge @severityBadge">@Model.Severity.Value</span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-4">Identified On</dt>
+                    <dd class="col-sm-8">@Model.IdentifiedOn.ToSite().ToShortDateString() <span class="text-muted small">(@ageDays days ago)</span></dd>
+
+                    @if (Model.TargetResolutionDate.HasValue)
+                    {
+                        <dt class="col-sm-4">Target Resolution</dt>
+                        <dd class="col-sm-8 @(isOverdue ? "text-danger fw-bold" : isApproaching ? "text-warning fw-bold" : "")">
+                            @Model.TargetResolutionDate.Value.ToShortDateString()
+                            @if (isOverdue) { <span class="badge bg-danger ms-1">Overdue</span> }
+                            else if (isApproaching) { <span class="badge bg-warning text-dark ms-1">Approaching</span> }
+                        </dd>
+                    }
+                </dl>
+
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">Linked Records</h6>
+                <dl class="row">
+                    <dt class="col-sm-4">Products</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            var lProducts = Model.LinkedProducts?.Any() == true
+                                ? Model.LinkedProducts.Where(x => x.Product != null)
+                                : (Model.Product != null ? new[] { new OpenQMS.Models.DeviationProduct { Product = Model.Product, ProductId = Model.ProductId ?? 0, DeviationId = Model.Id } } : Enumerable.Empty<OpenQMS.Models.DeviationProduct>());
+                        }
+                        @if (lProducts.Any())
+                        {
+                            foreach (var lp in lProducts)
+                            {
+                                <a class="d-block" href="/Products/Details/@lp.ProductId">@lp.Product!.Name</a>
+                            }
+                        }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-4">Processes</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            var lProcesses = Model.LinkedProcesses?.Any() == true
+                                ? Model.LinkedProcesses.Where(x => x.Process != null)
+                                : (Model.Process != null ? new[] { new OpenQMS.Models.DeviationProcess { Process = Model.Process, ProcessId = Model.ProcessId ?? 0, DeviationId = Model.Id } } : Enumerable.Empty<OpenQMS.Models.DeviationProcess>());
+                        }
+                        @if (lProcesses.Any())
+                        {
+                            foreach (var lp in lProcesses)
+                            {
+                                <a class="d-block" href="/Processes/Details/@lp.ProcessId">@lp.Process!.Name</a>
+                            }
+                        }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-4">Assets</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            var lAssets = Model.LinkedAssets?.Any() == true
+                                ? Model.LinkedAssets.Where(x => x.Asset != null)
+                                : (Model.Asset != null ? new[] { new OpenQMS.Models.DeviationAsset { Asset = Model.Asset, AssetId = Model.AssetId ?? 0, DeviationId = Model.Id } } : Enumerable.Empty<OpenQMS.Models.DeviationAsset>());
+                        }
+                        @if (lAssets.Any())
+                        {
+                            foreach (var la in lAssets)
+                            {
+                                <a class="d-block" href="/Assets/Details/@la.AssetId">@la.Asset!.Name</a>
+                            }
+                        }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-4">Materials</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            var lMaterials = Model.LinkedMaterials?.Any() == true
+                                ? Model.LinkedMaterials.Where(x => x.Material != null)
+                                : (Model.Material != null ? new[] { new OpenQMS.Models.DeviationMaterial { Material = Model.Material, MaterialId = Model.MaterialId ?? 0, DeviationId = Model.Id } } : Enumerable.Empty<OpenQMS.Models.DeviationMaterial>());
+                        }
+                        @if (lMaterials.Any())
+                        {
+                            foreach (var lm in lMaterials)
+                            {
+                                <a class="d-block" href="/Materials/Details/@lm.MaterialId">@lm.Material!.Name</a>
+                            }
+                        }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-4">Suppliers</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            var lSuppliers = Model.LinkedSuppliers?.Any() == true
+                                ? Model.LinkedSuppliers.Where(x => x.Supplier != null)
+                                : (Model.Supplier != null ? new[] { new OpenQMS.Models.DeviationSupplier { Supplier = Model.Supplier, SupplierId = Model.SupplierId ?? 0, DeviationId = Model.Id } } : Enumerable.Empty<OpenQMS.Models.DeviationSupplier>());
+                        }
+                        @if (lSuppliers.Any())
+                        {
+                            foreach (var ls in lSuppliers)
+                            {
+                                <a class="d-block" href="/Suppliers/Details/@ls.SupplierId">@ls.Supplier!.LegalName</a>
+                            }
+                        }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    @{
+                        var linkedCapas = Model.LinkedCapas?.Where(x => x.Capa != null).ToList();
+                    }
+                    @if (linkedCapas?.Any() == true)
+                    {
+                        <dt class="col-sm-4">CAPAs</dt>
+                        <dd class="col-sm-8">
+                            @foreach (var lc in linkedCapas)
+                            {
+                                <a class="d-block" href="/Capas/Details/@lc.CapaId">@lc.Capa!.CapaId — @lc.Capa.Title</a>
+                            }
+                        </dd>
+                    }
+                    else if (ViewBag.LinkedCapa != null)
+                    {
+                        var lc = (OpenQMS.Models.Capa)ViewBag.LinkedCapa;
+                        <dt class="col-sm-4">CAPA</dt>
+                        <dd class="col-sm-8"><a href="/Capas/Details/@lc.Id">@lc.CapaId — @lc.Title</a></dd>
+                    }
+                </dl>
+
+                <div class="mt-3 d-flex gap-2">
+                    <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
+                    <a asp-action="ExportDeviationDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+                </div>
+            </div>
+
+            <!-- Right column: content sections + workflow trail -->
+            <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small mb-2">Identification</h6>
+                <div class="p-3 bg-light rounded mb-3">@(Model.Identification ?? "-")</div>
+
+                @if (!string.IsNullOrEmpty(Model.Evaluation) || Model.Status > OpenQMS.Models.Deviation.DeviationStatus.Identification)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Evaluation</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.Evaluation ?? "-")</div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Investigation) || Model.Status > OpenQMS.Models.Deviation.DeviationStatus.Evaluation)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Investigation</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.Investigation ?? "-")</div>
+                }
+
+                @if (Model.RootCauseCategory.HasValue || Model.Status > OpenQMS.Models.Deviation.DeviationStatus.Evaluation)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Root Cause Category</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.RootCauseCategory?.ToString() ?? "-")</div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.CorrectiveAction) || Model.Status > OpenQMS.Models.Deviation.DeviationStatus.Evaluation)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Corrective and Preventive Action</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.CorrectiveAction ?? "-")</div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Resolution) || Model.Status >= OpenQMS.Models.Deviation.DeviationStatus.Resolution)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Resolution</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.Resolution ?? "-")</div>
+                }
+
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">Workflow Trail</h6>
+                <dl class="row">
+                    <dt class="col-sm-5">Identified By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.IdentifiedBy))
+                        { <span>@Model.IdentifiedBy <span class="text-muted small">@Model.IdentifiedOn.ToSite().ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Evaluation Started By</dt>
+                    <dd class="col-sm-7">
+                        @if (evalStartLog != null)
+                        { <span>@evalStartLog.PerformedBy <span class="text-muted small">@evalStartLog.PerformedOn.ToSite().ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Submitted for Acceptance By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.EvaluatedBy))
+                        { <span>@Model.EvaluatedBy <span class="text-muted small">@Model.EvaluatedOn.ToSite()?.ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Accepted By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.AcceptedBy))
+                        { <span>@Model.AcceptedBy <span class="text-muted small">@Model.AcceptedOn.ToSite()?.ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Submitted for Approval By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.ResolvedBy))
+                        { <span>@Model.ResolvedBy <span class="text-muted small">@Model.ResolvedOn.ToSite()?.ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Approved By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.ApprovedBy))
+                        { <span>@Model.ApprovedBy <span class="text-muted small">@Model.ApprovedOn.ToSite()?.ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attachments Tab -->
+    <div class="tab-pane fade" id="attachments">
+        @if (!isLocked)
+        {
+            <div class="card mb-3">
+                <div class="card-header">Upload Attachment</div>
+                <div class="card-body">
+                    <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data" class="row g-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="deviationId" value="@Model.Id" />
+                        <div class="col-md-5">
+                            <input type="file" class="form-control" name="file" required
+                                   accept="@UploadRules.Accept" />
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="description" placeholder="Description (optional)" />
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-secondary">Record is approved — no new attachments can be added.</div>
+        }
+
+        @if (Model.Attachments != null && Model.Attachments.Any())
+        {
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>File Name</th><th>Description</th><th>Size</th><th>Uploaded By</th><th>Date</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var att in Model.Attachments.OrderByDescending(a => a.UploadedDate))
+                    {
+                        <tr>
+                            <td>@att.FileName</td>
+                            <td>@(att.Description ?? "-")</td>
+                            <td>@((att.FileSize / 1024.0).ToString("N1")) KB</td>
+                            <td>@att.UploadedBy</td>
+                            <td>@att.UploadedDate.ToSite().ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>
+                                <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                                @if (!isLocked)
+                                {
+                                    <form asp-action="DeleteAttachment" method="post" class="d-inline" data-delete-reason="attachment">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@att.Id" />
+                                        <input type="hidden" name="deviationId" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">No attachments yet.</p>
+        }
+        <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
+    </div>
+
+    <!-- Audit Log Tab -->
+    <div class="tab-pane fade" id="auditlog">
+        @await Html.PartialAsync("_AuditLogTable", (Model.AuditLogs ?? Enumerable.Empty<OpenQMS.Models.DeviationAuditLog>())
+            .Select(l => new OpenQMS.ViewModels.AuditLogRow(l.PerformedOn, l.PerformedBy, l.Action, l.FromStatus, l.ToStatus, l.Notes)))
+    </div>
+
+</div>
+
+<div class="mt-3 d-flex gap-3">
+    @if (!isEditLocked && !User.IsInRole(Constants.ReadOnlyRole))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+    }
+    @if (User.IsInRole(Constants.AdministratorsRole)
+         && Model.Status != OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance
+         && Model.Status != OpenQMS.Models.Deviation.DeviationStatus.Accepted
+         && Model.Status != OpenQMS.Models.Deviation.DeviationStatus.Resolution
+         && Model.Status != OpenQMS.Models.Deviation.DeviationStatus.Approved)
+    {
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Delete</a>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+</div>
+
+<!-- Submit for Evaluation Modal (Identification → Evaluation) -->
+@if (canForwardToEvaluation)
+{
+    <div class="modal fade" id="submitEvaluationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="SubmitForEvaluation" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="fas fa-arrow-right me-1"></i>Submit for Evaluation — @Model.DeviationId</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted small">Moves the deviation to <strong>Evaluation</strong> status. Enter your credentials to confirm.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Notes (optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="pwd" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Confirm Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Submit for Acceptance Modal (Evaluation → PendingAcceptance) -->
+@if (canSubmitEvaluation)
+{
+    <div class="modal fade" id="submitForAcceptanceModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="SubmitEvaluation" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>Submit for Acceptance — @Model.DeviationId</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted small">Moves the deviation to <strong>Pending Acceptance</strong> and locks the evaluation fields. A QA Manager will review and accept or return the record.</p>
+                        <p class="text-muted small">All four fields must be completed: <strong>Evaluation, Investigation, Root Cause Category, Corrective and Preventive Action</strong>.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Notes (optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="pwd" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Confirm Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Submit for Approval Modal -->
+@if (canSubmitResolution)
+{
+    <div class="modal fade" id="submitResolutionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="SubmitForResolution" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="fas fa-arrow-right me-1"></i>Submit for Approval — @Model.DeviationId</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted small">Moves the deviation to <strong>Resolution</strong> status for final QA approval. Enter your credentials to confirm.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Notes (optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="pwd" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Confirm Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Return for Rework Modal -->
+@if (canReturn)
+{
+    <div class="modal fade" id="returnModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="ReturnDeviation" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-warning">
+                        <h5 class="modal-title"><i class="fas fa-undo me-1"></i>Return for Rework — @Model.DeviationId</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted small">
+                            @if (Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Evaluation)
+                            { <text>Returns to <strong>Identification</strong> status.</text> }
+                            else if (Model.Status == OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance)
+                            { <text>Returns to <strong>Evaluation</strong> status — evaluation fields will be unlocked for rework.</text> }
+                            else if (Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Accepted)
+                            { <text>Returns to <strong>Evaluation</strong> status — evaluation fields will be unlocked for full rework.</text> }
+                            else
+                            { <text>Returns to <strong>Accepted</strong> status — resolution field will be unlocked for rework.</text> }
+                        </p>
+                        <div class="mb-3">
+                            <label class="form-label">Reason for Return <span class="text-danger">*</span></label>
+                            <textarea name="reason" class="form-control" rows="3" required
+                                placeholder="Describe why this record is being returned and what needs to be addressed."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="pwd" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning">Confirm Return</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Accept Modal -->
+@if (Model.Status == OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance)
+{
+    <div class="modal fade" id="acceptModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="AcceptDeviation" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="fas fa-check-circle me-1"></i>Accept Deviation — @Model.DeviationId</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted small">Confirms the evaluation package is complete and acceptable. Moves the deviation to <strong>Accepted</strong> status. Enter your credentials to confirm.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Notes (optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="pwd" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Confirm Accept</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Approve Modal -->
+@if (Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Resolution)
+{
+    <div class="modal fade" id="approveModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="ApproveDeviation" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="fas fa-thumbs-up me-1"></i>Approve Deviation — @Model.DeviationId</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted small">Moves the deviation to <strong>Approved</strong> status and locks the record. Enter your credentials to confirm.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Notes (optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="pwd" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Confirm Approve</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isLocked && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="modal fade" id="adminReopenModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong>Warning:</strong> Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@section Scripts {
+<script>
+$(document).ready(function () {
+    var activeTab = '@TempData["ActiveTab"]';
+    var target = activeTab ? '#' + activeTab : '#overview';
+    var el = document.querySelector('[data-bs-target="' + target + '"]');
+    if (el) new bootstrap.Tab(el).show();
+});
+</script>
+}

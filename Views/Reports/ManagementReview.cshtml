@@ -1,0 +1,279 @@
+@{
+    ViewData["Title"] = "Management Review Input";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var from = (DateTime)ViewBag.From;
+    var to = (DateTime)ViewBag.To;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Management Review Input Report</h4>
+    <div class="d-flex gap-2">
+        <a asp-action="ExportManagementReview"
+           asp-route-from="@from.ToString("yyyy-MM-dd")"
+           asp-route-to="@to.ToString("yyyy-MM-dd")"
+           class="btn btn-outline-success">Export Excel</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Reports Hub</a>
+    </div>
+</div>
+
+<p class="text-muted mb-3">
+    Aggregated quality system KPIs for ISO 13485 / GMP management review. Use the date filter to select the reporting period.
+    Audit and risk data noted where it reflects the full register rather than just the period.
+</p>
+
+@* Date range filter *@
+<form method="get" class="card card-body mb-4">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">From</label>
+            <input type="date" name="from" class="form-control" value="@from.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">To</label>
+            <input type="date" name="to" class="form-control" value="@to.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary w-100">Apply</button>
+        </div>
+    </div>
+</form>
+
+<p class="text-muted small mb-4">
+    Showing period: <strong>@from.ToString("dd MMM yyyy")</strong> to <strong>@to.ToString("dd MMM yyyy")</strong>
+</p>
+
+@* CAPAs *@
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white fw-semibold">
+        CAPAs (Corrective &amp; Preventive Actions)
+    </div>
+    <div class="card-body">
+        <div class="row g-3 text-center">
+            <div class="col-6 col-md">
+                <div class="display-6 fw-bold text-primary">@ViewBag.CapaTotal</div>
+                <div class="text-muted small">Total (all time)</div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="display-6 fw-bold text-info">@ViewBag.CapaOpenedInPeriod</div>
+                <div class="text-muted small">Opened in Period</div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="display-6 fw-bold text-success">@ViewBag.CapaClosedInPeriod</div>
+                <div class="text-muted small">Closed in Period</div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="display-6 fw-bold text-warning">@ViewBag.CapaCurrentlyOpen</div>
+                <div class="text-muted small">Currently Open</div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="display-6 fw-bold @(ViewBag.CapaOverdue > 0 ? "text-danger" : "text-success")">@ViewBag.CapaOverdue</div>
+                <div class="text-muted small">Overdue</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Deviations *@
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white fw-semibold">
+        Deviations
+    </div>
+    <div class="card-body">
+        <div class="row g-3 text-center mb-3">
+            <div class="col-6 col-md-3">
+                <div class="display-6 fw-bold text-primary">@ViewBag.DevTotal</div>
+                <div class="text-muted small">Total (all time)</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="display-6 fw-bold text-info">@ViewBag.DevOpenedInPeriod</div>
+                <div class="text-muted small">Identified in Period</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="display-6 fw-bold text-success">@ViewBag.DevClosedInPeriod</div>
+                <div class="text-muted small">Closed in Period</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="display-6 fw-bold text-warning">@ViewBag.DevCurrentlyOpen</div>
+                <div class="text-muted small">Currently Open</div>
+            </div>
+        </div>
+        <hr />
+        <p class="fw-semibold mb-2">Severity breakdown (all time):</p>
+        <div class="row g-3 text-center mb-3">
+            <div class="col-4">
+                <div class="display-6 fw-bold @(ViewBag.DevCritical > 0 ? "text-danger" : "text-muted")">@ViewBag.DevCritical</div>
+                <div class="text-muted small">Critical</div>
+            </div>
+            <div class="col-4">
+                <div class="display-6 fw-bold @(ViewBag.DevMajor > 0 ? "text-warning" : "text-muted")">@ViewBag.DevMajor</div>
+                <div class="text-muted small">Major</div>
+            </div>
+            <div class="col-4">
+                <div class="display-6 fw-bold text-secondary">@ViewBag.DevMinor</div>
+                <div class="text-muted small">Minor</div>
+            </div>
+        </div>
+        @{
+            var devEventCounts = ViewBag.DevEventTypeCounts as List<(string Label, int Count)>;
+        }
+        @if (devEventCounts != null && devEventCounts.Any())
+        {
+            <hr />
+            <p class="fw-semibold mb-2">Event type breakdown (all time):</p>
+            <div class="row g-2 text-center">
+                @foreach (var (label, count) in devEventCounts)
+                {
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="h4 fw-bold text-primary mb-0">@count</div>
+                        <div class="text-muted small">@label</div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@* Changes *@
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white fw-semibold">
+        Changes
+    </div>
+    <div class="card-body">
+        <div class="row g-3 text-center">
+            <div class="col-6 col-md">
+                <div class="display-6 fw-bold text-primary">@ViewBag.ChangeTotal</div>
+                <div class="text-muted small">Total (all time)</div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="display-6 fw-bold text-info">@ViewBag.ChangeOpenedInPeriod</div>
+                <div class="text-muted small">Proposed in Period</div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="display-6 fw-bold text-success">@ViewBag.ChangeClosedInPeriod</div>
+                <div class="text-muted small">Approved in Period</div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="display-6 fw-bold text-warning">@ViewBag.ChangeCurrentlyOpen</div>
+                <div class="text-muted small">Currently Open</div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="display-6 fw-bold @(ViewBag.ChangeOverdue > 0 ? "text-danger" : "text-success")">@ViewBag.ChangeOverdue</div>
+                <div class="text-muted small">Overdue</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Complaints *@
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white fw-semibold">
+        Complaints
+    </div>
+    <div class="card-body">
+        <div class="row g-3 text-center mb-3">
+            <div class="col-6 col-md-3">
+                <div class="display-6 fw-bold text-primary">@ViewBag.ComplaintTotal</div>
+                <div class="text-muted small">Total (all time)</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="display-6 fw-bold text-info">@ViewBag.ComplaintReceivedInPeriod</div>
+                <div class="text-muted small">Received in Period</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="display-6 fw-bold text-success">@ViewBag.ComplaintClosedInPeriod</div>
+                <div class="text-muted small">Closed in Period</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="display-6 fw-bold text-warning">@ViewBag.ComplaintCurrentlyOpen</div>
+                <div class="text-muted small">Currently Open</div>
+            </div>
+        </div>
+        <hr />
+        <p class="fw-semibold mb-2">Severity breakdown (all time):</p>
+        <div class="row g-3 text-center">
+            <div class="col-4">
+                <div class="display-6 fw-bold @(ViewBag.ComplaintCritical > 0 ? "text-danger" : "text-muted")">@ViewBag.ComplaintCritical</div>
+                <div class="text-muted small">Critical</div>
+            </div>
+            <div class="col-4">
+                <div class="display-6 fw-bold @(ViewBag.ComplaintMajor > 0 ? "text-warning" : "text-muted")">@ViewBag.ComplaintMajor</div>
+                <div class="text-muted small">Major</div>
+            </div>
+            <div class="col-4">
+                <div class="display-6 fw-bold text-secondary">@ViewBag.ComplaintMinor</div>
+                <div class="text-muted small">Minor</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Audits *@
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white fw-semibold">
+        Audits <small class="fw-normal">(planned start within selected period)</small>
+    </div>
+    <div class="card-body">
+        <div class="row g-3 text-center">
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold text-primary">@ViewBag.AuditScheduledInPeriod</div>
+                <div class="text-muted small">Scheduled</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold text-success">@ViewBag.AuditCompletedInPeriod</div>
+                <div class="text-muted small">Completed</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold @(ViewBag.AuditCriticalFindings > 0 ? "text-danger" : "text-muted")">@ViewBag.AuditCriticalFindings</div>
+                <div class="text-muted small">Critical Findings</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold @(ViewBag.AuditMajorFindings > 0 ? "text-warning" : "text-muted")">@ViewBag.AuditMajorFindings</div>
+                <div class="text-muted small">Major Findings</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold text-secondary">@ViewBag.AuditMinorFindings</div>
+                <div class="text-muted small">Minor Findings</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold @(ViewBag.AuditCAPARequired > 0 ? "text-warning" : "text-muted")">@ViewBag.AuditCAPARequired</div>
+                <div class="text-muted small">CAPA Required</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Risks *@
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white fw-semibold">
+        Risks <small class="fw-normal">(current register snapshot)</small>
+    </div>
+    <div class="card-body">
+        <div class="row g-3 text-center">
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold text-primary">@ViewBag.RiskTotal</div>
+                <div class="text-muted small">Total</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold @(ViewBag.RiskHigh > 0 ? "text-danger" : "text-muted")">@ViewBag.RiskHigh</div>
+                <div class="text-muted small">High RPN (≥80)</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold @(ViewBag.RiskMedium > 0 ? "text-warning" : "text-muted")">@ViewBag.RiskMedium</div>
+                <div class="text-muted small">Medium RPN (40–79)</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold text-secondary">@ViewBag.RiskLow</div>
+                <div class="text-muted small">Low RPN (&lt;40)</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold text-warning">@ViewBag.RiskOpen</div>
+                <div class="text-muted small">Open</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="display-6 fw-bold text-success">@ViewBag.RiskClosed</div>
+                <div class="text-muted small">Closed</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,184 @@
+@using OpenQMS.Controllers
+@using OpenQMS.Models.Release
+@model List<ReleaseCertificationSetting>
+
+@{
+    ViewData["Title"] = "Release Certification Statements";
+    bool canEdit = ViewBag.CanEdit == true;
+
+    var groupOrder = new Dictionary<string, int>
+    {
+        ["PharmaBio"]     = 1, ["MedDevice"]    = 2, ["ConsumerHealth"] = 3,
+        ["Cosmetic"]      = 4, ["RawMatAPI"]    = 5, ["RawMatOther"]    = 6,
+        ["MedComponent"]  = 7, ["Consumable"]   = 8, ["All"]            = 9,
+    };
+
+    var releaseTypes = new[]
+    {
+        (Type: ReleaseType.ReleaseForSupply,            Label: "Release For Supply"),
+        (Type: ReleaseType.ReleaseUnderQuarantine,      Label: "Release Under Quarantine"),
+        (Type: ReleaseType.ReleaseForFurtherProcessing, Label: "Release For Further Processing"),
+        (Type: ReleaseType.ReleaseToCustomer,           Label: "Release To Customer"),
+        (Type: ReleaseType.QualityOversight,            Label: "Quality Oversight"),
+    };
+}
+
+<h4 class="mb-0">Release Certification Statements</h4>
+<hr />
+
+<p class="text-muted">
+    These statements pre-populate the Certification Statement field in the AP Certification modal when approving a release record.
+    The system selects the appropriate statement based on the release type and product type of the record being certified.
+    The AP can edit the statement before signing.
+</p>
+
+@if (!canEdit)
+{
+    <div class="alert alert-info" role="alert">
+        <i class="fas fa-info-circle me-2"></i>You have view-only access. Contact an Administrator to make changes.
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@foreach (var (rtType, rtLabel) in releaseTypes)
+{
+    var rows = Model
+        .Where(s => s.ReleaseType == rtType)
+        .OrderBy(s => groupOrder.TryGetValue(s.ProductGroup, out var o) ? o : 99)
+        .ToList();
+
+    if (!rows.Any()) continue;
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">@rtLabel</div>
+        <div class="card-body p-0">
+            <table class="table table-sm table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:28%">Product Group</th>
+                        <th>Statement</th>
+                        <th style="width:14%">Last Modified By</th>
+                        <th style="width:10%">Date</th>
+                        @if (canEdit)
+                        {
+                            <th style="width:6%"></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in rows)
+                    {
+                        var preview = s.Statement.Length > 130
+                            ? s.Statement[..130] + "…"
+                            : s.Statement;
+                        <tr>
+                            <td class="fw-semibold small align-middle">@s.ProductGroupLabel</td>
+                            <td class="small text-muted align-middle" title="@s.Statement">@preview</td>
+                            <td class="small align-middle">@s.LastModifiedBy</td>
+                            <td class="small align-middle">@s.LastModifiedDate.ToSite()?.ToString("dd-MMM-yyyy")</td>
+                            @if (canEdit)
+                            {
+                                <td class="align-middle">
+                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                            data-bs-toggle="modal" data-bs-target="#editModal"
+                                            data-id="@s.Id"
+                                            data-label="@s.ProductGroupLabel"
+                                            data-release="@rtLabel"
+                                            data-statement="@s.Statement">Edit</button>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@{
+    var auditLogs = ViewBag.AuditLogs as List<ReleaseCertSettingAuditLog> ?? new List<ReleaseCertSettingAuditLog>();
+}
+@if (auditLogs.Any())
+{
+    <div class="card mb-4">
+        <div class="card-header fw-semibold"><i class="fas fa-history me-1"></i>Change History</div>
+        <div class="card-body p-0">
+            <table class="table table-sm table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:14%">Date / Time <span class="fw-normal text-muted">(@SiteTime.Label)</span></th>
+                        <th style="width:24%">Setting</th>
+                        <th>Change</th>
+                        <th style="width:14%">Changed By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in auditLogs)
+                    {
+                        var rtLabel = releaseTypes.Where(rt => rt.Type == log.ReleaseType).Select(rt => rt.Label).FirstOrDefault() ?? log.ReleaseType.ToString();
+                        <tr>
+                            <td class="small align-middle">@(SiteTime.ToSite((DateTime)log.ChangedOn).ToString("dd-MMM-yyyy HH:mm"))</td>
+                            <td class="small align-middle">@rtLabel — @log.ProductGroupLabel</td>
+                            <td class="small align-middle">
+                                <details>
+                                    <summary style="cursor:pointer;list-style:none">@log.FieldName updated <span class="text-muted">[show]</span></summary>
+                                    <div class="mt-1"><span class="text-danger fw-semibold">Old:</span> <span class="text-muted">@log.OldValue</span></div>
+                                    <div class="mt-1"><span class="text-success fw-semibold">New:</span> <span class="text-muted">@log.NewValue</span></div>
+                                </details>
+                            </td>
+                            <td class="small align-middle">@log.ChangedBy</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@if (canEdit)
+{
+    <!-- Edit Statement Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="editId" />
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalTitle">Edit Statement</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted small mb-3" id="editModalSubtitle"></p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Certification Statement</label>
+                            <textarea name="statement" id="editStatement" class="form-control" rows="7" required></textarea>
+                            <div class="form-text">This text will pre-populate the statement field in the AP Certification modal. The AP can still edit it before signing.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Statement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById('editModal').addEventListener('show.bs.modal', function(event) {
+        var btn = event.relatedTarget;
+        document.getElementById('editId').value        = btn.dataset.id;
+        document.getElementById('editStatement').value = btn.dataset.statement;
+        document.getElementById('editModalTitle').textContent   = btn.dataset.release + ' — ' + btn.dataset.label;
+        document.getElementById('editModalSubtitle').textContent = 'Editing the default AP certification statement for ' + btn.dataset.label + ' records released under ' + btn.dataset.release + '.';
+    });
+    </script>
+}

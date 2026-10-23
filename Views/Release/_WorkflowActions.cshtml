@@ -1,0 +1,519 @@
+@model OpenQMS.Models.Release.ReleaseRecord
+@using OpenQMS.Models.Release
+@using OpenQMS.Authorization
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+
+@functions {
+    static string EnumDisplay<T>(T value) where T : Enum
+    {
+        var fi = value.GetType().GetField(value.ToString()!);
+        var attr = fi?.GetCustomAttribute<DisplayAttribute>();
+        return attr?.Name ?? value.ToString()!;
+    }
+
+    static string ReleaseStatusLabel(ReleaseStatus s) =>
+        s == ReleaseStatus.Closed ? "Released" : EnumDisplay(s);
+}
+
+@{
+    // isAP: can certify, reject, issue certificates, override rejection
+    var isAP = User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
+    // isQO: all quality roles — Admin, QualityManager, QualityUser
+    var isQO = User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) ||
+               User.IsInRole(Constants.QualityUserRole);
+}
+
+@if (Model.Status != ReleaseStatus.Closed && Model.Status != ReleaseStatus.Cancelled)
+{
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <strong>Workflow Actions</strong>
+            <span class="small">Current: @ReleaseStatusLabel(Model.Status)</span>
+        </div>
+        <div class="card-body d-flex gap-2 flex-wrap">
+
+            @* Finding 6: isQO already includes QualityUser — single condition sufficient *@
+            @if (Model.Status == ReleaseStatus.Draft && isQO)
+            {
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#submitReviewModal">Submit for Review</button>
+                <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">Cancel</button>
+            }
+
+            @if (Model.Status == ReleaseStatus.UnderReview && isQO)
+            {
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submitAPModal">Submit to AP</button>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#holdModal">Place on Hold</button>
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#returnDraftModal">Return for Rework</button>
+                @* Finding 4: direct cancel from Under Review *@
+                <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">Cancel</button>
+            }
+
+            @if (Model.Status == ReleaseStatus.OnHold && (isQO || isAP))
+            {
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#liftHoldModal">Lift Hold</button>
+                <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">Cancel</button>
+            }
+
+            @if (Model.Status == ReleaseStatus.PendingAPDecision && isAP)
+            {
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#certifyModal">Certify Batch</button>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#holdModal">Place on Hold</button>
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#returnReviewModal">Return for Rework</button>
+            }
+
+            @if (Model.Status == ReleaseStatus.Certified && (isQO || isAP))
+            {
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmReleaseModal">Confirm Transfer to Saleable Stock</button>
+            }
+
+            @if (Model.Status == ReleaseStatus.Rejected)
+            {
+                @if (isQO)
+                {
+                    <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#closeModal">Close</button>
+                }
+                @* Finding 5: AP can override rejection *@
+                @if (isAP)
+                {
+                    <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#returnFromRejectionModal">Override Rejection</button>
+                }
+            }
+        </div>
+    </div>
+
+    <!-- ══ Modals ══════════════════════════════════════════════════════════ -->
+
+    <div class="modal fade" id="submitReviewModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="SubmitForReview" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h5 class="modal-title">Submit for Review</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Comments (optional)</label>
+                        <textarea name="comments" class="form-control" rows="3"></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info">Submit for Review</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="submitAPModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="SubmitToAP" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h5 class="modal-title">Submit to Authorised Person</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    @{
+                        var outstandingCount = Model.ChecklistItems?.Count(i => i.Status == ChecklistItemStatus.Outstanding) ?? 0;
+                        bool isQOReleaseType = Model.ReleaseType == ReleaseType.QualityOversight;
+                        var blockingOutstandingCount = Model.ChecklistItems?.Count(i =>
+                            i.IsBlocking && (
+                                i.Status == ChecklistItemStatus.Outstanding ||
+                                (!isQOReleaseType && i.Status == ChecklistItemStatus.NotApplicable)
+                            )) ?? 0;
+                        var pendingResultCount = Model.TestResults?.Count(t => t.Status == TestResultStatus.Pending) ?? 0;
+                        var apSubmitBlocked = blockingOutstandingCount > 0 || pendingResultCount > 0;
+                    }
+                    @if (blockingOutstandingCount > 0)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>&#9888; @blockingOutstandingCount Blocking Outstanding checklist item(s)</strong> — submission blocked. Resolve all blocking items first.
+                        </div>
+                    }
+                    else if (outstandingCount > 0)
+                    {
+                        <div class="alert alert-warning">
+                            <strong>&#9888; @outstandingCount Outstanding checklist item(s)</strong> — non-blocking, but should be addressed.
+                        </div>
+                    }
+                    @if (pendingResultCount > 0)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>&#9888; @pendingResultCount Pending analytical result(s)</strong> — submission blocked. Enter a result (Pass, Fail, or N/A) for all listed tests.
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label class="form-label">Comments (optional)</label>
+                        <textarea name="comments" class="form-control" rows="3"></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" @(apSubmitBlocked ? "disabled" : "")>Submit to AP</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="holdModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="PlaceOnHold" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h5 class="modal-title">Place on Hold</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Hold Reason <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Place on Hold</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    @* Finding 8: Lift Hold modal includes target state selection *@
+    <div class="modal fade" id="liftHoldModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="LiftHold" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h5 class="modal-title">Lift Hold</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Return Record To</label>
+                        <select name="targetState" class="form-select">
+                            <option value="UnderReview" selected>Under Review (continue quality review)</option>
+                            <option value="Draft">Draft (major rework required)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Comments (optional)</label>
+                        <textarea name="comments" class="form-control" rows="3"></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Lift Hold</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="returnDraftModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="ReturnForReview" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h5 class="modal-title">Return for Rework</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="alert alert-info small">The record will return to <strong>Draft</strong>. All fields will be available for editing.</div>
+                    <div class="mb-3">
+                        <label class="form-label">Reason / Comments</label>
+                        <textarea name="comments" class="form-control" rows="3"></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-outline-secondary">Return for Rework</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="returnReviewModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="ReturnToUnderReview" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h5 class="modal-title">Return for Rework</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="alert alert-info small">The record will return to <strong>Under Review</strong>. Quality Notes can be updated; Product, Batch, and Site details remain locked until returned to Draft.</div>
+                    <div class="mb-3">
+                        <label class="form-label">Reason / Comments</label>
+                        <textarea name="comments" class="form-control" rows="3"></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-outline-secondary">Return for Rework</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="certifyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="Certify" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-success text-white"><h5 class="modal-title">AP Certification — Electronic Signature</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="alert alert-info small">By certifying this batch, you are providing an electronic signature under PIC/S Annex 16. Your email and password confirm your identity.</div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">AP Full Name &amp; Qualification</label>
+                        <input name="apFullName" class="form-control" value="@(Model.APFullNameQualification ?? ViewBag.APDefaultName)" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Certification Statement</label>
+                        <textarea name="statement" class="form-control" rows="6">@(Model.APCertificationStatement ?? ViewBag.APDefaultStatement ?? "I hereby certify that this batch has been manufactured, tested, and reviewed in accordance with the conditions of the Marketing Authorisation and all applicable GMP requirements. All manufacturing records, quality control results, deviation status, and regulatory obligations have been reviewed and found satisfactory. This batch is approved for release for supply.")</textarea>
+                    </div>
+                    <hr />
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Certify Batch</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="rejectModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="Reject" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white"><h5 class="modal-title">Reject Batch</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Rejection Reason <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reject Batch</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="confirmReleaseModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="ConfirmRelease" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h5 class="modal-title">Confirm Transfer to Saleable Stock</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Release Reference Number
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn-release" data-help="releaseref"
+                                    aria-label="Release Reference Number guidance">?</button>
+                        </label>
+                        <input type="text" name="releaseRegisterRef" class="form-control"
+                               placeholder="e.g. WMS-2026-0042 (optional)"
+                               value="@Model.ReleaseRegisterRef" />
+                        <div class="form-text">Optional — enter the WMS / ERP / register reference for this batch release.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Comments (optional)</label>
+                        <textarea name="comments" class="form-control" rows="2"></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Confirm Release</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <!-- Popover help content for Release Reference Number -->
+    <div class="d-none">
+        <div id="help-releaseref">
+            <p class="mb-1"><strong>Release Reference Number</strong></p>
+            <p class="mb-0">Optional. Enter the reference number or code assigned to this batch release in your Warehouse Management System (WMS), ERP, or external release register. This field is intended as a cross-reference to the operational release record outside this QMS. Leave blank if not applicable.</p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            document.querySelectorAll('.help-btn-release').forEach(function (btn) {
+                var contentEl = document.getElementById('help-' + btn.dataset.help);
+                new bootstrap.Popover(btn, {
+                    html: true, trigger: 'click', placement: 'right',
+                    content: contentEl ? contentEl.innerHTML : '', title: '', container: 'body'
+                });
+            });
+            document.addEventListener('click', function (e) {
+                if (!e.target.classList.contains('help-btn-release')) {
+                    document.querySelectorAll('.help-btn-release').forEach(function (btn) {
+                        var pop = bootstrap.Popover.getInstance(btn);
+                        if (pop) pop.hide();
+                    });
+                }
+            });
+        })();
+    </script>
+
+    <div class="modal fade" id="closeModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="Close" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h5 class="modal-title">Close Record</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Comments (optional)</label>
+                        <textarea name="comments" class="form-control" rows="3"></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-outline-secondary">Close Record</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="cancelModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="Cancel" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header"><h5 class="modal-title">Cancel Record</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Cancellation Reason <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-outline-danger">Cancel Record</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    @* Finding 5: AP override of rejection modal *@
+    <div class="modal fade" id="returnFromRejectionModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="ReturnFromRejection" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-warning"><h5 class="modal-title">Override Rejection</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="alert alert-warning small">This action overrides the AP rejection and returns the record to Under Review. An electronic signature is required. Use only when the rejection was made in error or new information has been obtained.</div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason for Override <span class="text-danger">*</span></label>
+                        <textarea name="comments" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Override Rejection</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}

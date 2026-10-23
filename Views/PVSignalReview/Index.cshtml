@@ -1,0 +1,95 @@
+@model IEnumerable<OpenQMS.Models.PVSignalReview>
+@{
+    ViewData["Title"] = "Signal Reviews";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="fas fa-broadcast-tower me-2 text-warning"></i>PV Signal Reviews</h4>
+</div>
+
+<div class="alert alert-info small mb-3">
+    <i class="fas fa-info-circle me-1"></i>
+    Signal reviews are automatically created when 3 or more adverse events share the same MedDRA Preferred Term within a 90-day window.
+    Each signal must be assessed and either confirmed, refuted, or placed under ongoing monitoring.
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<table class="table table-striped table-hover" id="signalTable">
+    <thead class="table-dark">
+        <tr>
+            <th>Detected</th>
+            <th>MedDRA Preferred Term</th>
+            <th class="text-center">Trigger Count</th>
+            <th>Assigned To</th>
+            <th>Status</th>
+            <th>Conclusion</th>
+            <th>Reviewed On</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+            var statusClass = s.Status switch
+            {
+                PVSignalReview.SignalStatus.Open         => "danger",
+                PVSignalReview.SignalStatus.UnderReview  => "warning",
+                PVSignalReview.SignalStatus.Confirmed    => "dark",
+                PVSignalReview.SignalStatus.Refuted      => "secondary",
+                PVSignalReview.SignalStatus.Closed       => "success",
+                _                                        => "secondary"
+            };
+            <tr class="@(s.Status == PVSignalReview.SignalStatus.Open ? "table-danger" : "")">
+                <td>@s.DetectedOn.ToSite().ToString("dd MMM yyyy")</td>
+                <td><strong>@s.MedDRAPT</strong></td>
+                <td class="text-center">
+                    <span class="badge bg-warning text-dark">@s.TriggerCount</span>
+                </td>
+                @{
+                    var assigneeNames = ViewBag.AssigneeNames as Dictionary<string, string>;
+                    var assigneeLabel = (!string.IsNullOrEmpty(s.AssignedTo) && assigneeNames != null && assigneeNames.ContainsKey(s.AssignedTo))
+                        ? assigneeNames[s.AssignedTo]
+                        : s.AssignedTo;
+                }
+                <td>@if (assigneeLabel != null) { @assigneeLabel } else { <span class="text-muted">Unassigned</span> }</td>
+                <td><span class="badge bg-@statusClass">@EnumHelper.Display(s.Status)</span></td>
+                <td>
+                    @if (s.Conclusion.HasValue)
+                    {
+                        <span class="badge bg-@(s.Conclusion == PVSignalReview.SignalConclusion.Confirmed ? "danger" : s.Conclusion == PVSignalReview.SignalConclusion.Refuted ? "secondary" : "info")">
+                            @s.Conclusion
+                        </span>
+                    }
+                    else { <span class="text-muted">—</span> }
+                </td>
+                <td>@(s.ReviewedOn.ToSite()?.ToString("dd MMM yyyy") ?? "—")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-primary">View</a>
+                    @if (s.Status != PVSignalReview.SignalStatus.Closed && s.Status != PVSignalReview.SignalStatus.Refuted)
+                    {
+                        <a asp-action="Edit" asp-route-id="@s.Id" class="btn btn-sm btn-outline-secondary ms-1">Assess</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <p class="text-muted text-center mt-4">No signal reviews yet. Signals are auto-detected by the background monitor.</p>
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        $('#signalTable').DataTable({ stateSave: true, order: [[0, 'desc']], language: { searchPlaceholder: 'Search within filtered results…', search: '' } });
+    });
+</script>
+}

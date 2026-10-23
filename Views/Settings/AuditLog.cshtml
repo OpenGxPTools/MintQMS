@@ -1,0 +1,56 @@
+@model IEnumerable<OpenQMS.Models.SettingsAuditLog>
+
+@{
+    ViewData["Title"] = "Settings Audit Log";
+}
+
+<h4>Settings Audit Log</h4>
+<hr />
+
+<p>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">&larr; Back to Settings</a>
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No settings changes have been recorded yet.</div>
+}
+else
+{
+    <table id="settingsAuditTable" class="table table-hover table-sm">
+        <thead>
+            <tr>
+                <th>Date / Time (UTC)</th>
+                <th>Changed By</th>
+                <th>Field</th>
+                <th>Previous Value</th>
+                <th>New Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Model)
+            {
+                <tr>
+                    <td>@log.ChangedOn.ToSite().ToString("dd/MM/yyyy HH:mm:ss")</td>
+                    <td>@log.ChangedBy</td>
+                    <td><code>@log.FieldName</code></td>
+                    <td class="text-muted">@(log.OldValue ?? "—")</td>
+                    <td>@(log.NewValue ?? "—")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#settingsAuditTable').DataTable({
+                pageLength: 25,
+                order: [[0, 'desc']],
+                dom: 'Bfrtip',
+                buttons: ['excel', 'print']
+            });
+        });
+    </script>
+}

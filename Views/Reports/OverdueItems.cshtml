@@ -1,0 +1,390 @@
+@using OpenQMS.Models
+@{
+    ViewData["Title"] = "Overdue Items";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var today = (DateTime)ViewBag.Today;
+    var overdueCapas = (List<Capa>)ViewBag.OverdueCapas;
+    var overdueChanges = (List<Change>)ViewBag.OverdueChanges;
+    var overdueAudits = (List<Audit>)ViewBag.OverdueAudits;
+    var overdueRisks = (List<Risk>)ViewBag.OverdueRisks;
+    var overdueDeviations = (List<Deviation>)ViewBag.OverdueDeviations;
+    var overdueComplaints = (List<Complaint>)ViewBag.OverdueComplaints;
+    var overdueDocReviews = (List<AppDocument>)ViewBag.OverdueDocReviews;
+    var dueSoonDocReviews = (List<AppDocument>)ViewBag.DueSoonDocReviews;
+
+    int DaysOverdue(DateTime dueDate) => (int)(today - dueDate).TotalDays;
+    string RowClass(int days) => days > 60 ? "table-danger" : days > 30 ? "table-warning" : "";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Overdue Items</h4>
+    <a asp-action="Index" class="btn btn-outline-secondary">Reports Hub</a>
+</div>
+
+<p class="text-muted mb-3">
+    All items currently past their due date or open for more than 30 days across all quality modules.
+    This is a live snapshot — refresh the page to see the current state.
+</p>
+
+@* Total count *@
+<div class="alert @(ViewBag.TotalOverdue > 0 ? "alert-danger" : "alert-success") d-flex align-items-center mb-4">
+    <strong class="fs-5 me-2">@ViewBag.TotalOverdue</strong>
+    @if (ViewBag.TotalOverdue == 0)
+    {
+        <span>items overdue — everything is on track.</span>
+    }
+    else
+    {
+        <span>item(s) overdue across all modules as at @today.ToString("dd MMM yyyy").</span>
+    }
+</div>
+
+<div class="alert alert-light border small mb-4">
+    <strong>Colour coding:</strong>
+    <span class="badge bg-danger me-1">Red</span> &gt;60 days overdue &nbsp;
+    <span class="badge bg-warning text-dark me-1">Amber</span> 31–60 days overdue &nbsp;
+    <span class="badge bg-light text-dark border me-1">White</span> up to 30 days overdue.<br />
+    Deviations and Complaints have no formal due date — they appear here when open for more than 30 days.
+</div>
+
+@* CAPAs *@
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center @(overdueCapas.Any() ? "bg-danger text-white" : "bg-success text-white")">
+        <span class="fw-semibold">CAPAs</span>
+        <span class="badge bg-white text-dark">@overdueCapas.Count overdue</span>
+    </div>
+    @if (!overdueCapas.Any())
+    {
+        <div class="card-body text-muted">No overdue CAPAs.</div>
+    }
+    else
+    {
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>CAPA ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Target Date</th>
+                        <th>Days Overdue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in overdueCapas)
+                    {
+                        var days = DaysOverdue(c.TargetCompletionDate!.Value);
+                        <tr class="@RowClass(days)">
+                            <td><a asp-controller="Capas" asp-action="Details" asp-route-id="@c.Id">@c.CapaId</a></td>
+                            <td>@c.Title</td>
+                            <td><span class="badge bg-secondary">@EnumHelper.Display(c.Status)</span></td>
+                            <td>@c.TargetCompletionDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td><strong>@days</strong></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@* Changes *@
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center @(overdueChanges.Any() ? "bg-danger text-white" : "bg-success text-white")">
+        <span class="fw-semibold">Changes</span>
+        <span class="badge bg-white text-dark">@overdueChanges.Count overdue</span>
+    </div>
+    @if (!overdueChanges.Any())
+    {
+        <div class="card-body text-muted">No overdue changes.</div>
+    }
+    else
+    {
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Change ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Target Date</th>
+                        <th>Days Overdue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in overdueChanges)
+                    {
+                        var days = DaysOverdue(c.TargetImplementationDate!.Value);
+                        <tr class="@RowClass(days)">
+                            <td><a asp-controller="Changes" asp-action="Details" asp-route-id="@c.Id">@c.ChangeId</a></td>
+                            <td>@c.Title</td>
+                            <td><span class="badge bg-secondary">@EnumHelper.Display(c.Status)</span></td>
+                            <td>@c.TargetImplementationDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td><strong>@days</strong></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@* Audits *@
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center @(overdueAudits.Any() ? "bg-danger text-white" : "bg-success text-white")">
+        <span class="fw-semibold">Audits</span>
+        <span class="badge bg-white text-dark">@overdueAudits.Count overdue</span>
+    </div>
+    @if (!overdueAudits.Any())
+    {
+        <div class="card-body text-muted">No overdue audits.</div>
+    }
+    else
+    {
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Audit ID</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Planned End</th>
+                        <th>Days Overdue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in overdueAudits)
+                    {
+                        var days = DaysOverdue(a.PlannedEndDate!.Value);
+                        <tr class="@RowClass(days)">
+                            <td><a asp-controller="Audits" asp-action="Details" asp-route-id="@a.Id">@a.AuditId</a></td>
+                            <td>@a.Title</td>
+                            <td>@a.Type</td>
+                            <td><span class="badge bg-secondary">@EnumHelper.Display(a.Status)</span></td>
+                            <td>@a.PlannedEndDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td><strong>@days</strong></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@* Risks *@
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center @(overdueRisks.Any() ? "bg-danger text-white" : "bg-success text-white")">
+        <span class="fw-semibold">Risks</span>
+        <span class="badge bg-white text-dark">@overdueRisks.Count overdue</span>
+    </div>
+    @if (!overdueRisks.Any())
+    {
+        <div class="card-body text-muted">No overdue risks.</div>
+    }
+    else
+    {
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Risk ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>RPN</th>
+                        <th>Target Date</th>
+                        <th>Days Overdue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in overdueRisks)
+                    {
+                        var days = DaysOverdue(r.TargetCompletionDate!.Value);
+                        var rpn = r.ResidualRPN ?? r.InitialRPN;
+                        <tr class="@RowClass(days)">
+                            <td><a asp-controller="Risks" asp-action="Details" asp-route-id="@r.Id">@r.RiskId</a></td>
+                            <td>@r.Title</td>
+                            <td><span class="badge bg-secondary">@EnumHelper.Display(r.Status)</span></td>
+                            <td>
+                                <span class="badge @(rpn >= 80 ? "bg-danger" : rpn >= 40 ? "bg-warning text-dark" : "bg-success")">@rpn</span>
+                            </td>
+                            <td>@r.TargetCompletionDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td><strong>@days</strong></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@* Deviations *@
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center @(overdueDeviations.Any() ? "bg-warning text-dark" : "bg-success text-white")">
+        <span class="fw-semibold">Deviations <small class="fw-normal">(open &gt;30 days)</small></span>
+        <span class="badge bg-white text-dark">@overdueDeviations.Count</span>
+    </div>
+    @if (!overdueDeviations.Any())
+    {
+        <div class="card-body text-muted">No deviations open for more than 30 days.</div>
+    }
+    else
+    {
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Deviation ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Identified On</th>
+                        <th>Days Open</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in overdueDeviations)
+                    {
+                        var days = DaysOverdue(d.IdentifiedOn);
+                        <tr class="@RowClass(days)">
+                            <td><a asp-controller="Deviations" asp-action="Details" asp-route-id="@d.Id">@d.DeviationId</a></td>
+                            <td>@d.Title</td>
+                            <td><span class="badge bg-secondary">@EnumHelper.Display(d.Status)</span></td>
+                            <td>@d.IdentifiedOn.ToSite().ToString("dd MMM yyyy")</td>
+                            <td><strong>@days</strong></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@* Complaints *@
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center @(overdueComplaints.Any() ? "bg-warning text-dark" : "bg-success text-white")">
+        <span class="fw-semibold">Complaints <small class="fw-normal">(open &gt;30 days)</small></span>
+        <span class="badge bg-white text-dark">@overdueComplaints.Count</span>
+    </div>
+    @if (!overdueComplaints.Any())
+    {
+        <div class="card-body text-muted">No complaints open for more than 30 days.</div>
+    }
+    else
+    {
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Complaint ID</th>
+                        <th>Title</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Received On</th>
+                        <th>Days Open</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in overdueComplaints)
+                    {
+                        var days = DaysOverdue(c.ReceivedOn);
+                        <tr class="@RowClass(days)">
+                            <td><a asp-controller="Complaints" asp-action="Details" asp-route-id="@c.Id">@c.ComplaintId</a></td>
+                            <td>@c.Title</td>
+                            <td>
+                                <span class="badge @(c.Severity == Complaint.ComplaintSeverity.Critical ? "bg-danger" : c.Severity == Complaint.ComplaintSeverity.Major ? "bg-warning text-dark" : "bg-secondary")">
+                                    @c.Severity
+                                </span>
+                            </td>
+                            <td><span class="badge bg-secondary">@EnumHelper.Display(c.Status)</span></td>
+                            <td>@c.ReceivedOn.ToSite().ToString("dd MMM yyyy")</td>
+                            <td><strong>@days</strong></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@* Documents Overdue for Periodic Review *@
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center @(overdueDocReviews.Any() ? "bg-danger text-white" : "bg-success text-white")">
+        <span class="fw-semibold">Documents — Periodic Review Overdue</span>
+        <span class="badge bg-white text-dark">@overdueDocReviews.Count overdue</span>
+    </div>
+    @if (!overdueDocReviews.Any())
+    {
+        <div class="card-body text-muted">No approved documents are overdue for periodic review.</div>
+    }
+    else
+    {
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Document ID</th>
+                        <th>Title</th>
+                        <th>Version</th>
+                        <th>Review Due Date</th>
+                        <th>Days Overdue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in overdueDocReviews)
+                    {
+                        var days = DaysOverdue(d.ReviewDueDate!.Value);
+                        <tr class="@RowClass(days)">
+                            <td><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@d.Id">@d.DocumentId</a></td>
+                            <td>@d.Title</td>
+                            <td>@d.Version.ToString("0.0")</td>
+                            <td>@d.ReviewDueDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td><strong>@days</strong></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@* Documents with Review Due Within 30 Days *@
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center @(dueSoonDocReviews.Any() ? "bg-warning text-dark" : "bg-success text-white")">
+        <span class="fw-semibold">Documents — Review Due Within 30 Days</span>
+        <span class="badge bg-white text-dark">@dueSoonDocReviews.Count</span>
+    </div>
+    @if (!dueSoonDocReviews.Any())
+    {
+        <div class="card-body text-muted">No approved documents have a review due within the next 30 days.</div>
+    }
+    else
+    {
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Document ID</th>
+                        <th>Title</th>
+                        <th>Version</th>
+                        <th>Review Due Date</th>
+                        <th>Days Until Due</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in dueSoonDocReviews)
+                    {
+                        var daysLeft = (int)(d.ReviewDueDate!.Value.Date - today).TotalDays;
+                        <tr class="@(daysLeft <= 7 ? "table-warning" : "")">
+                            <td><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@d.Id">@d.DocumentId</a></td>
+                            <td>@d.Title</td>
+                            <td>@d.Version.ToString("0.0")</td>
+                            <td>@d.ReviewDueDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td><strong>@daysLeft</strong></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -1,0 +1,90 @@
+﻿@*
+This file is part of the OpenQMS.net project (https://github.com/C-realize/OpenQMS).
+Copyright (C) 2022-2024  C-realize IT Services SRL (https://www.c-realize.com)
+
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://www.c-realize.com/contact.  For AGPL licensing, see below.
+
+AGPL:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+*@
+
+@model OpenQMS.Models.Training
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Delete Training</h4>
+    </div>
+</div>
+<hr />
+<h5 class="text-danger">Are you sure you want to delete this?</h5>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.TrainingId)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.TrainingId)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-4">Policy</dt>
+            <dd class="col-sm-8">
+                <a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@Model.PolicyId">@Html.DisplayFor(model => model.PolicyTitle)</a>
+            </dd>
+            <dt class="col-sm-4">Trainer</dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.TrainerEmail)
+            </dd>
+        </dl>
+        <table class="table table-sm">
+            <thead>
+                <tr><th>Trainees</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Trainees)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Trainee.Email)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <div class="d-flex gap-2">
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+    </div>
+</form>

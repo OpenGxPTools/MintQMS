@@ -1,0 +1,155 @@
+@model OpenQMS.Models.Customer
+
+@{
+    ViewData["Title"] = "Customer Attachments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isLocked = Model.Status != OpenQMS.Models.Customer.CustomerStatus.Draft
+                 && Model.Status != OpenQMS.Models.Customer.CustomerStatus.UnderReview;
+    var statusBadge = Model.Status switch {
+        OpenQMS.Models.Customer.CustomerStatus.Approved => "bg-success",
+        OpenQMS.Models.Customer.CustomerStatus.Obsolete => "bg-secondary",
+        _ => "bg-warning text-dark"
+    };
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Customer &mdash; <span class="fw-bold">@Model.CustomerId</span></h4>
+        <small class="text-muted">Attachments &mdash; @Model.LegalName</small>
+    </div>
+    <span class="badge @statusBadge fs-6">@Model.Status</span>
+</div>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!isLocked)
+{
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Upload Document</span>
+            <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Accepted: @UploadRules.AcceptedLabel &middot; Max 25 MB</small>
+        </div>
+        <div class="card-body">
+            <form asp-action="UploadDocument" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="customerId" value="@Model.Id" />
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label">File <span class="text-danger">*</span></label>
+                        <input type="file" name="file" class="form-control form-control-sm" required
+                               accept="@UploadRules.Accept" />
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Description</label>
+                        <input type="text" name="description" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-3">
+                        <label class="form-label">Issue Date</label>
+                        <input type="date" name="issueDate" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="date" name="expiryDate" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-upload me-1"></i>Upload
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary">Attachments can only be added or removed while the record is in Draft or Under Review.</div>
+}
+
+@if (Model.Documents == null || !Model.Documents.Any())
+{
+    <p class="text-muted">No documents uploaded yet.</p>
+}
+else
+{
+    <table class="table table-sm table-hover" id="docsTable">
+        <thead class="table-light">
+            <tr>
+                <th>File Name</th>
+                <th>Description</th>
+                <th>Issue Date</th>
+                <th>Expiry Date</th>
+                <th>Status</th>
+                <th>Uploaded By</th>
+                <th>Uploaded Date</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var doc in Model.Documents.OrderByDescending(d => d.UploadedDate))
+            {
+                var rowClass = doc.DocumentStatus == OpenQMS.Models.CustomerDocumentStatus.Expired ? "table-danger"
+                             : doc.DocumentStatus == OpenQMS.Models.CustomerDocumentStatus.Expiring ? "table-warning" : "";
+                <tr class="@rowClass">
+                    <td><i class="fas fa-file me-1 text-muted"></i>@doc.FileName</td>
+                    <td>@(doc.Description ?? "-")</td>
+                    <td>@(doc.IssueDate.HasValue ? doc.IssueDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                    <td>@(doc.ExpiryDate.HasValue ? doc.ExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                    <td>@doc.DocumentStatus</td>
+                    <td>@doc.UploadedBy</td>
+                    <td>@doc.UploadedDate.ToSite().ToString("dd/MM/yyyy")</td>
+                    <td class="text-end">
+                        <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-download me-1"></i>Download
+                        </a>
+                        @if (!isLocked)
+                        {
+                            <form asp-action="DeleteDocument" method="post" class="d-inline ms-1" data-delete-reason="document">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@doc.Id" />
+                                <input type="hidden" name="customerId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash me-1"></i>Delete
+                                </button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadDocument", Noun: "documents")' />
+
+<div class="mt-3 d-flex gap-3">
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to Details</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#docsTable').DataTable({
+                dom: 'lBfrtip',
+                buttons: ['colvis', 'pdf', 'excel'],
+                order: [[6, 'desc']]
+            });
+        });
+    </script>
+}

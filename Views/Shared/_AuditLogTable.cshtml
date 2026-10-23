@@ -1,0 +1,54 @@
+@model IEnumerable<OpenQMS.ViewModels.AuditLogRow>
+@{
+    const int TruncateAt = 120;
+    var rows = Model?.OrderByDescending(r => r.PerformedOn).ToList()
+               ?? new List<OpenQMS.ViewModels.AuditLogRow>();
+}
+@if (rows.Any())
+{
+    <table class="table table-sm table-hover mb-0">
+        <thead class="table-light">
+            <tr>
+                <th class="text-nowrap">Date / Time <span class="fw-normal text-muted">(@SiteTime.Label)</span></th>
+                <th>Action</th>
+                <th>From Status</th>
+                <th>To Status</th>
+                <th>Performed By</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in rows)
+            {
+                <tr>
+                    <td class="text-nowrap text-muted small">@row.PerformedOn.ToSite().ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@row.Action</td>
+                    <td>@(row.FromStatus ?? "-")</td>
+                    <td>@(row.ToStatus ?? "-")</td>
+                    <td>@row.PerformedBy</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(row.Notes))
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                        else if (row.Notes.Length <= TruncateAt)
+                        {
+                            @row.Notes
+                        }
+                        else
+                        {
+                            <details>
+                                <summary style="cursor:pointer;list-style:none" title="Click to expand">@row.Notes[..TruncateAt]<span class="text-muted">… <small>[show more]</small></span></summary>
+                                <div class="mt-1 small border-start ps-2">@row.Notes</div>
+                            </details>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-muted mb-0">No audit log entries yet.</p>
+}

@@ -1,0 +1,142 @@
+@model IEnumerable<OpenQMS.Models.Change>
+@using OpenQMS.Authorization
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        var table = $('#changesTable').DataTable({ stateSave: true,
+            initComplete: function () {
+                $('.status-filter').on('click', function () {
+                    $('.status-filter').removeClass('active');
+                    $(this).addClass('active');
+                    var val = $(this).data('status');
+                    table.column(6).search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+                $('.status-filter[data-status=""]').addClass('active');
+            },
+            "columns": [
+                null,
+                null,
+                null,
+                { "visible": false },
+                { "visible": false },
+                null,
+                null,
+                null
+            ],
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[0, 'asc']],
+            displayLength: 10,
+            buttons: [
+                'colvis',
+                {
+                    extend: 'pdf',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] }
+                },
+                {
+                    extend: 'excel',
+                    footer: false,
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] }
+                }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Changes</h4>
+    @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.QualityUserRole))
+    {
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Change</a>
+    }
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Proposal">Proposal</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="Assessment">Assessment</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending Acceptance">Pending Acceptance</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Implementation">Implementation</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Pending Approval">Pending Approval</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">Approved</button>
+</div>
+
+<table id="changesTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Change ID</th>
+            <th>Title</th>
+            <th>Linked To</th>
+            <th>Proposed By</th>
+            <th>Proposed On</th>
+            <th>Target Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var statusLabel = EnumHelper.Display(item.Status);
+
+            // Edit forbidden for: Approved, PendingAssessment, PendingApproval, Accepted
+            // Must exactly match controller Edit GET Forbid() gates
+            var canEdit = item.Status != OpenQMS.Models.Change.ChangeStatus.Approved
+                       && item.Status != OpenQMS.Models.Change.ChangeStatus.PendingAssessment
+                       && item.Status != OpenQMS.Models.Change.ChangeStatus.PendingApproval
+                       && !User.IsInRole(Constants.ReadOnlyRole);
+
+            // Delete: Admin only, Proposal/Assessment only
+            var canDelete = User.IsInRole(Constants.AdministratorsRole)
+                         && (item.Status == OpenQMS.Models.Change.ChangeStatus.Proposal
+                          || item.Status == OpenQMS.Models.Change.ChangeStatus.Assessment);
+
+            <tr>
+                <td>@item.ChangeId</td>
+                <td>@item.Title</td>
+                <td>
+                    @{
+                        var iLinked = new List<string>();
+                        if (item.LinkedProducts?.Any()  == true) iLinked.AddRange(item.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
+                        if (item.LinkedProcesses?.Any() == true) iLinked.AddRange(item.LinkedProcesses.Select(x => x.Process?.Name ?? "").Where(n => n != ""));
+                        if (item.LinkedAssets?.Any()    == true) iLinked.AddRange(item.LinkedAssets.Select(x => x.Asset?.Name ?? "").Where(n => n != ""));
+                        if (item.LinkedMaterials?.Any() == true) iLinked.AddRange(item.LinkedMaterials.Select(x => x.Material?.Name ?? "").Where(n => n != ""));
+                        if (item.LinkedSuppliers?.Any() == true) iLinked.AddRange(item.LinkedSuppliers.Select(x => x.Supplier?.LegalName ?? "").Where(n => n != ""));
+                        if (item.LinkedCapas?.Any()     == true) iLinked.AddRange(item.LinkedCapas.Select(x => x.Capa?.CapaId ?? "").Where(n => n != ""));
+                        if (!iLinked.Any() && item.Product != null) iLinked.Add(item.Product.Name);
+                    }
+                    @string.Join(", ", iLinked)
+                </td>
+                <td>@item.ProposedBy</td>
+                <td>@item.ProposedOn.ToSite().ToShortDateString()</td>
+                <td>@(item.TargetImplementationDate.HasValue ? item.TargetImplementationDate.Value.ToShortDateString() : "")</td>
+                <td>@statusLabel</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (canEdit)
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if (canDelete)
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

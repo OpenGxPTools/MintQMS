@@ -1,0 +1,122 @@
+@model IEnumerable<OpenQMS.Models.Release.ReleaseRecord>
+@using OpenQMS.Models.Release
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+
+@functions {
+    static string EnumDisplay<T>(T value) where T : Enum
+    {
+        var fi = value.GetType().GetField(value.ToString()!);
+        var attr = fi?.GetCustomAttribute<DisplayAttribute>();
+        return attr?.Name ?? value.ToString()!;
+    }
+
+    static string ReleaseStatusLabel(ReleaseStatus s) =>
+        s == ReleaseStatus.Closed ? "Released" : EnumDisplay(s);
+}
+
+@{
+    ViewData["Title"] = "Release Records";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        var table = $('#releaseTable').DataTable({ stateSave: true,
+            initComplete: function () {
+                $('.status-filter').on('click', function () {
+                    $('.status-filter').removeClass('active');
+                    $(this).addClass('active');
+                    var val = $(this).data('status');
+                    table.column(3).search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+                $('.status-filter[data-status=""]').addClass('active');
+            },
+            columns: [
+                null, null, null, null, null, null, null, null
+            ],
+            paging: true,
+            orderCellsTop: true,
+            dom: 'lBfrtip',
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            order: [[0, 'desc']],
+            displayLength: 10,
+            buttons: [
+                'colvis',
+                { extend: 'pdf',   footer: false, exportOptions: { columns: [0,1,2,3,4,5,6] } },
+                { extend: 'excel', footer: false, exportOptions: { columns: [0,1,2,3,4,5,6] } }
+            ]
+        });
+    });
+</script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Release Records</h4>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Release Record</a>
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Draft">Draft</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="Under Review">Under Review</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="On Hold">On Hold</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending AP Decision">Pending AP</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Certified">Certified</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Released">Released</button>
+    <button class="btn btn-outline-danger btn-sm status-filter" data-status="Rejected">Rejected</button>
+</div>
+
+<table id="releaseTable" class="table" style="width:100%">
+    <thead>
+        <tr>
+            <th>Record No.</th>
+            <th>Product</th>
+            <th>Batch No.</th>
+            <th>Status</th>
+            <th>Release Type</th>
+            <th>AP</th>
+            <th>Cert. Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            var badge = r.Status switch
+            {
+                ReleaseStatus.Draft             => "bg-secondary",
+                ReleaseStatus.UnderReview       => "bg-info text-dark",
+                ReleaseStatus.OnHold            => "bg-warning text-dark",
+                ReleaseStatus.PendingAPDecision => "bg-primary",
+                ReleaseStatus.Certified         => "bg-success",
+                ReleaseStatus.Released          => "bg-success",
+                ReleaseStatus.Rejected          => "bg-danger",
+                ReleaseStatus.Closed            => "bg-success",
+                ReleaseStatus.Cancelled         => "bg-secondary",
+                _                               => "bg-secondary"
+            };
+            <tr>
+                <td>@r.RecordNumber</td>
+                <td>@r.ProductName</td>
+                <td>@r.BatchNumber</td>
+                <td><span class="badge @badge">@ReleaseStatusLabel(r.Status)</span></td>
+                <td>@EnumDisplay(r.ReleaseType)</td>
+                <td>@(r.APFullNameQualification ?? "-")</td>
+                <td>@(r.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@r.Id">Details</a>
+                    @if (!r.IsLocked)
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

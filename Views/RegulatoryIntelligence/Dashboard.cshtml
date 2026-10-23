@@ -1,0 +1,315 @@
+@using OpenQMS.Models.RI
+@{
+    ViewData["Title"] = "RI Dashboard";
+
+    var statusCounts      = ViewBag.StatusCounts as Dictionary<RIApplicationStatus, int> ?? new();
+    var jurisdictionGroups = ViewBag.JurisdictionGroups as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+    var approachingDec    = ViewBag.ApproachingDecisions as List<RegulatoryApplication> ?? new();
+    var expiringApp       = ViewBag.ExpiringApprovals    as List<RegulatoryApplication> ?? new();
+    var openConditions    = ViewBag.OpenConditions        as List<RIConditionOfApproval> ?? new();
+    var expiringPathways  = ViewBag.ExpiringPathways      as List<RIAccessPathwayRecord>  ?? new();
+    var overdueMilestones = ViewBag.OverdueMilestones     as List<RIMilestone>            ?? new();
+    var recentActivity    = ViewBag.RecentActivity        as List<RIAuditLog>             ?? new();
+    var recentApps        = ViewBag.RecentActivityApps    as Dictionary<int, string>      ?? new();
+    var today             = SiteTime.Today;
+}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Regulatory Intelligence Dashboard</h4>
+    <div class="d-flex gap-2">
+        <a asp-action="ExportApplications" class="btn btn-outline-success btn-sm">Export Register</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">RI Register</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Application</a>
+    </div>
+</div>
+
+<!-- ── Stat Cards ──────────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="fs-1 fw-bold text-primary">@ViewBag.TotalApplications</div>
+                <div class="text-muted small">Total Applications</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card border-0 shadow-sm h-100 border-start border-success border-3">
+            <div class="card-body text-center">
+                <div class="fs-1 fw-bold text-success">@ViewBag.ActiveCount</div>
+                <div class="text-muted small">Approved / Active</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card border-0 shadow-sm h-100 border-start border-warning border-3">
+            <div class="card-body text-center">
+                <div class="fs-1 fw-bold text-warning">@ViewBag.UnderReviewCount</div>
+                <div class="text-muted small">Under Review / Clock Stop</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card border-0 shadow-sm h-100 border-start border-danger border-3">
+            <div class="card-body text-center">
+                <div class="fs-1 fw-bold text-danger">@(ViewBag.OpenConditionCount + (int)ViewBag.OverdueMilestoneCount + (int)ViewBag.OverdueReportCount)</div>
+                <div class="text-muted small">Items Needing Attention</div>
+                <div class="text-muted" style="font-size:0.7rem">
+                    @ViewBag.OpenConditionCount cond · @ViewBag.OverdueMilestoneCount milestones · @ViewBag.OverdueReportCount reports
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Status Breakdown & Jurisdiction Split ──────────────────────── -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold"><i class="fas fa-chart-bar me-1"></i>Applications by Status</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <tbody>
+                        @foreach (RIApplicationStatus s in Enum.GetValues(typeof(RIApplicationStatus)))
+                        {
+                            int cnt = statusCounts.GetValueOrDefault(s, 0);
+                            if (cnt == 0) continue;
+                            string badgeColor = s switch
+                            {
+                                RIApplicationStatus.Approved         => "success",
+                                RIApplicationStatus.ConditionsActive => "success",
+                                RIApplicationStatus.UnderReview      => "warning",
+                                RIApplicationStatus.ClockStop        => "warning",
+                                RIApplicationStatus.Submitted        => "primary",
+                                RIApplicationStatus.Rejected         => "danger",
+                                RIApplicationStatus.Withdrawn        => "dark",
+                                RIApplicationStatus.Suspended        => "danger",
+                                _ => "secondary"
+                            };
+                            int pct = ViewBag.TotalApplications > 0 ? (int)Math.Round(cnt * 100.0 / (int)ViewBag.TotalApplications) : 0;
+                            <tr>
+                                <td style="width:130px"><span class="badge bg-@badgeColor">@s</span></td>
+                                <td>
+                                    <div class="progress" style="height:14px">
+                                        <div class="progress-bar bg-@badgeColor" style="width:@pct%"></div>
+                                    </div>
+                                </td>
+                                <td style="width:30px" class="text-end fw-bold small">@cnt</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold"><i class="fas fa-globe me-1"></i>Applications by Jurisdiction</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead class="table-light"><tr><th>Jurisdiction</th><th>Authority</th><th class="text-end">Count</th></tr></thead>
+                    <tbody>
+                        @foreach (var g in jurisdictionGroups)
+                        {
+                            <tr>
+                                <td><span class="badge bg-secondary">@g.Code</span></td>
+                                <td class="small text-muted">@g.Auth</td>
+                                <td class="text-end fw-bold">@g.Count</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Deadline Alerts ────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold text-warning bg-warning bg-opacity-10">
+                <i class="fas fa-clock me-1"></i>Approaching Target Decision Dates
+                @if (approachingDec.Any()) { <span class="badge bg-warning text-dark ms-1">@approachingDec.Count</span> }
+            </div>
+            <div class="card-body p-0">
+                @if (approachingDec.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr><th>Application</th><th>Authority</th><th>Target Date</th><th>Days</th></tr></thead>
+                        <tbody>
+                            @foreach (var a in approachingDec)
+                            {
+                                int d = (a.TargetDecisionDate!.Value.Date - today).Days;
+                                <tr class="@(d < 0 ? "table-danger" : d <= 7 ? "table-warning" : "")">
+                                    <td><a asp-action="Details" asp-route-id="@a.Id" class="fw-semibold">@a.RINumber</a></td>
+                                    <td class="small">@a.Jurisdiction?.Authority</td>
+                                    <td class="small">@a.TargetDecisionDate.Value.ToString("dd MMM yyyy")</td>
+                                    <td class="small fw-bold @(d < 0 ? "text-danger" : "text-warning")">
+                                        @(d < 0 ? $"{Math.Abs(d)}d overdue" : $"{d}d")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <div class="text-muted text-center py-3 small">No approaching decision dates.</div> }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold text-danger bg-danger bg-opacity-10">
+                <i class="fas fa-calendar-times me-1"></i>Expiring Authorisations (≤ 90 days)
+                @if (expiringApp.Any()) { <span class="badge bg-danger ms-1">@expiringApp.Count</span> }
+            </div>
+            <div class="card-body p-0">
+                @if (expiringApp.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr><th>Application</th><th>Authority</th><th>Expiry</th><th>Days</th></tr></thead>
+                        <tbody>
+                            @foreach (var a in expiringApp)
+                            {
+                                int d = (a.ExpiryDate!.Value.Date - today).Days;
+                                <tr class="@(d < 0 ? "table-danger" : d <= 30 ? "table-warning" : "")">
+                                    <td><a asp-action="Details" asp-route-id="@a.Id" class="fw-semibold">@a.RINumber</a></td>
+                                    <td class="small">@a.Jurisdiction?.Authority</td>
+                                    <td class="small">@a.ExpiryDate.Value.ToString("dd MMM yyyy")</td>
+                                    <td class="small fw-bold @(d < 0 ? "text-danger" : "text-warning")">
+                                        @(d < 0 ? $"{Math.Abs(d)}d expired" : $"{d}d")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <div class="text-muted text-center py-3 small">No expiring authorisations within 90 days.</div> }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Conditions & Access Pathways ──────────────────────────────── -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">
+                <i class="fas fa-clipboard-list me-1"></i>Open Conditions of Approval
+                @if (openConditions.Any()) { <span class="badge bg-danger ms-1">@openConditions.Count</span> }
+            </div>
+            <div class="card-body p-0">
+                @if (openConditions.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr><th>Application</th><th>Type</th><th>Due</th><th>Status</th></tr></thead>
+                        <tbody>
+                            @foreach (var c in openConditions)
+                            {
+                                bool ov = c.DueDate.HasValue && c.DueDate < today;
+                                <tr class="@(ov ? "table-danger" : "")">
+                                    <td><a asp-action="Details" asp-route-id="@c.RegulatoryApplicationId" class="small fw-semibold">@c.Application?.RINumber</a></td>
+                                    <td><span class="badge bg-secondary" style="font-size:0.65rem">@c.ConditionType</span></td>
+                                    <td class="small @(ov ? "text-danger fw-bold" : "")">@(c.DueDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                                    <td><span class="badge bg-@(c.Status == RIConditionStatus.Outstanding ? "danger" : "warning")" style="font-size:0.65rem">@c.Status</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <div class="text-muted text-center py-3 small">No open conditions.</div> }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">
+                <i class="fas fa-user-shield me-1"></i>Access Pathways Expiring (≤ 60 days)
+                @if (expiringPathways.Any()) { <span class="badge bg-warning text-dark ms-1">@expiringPathways.Count</span> }
+            </div>
+            <div class="card-body p-0">
+                @if (expiringPathways.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr><th>AP Number</th><th>Type</th><th>Expiry</th><th>Days</th></tr></thead>
+                        <tbody>
+                            @foreach (var ap in expiringPathways)
+                            {
+                                int d = (ap.ExpiryDate!.Value.Date - today).Days;
+                                <tr class="@(d < 0 ? "table-danger" : "")">
+                                    <td><a asp-action="AccessPathwayDetails" asp-route-id="@ap.Id" class="small fw-semibold">@ap.AccessNumber</a></td>
+                                    <td><span class="badge bg-info text-dark" style="font-size:0.65rem">@ap.PathwayType</span></td>
+                                    <td class="small">@ap.ExpiryDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td class="small fw-bold @(d < 0 ? "text-danger" : "text-warning")">
+                                        @(d < 0 ? $"{Math.Abs(d)}d expired" : $"{d}d")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <div class="text-muted text-center py-3 small">No access pathways expiring within 60 days.</div> }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Overdue Milestones & Recent Activity ───────────────────────── -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">
+                <i class="fas fa-tasks me-1"></i>Overdue Milestones
+                @if (overdueMilestones.Any()) { <span class="badge bg-danger ms-1">@overdueMilestones.Count</span> }
+            </div>
+            <div class="card-body p-0">
+                @if (overdueMilestones.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr><th>Application</th><th>Milestone</th><th>Planned</th><th>Days</th></tr></thead>
+                        <tbody>
+                            @foreach (var m in overdueMilestones)
+                            {
+                                int d = (today - m.PlannedDate!.Value.Date).Days;
+                                <tr class="table-warning">
+                                    <td><a asp-action="Details" asp-route-id="@m.RegulatoryApplicationId" class="small fw-semibold">@m.Application?.RINumber</a></td>
+                                    <td class="small">@m.MilestoneName</td>
+                                    <td class="small text-danger">@m.PlannedDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td class="small fw-bold text-danger">@d d</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <div class="text-muted text-center py-3 small">No overdue milestones.</div> }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold"><i class="fas fa-history me-1"></i>Recent Activity</div>
+            <div class="card-body p-0">
+                @if (recentActivity.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light"><tr><th>Date</th><th>Application</th><th>Action</th><th>User</th></tr></thead>
+                        <tbody>
+                            @foreach (var log in recentActivity)
+                            {
+                                recentApps.TryGetValue(log.RegulatoryApplicationId, out var riNum);
+                                <tr>
+                                    <td class="small text-muted" style="white-space:nowrap">@(SiteTime.ToSite((DateTime)log.Timestamp).ToString("dd MMM HH:mm"))</td>
+                                    <td><a asp-action="Details" asp-route-id="@log.RegulatoryApplicationId" class="small fw-semibold">@(riNum ?? $"#{log.RegulatoryApplicationId}")</a></td>
+                                    <td><span class="badge bg-secondary" style="font-size:0.65rem">@log.Action</span></td>
+                                    <td class="small text-muted">@log.UserId</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <div class="text-muted text-center py-3 small">No recent activity.</div> }
+            </div>
+        </div>
+    </div>
+</div>

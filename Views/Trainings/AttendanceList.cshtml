@@ -1,0 +1,224 @@
+@model OpenQMS.Models.Training
+@using OpenQMS.Models.Navigation
+@inject OpenQMS.Data.ApplicationDbContext _attDb
+
+@{
+    var policyDoc  = ViewBag.PolicyDocument as OpenQMS.Models.AppDocument;
+    var settings   = await _attDb.SystemSettings.FindAsync(1);
+    var isCA       = Model.TrainingType == TrainingType.CompetencyAssessment;
+    var docVersion = Model.SourceDocumentVersion ?? policyDoc?.Version;
+
+    ViewData["Title"] = $"Attendance List — {Model.TrainingId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    @@media print {
+        .navbar, header, footer, .no-print, .btn, nav, .alert { display: none !important; }
+        .card { border: 1px solid #dee2e6 !important; box-shadow: none !important; }
+        body { font-size: 10pt; }
+    }
+    .att-header  { border-bottom: 3px solid #0d6efd; padding-bottom: 12px; }
+    .att-section { border-top: 1px solid #dee2e6; padding-top: 12px; margin-top: 12px; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-3 no-print">
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to Training
+    </a>
+    <button onclick="window.print()" class="btn btn-outline-primary btn-sm">
+        <i class="fas fa-print me-1"></i>Print / Save as PDF
+    </button>
+</div>
+
+<div class="card p-4">
+
+    @* Organisation Header *@
+    @if (!string.IsNullOrEmpty(settings?.LogoPath) || !string.IsNullOrEmpty(settings?.OrganisationName))
+    {
+        <div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+            <div>
+                @if (!string.IsNullOrEmpty(settings?.LogoPath))
+                {
+                    <img src="@settings.LogoPath" alt="@(settings.OrganisationName ?? "Organisation")"
+                         style="max-height:60px; max-width:200px;" />
+                }
+            </div>
+            <div class="text-end">
+                @if (!string.IsNullOrEmpty(settings?.OrganisationName))
+                {
+                    <div class="fw-bold fs-6">@settings.OrganisationName</div>
+                }
+                @if (!string.IsNullOrEmpty(settings?.OrganisationAddress))
+                {
+                    <div class="small text-muted" style="white-space: pre-line;">@settings.OrganisationAddress</div>
+                }
+            </div>
+        </div>
+    }
+
+    @* Title *@
+    <div class="att-header d-flex justify-content-between align-items-start">
+        <div>
+            <h3 class="mb-1">Training Completion Record</h3>
+            <div><strong>Training ID:</strong> @Model.TrainingId</div>
+            <div><strong>Generated:</strong> @SiteTime.Today.ToString("dd-MMM-yyyy")</div>
+        </div>
+        <div class="text-end">
+            <span class="badge @(isCA ? "bg-primary" : "bg-info text-dark") fs-6">
+                @(isCA ? "Competency Assessment" : "Read & Acknowledge")
+            </span>
+            <br />
+            <span class="badge @(Model.Status == Training.TrainingStatus.Completed ? "bg-success" : "bg-warning text-dark") mt-1">
+                @EnumHelper.Display(Model.Status)
+            </span>
+        </div>
+    </div>
+
+    @* Training Details *@
+    <div class="att-section">
+        <h6 class="text-uppercase text-muted small mb-2">Training Details</h6>
+        <div class="row">
+            <div class="col-md-8"><strong>Name:</strong> @Model.Name</div>
+            <div class="col-md-4"><strong>Training ID:</strong> @Model.TrainingId</div>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="row mt-1">
+                <div class="col-12"><strong>Description:</strong> @Model.Description</div>
+            </div>
+        }
+        <div class="row mt-1">
+            <div class="col-md-6">
+                <strong>Source Document:</strong>
+                @if (policyDoc != null)
+                {
+                    <span>@policyDoc.DocumentId — @policyDoc.Title</span>
+                    @if (docVersion.HasValue) { <span class="badge bg-light text-dark border ms-1">v@(docVersion.Value.ToString("0.00"))</span> }
+                }
+                else
+                {
+                    <span>@(Model.PolicyTitle ?? "-")</span>
+                }
+            </div>
+            <div class="col-md-3"><strong>Due Date:</strong> @(Model.DueDate?.ToString("dd-MMM-yyyy") ?? "—")</div>
+            <div class="col-md-3"><strong>Trainer:</strong> @(Model.TrainerEmail ?? "—")</div>
+        </div>
+        @if (Model.CompletedOn.HasValue)
+        {
+            <div class="row mt-1">
+                <div class="col-md-6">
+                    <strong>Completed On:</strong> @Model.CompletedOn.Value.ToSite().ToString("dd-MMM-yyyy HH:mm")
+                </div>
+                <div class="col-md-6">
+                    <strong>Completed By:</strong>
+                    @(Model.CompletedByUser != null
+                        ? $"{Model.CompletedByUser.FirstName} {Model.CompletedByUser.LastName}".Trim()
+                        : "Auto-completed")
+                </div>
+            </div>
+        }
+    </div>
+
+    @* Trainee completion table *@
+    <div class="att-section">
+        <h6 class="text-uppercase text-muted small mb-2">
+            Trainees — @(Model.Trainees?.Count ?? 0) enrolled,
+            @(Model.Trainees?.Count(t => t.Status == UserTrainingStatus.Completed) ?? 0) completed
+        </h6>
+
+        @if (isCA)
+        {
+            <table class="table table-bordered table-sm mt-2">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Competency Verified On</th>
+                        <th>Verified By</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 1; }
+                    @foreach (var ut in Model.Trainees ?? new List<UserTraining>())
+                    {
+                        var trainee  = ut.Trainee;
+                        var fullName = trainee != null ? $"{trainee.FirstName} {trainee.LastName}".Trim() : null;
+                        if (string.IsNullOrWhiteSpace(fullName)) fullName = trainee?.UserName ?? "-";
+                        var statusBadge = ut.Status switch {
+                            UserTrainingStatus.Completed                 => "bg-success",
+                            UserTrainingStatus.Failed                    => "bg-danger",
+                            UserTrainingStatus.PendingTrainerConfirmation => "bg-info text-dark",
+                            UserTrainingStatus.InProgress                => "bg-warning text-dark",
+                            _                                            => "bg-secondary"
+                        };
+                        <tr>
+                            <td class="text-center">@(i++)</td>
+                            <td>@fullName</td>
+                            <td class="small text-muted">@(trainee?.Email ?? "-")</td>
+                            <td><span class="badge @statusBadge">@EnumHelper.Display(ut.Status)</span></td>
+                            <td>@(ut.CompetencyVerifiedOn.ToSite()?.ToString("dd-MMM-yyyy HH:mm") ?? "—")</td>
+                            <td class="small">@(ut.CompetencyVerifiedBy ?? "—")</td>
+                            <td class="small">@(ut.CompetencyNotes ?? "")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <table class="table table-bordered table-sm mt-2">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Acknowledged On</th>
+                        <th>Electronic Signature Ref</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int j = 1; }
+                    @foreach (var ut in Model.Trainees ?? new List<UserTraining>())
+                    {
+                        var trainee  = ut.Trainee;
+                        var fullName = trainee != null ? $"{trainee.FirstName} {trainee.LastName}".Trim() : null;
+                        if (string.IsNullOrWhiteSpace(fullName)) fullName = trainee?.UserName ?? "-";
+                        var statusBadge = ut.Status switch {
+                            UserTrainingStatus.Completed => "bg-success",
+                            UserTrainingStatus.InProgress => "bg-warning text-dark",
+                            _ => "bg-secondary"
+                        };
+                        <tr>
+                            <td class="text-center">@(j++)</td>
+                            <td>@fullName</td>
+                            <td class="small text-muted">@(trainee?.Email ?? "-")</td>
+                            <td><span class="badge @statusBadge">@EnumHelper.Display(ut.Status)</span></td>
+                            <td>@(ut.ReadAcknowledgedOn.ToSite()?.ToString("dd-MMM-yyyy HH:mm") ?? "—")</td>
+                            <td class="small text-muted font-monospace">
+                                @if (!string.IsNullOrEmpty(ut.ReadAcknowledgedSignature))
+                                {
+                                    @ut.ReadAcknowledgedSignature[..Math.Min(16, ut.ReadAcknowledgedSignature.Length)]<text>…</text>
+                                }
+                                else { <span>—</span> }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    @* Footer note *@
+    <div class="att-section">
+        <p class="small text-muted mb-0">
+            This record was generated from the Quality Management System on @SiteTime.Now.ToString("dd-MMM-yyyy HH:mm").
+            Electronic signatures and completion timestamps are stored in the system audit log.
+        </p>
+    </div>
+
+</div>

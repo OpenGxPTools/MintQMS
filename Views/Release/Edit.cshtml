@@ -1,0 +1,761 @@
+@model OpenQMS.Models.Release.ReleaseRecord
+@using OpenQMS.Models.Release
+
+@{
+    ViewData["Title"] = $"Edit — {Model.RecordNumber}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var s = Model.Status;
+    var coreLocked = s == ReleaseStatus.UnderReview
+                  || s == ReleaseStatus.PendingAPDecision
+                  || s == ReleaseStatus.Rejected;
+    var allLocked  = s == ReleaseStatus.PendingAPDecision
+                  || s == ReleaseStatus.Rejected;
+    var showDelegation = Model.ReleaseType == ReleaseType.ReleaseForFurtherProcessing
+                      || Model.ReleaseType == ReleaseType.ReleaseToCustomer;
+    var ept = Model.ProductType;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <h4 class="mb-0">Edit Release Record &mdash; <span class="fw-bold">@Model.RecordNumber</span></h4>
+    <div class="d-flex gap-2">
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">View Details</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+</div>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Error"]</div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["WorkflowError"]</div>
+}
+
+@if (s == ReleaseStatus.UnderReview)
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-1"></i>This record is <strong>Under Review</strong>. Product, Batch, Site, and Storage details are locked. You may update Quality Notes below.
+    </div>
+}
+@if (s == ReleaseStatus.PendingAPDecision)
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-lock me-1"></i>This record is <strong>Pending AP Decision</strong>. All fields are locked. Return to the Details page to track workflow progress.
+    </div>
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="editTabs">
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabRecord">Record Details</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabChecklist">Checklist</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabTests">Analytical Results</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabDocs">Attachments</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabLinked">Linked Records</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAudit">Audit Log</button></li>
+</ul>
+
+<div class="tab-content">
+    <!-- Tab 1: Record Details -->
+    <div class="tab-pane fade show active" id="tabRecord">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="RecordNumber" />
+            <input type="hidden" asp-for="Status" />
+            <input type="hidden" asp-for="CreatedDate" />
+            <input type="hidden" asp-for="CreatedBy" />
+            <input type="hidden" asp-for="IsLocked" />
+            <input type="hidden" asp-for="LinkedProductId" />
+            <input type="hidden" asp-for="ProductType" />
+            <input type="hidden" asp-for="InciName" />
+            <input type="hidden" asp-for="PresentationForm" />
+            <input type="hidden" asp-for="DeviceTypeCategory" />
+            <input type="hidden" asp-for="ModelVersion" />
+            <input type="hidden" asp-for="StandardScientificName" />
+            <input type="hidden" asp-for="RawMaterialTypeCategory" />
+            <input type="hidden" asp-for="Grade" />
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Record Number</label>
+                <input type="text" class="form-control" value="@Model.RecordNumber" readonly />
+            </div>
+
+            <!-- ── Section 1: Product Identification ─────────────────────────── -->
+            <div class="card mb-4 @(coreLocked ? "opacity-50" : "")">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>Product Identification</strong>
+                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span> }
+                    else { <span class="badge bg-primary">In Progress</span> }
+                </div>
+                <div class="card-body">
+                    @if (coreLocked)
+                    {
+                        <dl class="row mb-1">
+                            <dt class="col-sm-4">Release Type</dt><dd class="col-sm-8">@Model.ReleaseType</dd>
+                            <dt class="col-sm-4">Product Name</dt><dd class="col-sm-8">@Model.ProductName</dd>
+                            <dt class="col-sm-4">Brand Name</dt><dd class="col-sm-8">@(Model.BrandName ?? "-")</dd>
+                            @if (!ept.HasValue || ept == OpenQMS.Models.ProductType.Pharmaceutical || ept == OpenQMS.Models.ProductType.Biological || ept == OpenQMS.Models.ProductType.ConsumerHealth)
+                            {
+                                <dt class="col-sm-4">INN / Generic</dt><dd class="col-sm-8">@(Model.InnName ?? "-")</dd>
+                                <dt class="col-sm-4">Dosage Form</dt><dd class="col-sm-8">@(Model.DosageForm ?? "-")</dd>
+                                <dt class="col-sm-4">Strength / Presentation</dt><dd class="col-sm-8">@(Model.Strength ?? "-")</dd>
+                            }
+                            @if (ept == OpenQMS.Models.ProductType.Cosmetic)
+                            {
+                                <dt class="col-sm-4">INCI Name / Ingredient Ref.</dt><dd class="col-sm-8">@(Model.InciName ?? "-")</dd>
+                                <dt class="col-sm-4">Presentation / Form</dt><dd class="col-sm-8">@(Model.PresentationForm ?? "-")</dd>
+                                <dt class="col-sm-4">Strength / Presentation</dt><dd class="col-sm-8">@(Model.Strength ?? "-")</dd>
+                            }
+                            @if (ept == OpenQMS.Models.ProductType.MedicalDevice)
+                            {
+                                <dt class="col-sm-4">Device Type / Category</dt><dd class="col-sm-8">@(Model.DeviceTypeCategory ?? "-")</dd>
+                                <dt class="col-sm-4">Model / Version</dt><dd class="col-sm-8">@(Model.ModelVersion ?? "-")</dd>
+                            }
+                            @if (ept == OpenQMS.Models.ProductType.RawMaterial)
+                            {
+                                <dt class="col-sm-4">Standard / Scientific Name</dt><dd class="col-sm-8">@(Model.StandardScientificName ?? "-")</dd>
+                                <dt class="col-sm-4">Material Type / Category</dt><dd class="col-sm-8">@(Model.RawMaterialTypeCategory ?? "-")</dd>
+                                <dt class="col-sm-4">Grade</dt><dd class="col-sm-8">@(Model.Grade ?? "-")</dd>
+                                <dt class="col-sm-4">Presentation / Form</dt><dd class="col-sm-8">@(Model.PresentationForm ?? "-")</dd>
+                            }
+                            <dt class="col-sm-4">ARTG Reference</dt><dd class="col-sm-8">@(Model.ArtgReference ?? "-")</dd>
+                        </dl>
+                        <input type="hidden" asp-for="ReleaseType" />
+                        <input type="hidden" asp-for="ProductName" />
+                        <input type="hidden" asp-for="InnName" />
+                        <input type="hidden" asp-for="BrandName" />
+                        <input type="hidden" asp-for="DosageForm" />
+                        <input type="hidden" asp-for="Strength" />
+                        <input type="hidden" asp-for="ArtgReference" />
+                        <p class="text-muted small mb-0 mt-2"><i class="bi bi-info-circle me-1"></i>Use Return for Rework from the Details page if changes to these fields are needed.</p>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+                            <label asp-for="ReleaseType" class="form-label"></label>
+                            <select asp-for="ReleaseType" class="form-select" asp-items="Html.GetEnumSelectList<ReleaseType>()"></select>
+                            <span asp-validation-for="ReleaseType" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-2">
+                            <label asp-for="ProductName" class="form-label"></label>
+                            <select id="editProductNameSelect" asp-for="ProductName" class="form-select" asp-items="ViewBag.ProductsList">
+                                <option value="">-- Select Product --</option>
+                            </select>
+                            <span asp-validation-for="ProductName" class="text-danger small"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <label asp-for="InnName" class="form-label"></label>
+                                    <input asp-for="InnName" id="editInnName" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <label asp-for="BrandName" class="form-label"></label>
+                                    <input asp-for="BrandName" id="editBrandName" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <label asp-for="DosageForm" class="form-label"></label>
+                                    <input asp-for="DosageForm" id="editDosageForm" class="form-control" readonly />
+                                    <span asp-validation-for="DosageForm" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <label asp-for="Strength" class="form-label"></label>
+                                    <select asp-for="Strength" id="editStrengthSelect" class="form-select">
+                                        <option value="">-- Select product first --</option>
+                                    </select>
+                                    <span asp-validation-for="Strength" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-0">
+                            <label asp-for="ArtgReference" class="form-label"></label>
+                            <input asp-for="ArtgReference" id="editArtgReference" class="form-control" />
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- ── Section 2: Batch Details ──────────────────────────────────── -->
+            <div class="card mb-4 @(coreLocked ? "opacity-50" : "")">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>Batch Details</strong>
+                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span> }
+                    else { <span class="badge bg-primary">In Progress</span> }
+                </div>
+                <div class="card-body">
+                    @if (coreLocked)
+                    {
+                        <dl class="row mb-1">
+                            <dt class="col-sm-4">Batch Number</dt><dd class="col-sm-8">@Model.BatchNumber</dd>
+                            <dt class="col-sm-4">Batch Size</dt><dd class="col-sm-8">@(Model.BatchSize ?? "-")</dd>
+                            <dt class="col-sm-4">Pack Size</dt><dd class="col-sm-8">@(Model.PackSize ?? "-")</dd>
+                            <dt class="col-sm-4">Mfg Date</dt><dd class="col-sm-8">@(Model.ManufacturingDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                            <dt class="col-sm-4">Expiry Date</dt><dd class="col-sm-8">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                            <dt class="col-sm-4">Retest Date</dt><dd class="col-sm-8">@(Model.RetestDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                        </dl>
+                        <input type="hidden" asp-for="BatchNumber" />
+                        <input type="hidden" asp-for="BatchSize" />
+                        <input type="hidden" asp-for="PackSize" />
+                        <input type="hidden" asp-for="ManufacturingDate" />
+                        <input type="hidden" asp-for="ExpiryDate" />
+                        <input type="hidden" asp-for="RetestDate" />
+                        <p class="text-muted small mb-0 mt-2"><i class="bi bi-info-circle me-1"></i>Use Return for Rework from the Details page if changes to these fields are needed.</p>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <label asp-for="BatchNumber" class="form-label"></label><span class="text-danger ms-1">*</span>
+                                    <input asp-for="BatchNumber" class="form-control" />
+                                    <span asp-validation-for="BatchNumber" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <label asp-for="BatchSize" class="form-label"></label>
+                                    <input asp-for="BatchSize" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <label asp-for="PackSize" class="form-label"></label>
+                                    <input asp-for="PackSize" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <label asp-for="ManufacturingDate" class="form-label"></label><span class="text-danger ms-1">*</span>
+                                    <input asp-for="ManufacturingDate" type="date" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <label asp-for="ExpiryDate" class="form-label"></label><span class="text-danger ms-1" title="At least one of Expiry Date or Retest Date is required for AP submission">*</span>
+                                    <input asp-for="ExpiryDate" type="date" class="form-control" />
+                                    <span asp-validation-for="ExpiryDate" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-0">
+                                    <label asp-for="RetestDate" class="form-label"></label><span class="text-danger ms-1" title="At least one of Expiry Date or Retest Date is required for AP submission">*</span>
+                                    <input asp-for="RetestDate" type="date" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- ── Section 3: Sites ──────────────────────────────────────────── -->
+            <div class="card mb-4 @(coreLocked ? "opacity-50" : "")">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>Manufacturing &amp; Testing Sites</strong>
+                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span> }
+                    else { <span class="badge bg-primary">In Progress</span> }
+                </div>
+                <div class="card-body">
+                    @if (coreLocked)
+                    {
+                        <dl class="row mb-1">
+                            <dt class="col-sm-4">Mfg Site</dt><dd class="col-sm-8">@Model.ManufacturingSite</dd>
+                            <dt class="col-sm-4">Mfg GMP Ref.</dt><dd class="col-sm-8">@(Model.ManufacturingSiteGmpRef ?? "-")</dd>
+                            <dt class="col-sm-4">Packaging Site</dt><dd class="col-sm-8">@(Model.PackagingSite ?? "-")</dd>
+                            <dt class="col-sm-4">Pkg GMP Ref.</dt><dd class="col-sm-8">@(Model.PackagingSiteGmpRef ?? "-")</dd>
+                            <dt class="col-sm-4">Testing Lab(s)</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.TestingLabs != null && Model.TestingLabs.Any())
+                                {
+                                    @foreach (var lab in Model.TestingLabs)
+                                    {
+                                        <div>@lab.LaboratoryName @(string.IsNullOrEmpty(lab.GmpLicenceRef) ? "" : $"[{lab.GmpLicenceRef}]")</div>
+                                    }
+                                }
+                                else { <span>-</span> }
+                            </dd>
+                            <dt class="col-sm-4">Releasing Company</dt><dd class="col-sm-8">@(Model.ReleasingCompany ?? "-")</dd>
+                            <dt class="col-sm-4">TGA Licence / Clearance</dt><dd class="col-sm-8">@(Model.ReleasingCompanyLicenceRef ?? "-")</dd>
+                        </dl>
+                        <input type="hidden" asp-for="ManufacturingSite" />
+                        <input type="hidden" asp-for="ManufacturingSiteGmpRef" />
+                        <input type="hidden" asp-for="PackagingSite" />
+                        <input type="hidden" asp-for="PackagingSiteGmpRef" />
+                        <input type="hidden" asp-for="ReleasingCompany" />
+                        <input type="hidden" asp-for="ReleasingCompanyLicenceRef" />
+                        <p class="text-muted small mb-0 mt-2"><i class="bi bi-info-circle me-1"></i>Use Return for Rework from the Details page if changes to these fields are needed.</p>
+                    }
+                    else
+                    {
+                        <!-- Manufacturing Site -->
+                        <div class="mb-2">
+                            <label class="form-label fw-semibold">Manufacturing Site <span class="text-danger">*</span></label>
+                            <select id="editMfgSiteSel" class="form-select mb-1" onchange="handleSite(this,'editMfgSiteOther','ManufacturingSite')">
+                                <option value="">-- Select Approved Manufacturer --</option>
+                                @foreach (var s in (ViewBag.ManufacturingSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
+                                <option value="__OTHER__">Other (specify below)</option>
+                            </select>
+                            <input id="editMfgSiteOther" type="text" class="form-control mb-1" placeholder="Enter manufacturing site name" style="display:none" oninput="document.getElementById('ManufacturingSite').value=this.value" />
+                            <input type="hidden" asp-for="ManufacturingSite" id="ManufacturingSite" />
+                            <span asp-validation-for="ManufacturingSite" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-2">
+                            <label asp-for="ManufacturingSiteGmpRef" class="form-label"></label>
+                            <input asp-for="ManufacturingSiteGmpRef" class="form-control" />
+                        </div>
+                        <!-- Packaging Site -->
+                        <div class="mb-2">
+                            <label class="form-label fw-semibold">Packaging Site</label>
+                            <select id="editPkgSiteSel" class="form-select mb-1" onchange="handleSite(this,'editPkgSiteOther','PackagingSite')">
+                                <option value="">-- Select Approved Supplier (Service) --</option>
+                                @foreach (var s in (ViewBag.ServiceSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
+                                <option value="__OTHER__">Other (specify below)</option>
+                            </select>
+                            <input id="editPkgSiteOther" type="text" class="form-control mb-1" placeholder="Enter packaging site name" style="display:none" oninput="document.getElementById('PackagingSite').value=this.value" />
+                            <input type="hidden" asp-for="PackagingSite" id="PackagingSite" />
+                        </div>
+                        <div class="mb-2">
+                            <label asp-for="PackagingSiteGmpRef" class="form-label"></label>
+                            <input asp-for="PackagingSiteGmpRef" class="form-control" />
+                        </div>
+                        <!-- Testing Laboratories -->
+                        <div class="mb-2">
+                            <label class="form-label fw-semibold">Testing Laboratory / Laboratories</label>
+                            <div id="editLabsContainer"></div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-1" onclick="addLabRow()">
+                                <i class="bi bi-plus-circle me-1"></i>Add Testing Laboratory
+                            </button>
+                        </div>
+                        <!-- Releasing Company -->
+                        <div class="mb-2">
+                            <label class="form-label fw-semibold">Releasing Company <span class="text-danger">*</span></label>
+                            <select id="editRelCoSel" class="form-select mb-1" onchange="handleSite(this,'editRelCoOther','ReleasingCompany')">
+                                <option value="">-- Select --</option>
+                                @if (!string.IsNullOrEmpty(ViewBag.OwnCompanyName as string)) { <option value="@ViewBag.OwnCompanyName">@ViewBag.OwnCompanyName (Own Company)</option> }
+                                @foreach (var s in (ViewBag.ReleasingSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
+                                <option value="__OTHER__">Other (specify below)</option>
+                            </select>
+                            <input id="editRelCoOther" type="text" class="form-control mb-1" placeholder="Enter releasing company name" style="display:none" oninput="document.getElementById('ReleasingCompany').value=this.value" />
+                            <input type="hidden" asp-for="ReleasingCompany" id="ReleasingCompany" />
+                        </div>
+                        <div class="mb-0">
+                            <label asp-for="ReleasingCompanyLicenceRef" class="form-label"></label>
+                            <input asp-for="ReleasingCompanyLicenceRef" class="form-control" />
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- ── Section 4: Delegation / Technical Agreement ───────────────── -->
+            @if (coreLocked)
+            {
+                @if (showDelegation)
+                {
+                    <div class="card mb-4 opacity-50">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <strong>Delegation / Technical Agreement</strong>
+                            <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row mb-1">
+                                <dt class="col-sm-4">Final Release Party</dt><dd class="col-sm-8">@(Model.FinalReleaseParty ?? "-")</dd>
+                                <dt class="col-sm-4">Technical Agreement Ref.</dt><dd class="col-sm-8">@(Model.TechnicalAgreementRef ?? "-")</dd>
+                            </dl>
+                            <p class="text-muted small mb-0 mt-2"><i class="bi bi-info-circle me-1"></i>Use Return for Rework from the Details page if changes to these fields are needed.</p>
+                        </div>
+                    </div>
+                }
+                <input type="hidden" asp-for="FinalReleaseParty" />
+                <input type="hidden" asp-for="TechnicalAgreementRef" />
+            }
+            else
+            {
+                <div id="finalReleaseSection" class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong>Delegation / Technical Agreement</strong>
+                        <span class="badge bg-primary">In Progress</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <label asp-for="FinalReleaseParty" class="form-label"></label>
+                            <input asp-for="FinalReleaseParty" class="form-control" />
+                        </div>
+                        <div class="mb-0">
+                            <label asp-for="TechnicalAgreementRef" class="form-label"></label>
+                            <input asp-for="TechnicalAgreementRef" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- ── Section 5: Specification & Storage ───────────────────────── -->
+            <div class="card mb-4 @(coreLocked ? "opacity-50" : "")">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>Specification &amp; Storage</strong>
+                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span> }
+                    else { <span class="badge bg-primary">In Progress</span> }
+                </div>
+                <div class="card-body">
+                    @if (coreLocked)
+                    {
+                        <dl class="row mb-1">
+                            <dt class="col-sm-4">Specification Ref.</dt><dd class="col-sm-8">@(Model.SpecificationReference ?? "-")</dd>
+                            <dt class="col-sm-4">Storage Conditions</dt><dd class="col-sm-8">@(Model.StorageConditions ?? "-")</dd>
+                            <dt class="col-sm-4">Distribution Conditions</dt><dd class="col-sm-8">@(Model.DistributionConditions ?? "-")</dd>
+                        </dl>
+                        <input type="hidden" asp-for="SpecificationReference" />
+                        <input type="hidden" asp-for="StorageConditions" />
+                        <input type="hidden" asp-for="DistributionConditions" />
+                        <p class="text-muted small mb-0 mt-2"><i class="bi bi-info-circle me-1"></i>Use Return for Rework from the Details page if changes to these fields are needed.</p>
+                    }
+                    else
+                    {
+                        <div class="mb-2">
+                            <label asp-for="SpecificationReference" class="form-label"></label>
+                            <input asp-for="SpecificationReference" class="form-control" />
+                        </div>
+                        <div class="mb-2">
+                            <label asp-for="StorageConditions" class="form-label"></label>
+                            <input asp-for="StorageConditions" class="form-control" />
+                        </div>
+                        <div class="mb-0">
+                            <label asp-for="DistributionConditions" class="form-label"></label>
+                            <textarea asp-for="DistributionConditions" class="form-control" rows="2"></textarea>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- ── Section 6: Quality Notes ──────────────────────────────────── -->
+            <div class="card mb-4 @(allLocked ? "opacity-50" : "")">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>Quality Notes</strong>
+                    @if (allLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span> }
+                    else if (s == ReleaseStatus.UnderReview) { <span class="badge bg-warning text-dark">Action Required</span> }
+                    else { <span class="badge bg-primary">In Progress</span> }
+                </div>
+                <div class="card-body">
+                    @if (allLocked)
+                    {
+                        <dl class="row mb-1">
+                            <dt class="col-sm-4">Open Deviations / Exceptions</dt><dd class="col-sm-8">@(Model.OpenDeviationsNotes ?? "-")</dd>
+                            <dt class="col-sm-4">Limitations / Conditions</dt><dd class="col-sm-8">@(Model.LimitationsNotes ?? "-")</dd>
+                            <dt class="col-sm-4">Notes</dt><dd class="col-sm-8">@(Model.Notes ?? "-")</dd>
+                        </dl>
+                        <input type="hidden" asp-for="OpenDeviationsNotes" />
+                        <input type="hidden" asp-for="LimitationsNotes" />
+                        <input type="hidden" asp-for="Notes" />
+                        <p class="text-muted small mb-0 mt-2"><i class="bi bi-info-circle me-1"></i>Use Return for Rework from the Details page if changes are needed.</p>
+                    }
+                    else
+                    {
+                        <div class="mb-2">
+                            <label asp-for="OpenDeviationsNotes" class="form-label"></label>
+                            <textarea asp-for="OpenDeviationsNotes" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="mb-2">
+                            <label asp-for="LimitationsNotes" class="form-label"></label>
+                            <textarea asp-for="LimitationsNotes" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="mb-0">
+                            <label asp-for="Notes" class="form-label"></label>
+                            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (!allLocked)
+            {
+                <div class="d-flex gap-2 mt-4">
+                    <input type="submit" value="Save Changes" class="btn btn-primary" />
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Cancel</a>
+                </div>
+            }
+            else
+            {
+                <div class="mt-4">
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Details</a>
+                </div>
+            }
+        </form>
+    </div>
+
+    <!-- Tab 2: Checklist -->
+    <div class="tab-pane fade" id="tabChecklist">
+        @await Html.PartialAsync("_ChecklistTab", Model)
+    </div>
+
+    <!-- Tab 3: Analytical Results -->
+    <div class="tab-pane fade" id="tabTests">
+        @await Html.PartialAsync("_TestResultsTab", Model)
+    </div>
+
+    <!-- Tab 4: Documents -->
+    <div class="tab-pane fade" id="tabDocs">
+        @await Html.PartialAsync("_DocumentsTab", Model)
+    </div>
+
+    <!-- Tab 5: Linked Records -->
+    <div class="tab-pane fade" id="tabLinked">
+        @if (!Model.IsLocked && !allLocked)
+        {
+            <form asp-action="AddCrossReference" asp-route-releaseRecordId="@Model.Id" method="post" class="card mb-3 p-3 bg-light">
+                @Html.AntiForgeryToken()
+                <h6 class="mb-3">Add Cross-Reference</h6>
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <select name="moduleType" class="form-select form-select-sm" required>
+                            <option value="">-- Module Type --</option>
+                            <option>Deviation</option>
+                            <option>CAPA</option>
+                            <option>Supplier</option>
+                            <option>LicCert</option>
+                            <option>Change</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="linkedRecordNumber" class="form-control form-control-sm" placeholder="Record Number" />
+                    </div>
+                    <div class="col-md-5">
+                        <input name="notes" class="form-control form-control-sm" placeholder="Notes (optional)" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-sm btn-primary w-100">Add</button>
+                    </div>
+                </div>
+            </form>
+        }
+
+        @if (Model.CrossReferences == null || !Model.CrossReferences.Any())
+        {
+            <p class="text-muted">No linked records.</p>
+        }
+        else
+        {
+            <table class="table table-sm">
+                <thead class="table-light"><tr><th>Module</th><th>Record</th><th>Notes</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var x in Model.CrossReferences)
+                    {
+                        <tr>
+                            <td><span class="badge bg-primary">@x.ModuleType</span></td>
+                            <td>@x.LinkedRecordNumber</td>
+                            <td><small>@x.Notes</small></td>
+                            <td>
+                                @if (!Model.IsLocked && !allLocked)
+                                {
+                                    <form asp-action="DeleteCrossReference" asp-route-id="@x.Id" method="post" style="display:inline" onsubmit="return confirm('Remove this link?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- Tab 6: Audit Log -->
+    <div class="tab-pane fade" id="tabAudit">
+        @await Html.PartialAsync("_AuditTab", Model)
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/tab-form-validation.js" asp-append-version="true"></script>
+    @if (!coreLocked)
+    {
+        <script>
+            // ── Site field helpers ────────────────────────────────────────────
+            function handleSite(sel, otherId, hiddenId) {
+                var other = document.getElementById(otherId);
+                var hidden = document.getElementById(hiddenId);
+                if (sel.value === '__OTHER__') { other.style.display = ''; hidden.value = other.value; }
+                else { other.style.display = 'none'; hidden.value = sel.value; }
+            }
+            function initSite(selId, otherId, hiddenId) {
+                var val = document.getElementById(hiddenId).value;
+                if (!val) return;
+                var sel = document.getElementById(selId);
+                for (var i = 0; i < sel.options.length; i++) {
+                    if (sel.options[i].value === val) { sel.value = val; return; }
+                }
+                sel.value = '__OTHER__';
+                document.getElementById(otherId).value = val;
+                document.getElementById(otherId).style.display = '';
+            }
+
+            // ── Testing labs ──────────────────────────────────────────────────
+            var labSuppliers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ServiceSuppliers as List<string> ?? new List<string>()));
+            function buildLabOptions() {
+                var html = '<option value="">-- Select Approved Lab --</option>';
+                labSuppliers.forEach(function(s) { html += '<option value="' + s.replace(/"/g,'&quot;') + '">' + s + '</option>'; });
+                html += '<option value="__OTHER__">Other (specify below)</option>';
+                return html;
+            }
+            function addLabRow(initName, initRef) {
+                var container = document.getElementById('editLabsContainer');
+                var div = document.createElement('div');
+                div.className = 'lab-row border rounded p-2 mb-2';
+                div.innerHTML =
+                    '<div class="row g-2 align-items-end">' +
+                        '<div class="col-md-5">' +
+                            '<label class="form-label small mb-1">Laboratory Name</label>' +
+                            '<select class="form-select form-select-sm lab-sel">' + buildLabOptions() + '</select>' +
+                            '<input type="text" class="form-control form-control-sm lab-other mt-1" placeholder="Enter laboratory name" style="display:none" />' +
+                            '<input type="hidden" class="lab-name" name="labNames" />' +
+                        '</div>' +
+                        '<div class="col-md-5">' +
+                            '<label class="form-label small mb-1">Testing Site GMP Licence / Clearance No.</label>' +
+                            '<input type="text" class="form-control form-control-sm" name="labRefs" placeholder="e.g. GMP 12345" />' +
+                        '</div>' +
+                        '<div class="col-md-2 d-flex align-items-end">' +
+                            '<button type="button" class="btn btn-sm btn-outline-danger w-100" onclick="removeLabRow(this)">Remove</button>' +
+                        '</div>' +
+                    '</div>';
+                container.appendChild(div);
+                var sel = div.querySelector('.lab-sel');
+                var other = div.querySelector('.lab-other');
+                var hidden = div.querySelector('.lab-name');
+                var refInput = div.querySelector('input[name="labRefs"]');
+                sel.addEventListener('change', function() {
+                    if (sel.value==='__OTHER__') { other.style.display=''; hidden.value=other.value; }
+                    else { other.style.display='none'; hidden.value=sel.value; }
+                });
+                other.addEventListener('input', function() { hidden.value=this.value; });
+                if (initName) {
+                    var found = false;
+                    for (var i=0; i<sel.options.length; i++) {
+                        if (sel.options[i].value===initName) { sel.value=initName; hidden.value=initName; found=true; break; }
+                    }
+                    if (!found) { sel.value='__OTHER__'; other.value=initName; other.style.display=''; hidden.value=initName; }
+                }
+                if (initRef) refInput.value = initRef;
+            }
+            function removeLabRow(btn) { btn.closest('.lab-row').remove(); }
+
+            // Pre-populate existing labs or start with one empty row
+            @if (Model.TestingLabs != null && Model.TestingLabs.Any()) {
+                @foreach (var lab in Model.TestingLabs) {
+                    @* JSON-encode for a script context (also escapes <, >, &) *@
+                    var jName = System.Text.Json.JsonSerializer.Serialize(lab.LaboratoryName ?? "");
+                    var jRef  = System.Text.Json.JsonSerializer.Serialize(lab.GmpLicenceRef  ?? "");
+                    <text>addLabRow(@Html.Raw(jName), @Html.Raw(jRef));</text>
+                }
+            } else {
+                <text>addLabRow();</text>
+            }
+
+            initSite('editMfgSiteSel','editMfgSiteOther','ManufacturingSite');
+            initSite('editPkgSiteSel','editPkgSiteOther','PackagingSite');
+            initSite('editRelCoSel','editRelCoOther','ReleasingCompany');
+
+            function toggleFinalRelease() {
+                var type = parseInt(document.getElementById('ReleaseType').value);
+                var show = (type === 3 || type === 4);
+                document.getElementById('finalReleaseSection').style.display = show ? '' : 'none';
+            }
+            document.getElementById('ReleaseType').addEventListener('change', toggleFinalRelease);
+            toggleFinalRelease();
+
+            // ── Expiry / Retest date mutual exclusion ─────────────────────────
+            (function () {
+                var expiry = document.getElementById('ExpiryDate');
+                var retest = document.getElementById('RetestDate');
+                if (!expiry || !retest || expiry.type !== 'date') return; // locked view — skip
+                function applyExclusion() {
+                    if (expiry.value) {
+                        retest.value = '';
+                        retest.disabled = true;
+                    } else if (retest.value) {
+                        expiry.value = '';
+                        expiry.disabled = true;
+                    } else {
+                        expiry.disabled = false;
+                        retest.disabled = false;
+                    }
+                }
+                expiry.addEventListener('change', function () {
+                    retest.disabled = false;
+                    applyExclusion();
+                });
+                retest.addEventListener('change', function () {
+                    expiry.disabled = false;
+                    applyExclusion();
+                });
+                applyExclusion(); // reflect existing values on page load
+            })();
+
+            // ── Product selection — auto-populate fields from master data ─────
+            var currentStrength = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Strength ?? ""));
+
+            document.getElementById('editProductNameSelect').addEventListener('change', function () {
+                var name = this.value;
+                var strengthSel = document.getElementById('editStrengthSelect');
+
+                if (!name) {
+                    document.getElementById('editInnName').value = '';
+                    document.getElementById('editBrandName').value = '';
+                    document.getElementById('editDosageForm').value = '';
+                    document.getElementById('editArtgReference').value = '';
+                    strengthSel.innerHTML = '<option value="">-- Select product first --</option>';
+                    return;
+                }
+
+                fetch('/Release/GetProductDetails?name=' + encodeURIComponent(name))
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (!data) return;
+                        document.getElementById('editInnName').value       = data.innName       || '';
+                        document.getElementById('editBrandName').value     = data.brandName     || '';
+                        document.getElementById('editDosageForm').value    = data.dosageForm    || '';
+                        document.getElementById('editArtgReference').value = data.artgReference || '';
+
+                        strengthSel.innerHTML = '';
+                        if (data.strengths && data.strengths.length > 0) {
+                            var ph = document.createElement('option');
+                            ph.value = ''; ph.textContent = '-- Select Strength --';
+                            strengthSel.appendChild(ph);
+                            data.strengths.forEach(function(s) {
+                                var opt = document.createElement('option');
+                                opt.value = s; opt.textContent = s;
+                                if (s === currentStrength) opt.selected = true;
+                                strengthSel.appendChild(opt);
+                            });
+                        } else {
+                            var opt = document.createElement('option');
+                            opt.value = ''; opt.textContent = '-- No strengths defined in master data --';
+                            strengthSel.appendChild(opt);
+                        }
+                        currentStrength = '';
+                    });
+            });
+
+            // Trigger on load to restore existing strength options
+            var sel = document.getElementById('editProductNameSelect');
+            if (sel.value) sel.dispatchEvent(new Event('change'));
+        </script>
+    }
+}

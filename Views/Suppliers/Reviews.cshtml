@@ -1,0 +1,103 @@
+@model OpenQMS.Models.Supplier
+@{
+    ViewData["Title"] = "Supplier Reviews";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isComplete = Model.Status == OpenQMS.Models.SupplierStatus.Approved
+                   || Model.Status == OpenQMS.Models.SupplierStatus.Qualified
+                   || Model.Status == OpenQMS.Models.SupplierStatus.Suspended
+                   || Model.Status == OpenQMS.Models.SupplierStatus.Cancelled;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Review History — @Model.SupplierCode</h4>
+        <small class="text-muted">@Model.LegalName</small>
+    </div>
+    @if (isComplete)
+    {
+        <a asp-action="CreateReview" asp-route-id="@Model.Id" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Start New Review</a>
+    }
+</div>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (Model.Snapshots == null || !Model.Snapshots.Any())
+{
+    <p class="text-muted">No completed review cycles recorded yet.</p>
+}
+else
+{
+    <table class="table table-striped" id="snapshotsTable">
+        <thead>
+            <tr>
+                <th>Supplier ID</th>
+                <th>Legal Name</th>
+                <th>Type</th>
+                <th>Risk Level</th>
+                <th>Supplier Status</th>
+                <th>Completed By</th>
+                <th>Completed On</th>
+                <th>Review Trigger</th>
+                <th>Next Review Was</th>
+                <th>Documents</th>
+                <th>Quality Records</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var snap in Model.Snapshots.OrderByDescending(s => s.SnapshotDate))
+            {
+                <tr>
+                    <td>@snap.SupplierCode</td>
+                    <td>@snap.LegalName</td>
+                    <td>@snap.SupplierType</td>
+                    <td>@snap.RiskLevel</td>
+                    <td>
+                        @{
+                            var snapBadge = snap.ApprovalStatus switch
+                            {
+                                OpenQMS.Models.SupplierStatus.Approved => "badge bg-success",
+                                OpenQMS.Models.SupplierStatus.Qualified => "badge bg-primary",
+                                OpenQMS.Models.SupplierStatus.Suspended => "badge bg-warning text-dark",
+                                OpenQMS.Models.SupplierStatus.Cancelled => "badge bg-secondary",
+                                _ => "badge bg-light text-dark"
+                            };
+                        }
+                        <span class="@snapBadge">@snap.ApprovalStatus</span>
+                    </td>
+                    <td>@(snap.CompletedBy ?? "-")</td>
+                    <td>@snap.SnapshotDate.ToSite().ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@(snap.ReviewTrigger.HasValue ? snap.ReviewTrigger.ToString() : "-")</td>
+                    <td>@(snap.NextReviewDate.HasValue ? snap.NextReviewDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                    <td>@(snap.Documents?.Count ?? 0)</td>
+                    <td>@(snap.QualityRecords?.Count ?? 0)</td>
+                    <td><a asp-action="SnapshotDetails" asp-route-id="@snap.Id">View</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="mt-3 d-flex gap-2">
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Details</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list me-1"></i>Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#snapshotsTable').DataTable({
+                dom: 'lBfrtip',
+                buttons: ['colvis', 'pdf', 'excel'],
+                order: [[6, 'desc']]
+            });
+        });
+    </script>
+}

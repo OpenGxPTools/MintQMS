@@ -1,0 +1,561 @@
+@model OpenQMS.Models.Deviation
+@using OpenQMS.Authorization
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = $"Edit — {Model.DeviationId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    static string EnumDisplayName(Enum? value)
+    {
+        if (value == null) return string.Empty;
+        var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
+        var attr   = member?.GetCustomAttribute<DisplayAttribute>();
+        return attr?.Name ?? value.ToString();
+    }
+
+    var products  = (List<SelectListItem>)ViewData["Products"];
+    var processes = (List<SelectListItem>)ViewData["Processes"];
+    var assets    = (List<SelectListItem>)ViewData["Assets"];
+    var materials = (List<SelectListItem>)ViewData["Materials"];
+    var suppliers = (List<SelectListItem>)ViewData["Suppliers"];
+
+    var selProductIds  = (List<int>)(ViewBag.SelectedProductIds  ?? new List<int>());
+    var selProcessIds  = (List<int>)(ViewBag.SelectedProcessIds  ?? new List<int>());
+    var selAssetIds    = (List<int>)(ViewBag.SelectedAssetIds    ?? new List<int>());
+    var selMaterialIds = (List<int>)(ViewBag.SelectedMaterialIds ?? new List<int>());
+    var selSupplierIds = (List<int>)(ViewBag.SelectedSupplierIds ?? new List<int>());
+
+    string JoinJunctions<T>(ICollection<T>? junctions, Func<T, string?> getName, string? legacyFallback)
+    {
+        if (junctions?.Any() == true)
+            return string.Join(", ", junctions.Select(getName).Where(n => !string.IsNullOrEmpty(n)));
+        return legacyFallback ?? "-";
+    }
+
+    var s                = Model.Status;
+    var isIdentification = s == Deviation.DeviationStatus.Identification;
+    var isEvaluation     = s == Deviation.DeviationStatus.Evaluation;
+    var isAccepted       = s == Deviation.DeviationStatus.Accepted;
+    var isResolution     = s == Deviation.DeviationStatus.Resolution;
+    var identEditable    = isIdentification || isEvaluation;
+
+    var statusLabel = s switch
+    {
+        Deviation.DeviationStatus.PendingAcceptance => "Pending Acceptance",
+        _ => s.ToString()
+    };
+    var badgeClass = s switch
+    {
+        Deviation.DeviationStatus.Identification    => "bg-light text-dark border",
+        Deviation.DeviationStatus.Evaluation        => "bg-info text-dark",
+        Deviation.DeviationStatus.PendingAcceptance => "bg-primary text-white",
+        Deviation.DeviationStatus.Accepted          => "bg-warning text-dark",
+        Deviation.DeviationStatus.Resolution        => "bg-warning text-dark",
+        Deviation.DeviationStatus.Approved          => "bg-success",
+        _ => "bg-secondary"
+    };
+    var severityBadge = Model.Severity switch
+    {
+        OpenQMS.Models.DeviationSeverity.Critical => "bg-danger",
+        OpenQMS.Models.DeviationSeverity.Major    => "bg-warning text-dark",
+        OpenQMS.Models.DeviationSeverity.Minor    => "bg-secondary",
+        _ => "bg-light text-dark border"
+    };
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Edit Deviation — <span class="fw-bold">@Model.DeviationId</span></h4>
+        <small class="text-muted">@Model.Title</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        @if (Model.Severity.HasValue)
+        {
+            <span class="badge @severityBadge fs-6">@Model.Severity.Value</span>
+        }
+        <span class="badge @badgeClass fs-6">@statusLabel</span>
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-md-9">
+        <form asp-action="Edit">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="DeviationId" value="@Model.DeviationId" />
+            <input type="hidden" asp-for="IdentifiedBy" />
+            <input type="hidden" asp-for="IdentifiedOn" />
+            <input type="hidden" asp-for="EvaluatedBy" />
+            <input type="hidden" asp-for="EvaluatedOn" />
+            <input type="hidden" asp-for="AcceptedBy" />
+            <input type="hidden" asp-for="AcceptedOn" />
+            <input type="hidden" asp-for="Status" />
+            <input type="hidden" asp-for="InvestigatedBy" />
+            <input type="hidden" asp-for="InvestigatedOn" />
+            <input type="hidden" asp-for="RootCauseBy" />
+            <input type="hidden" asp-for="RootCauseOn" />
+            <input type="hidden" asp-for="ActionBy" />
+            <input type="hidden" asp-for="ActionOn" />
+            <input type="hidden" asp-for="ResolvedBy" />
+            <input type="hidden" asp-for="ResolvedOn" />
+            <input type="hidden" asp-for="LinkedCapaId" />
+
+            <!-- ── Section 1: Identification ─────────────────────────────────── -->
+            <div class="card mb-4 @(!identEditable ? "opacity-50" : "")">
+                <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                    Identification
+                    @if (!identEditable)
+                    {
+                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                    }
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Record what happened, when, where, and the immediate actions taken.</p>
+                    @if (!identEditable)
+                    {
+                        <dl class="row mb-0">
+                            <dt class="col-sm-3">Title</dt>
+                            <dd class="col-sm-9">@Model.Title</dd>
+                            <input type="hidden" asp-for="Title" />
+
+                            <dt class="col-sm-3">Event Type</dt>
+                            <dd class="col-sm-9">@EnumDisplayName(Model.EventType)</dd>
+                            <input type="hidden" asp-for="EventType" />
+
+                            <dt class="col-sm-3">Severity</dt>
+                            <dd class="col-sm-9">
+                                @if (Model.Severity.HasValue)
+                                { <span class="badge @severityBadge">@Model.Severity.Value</span> }
+                                else { <span class="text-muted">-</span> }
+                            </dd>
+                            <input type="hidden" asp-for="Severity" />
+
+                            <dt class="col-sm-3">Products</dt>
+                            <dd class="col-sm-9">@JoinJunctions(Model.LinkedProducts, x => x.Product?.Name, Model.Product?.Name)</dd>
+
+                            <dt class="col-sm-3">Processes</dt>
+                            <dd class="col-sm-9">@JoinJunctions(Model.LinkedProcesses, x => x.Process?.Name, Model.Process?.Name)</dd>
+
+                            <dt class="col-sm-3">Assets</dt>
+                            <dd class="col-sm-9">@JoinJunctions(Model.LinkedAssets, x => x.Asset?.Name, Model.Asset?.Name)</dd>
+
+                            <dt class="col-sm-3">Materials</dt>
+                            <dd class="col-sm-9">@JoinJunctions(Model.LinkedMaterials, x => x.Material?.Name, Model.Material?.Name)</dd>
+
+                            <dt class="col-sm-3">Suppliers</dt>
+                            <dd class="col-sm-9">@JoinJunctions(Model.LinkedSuppliers, x => x.Supplier?.LegalName, Model.Supplier?.LegalName)</dd>
+
+                            <dt class="col-sm-3">Identification</dt>
+                            <dd class="col-sm-9">@(Model.Identification ?? "-")</dd>
+                            <input type="hidden" asp-for="Identification" />
+                        </dl>
+                    }
+                    else
+                    {
+                        <fieldset>
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <label asp-for="Title" class="form-label"></label>
+                                    <input asp-for="Title" class="form-control" />
+                                    <span asp-validation-for="Title" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="EventType" class="form-label">
+                                        Event Type
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="eventtype" aria-label="Event Type guidance">?</button>
+                                    </label>
+                                    <select asp-for="EventType" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.DeviationEventType>()">
+                                        <option value="">-- Select Event Type --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="Severity" class="form-label">
+                                        Severity
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="severity" aria-label="Severity guidance">?</button>
+                                    </label>
+                                    <select asp-for="Severity" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.DeviationSeverity>()">
+                                        <option value="">-- Select Severity --</option>
+                                    </select>
+                                </div>
+
+                                <!-- Products picker -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Products</label>
+                                    <select id="productDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add Product --</option>
+                                        @foreach (var p in products)
+                                        {
+                                            <option value="@p.Value" data-text="@p.Text">@p.Text</option>
+                                        }
+                                    </select>
+                                    <div id="productTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="productHidden" class="d-none"></div>
+                                </div>
+
+                                <!-- Processes picker -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Processes</label>
+                                    <select id="processDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add Process --</option>
+                                        @foreach (var p in processes)
+                                        {
+                                            <option value="@p.Value" data-text="@p.Text">@p.Text</option>
+                                        }
+                                    </select>
+                                    <div id="processTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="processHidden" class="d-none"></div>
+                                </div>
+
+                                <!-- Assets picker -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Assets</label>
+                                    <select id="assetDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add Asset --</option>
+                                        @foreach (var p in assets)
+                                        {
+                                            <option value="@p.Value" data-text="@p.Text">@p.Text</option>
+                                        }
+                                    </select>
+                                    <div id="assetTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="assetHidden" class="d-none"></div>
+                                </div>
+
+                                <!-- Materials picker -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Materials</label>
+                                    <select id="materialDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add Material --</option>
+                                        @foreach (var p in materials)
+                                        {
+                                            <option value="@p.Value" data-text="@p.Text">@p.Text</option>
+                                        }
+                                    </select>
+                                    <div id="materialTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="materialHidden" class="d-none"></div>
+                                </div>
+
+                                <!-- Suppliers picker -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Suppliers</label>
+                                    <select id="supplierDropdown" class="form-select form-select-sm">
+                                        <option value="">-- Add Supplier --</option>
+                                        @foreach (var p in suppliers)
+                                        {
+                                            <option value="@p.Value" data-text="@p.Text">@p.Text</option>
+                                        }
+                                    </select>
+                                    <div id="supplierTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                                    <div id="supplierHidden" class="d-none"></div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label asp-for="Identification" class="form-label">
+                                        Identification
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="identification" aria-label="Identification guidance">?</button>
+                                    </label>
+                                    <textarea asp-for="Identification" class="form-control" rows="5"></textarea>
+                                    <span asp-validation-for="Identification" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
+                </div>
+            </div>
+
+            <!-- ── Section 2: Evaluation & Investigation ─────────────────────── -->
+            @if (!isIdentification)
+            {
+                <div class="card mb-4 @(isResolution || isAccepted ? "opacity-50" : "")">
+                    <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                        Evaluation &amp; Investigation
+                        @if (isResolution || isAccepted)
+                        {
+                            <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-info text-dark">In Progress</span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">Assess the impact of the deviation and document the investigation findings and root cause.</p>
+                        @if (isResolution || isAccepted)
+                        {
+                            <dl class="row mb-0">
+                                <dt class="col-sm-3">Evaluation</dt>
+                                <dd class="col-sm-9">@(Model.Evaluation ?? "-")</dd>
+                                <dt class="col-sm-3">Investigation</dt>
+                                <dd class="col-sm-9">@(Model.Investigation ?? "-")</dd>
+                                <dt class="col-sm-3">Root Cause Category</dt>
+                                <dd class="col-sm-9">@(Model.RootCauseCategory?.ToString() ?? "-")</dd>
+                                <dt class="col-sm-3">Corrective &amp; Preventive Action</dt>
+                                <dd class="col-sm-9">@(Model.CorrectiveAction ?? "-")</dd>
+                            </dl>
+                            <input type="hidden" asp-for="Evaluation" />
+                            <input type="hidden" asp-for="Investigation" />
+                            <input type="hidden" asp-for="RootCauseCategory" />
+                            <input type="hidden" asp-for="CorrectiveAction" />
+                        }
+                        else
+                        {
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label asp-for="Evaluation" class="form-label">
+                                        Evaluation <span class="text-danger">*</span>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="evaluation" aria-label="Evaluation guidance">?</button>
+                                    </label>
+                                    <textarea asp-for="Evaluation" class="form-control" rows="5"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label asp-for="Investigation" class="form-label">
+                                        Investigation <span class="text-danger">*</span>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="investigation" aria-label="Investigation guidance">?</button>
+                                    </label>
+                                    <textarea asp-for="Investigation" class="form-control" rows="5"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="RootCauseCategory" class="form-label">
+                                        Root Cause Category <span class="text-danger">*</span>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="rootcause" aria-label="Root cause category guidance">?</button>
+                                    </label>
+                                    <select asp-for="RootCauseCategory" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<OpenQMS.Models.RootCauseCategory>()">
+                                        <option value="">-- Select Root Cause Category --</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label asp-for="CorrectiveAction" class="form-label">
+                                        Corrective and Preventive Action <span class="text-danger">*</span>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="capa" aria-label="CAPA guidance">?</button>
+                                    </label>
+                                    <textarea asp-for="CorrectiveAction" class="form-control" rows="5"></textarea>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- ── Section 3: Resolution ─────────────────────────────────────── -->
+            @if (isAccepted || isResolution)
+            {
+                <div class="card mb-4 @(isResolution ? "opacity-50" : "")">
+                    <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                        Resolution
+                        @if (isResolution)
+                        {
+                            <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Pending Approval</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Action Required</span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">Document all completed CAPA actions with evidence, confirm root cause is eliminated, and record the effectiveness check.</p>
+                        @if (isResolution)
+                        {
+                            <dl class="row mb-0">
+                                <dt class="col-sm-3">Resolution</dt>
+                                <dd class="col-sm-9">@(Model.Resolution ?? "-")</dd>
+                            </dl>
+                            <input type="hidden" asp-for="Resolution" />
+                            <small class="text-muted">Record is pending final approval. Use <strong>Return for Rework</strong> from the Details page if changes are needed.</small>
+                        }
+                        else
+                        {
+                            <div class="col-12">
+                                <label asp-for="Resolution" class="form-label">
+                                    Resolution <span class="text-danger">*</span>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="resolution" aria-label="Resolution guidance">?</button>
+                                </label>
+                                <textarea asp-for="Resolution" class="form-control" rows="5"></textarea>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">View Details</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+            </div>
+        </form>
+
+        @if (Model.LinkedCapaId == null)
+        {
+            <form asp-action="CreateCapa" asp-route-id="@Model.Id" method="post" class="mt-3">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-primary btn-sm">+ Create Linked CAPA</button>
+            </form>
+        }
+        else
+        {
+            <div class="alert alert-info mt-3">
+                <strong>Linked CAPA:</strong>
+                <a asp-controller="Capas" asp-action="Details" asp-route-id="@Model.LinkedCapaId">View CAPA</a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Popover help content (hidden, read by JS) -->
+<div class="d-none">
+    <div id="help-identification"><p class="mb-0">A clear, factual description of a deviation, outlining what occurred, when and where it happened, how it was detected, and the immediate actions taken. Attach supporting documentation and photos, where relevant.</p></div>
+    <div id="help-severity">
+        <p class="mb-1"><strong>Severity Definitions</strong></p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Critical</strong> — Directly impacts patient safety, product sterility or efficacy.</li>
+            <li><strong>Major</strong> — Significant departure from GMP or SOPs. Requires full investigation and CAPA.</li>
+            <li><strong>Minor</strong> — Low-risk departure with no direct impact on product quality or patient safety.</li>
+        </ul>
+    </div>
+    <div id="help-evaluation">
+        <p class="mb-1"><strong>Evaluation must address all of:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>Impact on product quality and patient safety</li>
+            <li>Impact on data integrity</li>
+            <li>Regulatory and compliance obligations</li>
+            <li>Whether affected batches, lots or materials require quarantine, re-testing or recall</li>
+        </ul>
+    </div>
+    <div id="help-investigation">
+        <p class="mb-1"><strong>Investigation must document:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>Methodology used (e.g. 5-Why, fishbone/Ishikawa)</li>
+            <li>Evidence reviewed (records, samples, equipment logs)</li>
+            <li>Timeline of events</li>
+            <li>Findings that led to the root cause determination</li>
+        </ul>
+    </div>
+    <div id="help-rootcause"><p class="mb-0"><strong>Root Cause Category</strong> — Select the primary category. If multiple apply, choose the most significant and document the others in Investigation.</p></div>
+    <div id="help-eventtype">
+        <p class="mb-1"><strong>Event Type Definitions</strong></p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Process Deviation</strong> — Deviation from stipulated process, procedure or relevant quality documentation</li>
+            <li><strong>Supplier Non-conformance</strong> — Quality issues identified in sourced materials, products or outsourced activities</li>
+            <li><strong>Quality Incident</strong> — Unexpected event or accident impacting quality</li>
+            <li><strong>Equipment Failure</strong> — Facility, equipment, hardware or utility failure impacting quality</li>
+            <li><strong>OOS</strong> — Laboratory testing result that fails acceptance criteria</li>
+            <li><strong>Adverse Trend</strong> — A confirmed trend with negative quality impact</li>
+            <li><strong>Near Miss</strong> — Unplanned event that did not result in a Deviation but had the potential to impact quality</li>
+        </ul>
+    </div>
+    <div id="help-capa">
+        <p class="mb-1"><strong>Corrective and Preventive Action must include:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>A description of each action</li>
+            <li>The responsible person for each action</li>
+            <li>Target completion date for each action</li>
+            <li>How effectiveness will be verified</li>
+        </ul>
+    </div>
+    <div id="help-resolution">
+        <p class="mb-1"><strong>Resolution must document:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>All CAPA actions completed with evidence</li>
+            <li>Confirmation that the root cause has been eliminated</li>
+            <li>Effectiveness check result</li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+        var selected = {};
+        preselected = preselected || [];
+
+        function renderTags() {
+            var tagsDiv   = document.getElementById(tagsId);
+            var hiddenDiv = document.getElementById(hiddenId);
+            tagsDiv.innerHTML   = '';
+            hiddenDiv.innerHTML = '';
+            Object.keys(selected).forEach(function(id) {
+                var text = selected[id];
+                var chip = document.createElement('span');
+                chip.style.cssText = 'display:inline-block;background:#0d6efd;color:white;padding:2px 8px;border-radius:12px;margin:2px;font-size:12px;cursor:pointer;';
+                chip.innerHTML = text + ' &times;';
+                chip.title = 'Click to remove';
+                chip.addEventListener('click', function() {
+                    delete selected[id];
+                    var opt = document.querySelector('#' + dropdownId + ' option[value="' + id + '"]');
+                    if (opt) opt.disabled = false;
+                    renderTags();
+                });
+                tagsDiv.appendChild(chip);
+                var hidden = document.createElement('input');
+                hidden.type  = 'hidden';
+                hidden.name  = inputName;
+                hidden.value = id;
+                hiddenDiv.appendChild(hidden);
+            });
+        }
+
+        preselected.forEach(function(item) {
+            selected[item.id] = item.text;
+            var opt = document.querySelector('#' + dropdownId + ' option[value="' + item.id + '"]');
+            if (opt) opt.disabled = true;
+        });
+        renderTags();
+
+        document.getElementById(dropdownId).addEventListener('change', function() {
+            var dd   = document.getElementById(dropdownId);
+            var id   = dd.value;
+            var text = dd.options[dd.selectedIndex].dataset.text;
+            if (id && !selected[id]) {
+                selected[id] = text;
+                dd.options[dd.selectedIndex].disabled = true;
+                renderTags();
+            }
+            dd.value = '';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.help-btn').forEach(function (btn) {
+            var contentEl = document.getElementById('help-' + btn.dataset.help);
+            new bootstrap.Popover(btn, {
+                html: true, trigger: 'click', placement: 'right',
+                content: contentEl ? contentEl.innerHTML : '',
+                title: '', container: 'body'
+            });
+        });
+        document.addEventListener('click', function (e) {
+            if (!e.target.classList.contains('help-btn')) {
+                document.querySelectorAll('.help-btn').forEach(function (btn) {
+                    var pop = bootstrap.Popover.getInstance(btn);
+                    if (pop) pop.hide();
+                });
+            }
+        });
+    });
+    </script>
+    @if (identEditable)
+    {
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var selProducts  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(products.Where(x => selProductIds.Contains(int.Parse(x.Value))).Select(x => new { id = x.Value, text = x.Text }).ToList()));
+            var selProcesses = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(processes.Where(x => selProcessIds.Contains(int.Parse(x.Value))).Select(x => new { id = x.Value, text = x.Text }).ToList()));
+            var selAssets    = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(assets.Where(x => selAssetIds.Contains(int.Parse(x.Value))).Select(x => new { id = x.Value, text = x.Text }).ToList()));
+            var selMaterials = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(materials.Where(x => selMaterialIds.Contains(int.Parse(x.Value))).Select(x => new { id = x.Value, text = x.Text }).ToList()));
+            var selSuppliers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(suppliers.Where(x => selSupplierIds.Contains(int.Parse(x.Value))).Select(x => new { id = x.Value, text = x.Text }).ToList()));
+            setupPicker('productDropdown',  'productTags',  'productHidden',  'selectedProducts',  selProducts);
+            setupPicker('processDropdown',  'processTags',  'processHidden',  'selectedProcesses', selProcesses);
+            setupPicker('assetDropdown',    'assetTags',    'assetHidden',    'selectedAssets',    selAssets);
+            setupPicker('materialDropdown', 'materialTags', 'materialHidden', 'selectedMaterials', selMaterials);
+            setupPicker('supplierDropdown', 'supplierTags', 'supplierHidden', 'selectedSuppliers', selSuppliers);
+        });
+        </script>
+    }
+}

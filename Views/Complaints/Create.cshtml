@@ -1,0 +1,275 @@
+@model OpenQMS.Models.Complaint
+@{
+    ViewData["Title"] = "New Complaint";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var products  = ViewData["Products"]  as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var processes = ViewData["Processes"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var materials = ViewData["Materials"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var suppliers = ViewData["Suppliers"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+
+    var selProductIds  = (List<int>?)ViewBag.SelectedProductIds  ?? new List<int>();
+    var selProcessIds  = (List<int>?)ViewBag.SelectedProcessIds  ?? new List<int>();
+    var selMaterialIds = (List<int>?)ViewBag.SelectedMaterialIds ?? new List<int>();
+    var selSupplierIds = (List<int>?)ViewBag.SelectedSupplierIds ?? new List<int>();
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">New Complaint</h4>
+        <small class="text-muted">Complete the intake details and submit to open the complaint record.</small>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- ── Complaint Intake ────────────────────────────────────────────── -->
+            <div class="card mb-4">
+                <div class="card-header fw-semibold">Complaint Intake</div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Record the complaint source, product involved, and the full description of the issue reported.</p>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Severity" class="form-label">
+                                Severity
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="severity"
+                                        aria-label="Severity guidance">?</button>
+                            </label>
+                            <select asp-for="Severity" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<OpenQMS.Models.Complaint.ComplaintSeverity>()">
+                            </select>
+                            <span asp-validation-for="Severity" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CustomerId" class="form-label">Customer (from Master Data)</label>
+                            <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.CustomerId" id="CustomerIdSelect">
+                                <option value="">-- Select Customer --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6" id="CustomerNameRow">
+                            <label asp-for="CustomerName" class="form-label">
+                                Customer Name <span class="text-muted small">(if not in system)</span>
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="customername"
+                                        aria-label="Customer name guidance">?</button>
+                            </label>
+                            <input asp-for="CustomerName" class="form-control"
+                                   placeholder="e.g. Pharmacy name, patient reference..." />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CustomerContact" class="form-label">
+                                @Html.DisplayNameFor(m => m.CustomerContact)
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="customercontact"
+                                        aria-label="Customer contact guidance">?</button>
+                            </label>
+                            <input asp-for="CustomerContact" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CustomerReference" class="form-label"></label>
+                            <input asp-for="CustomerReference" class="form-control" />
+                        </div>
+
+                        <!-- Product picker -->
+                        <div class="col-md-6">
+                            <label class="form-label">Products</label>
+                            <select id="productDropdown" class="form-select">
+                                <option value="">-- Add Product --</option>
+                                @foreach (var p in products)
+                                {
+                                    <option value="@p.Value" data-text="@p.Text">@p.Text</option>
+                                }
+                            </select>
+                            <div id="productTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="productHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Process picker -->
+                        <div class="col-md-6">
+                            <label class="form-label">Processes</label>
+                            <select id="processDropdown" class="form-select">
+                                <option value="">-- Add Process --</option>
+                                @foreach (var p in processes)
+                                {
+                                    <option value="@p.Value" data-text="@p.Text">@p.Text</option>
+                                }
+                            </select>
+                            <div id="processTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="processHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Material picker -->
+                        <div class="col-md-6">
+                            <label class="form-label">Materials</label>
+                            <select id="materialDropdown" class="form-select">
+                                <option value="">-- Add Material --</option>
+                                @foreach (var p in materials)
+                                {
+                                    <option value="@p.Value" data-text="@p.Text">@p.Text</option>
+                                }
+                            </select>
+                            <div id="materialTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="materialHidden" class="d-none"></div>
+                        </div>
+
+                        <!-- Supplier picker -->
+                        <div class="col-md-6">
+                            <label class="form-label">Suppliers</label>
+                            <select id="supplierDropdown" class="form-select">
+                                <option value="">-- Add Supplier --</option>
+                                @foreach (var p in suppliers)
+                                {
+                                    <option value="@p.Value" data-text="@p.Text">@p.Text</option>
+                                }
+                            </select>
+                            <div id="supplierTags" class="mt-1 d-flex flex-wrap gap-1"></div>
+                            <div id="supplierHidden" class="d-none"></div>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label">
+                                Description
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="description"
+                                        aria-label="Description guidance">?</button>
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+            </div>
+        </form>
+
+<!-- Popover help content (hidden, read by JS) -->
+<div class="d-none">
+    <div id="help-severity">
+        <p class="mb-1"><strong>Severity Definitions</strong></p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Critical</strong> — Poses an immediate or potential risk to patient safety, product sterility or efficacy. Requires priority handling and may trigger regulatory reporting or recall assessment.</li>
+            <li><strong>Major</strong> — Significant quality failure or departure from specifications. No immediate safety risk but requires full investigation and CAPA. Typical SLA: 30 days.</li>
+            <li><strong>Minor</strong> — Low-risk issue with no direct impact on product quality or patient safety. Administrative or cosmetic in nature. Typical SLA: 60 days.</li>
+        </ul>
+    </div>
+    <div id="help-customername">
+        <p class="mb-0">Only complete if the complainant is not recorded in the Customer Master. If entered here, no linked customer record will be created.</p>
+    </div>
+    <div id="help-customercontact">
+        <p class="mb-1"><strong>Customer Contact details:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>Contact name</li>
+            <li>Role / job title</li>
+            <li>Phone number</li>
+            <li>Email address</li>
+        </ul>
+    </div>
+    <div id="help-description">
+        <p class="mb-1"><strong>Description must cover:</strong></p>
+        <ul class="mb-0 ps-3">
+            <li>What the complainant reported (verbatim or paraphrased)</li>
+            <li>Product or batch involved, if known</li>
+            <li>When the issue was first observed</li>
+            <li>How the complaint was received (phone, email, written)</li>
+            <li>Any immediate actions already taken</li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+        var selected = {};
+        preselected.forEach(function (item) { selected[item.id] = item.text; });
+
+        function render() {
+            var tagsDiv   = document.getElementById(tagsId);
+            var hiddenDiv = document.getElementById(hiddenId);
+            tagsDiv.innerHTML   = '';
+            hiddenDiv.innerHTML = '';
+            Object.keys(selected).forEach(function (id) {
+                var badge = document.createElement('span');
+                badge.className   = 'badge bg-primary d-flex align-items-center gap-1';
+                badge.textContent = selected[id];
+                var btn = document.createElement('button');
+                btn.type      = 'button';
+                btn.className = 'btn-close btn-close-white btn-sm ms-1';
+                btn.style.fontSize = '0.6rem';
+                btn.addEventListener('click', function () { delete selected[id]; render(); });
+                badge.appendChild(btn);
+                tagsDiv.appendChild(badge);
+
+                var input = document.createElement('input');
+                input.type  = 'hidden';
+                input.name  = inputName;
+                input.value = id;
+                hiddenDiv.appendChild(input);
+            });
+        }
+
+        document.getElementById(dropdownId).addEventListener('change', function () {
+            var dd   = this;
+            var id   = dd.value;
+            var text = dd.options[dd.selectedIndex].dataset.text;
+            if (id && !selected[id]) { selected[id] = text; render(); }
+            dd.value = '';
+        });
+
+        render();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.help-btn').forEach(function (btn) {
+            var contentEl = document.getElementById('help-' + btn.dataset.help);
+            new bootstrap.Popover(btn, {
+                html: true, trigger: 'click', placement: 'right',
+                content: contentEl ? contentEl.innerHTML : '', title: '', container: 'body'
+            });
+        });
+        document.addEventListener('click', function (e) {
+            if (!e.target.classList.contains('help-btn')) {
+                document.querySelectorAll('.help-btn').forEach(function (btn) {
+                    var pop = bootstrap.Popover.getInstance(btn);
+                    if (pop) pop.hide();
+                });
+            }
+        });
+
+        var customerSelect  = document.getElementById('CustomerIdSelect');
+        var customerNameRow = document.getElementById('CustomerNameRow');
+        function toggleCustomerName() {
+            if (customerSelect && customerNameRow)
+                customerNameRow.style.display = customerSelect.value ? 'none' : '';
+        }
+        if (customerSelect) { customerSelect.addEventListener('change', toggleCustomerName); toggleCustomerName(); }
+
+        var selProducts  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            products.Where(x => selProductIds.Contains(int.Parse(x.Value)))
+                    .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selProcesses = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            processes.Where(x => selProcessIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selMaterials = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            materials.Where(x => selMaterialIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        var selSuppliers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            suppliers.Where(x => selSupplierIds.Contains(int.Parse(x.Value)))
+                     .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+
+        setupPicker('productDropdown',  'productTags',  'productHidden',  'selectedProducts',  selProducts);
+        setupPicker('processDropdown',  'processTags',  'processHidden',  'selectedProcesses', selProcesses);
+        setupPicker('materialDropdown', 'materialTags', 'materialHidden', 'selectedMaterials', selMaterials);
+        setupPicker('supplierDropdown', 'supplierTags', 'supplierHidden', 'selectedSuppliers', selSuppliers);
+    });
+    </script>
+}

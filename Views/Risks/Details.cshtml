@@ -1,0 +1,704 @@
+@using Microsoft.AspNetCore.Html
+@model OpenQMS.Models.Risk
+
+@{
+    ViewData["Title"] = $"Risk — {Model.RiskId}";
+
+    var iLinked = new List<string>();
+    if (Model.LinkedProducts?.Any()  == true) iLinked.AddRange(Model.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedProcesses?.Any() == true) iLinked.AddRange(Model.LinkedProcesses.Select(x => x.Process?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedAssets?.Any()    == true) iLinked.AddRange(Model.LinkedAssets.Select(x => x.Asset?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedMaterials?.Any() == true) iLinked.AddRange(Model.LinkedMaterials.Select(x => x.Material?.Name ?? "").Where(n => n != ""));
+    if (Model.LinkedSuppliers?.Any() == true) iLinked.AddRange(Model.LinkedSuppliers.Select(x => x.Supplier?.LegalName ?? "").Where(n => n != ""));
+    if (!iLinked.Any())
+    {
+        if (Model.Product  != null) iLinked.Add(Model.Product.Name);
+        if (Model.Process  != null) iLinked.Add(Model.Process.Name);
+        if (Model.Asset    != null) iLinked.Add(Model.Asset.Name);
+        if (Model.Material != null) iLinked.Add(Model.Material.Name);
+        if (Model.Supplier != null) iLinked.Add(Model.Supplier.LegalName);
+    }
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Stage booleans
+    var isIdentification    = Model.Status == OpenQMS.Models.Risk.RiskStatus.Identification;
+    var isLegacyAssessment  = Model.Status == OpenQMS.Models.Risk.RiskStatus.Assessment;     // old workflow record
+    var isPendingAssessment = Model.Status == OpenQMS.Models.Risk.RiskStatus.PendingAssessment;
+    var isMitigation        = Model.Status == OpenQMS.Models.Risk.RiskStatus.Mitigation;
+    var isLegacyReview      = Model.Status == OpenQMS.Models.Risk.RiskStatus.Review;          // old workflow record
+    var isPendingReview     = Model.Status == OpenQMS.Models.Risk.RiskStatus.PendingReview;
+    var isClosed            = Model.Status == OpenQMS.Models.Risk.RiskStatus.Closed;
+
+    var canEdit          = isIdentification || isLegacyAssessment || isMitigation;
+    var canSubmitAssess  = isIdentification;
+    var canSubmitReview  = isMitigation || isLegacyAssessment;
+    var awaitingQMAssess = isPendingAssessment;
+    var awaitingQMClose  = isPendingReview || isLegacyReview;
+    var isQM             = User.IsInRole("Administrator") || User.IsInRole("QualityManager") || User.IsInRole("AuthorisedPerson");
+
+    // Progressive-disclosure: show a section once this stage (or beyond) has been reached
+    var atOrPastPendingAssessment = isPendingAssessment || isMitigation || isLegacyReview || isPendingReview || isClosed;
+    var atOrPastMitigation        = isMitigation || isLegacyReview || isPendingReview || isClosed;
+    var atOrPastPendingReview     = isLegacyReview || isPendingReview || isClosed;
+
+    var statusLabel = EnumHelper.Display(Model.Status);
+
+    var statusBadge = Model.Status switch
+    {
+        OpenQMS.Models.Risk.RiskStatus.Identification    => "bg-light text-dark border",
+        OpenQMS.Models.Risk.RiskStatus.Assessment        => "bg-warning text-dark",
+        OpenQMS.Models.Risk.RiskStatus.PendingAssessment => "bg-info text-dark",
+        OpenQMS.Models.Risk.RiskStatus.Mitigation        => "bg-warning text-dark",
+        OpenQMS.Models.Risk.RiskStatus.Review            => "bg-primary",
+        OpenQMS.Models.Risk.RiskStatus.PendingReview     => "bg-primary",
+        OpenQMS.Models.Risk.RiskStatus.Closed            => "bg-success",
+        _                                                 => "bg-secondary"
+    };
+    var rpnBadge = Model.InitialRPN >= 80 ? "bg-danger"
+                 : Model.InitialRPN >= 40 ? "bg-warning text-dark"
+                 : "bg-success";
+    var isOverdue    = !isClosed && Model.TargetCompletionDate.HasValue && Model.TargetCompletionDate.Value.Date < SiteTime.Today;
+    var isApproaching = !isClosed && Model.TargetCompletionDate.HasValue
+                     && Model.TargetCompletionDate.Value.Date >= SiteTime.Today
+                     && Model.TargetCompletionDate.Value.Date <= SiteTime.Today.AddDays(14);
+    var attachCount = Model.Attachments?.Count ?? 0;
+    var auditCount  = Model.AuditLogs?.Count ?? 0;
+}
+
+<!-- Header -->
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Risk &mdash; <span class="fw-bold">@Model.RiskId</span></h4>
+        <small class="text-muted">@Model.Title</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <span class="badge @rpnBadge fs-6">RPN @Model.InitialRPN</span>
+        <span class="badge @statusBadge fs-6">@statusLabel</span>
+    </div>
+</div>
+<hr />
+
+<!-- TempData alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Success"]</div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["WorkflowError"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Error"]</div>
+}
+
+<!-- Deadline banners -->
+@if (isOverdue)
+{
+    var daysOver = (SiteTime.Today - Model.TargetCompletionDate!.Value.Date).Days;
+    <div class="alert alert-danger">&#9888; Target completion date was <strong>@Model.TargetCompletionDate.Value.ToShortDateString()</strong> — overdue by <strong>@daysOver day(s)</strong>.</div>
+}
+else if (isApproaching)
+{
+    var daysLeft = (Model.TargetCompletionDate!.Value.Date - SiteTime.Today).Days;
+    <div class="alert alert-warning">&#9888; Target completion date is <strong>@Model.TargetCompletionDate.Value.ToShortDateString()</strong> — <strong>@daysLeft day(s)</strong> remaining.</div>
+}
+
+@if (isClosed && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="card mb-3 border-danger">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+        </div>
+        <div class="card-body py-2">
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
+                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Workflow action card -->
+@if (!isClosed)
+{
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-tasks me-2"></i>Workflow Actions</strong>
+            <span class="small">Current: @statusLabel</span>
+        </div>
+        <div class="card-body">
+            @if (canSubmitAssess)
+            {
+                <p class="text-muted small mb-2">Complete the risk identification and initial assessment, then submit for formal Quality Manager assessment.</p>
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#submitForAssessmentModal">
+                    <i class="fas fa-paper-plane me-1"></i>Submit for Assessment
+                </button>
+            }
+            else if (awaitingQMAssess)
+            {
+                <p class="text-muted small mb-2">This risk has been submitted for formal assessment. A Quality Manager must review the scoring and either accept or return it for revision.</p>
+                @if (isQM)
+                {
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#acceptAssessmentModal">
+                            <i class="fas fa-check me-1"></i>Accept Assessment
+                        </button>
+                        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#returnFromAssessmentModal">
+                            <i class="fas fa-undo me-1"></i>Return for Revision
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info mb-0 py-2 small">Awaiting Quality Manager acceptance. No actions available at this stage.</div>
+                }
+            }
+            else if (canSubmitReview)
+            {
+                <p class="text-muted small mb-2">
+                    Complete all mitigation details: strategy, residual risk scores (S/P/D), and the risk acceptance decision with justification.
+                    Then submit for Quality Manager review and closure.
+                </p>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submitForReviewModal">
+                    <i class="fas fa-paper-plane me-1"></i>Submit for Review
+                </button>
+            }
+            else if (awaitingQMClose)
+            {
+                <p class="text-muted small mb-2">Mitigation has been completed and submitted for review. A Quality Manager must review and formally close this risk.</p>
+                @if (isQM)
+                {
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#closeRiskModal">
+                            <i class="fas fa-lock me-1"></i>Close Risk
+                        </button>
+                        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#returnFromReviewModal">
+                            <i class="fas fa-undo me-1"></i>Return to Mitigation
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info mb-0 py-2 small">Awaiting Quality Manager review and closure. No actions available at this stage.</div>
+                }
+            }
+        </div>
+    </div>
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="detailTabs">
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">Overview</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAttachments">Attachments <span class="badge bg-secondary">@attachCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAuditLog">Audit Log <span class="badge bg-secondary">@auditCount</span></button></li>
+</ul>
+
+<div class="tab-content">
+
+<!-- OVERVIEW TAB -->
+<div class="tab-pane fade show active" id="tabOverview">
+
+    <!-- Context -->
+    <h6 class="text-muted text-uppercase small mb-2">Context</h6>
+    <dl class="row mb-4">
+        <dt class="col-sm-3">Risk ID</dt>
+        <dd class="col-sm-9"><strong>@Model.RiskId</strong></dd>
+        <dt class="col-sm-3">Title</dt>
+        <dd class="col-sm-9">@Model.Title</dd>
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+        <dt class="col-sm-3">Category</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(m => m.Category)</dd>
+        <dt class="col-sm-3">Risk Owner</dt>
+        <dd class="col-sm-9">@(Model.RiskOwner ?? "-")</dd>
+        <dt class="col-sm-3">Linked To</dt>
+        <dd class="col-sm-9">@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</dd>
+        <dt class="col-sm-3">Identified By</dt>
+        <dd class="col-sm-9">@Model.IdentifiedBy on @Model.IdentifiedOn.ToSite().ToShortDateString()</dd>
+    </dl>
+
+    <hr />
+
+    <!-- Initial Risk Assessment -->
+    <h6 class="text-muted text-uppercase small mb-2">Initial Risk Assessment</h6>
+    <div class="row mb-4">
+        <div class="col-md-5">
+            <dl class="row">
+                <dt class="col-sm-6">Severity</dt>
+                <dd class="col-sm-6">@Model.Severity</dd>
+                <dt class="col-sm-6">Probability</dt>
+                <dd class="col-sm-6">@Model.Probability</dd>
+                <dt class="col-sm-6">Detectability</dt>
+                <dd class="col-sm-6">@Model.Detectability</dd>
+                <dt class="col-sm-6">Initial RPN</dt>
+                <dd class="col-sm-6">
+                    <span class="badge @rpnBadge fs-6">@Model.InitialRPN</span>
+                    <span class="ms-2 small">@GetRPNLevel(Model.InitialRPN)</span>
+                </dd>
+            </dl>
+            <div class="alert alert-secondary small py-2">
+                <strong>Calculation:</strong> @Model.Severity × @Model.Probability × @Model.Detectability = @Model.InitialRPN<br />
+                <small>RPN scale: &lt;40 = Low | 40–79 = Medium | ≥80 = High</small>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <strong class="small">Risk Matrix (Severity × Probability)</strong>
+            <div class="mt-2">@RenderRiskMatrix(Model.Severity, Model.Probability)</div>
+        </div>
+    </div>
+
+    @if (atOrPastPendingAssessment || !string.IsNullOrEmpty(Model.AssessedBy))
+    {
+        <hr />
+        <!-- Assessment -->
+        <h6 class="text-muted text-uppercase small mb-2">Assessment</h6>
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Submitted By</dt>
+            <dd class="col-sm-9">@(Model.AssessedBy ?? "-")@(Model.AssessedOn.HasValue ? $" on {Model.AssessedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
+            <dt class="col-sm-3">Accepted By (QM)</dt>
+            <dd class="col-sm-9">@(Model.AcceptedBy ?? "-")@(Model.AcceptedOn.HasValue ? $" on {Model.AcceptedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
+            @if (!string.IsNullOrWhiteSpace(Model.AssessmentNotes))
+            {
+                <dt class="col-sm-3">Assessment Notes</dt>
+                <dd class="col-sm-9">@Model.AssessmentNotes</dd>
+            }
+        </dl>
+    }
+
+    @if (atOrPastMitigation || !string.IsNullOrEmpty(Model.MitigationStrategy))
+    {
+        <hr />
+        <!-- Mitigation -->
+        <h6 class="text-muted text-uppercase small mb-2">Mitigation</h6>
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Mitigation Strategy</dt>
+            <dd class="col-sm-9">@(Model.MitigationStrategy ?? "-")</dd>
+            <dt class="col-sm-3">Target Completion</dt>
+            <dd class="col-sm-9">@(Model.TargetCompletionDate?.ToShortDateString() ?? "-")</dd>
+            <dt class="col-sm-3">Actual Completion</dt>
+            <dd class="col-sm-9">@(Model.ActualCompletionDate?.ToShortDateString() ?? "-")</dd>
+            @if (atOrPastPendingReview || !string.IsNullOrEmpty(Model.ReviewedBy))
+            {
+                <dt class="col-sm-3">Submitted for Review By</dt>
+                <dd class="col-sm-9">@(Model.ReviewedBy ?? "-")@(Model.ReviewedOn.HasValue ? $" on {Model.ReviewedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
+            }
+        </dl>
+    }
+
+    @if (atOrPastMitigation || Model.ResidualRPN.HasValue)
+    {
+        <hr />
+        <h6 class="text-muted text-uppercase small mb-2">Residual Risk (After Mitigation)</h6>
+        @if (Model.ResidualRPN.HasValue)
+        {
+            var resBadge = Model.ResidualRPN.Value >= 80 ? "bg-danger"
+                         : Model.ResidualRPN.Value >= 40 ? "bg-warning text-dark"
+                         : "bg-success";
+            <div class="row mb-4">
+                <div class="col-md-5">
+                    <dl class="row">
+                        <dt class="col-sm-6">Residual Severity</dt>
+                        <dd class="col-sm-6">@Model.ResidualSeverity</dd>
+                        <dt class="col-sm-6">Residual Probability</dt>
+                        <dd class="col-sm-6">@Model.ResidualProbability</dd>
+                        <dt class="col-sm-6">Residual Detectability</dt>
+                        <dd class="col-sm-6">@Model.ResidualDetectability</dd>
+                        <dt class="col-sm-6">Residual RPN</dt>
+                        <dd class="col-sm-6">
+                            <span class="badge @resBadge fs-6">@Model.ResidualRPN.Value</span>
+                            <span class="ms-2 small">@GetRPNLevel(Model.ResidualRPN.Value)</span>
+                        </dd>
+                    </dl>
+                    @if (Model.ResidualRPN.Value < Model.InitialRPN)
+                    {
+                        <div class="alert alert-success small py-2">&#10003; RPN reduced from @Model.InitialRPN &rarr; @Model.ResidualRPN.Value (&#8722;@(Model.InitialRPN - Model.ResidualRPN.Value))</div>
+                    }
+                    else if (Model.ResidualRPN.Value == Model.InitialRPN)
+                    {
+                        <div class="alert alert-warning small py-2">RPN unchanged at @Model.InitialRPN</div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger small py-2">&#9888; RPN increased from @Model.InitialRPN &rarr; @Model.ResidualRPN.Value</div>
+                    }
+                </div>
+                <div class="col-md-7">
+                    <strong class="small">Residual Risk Matrix</strong>
+                    <div class="mt-2">@RenderRiskMatrix(Model.ResidualSeverity!.Value, Model.ResidualProbability!.Value)</div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted small mb-4">Not yet assessed.</p>
+        }
+    }
+
+    @if (atOrPastMitigation || Model.RiskAcceptable.HasValue)
+    {
+        <hr />
+        <!-- Risk Acceptance -->
+        <h6 class="text-muted text-uppercase small mb-2">Risk Acceptance</h6>
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Risk Acceptable</dt>
+            <dd class="col-sm-9">
+                @if (Model.RiskAcceptable.HasValue)
+                {
+                    <span class="badge @(Model.RiskAcceptable.Value ? "bg-success" : "bg-danger")">
+                        @(Model.RiskAcceptable.Value ? "Yes — Acceptable" : "No — Further Action Required")
+                    </span>
+                }
+                else { <span class="text-muted">-</span> }
+            </dd>
+            <dt class="col-sm-3">Justification</dt>
+            <dd class="col-sm-9">@(Model.Justification ?? "-")</dd>
+        </dl>
+    }
+
+    @if (atOrPastMitigation || !string.IsNullOrEmpty(Model.MonitoringPlan) || Model.NextReviewDate.HasValue)
+    {
+        <hr />
+        <!-- Monitoring -->
+        <h6 class="text-muted text-uppercase small mb-2">Monitoring</h6>
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Monitoring Plan</dt>
+            <dd class="col-sm-9">@(Model.MonitoringPlan ?? "-")</dd>
+            <dt class="col-sm-3">Next Review Date</dt>
+            <dd class="col-sm-9">@(Model.NextReviewDate?.ToShortDateString() ?? "-")</dd>
+        </dl>
+    }
+
+    <div class="mt-3 d-flex gap-2">
+        <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
+        <a asp-action="ExportRiskDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+    </div>
+
+    @if (atOrPastPendingReview || !string.IsNullOrEmpty(Model.ReviewConclusion) || !string.IsNullOrEmpty(Model.ClosedBy))
+    {
+        <hr />
+        <!-- Review & Closure -->
+        <h6 class="text-muted text-uppercase small mb-2">Review &amp; Closure</h6>
+        <dl class="row mb-4">
+            @if (!string.IsNullOrWhiteSpace(Model.ReviewConclusion))
+            {
+                <dt class="col-sm-3">Review Conclusion</dt>
+                <dd class="col-sm-9">@Model.ReviewConclusion</dd>
+            }
+            <dt class="col-sm-3">Closed By</dt>
+            <dd class="col-sm-9">@(Model.ClosedBy ?? "-")@(Model.ClosedOn.HasValue ? $" on {Model.ClosedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
+        </dl>
+    }
+
+</div>
+
+<!-- ATTACHMENTS TAB -->
+<div class="tab-pane fade" id="tabAttachments">
+    @if (!isClosed && !awaitingQMAssess && !awaitingQMClose)
+    {
+        <div class="card mb-3">
+            <div class="card-header">Upload Attachment</div>
+            <div class="card-body">
+                <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="riskId" value="@Model.Id" />
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-5">
+                            <label class="form-label">File</label>
+                            <input type="file" name="file" class="form-control" required />
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Description</label>
+                            <input type="text" name="description" class="form-control" placeholder="Optional description" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+
+    @if (Model.Attachments != null && Model.Attachments.Any())
+    {
+        <table class="table table-sm">
+            <thead>
+                <tr><th>File</th><th>Description</th><th>Uploaded By</th><th>Date</th><th>Size</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var att in Model.Attachments.OrderByDescending(a => a.UploadedDate))
+                {
+                    <tr>
+                        <td>@att.FileName</td>
+                        <td>@(att.Description ?? "-")</td>
+                        <td>@att.UploadedBy</td>
+                        <td>@att.UploadedDate.ToSite().ToShortDateString()</td>
+                        <td>@(att.FileSize / 1024) KB</td>
+                        <td class="text-end">
+                            <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                            @if (!isClosed && !awaitingQMAssess && !awaitingQMClose)
+                            {
+                                <form asp-action="DeleteAttachment" method="post" class="d-inline" data-delete-reason="attachment">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@att.Id" />
+                                    <input type="hidden" name="riskId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">No attachments.</p>
+    }
+    <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
+</div>
+
+<!-- AUDIT LOG TAB -->
+<div class="tab-pane fade" id="tabAuditLog">
+    @await Html.PartialAsync("_AuditLogTable", (Model.AuditLogs ?? Enumerable.Empty<OpenQMS.Models.RiskAuditLog>())
+        .Select(l => new OpenQMS.ViewModels.AuditLogRow(l.PerformedOn, l.PerformedBy, l.Action, l.FromStatus, l.ToStatus, l.Notes)))
+</div>
+
+</div><!-- end tab-content -->
+
+<div class="mt-3 d-flex gap-3">
+    @if (canEdit)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+    }
+    @if (User.IsInRole("Administrator") && isIdentification)
+    {
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Delete</a>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+</div>
+
+<!-- ── Workflow Modals ────────────────────────────────────────────────── -->
+
+@if (canSubmitAssess)
+{
+    <div class="modal fade" id="submitForAssessmentModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Submit for Assessment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="SubmitForAssessment" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">This will lock the record and send it to the Quality Manager for formal assessment. Enter your credentials to confirm.</p>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info">Submit for Assessment</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (awaitingQMAssess && isQM)
+{
+    <div class="modal fade" id="acceptAssessmentModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Accept Assessment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="AcceptAssessment" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">Accepting will move this risk to Mitigation. The risk scoring is locked from this point.</p>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Assessment Notes</label><textarea name="assessmentNotes" class="form-control" rows="3" placeholder="Document the basis for accepting this risk assessment..."></textarea></div>
+                    <div class="mb-3"><label class="form-label">Additional Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Accept Assessment</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="returnFromAssessmentModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Return for Revision</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="ReturnFromAssessment" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">This will return the risk to Identification for the submitter to revise. The submission signature will be cleared.</p>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Reason for Return (required)</label><textarea name="notes" class="form-control" rows="3" required placeholder="Explain what needs to be revised..."></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Return for Revision</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (canSubmitReview)
+{
+    <div class="modal fade" id="submitForReviewModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Submit for Review</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="SubmitForReview" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">Before submitting, confirm:</p>
+                    <ul class="small text-muted">
+                        <li>Mitigation strategy is fully documented</li>
+                        <li>Residual risk scores (S/P/D) have been assessed</li>
+                        <li>Risk acceptance decision and justification are recorded</li>
+                    </ul>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit for Review</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (awaitingQMClose && isQM)
+{
+    <div class="modal fade" id="closeRiskModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Close Risk</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="CloseRisk" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">Closing this risk is a final action. A Review Conclusion is required and will be permanently recorded.</p>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3">
+                        <label class="form-label">Review Conclusion <span class="text-danger">*</span></label>
+                        <textarea name="reviewConclusion" class="form-control" rows="4" required placeholder="Document the outcome of the review and basis for closure..."></textarea>
+                    </div>
+                    <div class="mb-3"><label class="form-label">Additional Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Close Risk</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="returnFromReviewModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Return to Mitigation</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="ReturnFromReview" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">This will return the risk to Mitigation for further work. The review submission signature will be cleared.</p>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Reason for Return (required)</label><textarea name="notes" class="form-control" rows="3" required placeholder="Explain what needs to be revised in the mitigation..."></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Return to Mitigation</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (isClosed && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="modal fade" id="adminReopenModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong>Warning:</strong> Administratively reopening a completed record reverts it to the Mitigation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@section Scripts {
+<script>
+$(document).ready(function () {
+    @if (TempData["ActiveTab"] != null)
+    {
+        <text>
+        var tab = '@TempData["ActiveTab"]';
+        var tabMap = { 'attachments': '#tabAttachments', 'auditlog': '#tabAuditLog' };
+        if (tabMap[tab]) {
+            var el = document.querySelector('[data-bs-target="' + tabMap[tab] + '"]');
+            if (el) new bootstrap.Tab(el).show();
+        }
+        </text>
+    }
+});
+</script>
+}
+
+@functions {
+    string GetRPNLevel(int rpn) =>
+        rpn >= 80 ? "High Risk" : rpn >= 40 ? "Medium Risk" : "Low Risk";
+
+    IHtmlContent RenderRiskMatrix(int currentSeverity, int currentProbability)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.Append("<table class='table table-bordered table-sm mb-1' style='width:auto;text-align:center;font-size:0.8rem'>");
+        sb.Append("<thead><tr><th style='width:32px'>S\\P</th>");
+        for (int p = 1; p <= 5; p++) sb.Append($"<th style='width:36px'>{p}</th>");
+        sb.Append("</tr></thead><tbody>");
+        for (int s = 5; s >= 1; s--)
+        {
+            sb.Append($"<tr><td><strong>{s}</strong></td>");
+            for (int p = 1; p <= 5; p++)
+            {
+                int score = s * p;
+                string bg = score >= 20 ? "#dc3545" : score >= 12 ? "#fd7e14" : score >= 6 ? "#ffc107" : "#198754";
+                string font = "white";
+                string border = (s == currentSeverity && p == currentProbability) ? "border:3px solid #000!important;" : "";
+                string marker = (s == currentSeverity && p == currentProbability) ? "★" : score.ToString();
+                sb.Append($"<td style='background:{bg};color:{font};font-weight:bold;{border}'>{marker}</td>");
+            }
+            sb.Append("</tr>");
+        }
+        sb.Append("</tbody></table>");
+        sb.Append("<small class='text-muted'>S = Severity (rows), P = Probability (cols), ★ = current position</small>");
+        return new HtmlString(sb.ToString());
+    }
+}

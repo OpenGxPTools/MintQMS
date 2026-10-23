@@ -1,0 +1,117 @@
+@model OpenQMS.Models.Service
+@using static OpenQMS.Models.Service
+
+@{
+    ViewData["Title"] = "Edit Service";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Edit Service — @Model.ServiceId</h4>
+    </div>
+</div>
+<hr />
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ServiceId" />
+    <input type="hidden" asp-for="GeneratedFrom" value="@Model.GeneratedFrom" />
+    <input type="hidden" asp-for="Version" />
+    <input type="hidden" asp-for="EditedBy" value="@Model.EditedBy" />
+    <input type="hidden" asp-for="EditedOn" value="@(Model.EditedOn.ToSite())" />
+    <input type="hidden" asp-for="ApprovedBy" value="@Model.ApprovedBy" />
+    <input type="hidden" asp-for="ApprovedOn" value="@(Model.ApprovedOn.ToSite())" />
+    <input type="hidden" asp-for="IsLocked" value="@Model.IsLocked" />
+    <input type="hidden" asp-for="Status" value="@Model.Status" />
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Service Details</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Category" class="form-label"></label>
+                    <select asp-for="Category" class="form-select"
+                            asp-items="Html.GetEnumSelectList<ServiceCategory>()">
+                    </select>
+                    <span asp-validation-for="Category" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Related Documents</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Linked Approved Documents</label>
+                    <select id="relatedDocDropdown" class="form-select">
+                        <option value="">-- Add Document --</option>
+                        @foreach (var d in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
+                        {
+                            <option value="@d.Value" data-text="@d.Text">@d.Text</option>
+                        }
+                    </select>
+                    <div id="relatedDocTags" class="mt-2 d-flex flex-wrap gap-1"></div>
+                    <div id="relatedDocHidden" class="d-none"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+            var selected = {};
+            preselected.forEach(function (item) { selected[item.id] = item.text; });
+            function render() {
+                var tagsDiv = document.getElementById(tagsId);
+                var hiddenDiv = document.getElementById(hiddenId);
+                tagsDiv.innerHTML = ''; hiddenDiv.innerHTML = '';
+                Object.keys(selected).forEach(function (id) {
+                    var badge = document.createElement('span');
+                    badge.className = 'badge bg-primary d-flex align-items-center gap-1';
+                    badge.style.fontSize = '0.85rem';
+                    badge.textContent = selected[id];
+                    var btn = document.createElement('button');
+                    btn.type = 'button'; btn.className = 'btn-close btn-close-white btn-sm ms-1'; btn.style.fontSize = '0.6rem';
+                    btn.addEventListener('click', function () { delete selected[id]; render(); });
+                    badge.appendChild(btn); tagsDiv.appendChild(badge);
+                    var input = document.createElement('input');
+                    input.type = 'hidden'; input.name = inputName; input.value = id;
+                    hiddenDiv.appendChild(input);
+                });
+            }
+            document.getElementById(dropdownId).addEventListener('change', function () {
+                var id = this.value; var text = this.options[this.selectedIndex].dataset.text;
+                if (id && !selected[id]) { selected[id] = text; render(); }
+                this.value = '';
+            });
+            render();
+        }
+        var selRelatedDocs = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            ((List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
+                .Where(x => ((List<int>)ViewBag.SelectedRelatedDocIds).Contains(int.Parse(x.Value)))
+                .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+        setupPicker('relatedDocDropdown', 'relatedDocTags', 'relatedDocHidden', 'selectedRelatedDocs', selRelatedDocs);
+    </script>
+}

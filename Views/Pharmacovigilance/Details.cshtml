@@ -1,0 +1,760 @@
+@model OpenQMS.Models.AdverseEvent
+@{
+    ViewData["Title"] = Model.AENumber;
+    var rep = Model.Reporter;
+    var pat = Model.Patient;
+    var sp = Model.SuspectProduct;
+    var reg = Model.RegulatoryReport;
+    var auditLog = ViewData["AuditLog"] as IEnumerable<OpenQMS.Models.AEAuditLog> ?? Enumerable.Empty<OpenQMS.Models.AEAuditLog>();
+    var deadlineStatus = ViewData["DeadlineStatus"] is OpenQMS.Services.PVRegulatoryService.DeadlineStatus ds
+        ? ds : OpenQMS.Services.PVRegulatoryService.DeadlineStatus.NotApplicable;
+    var deadlineBadgeClass = deadlineStatus switch {
+        OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Overdue   => "danger",
+        OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Critical  => "danger",
+        OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Warning   => "warning",
+        OpenQMS.Services.PVRegulatoryService.DeadlineStatus.OnTrack   => "success",
+        _ => "secondary"
+    };
+
+    var statusClass = Model.Status switch {
+        AdverseEvent.AEStatus.Draft => "secondary",
+        AdverseEvent.AEStatus.UnderMedicalReview => "info",
+        AdverseEvent.AEStatus.PendingApproval => "warning",
+        AdverseEvent.AEStatus.Approved => "success",
+        AdverseEvent.AEStatus.Closed => "dark",
+        AdverseEvent.AEStatus.Voided => "voided",
+        _ => "secondary"
+    };
+}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+        <h4 class="mb-1">@Model.AENumber</h4>
+        <div class="d-flex gap-2 align-items-center">
+            @if (statusClass == "voided")
+            {
+                <span class="badge text-bg-light border text-muted text-decoration-line-through fs-6">@EnumHelper.Display(Model.Status)</span>
+            }
+            else
+            {
+                <span class="badge bg-@statusClass fs-6">@EnumHelper.Display(Model.Status)</span>
+            }
+            @if (Model.IsSerious) { <span class="badge bg-danger">Serious</span> }
+            @if (Model.IsFatalOrLifeThreatening) { <span class="badge bg-dark">Fatal / Life-Threatening</span> }
+            @if (Model.IsLocked) { <span class="badge bg-warning text-dark"><i class="bi bi-lock-fill"></i> Locked</span> }
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        @if (!Model.IsLocked && Model.Status != AdverseEvent.AEStatus.Voided)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Edit</a>
+        }
+        <a href="#tab-attachments" data-bs-toggle="tab" class="btn btn-outline-secondary">
+            <i class="fas fa-paperclip me-1"></i>Documents (@(Model.Attachments?.Count(a => !a.IsDeleted) ?? 0))
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<!-- TGA Deadline Alert -->
+@if (Model.IsSerious && Model.TGADeadlineDate.HasValue)
+{
+    var daysLeft = (Model.TGADeadlineDate.Value.Date - SiteTime.Today).Days;
+    var alertClass = daysLeft < 0 ? "danger" : daysLeft <= 2 ? "danger" : daysLeft <= 5 ? "warning" : "info";
+    <div class="alert alert-@alertClass mb-3">
+        <strong>TGA Reporting Deadline:</strong> @Model.TGADeadlineDate.Value.ToString("dd MMM yyyy")
+        @if (daysLeft < 0) { <span class="badge bg-danger ms-2">OVERDUE by @(Math.Abs(daysLeft)) days</span> }
+        else if (daysLeft == 0) { <span class="badge bg-danger ms-2">Due TODAY</span> }
+        else { <span class="badge bg-@alertClass ms-2">@daysLeft day(s) remaining</span> }
+    </div>
+}
+
+<!-- Parent AE link -->
+@if (Model.ParentAE != null)
+{
+    <div class="alert alert-secondary">
+        Follow-up to: <a asp-action="Details" asp-route-id="@Model.ParentAE.Id">@Model.ParentAE.AENumber</a>
+    </div>
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-0" id="detailTabs">
+    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-report">Report Info</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-patient">Patient</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-product">Suspect Product</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-ae">AE Details</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-assessment">Case Assessment</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-regulatory">Regulatory</a></li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#tab-attachments">
+            Documents
+            @{ var attCount = Model.Attachments?.Count(a => !a.IsDeleted) ?? 0; }
+            @if (attCount > 0) { <span class="badge bg-secondary">@attCount</span> }
+        </a>
+    </li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-audit">Audit Trail</a></li>
+</ul>
+
+<div class="tab-content border border-top-0 rounded-bottom p-4 mb-3">
+
+    <!-- Tab 1: Report Info -->
+    <div class="tab-pane fade show active" id="tab-report">
+        <dl class="row">
+            <dt class="col-sm-3">Report Date</dt>
+            <dd class="col-sm-9">@Model.ReportDate.ToSite().ToString("dd MMM yyyy HH:mm")</dd>
+            <dt class="col-sm-3">Report Source</dt>
+            <dd class="col-sm-9">@Model.ReportSource</dd>
+            <dt class="col-sm-3">Report Type</dt>
+            <dd class="col-sm-9">@Model.ReportType</dd>
+            <dt class="col-sm-3">Day 0 Date</dt>
+            <dd class="col-sm-9">@(Model.Day0Date?.ToString("dd MMM yyyy") ?? "-")</dd>
+            <dt class="col-sm-3">TGA Deadline</dt>
+            <dd class="col-sm-9">@(Model.TGADeadlineDate?.ToString("dd MMM yyyy") ?? "-")</dd>
+            <dt class="col-sm-3">Created By</dt>
+            <dd class="col-sm-9">@Model.CreatedBy on @Model.CreatedOn.ToSite().ToString("dd MMM yyyy HH:mm")</dd>
+            @if (Model.ModifiedBy != null)
+            {
+                <dt class="col-sm-3">Last Modified</dt>
+                <dd class="col-sm-9">@Model.ModifiedBy on @Model.ModifiedOn.ToSite()?.ToString("dd MMM yyyy HH:mm")</dd>
+            }
+        </dl>
+        @if (rep != null)
+        {
+            <hr /><h6>Reporter</h6>
+            <dl class="row">
+                <dt class="col-sm-3">Name / Initials</dt>
+                <dd class="col-sm-9">@(rep.ReporterName ?? "-")</dd>
+                <dt class="col-sm-3">Type</dt>
+                <dd class="col-sm-9">@(rep.Type?.ToString() ?? "-")</dd>
+                <dt class="col-sm-3">Qualification</dt>
+                <dd class="col-sm-9">@(rep.Qualification?.ToString() ?? "-")</dd>
+                <dt class="col-sm-3">Institution</dt>
+                <dd class="col-sm-9">@(rep.Institution ?? "-")</dd>
+                <dt class="col-sm-3">Country</dt>
+                <dd class="col-sm-9">@(rep.Country ?? "-")</dd>
+            </dl>
+        }
+    </div>
+
+    <!-- Tab 2: Patient -->
+    <div class="tab-pane fade" id="tab-patient">
+        @if (pat != null)
+        {
+            <dl class="row">
+                <dt class="col-sm-3">Patient Identifier</dt>
+                <dd class="col-sm-9">@(pat.PatientIdentifier ?? "-")</dd>
+                <dt class="col-sm-3">Age</dt>
+                <dd class="col-sm-9">@(pat.Age.HasValue ? $"{pat.Age} {pat.AgeUnit}" : "-")</dd>
+                <dt class="col-sm-3">Date of Birth</dt>
+                <dd class="col-sm-9">@(pat.DateOfBirth?.ToString("dd MMM yyyy") ?? "-")</dd>
+                <dt class="col-sm-3">Sex</dt>
+                <dd class="col-sm-9">@(pat.Sex?.ToString() ?? "-")</dd>
+                <dt class="col-sm-3">Weight / Height</dt>
+                <dd class="col-sm-9">@(pat.WeightKg.HasValue ? $"{pat.WeightKg} kg" : "-") / @(pat.HeightCm.HasValue ? $"{pat.HeightCm} cm" : "-")</dd>
+                <dt class="col-sm-3">Pregnant</dt>
+                <dd class="col-sm-9">@(pat.IsPregnant.HasValue ? (pat.IsPregnant.Value ? "Yes" : "No") : "Unknown")</dd>
+                <dt class="col-sm-3">Medical History</dt>
+                <dd class="col-sm-9" style="white-space:pre-wrap">@(pat.MedicalHistory ?? "-")</dd>
+                <dt class="col-sm-3">Concomitant Medications</dt>
+                <dd class="col-sm-9" style="white-space:pre-wrap">@(pat.ConcomitantMedications ?? "-")</dd>
+            </dl>
+        }
+        else { <p class="text-muted">No patient data recorded.</p> }
+    </div>
+
+    <!-- Tab 3: Suspect Product -->
+    <div class="tab-pane fade" id="tab-product">
+        @if (sp != null)
+        {
+            <dl class="row">
+                <dt class="col-sm-3">Product Name</dt>
+                <dd class="col-sm-9">
+                    @(sp.ProductName ?? "-")
+                    @if (sp.Product != null) { <a asp-controller="Products" asp-action="Details" asp-route-id="@sp.ProductId" class="ms-2 badge bg-light text-dark">View in Register</a> }
+                </dd>
+                <dt class="col-sm-3">ARTG Number</dt>
+                <dd class="col-sm-9">@(sp.ARTGNumber ?? "-")</dd>
+                <dt class="col-sm-3">Batch / Lot</dt>
+                <dd class="col-sm-9">@(sp.BatchNumber ?? "-")</dd>
+                <dt class="col-sm-3">Route / Dose</dt>
+                <dd class="col-sm-9">@(sp.RouteOfAdministration ?? "-") — @(sp.Dose ?? "-") @(sp.DoseUnit ?? "") @(sp.DoseFrequency ?? "")</dd>
+                <dt class="col-sm-3">Indication</dt>
+                <dd class="col-sm-9">@(sp.Indication ?? "-")</dd>
+                <dt class="col-sm-3">Treatment Dates</dt>
+                <dd class="col-sm-9">@(sp.TreatmentStartDate?.ToString("dd MMM yyyy") ?? "-") → @(sp.TreatmentEndDate?.ToString("dd MMM yyyy") ?? "-")</dd>
+                <dt class="col-sm-3">Action Taken</dt>
+                <dd class="col-sm-9">@(sp.ActionTaken?.ToString() ?? "-")</dd>
+                <dt class="col-sm-3">Dechallenge / Rechallenge</dt>
+                <dd class="col-sm-9">@(sp.DechallengeResult?.ToString() ?? "-") / @(sp.RechallengeResult?.ToString() ?? "-")</dd>
+            </dl>
+        }
+        else { <p class="text-muted">No suspect product data recorded.</p> }
+    </div>
+
+    <!-- Tab 4: AE Details -->
+    <div class="tab-pane fade" id="tab-ae">
+        <dl class="row">
+            <dt class="col-sm-3">AE Description</dt>
+            <dd class="col-sm-9" style="white-space:pre-wrap">@(Model.AEDescription ?? "-")</dd>
+            <dt class="col-sm-3">MedDRA Preferred Term</dt>
+            <dd class="col-sm-9">@(Model.MedDRAPT ?? "-")</dd>
+            <dt class="col-sm-3">MedDRA System Organ Class</dt>
+            <dd class="col-sm-9">@(Model.MedDRASOC ?? "-")</dd>
+            <dt class="col-sm-3">AE Dates</dt>
+            <dd class="col-sm-9">@(Model.AEStartDate?.ToString("dd MMM yyyy") ?? "-") → @(Model.AEEndDate?.ToString("dd MMM yyyy") ?? "-")</dd>
+            <dt class="col-sm-3">Outcome</dt>
+            <dd class="col-sm-9">@(Model.Outcome?.ToString() ?? "-")</dd>
+            <dt class="col-sm-3">Seriousness Criteria</dt>
+            <dd class="col-sm-9">
+                @if (Model.SeriousnessCriteria == AdverseEvent.SeriousnessFlags.None)
+                {
+                    <span class="badge bg-secondary">None</span>
+                }
+                else
+                {
+                    foreach (AdverseEvent.SeriousnessFlags flag in Enum.GetValues(typeof(AdverseEvent.SeriousnessFlags)))
+                    {
+                        if (flag != AdverseEvent.SeriousnessFlags.None && Model.SeriousnessCriteria.HasFlag(flag))
+                        {
+                            <span class="badge bg-danger me-1">@flag</span>
+                        }
+                    }
+                }
+            </dd>
+            <dt class="col-sm-3">Causality</dt>
+            <dd class="col-sm-9">@(Model.Causality?.ToString() ?? "-")</dd>
+            <dt class="col-sm-3">Severity</dt>
+            <dd class="col-sm-9">@(Model.Severity?.ToString() ?? "-")</dd>
+            <dt class="col-sm-3">Expectedness</dt>
+            <dd class="col-sm-9">@(Model.Expectedness?.ToString() ?? "-")</dd>
+        </dl>
+    </div>
+
+    <!-- Tab 5: Case Assessment -->
+    <div class="tab-pane fade" id="tab-assessment">
+        <dl class="row">
+            <dt class="col-sm-3">Medical Evaluator</dt>
+            <dd class="col-sm-9">@(Model.MedicalEvaluator ?? "-")</dd>
+            <dt class="col-sm-3">Evaluation Date</dt>
+            <dd class="col-sm-9">@(Model.EvaluationDate?.ToString("dd MMM yyyy") ?? "-")</dd>
+            <dt class="col-sm-3">Signal Detected</dt>
+            <dd class="col-sm-9">@Html.Raw(Model.SignalDetected ? "<span class=\"badge bg-warning text-dark\">Yes</span>" : "No")</dd>
+            <dt class="col-sm-3">Medical Narrative</dt>
+            <dd class="col-sm-9" style="white-space:pre-wrap">@(Model.MedicalNarrative ?? "-")</dd>
+        </dl>
+    </div>
+
+    <!-- Tab 6: Regulatory -->
+    <div class="tab-pane fade" id="tab-regulatory">
+        @if (reg != null)
+        {
+            <!-- Deadline Status Banner -->
+            @if (deadlineStatus != OpenQMS.Services.PVRegulatoryService.DeadlineStatus.NotApplicable)
+            {
+                var bannerText = deadlineStatus switch {
+                    OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Overdue =>
+                        $"OVERDUE — TGA deadline was {Model.TGADeadlineDate!.Value:dd MMM yyyy}. Submission not yet recorded.",
+                    OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Critical =>
+                        $"CRITICAL — TGA deadline in {(Model.TGADeadlineDate!.Value.Date - SiteTime.Today).Days} day(s) ({Model.TGADeadlineDate!.Value:dd MMM yyyy}).",
+                    OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Warning =>
+                        $"WARNING — TGA deadline in {(Model.TGADeadlineDate!.Value.Date - SiteTime.Today).Days} day(s) ({Model.TGADeadlineDate!.Value:dd MMM yyyy}).",
+                    _ => $"TGA submission deadline: {Model.TGADeadlineDate!.Value:dd MMM yyyy}."
+                };
+                <div class="alert alert-@deadlineBadgeClass d-flex align-items-center mb-3" role="alert">
+                    <i class="fas fa-clock me-2"></i>
+                    <div>@bannerText</div>
+                </div>
+            }
+
+            <dl class="row">
+                <dt class="col-sm-3">Deadline Status</dt>
+                <dd class="col-sm-9"><span class="badge bg-@deadlineBadgeClass">@deadlineStatus</span></dd>
+                <dt class="col-sm-3">Reportable to TGA</dt>
+                <dd class="col-sm-9">
+                    @if (reg.IsReportableToTGA == null) { <span class="badge bg-secondary">Pending Assessment</span> }
+                    else if (reg.IsReportableToTGA == true) { <span class="badge bg-danger">Yes — Expedited Reporting Required</span> }
+                    else { <span class="badge bg-success">No</span> }
+                </dd>
+                <dt class="col-sm-3">TGA Submission Date</dt>
+                <dd class="col-sm-9">
+                    @if (reg.TGASubmissionDate.HasValue) {
+                        <span class="badge bg-success">@reg.TGASubmissionDate.Value.ToString("dd MMM yyyy")</span>
+                    } else { <span class="text-muted">Not yet submitted</span> }
+                </dd>
+                <dt class="col-sm-3">Submission Method</dt>
+                <dd class="col-sm-9">@(reg.SubmissionMethod?.ToString() ?? "-")</dd>
+                <dt class="col-sm-3">TGA ADRS Reference</dt>
+                <dd class="col-sm-9">@(reg.TGAADRSReferenceNumber ?? "-")</dd>
+                <dt class="col-sm-3">E2B Reference</dt>
+                <dd class="col-sm-9">@(reg.E2BTransmissionReference ?? "-")</dd>
+                <dt class="col-sm-3">Decision Rationale</dt>
+                <dd class="col-sm-9" style="white-space:pre-wrap">@(reg.ReportingDecisionRationale ?? "-")</dd>
+                <dt class="col-sm-3">Overseas Reporting</dt>
+                <dd class="col-sm-9">
+                    @(reg.OverseasReportingRequired ? "Yes" : "No")
+                    @if (!string.IsNullOrWhiteSpace(reg.OverseasAuthorities)) { <span class="ms-1 text-muted">— @reg.OverseasAuthorities</span> }
+                </dd>
+                <dt class="col-sm-3">Include in PSUR</dt>
+                <dd class="col-sm-9">@Html.Raw(reg.IncludeInNextPSUR ? "<span class=\"badge bg-info\">Yes</span>" : "No")</dd>
+                <dt class="col-sm-3">Significant Safety Issue</dt>
+                <dd class="col-sm-9">@Html.Raw(reg.SignificantSafetyIssue ? "<span class=\"badge bg-danger\">SSI Flagged</span>" : "No")</dd>
+                <dt class="col-sm-3">Regulatory Status</dt>
+                <dd class="col-sm-9"><span class="badge bg-secondary">@EnumHelper.Display(reg.Status)</span></dd>
+            </dl>
+
+            <hr />
+
+            <!-- Log TGA Submission (only if not yet submitted) -->
+            @if (!reg.TGASubmissionDate.HasValue && reg.IsReportableToTGA == true)
+            {
+                <div class="card border-warning mb-3">
+                    <div class="card-header bg-warning text-dark">
+                        <strong><i class="fas fa-paper-plane me-1"></i>Log TGA Submission</strong>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" asp-action="LogTGASubmission" asp-route-id="@Model.Id">
+                            @Html.AntiForgeryToken()
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Submission Date <span class="text-danger">*</span></label>
+                                    <input type="date" name="submissionDate" class="form-control form-control-sm"
+                                           value="@SiteTime.Today.ToString("yyyy-MM-dd")" required />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Submission Method</label>
+                                    <select name="method" class="form-select form-select-sm">
+                                        <option value="">— select —</option>
+                                        <option value="AEMSPortal">AEMS Portal</option>
+                                        <option value="E2BEDI">E2B(R3) EDI</option>
+                                        <option value="CIOMSEmail">CIOMS-I Email</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">TGA ADRS Reference Number</label>
+                                    <input type="text" name="adrsRef" class="form-control form-control-sm"
+                                           placeholder="e.g. AEMS-2026-XXXXX" />
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-warning btn-sm w-100">
+                                        <i class="fas fa-check me-1"></i>Record
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+            <!-- Export CIOMS-I Button -->
+            <div class="mt-2">
+                <a asp-action="ExportCIOMS" asp-route-id="@Model.Id"
+                   class="btn btn-outline-secondary btn-sm" target="_blank">
+                    <i class="fas fa-file-pdf me-1"></i>Export CIOMS-I Form (PDF)
+                </a>
+            </div>
+        }
+        else { <p class="text-muted">No regulatory data recorded.</p> }
+    </div>
+
+    <!-- Tab: Documents / Attachments -->
+    <div class="tab-pane fade" id="tab-attachments">
+        @if (!Model.IsLocked)
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-light"><strong><i class="fas fa-upload me-1"></i>Upload Document</strong></div>
+                <div class="card-body">
+                    <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="aeId" value="@Model.Id" />
+                        <div class="row g-2 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label small">File</label>
+                                <input type="file" name="file" class="form-control form-control-sm" required />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small">Document Type</label>
+                                <select name="documentType" class="form-select form-select-sm">
+                                    <option value="">— Select Type —</option>
+                                    <option>CIOMS Form</option>
+                                    <option>MedWatch / Authority Form</option>
+                                    <option>Source Document</option>
+                                    <option>Medical Records</option>
+                                    <option>Lab Report</option>
+                                    <option>Medical Narrative</option>
+                                    <option>Causality Assessment</option>
+                                    <option>Correspondence</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small">Description</label>
+                                <input type="text" name="description" class="form-control form-control-sm" placeholder="optional" />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-sm btn-primary w-100"><i class="fas fa-upload me-1"></i>Upload</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-secondary small"><i class="fas fa-lock me-1"></i>This case is locked (finalised) — documents can be viewed but not added or removed.</div>
+        }
+
+        @{ var atts = Model.Attachments?.Where(a => !a.IsDeleted).OrderByDescending(a => a.UploadedDate).ToList() ?? new(); }
+        @if (atts.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover table-sm align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>File Name</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Uploaded By</th>
+                            <th>Date</th>
+                            <th>Size</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var att in atts)
+                        {
+                            <tr>
+                                <td><i class="bi bi-paperclip"></i> @att.FileName</td>
+                                <td>@(string.IsNullOrEmpty(att.DocumentType) ? "—" : att.DocumentType)</td>
+                                <td>@(att.Description ?? "—")</td>
+                                <td>@att.UploadedBy</td>
+                                <td>@att.UploadedDate.ToSite().ToString("dd MMM yyyy")</td>
+                                <td>@((att.FileSize / 1024.0).ToString("F1")) KB</td>
+                                <td class="text-end text-nowrap">
+                                    <a asp-action="ViewAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-eye me-1"></i>View</a>
+                                    <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-download me-1"></i>Download</a>
+                                    @if (!Model.IsLocked)
+                                    {
+                                        <form asp-action="DeleteAttachment" method="post" class="d-inline ms-1" data-delete-reason="attachment">
+                                            <input type="hidden" name="id" value="@att.Id" />
+                                            <input type="hidden" name="aeId" value="@Model.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>Delete</button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted mb-0">No documents uploaded yet.</p>
+        }
+        <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
+    </div>
+
+    <!-- Tab 7: Audit Trail -->
+    <div class="tab-pane fade" id="tab-audit">
+        @if (auditLog.Any())
+        {
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr><th>Date / Time <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>Action</th><th>Performed By</th><th>Details</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in auditLog)
+                    {
+                        <tr>
+                            <td>@(SiteTime.ToSite((DateTime)entry.PerformedOn).ToString("dd MMM yyyy HH:mm"))</td>
+                            <td><span class="badge bg-secondary">@entry.Action</span></td>
+                            <td>@entry.PerformedBy</td>
+                            <td>@(!string.IsNullOrEmpty(entry.Notes) ? entry.Notes : (entry.NewValue ?? "-"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else { <p class="text-muted">No audit trail entries yet.</p> }
+    </div>
+
+</div><!-- end tab-content -->
+
+<!-- ── Workflow Action Buttons ──────────────────────────────────────── -->
+<hr />
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+}
+
+@if (Model.Status == AdverseEvent.AEStatus.Draft)
+{
+    <div class="card mb-3 border-primary">
+        <div class="card-header bg-primary text-white"><strong>Submit for Medical Review</strong></div>
+        <div class="card-body">
+            <p class="text-muted small">Minimum ICSR requirements: identifiable reporter, patient, suspect product, and AE description.</p>
+            <form method="post" asp-action="SubmitForReview" asp-route-id="@Model.Id">
+                <div class="row g-2">
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
+                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
+                    <div class="col-md-4"><button type="submit" class="btn btn-primary w-100">Submit for Review</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@if (Model.Status == AdverseEvent.AEStatus.UnderMedicalReview)
+{
+    <div class="card mb-3 border-success">
+        <div class="card-header bg-success text-white"><strong>Complete Medical Evaluation</strong></div>
+        <div class="card-body">
+            <p class="text-muted small">Ensure MedDRA coding, causality, and medical narrative are complete before proceeding.</p>
+            <form method="post" asp-action="CompleteEvaluation" asp-route-id="@Model.Id">
+                <div class="row g-2">
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
+                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
+                    <div class="col-md-4"><button type="submit" class="btn btn-success w-100">Complete Evaluation</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card mb-3 border-warning">
+        <div class="card-header bg-warning"><strong>Send Back to Draft</strong></div>
+        <div class="card-body">
+            <form method="post" asp-action="SendBack" asp-route-id="@Model.Id">
+                <div class="row g-2">
+                    <div class="col-md-3"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
+                    <div class="col-md-3"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
+                    <div class="col-md-4"><input type="text" name="comment" class="form-control" placeholder="Reason for sending back" /></div>
+                    <div class="col-md-2"><button type="submit" class="btn btn-warning w-100">Send Back</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@if (Model.Status == AdverseEvent.AEStatus.PendingApproval)
+{
+    <div class="card mb-3 border-success">
+        <div class="card-header bg-success text-white"><strong>Approve &amp; Lock Record</strong></div>
+        <div class="card-body">
+            <p class="text-muted small">Approving will lock this record. A Follow-up Report must be created to add further information.</p>
+            <form method="post" asp-action="Approve" asp-route-id="@Model.Id">
+                <div class="row g-2">
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
+                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
+                    <div class="col-md-4"><button type="submit" class="btn btn-success w-100">Approve</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card mb-3 border-warning">
+        <div class="card-header bg-warning"><strong>Reject — Return to Medical Review</strong></div>
+        <div class="card-body">
+            <form method="post" asp-action="Reject" asp-route-id="@Model.Id">
+                <div class="row g-2">
+                    <div class="col-md-3"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
+                    <div class="col-md-3"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
+                    <div class="col-md-4"><input type="text" name="comment" class="form-control" placeholder="Reason for rejection" /></div>
+                    <div class="col-md-2"><button type="submit" class="btn btn-warning w-100">Reject</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@if (Model.Status == AdverseEvent.AEStatus.Approved)
+{
+    <div class="card mb-3 border-dark">
+        <div class="card-header bg-dark text-white"><strong>Close Case</strong></div>
+        <div class="card-body">
+            <p class="text-muted small">Closing flags this case for PSUR inclusion.</p>
+            <form method="post" asp-action="CloseCase" asp-route-id="@Model.Id">
+                <div class="row g-2">
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
+                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
+                    <div class="col-md-4"><button type="submit" class="btn btn-dark w-100">Close Case</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@if (Model.Status == AdverseEvent.AEStatus.Approved || Model.Status == AdverseEvent.AEStatus.Closed)
+{
+    <div class="card mb-3 border-info">
+        <div class="card-header bg-info text-white"><strong>Create Follow-up Report</strong></div>
+        <div class="card-body">
+            <p class="text-muted small">Creates a new AE record linked to this case with suffix /F1, /F2, etc.</p>
+            <form method="post" asp-action="CreateFollowUp" asp-route-id="@Model.Id">
+                <div class="row g-2">
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
+                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
+                    <div class="col-md-4"><button type="submit" class="btn btn-info w-100">Create Follow-up</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+<!-- Cross-module links: Complaint -->
+@{
+    var canEditLinks = !Model.IsLocked && Model.Status != AdverseEvent.AEStatus.Voided;
+    var availableComplaints = ViewData["AvailableComplaints"] as System.Collections.IEnumerable;
+}
+<div class="card mb-3 border-info">
+    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+        <strong><i class="fas fa-comment-medical me-1"></i>Linked Complaint</strong>
+        @if (Model.LinkedComplaint != null && canEditLinks)
+        {
+            <form asp-action="UnlinkComplaint" method="post" class="d-inline"
+                  onsubmit="return confirm('Remove the link to complaint @Model.LinkedComplaint.ComplaintId?');">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="aeId" value="@Model.Id" />
+                <button type="submit" class="btn btn-sm btn-light"><i class="fas fa-unlink me-1"></i>Unlink</button>
+            </form>
+        }
+        else if (Model.LinkedComplaint == null && canEditLinks)
+        {
+            <button type="button" class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#linkComplaintModal">
+                <i class="fas fa-link me-1"></i>Link Complaint
+            </button>
+        }
+    </div>
+    <div class="card-body">
+        @if (Model.LinkedComplaint != null)
+        {
+            <a asp-controller="Complaints" asp-action="Details" asp-route-id="@Model.LinkedComplaintId" class="fw-bold">@Model.LinkedComplaint.ComplaintId</a>
+            <text>— @Model.LinkedComplaint.Title</text>
+        }
+        else
+        {
+            <span class="text-muted">Not linked to any complaint.</span>
+        }
+    </div>
+</div>
+
+@if (Model.LinkedComplaint == null && canEditLinks)
+{
+    <div class="modal fade" id="linkComplaintModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="LinkComplaint" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="aeId" value="@Model.Id" />
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title"><i class="fas fa-link me-1"></i>Link to Complaint — @Model.AENumber</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    @{
+                        var anyComplaint = false;
+                        if (availableComplaints != null) { foreach (var _ in availableComplaints) { anyComplaint = true; break; } }
+                    }
+                    @if (anyComplaint)
+                    {
+                        <p class="text-muted small">Select an open complaint to associate with this adverse event.</p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Complaint <span class="text-danger">*</span></label>
+                            <select name="complaintId" class="form-select" required>
+                                <option value="">— Select a complaint —</option>
+                                @foreach (dynamic c in availableComplaints!)
+                                {
+                                    <option value="@c.Id">@c.Label</option>
+                                }
+                            </select>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">There are no open complaints available to link.</p>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    @if (anyComplaint)
+                    {
+                        <button type="submit" class="btn btn-info text-white"><i class="fas fa-link me-1"></i>Link</button>
+                    }
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+<!-- Cross-module links: CAPA -->
+@if (Model.LinkedCapa != null)
+{
+    <div class="card mb-3 border-success">
+        <div class="card-header bg-success text-white"><strong><i class="fas fa-tasks me-1"></i>Linked CAPA</strong></div>
+        <div class="card-body">
+            <a asp-controller="Capas" asp-action="Details" asp-route-id="@Model.LinkedCapaId" class="fw-bold">@Model.LinkedCapa.CapaId</a>
+            — @Model.LinkedCapa.Title
+            <span class="badge bg-secondary ms-2">@EnumHelper.Display(Model.LinkedCapa.Status)</span>
+        </div>
+    </div>
+}
+@if (Model.Status == AdverseEvent.AEStatus.Approved && Model.LinkedCapaId == null)
+{
+    <div class="card mb-3 border-warning">
+        <div class="card-header bg-warning text-dark"><strong><i class="fas fa-exclamation-triangle me-1"></i>No CAPA Linked</strong></div>
+        <div class="card-body d-flex align-items-center justify-content-between">
+            <span class="text-muted small">This approved AE has no linked CAPA. Consider raising a CAPA to address root causes.</span>
+            <a asp-controller="Capas" asp-action="Create" asp-route-aeId="@Model.Id" class="btn btn-warning btn-sm ms-3">
+                <i class="fas fa-plus me-1"></i>Create CAPA
+            </a>
+        </div>
+    </div>
+}
+
+<!-- Follow-up Reports -->
+@if (Model.FollowUpReports?.Any() == true)
+{
+    <div class="card mb-3">
+        <div class="card-header"><strong>Follow-up Reports</strong></div>
+        <ul class="list-group list-group-flush">
+            @foreach (var fu in Model.FollowUpReports)
+            {
+                <li class="list-group-item">
+                    <a asp-action="Details" asp-route-id="@fu.Id">@fu.AENumber</a>
+                    <span class="badge bg-secondary ms-2">@EnumHelper.Display(fu.Status)</span>
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+<!-- Delete (void) -->
+@if (Model.Status == AdverseEvent.AEStatus.Draft
+     && (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser")))
+{
+    <details class="mt-3">
+        <summary class="text-danger" style="cursor:pointer">Void this record</summary>
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="mt-2">
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Void this adverse event? This action will mark it as Voided.')">Void Record</button>
+        </form>
+    </details>
+}
+
+@section Scripts {
+    <script>
+        // Re-open a specific tab after a server redirect (e.g. document upload/delete).
+        (function () {
+            var activeTab = @Json.Serialize(TempData["ActiveTab"] as string);
+            if (activeTab) {
+                var trigger = document.querySelector('[data-bs-toggle="tab"][href="#' + activeTab + '"]');
+                if (trigger) { new bootstrap.Tab(trigger).show(); }
+            }
+        })();
+    </script>
+}

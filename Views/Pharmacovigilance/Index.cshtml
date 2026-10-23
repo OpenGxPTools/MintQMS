@@ -1,0 +1,212 @@
+@model IEnumerable<OpenQMS.Models.AdverseEvent>
+@{
+    ViewData["Title"] = "Adverse Events";
+    var allStatuses = Enum.GetNames(typeof(AdverseEvent.AEStatus));
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Adverse Events</h4>
+    <div class="d-flex gap-2">
+        <a asp-controller="Pharmacovigilance" asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-chart-bar me-1"></i>Dashboard
+        </a>
+        @if (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser"))
+        {
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> New Adverse Event
+            </a>
+        }
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<!-- Filter Panel -->
+<div class="card mb-3 border-0 bg-light">
+    <div class="card-body py-2">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-2">
+                <label class="form-label small fw-bold mb-1">Status</label>
+                <select id="filterStatus" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    @foreach (var s in allStatuses)
+                    {
+                        <option value="@s">@s</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold mb-1">Seriousness</label>
+                <select id="filterSerious" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option value="Serious">Serious</option>
+                    <option value="Non-Serious">Non-Serious</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold mb-1">Report Date From</label>
+                <input type="date" id="filterDateFrom" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold mb-1">Report Date To</label>
+                <input type="date" id="filterDateTo" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="checkbox" id="filterOverdue" />
+                    <label class="form-check-label small fw-bold" for="filterOverdue">Overdue Only</label>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button id="clearFilters" class="btn btn-outline-secondary btn-sm w-100">Clear Filters</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0" id="aeTable">
+            <thead class="table-light">
+                <tr>
+                    <th>AE Number</th>
+                    <th>Report Date</th>
+                    <th>Day 0 Date</th>
+                    <th>TGA Deadline</th>
+                    <th>Serious</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ae in Model)
+                {
+                    var deadlineBadge = "";
+                    var deadlineText = "-";
+                    if (ae.TGADeadlineDate.HasValue && ae.IsSerious)
+                    {
+                        var daysLeft = (ae.TGADeadlineDate.Value.Date - SiteTime.Today).Days;
+                        deadlineText = ae.TGADeadlineDate.Value.ToString("dd MMM yyyy");
+                        deadlineBadge = daysLeft < 0 ? "danger" : daysLeft <= 2 ? "danger" : daysLeft <= 5 ? "warning" : "success";
+                    }
+                    var isOverdue = ae.IsSerious && ae.TGADeadlineDate.HasValue && ae.TGADeadlineDate.Value.Date < SiteTime.Today;
+                    <tr data-status="@ae.Status"
+                        data-serious="@(ae.IsSerious ? "Serious" : "Non-Serious")"
+                        data-report-date="@ae.ReportDate.ToSite().ToString("yyyy-MM-dd")"
+                        data-overdue="@(isOverdue ? "1" : "0")">
+                        <td><a asp-action="Details" asp-route-id="@ae.Id" class="fw-semibold">@ae.AENumber</a></td>
+                        <td>@ae.ReportDate.ToSite().ToString("dd MMM yyyy")</td>
+                        <td>@(ae.Day0Date?.ToString("dd MMM yyyy") ?? "-")</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(deadlineBadge))
+                            {
+                                <span class="badge bg-@deadlineBadge">@deadlineText</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">@deadlineText</span>
+                            }
+                        </td>
+                        <td>
+                            @if (ae.IsSerious)
+                            {
+                                <span class="badge bg-danger">Serious</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Non-Serious</span>
+                            }
+                        </td>
+                        <td>
+                            @{
+                                var statusClass = ae.Status switch
+                                {
+                                    AdverseEvent.AEStatus.Draft => "secondary",
+                                    AdverseEvent.AEStatus.UnderMedicalReview => "info",
+                                    AdverseEvent.AEStatus.PendingApproval => "warning",
+                                    AdverseEvent.AEStatus.Approved => "success",
+                                    AdverseEvent.AEStatus.Closed => "dark",
+                                    AdverseEvent.AEStatus.Voided => "voided",
+                                    _ => "secondary"
+                                };
+                            }
+                            @if (statusClass == "voided")
+                            {
+                                <span class="badge text-bg-light border text-muted text-decoration-line-through">@EnumHelper.Display(ae.Status)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-@statusClass">@EnumHelper.Display(ae.Status)</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@ae.Id">Details</a>
+                            @if (!ae.IsLocked && ae.Status != AdverseEvent.AEStatus.Voided && (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser")))
+                            {
+                                <text> | </text>
+                                <a asp-action="Edit" asp-route-id="@ae.Id">Edit</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center text-muted mt-4">
+        <p>No adverse event records found. <a asp-action="Create">Create the first one.</a></p>
+    </div>
+}
+
+@section Scripts {
+<script>
+(function() {
+    function applyFilters() {
+        var statusVal  = document.getElementById('filterStatus').value.toLowerCase();
+        var seriousVal = document.getElementById('filterSerious').value;
+        var dateFrom   = document.getElementById('filterDateFrom').value;
+        var dateTo     = document.getElementById('filterDateTo').value;
+        var overdueOnly = document.getElementById('filterOverdue').checked;
+
+        document.querySelectorAll('#aeTable tbody tr').forEach(function(row) {
+            var rowStatus  = row.getAttribute('data-status') || '';
+            var rowSerious = row.getAttribute('data-serious') || '';
+            var rowDate    = row.getAttribute('data-report-date') || '';
+            var rowOverdue = row.getAttribute('data-overdue') === '1';
+
+            var show = true;
+            if (statusVal  && rowStatus.toLowerCase() !== statusVal) show = false;
+            if (seriousVal && rowSerious !== seriousVal)              show = false;
+            if (dateFrom   && rowDate < dateFrom)                     show = false;
+            if (dateTo     && rowDate > dateTo)                       show = false;
+            if (overdueOnly && !rowOverdue)                           show = false;
+
+            row.style.display = show ? '' : 'none';
+        });
+    }
+
+    ['filterStatus','filterSerious','filterDateFrom','filterDateTo'].forEach(function(id) {
+        document.getElementById(id).addEventListener('change', applyFilters);
+    });
+    document.getElementById('filterOverdue').addEventListener('change', applyFilters);
+    document.getElementById('clearFilters').addEventListener('click', function() {
+        document.getElementById('filterStatus').value = '';
+        document.getElementById('filterSerious').value = '';
+        document.getElementById('filterDateFrom').value = '';
+        document.getElementById('filterDateTo').value = '';
+        document.getElementById('filterOverdue').checked = false;
+        applyFilters();
+    });
+})();
+</script>
+}

@@ -1,0 +1,107 @@
+﻿@*
+This file is part of the OpenQMS.net project (https://github.com/C-realize/OpenQMS).
+Copyright (C) 2022-2024  C-realize IT Services SRL (https://www.c-realize.com)
+
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://www.c-realize.com/contact.  For AGPL licensing, see below.
+
+AGPL:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+*@
+
+@using OpenQMS.Models.ViewModels
+@model IEnumerable<UserRolesViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h4 class="mb-0">Users</h4>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Roles</th>
+            @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole))
+            {
+                <th></th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.UserName</td>
+                <td>@item.Email</td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Inactive</span>
+                    }
+                </td>
+                <td>
+                    @if (item.Roles.Any())
+                    {
+                        @string.Join(", ", item.Roles.Select(r => EnumHelper.RoleName(r)))
+                    }
+                    else
+                    {
+                        <span class="text-muted fst-italic">No roles assigned</span>
+                    }
+                </td>
+                @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole))
+                {
+                    <td>
+                        @if (User.IsInRole(Constants.AdministratorsRole))
+                        {
+                            <a asp-action="ManageRoles" asp-route-userId="@item.UserId" class="btn btn-sm btn-outline-secondary">Manage Roles</a>
+                        }
+                        <a asp-action="History" asp-route-userId="@item.UserId" class="btn btn-sm btn-outline-info ms-1">History</a>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (User.IsInRole(Constants.AdministratorsRole))
+{
+    <p>
+        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary">Create New User</a>
+    </p>
+}

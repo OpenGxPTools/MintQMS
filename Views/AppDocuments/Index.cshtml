@@ -1,0 +1,163 @@
+@model IEnumerable<OpenQMS.Models.AppDocument>
+@using OpenQMS.Authorization
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService
+
+@{
+    ViewData["Title"] = "Documents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var table = $('#docsTable').DataTable({ stateSave: true,
+                initComplete: function () {
+                    // Status filter pills
+                    $('.status-filter').on('click', function () {
+                        $('.status-filter').removeClass('active');
+                        $(this).addClass('active');
+                        var val = $(this).data('status');
+                        table.column(9).search(val ? '^' + val + '$' : '', true, false).draw();
+                    });
+                    $('.status-filter[data-status=""]').addClass('active');
+
+                    // External filter toggle
+                    $('#externalFilterBtn').on('click', function () {
+                        var active = $(this).data('external');
+                        if (active === false || active === 'false') {
+                            $(this).addClass('active').data('external', 'true');
+                            table.column(10).search('^true$', true, false).draw();
+                        } else {
+                            $(this).removeClass('active').data('external', 'false');
+                            table.column(10).search('', true, false).draw();
+                        }
+                    });
+                },
+                columns: [
+                    null, null, null, null,
+                    { visible: false }, // Version
+                    { visible: false }, // Authored By
+                    { visible: false }, // Authored On
+                    { visible: false }, // Approved By
+                    { visible: false }, // Approved On
+                    null,               // Status
+                    { visible: false }, // IsExternal (filter col)
+                    null                // Action
+                ],
+                paging: true,
+                orderCellsTop: true,
+                dom: 'lBfrtip',
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                order: [[0, 'asc']],
+                displayLength: 10,
+                buttons: [
+                    'colvis',
+                    { extend: 'pdf', footer: false, exportOptions: { columns: [0,1,2,3,4,5,6,7,8,9] } },
+                    { extend: 'excel', footer: false, exportOptions: { columns: [0,1,2,3,4,5,6,7,8,9] } }
+                ]
+            });
+        });
+    </script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Documents</h4>
+    @if (!User.IsInRole(Constants.ReadOnlyRole))
+    {
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Document</a>
+    }
+</div>
+<hr />
+
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+    <span class="text-muted small me-1">Filter by status:</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Draft">Draft</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="Under Review">Under Review</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Approved">Approved</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Effective">Effective</button>
+    <button class="btn btn-outline-danger btn-sm status-filter" data-status="Rejected">Rejected</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Obsolete">Obsolete</button>
+    <button class="btn btn-outline-warning btn-sm ms-3" id="externalFilterBtn" data-external="false">
+        <i class="fas fa-file-import me-1"></i>External Only
+    </button>
+</div>
+
+<table id="docsTable" class="table" style="width:100%;">
+    <thead>
+        <tr>
+            <th>Doc ID</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Document Type</th>
+            <th>Version</th>
+            <th>Authored By</th>
+            <th>Authored On</th>
+            <th>Approved By</th>
+            <th>Approved On</th>
+            <th>Status</th>
+            <th>IsExternal</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            // Resolve display names via Display attribute
+            string? catDisplay = null;
+            if (item.Category.HasValue)
+            {
+                var catAttr = typeof(AppDocument.DocumentCategory)
+                    .GetField(item.Category.Value.ToString())?
+                    .GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
+                    .Cast<System.ComponentModel.DataAnnotations.DisplayAttribute>()
+                    .FirstOrDefault();
+                catDisplay = catAttr?.Name ?? item.Category.Value.ToString();
+            }
+            string? typeDisplay = null;
+            if (item.DocType.HasValue)
+            {
+                var dtAttr = typeof(AppDocument.DocumentType)
+                    .GetField(item.DocType.Value.ToString())?
+                    .GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
+                    .Cast<System.ComponentModel.DataAnnotations.DisplayAttribute>()
+                    .FirstOrDefault();
+                typeDisplay = dtAttr?.Name ?? item.DocType.Value.ToString();
+            }
+
+            <tr>
+                <td>
+                    @item.DocumentId
+                    @if (item.IsExternal)
+                    {
+                        <span class="badge bg-warning text-dark ms-1" title="Externally sourced document"><i class="fas fa-file-import"></i> External</span>
+                    }
+                </td>
+                <td>@item.Title</td>
+                <td>@(catDisplay ?? "-")</td>
+                <td>@(typeDisplay ?? "-")</td>
+                <td>@item.Version.ToString("0.00")</td>
+                <td>@item.AuthoredBy</td>
+                <td>@item.AuthoredOn.ToSite().ToString("dd/MM/yyyy")</td>
+                <td>@(item.ApprovedBy ?? "-")</td>
+                <td>@(item.ApprovedOn.HasValue ? item.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy") : "-")</td>
+                <td>@EnumHelper.Display(item.Status)</td>
+                <td style="display:none">@item.IsExternal.ToString().ToLower()</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if ((await AuthorizationService.AuthorizeAsync(User, item, DocumentOperations.Update)).Succeeded && item.IsLocked != true && item.Status == AppDocument.DocumentStatus.Draft)
+                    {
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if (item.Status == AppDocument.DocumentStatus.Draft && User.IsInRole(Constants.AdministratorsRole))
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

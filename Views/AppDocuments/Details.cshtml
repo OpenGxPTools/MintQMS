@@ -1,0 +1,931 @@
+@model OpenQMS.Models.AppDocument
+@using OpenQMS.Authorization
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService
+
+@using OpenQMS.Models.Navigation
+
+@{
+    ViewData["Title"] = "Document Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var linkedTrainings = ViewBag.LinkedTrainings as List<DocumentTrainingRequirement> ?? new();
+
+    var statusBadge = Model.Status switch {
+        AppDocument.DocumentStatus.Effective   => "bg-success",
+        AppDocument.DocumentStatus.Approved    => "bg-primary",
+        AppDocument.DocumentStatus.Rejected    => "bg-danger",
+        AppDocument.DocumentStatus.Obsolete    => "bg-secondary",
+        AppDocument.DocumentStatus.UnderReview => "bg-info text-dark",
+        _ => "bg-warning text-dark"
+    };
+
+    var activeTab = ViewBag.ActiveTab as string ?? "overview";
+    var versionHistory = ViewBag.VersionHistory as List<AppDocument> ?? new List<AppDocument>();
+
+    int? daysToReview = Model.ReviewDueDate.HasValue
+        ? (int)(Model.ReviewDueDate.Value.Date - SiteTime.Today).TotalDays
+        : (int?)null;
+
+    bool canSubmit   = (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Create)).Succeeded
+                       && Model.Status == AppDocument.DocumentStatus.Draft;
+    bool canApprove  = (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Approve)).Succeeded
+                       && Model.Status == AppDocument.DocumentStatus.UnderReview;
+    bool canReject   = (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Reject)).Succeeded
+                       && Model.Status == AppDocument.DocumentStatus.UnderReview;
+    bool canReturn   = (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Reject)).Succeeded
+                       && Model.Status == AppDocument.DocumentStatus.UnderReview;
+    bool canObsolete = (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Approve)).Succeeded
+                       && (Model.Status == AppDocument.DocumentStatus.Approved || Model.Status == AppDocument.DocumentStatus.Effective);
+    bool canIssue    = (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Approve)).Succeeded
+                       && Model.Status == AppDocument.DocumentStatus.Approved;
+    bool canInitiateReview = (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Update)).Succeeded
+                             && Model.Status == AppDocument.DocumentStatus.Effective
+                             && Model.PeriodicReviewRequired
+                             && !Model.IsLocked
+                             && Model.ReviewDueDate.HasValue
+                             && Model.ReviewDueDate.Value.Date < SiteTime.Today;
+    // Reassign Author: Quality Manager / Administrator only (DocumentOperations.Approve excludes the author),
+    // and only for an in-progress, unlocked draft — an approved/effective version's authorship is fixed.
+    bool canReassign = (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Approve)).Succeeded
+                       && (Model.Status == AppDocument.DocumentStatus.Draft || Model.Status == AppDocument.DocumentStatus.UnderReview)
+                       && !Model.IsLocked;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Document &mdash; <span class="fw-bold">@Model.DocumentId</span></h4>
+        <small class="text-muted">@Model.Title</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        @if (Model.IsExternal)
+        {
+            <span class="badge bg-warning text-dark fs-6"><i class="fas fa-file-import me-1"></i>External</span>
+        }
+        <span class="badge @statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+    </div>
+</div>
+<hr />
+
+@if (TempData["IntegrityWarning"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong><i class="bi bi-shield-exclamation"></i> File Integrity Alert:</strong> @TempData["IntegrityWarning"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-1"></i>@TempData["WorkflowError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["TrainingReminder"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-graduation-cap me-1"></i><strong>Training Action Required:</strong> @TempData["TrainingReminder"]
+        <a asp-controller="Trainings" asp-action="Create" class="btn btn-sm btn-warning ms-2">Create Training Record</a>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* Review date alert *@
+@if (daysToReview.HasValue && (Model.Status == AppDocument.DocumentStatus.Approved || Model.Status == AppDocument.DocumentStatus.Effective))
+{
+    if (daysToReview.Value < 0)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-1"></i>
+            <strong>Review Overdue:</strong> This document was due for review on <strong>@Model.ReviewDueDate!.Value.ToString("dd MMM yyyy")</strong> (@Math.Abs(daysToReview.Value) days ago).
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    else if (daysToReview.Value <= 30)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="fas fa-clock me-1"></i>
+            <strong>Review Due Soon:</strong> This document is due for review on <strong>@Model.ReviewDueDate!.Value.ToString("dd MMM yyyy")</strong> (@daysToReview.Value days remaining).
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+}
+
+@* Workflow panel — only when action is available *@
+@if (canSubmit || canApprove || canReject || canReturn || canObsolete || canInitiateReview || canIssue || canReassign)
+{
+    <div class="card border-primary mb-3">
+        <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> Workflow Actions</div>
+        <div class="card-body d-flex gap-2 flex-wrap">
+            @if (canSubmit)
+            {
+                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#submitReviewModal">
+                    <i class="fas fa-paper-plane me-1"></i>Submit for Review
+                </button>
+            }
+            @if (canApprove)
+            {
+                <a asp-action="Approve" asp-route-id="@Model.Id" class="btn btn-success btn-sm">
+                    <i class="fas fa-check-circle me-1"></i>Approve Document
+                </a>
+            }
+            @if (canIssue)
+            {
+                <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#issueModal">
+                    <i class="bi bi-send-check me-1"></i>Issue Document
+                </button>
+            }
+            @if (canReject)
+            {
+                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                    <i class="fas fa-times-circle me-1"></i>Reject Document
+                </button>
+            }
+            @if (canReturn)
+            {
+                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#returnForReworkModal">
+                    <i class="fas fa-undo me-1"></i>Return for Rework
+                </button>
+            }
+            @if (canObsolete)
+            {
+                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#obsoleteModal">
+                    <i class="fas fa-archive me-1"></i>Mark as Obsolete
+                </button>
+            }
+            @if (canInitiateReview)
+            {
+                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#initiateReviewModal">
+                    <i class="fas fa-sync-alt me-1"></i>Initiate Periodic Review
+                </button>
+            }
+            @if (canReassign)
+            {
+                <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#reassignAuthorModal">
+                    <i class="fas fa-user-edit me-1"></i>Reassign Author
+                </button>
+            }
+        </div>
+    </div>
+}
+
+@* Tab navigation *@
+<ul class="nav nav-tabs mb-3" id="docTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(activeTab == "overview" ? "active" : "")" id="tab-overview"
+                data-bs-toggle="tab" data-bs-target="#pane-overview" type="button">Overview</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(activeTab == "versions" ? "active" : "")" id="tab-versions"
+                data-bs-toggle="tab" data-bs-target="#pane-versions" type="button">
+            Version History <span class="badge bg-secondary ms-1">@versionHistory.Count</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(activeTab == "trainings" ? "active" : "")" id="tab-trainings"
+                data-bs-toggle="tab" data-bs-target="#pane-trainings" type="button">
+            Linked Trainings <span class="badge bg-secondary ms-1">@linkedTrainings.Count</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(activeTab == "auditlog" ? "active" : "")" id="tab-auditlog"
+                data-bs-toggle="tab" data-bs-target="#pane-auditlog" type="button">
+            Audit Log <span class="badge bg-secondary ms-1">@(Model.AuditLogs?.Count ?? 0)</span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    @* OVERVIEW TAB *@
+    <div class="tab-pane fade @(activeTab == "overview" ? "show active" : "")" id="pane-overview" role="tabpanel">
+
+        <dl class="row">
+            <dt class="col-sm-3">ID</dt>
+            <dd class="col-sm-9">@Model.DocumentId</dd>
+
+            <dt class="col-sm-3">Title</dt>
+            <dd class="col-sm-9">@Model.Title</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@(Model.Description ?? "-")</dd>
+
+            <dt class="col-sm-3">Category</dt>
+            <dd class="col-sm-9">
+                @if (Model.Category.HasValue)
+                {
+                    var catAttr = typeof(AppDocument.DocumentCategory)
+                        .GetField(Model.Category.Value.ToString())?
+                        .GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
+                        .Cast<System.ComponentModel.DataAnnotations.DisplayAttribute>()
+                        .FirstOrDefault();
+                    <span class="badge bg-info text-dark">@(catAttr?.Name ?? Model.Category.Value.ToString())</span>
+                }
+                else { <span class="text-muted">-</span> }
+            </dd>
+
+            <dt class="col-sm-3">Document Type</dt>
+            <dd class="col-sm-9">
+                @if (Model.DocType.HasValue)
+                {
+                    var dtAttr = typeof(AppDocument.DocumentType)
+                        .GetField(Model.DocType.Value.ToString())?
+                        .GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
+                        .Cast<System.ComponentModel.DataAnnotations.DisplayAttribute>()
+                        .FirstOrDefault();
+                    <span>@(dtAttr?.Name ?? Model.DocType.Value.ToString())</span>
+                }
+                else { <span class="text-muted">-</span> }
+            </dd>
+
+            <dt class="col-sm-3">Version</dt>
+            <dd class="col-sm-9">@Model.Version.ToString("0.00")</dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9"><span class="badge @statusBadge">@EnumHelper.Display(Model.Status)</span></dd>
+
+            <dt class="col-sm-3">File Type</dt>
+            <dd class="col-sm-9">@(Model.FileExtension?.TrimStart('.').ToUpperInvariant() ?? "-")</dd>
+        </dl>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ReasonForChange))
+        {
+            <hr />
+            <h6 class="text-uppercase text-muted small fw-bold mb-2">Change Information</h6>
+            <dl class="row">
+                <dt class="col-sm-3">Reason for Change</dt>
+                <dd class="col-sm-9">@Model.ReasonForChange</dd>
+            </dl>
+        }
+
+        @if (Model.TrainingRequired || linkedTrainings.Any())
+        {
+            <hr />
+            <h6 class="text-uppercase text-muted small fw-bold mb-2">Training Requirements</h6>
+            <dl class="row">
+                <dt class="col-sm-3">Training Required</dt>
+                <dd class="col-sm-9">
+                    @if (Model.TrainingRequired)
+                    {
+                        <span class="badge bg-warning text-dark">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">No</span>
+                    }
+                </dd>
+            </dl>
+
+            @if (linkedTrainings.Any())
+            {
+                @for (int gi = 0; gi < linkedTrainings.Count; gi++)
+                {
+                    var req = linkedTrainings[gi];
+                    var t = req.Training;
+                    if (t == null) continue;
+                    if (gi > 0) { <hr class="my-2" /> }
+
+                    var traineeNames = t.Trainees?
+                        .Select(ut => ut.Trainee?.UserName ?? ut.Trainee?.Email ?? "(unknown)")
+                        .OrderBy(n => n)
+                        .ToList() ?? new List<string>();
+
+                    <p class="small fw-semibold text-muted mb-1 mt-1">
+                        @(linkedTrainings.Count > 1 ? $"Group {gi + 1}" : "Training Group")
+                    </p>
+                    <dl class="row small">
+                        <dt class="col-sm-3">Group Name</dt>
+                        <dd class="col-sm-9">@t.Name</dd>
+
+                        <dt class="col-sm-3">Training Type</dt>
+                        <dd class="col-sm-9">
+                            @(t.TrainingType == TrainingType.CompetencyAssessment
+                                ? "Competency Assessment"
+                                : "Read & Acknowledge")
+                        </dd>
+
+                        <dt class="col-sm-3">Trainer</dt>
+                        <dd class="col-sm-9">@(string.IsNullOrEmpty(t.TrainerEmail) ? "—" : t.TrainerEmail)</dd>
+
+                        <dt class="col-sm-3">Trainees</dt>
+                        <dd class="col-sm-9">
+                            @if (traineeNames.Any())
+                            {
+                                @string.Join(", ", traineeNames)
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Due Date</dt>
+                        <dd class="col-sm-9">
+                            @(t.DueDate.HasValue ? t.DueDate.Value.ToString("dd MMM yyyy") : "—")
+                        </dd>
+
+                        @if (!string.IsNullOrWhiteSpace(t.Description))
+                        {
+                            <dt class="col-sm-3">Description</dt>
+                            <dd class="col-sm-9">@t.Description</dd>
+                        }
+                    </dl>
+                }
+            }
+        }
+
+        <hr />
+        <h6 class="text-uppercase text-muted small fw-bold mb-2">
+            @(Model.IsExternal ? "System Acceptance Trail" : "Workflow Trail")
+        </h6>
+        <dl class="row">
+            <dt class="col-sm-3">@(Model.IsExternal ? "Uploaded By" : "Authored By")</dt>
+            <dd class="col-sm-9">@Model.AuthoredBy</dd>
+
+            <dt class="col-sm-3">@(Model.IsExternal ? "Uploaded On" : "Authored On")</dt>
+            <dd class="col-sm-9">@Model.AuthoredOn.ToSite().ToString("dd MMM yyyy HH:mm")</dd>
+
+            <dt class="col-sm-3">@(Model.IsExternal ? "Accepted into QMS By" : "Approved By")</dt>
+            <dd class="col-sm-9">@(Model.ApprovedBy ?? "-")</dd>
+
+            <dt class="col-sm-3">@(Model.IsExternal ? "Accepted into QMS On" : "Approved On")</dt>
+            <dd class="col-sm-9">@(Model.ApprovedOn.HasValue ? Model.ApprovedOn.Value.ToSite().ToString("dd MMM yyyy HH:mm") : "-")</dd>
+
+            <dt class="col-sm-3">Issued On</dt>
+            <dd class="col-sm-9">@(Model.IssuedOn.HasValue ? Model.IssuedOn.Value.ToSite().ToString("dd MMM yyyy") : "-")</dd>
+            @if (!string.IsNullOrEmpty(Model.IssuedBy))
+            {
+                <dt class="col-sm-3">Issued By</dt>
+                <dd class="col-sm-9">@Model.IssuedBy</dd>
+            }
+            @if (!string.IsNullOrEmpty(Model.IssueCommentary))
+            {
+                <dt class="col-sm-3">Issue Commentary</dt>
+                <dd class="col-sm-9">@Model.IssueCommentary</dd>
+            }
+
+            <dt class="col-sm-3">Next Review Date</dt>
+            <dd class="col-sm-9">
+                @if (Model.ReviewDueDate.HasValue)
+                {
+                    var dClass = daysToReview!.Value < 0 ? "text-danger fw-semibold"
+                               : daysToReview.Value <= 30 ? "text-warning fw-semibold"
+                               : "";
+                    <span class="@dClass">@Model.ReviewDueDate.Value.ToString("dd MMM yyyy")</span>
+                    if (daysToReview.Value < 0)
+                    {
+                        <span class="badge bg-danger ms-2">Overdue</span>
+                    }
+                    else if (daysToReview.Value <= 30)
+                    {
+                        <span class="badge bg-warning text-dark ms-2">Due in @daysToReview.Value days</span>
+                    }
+                }
+                else { <span class="text-muted">-</span> }
+            </dd>
+
+            @if (Model.Status == AppDocument.DocumentStatus.Obsolete && Model.RetainUntil.HasValue)
+            {
+                <dt class="col-sm-3">Retain Until</dt>
+                <dd class="col-sm-9">
+                    @Model.RetainUntil.Value.ToString("dd MMM yyyy")
+                    @if (Model.RetainUntil.Value.Date < SiteTime.Today)
+                    {
+                        <span class="badge bg-secondary ms-2">Retention Expired</span>
+                    }
+                </dd>
+            }
+        </dl>
+
+        @if (Model.IsExternal)
+        {
+            <hr />
+            <h6 class="text-uppercase text-muted small fw-bold mb-2"><i class="fas fa-file-import me-1"></i>Document Provenance</h6>
+            <p class="text-muted small mb-2">Original authorship and approval details as recorded on the document itself, independent of the system acceptance workflow above.</p>
+            <dl class="row">
+                @if (!string.IsNullOrEmpty(Model.ExternalSource))
+                {
+                    <dt class="col-sm-3">Source / Origin</dt>
+                    <dd class="col-sm-9">@Model.ExternalSource</dd>
+                }
+                @if (!string.IsNullOrEmpty(Model.ExternalVersion))
+                {
+                    <dt class="col-sm-3">Original Version / Ref</dt>
+                    <dd class="col-sm-9"><span class="badge bg-secondary">@Model.ExternalVersion</span></dd>
+                }
+                <dt class="col-sm-3">Original Author</dt>
+                <dd class="col-sm-9">@(Model.ExternalAuthorName ?? "-")</dd>
+
+                <dt class="col-sm-3">Originally Authored On</dt>
+                <dd class="col-sm-9">@(Model.ExternalAuthoredOn?.ToString("dd MMM yyyy") ?? "-")</dd>
+
+                <dt class="col-sm-3">Original Approver</dt>
+                <dd class="col-sm-9">@(Model.ExternalApproverName ?? "-")</dd>
+
+                <dt class="col-sm-3">Originally Approved On</dt>
+                <dd class="col-sm-9">@(Model.ExternalApprovedOn?.ToString("dd MMM yyyy") ?? "-")</dd>
+            </dl>
+        }
+
+        @if (Model.TrainingRequired && Model.Status == AppDocument.DocumentStatus.Approved)
+        {
+            <div class="alert alert-warning d-flex align-items-center gap-2 mt-3 mb-0" role="alert">
+                <i class="bi bi-hourglass-split"></i>
+                <span>
+                    This document is <strong>pending training completion</strong> before it becomes Effective.
+                    <a asp-controller="Trainings" asp-action="Index" class="alert-link ms-1">View Training Records</a>
+                </span>
+            </div>
+        }
+        @if (Model.Status == AppDocument.DocumentStatus.Effective && Model.TrainingRequired)
+        {
+            <div class="alert alert-success d-flex align-items-center gap-2 mt-3 mb-0" role="alert">
+                <i class="bi bi-check-circle"></i>
+                <span>All required training has been completed. This document is Effective.</span>
+            </div>
+        }
+        <div class="mt-3 d-flex gap-2">
+            <a asp-action="DownloadFile" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-download me-1"></i>Download File
+            </a>
+            @if ((Model.DocType == AppDocument.DocumentType.Form || Model.DocType == AppDocument.DocumentType.Template)
+                 && Model.Status == AppDocument.DocumentStatus.Effective)
+            {
+                <a asp-action="DownloadWorkingCopy" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"
+                   title="Clean copy for external use — no internal watermark or control sheet, only a discreet 'uncontrolled copy' mark. The download is audit-logged.">
+                    <i class="fas fa-file-export me-1"></i>Download Working Copy
+                </a>
+            }
+            <a class="btn btn-outline-secondary btn-sm" asp-action="ExportDetailInCSV" asp-route-id="@Model.Id">
+                <i class="fas fa-file-csv me-1"></i>Export CSV
+            </a>
+        </div>
+    </div>
+
+    @* VERSION HISTORY TAB *@
+    <div class="tab-pane fade @(activeTab == "versions" ? "show active" : "")" id="pane-versions" role="tabpanel">
+        @if (versionHistory.Any())
+        {
+            <table class="table table-sm table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Version</th>
+                        <th>Status</th>
+                        <th>Authored By</th>
+                        <th>Authored On</th>
+                        <th>Approved By</th>
+                        <th>Approved On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var v in versionHistory)
+                    {
+                        var vBadge = v.Status switch {
+                            AppDocument.DocumentStatus.Effective   => "bg-success",
+                            AppDocument.DocumentStatus.Approved    => "bg-primary",
+                            AppDocument.DocumentStatus.Rejected    => "bg-danger",
+                            AppDocument.DocumentStatus.Obsolete    => "bg-secondary",
+                            AppDocument.DocumentStatus.UnderReview => "bg-info text-dark",
+                            _ => "bg-warning text-dark"
+                        };
+                        var isCurrent = v.Id == Model.Id;
+                        <tr class="@(isCurrent ? "table-primary fw-bold" : "")">
+                            <td>@v.Version.ToString("0.00") @if (isCurrent) { <span class="badge bg-primary ms-1">current</span> }</td>
+                            <td><span class="badge @vBadge">@EnumHelper.Display(v.Status)</span></td>
+                            <td>@v.AuthoredBy</td>
+                            <td>@(SiteTime.ToSite((DateTime)v.AuthoredOn).ToString("dd MMM yyyy"))</td>
+                            <td>@(v.ApprovedBy ?? "-")</td>
+                            <td>@(v.ApprovedOn.HasValue ? SiteTime.ToSite((DateTime)v.ApprovedOn.Value).ToString("dd MMM yyyy") : "-")</td>
+                            <td>
+                                @if (!isCurrent)
+                                {
+                                    <a asp-action="Details" asp-route-id="@v.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-info-circle me-1"></i>Details</a>
+                                }
+                                @if (v.Content != null && v.Content.Length > 0)
+                                {
+                                    <a asp-action="ViewFile" asp-route-id="@v.Id" class="btn btn-outline-primary btn-sm ms-1" target="_blank" rel="noopener">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </a>
+                                }
+                                <a asp-action="DownloadFile" asp-route-id="@v.Id" class="btn btn-outline-secondary btn-sm ms-1">
+                                    <i class="fas fa-download me-1"></i>Download
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">No version history available.</p>
+        }
+    </div>
+
+    @* LINKED TRAININGS TAB *@
+    <div class="tab-pane fade @(activeTab == "trainings" ? "show active" : "")" id="pane-trainings" role="tabpanel">
+        @if (linkedTrainings.Any())
+        {
+            <table class="table table-sm table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Training ID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Version Trained On</th>
+                        <th>Status</th>
+                        <th>Trainees</th>
+                        <th>Created On</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var req in linkedTrainings)
+                    {
+                        var t = req.Training;
+                        if (t == null) continue;
+                        var tBadge = t.Status switch {
+                            Training.TrainingStatus.Completed  => "bg-success",
+                            Training.TrainingStatus.Cancelled  => "bg-secondary",
+                            Training.TrainingStatus.PendingTrainerConfirmation => "bg-info text-dark",
+                            Training.TrainingStatus.InProgress => "bg-primary",
+                            _ => "bg-warning text-dark"
+                        };
+                        <tr>
+                            <td>
+                                <a asp-controller="Trainings" asp-action="Details" asp-route-id="@t.Id">@t.TrainingId</a>
+                            </td>
+                            <td>@t.Name</td>
+                            <td>
+                                <span class="badge @(t.TrainingType == TrainingType.CompetencyAssessment ? "bg-primary" : "bg-info text-dark")">
+                                    @(t.TrainingType == TrainingType.CompetencyAssessment ? "CA" : "R&A")
+                                </span>
+                            </td>
+                            <td>v@req.DocumentVersion.ToString("0.00")</td>
+                            <td><span class="badge @tBadge">@EnumHelper.Display(t.Status)</span></td>
+                            <td>@(t.Trainees?.Count ?? 0)</td>
+                            <td>@(SiteTime.ToSite((DateTime)req.CreatedOn).ToString("dd MMM yyyy"))</td>
+                            <td>
+                                <a asp-controller="Trainings" asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">No trainings were auto-generated from this document version.</p>
+        }
+    </div>
+
+    @* AUDIT LOG TAB *@
+    <div class="tab-pane fade @(activeTab == "auditlog" ? "show active" : "")" id="pane-auditlog" role="tabpanel">
+        @await Html.PartialAsync("_AuditLogTable", (Model.AuditLogs ?? Enumerable.Empty<OpenQMS.Models.DocumentAuditLog>())
+            .Select(l => new OpenQMS.ViewModels.AuditLogRow(l.PerformedOn, l.PerformedBy, l.Action, l.FromStatus, l.ToStatus, l.Notes)))
+    </div>
+
+</div>
+
+@* Bottom action links *@
+<div class="mt-3 d-flex gap-3">
+    @if ((await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Update)).Succeeded && !Model.IsLocked && Model.Status == AppDocument.DocumentStatus.Draft)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">
+            <i class="fas fa-edit me-1"></i>Edit
+        </a>
+    }
+    @if ((await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Update)).Succeeded
+         && (Model.Status == AppDocument.DocumentStatus.Approved || Model.Status == AppDocument.DocumentStatus.Effective))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">
+            <i class="fas fa-code-branch me-1"></i>New Version
+        </a>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to List
+    </a>
+</div>
+
+@* Submit for Review Modal *@
+@if (canSubmit)
+{
+    <div class="modal fade" id="submitReviewModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="SubmitForReview" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header bg-info text-dark">
+                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>Submit for Review</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You are submitting <strong>@Model.Title</strong> v@(Model.Version.ToString("0.00")) for review. The document will be locked from further editing.</p>
+                        <hr />
+                        <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                        <div class="mb-3">
+                            <label class="form-label">Your Email <span class="text-danger">*</span></label>
+                            <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-info">Submit for Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@* Issue Document Modal (manual override when training is pending) *@
+@if (canIssue)
+{
+    <div class="modal fade" id="issueModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="IssueDocument" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="bi bi-send-check me-1"></i>Issue Document</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning mb-3">
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            This will make <strong>@Model.Title</strong> v@(Math.Ceiling(Model.Version).ToString("0.0")) immediately Effective,
+                            overriding any pending training requirements.
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Commentary</label>
+                            <textarea name="Commentary" class="form-control" rows="2"
+                                      placeholder="Reason for manual issue override…"></textarea>
+                        </div>
+                        <hr />
+                        <p class="text-muted small mb-2">Enter your credentials to confirm.</p>
+                        <div class="mb-3">
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="InputEmail" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="InputPassword" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Issue Document</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@* Reject Modal *@
+@if (canReject)
+{
+    <div class="modal fade" id="rejectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="status" value="Rejected" />
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title"><i class="fas fa-times-circle me-1"></i>Reject Document</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You are rejecting <strong>@Model.Title</strong> v@(Model.Version.ToString("0.00")).</p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Reason for Rejection <span class="text-danger">*</span></label>
+                            <textarea name="RejectionReason" class="form-control" rows="3" required
+                                      placeholder="Describe why this document is being rejected..."></textarea>
+                        </div>
+                        <hr />
+                        <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                        <div class="mb-3">
+                            <label class="form-label">Your Email <span class="text-danger">*</span></label>
+                            <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-times-circle me-1"></i>Reject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@* Obsolete Modal *@
+@if (canObsolete)
+{
+    <div class="modal fade" id="obsoleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="ObsoleteDocument" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-secondary text-white">
+                        <h5 class="modal-title"><i class="fas fa-archive me-1"></i>Mark as Obsolete</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>This will retire <strong>@Model.Title</strong> v@(Model.Version.ToString("0.00")) without creating a new version. The document will be locked.</p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Reason for Obsolescence</label>
+                            <textarea name="ObsoleteReason" class="form-control" rows="2"
+                                      placeholder="e.g. Superseded by external regulation, process discontinued..."></textarea>
+                        </div>
+                        <hr />
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Your Email</label>
+                            <input type="email" name="InputEmail" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Password</label>
+                            <input type="password" name="InputPassword" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-secondary btn-sm"><i class="fas fa-archive me-1"></i>Mark Obsolete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@* Reassign Author Modal *@
+@if (canReassign)
+{
+    var reassignCandidates = ViewBag.ReassignCandidates as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                             ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
+    <div class="modal fade" id="reassignAuthorModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="ReassignAuthor" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title"><i class="fas fa-user-edit me-1"></i>Reassign Author</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-2">Transfer ownership of <strong>@Model.Title</strong> v@(Model.Version.ToString("0.00")) to another user — for example, when the current author has left the company or can no longer work on the draft.</p>
+                        <p class="small text-muted">Current author: <strong>@Model.AuthoredBy</strong>. This does not change the document's status or version; the change is recorded in the audit log.</p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">New Author</label>
+                            @if (reassignCandidates.Any())
+                            {
+                                <select name="NewAuthorId" class="form-select" required>
+                                    <option value="">&mdash; select a user &mdash;</option>
+                                    @foreach (var c in reassignCandidates)
+                                    {
+                                        <option value="@c.Value">@c.Text</option>
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <div class="text-muted small">No eligible users are available to reassign to.</div>
+                            }
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Reason for Reassignment</label>
+                            <textarea name="ReassignReason" class="form-control" rows="2" required
+                                      placeholder="e.g. Original author has left the company; draft handed over to continue."></textarea>
+                        </div>
+                        <hr />
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Your Email</label>
+                            <input type="email" name="InputEmail" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Password</label>
+                            <input type="password" name="InputPassword" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-dark btn-sm"><i class="fas fa-user-edit me-1"></i>Reassign Author</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@* Return for Rework Modal *@
+@if (canReturn)
+{
+    <div class="modal fade" id="returnForReworkModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="ReturnForRework" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title"><i class="fas fa-undo me-1"></i>Return for Rework</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Returning <strong>@Model.Title</strong> v@(Model.Version.ToString("0.00")) to Draft. The author will be able to make changes and resubmit for review.</p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Reason for Return <span class="text-danger">*</span></label>
+                            <textarea name="ReturnReason" class="form-control" rows="3" required
+                                      placeholder="Describe what changes are needed before resubmission..."></textarea>
+                        </div>
+                        <hr />
+                        <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                        <div class="mb-3">
+                            <label class="form-label">Your Email <span class="text-danger">*</span></label>
+                            <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning btn-sm"><i class="fas fa-undo me-1"></i>Return for Rework</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@* Initiate Periodic Review Modal *@
+@if (canInitiateReview)
+{
+    <div class="modal fade" id="initiateReviewModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="InitiatePeriodicReview" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title"><i class="fas fa-sync-alt me-1"></i>Initiate Periodic Review</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning mb-3">
+                            <strong>Review Overdue</strong> — This document was due for review on <strong>@Model.ReviewDueDate!.Value.ToString("dd MMM yyyy")</strong>.
+                        </div>
+                        <p>Initiating a periodic review will create a new draft (v@((Model.Version + 0.01m).ToString("0.00"))) with <em>Periodic Review</em> as the reason for change. The current version will be locked pending re-approval.</p>
+                        <hr />
+                        <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                        <div class="mb-3">
+                            <label class="form-label">Your Email <span class="text-danger">*</span></label>
+                            <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning">Initiate Periodic Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        var tabMap = { 'overview': '#tab-overview', 'versions': '#tab-versions', 'trainings': '#tab-trainings', 'auditlog': '#tab-auditlog' };
+        var tabEl = document.querySelector(tabMap['@activeTab'] || '#tab-overview');
+        if (tabEl) { new bootstrap.Tab(tabEl).show(); }
+    </script>
+}

@@ -1,0 +1,241 @@
+@{
+    ViewData["Title"] = "Maintenance Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var statusCounts  = (Dictionary<string, int>)ViewBag.StatusCounts;
+    var typeCounts    = (Dictionary<string, int>)ViewBag.TypeCounts;
+    var overdue       = (List<OpenQMS.Models.Maintenance>)ViewBag.Overdue;
+    var upcoming      = (List<OpenQMS.Models.Maintenance>)ViewBag.Upcoming;
+    var pendingReview = (List<OpenQMS.Models.Maintenance>)ViewBag.PendingReview;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Maintenance Dashboard</h4>
+    <div class="d-flex gap-2">
+        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">Export Excel</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Register</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Maintenance</a>
+    </div>
+</div>
+
+@if ((int)ViewBag.OverdueCount > 0)
+{
+    <div class="alert alert-danger d-flex align-items-center mb-4">
+        <strong class="me-2">&#9888;</strong>
+        <span><strong>@ViewBag.OverdueCount overdue maintenance(s)</strong> require immediate attention.</span>
+    </div>
+}
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-primary">@ViewBag.Total</div>
+                <div class="text-muted">Total Maintenances</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-warning">@ViewBag.OpenCount</div>
+                <div class="text-muted">Open</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-success">@ViewBag.ReviewedCount</div>
+                <div class="text-muted">Reviewed (Closed)</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100 @((int)ViewBag.OverdueCount > 0 ? "border-danger" : "")">
+            <div class="card-body">
+                <div class="display-5 fw-bold @((int)ViewBag.OverdueCount > 0 ? "text-danger" : "text-secondary")">@ViewBag.OverdueCount</div>
+                <div class="text-muted">Overdue</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card text-center h-100 @((int)ViewBag.SuspendedCount > 0 ? "border-secondary" : "")">
+            <div class="card-body">
+                <div class="display-5 fw-bold text-secondary">@ViewBag.SuspendedCount</div>
+                <div class="text-muted">Suspended</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status Chart + Status Table -->
+<div class="row g-3 mb-4">
+    <div class="col-md-5">
+        <div class="card h-100">
+            <div class="card-header">Status Distribution</div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="statusChart" style="max-height:220px"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card h-100">
+            <div class="card-header">By Maintenance Type</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Type</th><th>Count</th><th style="width:40%">Progress</th></tr></thead>
+                    <tbody>
+                        @foreach (var kv in typeCounts.Where(k => k.Value > 0))
+                        {
+                            var pct = (int)ViewBag.Total > 0 ? (kv.Value * 100 / (int)ViewBag.Total) : 0;
+                            <tr>
+                                <td>@kv.Key</td>
+                                <td>@kv.Value</td>
+                                <td><div class="progress" style="height:8px"><div class="progress-bar bg-primary" style="width:@pct%"></div></div></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming + Pending Review -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between">
+                <span>Due Within 14 Days</span>
+                <span class="badge bg-warning text-dark">@upcoming.Count</span>
+            </div>
+            <div class="card-body p-0">
+                @if (upcoming.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>ID</th><th>Asset</th><th>Type</th><th>Scheduled</th></tr></thead>
+                        <tbody>
+                            @foreach (var m in upcoming)
+                            {
+                                var daysTo = (m.ScheduledDate.Date - SiteTime.Today).Days;
+                                var rc = daysTo <= 3 ? "table-warning" : "";
+                                <tr class="@rc">
+                                    <td><a asp-action="Details" asp-route-id="@m.Id">@m.MaintenanceId</a></td>
+                                    <td>@(m.Asset?.Name ?? "-")</td>
+                                    <td>@m.Type</td>
+                                    <td>@m.ScheduledDate.ToShortDateString()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <p class="text-muted p-3 mb-0">None due within 14 days.</p> }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between">
+                <span>Pending Review</span>
+                <span class="badge bg-warning text-dark">@pendingReview.Count</span>
+            </div>
+            <div class="card-body p-0">
+                @if (pendingReview.Any())
+                {
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>ID</th><th>Asset</th><th>Status</th><th>Performed</th></tr></thead>
+                        <tbody>
+                            @foreach (var m in pendingReview)
+                            {
+                                <tr>
+                                    <td><a asp-action="Details" asp-route-id="@m.Id">@m.MaintenanceId</a></td>
+                                    <td>@(m.Asset?.Name ?? "-")</td>
+                                    <td>@EnumHelper.Display(m.Status)</td>
+                                    <td>@(m.PerformedOn.ToSite()?.ToShortDateString() ?? "-")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else { <p class="text-muted p-3 mb-0">None pending.</p> }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overdue -->
+@if (overdue.Any())
+{
+    <div class="card mb-4 border-danger">
+        <div class="card-header bg-danger text-white d-flex justify-content-between">
+            <span>Overdue Maintenances</span>
+            <span class="badge bg-white text-danger">@overdue.Count</span>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm mb-0">
+                <thead><tr><th>ID</th><th>Title</th><th>Asset</th><th>Type</th><th>Scheduled</th><th>Days Overdue</th></tr></thead>
+                <tbody>
+                    @foreach (var m in overdue)
+                    {
+                        var daysOver = (SiteTime.Today - m.ScheduledDate.Date).Days;
+                        <tr class="table-danger">
+                            <td><a asp-action="Details" asp-route-id="@m.Id">@m.MaintenanceId</a></td>
+                            <td>@m.Title</td>
+                            <td>@(m.Asset?.Name ?? "-")</td>
+                            <td>@m.Type</td>
+                            <td>@m.ScheduledDate.ToShortDateString()</td>
+                            <td><strong>@daysOver days</strong></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<!-- Recent Activity -->
+<div class="card">
+    <div class="card-header">Recent Activity</div>
+    <div class="card-body p-0">
+        @{
+            var recentActivity = ViewBag.RecentActivity as dynamic;
+        }
+        @if (recentActivity != null)
+        {
+            <table class="table table-sm mb-0">
+                <thead><tr><th>Time</th><th>Maintenance</th><th>Action</th><th>By</th></tr></thead>
+                <tbody>
+                    @foreach (var entry in recentActivity)
+                    {
+                        <tr>
+                            <td class="text-nowrap text-muted small">@(SiteTime.ToSite((DateTime)entry.Log.PerformedOn).ToString("yyyy-MM-dd HH:mm"))</td>
+                            <td><a asp-action="Details" asp-route-id="@entry.RecordId">@entry.MaintenanceId</a> — @entry.Title</td>
+                            <td>@entry.Log.Action</td>
+                            <td>@entry.Log.PerformedBy</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else { <p class="text-muted p-3 mb-0">No activity recorded yet.</p> }
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    var labels = @Json.Serialize(statusCounts.Keys.ToList());
+    var data   = @Json.Serialize(statusCounts.Values.ToList());
+    var colors = ['#6c757d','#0dcaf0','#ffc107','#0d6efd','#198754','#dc3545','#adb5bd'];
+
+    new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: { labels: labels, datasets: [{ data: data, backgroundColor: colors }] },
+        options: { plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: true }
+    });
+})();
+</script>
+}

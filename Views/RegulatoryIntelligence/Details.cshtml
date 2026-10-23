@@ -1,0 +1,1849 @@
+@model OpenQMS.Models.RI.RegulatoryApplication
+@using OpenQMS.Models.RI
+@{
+    ViewData["Title"] = Model.RINumber;
+    var supplierName = ViewData["ManufacturingSupplierName"] as string;
+}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+        <h4 class="mb-1"><i class="fas fa-globe me-2 text-primary"></i>@Model.RINumber</h4>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            @{
+                var statusBadge = Model.Status switch
+                {
+                    RIApplicationStatus.Strategy          => "secondary",
+                    RIApplicationStatus.Preparation       => "info",
+                    RIApplicationStatus.Submitted         => "primary",
+                    RIApplicationStatus.UnderReview       => "warning",
+                    RIApplicationStatus.ClockStop         => "warning",
+                    RIApplicationStatus.Approved          => "success",
+                    RIApplicationStatus.ConditionsActive  => "success",
+                    RIApplicationStatus.VariationRequired => "warning",
+                    RIApplicationStatus.RenewalDue        => "warning",
+                    RIApplicationStatus.Rejected          => "danger",
+                    RIApplicationStatus.Withdrawn         => "dark",
+                    RIApplicationStatus.Suspended         => "danger",
+                    _                                     => "secondary"
+                };
+            }
+            <span class="badge bg-@statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+            @if (Model.IsLocked) { <span class="badge bg-secondary"><i class="fas fa-lock me-1"></i>Locked</span> }
+            @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">Orphan</span> }
+            @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">Priority</span> }
+            @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">Breakthrough</span> }
+            @if (Model.IsPRIME)               { <span class="badge bg-danger">PRIME</span> }
+            @if (Model.IsConditionalApproval) { <span class="badge bg-warning text-dark">Conditional</span> }
+            <span class="text-muted small">@Model.Jurisdiction?.Authority — @Model.Jurisdiction?.Name</span>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>Register
+        </a>
+        @if (!Model.IsLocked && !OpenQMS.Services.RIWorkflowService.IsTerminal(Model.Status))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-edit me-1"></i>Edit
+            </a>
+        }
+        @if (User.IsInRole("Administrator"))
+        {
+            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline"
+                  onsubmit="return confirm('Soft-delete this application?')">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-trash me-1"></i>Delete
+                </button>
+            </form>
+        }
+    </div>
+</div>
+
+@if (Model.IsLocked)
+{
+    <div class="alert alert-info d-flex align-items-center mb-3">
+        <i class="fas fa-lock me-3 fa-lg"></i>
+        <div>
+            <strong>This application is approved and locked.</strong>
+            To make changes, create a <strong>Variation</strong> or initiate a <strong>Renewal</strong>.
+        </div>
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<!-- Workflow Actions Panel -->
+@{
+    bool isTerminal = Model.Status is RIApplicationStatus.Rejected or RIApplicationStatus.Withdrawn;
+    // Variations are post-approval changes — only offered once an authorisation exists.
+    bool canVariate = Model.Status is RIApplicationStatus.Approved
+                                   or RIApplicationStatus.ConditionsActive
+                                   or RIApplicationStatus.VariationRequired
+                                   or RIApplicationStatus.RenewalDue;
+}
+@if (!isTerminal)
+{
+    <div class="card mb-3 border-0 bg-light">
+        <div class="card-body py-2 d-flex align-items-center flex-wrap gap-2">
+            <small class="text-muted fw-bold">ACTIONS:</small>
+
+            @if (Model.Status == RIApplicationStatus.Strategy)
+            {
+                <form asp-action="Transition" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="Preparation" />
+                    <button type="submit" class="btn btn-sm btn-outline-info">
+                        <i class="fas fa-arrow-right me-1"></i>Advance to Preparation
+                    </button>
+                </form>
+            }
+
+            @if (Model.Status == RIApplicationStatus.Preparation)
+            {
+                <form asp-action="Transition" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="Strategy" />
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Strategy
+                    </button>
+                </form>
+                <form asp-action="Transition" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="Submitted" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-paper-plane me-1"></i>Mark Submitted
+                    </button>
+                </form>
+            }
+
+            @if (Model.Status == RIApplicationStatus.Submitted)
+            {
+                <form asp-action="Transition" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="Preparation" />
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Preparation
+                    </button>
+                </form>
+                <form asp-action="Transition" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="UnderReview" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-search me-1"></i>Under Review (set Day 0)
+                    </button>
+                </form>
+                <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                    <i class="fas fa-ban me-1"></i>Withdraw
+                </button>
+            }
+
+            @if (Model.Status == RIApplicationStatus.UnderReview)
+            {
+                <form asp-action="Transition" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="ClockStop" />
+                    <button type="submit" class="btn btn-sm btn-outline-warning">
+                        <i class="fas fa-pause me-1"></i>Clock Stop
+                    </button>
+                </form>
+                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
+                    <i class="fas fa-check me-1"></i>Approve
+                </button>
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                    <i class="fas fa-times-circle me-1"></i>Reject
+                </button>
+                <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                    <i class="fas fa-ban me-1"></i>Withdraw
+                </button>
+            }
+
+            @if (Model.Status == RIApplicationStatus.ClockStop)
+            {
+                <form asp-action="Transition" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="UnderReview" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-play me-1"></i>Restart Clock
+                    </button>
+                </form>
+            }
+
+            @if (Model.Status == RIApplicationStatus.Approved)
+            {
+                <form asp-action="Transition" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="VariationRequired" />
+                    <button type="submit" class="btn btn-sm btn-outline-warning">
+                        <i class="fas fa-edit me-1"></i>Variation Required
+                    </button>
+                </form>
+                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#initiateRenewalModal"
+                        title="Start the renewal cycle now, ahead of the expiry-driven reminders.">
+                    <i class="fas fa-sync me-1"></i>Initiate Renewal Now
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#suspendModal"
+                        title="Record an authority suspension of this authorisation.">
+                    <i class="fas fa-pause-circle me-1"></i>Suspend
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal"
+                        title="End this authorisation — e.g. a decision not to renew.">
+                    <i class="fas fa-ban me-1"></i>Withdraw
+                </button>
+            }
+
+            @if (Model.Status == RIApplicationStatus.ConditionsActive)
+            {
+                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
+                    <i class="fas fa-check me-1"></i>Approve (Conditions Met)
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#suspendModal">
+                    <i class="fas fa-pause-circle me-1"></i>Suspend
+                </button>
+                <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                    <i class="fas fa-ban me-1"></i>Withdraw
+                </button>
+            }
+
+            @if (Model.Status == RIApplicationStatus.Suspended)
+            {
+                <form asp-action="Transition" method="post" class="d-inline"
+                      onsubmit="return confirm('Reinstate @Model.RINumber and re-open it for review?');">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="UnderReview" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-play-circle me-1"></i>Reinstate (Re-review)
+                    </button>
+                </form>
+                <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                    <i class="fas fa-ban me-1"></i>Withdraw
+                </button>
+            }
+
+            @if (Model.Status == RIApplicationStatus.VariationRequired)
+            {
+                <form asp-action="Transition" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="UnderReview" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-arrow-right me-1"></i>Back to Under Review
+                    </button>
+                </form>
+            }
+
+            @if (Model.Status == RIApplicationStatus.RenewalDue)
+            {
+                <form asp-action="Transition" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="Submitted" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-paper-plane me-1"></i>Submit Renewal
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+}
+
+<!-- Approve Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="ApproveApplication" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="approveModalLabel"><i class="fas fa-check-circle me-2"></i>Approve Application</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Enter your credentials to approve <strong>@Model.RINumber</strong>.</p>
+                    @if (Model.IsConditionalApproval)
+                    {
+                        <div class="alert alert-info small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <strong>Conditional Approval</strong> flag is set — status will be set to <strong>Conditions Active</strong>. All conditions must be closed before transitioning to full Approval.
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="pwd" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>Confirm Approval</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="RejectApplication" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="rejectModalLabel"><i class="fas fa-times-circle me-2"></i>Reject Application</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Enter your credentials and rejection reason for <strong>@Model.RINumber</strong>.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="pwd" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rejection Reason <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" required placeholder="State the grounds for rejection..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-times-circle me-1"></i>Confirm Rejection</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="WithdrawApplication" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="withdrawModalLabel"><i class="fas fa-ban me-2"></i>Withdraw Application</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Enter your credentials and withdrawal reason for <strong>@Model.RINumber</strong>.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="pwd" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Withdrawal Reason <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" required placeholder="State the reason for withdrawal..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark"><i class="fas fa-ban me-1"></i>Confirm Withdrawal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Suspend Modal (password-gated, reason required) -->
+<div class="modal fade" id="suspendModal" tabindex="-1" aria-labelledby="suspendModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="SuspendApplication" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="suspendModalLabel"><i class="fas fa-pause-circle me-2"></i>Suspend Authorisation</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This will mark <strong>@Model.RINumber</strong> as <strong class="text-danger">Suspended</strong> and lock the record. Enter your credentials and the suspension reason.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="pwd" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Suspension Reason <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" required placeholder="State the reason for suspension..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-pause-circle me-1"></i>Confirm Suspension</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Initiate Renewal Modal (early / unscheduled renewal, reason required) ── -->
+<div class="modal fade" id="initiateRenewalModal" tabindex="-1" aria-labelledby="initiateRenewalModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="InitiateRenewal" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="initiateRenewalModalLabel"><i class="fas fa-sync me-2"></i>Initiate Renewal Now</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This will move <strong>@Model.RINumber</strong> to <strong class="text-warning-emphasis">Renewal Due</strong> so the renewal submission can be progressed.</p>
+                    @if (Model.NextRenewalDue.HasValue || Model.ExpiryDate.HasValue)
+                    {
+                        var refDate = Model.NextRenewalDue ?? Model.ExpiryDate;
+                        <div class="alert alert-info small mb-3">
+                            <i class="fas fa-info-circle me-1"></i>Renewal is otherwise tracked against @(Model.NextRenewalDue.HasValue ? "next renewal due" : "expiry") (@refDate!.Value.ToString("dd MMM yyyy")). Use this to start the renewal early.
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Reason for early renewal <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" required placeholder="e.g. authority advised early resubmission, scheduling ahead of expiry, change in product details..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning"><i class="fas fa-sync me-1"></i>Initiate Renewal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming Alerts -->
+@{
+    var upcomingAlerts = new List<(string Level, string Icon, string Message)>();
+
+    if (Model.TargetDecisionDate.HasValue && Model.Status == RIApplicationStatus.UnderReview)
+    {
+        int tdDays = (Model.TargetDecisionDate.Value.Date - SiteTime.Today).Days;
+        if (tdDays < 0)
+            upcomingAlerts.Add(("danger", "fa-clock", $"Target decision date was {Math.Abs(tdDays)} day(s) ago ({Model.TargetDecisionDate.Value:dd MMM yyyy}). Review is overdue."));
+        else if (tdDays <= 30)
+            upcomingAlerts.Add(("warning", "fa-clock", $"Target decision date in {tdDays} day(s) ({Model.TargetDecisionDate.Value:dd MMM yyyy})."));
+    }
+
+    if (Model.ExpiryDate.HasValue && (Model.Status == RIApplicationStatus.Approved || Model.Status == RIApplicationStatus.ConditionsActive))
+    {
+        int exDays = (Model.ExpiryDate.Value.Date - SiteTime.Today).Days;
+        if (exDays < 0)
+            upcomingAlerts.Add(("danger", "fa-calendar-times", $"Authorisation expired {Math.Abs(exDays)} day(s) ago ({Model.ExpiryDate.Value:dd MMM yyyy}). Initiate renewal immediately."));
+        else if (exDays <= 90)
+            upcomingAlerts.Add(("warning", "fa-calendar-alt", $"Authorisation expires in {exDays} day(s) ({Model.ExpiryDate.Value:dd MMM yyyy}). Consider initiating renewal."));
+    }
+
+    int overdueCondCount = Model.Conditions?.Count(c => c.Status == RIConditionStatus.Outstanding && c.DueDate.HasValue && c.DueDate < SiteTime.Today) ?? 0;
+    if (overdueCondCount > 0)
+        upcomingAlerts.Add(("danger", "fa-clipboard-list", $"{overdueCondCount} condition(s) of approval are overdue."));
+
+    int dueSoonCondCount = Model.Conditions?.Count(c => c.Status == RIConditionStatus.Outstanding && c.DueDate.HasValue && c.DueDate >= SiteTime.Today && c.DueDate <= SiteTime.Today.AddDays(30)) ?? 0;
+    if (dueSoonCondCount > 0)
+        upcomingAlerts.Add(("warning", "fa-clipboard-check", $"{dueSoonCondCount} condition(s) due within 30 days."));
+
+    int apExpiring = Model.AccessPathways?.Count(ap => ap.ExpiryDate.HasValue && ap.ExpiryDate.Value.Date >= SiteTime.Today && ap.ExpiryDate.Value.Date <= SiteTime.Today.AddDays(60)) ?? 0;
+    if (apExpiring > 0)
+        upcomingAlerts.Add(("warning", "fa-user-shield", $"{apExpiring} access pathway(s) expiring within 60 days."));
+
+    int reportsOverdue = Model.AccessPathways?.Count(ap => ap.NextSixMonthlyReportDue.HasValue && ap.NextSixMonthlyReportDue < SiteTime.Today) ?? 0;
+    if (reportsOverdue > 0)
+        upcomingAlerts.Add(("danger", "fa-chart-bar", $"{reportsOverdue} access pathway(s) have overdue six-monthly supply reports."));
+}
+@if (upcomingAlerts.Any())
+{
+    <div class="card border-warning mb-3">
+        <div class="card-header py-2 bg-warning bg-opacity-10 text-warning fw-semibold small">
+            <i class="fas fa-bell me-1"></i>Upcoming Deadlines &amp; Alerts
+        </div>
+        <div class="card-body py-2 px-3">
+            @foreach (var (level, icon, message) in upcomingAlerts)
+            {
+                <div class="d-flex align-items-center gap-2 py-1 border-bottom border-light">
+                    <i class="fas @icon text-@level"></i>
+                    <span class="small text-@level">@message</span>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- Tab Navigation -->
+<ul class="nav nav-tabs mb-0" id="detailTabs" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dtab1" type="button"><i class="fas fa-file-alt me-1"></i>Application</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab2" type="button"><i class="fas fa-pills me-1"></i>Product</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab3" type="button"><i class="fas fa-calendar-alt me-1"></i>Dates</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab4" type="button"><i class="fas fa-dollar-sign me-1"></i>Fees</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab5" type="button"><i class="fas fa-users me-1"></i>Contacts</button></li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab6" type="button">
+            <i class="fas fa-clipboard-check me-1"></i>Conditions
+            @if (Model.Conditions?.Any(c => c.Status == RIConditionStatus.Outstanding) == true)
+            {
+                <span class="badge bg-danger ms-1">@Model.Conditions.Count(c => c.Status == RIConditionStatus.Outstanding)</span>
+            }
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab7" type="button">
+            <i class="fas fa-paperclip me-1"></i>Attachments
+            @if (Model.Documents?.Any() == true) { <span class="badge bg-secondary ms-1">@Model.Documents.Count</span> }
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtabVariations" type="button">
+            <i class="fas fa-random me-1"></i>Variations
+            @if (Model.Variations?.Any() == true)
+            {
+                var vApproved = Model.Variations.Count(v => v.Status == RIApplicationStatus.Approved);
+                @if (vApproved > 0) { <span class="badge bg-success ms-1">@vApproved approved</span> }
+                else { <span class="badge bg-secondary ms-1">@Model.Variations.Count</span> }
+            }
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtabPathways" type="button">
+            <i class="fas fa-user-shield me-1"></i>Access Pathways
+            @if (Model.AccessPathways?.Any() == true)
+            {
+                var expiredCount = Model.AccessPathways.Count(ap => ap.ExpiryDate.HasValue && ap.ExpiryDate < SiteTime.Today);
+                @if (expiredCount > 0) { <span class="badge bg-danger ms-1">@expiredCount expired</span> }
+                else { <span class="badge bg-secondary ms-1">@Model.AccessPathways.Count</span> }
+            }
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtabMilestones" type="button">
+            <i class="fas fa-tasks me-1"></i>Milestones
+            @{
+                var mTotal     = Model.Milestones?.Count ?? 0;
+                var mDone      = Model.Milestones?.Count(m => m.Status == RIMilestoneStatus.Completed || m.Status == RIMilestoneStatus.Skipped) ?? 0;
+                var mOverdue   = Model.Milestones?.Count(m => m.Status == RIMilestoneStatus.Overdue ||
+                                     (m.Status == RIMilestoneStatus.Pending && m.PlannedDate.HasValue && m.PlannedDate < SiteTime.Today)) ?? 0;
+            }
+            @if (mOverdue > 0)  { <span class="badge bg-danger ms-1">@mOverdue overdue</span> }
+            else if (mTotal > 0){ <span class="badge bg-secondary ms-1">@mDone/@mTotal</span> }
+        </button>
+    </li>
+    <li class="nav-item">
+        @{
+            var lcDeps = ViewBag.LinkedLCRecords as List<OpenQMS.Models.LC.LCDependency> ?? new List<OpenQMS.Models.LC.LCDependency>();
+        }
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtabLicCert" type="button">
+            <i class="fas fa-id-card me-1 text-success"></i>Licences &amp; Certs
+            @if (lcDeps.Any()) { <span class="badge bg-success ms-1">@lcDeps.Count</span> }
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab8" type="button">
+            <i class="fas fa-history me-1"></i>Audit Log
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtabHistory" type="button">
+            <i class="fas fa-layer-group me-1"></i>Approval History
+            @if (Model.ApprovalSnapshots?.Any() == true) { <span class="badge bg-secondary ms-1">@Model.ApprovalSnapshots.Count</span> }
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content border border-top-0 rounded-bottom p-4 mb-3">
+
+    <!-- Tab 1: Application Info -->
+    <div class="tab-pane fade show active" id="dtab1" role="tabpanel">
+        <div class="row g-3">
+            <div class="col-md-3"><label class="text-muted small">RI Number</label><div class="fw-bold">@Model.RINumber</div></div>
+            <div class="col-md-3"><label class="text-muted small">Jurisdiction</label><div>@Model.Jurisdiction?.Name (@Model.Jurisdiction?.Code)</div></div>
+            <div class="col-md-3"><label class="text-muted small">Authority</label><div>@Model.Jurisdiction?.Authority</div></div>
+            <div class="col-md-3"><label class="text-muted small">Application Type</label><div>@Model.ApplicationType?.Name</div></div>
+            <div class="col-md-3"><label class="text-muted small">Submission Method</label><div>@(Model.SubmissionMethod ?? "—")</div></div>
+            <div class="col-md-3"><label class="text-muted small">Authority Reference No.</label><div>@(Model.AuthorityReferenceNumber ?? "—")</div></div>
+            <div class="col-md-6">
+                <label class="text-muted small">Designations</label>
+                <div class="d-flex flex-wrap gap-1">
+                    @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">Orphan</span> }
+                    @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">Priority Review</span> }
+                    @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">Breakthrough Therapy</span> }
+                    @if (Model.IsPRIME)               { <span class="badge bg-danger">PRIME</span> }
+                    @if (Model.IsConditionalApproval) { <span class="badge bg-warning text-dark">Conditional Approval</span> }
+                    @if (!Model.IsOrphanDesignation && !Model.IsPriorityReview && !Model.IsBreakthroughTherapy && !Model.IsPRIME && !Model.IsConditionalApproval) { <span class="text-muted">None</span> }
+                </div>
+            </div>
+            <div class="col-md-3"><label class="text-muted small">Created By</label><div>@Model.CreatedBy</div></div>
+            <div class="col-md-3"><label class="text-muted small">Created At</label><div>@Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm")</div></div>
+            @if (Model.ModifiedBy != null)
+            {
+                <div class="col-md-3"><label class="text-muted small">Last Modified By</label><div>@Model.ModifiedBy</div></div>
+                <div class="col-md-3"><label class="text-muted small">Last Modified</label><div>@Model.ModifiedAt.ToSite()?.ToString("dd MMM yyyy HH:mm")</div></div>
+            }
+        </div>
+    </div>
+
+    <!-- Tab 2: Product & Indication -->
+    <div class="tab-pane fade" id="dtab2" role="tabpanel">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="text-muted small">Product</label>
+                <div>
+                    <a asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductId">@Model.Product?.Name</a>
+                </div>
+            </div>
+            <div class="col-md-6"><label class="text-muted small">Product Name (snapshot)</label><div>@Model.ProductName</div></div>
+            <div class="col-md-4"><label class="text-muted small">Active Substance / INN</label><div>@(Model.ActiveSubstance ?? "—")</div></div>
+            <div class="col-md-8"><label class="text-muted small">Indication</label><div>@(Model.Indication ?? "—")</div></div>
+            <div class="col-md-4"><label class="text-muted small">Dosage Form</label><div>@(Model.DosageForm ?? "—")</div></div>
+            <div class="col-md-4"><label class="text-muted small">Strength</label><div>@(Model.Strength ?? "—")</div></div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Key Dates -->
+    <div class="tab-pane fade" id="dtab3" role="tabpanel">
+        <div class="row g-3">
+            @{
+                void DateRow(string label, DateTime? val, bool highlight = false)
+                {
+                    <div class="col-md-3">
+                        <label class="text-muted small">@label</label>
+                        <div class="@(highlight && val < SiteTime.Today ? "text-danger fw-bold" : "")">
+                            @(val?.ToString("dd MMM yyyy") ?? "—")
+                        </div>
+                    </div>
+                }
+            }
+            @{ DateRow("Strategy Start", Model.StrategyStartDate); }
+            @{ DateRow("Pre-Submission Meeting", Model.PreSubMeetingDate); }
+            @{ DateRow("Dossier Lock Date", Model.DossierLockDate); }
+            @{ DateRow("Submission Date", Model.SubmissionDate); }
+            @{ DateRow("Acknowledgement Date", Model.AcknowledgementDate); }
+            @{ DateRow("Day 0 (Clock Start)", Model.Day0Date); }
+            @{ DateRow("Target Decision Date", Model.TargetDecisionDate, highlight: true); }
+            @{ DateRow("Actual Decision Date", Model.ActualDecisionDate); }
+            @{ DateRow("Approval Date", Model.ApprovalDate); }
+            @{ DateRow("Expiry Date", Model.ExpiryDate, highlight: true); }
+            @{ DateRow("Next Renewal Due", Model.NextRenewalDue, highlight: true); }
+            @{ DateRow("Appeal Deadline", Model.AppealDeadline, highlight: true); }
+        </div>
+        @if (Model.ApplicationType?.ClockDays.HasValue == true)
+        {
+            <div class="mt-3 alert alert-light">
+                <i class="fas fa-clock me-1"></i>Regulatory clock: <strong>@Model.ApplicationType.ClockDays working days</strong> from Day 0.
+            </div>
+        }
+    </div>
+
+    <!-- Tab 4: Fees -->
+    <div class="tab-pane fade" id="dtab4" role="tabpanel">
+        <div class="row g-3">
+            <div class="col-md-3"><label class="text-muted small">Application Fee</label>
+                <div>@(Model.ApplicationFee.HasValue ? $"{Model.FeeCurrency} {Model.ApplicationFee:N2}" : "—")</div>
+            </div>
+            <div class="col-md-3"><label class="text-muted small">Fee Paid Date</label><div>@(Model.FeePaidDate?.ToString("dd MMM yyyy") ?? "—")</div></div>
+            <div class="col-md-3"><label class="text-muted small">Fee Waiver</label>
+                <div>@(Model.FeeWaiverApplied ? "Yes — " + (Model.FeeWaiverReason ?? "") : "No")</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 5: Contacts & Strategy -->
+    <div class="tab-pane fade" id="dtab5" role="tabpanel">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="text-muted small">Internal RA Lead</label><div>@(ViewData["RALeadName"] as string ?? Model.InternalRALead ?? "—")</div></div>
+            <div class="col-md-6"><label class="text-muted small">External RA Consultant</label><div>@(Model.ExternalConsultant ?? "—")</div></div>
+            <div class="col-md-6"><label class="text-muted small">Authority Rapporteur / PM</label><div>@(Model.AuthorityRapporteur ?? "—")</div></div>
+            <div class="col-md-6"><label class="text-muted small">Authority Contact Email</label>
+                <div>@(Model.AuthorityContactEmail != null ? Model.AuthorityContactEmail : "—")</div>
+            </div>
+            <div class="col-md-6"><label class="text-muted small">Manufacturing Supplier</label>
+                <div>
+                    @if (Model.ManufacturingSupplierId.HasValue && supplierName != null)
+                    {
+                        <a asp-controller="Suppliers" asp-action="Details" asp-route-id="@Model.ManufacturingSupplierId">@supplierName</a>
+                    }
+                    else { <span>—</span> }
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.StrategyNotes))
+            {
+                <div class="col-12"><label class="text-muted small">Strategy Notes</label>
+                    <div class="border rounded p-2 bg-light" style="white-space:pre-wrap">@Model.StrategyNotes</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Tab 6: Conditions of Approval -->
+    <div class="tab-pane fade" id="dtab6" role="tabpanel">
+        @if (!isTerminal)
+        {
+            <div class="d-flex justify-content-end mb-3">
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addConditionModal">
+                    <i class="fas fa-plus me-1"></i>Add Condition
+                </button>
+            </div>
+        }
+
+        @if (Model.Conditions?.Any() == true)
+        {
+            <table class="table table-sm table-hover align-middle">
+                <thead class="table-light">
+                    <tr><th>Condition</th><th>Type</th><th>Due Date</th><th>Status</th><th>CAPA</th><th class="text-end">Actions</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model.Conditions.OrderBy(x => x.DueDate))
+                    {
+                        bool cOverdue    = c.Status == RIConditionStatus.Outstanding && c.DueDate.HasValue && c.DueDate < SiteTime.Today;
+                        bool cDueSoon    = !cOverdue && c.DueDate.HasValue && c.DueDate < SiteTime.Today.AddDays(30);
+                        bool canClose    = c.Status != RIConditionStatus.Closed && c.Status != RIConditionStatus.Waived;
+                        string cBadge   = c.Status switch
+                        {
+                            RIConditionStatus.Outstanding => "danger",
+                            RIConditionStatus.InProgress  => "warning",
+                            RIConditionStatus.Submitted   => "primary",
+                            RIConditionStatus.Closed      => "success",
+                            RIConditionStatus.Waived      => "secondary",
+                            _                             => "secondary"
+                        };
+                        <tr class="@(cOverdue ? "table-danger" : "")">
+                            <td>@c.ConditionDescription
+                                @if (!string.IsNullOrEmpty(c.CompletionNotes))
+                                {
+                                    <div class="small text-muted fst-italic mt-1">@c.CompletionNotes</div>
+                                }
+                            </td>
+                            <td><span class="badge bg-secondary">@c.ConditionType</span></td>
+                            <td class="@(cOverdue ? "text-danger fw-bold" : cDueSoon ? "text-warning fw-bold" : "")">
+                                @(c.DueDate?.ToString("dd MMM yyyy") ?? "—")
+                                @if (c.CompletedDate.HasValue) { <div class="small text-success">Closed: @c.CompletedDate.Value.ToString("dd MMM yyyy")</div> }
+                            </td>
+                            <td><span class="badge bg-@cBadge">@EnumHelper.Display(c.Status)</span></td>
+                            <td>
+                                @if (c.LinkedCAPAId.HasValue)
+                                {
+                                    <a asp-controller="Capas" asp-action="Details" asp-route-id="@c.LinkedCAPAId" class="btn btn-xs btn-sm btn-outline-info py-0">CAPA #@c.LinkedCAPAId</a>
+                                }
+                            </td>
+                            <td class="text-end text-nowrap">
+                                @if (!isTerminal)
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-secondary edit-condition-btn"
+                                            data-bs-toggle="modal" data-bs-target="#editConditionModal"
+                                            data-id="@c.Id"
+                                            data-desc="@c.ConditionDescription"
+                                            data-type="@((int)c.ConditionType)"
+                                            data-due="@(c.DueDate?.ToString("yyyy-MM-dd") ?? "")"
+                                            data-status="@((int)c.Status)">
+                                        <i class="fas fa-edit me-1"></i>Edit
+                                    </button>
+                                    @if (canClose)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-success ms-1 close-condition-btn"
+                                                data-bs-toggle="modal" data-bs-target="#closeConditionModal"
+                                                data-id="@c.Id"
+                                                data-desc="@c.ConditionDescription">
+                                            <i class="fas fa-check me-1"></i>Close
+                                        </button>
+                                    }
+                                    @if (!c.LinkedCAPAId.HasValue)
+                                    {
+                                        <form asp-action="CreateCAPAFromCondition" method="post" class="d-inline ms-1"
+                                              onsubmit="return confirm('Create a CAPA from this condition?')">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="conditionId" value="@c.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-info">
+                                                <i class="fas fa-tasks me-1"></i>Raise CAPA
+                                            </button>
+                                        </form>
+                                    }
+                                    <form asp-action="DeleteCondition" method="post" class="d-inline ms-1"
+                                          onsubmit="return confirm('Delete this condition?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@c.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (Model.Status == RIApplicationStatus.ConditionsActive)
+            {
+                var openRemaining = Model.Conditions.Count(c => c.Status != RIConditionStatus.Closed && c.Status != RIConditionStatus.Waived);
+                <div class="alert alert-@(openRemaining == 0 ? "success" : "info") small mt-2 mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    @if (openRemaining == 0)
+                    {
+                        <span>All conditions are satisfied. Application will auto-transition to <strong>Approved</strong> when the final condition is closed.</span>
+                    }
+                    else
+                    {
+                        <span><strong>@openRemaining</strong> open condition(s) remaining before auto-transition to Approved.</span>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-muted">No conditions of approval on record.</div>
+        }
+
+        @if (Model.RejectionReason != null) { <div class="alert alert-danger mt-3"><strong>Rejection Reason:</strong> @Model.RejectionReason</div> }
+        @if (Model.WithdrawalReason != null) { <div class="alert alert-warning mt-3"><strong>Withdrawal Reason:</strong> @Model.WithdrawalReason</div> }
+        @if (Model.SuspensionReason != null) { <div class="alert alert-danger mt-3"><strong>Suspension Reason:</strong> @Model.SuspensionReason @(Model.SuspendedOn.HasValue ? $"(suspended {Model.SuspendedOn.Value:dd MMM yyyy})" : "")</div> }
+    </div>
+
+    <!-- Tab 7: Documents -->
+    <div class="tab-pane fade" id="dtab7" role="tabpanel">
+        @{
+            var riPendingDocs = Model.Documents?.Where(d => d.ApprovalCycle == null).OrderByDescending(d => d.UploadedAt).ToList() ?? new List<OpenQMS.Models.RI.RIDocument>();
+            var riCycleGroups = Model.Documents?.Where(d => d.ApprovalCycle != null)
+                .GroupBy(d => d.ApprovalCycle!.Value)
+                .OrderByDescending(g => g.Key)
+                .ToList() ?? new List<IGrouping<int, OpenQMS.Models.RI.RIDocument>>();
+        }
+
+        @if (!riPendingDocs.Any() && !riCycleGroups.Any())
+        {
+            <div class="text-muted mb-3">No documents uploaded.</div>
+        }
+
+        @if (riPendingDocs.Any())
+        {
+            <h6 class="text-uppercase small text-muted mt-2 mb-1">Current (Pending Approval)</h6>
+            <table class="table table-sm table-hover mb-3">
+                <thead class="table-light"><tr><th>File Name</th><th>Type</th><th>Size</th><th>Version</th><th>Uploaded</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var doc in riPendingDocs)
+                    {
+                        <tr>
+                            <td><i class="fas fa-file me-1 text-muted"></i>@doc.FileName</td>
+                            <td>@(doc.DocumentType ?? "—")</td>
+                            <td class="text-muted small">@($"{doc.FileSizeBytes / 1024.0:N0} KB")</td>
+                            <td>v@(doc.Version)</td>
+                            <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy") <span class="text-muted small">@doc.UploadedBy</span></td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-download me-1"></i>Download
+                                </a>
+                                <form asp-action="DeleteDocument" method="post" class="d-inline" data-delete-reason="document">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@doc.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger ms-1"><i class="fas fa-trash me-1"></i>Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @foreach (var group in riCycleGroups)
+        {
+            var riSnap = Model.ApprovalSnapshots?.FirstOrDefault(s => s.RenewalCycle == group.Key);
+            <h6 class="text-uppercase small text-muted mt-3 mb-1">
+                <i class="fas fa-check-circle text-success me-1"></i>
+                Cycle @group.Key
+                @if (riSnap != null) { <span class="fw-normal">— Approved @riSnap.TakenAt.ToSite().ToString("dd MMM yyyy")</span> }
+            </h6>
+            <table class="table table-sm table-hover mb-3">
+                <thead class="table-light"><tr><th>File Name</th><th>Type</th><th>Size</th><th>Version</th><th>Uploaded</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var doc in group.OrderByDescending(d => d.UploadedAt))
+                    {
+                        <tr>
+                            <td><i class="fas fa-file me-1 text-muted"></i>@doc.FileName</td>
+                            <td>@(doc.DocumentType ?? "—")</td>
+                            <td class="text-muted small">@($"{doc.FileSizeBytes / 1024.0:N0} KB")</td>
+                            <td>v@(doc.Version)</td>
+                            <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy") <span class="text-muted small">@doc.UploadedBy</span></td>
+                            <td class="text-end"><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>Download</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadDocument", Noun: "documents")' />
+
+        @if (!Model.IsLocked)
+        {
+        <div class="border rounded p-3 bg-light">
+            <h6><i class="fas fa-upload me-1"></i>Upload Document</h6>
+            <form asp-action="UploadDocument" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="applicationId" value="@Model.Id" />
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label small">File</label>
+                        <input type="file" name="file" class="form-control form-control-sm" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small">Document Type</label>
+                        <select name="documentType" class="form-select form-select-sm">
+                            <option value="">— Select Type —</option>
+                            <option>eCTD Module</option>
+                            <option>Approval Letter</option>
+                            <option>PI (Product Information)</option>
+                            <option>CMI (Consumer Medicine Information)</option>
+                            <option>SmPC</option><option>REMS</option><option>RMP</option>
+                            <option>Condition Letter</option>
+                            <option>Assessment Report</option>
+                            <option>Labelling</option><option>Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-sm btn-primary w-100">
+                            <i class="fas fa-upload me-1"></i>Upload
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        }
+    </div>
+
+    <!-- Tab: Variations -->
+    <div class="tab-pane fade" id="dtabVariations" role="tabpanel">
+        @if (canVariate)
+        {
+            <div class="d-flex justify-content-end mb-3">
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addVariationModal">
+                    <i class="fas fa-plus me-1"></i>Add Variation
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-light border small mb-3">
+                <i class="fas fa-info-circle me-1 text-muted"></i>Variations can only be raised once the application is approved.
+            </div>
+        }
+
+        @if (Model.Variations?.Any() == true)
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Variation Number</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                            <th>Approved</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var v in Model.Variations.OrderByDescending(x => x.CreatedAt))
+                        {
+                            string vBadge = v.Status switch
+                            {
+                                RIApplicationStatus.Approved          => "success",
+                                RIApplicationStatus.ConditionsActive  => "success",
+                                RIApplicationStatus.Rejected          => "danger",
+                                RIApplicationStatus.Withdrawn         => "dark",
+                                RIApplicationStatus.UnderReview       => "warning",
+                                RIApplicationStatus.Submitted         => "primary",
+                                _                                     => "secondary"
+                            };
+                            <tr>
+                                <td class="fw-semibold small">@v.VariationNumber</td>
+                                <td><span class="badge bg-info text-dark small">@v.VariationType</span></td>
+                                <td class="small">@v.VariationDescription
+                                    @if (!string.IsNullOrEmpty(v.Notes))
+                                    {
+                                        <div class="text-muted fst-italic mt-1">@v.Notes</div>
+                                    }
+                                </td>
+                                <td><span class="badge bg-@vBadge">@EnumHelper.Display(v.Status)</span></td>
+                                <td class="small">@(v.SubmissionDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td class="small">@(v.ApprovalDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td class="text-end text-nowrap">
+                                    @if (!isTerminal)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-primary edit-variation-btn"
+                                                data-bs-toggle="modal" data-bs-target="#editVariationModal"
+                                                data-id="@v.Id"
+                                                data-desc="@v.VariationDescription"
+                                                data-type="@((int)v.VariationType)"
+                                                data-status="@((int)v.Status)"
+                                                data-submitted="@(v.SubmissionDate?.ToString("yyyy-MM-dd") ?? "")"
+                                                data-approved="@(v.ApprovalDate?.ToString("yyyy-MM-dd") ?? "")"
+                                                data-notes="@(v.Notes ?? "")">
+                                            <i class="fas fa-edit me-1"></i>Edit
+                                        </button>
+                                        <form asp-action="DeleteVariation" method="post" class="d-inline ms-1"
+                                              onsubmit="return confirm('Delete variation @v.VariationNumber?')">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@v.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash me-1"></i>Delete
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-muted text-center py-4">
+                <i class="fas fa-random fa-2x mb-2 d-block text-secondary"></i>
+                No variations recorded. Click <strong>Add Variation</strong> to log a post-approval variation application.
+            </div>
+        }
+    </div>
+
+    <!-- Tab: Access Pathways -->
+    <div class="tab-pane fade" id="dtabPathways" role="tabpanel">
+        <div class="d-flex justify-content-end mb-3">
+            <a asp-action="CreateAccessPathway" asp-route-applicationId="@Model.Id" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus me-1"></i>New Access Pathway
+            </a>
+        </div>
+
+        @if (Model.AccessPathways?.Any() == true)
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>AP Number</th>
+                            <th>Type</th>
+                            <th>Patient ID</th>
+                            <th>Status</th>
+                            <th>Approval</th>
+                            <th>Expiry</th>
+                            <th>Next Report Due</th>
+                            <th class="text-center">AE Rep.</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ap in Model.AccessPathways.OrderByDescending(x => x.CreatedAt))
+                        {
+                            bool apExpired      = ap.ExpiryDate.HasValue && ap.ExpiryDate < SiteTime.Today;
+                            bool reportOverdue  = ap.NextSixMonthlyReportDue.HasValue && ap.NextSixMonthlyReportDue < SiteTime.Today;
+                            string apStatusBadge = ap.Status switch
+                            {
+                                RIAccessPathwayStatus.Active    => "success",
+                                RIAccessPathwayStatus.Approved  => "success",
+                                RIAccessPathwayStatus.Rejected  => "danger",
+                                RIAccessPathwayStatus.Closed    => "dark",
+                                RIAccessPathwayStatus.Submitted => "primary",
+                                _ => "secondary"
+                            };
+                            <tr class="@(apExpired ? "table-warning" : "")">
+                                <td>
+                                    <a asp-action="AccessPathwayDetails" asp-route-id="@ap.Id" class="fw-semibold">@ap.AccessNumber</a>
+                                </td>
+                                <td><span class="badge bg-info text-dark">@ap.PathwayType</span></td>
+                                <td class="small">@(ap.PatientIdentifier ?? "—")</td>
+                                <td><span class="badge bg-@apStatusBadge">@ap.Status</span></td>
+                                <td class="small">@(ap.ApprovalDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td class="small @(apExpired ? "text-danger fw-bold" : "")">@(ap.ExpiryDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td class="small @(reportOverdue ? "text-warning fw-bold" : "")">@(ap.NextSixMonthlyReportDue?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td class="text-center">
+                                    @if (ap.AEReportingRequired) { <span class="badge bg-warning text-dark">Yes</span> }
+                                    else { <span class="text-muted">No</span> }
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    <a asp-action="AccessPathwayDetails" asp-route-id="@ap.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </a>
+                                    <a asp-action="EditAccessPathway" asp-route-id="@ap.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-edit me-1"></i>Edit
+                                    </a>
+                                    <form asp-action="DeleteAccessPathway" method="post" class="d-inline"
+                                          onsubmit="return confirm('Delete access pathway @ap.AccessNumber?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@ap.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-muted text-center py-4">
+                <i class="fas fa-user-shield fa-2x mb-2 d-block text-secondary"></i>
+                No access pathway records. Click <strong>New Access Pathway</strong> to add one.
+            </div>
+        }
+    </div>
+
+    <!-- Tab Milestones: Milestone Tracking -->
+    <div class="tab-pane fade" id="dtabMilestones" role="tabpanel">
+        @{
+            var milestones  = Model.Milestones?.OrderBy(m => m.PlannedDate ?? DateTime.MaxValue).ToList() ?? new();
+            var msTotal     = milestones.Count;
+            var msDone      = milestones.Count(m => m.Status == RIMilestoneStatus.Completed || m.Status == RIMilestoneStatus.Skipped);
+            int pct         = msTotal > 0 ? (int)Math.Round(msDone * 100.0 / msTotal) : 0;
+        }
+
+        <!-- Toolbar -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                @if (msTotal > 0)
+                {
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="progress flex-grow-1" style="height:18px;min-width:180px;" title="@msDone of @msTotal milestones complete">
+                            <div class="progress-bar @(pct == 100 ? "bg-success" : "bg-primary")"
+                                 role="progressbar" style="width:@pct%">@pct%</div>
+                        </div>
+                        <span class="text-muted small">@msDone / @msTotal milestones complete</span>
+                    </div>
+                }
+            </div>
+            <div class="d-flex gap-2">
+                @if (!milestones.Any())
+                {
+                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#applyTemplateModal">
+                        <i class="fas fa-magic me-1"></i>Apply Standard Template
+                    </button>
+                }
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addMilestoneModal">
+                    <i class="fas fa-plus me-1"></i>Add Milestone
+                </button>
+            </div>
+        </div>
+
+        @if (milestones.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:30px">#</th>
+                            <th>Milestone</th>
+                            <th>Planned Date</th>
+                            <th>Actual Date</th>
+                            <th>Status</th>
+                            <th>Clock Stop</th>
+                            <th>Notes</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int msIdx = 0; }
+                        @foreach (var m in milestones)
+                        {
+                            msIdx++;
+                            bool isEffectivelyOverdue = (m.Status == RIMilestoneStatus.Overdue) ||
+                                (m.Status == RIMilestoneStatus.Pending && m.PlannedDate.HasValue && m.PlannedDate < SiteTime.Today);
+                            string rowCss = isEffectivelyOverdue ? "table-danger" :
+                                            m.Status == RIMilestoneStatus.Completed ? "table-success" :
+                                            m.Status == RIMilestoneStatus.Skipped   ? "table-secondary" : "";
+                            string msBadge = m.Status switch
+                            {
+                                RIMilestoneStatus.Pending    => "secondary",
+                                RIMilestoneStatus.InProgress => "primary",
+                                RIMilestoneStatus.Completed  => "success",
+                                RIMilestoneStatus.Overdue    => "danger",
+                                RIMilestoneStatus.Skipped    => "dark",
+                                _                            => "secondary"
+                            };
+                            string statusLabel = isEffectivelyOverdue && m.Status == RIMilestoneStatus.Pending
+                                ? "Overdue" : m.Status.ToString();
+                            <tr class="@rowCss">
+                                <td class="text-muted small">@msIdx</td>
+                                <td>
+                                    @m.MilestoneName
+                                    @if (m.IsClockStop) { <span class="badge bg-warning text-dark ms-1" title="Clock-stop milestone"><i class="fas fa-pause"></i></span> }
+                                </td>
+                                <td class="@(isEffectivelyOverdue ? "text-danger fw-bold" : "")">
+                                    @(m.PlannedDate?.ToString("dd MMM yyyy") ?? "—")
+                                </td>
+                                <td>@(m.ActualDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td><span class="badge bg-@msBadge">@statusLabel</span></td>
+                                <td class="text-center">
+                                    @if (m.IsClockStop)
+                                    {
+                                        <i class="fas fa-pause text-warning" title="Clock-stop milestone"></i>
+                                        @if (m.ClockRestartDate.HasValue)
+                                        {
+                                            <span class="small text-muted d-block">Restart: @m.ClockRestartDate.Value.ToString("dd MMM yyyy")</span>
+                                        }
+                                    }
+                                </td>
+                                <td class="small text-muted">@(m.Notes ?? "—")</td>
+                                <td class="text-end text-nowrap">
+                                    <button type="button" class="btn btn-sm btn-outline-primary edit-milestone-btn"
+                                            data-bs-toggle="modal" data-bs-target="#editMilestoneModal"
+                                            data-id="@m.Id"
+                                            data-name="@m.MilestoneName"
+                                            data-planned="@(m.PlannedDate?.ToString("yyyy-MM-dd") ?? "")"
+                                            data-actual="@(m.ActualDate?.ToString("yyyy-MM-dd") ?? "")"
+                                            data-status="@((int)m.Status)"
+                                            data-clockstop="@(m.IsClockStop ? "true" : "false")"
+                                            data-clockrestart="@(m.ClockRestartDate?.ToString("yyyy-MM-dd") ?? "")"
+                                            data-notes="@(m.Notes ?? "")">
+                                        <i class="fas fa-edit me-1"></i>Edit
+                                    </button>
+                                    <form asp-action="DeleteMilestone" method="post" class="d-inline ms-1"
+                                          onsubmit="return confirm('Delete this milestone?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@m.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-muted text-center py-4">
+                <i class="fas fa-tasks fa-2x mb-2 d-block text-secondary"></i>
+                No milestones recorded. Use <strong>Apply Standard Template</strong> for a jurisdiction-specific set,
+                or <strong>Add Milestone</strong> to add manually.
+            </div>
+        }
+    </div>
+
+    <!-- LC Dependencies Tab -->
+    <div class="tab-pane fade" id="dtabLicCert" role="tabpanel">
+        <h6 class="mb-3"><i class="fas fa-id-card me-1 text-success"></i>Linked Licences &amp; Certifications</h6>
+        @if (!lcDeps.Any())
+        {
+            <div class="text-muted">No licence/certification records linked to this application.</div>
+            <div class="mt-2 small text-muted">To link a record, open the LC record and use the <strong>Dependencies</strong> tab.</div>
+        }
+        else
+        {
+            <table class="table table-sm table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>LC Number</th>
+                        <th>Category</th>
+                        <th>Licence Type</th>
+                        <th>Status</th>
+                        <th>Expiry</th>
+                        <th>Notes</th>
+                        <th>Linked Since</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var dep in lcDeps)
+                {
+                    var r = dep.Record;
+                    string lcBadge = r.Status switch {
+                        OpenQMS.Models.LC.LCStatus.IssuedActive     => "bg-success",
+                        OpenQMS.Models.LC.LCStatus.ConditionsApplied => "bg-success",
+                        OpenQMS.Models.LC.LCStatus.RenewalDue       => "bg-warning text-dark",
+                        OpenQMS.Models.LC.LCStatus.Expired          => "bg-danger",
+                        OpenQMS.Models.LC.LCStatus.Suspended        => "bg-warning text-dark",
+                        OpenQMS.Models.LC.LCStatus.Withdrawn        => "bg-secondary",
+                        _ => "bg-light text-dark"
+                    };
+                    <tr>
+                        <td><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
+                        <td>@r.Category</td>
+                        <td>@(r.LicenceType?.DisplayName ?? "—")</td>
+                        <td><span class="badge @lcBadge">@EnumHelper.Display(r.Status)</span></td>
+                        <td>@(r.ExpiryDate.HasValue ? r.ExpiryDate.Value.ToString("dd MMM yyyy") : "—")</td>
+                        <td class="small text-muted">@(dep.Notes ?? "—")</td>
+                        <td class="small text-muted">@(SiteTime.ToSite((DateTime)dep.LinkedSince).ToString("dd MMM yyyy"))</td>
+                        <td><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">View</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- Tab 8: Audit Log -->
+    <div class="tab-pane fade" id="dtab8" role="tabpanel">
+        @if (Model.AuditLogs?.Any() == true)
+        {
+            <table class="table table-sm table-hover">
+                <thead class="table-light"><tr><th>Timestamp <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>Action</th><th>Field</th><th>From</th><th>To</th><th>User</th><th>Notes</th></tr></thead>
+                <tbody>
+                    @foreach (var log in Model.AuditLogs)
+                    {
+                        <tr>
+                            <td class="small text-muted">@log.Timestamp.ToSite().ToString("dd MMM yyyy HH:mm")</td>
+                            <td><span class="badge bg-secondary">@log.Action</span></td>
+                            <td class="small">@log.FieldChanged</td>
+                            <td class="small text-muted">@log.OldValue</td>
+                            <td class="small">@log.NewValue</td>
+                            <td class="small">@log.UserId</td>
+                            <td class="small text-muted">@log.Notes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else { <div class="text-muted">No audit log entries.</div> }
+    </div>
+
+    <!-- Tab: Approval History -->
+    <div class="tab-pane fade" id="dtabHistory" role="tabpanel">
+        @if (Model.ApprovalSnapshots?.Any() != true)
+        {
+            <p class="text-muted">No approval cycles recorded yet. A snapshot is captured automatically each time this application is transitioned to <strong>Approved</strong>.</p>
+        }
+        else
+        {
+            @foreach (var snap in Model.ApprovalSnapshots.OrderByDescending(s => s.RenewalCycle))
+            {
+                var data = System.Text.Json.JsonDocument.Parse(snap.SnapshotJson).RootElement;
+
+                // Returns the string value of a snapshot property, or null when absent/empty.
+                Func<System.Text.Json.JsonElement, string, string?> getVal = (el, key) =>
+                    el.TryGetProperty(key, out var p) && p.ValueKind != System.Text.Json.JsonValueKind.Null
+                        ? (string.IsNullOrWhiteSpace(p.ToString()) ? null : p.ToString())
+                        : null;
+
+                // Field layout grouped to mirror the application's tabs. Only populated fields render.
+                var riSections = new (string Title, (string Label, string Key)[] Fields)[]
+                {
+                    ("Product & Identification", new [] { ("RI Number","RINumber"), ("Product Name","ProductName"), ("Active Substance","ActiveSubstance"), ("Indication","Indication"), ("Dosage Form","DosageForm"), ("Strength","Strength"), ("Jurisdiction","Jurisdiction"), ("Application Type","ApplicationType") }),
+                    ("Authority", new [] { ("Authority Reference","AuthorityReferenceNumber"), ("Submission Method","SubmissionMethod") }),
+                    ("Priority / Expedited", new [] { ("Orphan Designation","IsOrphanDesignation"), ("Priority Review","IsPriorityReview"), ("Breakthrough Therapy","IsBreakthroughTherapy"), ("PRIME","IsPRIME"), ("Conditional Approval","IsConditionalApproval") }),
+                    ("Key Dates", new [] { ("Strategy Start","StrategyStartDate"), ("Pre-Sub Meeting","PreSubMeetingDate"), ("Dossier Lock","DossierLockDate"), ("Submission Date","SubmissionDate"), ("Acknowledgement","AcknowledgementDate"), ("Day 0","Day0Date"), ("Target Decision","TargetDecisionDate"), ("Actual Decision","ActualDecisionDate"), ("Approval Date","ApprovalDate"), ("Expiry Date","ExpiryDate"), ("Next Renewal Due","NextRenewalDue"), ("Appeal Deadline","AppealDeadline") }),
+                    ("Fees", new [] { ("Application Fee","ApplicationFee"), ("Fee Currency","FeeCurrency"), ("Fee Paid Date","FeePaidDate"), ("Fee Waiver Applied","FeeWaiverApplied"), ("Fee Waiver Reason","FeeWaiverReason") }),
+                    ("Contacts", new [] { ("Internal RA Lead","InternalRALead"), ("External Consultant","ExternalConsultant"), ("Authority Rapporteur","AuthorityRapporteur"), ("Authority Contact Email","AuthorityContactEmail") }),
+                    ("Notes", new [] { ("Strategy Notes","StrategyNotes"), ("Rejection Reason","RejectionReason"), ("Withdrawal Reason","WithdrawalReason") }),
+                };
+
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="fw-bold"><i class="fas fa-check-circle text-success me-2"></i>Cycle @snap.RenewalCycle</span>
+                        <small class="text-muted">Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy HH:mm") UTC</small>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var grp in riSections)
+                        {
+                            var pairs = grp.Fields
+                                .Select(f => (f.Label, Val: getVal(data, f.Key)))
+                                .Where(x => !string.IsNullOrEmpty(x.Val))
+                                .ToList();
+                            if (pairs.Any())
+                            {
+                                <h6 class="small text-uppercase text-muted border-bottom pb-1 mb-2">@grp.Title</h6>
+                                <div class="row g-2 mb-3">
+                                    @foreach (var p in pairs)
+                                    {
+                                        <div class="col-md-3"><small class="text-muted d-block">@p.Label</small><span class="text-wrap">@p.Val</span></div>
+                                    }
+                                </div>
+                            }
+                        }
+
+                        @if (data.TryGetProperty("Documents", out var docArr) && docArr.GetArrayLength() > 0)
+                        {
+                            <h6 class="small text-uppercase text-muted mb-1">Documents at Approval</h6>
+                            <table class="table table-sm table-bordered mb-2">
+                                <thead class="table-light"><tr><th>File Name</th><th>Type</th><th>SHA-256</th></tr></thead>
+                                <tbody>
+                                    @foreach (var doc in docArr.EnumerateArray())
+                                    {
+                                        <tr>
+                                            <td>@(doc.TryGetProperty("FileName", out var fn) ? fn.GetString() : "—")</td>
+                                            <td><span class="badge bg-light text-dark border small">@(doc.TryGetProperty("DocumentType", out var dt) ? dt.GetString() : "—")</span></td>
+                                            <td><code class="small text-muted">@(doc.TryGetProperty("FileHash", out var fh) && fh.ValueKind != System.Text.Json.JsonValueKind.Null ? fh.GetString()?[..Math.Min(16, fh.GetString()?.Length ?? 0)] + "…" : "—")</code></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                        @if (data.TryGetProperty("Conditions", out var condArr) && condArr.GetArrayLength() > 0)
+                        {
+                            <h6 class="small text-uppercase text-muted mb-1">Conditions at Approval</h6>
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var cond in condArr.EnumerateArray())
+                                {
+                                    <li class="small"><i class="fas fa-circle text-muted me-1" style="font-size:0.5em;vertical-align:middle"></i>
+                                        @(cond.TryGetProperty("ConditionDescription", out var cd) ? cd.GetString() : "")
+                                        <span class="badge bg-light text-dark border ms-1">@(cond.TryGetProperty("Status", out var cs) ? cs.GetString() : "")</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+</div>
+
+<!-- ── Add Condition Modal ───────────────────────────────────────────── -->
+<div class="modal fade" id="addConditionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="AddCondition" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="applicationId" value="@Model.Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-clipboard-list me-2 text-primary"></i>Add Condition of Approval</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Condition Description <span class="text-danger">*</span></label>
+                        <textarea name="conditionDescription" class="form-control" rows="3" required maxlength="500"
+                                  placeholder="Describe the condition imposed by the authority..."></textarea>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Condition Type</label>
+                            <select name="conditionType" class="form-select">
+                                @foreach (RIConditionType ct in Enum.GetValues(typeof(RIConditionType)))
+                                {
+                                    <option value="@((int)ct)">@ct</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Due Date</label>
+                            <input type="date" name="dueDate" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Add Condition</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Edit Condition Modal ──────────────────────────────────────────── -->
+<div class="modal fade" id="editConditionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="UpdateCondition" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="editConditionId" />
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2 text-primary"></i>Edit Condition</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Condition Description <span class="text-danger">*</span></label>
+                        <textarea name="conditionDescription" id="editConditionDesc" class="form-control" rows="3" required maxlength="500"></textarea>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Condition Type</label>
+                            <select name="conditionType" id="editConditionType" class="form-select">
+                                @foreach (RIConditionType ct in Enum.GetValues(typeof(RIConditionType)))
+                                {
+                                    <option value="@((int)ct)">@ct</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Due Date</label>
+                            <input type="date" name="dueDate" id="editConditionDue" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select name="status" id="editConditionStatus" class="form-select">
+                                @foreach (RIConditionStatus cs in Enum.GetValues(typeof(RIConditionStatus)))
+                                {
+                                    <option value="@((int)cs)">@cs</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Close Condition Modal ─────────────────────────────────────────── -->
+<div class="modal fade" id="closeConditionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="CloseCondition" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="closeConditionId" />
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Close Condition</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Closing: <strong id="closeConditionDesc"></strong></p>
+                    @if (Model.Status == RIApplicationStatus.ConditionsActive)
+                    {
+                        <div class="alert alert-info small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            If this is the last open condition, the application will automatically transition to <strong>Approved</strong>.
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label class="form-label">Completion Notes</label>
+                        <textarea name="completionNotes" class="form-control" rows="3"
+                                  placeholder="Describe how this condition was satisfied..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>Close Condition</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Add Variation Modal ──────────────────────────────────────────── -->
+<div class="modal fade" id="addVariationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="AddVariation" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="applicationId" value="@Model.Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-random me-2 text-primary"></i>Add Variation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Variation Type <span class="text-danger">*</span></label>
+                            <select name="variationType" class="form-select" required>
+                                @foreach (RIVariationType vt in Enum.GetValues(typeof(RIVariationType)))
+                                {
+                                    <option value="@((int)vt)">@vt</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Submission Date</label>
+                            <input type="date" name="submissionDate" class="form-control" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description <span class="text-danger">*</span></label>
+                            <textarea name="variationDescription" class="form-control" rows="3" required maxlength="300"
+                                      placeholder="Describe the proposed variation..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Notes</label>
+                            <textarea name="notes" class="form-control" rows="2" maxlength="500"
+                                      placeholder="Additional context or regulatory strategy notes..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Add Variation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Edit Variation Modal ─────────────────────────────────────────── -->
+<div class="modal fade" id="editVariationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="UpdateVariation" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="editVariationId" />
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2 text-primary"></i>Edit Variation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Variation Type</label>
+                            <select name="variationType" id="editVarType" class="form-select">
+                                @foreach (RIVariationType vt in Enum.GetValues(typeof(RIVariationType)))
+                                {
+                                    <option value="@((int)vt)">@vt</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select name="status" id="editVarStatus" class="form-select">
+                                @foreach (RIApplicationStatus vs in Enum.GetValues(typeof(RIApplicationStatus)))
+                                {
+                                    <option value="@((int)vs)">@vs</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Submission Date</label>
+                            <input type="date" name="submissionDate" id="editVarSubmitted" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Approval Date</label>
+                            <input type="date" name="approvalDate" id="editVarApproved" class="form-control" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description <span class="text-danger">*</span></label>
+                            <textarea name="variationDescription" id="editVarDesc" class="form-control" rows="3" required maxlength="300"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Notes</label>
+                            <textarea name="notes" id="editVarNotes" class="form-control" rows="2" maxlength="500"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Add Milestone Modal ──────────────────────────────────────────── -->
+<div class="modal fade" id="addMilestoneModal" tabindex="-1" aria-labelledby="addMilestoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="AddMilestone" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="applicationId" value="@Model.Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMilestoneModalLabel"><i class="fas fa-plus-circle me-2 text-primary"></i>Add Milestone</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Milestone Name <span class="text-danger">*</span></label>
+                        <input type="text" name="milestoneName" class="form-control" required maxlength="200" placeholder="e.g. Day 45 Questions Issued" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Planned Date</label>
+                        <input type="date" name="plannedDate" class="form-control" />
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" name="isClockStop" value="true" class="form-check-input" id="addIsClockStop" />
+                        <input type="hidden" name="isClockStop" value="false" />
+                        <label class="form-check-label" for="addIsClockStop">
+                            <i class="fas fa-pause text-warning me-1"></i>Clock-Stop Milestone
+                        </label>
+                        <div class="form-text">Check if this milestone triggers a regulatory clock stop.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea name="notes" class="form-control" rows="2" maxlength="500"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Add Milestone</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Edit Milestone Modal ─────────────────────────────────────────── -->
+<div class="modal fade" id="editMilestoneModal" tabindex="-1" aria-labelledby="editMilestoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="UpdateMilestone" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="editMilestoneId" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editMilestoneModalLabel"><i class="fas fa-edit me-2 text-primary"></i>Edit Milestone</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Milestone Name <span class="text-danger">*</span></label>
+                            <input type="text" name="milestoneName" id="editMilestoneName" class="form-control" required maxlength="200" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Planned Date</label>
+                            <input type="date" name="plannedDate" id="editPlannedDate" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Actual Date</label>
+                            <input type="date" name="actualDate" id="editActualDate" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select name="status" id="editStatus" class="form-select">
+                                @foreach (RIMilestoneStatus s in Enum.GetValues(typeof(RIMilestoneStatus)))
+                                {
+                                    <option value="@((int)s)">@s</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mt-3">
+                                <input type="checkbox" name="isClockStop" value="true" class="form-check-input" id="editIsClockStop" />
+                                <input type="hidden" name="isClockStop" value="false" />
+                                <label class="form-check-label" for="editIsClockStop">
+                                    <i class="fas fa-pause text-warning me-1"></i>Clock-Stop Milestone
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Clock Restart Date</label>
+                            <input type="date" name="clockRestartDate" id="editClockRestartDate" class="form-control" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Notes</label>
+                            <textarea name="notes" id="editNotes" class="form-control" rows="2" maxlength="500"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── Apply Template Modal ─────────────────────────────────────────── -->
+<div class="modal fade" id="applyTemplateModal" tabindex="-1" aria-labelledby="applyTemplateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="ApplyMilestoneTemplate" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="applicationId" value="@Model.Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="applyTemplateModalLabel"><i class="fas fa-magic me-2 text-secondary"></i>Apply Standard Milestone Template</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This will create standard milestones for <strong>@Model.Jurisdiction?.Authority</strong> based on the review timeline for <strong>@Model.ApplicationType?.Name</strong>.</p>
+                    <div class="alert alert-info small">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Milestone dates are calculated from <strong>Day 0 (@(Model.Day0Date?.ToString("dd MMM yyyy") ?? Model.SubmissionDate?.ToString("dd MMM yyyy") ?? "Submission Date"))</strong>.
+                        You can edit individual milestone dates after applying the template.
+                    </div>
+                    <p class="text-muted small">This action is only available when no milestones exist.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-secondary"><i class="fas fa-magic me-1"></i>Apply Template</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Populate Edit Variation modal
+    document.querySelectorAll('.edit-variation-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.getElementById('editVariationId').value  = this.dataset.id;
+            document.getElementById('editVarDesc').value      = this.dataset.desc;
+            document.getElementById('editVarType').value      = this.dataset.type;
+            document.getElementById('editVarStatus').value    = this.dataset.status;
+            document.getElementById('editVarSubmitted').value = this.dataset.submitted;
+            document.getElementById('editVarApproved').value  = this.dataset.approved;
+            document.getElementById('editVarNotes').value     = this.dataset.notes;
+        });
+    });
+
+    // Populate Edit Condition modal
+    document.querySelectorAll('.edit-condition-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.getElementById('editConditionId').value     = this.dataset.id;
+            document.getElementById('editConditionDesc').value   = this.dataset.desc;
+            document.getElementById('editConditionType').value   = this.dataset.type;
+            document.getElementById('editConditionDue').value    = this.dataset.due;
+            document.getElementById('editConditionStatus').value = this.dataset.status;
+        });
+    });
+
+    // Populate Close Condition modal
+    document.querySelectorAll('.close-condition-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.getElementById('closeConditionId').value   = this.dataset.id;
+            document.getElementById('closeConditionDesc').textContent = this.dataset.desc;
+        });
+    });
+
+    // Populate Edit Milestone modal from data attributes
+    document.querySelectorAll('.edit-milestone-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.getElementById('editMilestoneId').value    = this.dataset.id;
+            document.getElementById('editMilestoneName').value  = this.dataset.name;
+            document.getElementById('editPlannedDate').value    = this.dataset.planned;
+            document.getElementById('editActualDate').value     = this.dataset.actual;
+            document.getElementById('editStatus').value         = this.dataset.status;
+            document.getElementById('editIsClockStop').checked  = this.dataset.clockstop === 'true';
+            document.getElementById('editClockRestartDate').value = this.dataset.clockrestart;
+            document.getElementById('editNotes').value          = this.dataset.notes;
+        });
+    });
+
+    // Auto-activate Milestones tab if URL hash matches
+    if (window.location.hash === '#dtabMilestones') {
+        var tab = document.querySelector('[data-bs-target="#dtabMilestones"]');
+        if (tab) bootstrap.Tab.getOrCreateInstance(tab).show();
+    }
+
+    @if (TempData["ActiveTab"] != null)
+    {
+        <text>
+        (function() {
+            var tabId = @Json.Serialize(TempData["ActiveTab"]!.ToString());
+            var el = document.querySelector('[data-bs-target="#' + tabId + '"]');
+            if (el) bootstrap.Tab.getOrCreateInstance(el).show();
+        })();
+        </text>
+    }
+</script>
+}

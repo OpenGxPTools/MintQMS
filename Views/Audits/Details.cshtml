@@ -1,0 +1,645 @@
+@model OpenQMS.Models.Audit
+
+@{
+    ViewData["Title"] = $"Audit — {Model.AuditId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var statusBadge = Model.Status switch
+    {
+        OpenQMS.Models.Audit.AuditStatus.Scheduled   => "bg-light text-dark border",
+        OpenQMS.Models.Audit.AuditStatus.InProgress  => "bg-info text-dark",
+        OpenQMS.Models.Audit.AuditStatus.ReportDraft => "bg-warning text-dark",
+        OpenQMS.Models.Audit.AuditStatus.UnderReview => "bg-warning text-dark",
+        OpenQMS.Models.Audit.AuditStatus.Approved    => "bg-primary",
+        OpenQMS.Models.Audit.AuditStatus.Closed      => "bg-success",
+        _                                             => "bg-secondary"
+    };
+    var statusLabel = EnumHelper.Display(Model.Status);
+    var isClosed = Model.Status == OpenQMS.Models.Audit.AuditStatus.Closed;
+    var canEdit  = Model.Status == OpenQMS.Models.Audit.AuditStatus.Scheduled
+                || Model.Status == OpenQMS.Models.Audit.AuditStatus.InProgress
+                || Model.Status == OpenQMS.Models.Audit.AuditStatus.ReportDraft;
+    var isQM     = User.IsInRole("Administrator") || User.IsInRole("QualityManager");
+    var isAuditor = isQM || User.IsInRole("Auditor");
+    var isOverdue = Model.Status == OpenQMS.Models.Audit.AuditStatus.Scheduled
+                 && Model.PlannedStartDate.HasValue
+                 && Model.PlannedStartDate.Value.Date < SiteTime.Today;
+    var attachCount = Model.Attachments?.Count ?? 0;
+    var auditCount  = Model.AuditLogs?.Count ?? 0;
+    var linkedCapas = Model.LinkedCapas?.Where(x => x.Capa != null).ToList();
+    var linkedCapa  = (linkedCapas?.Any() == true) ? null : ViewBag.LinkedCapa as OpenQMS.Models.Capa;
+}
+
+<!-- Header -->
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Audit &mdash; <span class="fw-bold">@Model.AuditId</span></h4>
+        <small class="text-muted">@Model.Title</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <span class="badge bg-secondary fs-6">@Model.Type</span>
+        <span class="badge @statusBadge fs-6">@statusLabel</span>
+    </div>
+</div>
+<hr />
+
+<!-- TempData alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Success"]</div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["WorkflowError"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Error"]</div>
+}
+
+<!-- Overdue banner -->
+@if (isOverdue)
+{
+    var daysOver = (SiteTime.Today - Model.PlannedStartDate!.Value.Date).Days;
+    <div class="alert alert-warning">&#9888; Audit was planned to start <strong>@Model.PlannedStartDate.Value.ToShortDateString()</strong> — overdue by <strong>@daysOver day(s)</strong>.</div>
+}
+
+<!-- Critical findings banner -->
+@if (Model.CriticalFindings > 0 && !isClosed)
+{
+    <div class="alert alert-danger">&#9888; This audit has <strong>@Model.CriticalFindings critical finding(s)</strong>. @(Model.CAPARequired ? "A CAPA is required." : "")</div>
+}
+
+<!-- Linked CAPA banner -->
+@if (linkedCapas?.Any() == true)
+{
+    <div class="alert alert-info">
+        Linked CAPA@(linkedCapas.Count > 1 ? "s" : ""):
+        @foreach (var lc in linkedCapas)
+        {
+            <a asp-controller="Capas" asp-action="Details" asp-route-id="@lc.CapaId" class="ms-1"><strong>@lc.Capa!.CapaId</strong></a><span class="ms-1">— @lc.Capa.Title (@lc.Capa.Status)</span>
+        }
+    </div>
+}
+else if (linkedCapa != null)
+{
+    <div class="alert alert-info">Linked CAPA: <a asp-controller="Capas" asp-action="Details" asp-route-id="@linkedCapa.Id"><strong>@linkedCapa.CapaId</strong></a> — @linkedCapa.Title (@EnumHelper.Display(linkedCapa.Status))</div>
+}
+
+<!-- Workflow action card — only show if there is at least one action available for this user -->
+@{
+    var hasWorkflowAction =
+        (Model.Status == OpenQMS.Models.Audit.AuditStatus.Scheduled && isAuditor) ||
+        (Model.Status == OpenQMS.Models.Audit.AuditStatus.InProgress && isAuditor) ||
+        (Model.Status == OpenQMS.Models.Audit.AuditStatus.ReportDraft && isAuditor) ||
+        (Model.Status == OpenQMS.Models.Audit.AuditStatus.UnderReview && isQM) ||
+        (Model.Status == OpenQMS.Models.Audit.AuditStatus.Approved && isQM);
+}
+@if (hasWorkflowAction)
+{
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-tasks me-2"></i>Workflow Actions</strong>
+            <span class="small">Current: @statusLabel</span>
+        </div>
+        <div class="card-body d-flex gap-2 flex-wrap">
+            @if (Model.Status == OpenQMS.Models.Audit.AuditStatus.Scheduled && isAuditor)
+            {
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#inProgressModal">Start Audit</button>
+            }
+            @if (Model.Status == OpenQMS.Models.Audit.AuditStatus.InProgress && isAuditor)
+            {
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportDraftModal">Submit Report Draft</button>
+            }
+            @if (Model.Status == OpenQMS.Models.Audit.AuditStatus.ReportDraft && isAuditor)
+            {
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#underReviewModal">Submit for Review</button>
+            }
+            @if (Model.Status == OpenQMS.Models.Audit.AuditStatus.UnderReview && isQM)
+            {
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approvedModal">Approve</button>
+                <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#returnForRevisionModal">Return for Revision</button>
+            }
+            @if (Model.Status == OpenQMS.Models.Audit.AuditStatus.Approved && isQM)
+            {
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#closedModal">Close</button>
+                <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#returnToReviewModal">Return to Review</button>
+                @if (linkedCapas?.Any() != true && !Model.LinkedCapaId.HasValue)
+                {
+                    <form asp-action="CreateCapa" asp-route-id="@Model.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-danger">Create Linked CAPA</button>
+                    </form>
+                }
+            }
+        </div>
+    </div>
+}
+
+@if (isClosed && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="card mb-3 border-danger">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+        </div>
+        <div class="card-body py-2">
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
+                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="detailTabs">
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">Overview</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabFindings">Findings</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAttachments">Attachments <span class="badge bg-secondary">@attachCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAuditLog">Audit Log <span class="badge bg-secondary">@auditCount</span></button></li>
+</ul>
+
+<div class="tab-content">
+
+<!-- OVERVIEW TAB -->
+<div class="tab-pane fade show active" id="tabOverview">
+
+    <h6 class="text-muted text-uppercase small mb-2">Audit Details</h6>
+    <dl class="row mb-4">
+        <dt class="col-sm-3">Audit ID</dt>
+        <dd class="col-sm-9"><strong>@Model.AuditId</strong></dd>
+        <dt class="col-sm-3">Title</dt>
+        <dd class="col-sm-9">@Model.Title</dd>
+        <dt class="col-sm-3">Type</dt>
+        <dd class="col-sm-9">@Model.Type</dd>
+        <dt class="col-sm-3">Scope</dt>
+        <dd class="col-sm-9">@Model.Scope</dd>
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+        <dt class="col-sm-3">Audit Location</dt>
+        <dd class="col-sm-9">@(Model.AuditLocation ?? "-")</dd>
+        <dt class="col-sm-3">Lead Auditor</dt>
+        <dd class="col-sm-9">@(Model.LeadAuditor ?? "-")</dd>
+        <dt class="col-sm-3">Audit Team</dt>
+        <dd class="col-sm-9">@(Model.AuditTeam ?? "-")</dd>
+        <dt class="col-sm-3">Auditee</dt>
+        <dd class="col-sm-9">@(Model.Auditee ?? "-")</dd>
+        <dt class="col-sm-3">Auditee Contact</dt>
+        <dd class="col-sm-9">@(Model.AuditeeContact ?? "-")</dd>
+        @{
+            var detProducts  = Model.LinkedProducts?.Any()  == true ? Model.LinkedProducts.Select(x => x.Product).Where(p => p != null).ToList()  : (Model.Product  != null ? new List<OpenQMS.Models.Product?> { Model.Product }   : new List<OpenQMS.Models.Product?>());
+            var detProcesses = Model.LinkedProcesses?.Any() == true ? Model.LinkedProcesses.Select(x => x.Process).Where(p => p != null).ToList() : (Model.Process != null ? new List<OpenQMS.Models.Process?> { Model.Process }  : new List<OpenQMS.Models.Process?>());
+            var detAssets    = Model.LinkedAssets?.Any()    == true ? Model.LinkedAssets.Select(x => x.Asset).Where(a => a != null).ToList()      : (Model.Asset    != null ? new List<OpenQMS.Models.Asset?> { Model.Asset }      : new List<OpenQMS.Models.Asset?>());
+            var detMaterials = Model.LinkedMaterials?.Any() == true ? Model.LinkedMaterials.Select(x => x.Material).Where(m => m != null).ToList(): (Model.Material != null ? new List<OpenQMS.Models.Material?> { Model.Material }: new List<OpenQMS.Models.Material?>());
+            var detSuppliers = Model.LinkedSuppliers?.Any() == true ? Model.LinkedSuppliers.Select(x => x.Supplier).Where(s => s != null).ToList(): (Model.Supplier != null ? new List<OpenQMS.Models.Supplier?> { Model.Supplier }: new List<OpenQMS.Models.Supplier?>());
+        }
+        @if (detProducts.Any())
+        {
+            <dt class="col-sm-3">Products</dt>
+            <dd class="col-sm-9">@foreach (var p in detProducts) { <a class="d-block" asp-controller="Products" asp-action="Details" asp-route-id="@p!.Id">@p.Name</a> }</dd>
+        }
+        @if (detProcesses.Any())
+        {
+            <dt class="col-sm-3">Processes</dt>
+            <dd class="col-sm-9">@foreach (var p in detProcesses) { <a class="d-block" asp-controller="Processes" asp-action="Details" asp-route-id="@p!.Id">@p.Name</a> }</dd>
+        }
+        @if (detAssets.Any())
+        {
+            <dt class="col-sm-3">Assets</dt>
+            <dd class="col-sm-9">@foreach (var a in detAssets) { <a class="d-block" asp-controller="Assets" asp-action="Details" asp-route-id="@a!.Id">@a.Name</a> }</dd>
+        }
+        @if (detMaterials.Any())
+        {
+            <dt class="col-sm-3">Materials</dt>
+            <dd class="col-sm-9">@foreach (var m in detMaterials) { <a class="d-block" asp-controller="Materials" asp-action="Details" asp-route-id="@m!.Id">@m.Name</a> }</dd>
+        }
+        @if (detSuppliers.Any())
+        {
+            <dt class="col-sm-3">Suppliers</dt>
+            <dd class="col-sm-9">@foreach (var s in detSuppliers) { <a class="d-block" asp-controller="Suppliers" asp-action="Details" asp-route-id="@s!.Id">@s.LegalName</a> }</dd>
+        }
+    </dl>
+
+    <hr />
+
+    <h6 class="text-muted text-uppercase small mb-2">Schedule</h6>
+    <dl class="row mb-4">
+        <dt class="col-sm-3">Planned Start</dt>
+        <dd class="col-sm-9">@(Model.PlannedStartDate?.ToShortDateString() ?? "-")</dd>
+        <dt class="col-sm-3">Planned End</dt>
+        <dd class="col-sm-9">@(Model.PlannedEndDate?.ToShortDateString() ?? "-")</dd>
+        <dt class="col-sm-3">Actual Start</dt>
+        <dd class="col-sm-9">@(Model.ActualStartDate?.ToShortDateString() ?? "-")</dd>
+        <dt class="col-sm-3">Actual End</dt>
+        <dd class="col-sm-9">@(Model.ActualEndDate?.ToShortDateString() ?? "-")</dd>
+        <dt class="col-sm-3">Scheduled By</dt>
+        <dd class="col-sm-9">@Model.ScheduledBy on @Model.ScheduledOn.ToShortDateString()</dd>
+        <dt class="col-sm-3">Conducted By</dt>
+        <dd class="col-sm-9">@(Model.ConductedBy ?? "-") @(Model.ConductedOn.HasValue ? $"on {Model.ConductedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
+    </dl>
+
+    <hr />
+
+    <h6 class="text-muted text-uppercase small mb-2">Corrective Action &amp; Follow-Up</h6>
+    <dl class="row mb-4">
+        <dt class="col-sm-3">CAPA Required</dt>
+        <dd class="col-sm-9">
+            @if (Model.CAPARequired)
+            {
+                <span class="badge bg-danger">Yes</span>
+                @if (linkedCapas?.Any() == true)
+                {
+                    foreach (var lc in linkedCapas)
+                    {
+                        <a class="ms-2 d-block" asp-controller="Capas" asp-action="Details" asp-route-id="@lc.CapaId">@lc.Capa!.CapaId — @lc.Capa.Title</a>
+                    }
+                }
+                else if (Model.LinkedCapaId.HasValue)
+                {
+                    <span class="ms-2 text-muted small">Linked CAPA ID: @Model.LinkedCapaId</span>
+                }
+            }
+            else { <span class="badge bg-secondary">No</span> }
+        </dd>
+        <dt class="col-sm-3">Corrective Action</dt>
+        <dd class="col-sm-9">@(Model.CorrectiveAction ?? "-")</dd>
+        <dt class="col-sm-3">Follow-Up Date</dt>
+        <dd class="col-sm-9">@(Model.FollowUpDate?.ToShortDateString() ?? "-")</dd>
+        <dt class="col-sm-3">Follow-Up Completed</dt>
+        <dd class="col-sm-9">@(Model.FollowUpCompleted ? "Yes" : "No")</dd>
+        <dt class="col-sm-3">Recommendations</dt>
+        <dd class="col-sm-9">@(Model.Recommendations ?? "-")</dd>
+        <dt class="col-sm-3">Management Response</dt>
+        <dd class="col-sm-9">@(Model.ManagementResponse ?? "-")</dd>
+    </dl>
+
+    <hr />
+
+    <div class="mt-3 d-flex gap-2">
+        <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
+        <a asp-action="ExportAuditDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+    </div>
+
+    <h6 class="text-muted text-uppercase small mb-2 mt-4">Workflow Trail</h6>
+    <dl class="row">
+        <dt class="col-sm-3">Reviewed By</dt>
+        <dd class="col-sm-9">@(Model.ReviewedBy ?? "-") @(Model.ReviewedOn.HasValue ? $"on {Model.ReviewedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
+        <dt class="col-sm-3">Approved By</dt>
+        <dd class="col-sm-9">@(Model.ApprovedBy ?? "-") @(Model.ApprovedOn.HasValue ? $"on {Model.ApprovedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
+        <dt class="col-sm-3">Closed By</dt>
+        <dd class="col-sm-9">@(Model.ClosedBy ?? "-") @(Model.ClosedOn.HasValue ? $"on {Model.ClosedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
+    </dl>
+
+</div>
+
+<!-- FINDINGS TAB -->
+<div class="tab-pane fade" id="tabFindings">
+
+    <!-- Findings counts -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-md-3">
+            <div class="card text-center @(Model.CriticalFindings > 0 ? "border-danger" : "")">
+                <div class="card-body">
+                    <div class="display-6 fw-bold @(Model.CriticalFindings > 0 ? "text-danger" : "text-secondary")">@Model.CriticalFindings</div>
+                    <div class="text-muted small">Critical Findings</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card text-center @(Model.MajorFindings > 0 ? "border-warning" : "")">
+                <div class="card-body">
+                    <div class="display-6 fw-bold @(Model.MajorFindings > 0 ? "text-warning" : "text-secondary")">@Model.MajorFindings</div>
+                    <div class="text-muted small">Major Findings</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-6 fw-bold text-info">@Model.MinorFindings</div>
+                    <div class="text-muted small">Minor Findings</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-6 fw-bold text-secondary">@Model.Observations</div>
+                    <div class="text-muted small">Observations</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Overall Rating</dt>
+        <dd class="col-sm-9">
+            @if (Model.OverallRating.HasValue)
+            {
+                var rBadge = Model.OverallRating switch
+                {
+                    OpenQMS.Models.Audit.AuditRating.Satisfactory     => "bg-success",
+                    OpenQMS.Models.Audit.AuditRating.Acceptable       => "bg-info text-dark",
+                    OpenQMS.Models.Audit.AuditRating.NeedsImprovement => "bg-warning text-dark",
+                    OpenQMS.Models.Audit.AuditRating.Unsatisfactory   => "bg-danger",
+                    OpenQMS.Models.Audit.AuditRating.Critical         => "bg-dark",
+                    _                                                  => "bg-secondary"
+                };
+                <span class="badge @rBadge fs-6">@Html.DisplayFor(m => m.OverallRating)</span>
+            }
+            else { <span class="text-muted">Not rated yet</span> }
+        </dd>
+        <dt class="col-sm-3">Findings Summary</dt>
+        <dd class="col-sm-9">@(Model.FindingsSummary ?? "-")</dd>
+        <dt class="col-sm-3">Audit Plan</dt>
+        <dd class="col-sm-9">@(Model.AuditPlan ?? "-")</dd>
+        <dt class="col-sm-3">Audit Report</dt>
+        <dd class="col-sm-9">@(Model.AuditReport ?? "-")</dd>
+    </dl>
+
+</div>
+
+<!-- ATTACHMENTS TAB -->
+<div class="tab-pane fade" id="tabAttachments">
+    @if (!isClosed)
+    {
+        <div class="card mb-3">
+            <div class="card-header">Upload Attachment</div>
+            <div class="card-body">
+                <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="auditId" value="@Model.Id" />
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-5">
+                            <label class="form-label">File</label>
+                            <input type="file" name="file" class="form-control" required />
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Description</label>
+                            <input type="text" name="description" class="form-control" placeholder="Optional description" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+
+    @if (Model.Attachments != null && Model.Attachments.Any())
+    {
+        <table class="table table-sm">
+            <thead><tr><th>File</th><th>Description</th><th>Uploaded By</th><th>Date</th><th>Size</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var att in Model.Attachments.OrderByDescending(a => a.UploadedDate))
+                {
+                    <tr>
+                        <td>@att.FileName</td>
+                        <td>@(att.Description ?? "-")</td>
+                        <td>@att.UploadedBy</td>
+                        <td>@att.UploadedDate.ToSite().ToShortDateString()</td>
+                        <td>@(att.FileSize / 1024) KB</td>
+                        <td class="text-end">
+                            <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                            @if (!isClosed)
+                            {
+                                <form asp-action="DeleteAttachment" method="post" class="d-inline" data-delete-reason="attachment">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@att.Id" />
+                                    <input type="hidden" name="auditId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else { <p class="text-muted">No attachments.</p> }
+    <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
+</div>
+
+<!-- AUDIT LOG TAB -->
+<div class="tab-pane fade" id="tabAuditLog">
+    @await Html.PartialAsync("_AuditLogTable", (Model.AuditLogs ?? Enumerable.Empty<OpenQMS.Models.AuditAuditLog>())
+        .Select(l => new OpenQMS.ViewModels.AuditLogRow(l.PerformedOn, l.PerformedBy, l.Action, l.FromStatus, l.ToStatus, l.Notes)))
+</div>
+
+</div><!-- end tab-content -->
+
+<div class="mt-3 d-flex gap-3">
+    @if (canEdit)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+</div>
+
+<!-- Workflow Modals -->
+@if (Model.Status == OpenQMS.Models.Audit.AuditStatus.Scheduled)
+{
+    <div class="modal fade" id="inProgressModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Start Audit</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="InProgress" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info">Confirm Start</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Audit.AuditStatus.InProgress)
+{
+    <div class="modal fade" id="reportDraftModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Submit Report Draft</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="ReportDraft" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Submit Draft</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Audit.AuditStatus.ReportDraft)
+{
+    <div class="modal fade" id="underReviewModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Submit for Review</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="UnderReview" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit for Review</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Audit.AuditStatus.UnderReview)
+{
+    <div class="modal fade" id="approvedModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Approve Audit Report</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="Approved" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Approve</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Audit.AuditStatus.Approved)
+{
+    <div class="modal fade" id="closedModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Close Audit</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="Closed" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Close Audit</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Audit.AuditStatus.UnderReview)
+{
+    <div class="modal fade" id="returnForRevisionModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Return for Revision</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="ReturnForRevision" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="alert alert-warning mb-3">The audit will be returned to <strong>Report Draft</strong> so the auditor can revise and resubmit.</div>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">Reason for Return <span class="text-danger">*</span></label><textarea name="returnReason" class="form-control" rows="3" required placeholder="Describe what needs to be corrected or completed"></textarea></div>
+                    <div class="mb-3"><label class="form-label">Additional Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Return for Revision</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Audit.AuditStatus.Approved)
+{
+    <div class="modal fade" id="returnToReviewModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Return to Review</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="ReturnToReview" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="alert alert-warning mb-3">The approval will be revoked. The audit will return to <strong>Under Review</strong> status.</div>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">Reason for Return <span class="text-danger">*</span></label><textarea name="returnReason" class="form-control" rows="3" required placeholder="Describe why the approval is being revoked"></textarea></div>
+                    <div class="mb-3"><label class="form-label">Additional Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Return to Review</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (isClosed && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="modal fade" id="adminReopenModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong>Warning:</strong> Administratively reopening a completed record reverts it to the Approved stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@section Scripts {
+<script>
+$(document).ready(function () {
+    @if (TempData["ActiveTab"] != null)
+    {
+        <text>
+        var tab = '@TempData["ActiveTab"]';
+        var tabMap = { 'findings': '#tabFindings', 'attachments': '#tabAttachments', 'auditlog': '#tabAuditLog' };
+        if (tabMap[tab]) {
+            var el = document.querySelector('[data-bs-target="' + tabMap[tab] + '"]');
+            if (el) new bootstrap.Tab(el).show();
+        }
+        </text>
+    }
+});
+</script>
+}

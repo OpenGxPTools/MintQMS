@@ -1,0 +1,833 @@
+@model OpenQMS.Models.Complaint
+@using OpenQMS.Authorization
+
+@{
+    ViewData["Title"] = $"Complaint — {Model.ComplaintId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var isLocked     = Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Closed;
+    var isEditLocked = isLocked
+        || Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance
+        || Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Resolution;
+    var attachCount  = Model.Attachments?.Count ?? 0;
+    var auditCount   = Model.AuditLogs?.Count ?? 0;
+    var linkedAEs    = ViewData["LinkedAEs"] as List<OpenQMS.Models.AdverseEvent> ?? new List<OpenQMS.Models.AdverseEvent>();
+
+    var statusBadge = Model.Status switch
+    {
+        OpenQMS.Models.Complaint.ComplaintStatus.Received          => "bg-light text-dark border",
+        OpenQMS.Models.Complaint.ComplaintStatus.Evaluation        => "bg-info text-dark",
+        OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance => "bg-primary text-white",
+        OpenQMS.Models.Complaint.ComplaintStatus.Accepted          => "bg-warning text-dark",
+        OpenQMS.Models.Complaint.ComplaintStatus.Resolution        => "bg-warning text-dark",
+        OpenQMS.Models.Complaint.ComplaintStatus.Closed            => "bg-success",
+        _ => "bg-secondary"
+    };
+    var statusLabel = EnumHelper.Display(Model.Status);
+
+    bool isQM = User.IsInRole("Administrator") || User.IsInRole("QualityManager") || User.IsInRole("AuthorisedPerson");
+    bool isQU = isQM || User.IsInRole("QualityUser");
+    bool canSubmitResolution = isQU
+        && Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Accepted;
+    bool canReturn = isQM
+        && (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Evaluation
+            || Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance
+            || Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Accepted
+            || Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Resolution);
+    var severityBadge = Model.Severity switch
+    {
+        OpenQMS.Models.Complaint.ComplaintSeverity.Critical => "bg-danger",
+        OpenQMS.Models.Complaint.ComplaintSeverity.Major    => "bg-warning text-dark",
+        _ => "bg-light text-dark border"
+    };
+
+    var ageDays           = (SiteTime.Today - Model.ReceivedOn.Date).Days;
+    var isAged            = !isLocked && ageDays > 30;
+    var isOverdue         = !isLocked && Model.TargetResolutionDate.HasValue && SiteTime.Today > Model.TargetResolutionDate.Value.Date;
+    var daysUntilDeadline = Model.TargetResolutionDate.HasValue ? (Model.TargetResolutionDate.Value.Date - SiteTime.Today).Days : (int?)null;
+}
+
+<!-- Header -->
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Complaint &mdash; <span class="fw-bold">@Model.ComplaintId</span></h4>
+        <small class="text-muted">@Model.Title</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <span class="badge @severityBadge fs-6">@Model.Severity</span>
+        <span class="badge @statusBadge fs-6">@statusLabel</span>
+    </div>
+</div>
+<hr />
+
+<!-- TempData alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["WorkflowError"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["Error"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (isOverdue)
+{
+    <div class="alert alert-danger">
+        <i class="bi bi-alarm-fill me-1"></i>
+        <strong>Overdue:</strong> Target resolution date was @Model.TargetResolutionDate!.Value.ToShortDateString()
+        (@Math.Abs(daysUntilDeadline!.Value) day(s) past deadline).
+    </div>
+}
+else if (Model.Severity == OpenQMS.Models.Complaint.ComplaintSeverity.Critical && !isLocked)
+{
+    <div class="alert alert-danger">
+        <strong>Critical Complaint</strong> — requires priority handling.
+        @if (daysUntilDeadline.HasValue)
+        {
+            <span>Target resolution: @Model.TargetResolutionDate!.Value.ToShortDateString() (@daysUntilDeadline day(s) remaining).</span>
+        }
+    </div>
+}
+else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <= 5)
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+        <strong>Deadline approaching:</strong> Target resolution date is @Model.TargetResolutionDate.Value.ToShortDateString() (@daysUntilDeadline day(s) remaining).
+    </div>
+}
+
+@if (isAged)
+{
+    <div class="alert alert-warning">
+        <strong>Aged Complaint:</strong> Received @ageDays days ago and not yet closed.
+    </div>
+}
+
+
+<!-- Workflow action panel -->
+@if (!isLocked)
+{
+    <div class="card mb-3">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-tasks me-2"></i>Workflow Actions</strong>
+            <span class="small">Current: @statusLabel</span>
+        </div>
+        <div class="card-body py-2 d-flex flex-wrap gap-2">
+            @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Received && isQU)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#evaluationModal">
+                    <i class="fas fa-arrow-right me-1"></i>Submit for Evaluation
+                </button>
+            }
+            @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Evaluation && isQU)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#pendingAcceptanceModal">
+                    <i class="fas fa-paper-plane me-1"></i>Submit for Acceptance
+                </button>
+            }
+            @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance && isQM)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#acceptModal">
+                    <i class="fas fa-check-circle me-1"></i>Accept Complaint
+                </button>
+            }
+            @if (canSubmitResolution)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitResolutionModal">
+                    <i class="fas fa-arrow-right me-1"></i>Submit for Closure
+                </button>
+            }
+            @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Resolution && isQM)
+            {
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#closedModal">
+                    <i class="fas fa-lock me-1"></i>Close Complaint
+                </button>
+            }
+            @if (canReturn)
+            {
+                <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#returnModal">
+                    <i class="fas fa-undo me-1"></i>Return for Rework
+                </button>
+            }
+        </div>
+    </div>
+}
+
+@if (isLocked && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="card mb-3 border-danger">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+        </div>
+        <div class="card-body py-2">
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
+                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="cmpTabs">
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#overview">Overview</button></li>
+    <li class="nav-item">
+        <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#pv">
+            Pharmacovigilance <span class="badge bg-secondary">@linkedAEs.Count</span>
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#attachments">
+            Attachments <span class="badge bg-secondary">@attachCount</span>
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#auditlog">
+            Audit Log <span class="badge bg-secondary">@auditCount</span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <!-- Overview Tab -->
+    <div class="tab-pane fade show active" id="overview">
+        <div class="row">
+            <!-- Left column: record details -->
+            <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small mb-2">Complaint Details</h6>
+                <dl class="row">
+                    <dt class="col-sm-4">Complaint ID</dt><dd class="col-sm-8">@Model.ComplaintId</dd>
+                    <dt class="col-sm-4">Title</dt><dd class="col-sm-8">@Model.Title</dd>
+                    <dt class="col-sm-4">Severity</dt>
+                    <dd class="col-sm-8"><span class="badge @severityBadge">@Model.Severity</span></dd>
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8"><span class="badge @statusBadge">@statusLabel</span></dd>
+                    <dt class="col-sm-4">Received On</dt>
+                    <dd class="col-sm-8">@Model.ReceivedOn.ToSite().ToShortDateString() <span class="text-muted small">(@ageDays days ago)</span></dd>
+                    @if (Model.TargetResolutionDate.HasValue)
+                    {
+                        <dt class="col-sm-4">Target Resolution</dt>
+                        <dd class="col-sm-8">
+                            @Model.TargetResolutionDate.Value.ToShortDateString()
+                            @if (isOverdue)
+                            {
+                                <span class="badge bg-danger ms-1">Overdue</span>
+                            }
+                            else if (!isLocked && daysUntilDeadline <= 5)
+                            {
+                                <span class="badge bg-warning text-dark ms-1">Due soon</span>
+                            }
+                        </dd>
+                    }
+                </dl>
+
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">Customer</h6>
+                <dl class="row">
+                    <dt class="col-sm-4">Customer</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Customer != null)
+                        { <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.CustomerId">@Model.Customer.LegalName</a> }
+                        else if (!string.IsNullOrEmpty(Model.CustomerName))
+                        { <span>@Model.CustomerName <span class="badge bg-secondary ms-1 small">Not in system</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Contact</dt><dd class="col-sm-8">@(Model.CustomerContact ?? "-")</dd>
+                    <dt class="col-sm-4">Reference</dt><dd class="col-sm-8">@(Model.CustomerReference ?? "-")</dd>
+                </dl>
+
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">Linked Records</h6>
+                <dl class="row">
+                    <dt class="col-sm-4">Products</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            var detProducts = Model.LinkedProducts?.Any() == true
+                                ? Model.LinkedProducts.Select(x => x.Product).Where(p => p != null).ToList()
+                                : (Model.Product != null ? new List<OpenQMS.Models.Product?> { Model.Product } : new List<OpenQMS.Models.Product?>());
+                        }
+                        @if (detProducts.Any())
+                        { @foreach (var p in detProducts) { <a class="d-block" asp-controller="Products" asp-action="Details" asp-route-id="@p!.Id">@p.Name</a> } }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Processes</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            var detProcesses = Model.LinkedProcesses?.Any() == true
+                                ? Model.LinkedProcesses.Select(x => x.Process).Where(p => p != null).ToList()
+                                : (Model.Process != null ? new List<OpenQMS.Models.Process?> { Model.Process } : new List<OpenQMS.Models.Process?>());
+                        }
+                        @if (detProcesses.Any())
+                        { @foreach (var p in detProcesses) { <a class="d-block" asp-controller="Processes" asp-action="Details" asp-route-id="@p!.Id">@p.Name</a> } }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Materials</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            var detMaterials = Model.LinkedMaterials?.Any() == true
+                                ? Model.LinkedMaterials.Select(x => x.Material).Where(m => m != null).ToList()
+                                : (Model.Material != null ? new List<OpenQMS.Models.Material?> { Model.Material } : new List<OpenQMS.Models.Material?>());
+                        }
+                        @if (detMaterials.Any())
+                        { @foreach (var m in detMaterials) { <a class="d-block" asp-controller="Materials" asp-action="Details" asp-route-id="@m!.Id">@m.Name</a> } }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    <dt class="col-sm-4">Suppliers</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            var detSuppliers = Model.LinkedSuppliers?.Any() == true
+                                ? Model.LinkedSuppliers.Select(x => x.Supplier).Where(s => s != null).ToList()
+                                : (Model.Supplier != null ? new List<OpenQMS.Models.Supplier?> { Model.Supplier } : new List<OpenQMS.Models.Supplier?>());
+                        }
+                        @if (detSuppliers.Any())
+                        { @foreach (var s in detSuppliers) { <a class="d-block" asp-controller="Suppliers" asp-action="Details" asp-route-id="@s!.Id">@s.LegalName</a> } }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                    @{
+                        var linkedCapas = Model.LinkedCapas?.Where(x => x.Capa != null).ToList();
+                    }
+                    @if (linkedCapas?.Any() == true)
+                    {
+                        <dt class="col-sm-4">CAPAs</dt>
+                        <dd class="col-sm-8">
+                            @foreach (var lc in linkedCapas)
+                            {
+                                <a class="d-block" href="/Capas/Details/@lc.CapaId">@lc.Capa!.CapaId — @lc.Capa.Title</a>
+                            }
+                        </dd>
+                    }
+                    else if (ViewBag.LinkedCapa != null)
+                    {
+                        var lc = (OpenQMS.Models.Capa)ViewBag.LinkedCapa;
+                        <dt class="col-sm-4">CAPA</dt>
+                        <dd class="col-sm-8"><a href="/Capas/Details/@lc.Id">@lc.CapaId — @lc.Title</a></dd>
+                    }
+                </dl>
+
+                <div class="mt-3 d-flex gap-2">
+                    <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
+                    <a asp-action="ExportComplaintDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+                </div>
+            </div>
+
+            <!-- Right column: content + workflow trail -->
+            <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small mb-2">Description</h6>
+                <div class="p-3 bg-light rounded mb-3">@(Model.Description ?? "-")</div>
+
+                @if (!string.IsNullOrEmpty(Model.Evaluation) || Model.Status > OpenQMS.Models.Complaint.ComplaintStatus.Received)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Evaluation</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.Evaluation ?? "-")</div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Investigation) || Model.Status > OpenQMS.Models.Complaint.ComplaintStatus.Evaluation)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Investigation</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.Investigation ?? "-")</div>
+                }
+
+                @if (Model.RootCauseCategory.HasValue || Model.Status > OpenQMS.Models.Complaint.ComplaintStatus.Evaluation)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Root Cause Category</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.RootCauseCategory?.ToString() ?? "-")</div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.CorrectiveAction) || Model.Status > OpenQMS.Models.Complaint.ComplaintStatus.Evaluation)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Corrective and Preventive Action</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.CorrectiveAction ?? "-")</div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Resolution) || Model.Status >= OpenQMS.Models.Complaint.ComplaintStatus.Resolution)
+                {
+                    <h6 class="text-muted text-uppercase small mb-2">Resolution</h6>
+                    <div class="p-3 bg-light rounded mb-3">@(Model.Resolution ?? "-")</div>
+                }
+
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">Workflow Trail</h6>
+                <dl class="row">
+                    <dt class="col-sm-5">Received By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.ReceivedBy))
+                        { <span>@Model.ReceivedBy <span class="text-muted small">@Model.ReceivedOn.ToSite().ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Evaluation Started By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.InvestigatedBy))
+                        { <span>@Model.InvestigatedBy <span class="text-muted small">@Model.InvestigatedOn.ToSite()?.ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Submitted for Acceptance By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.ActionBy))
+                        { <span>@Model.ActionBy <span class="text-muted small">@Model.ActionOn.ToSite()?.ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Accepted By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.AcceptedBy))
+                        { <span>@Model.AcceptedBy <span class="text-muted small">@Model.AcceptedOn.ToSite()?.ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Submitted for Closure By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.ResolvedBy))
+                        { <span>@Model.ResolvedBy <span class="text-muted small">@Model.ResolvedOn.ToSite()?.ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+
+                    <dt class="col-sm-5">Closed By</dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.ClosedBy))
+                        { <span>@Model.ClosedBy <span class="text-muted small">@Model.ClosedOn.ToSite()?.ToShortDateString()</span></span> }
+                        else { <span class="text-muted">-</span> }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pharmacovigilance Tab -->
+    <div class="tab-pane fade" id="pv">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="text-muted text-uppercase small mb-0">Linked Adverse Event</h6>
+            @if (!isLocked && !linkedAEs.Any())
+            {
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#linkAEModal">
+                        <i class="fas fa-link me-1"></i>Link existing AE
+                    </button>
+                    <a asp-controller="Pharmacovigilance" asp-action="Create" asp-route-complaintId="@Model.Id"
+                       class="btn btn-sm btn-outline-danger"><i class="fas fa-exclamation-triangle me-1"></i>Raise Adverse Event</a>
+                </div>
+            }
+        </div>
+        @if (linkedAEs.Count > 1)
+        {
+            <div class="alert alert-warning small py-2"><i class="fas fa-exclamation-triangle me-1"></i>This complaint has multiple linked adverse events from before one-to-one linking was enforced. Unlink extras to keep a single association.</div>
+        }
+        @if (linkedAEs.Any())
+        {
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr><th>AE Number</th><th>Status</th><th>Serious</th><th>Report Date</th><th>Linked CAPA</th><th class="text-end"></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var ae in linkedAEs)
+                    {
+                        <tr>
+                            <td><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@ae.Id">@ae.AENumber</a></td>
+                            <td><span class="badge bg-secondary">@EnumHelper.Display(ae.Status)</span></td>
+                            <td>@Html.Raw(ae.IsSerious ? "<span class=\"badge bg-danger\">Serious</span>" : "-")</td>
+                            <td>@(SiteTime.ToSite((DateTime)ae.ReportDate).ToString("dd MMM yyyy"))</td>
+                            <td>
+                                @if (ae.LinkedCapa != null)
+                                {
+                                    <a asp-controller="Capas" asp-action="Details" asp-route-id="@ae.LinkedCapa.Id"
+                                       class="badge bg-warning text-dark text-decoration-none">@ae.LinkedCapa.CapaId</a>
+                                }
+                                else { <span class="text-muted">—</span> }
+                            </td>
+                            <td class="text-end">
+                                @if (!isLocked)
+                                {
+                                    <form asp-action="UnlinkAdverseEvent" method="post" class="d-inline"
+                                          onsubmit="return confirm('Unlink adverse event @ae.AENumber from this complaint?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="complaintId" value="@Model.Id" />
+                                        <input type="hidden" name="adverseEventId" value="@ae.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-unlink me-1"></i>Unlink
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">No adverse events linked to this complaint.</p>
+        }
+    </div>
+
+    <!-- Attachments Tab -->
+    <div class="tab-pane fade" id="attachments">
+        @if (!isLocked)
+        {
+            <div class="card mb-3">
+                <div class="card-header">Upload Attachment</div>
+                <div class="card-body">
+                    <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data" class="row g-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="complaintId" value="@Model.Id" />
+                        <div class="col-md-5">
+                            <input type="file" class="form-control" name="file" required accept="@UploadRules.Accept" />
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="description" placeholder="Description (optional)" />
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+        else { <div class="alert alert-secondary">Record is closed — no new attachments can be added.</div> }
+
+        @if (Model.Attachments != null && Model.Attachments.Any())
+        {
+            <table class="table table-hover">
+                <thead><tr><th>File Name</th><th>Description</th><th>Size</th><th>Uploaded By</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody>
+                    @foreach (var att in Model.Attachments.OrderByDescending(a => a.UploadedDate))
+                    {
+                        <tr>
+                            <td>@att.FileName</td>
+                            <td>@(att.Description ?? "-")</td>
+                            <td>@((att.FileSize / 1024.0).ToString("N1")) KB</td>
+                            <td>@att.UploadedBy</td>
+                            <td>@att.UploadedDate.ToSite().ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>
+                                <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                                @if (!isLocked)
+                                {
+                                    <form asp-action="DeleteAttachment" method="post" class="d-inline" data-delete-reason="attachment">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@att.Id" />
+                                        <input type="hidden" name="complaintId" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else { <p class="text-muted">No attachments yet.</p> }
+        <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
+    </div>
+
+    <!-- Audit Log Tab -->
+    <div class="tab-pane fade" id="auditlog">
+        @await Html.PartialAsync("_AuditLogTable", (Model.AuditLogs ?? Enumerable.Empty<OpenQMS.Models.ComplaintAuditLog>())
+            .Select(l => new OpenQMS.ViewModels.AuditLogRow(l.PerformedOn, l.PerformedBy, l.Action, l.FromStatus, l.ToStatus, l.Notes)))
+    </div>
+
+</div>
+
+<div class="mt-3 d-flex gap-3">
+    @if (!isEditLocked && isQU && !User.IsInRole(OpenQMS.Authorization.Constants.ReadOnlyRole))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+    }
+    @if (User.IsInRole("Administrator")
+         && Model.Status != OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance
+         && Model.Status != OpenQMS.Models.Complaint.ComplaintStatus.Accepted
+         && Model.Status != OpenQMS.Models.Complaint.ComplaintStatus.Resolution
+         && Model.Status != OpenQMS.Models.Complaint.ComplaintStatus.Closed)
+    {
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Delete</a>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+</div>
+
+<!-- ── Workflow Modals ──────────────────────────────────────────────────── -->
+
+<!-- Send for Evaluation: Received → Evaluation -->
+<div class="modal fade" id="evaluationModal" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content">
+        <form asp-action="Evaluation" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="modal-header bg-info text-dark">
+                <h5 class="modal-title">Send for Evaluation — @Model.ComplaintId</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small">
+                    Moves the complaint to <strong>Evaluation</strong> status. The Evaluation, Investigation,
+                    Root Cause Category, and Corrective and Preventive Action fields will become available for editing.
+                    Enter your credentials to confirm.
+                </p>
+                <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-info text-dark">Confirm</button>
+            </div>
+        </form>
+    </div></div>
+</div>
+
+<!-- Submit for Acceptance: Evaluation → PendingAcceptance -->
+<div class="modal fade" id="pendingAcceptanceModal" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content">
+        <form asp-action="PendingAcceptance" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">Submit for Acceptance — @Model.ComplaintId</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small">
+                    Submits the complaint to <strong>Pending Acceptance</strong> for QA Manager review. The record will be
+                    locked for editing until accepted or returned. Before confirming, ensure the following fields are completed:
+                    <strong>Evaluation, Root Cause Category, Corrective and Preventive Action.</strong>
+                </p>
+                <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning text-dark">Confirm Submit</button>
+            </div>
+        </form>
+    </div></div>
+</div>
+
+<!-- Accept: PendingAcceptance → Accepted -->
+@if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance)
+{
+<div class="modal fade" id="acceptModal" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content">
+        <form asp-action="Accept" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fas fa-check-circle me-1"></i>Accept Complaint — @Model.ComplaintId</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small">
+                    Confirms the evaluation package is complete and acceptable. Moves the complaint to <strong>Accepted</strong> status.
+                    The quality user will then document the resolution summary. Enter your credentials to confirm.
+                </p>
+                <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success">Confirm Accept</button>
+            </div>
+        </form>
+    </div></div>
+</div>
+}
+
+<!-- Submit for Closure: Accepted → Resolution -->
+@if (canSubmitResolution)
+{
+<div class="modal fade" id="submitResolutionModal" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content">
+        <form asp-action="SubmitForResolution" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fas fa-arrow-right me-1"></i>Submit for Closure — @Model.ComplaintId</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small">
+                    Moves the complaint to <strong>Resolution</strong> status for final QA Manager review and closure.
+                    The <strong>Resolution summary</strong> field must be completed before confirming.
+                </p>
+                <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success">Confirm Submit</button>
+            </div>
+        </form>
+    </div></div>
+</div>
+}
+
+<!-- Close: Resolution → Closed -->
+<div class="modal fade" id="closedModal" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content">
+        <form asp-action="Closed" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Close Complaint — @Model.ComplaintId</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small">
+                    Closes the complaint and <strong>permanently locks the record</strong>. The retention period
+                    will be calculated from today. Before confirming, ensure the
+                    <strong>Resolution summary</strong> field is completed. Enter your credentials to confirm.
+                </p>
+                <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success">Confirm Close</button>
+            </div>
+        </form>
+    </div></div>
+</div>
+
+<!-- Return for Rework -->
+@if (canReturn)
+{
+<div class="modal fade" id="returnModal" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content">
+        <form asp-action="ReturnComplaint" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title"><i class="fas fa-undo me-1"></i>Return for Rework — @Model.ComplaintId</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small">
+                    @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Evaluation)
+                    { <text>Returns to <strong>Received</strong> status — the complaint will need to be re-sent for evaluation.</text> }
+                    else if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance)
+                    { <text>Returns to <strong>Evaluation</strong> status — evaluation fields will be unlocked for rework.</text> }
+                    else if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Accepted)
+                    { <text>Returns to <strong>Evaluation</strong> status — evaluation fields will be unlocked for full rework.</text> }
+                    else
+                    { <text>Returns to <strong>Accepted</strong> status — the resolution field will be unlocked for rework.</text> }
+                </p>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Reason for Return <span class="text-danger">*</span></label>
+                    <textarea name="reason" class="form-control" rows="3" required placeholder="Describe why this complaint is being returned and what needs to be addressed..."></textarea>
+                </div>
+                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning text-dark">Confirm Return</button>
+            </div>
+        </form>
+    </div></div>
+</div>
+}
+
+@if (isLocked && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="modal fade" id="adminReopenModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong>Warning:</strong> Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (!isLocked && !linkedAEs.Any())
+{
+    var availableAEList = ViewData["AvailableAEs"] as System.Collections.IEnumerable;
+    <div class="modal fade" id="linkAEModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="LinkAdverseEvent" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="complaintId" value="@Model.Id" />
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-link me-1"></i>Link Existing Adverse Event — @Model.ComplaintId</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    @{
+                        var anyAE = false;
+                        if (availableAEList != null) { foreach (var _ in availableAEList) { anyAE = true; break; } }
+                    }
+                    @if (anyAE)
+                    {
+                        <p class="text-muted small">Select an existing adverse event to associate with this complaint. Only unlinked, non-voided cases are listed.</p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Adverse Event <span class="text-danger">*</span></label>
+                            <select name="adverseEventId" class="form-select" required>
+                                <option value="">— Select an adverse event —</option>
+                                @foreach (dynamic ae in availableAEList!)
+                                {
+                                    <option value="@ae.Id">@ae.Label</option>
+                                }
+                            </select>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">There are no unlinked adverse events available to link. Use <strong>+ Raise Adverse Event</strong> to create a new one.</p>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    @if (anyAE)
+                    {
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-link me-1"></i>Link</button>
+                    }
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@section Scripts {
+<script>
+$(document).ready(function () {
+    var activeTab = '@TempData["ActiveTab"]';
+    var target = activeTab ? '#' + activeTab : '#overview';
+    var el = document.querySelector('[data-bs-target="' + target + '"]');
+    if (el) new bootstrap.Tab(el).show();
+});
+</script>
+}

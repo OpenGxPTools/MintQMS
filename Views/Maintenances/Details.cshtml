@@ -1,0 +1,589 @@
+@model OpenQMS.Models.Maintenance
+
+@{
+    ViewData["Title"] = $"Maintenance — {Model.MaintenanceId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var statusBadge = Model.Status switch
+    {
+        OpenQMS.Models.Maintenance.MaintenanceStatus.Scheduled  => "bg-light text-dark border",
+        OpenQMS.Models.Maintenance.MaintenanceStatus.InProgress => "bg-info text-dark",
+        OpenQMS.Models.Maintenance.MaintenanceStatus.Completed  => "bg-warning text-dark",
+        OpenQMS.Models.Maintenance.MaintenanceStatus.Reviewed   => "bg-success",
+        OpenQMS.Models.Maintenance.MaintenanceStatus.Approved   => "bg-success",
+        OpenQMS.Models.Maintenance.MaintenanceStatus.Overdue    => "bg-danger",
+        OpenQMS.Models.Maintenance.MaintenanceStatus.Suspended  => "bg-secondary",
+        _                                                        => "bg-secondary"
+    };
+    var statusLabel = EnumHelper.Display(Model.Status);
+    var isApproved  = Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Reviewed
+                   || Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Approved;
+    var isSuspended = Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Suspended;
+    bool isQM = User.IsInRole("Administrator") || User.IsInRole("QualityManager") || User.IsInRole("AuthorisedPerson");
+    bool isQU = isQM || User.IsInRole("QualityUser") || User.IsInRole("OperationsUser");
+    var isOverdue  = (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Scheduled
+                   || Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Overdue)
+                  && Model.ScheduledDate.Date < SiteTime.Today;
+    var attachCount = Model.Attachments?.Count ?? 0;
+    var auditCount  = Model.AuditLogs?.Count ?? 0;
+}
+
+<!-- Header -->
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+        <h4 class="mb-0">Maintenance &mdash; <span class="fw-bold">@Model.MaintenanceId</span></h4>
+        <small class="text-muted">@Model.Title</small>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <span class="badge bg-secondary fs-6">@Model.Type</span>
+        <span class="badge @statusBadge fs-6">@statusLabel</span>
+    </div>
+</div>
+<hr />
+
+<!-- TempData alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Success"]</div>
+}
+@if (TempData["WorkflowError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["WorkflowError"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Error"]</div>
+}
+
+<!-- Overdue banner -->
+@if (isOverdue)
+{
+    var daysOver = (SiteTime.Today - Model.ScheduledDate.Date).Days;
+    <div class="alert alert-danger">&#9888; Maintenance was scheduled for <strong>@Model.ScheduledDate.ToShortDateString()</strong> — overdue by <strong>@daysOver day(s)</strong>.</div>
+}
+
+<!-- Workflow action card -->
+@if ((!isApproved && !isSuspended) || (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Reviewed && isQM) || (isSuspended && isQM))
+{
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-tasks me-2"></i>Workflow Actions</strong>
+            <span class="small">Current: @statusLabel</span>
+        </div>
+        <div class="card-body d-flex gap-2 flex-wrap align-items-center">
+
+            @* Forward-progress actions (hidden when suspended) *@
+            @if (!isSuspended)
+            {
+                @if (isQU && (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Scheduled
+                  || Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Overdue))
+                {
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#startWorkModal">Start Work</button>
+                }
+                @if (isQU && Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.InProgress)
+                {
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#completeWorkModal">Complete Work</button>
+                }
+                @if (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Completed && isQM)
+                {
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#reviewWorkModal">Review &amp; Close</button>
+                }
+
+                @* Send-back actions *@
+                @if (isQU && Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.InProgress)
+                {
+                    <span class="vr mx-1"></span>
+                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#sendBackToScheduledModal">
+                        <i class="fas fa-undo me-1"></i>Send Back to Scheduled
+                    </button>
+                }
+                @if (isQU && Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Completed)
+                {
+                    <span class="vr mx-1"></span>
+                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#sendBackToInProgressModal">
+                        <i class="fas fa-undo me-1"></i>Send Back to In Progress
+                    </button>
+                }
+                @if (isQM && Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Reviewed)
+                {
+                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#sendBackToCompletedModal">
+                        <i class="fas fa-undo me-1"></i>Send Back to Completed
+                    </button>
+                }
+            }
+
+            @* Suspend / Reactivate *@
+            @if (isSuspended && isQM)
+            {
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#reactivateModal">
+                    <i class="fas fa-play me-1"></i>Reactivate
+                </button>
+            }
+            @if (!isApproved && !isSuspended && isQM)
+            {
+                <span class="vr mx-1"></span>
+                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#suspendModal">
+                    <i class="fas fa-pause me-1"></i>Suspend Schedule
+                </button>
+            }
+        </div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Approved && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="card mb-3 border-danger">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+        </div>
+        <div class="card-body py-2">
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
+                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="detailTabs">
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">Overview</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAttachments">Attachments <span class="badge bg-secondary">@attachCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAuditLog">Audit Log <span class="badge bg-secondary">@auditCount</span></button></li>
+</ul>
+
+<div class="tab-content">
+
+<!-- OVERVIEW TAB -->
+<div class="tab-pane fade show active" id="tabOverview">
+
+    <h6 class="text-muted text-uppercase small mb-2">Details</h6>
+    <dl class="row mb-4">
+        <dt class="col-sm-3">Maintenance ID</dt>
+        <dd class="col-sm-9"><strong>@Model.MaintenanceId</strong></dd>
+        <dt class="col-sm-3">Title</dt>
+        <dd class="col-sm-9">@Model.Title</dd>
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+        <dt class="col-sm-3">Asset</dt>
+        <dd class="col-sm-9"><strong>@(Model.Asset?.Name ?? "-")</strong></dd>
+        @if (Model.Process != null)
+        {
+            <dt class="col-sm-3">Process</dt>
+            <dd class="col-sm-9">@Model.Process.Name</dd>
+        }
+        <dt class="col-sm-3">Type</dt>
+        <dd class="col-sm-9">@Model.Type</dd>
+        <dt class="col-sm-3">Frequency</dt>
+        <dd class="col-sm-9">@Model.Frequency</dd>
+        <dt class="col-sm-3">Scheduled Date</dt>
+        <dd class="col-sm-9">@Model.ScheduledDate.ToShortDateString()</dd>
+        <dt class="col-sm-3">Scheduled By</dt>
+        <dd class="col-sm-9">@Model.ScheduledBy on @Model.ScheduledOn.ToShortDateString()</dd>
+        @if (Model.NextScheduledDate.HasValue)
+        {
+            <dt class="col-sm-3">Next Scheduled</dt>
+            <dd class="col-sm-9">@Model.NextScheduledDate.Value.ToShortDateString()</dd>
+        }
+    </dl>
+
+    <hr />
+
+    <h6 class="text-muted text-uppercase small mb-2">Linked Records</h6>
+    <dl class="row mb-4">
+        <dt class="col-sm-3">Deviations</dt>
+        <dd class="col-sm-9">
+            @{ var lDevs = Model.LinkedDeviations?.Where(x => x.Deviation != null).ToList(); }
+            @if (lDevs?.Any() == true)
+            { foreach (var ld in lDevs) { <a href="/Deviations/Details/@ld.DeviationId" class="d-block">@ld.Deviation!.DeviationId — @ld.Deviation.Title</a> } }
+            else if (Model.Deviation != null) { <a href="/Deviations/Details/@Model.DeviationId">@Model.Deviation.DeviationId — @Model.Deviation.Title</a> }
+            else { <span class="text-muted">-</span> }
+        </dd>
+        <dt class="col-sm-3">CAPAs</dt>
+        <dd class="col-sm-9">
+            @{ var lCapas = Model.LinkedCapas?.Where(x => x.Capa != null).ToList(); }
+            @if (lCapas?.Any() == true)
+            { foreach (var lc in lCapas) { <a href="/Capas/Details/@lc.CapaId" class="d-block">@lc.Capa!.CapaId — @lc.Capa.Title</a> } }
+            else if (Model.Capa != null) { <a href="/Capas/Details/@Model.CapaId">@Model.Capa.CapaId — @Model.Capa.Title</a> }
+            else { <span class="text-muted">-</span> }
+        </dd>
+    </dl>
+
+    <hr />
+
+    <h6 class="text-muted text-uppercase small mb-2">Execution</h6>
+    <dl class="row mb-4">
+        <dt class="col-sm-3">Performed By</dt>
+        <dd class="col-sm-9">@(Model.PerformedBy ?? "-")</dd>
+        <dt class="col-sm-3">Performed On</dt>
+        <dd class="col-sm-9">@(Model.PerformedOn.ToSite()?.ToShortDateString() ?? "-")</dd>
+        <dt class="col-sm-3">Actual Start</dt>
+        <dd class="col-sm-9">@(Model.ActualStartTime.ToSite()?.ToString("yyyy-MM-dd HH:mm") ?? "-")</dd>
+        <dt class="col-sm-3">Actual End</dt>
+        <dd class="col-sm-9">@(Model.ActualEndTime.ToSite()?.ToString("yyyy-MM-dd HH:mm") ?? "-")</dd>
+        <dt class="col-sm-3">Downtime (hours)</dt>
+        <dd class="col-sm-9">@(Model.DowntimeHours.HasValue ? Model.DowntimeHours.Value.ToString("F2") : "-")</dd>
+        <dt class="col-sm-3">Work Performed</dt>
+        <dd class="col-sm-9">@(Model.WorkPerformed ?? "-")</dd>
+        <dt class="col-sm-3">Parts Used</dt>
+        <dd class="col-sm-9">@(Model.PartsUsed ?? "-")</dd>
+        <dt class="col-sm-3">Cost</dt>
+        <dd class="col-sm-9">@(Model.Cost.HasValue ? Model.Cost.Value.ToString("C") : "-")</dd>
+    </dl>
+
+    <hr />
+
+    <div class="mt-3 d-flex gap-2">
+        <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
+        <a asp-action="ExportMaintenanceDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+    </div>
+
+    <h6 class="text-muted text-uppercase small mb-2 mt-4">Review</h6>
+    <dl class="row mb-4">
+        <dt class="col-sm-3">Review Comments</dt>
+        <dd class="col-sm-9">@(Model.ReviewComments ?? "-")</dd>
+        <dt class="col-sm-3">Reviewed By</dt>
+        <dd class="col-sm-9">@(Model.ReviewedBy ?? "-") @(Model.ReviewedOn.HasValue ? $"on {Model.ReviewedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
+    </dl>
+
+    @if (isSuspended)
+    {
+        <div class="alert alert-warning mb-3">
+            <strong><i class="fas fa-pause-circle me-1"></i>Schedule Suspended</strong><br />
+            <span class="text-muted small">Suspended by <strong>@Model.SuspendedBy</strong> on @Model.SuspendedOn.ToSite()?.ToShortDateString()</span><br />
+            <span><strong>Reason:</strong> @Model.SuspensionReason</span>
+        </div>
+    }
+
+    @{
+        var child = ViewBag.ChildMaintenance as dynamic;
+    }
+    @if (Model.ParentMaintenance != null || child != null)
+    {
+        <h6 class="text-muted text-uppercase small mb-2 mt-2">Recurring Schedule Chain</h6>
+        <dl class="row mb-4">
+            @if (Model.ParentMaintenance != null)
+            {
+                <dt class="col-sm-3">Previous Occurrence</dt>
+                <dd class="col-sm-9">
+                    <a asp-action="Details" asp-route-id="@Model.ParentMaintenance.Id">@Model.ParentMaintenance.MaintenanceId</a>
+                    &mdash; @Model.ParentMaintenance.Status | Scheduled @Model.ParentMaintenance.ScheduledDate.ToShortDateString()
+                </dd>
+            }
+            @if (child != null)
+            {
+                <dt class="col-sm-3">Next Occurrence</dt>
+                <dd class="col-sm-9">
+                    <a asp-action="Details" asp-route-id="@child.Id">@child.MaintenanceId</a>
+                    &mdash; @EnumHelper.Display(child.Status) | Scheduled @child.ScheduledDate.ToShortDateString()
+                </dd>
+            }
+        </dl>
+    }
+
+</div>
+
+<!-- ATTACHMENTS TAB -->
+<div class="tab-pane fade" id="tabAttachments">
+    @if (!isApproved)
+    {
+        <div class="card mb-3">
+            <div class="card-header">Upload Attachment</div>
+            <div class="card-body">
+                <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="maintenanceId" value="@Model.Id" />
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-5">
+                            <label class="form-label">File</label>
+                            <input type="file" name="file" class="form-control" required />
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Description</label>
+                            <input type="text" name="description" class="form-control" placeholder="Optional description" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+
+    @if (Model.Attachments != null && Model.Attachments.Any())
+    {
+        <table class="table table-sm">
+            <thead><tr><th>File</th><th>Description</th><th>Uploaded By</th><th>Date</th><th>Size</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var att in Model.Attachments.OrderByDescending(a => a.UploadedDate))
+                {
+                    <tr>
+                        <td>@att.FileName</td>
+                        <td>@(att.Description ?? "-")</td>
+                        <td>@att.UploadedBy</td>
+                        <td>@att.UploadedDate.ToSite().ToShortDateString()</td>
+                        <td>@(att.FileSize / 1024) KB</td>
+                        <td class="text-end">
+                            <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                            @if (!isApproved)
+                            {
+                                <form asp-action="DeleteAttachment" method="post" class="d-inline" data-delete-reason="attachment">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@att.Id" />
+                                    <input type="hidden" name="maintenanceId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else { <p class="text-muted">No attachments.</p> }
+    <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
+</div>
+
+<!-- AUDIT LOG TAB -->
+<div class="tab-pane fade" id="tabAuditLog">
+    @await Html.PartialAsync("_AuditLogTable", (Model.AuditLogs ?? Enumerable.Empty<OpenQMS.Models.MaintenanceAuditLog>())
+        .Select(l => new OpenQMS.ViewModels.AuditLogRow(l.PerformedOn, l.PerformedBy, l.Action, l.FromStatus, l.ToStatus, l.Notes)))
+</div>
+
+</div><!-- end tab-content -->
+
+<div class="mt-3 d-flex gap-3">
+    @if (!isApproved && !isSuspended && Model.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Overdue)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+</div>
+
+<!-- Workflow Modals -->
+@if (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Scheduled
+  || Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Overdue)
+{
+    <div class="modal fade" id="startWorkModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Start Work</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="StartWork" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info">Start Work</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.InProgress)
+{
+    <div class="modal fade" id="completeWorkModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Complete Work</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="CompleteWork" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Complete Work</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Completed)
+{
+    <div class="modal fade" id="reviewWorkModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Review &amp; Close Maintenance</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form asp-action="ReviewWork" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Review &amp; Close</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="sendBackToInProgressModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header bg-danger text-white"><h5 class="modal-title"><i class="fas fa-undo me-2"></i>Send Back to In Progress</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form asp-action="SendBackToInProgress" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">This will revert the record to In Progress so work details can be corrected. The action will be logged in the audit trail.</p>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label><textarea name="notes" class="form-control" rows="3" required placeholder="Describe why this record is being sent back..."></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Confirm Send Back</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.InProgress)
+{
+    <div class="modal fade" id="sendBackToScheduledModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header bg-danger text-white"><h5 class="modal-title"><i class="fas fa-undo me-2"></i>Send Back to Scheduled</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form asp-action="SendBackToScheduled" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">This will revert the record to Scheduled so the basic fields can be corrected. The action will be logged in the audit trail.</p>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label><textarea name="notes" class="form-control" rows="3" required placeholder="Describe why this record is being sent back..."></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Confirm Send Back</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Reviewed && isQM)
+{
+    <div class="modal fade" id="sendBackToCompletedModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header bg-danger text-white"><h5 class="modal-title"><i class="fas fa-undo me-2"></i>Send Back to Completed</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form asp-action="SendBackToCompleted" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">This will reopen the record for re-review. Review comments, reviewer, and retention date will be cleared. The action will be logged in the audit trail.</p>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label><textarea name="notes" class="form-control" rows="3" required placeholder="Describe why this record is being sent back..."></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Confirm Send Back</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (!isApproved && !isSuspended && isQM)
+{
+    <div class="modal fade" id="suspendModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header bg-secondary text-white"><h5 class="modal-title"><i class="fas fa-pause me-2"></i>Suspend Maintenance Schedule</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form asp-action="Suspend" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">Suspending halts this recurring schedule. No next occurrence will be auto-generated until the schedule is reactivated.</p>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label><textarea name="reason" class="form-control" rows="3" required placeholder="Describe why this schedule is being suspended..."></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark">Confirm Suspension</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (isSuspended && isQM)
+{
+    <div class="modal fade" id="reactivateModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header bg-success text-white"><h5 class="modal-title"><i class="fas fa-play me-2"></i>Reactivate Maintenance Schedule</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form asp-action="Reactivate" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted small">Reactivating will return this record to Scheduled status. The recurring chain will resume when this occurrence is reviewed and closed.</p>
+                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Reactivate</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@if (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Approved && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
+{
+    <div class="modal fade" id="adminReopenModal" tabindex="-1">
+        <div class="modal-dialog modal-lg"><div class="modal-content">
+            <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong>Warning:</strong> Administratively reopening a completed record reverts it to the Reviewed stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                    </div>
+                    <hr />
+                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required autocomplete="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+
+@section Scripts {
+<script>
+$(document).ready(function () {
+    @if (TempData["ActiveTab"] != null)
+    {
+        <text>
+        var tab = '@TempData["ActiveTab"]';
+        var tabMap = { 'attachments': '#tabAttachments', 'auditlog': '#tabAuditLog' };
+        if (tabMap[tab]) {
+            var el = document.querySelector('[data-bs-target="' + tabMap[tab] + '"]');
+            if (el) new bootstrap.Tab(el).show();
+        }
+        </text>
+    }
+});
+</script>
+}

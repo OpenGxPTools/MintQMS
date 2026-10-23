@@ -1,0 +1,579 @@
+@model OpenQMS.Models.RI.RegulatoryApplication
+@using OpenQMS.Models.RI
+@{
+    ViewData["Title"] = $"Edit {Model.RINumber}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h4 class="mb-0"><i class="fas fa-edit me-2 text-primary"></i>Edit Application</h4>
+        <span class="text-muted">@Model.RINumber</span>
+    </div>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to Details
+    </a>
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger" id="saveErrorBanner">
+        <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-1"></i>Your changes were not saved</h6>
+        <p class="mb-2 small">Please correct the following and click Save again. Fields needing attention may be on other tabs.</p>
+        <div asp-validation-summary="All" class="mb-0"></div>
+    </div>
+}
+
+<form asp-action="Edit" method="post" id="editRIForm" novalidate>
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="RINumber" />
+    <input type="hidden" asp-for="Status" />
+    <input type="hidden" asp-for="IsLocked" />
+    <input type="hidden" asp-for="CreatedBy" />
+    <input type="hidden" asp-for="CreatedAt" />
+
+    <!-- Status badge strip -->
+    <div class="mb-3 d-flex align-items-center gap-2">
+        <span class="text-muted small">Status:</span>
+        @{
+            var statusBadge = Model.Status switch
+            {
+                RIApplicationStatus.Strategy          => "secondary",
+                RIApplicationStatus.Preparation       => "info",
+                RIApplicationStatus.Submitted         => "primary",
+                RIApplicationStatus.UnderReview       => "warning",
+                RIApplicationStatus.ClockStop         => "warning",
+                RIApplicationStatus.Approved          => "success",
+                RIApplicationStatus.ConditionsActive  => "success",
+                RIApplicationStatus.Rejected          => "danger",
+                RIApplicationStatus.Withdrawn         => "dark",
+                _                                     => "secondary"
+            };
+        }
+        <span class="badge bg-@statusBadge">@Model.Status</span>
+        @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">Orphan</span> }
+        @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">Priority Review</span> }
+        @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">Breakthrough</span> }
+        @if (Model.IsPRIME)               { <span class="badge bg-danger">PRIME</span> }
+        @if (Model.IsConditionalApproval) { <span class="badge bg-warning text-dark">Conditional</span> }
+    </div>
+
+    <!-- 7-Tab Navigation -->
+    <ul class="nav nav-tabs mb-0" id="applicationTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button">
+                <i class="fas fa-file-alt me-1"></i>Application Info
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button">
+                <i class="fas fa-pills me-1"></i>Product
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button">
+                <i class="fas fa-calendar-alt me-1"></i>Key Dates
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button">
+                <i class="fas fa-dollar-sign me-1"></i>Fees
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button">
+                <i class="fas fa-users me-1"></i>Contacts
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button">
+                <i class="fas fa-clipboard-check me-1"></i>Notes
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab7-tab" data-bs-toggle="tab" data-bs-target="#tab7" type="button">
+                <i class="fas fa-paperclip me-1"></i>Documents
+                @if (Model.Documents?.Any() == true)
+                {
+                    <span class="badge bg-secondary ms-1">@Model.Documents.Count</span>
+                }
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 rounded-bottom p-4 mb-3">
+
+        <!-- Tab 1: Application Info -->
+        <div class="tab-pane fade show active" id="tab1" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">RI Number</label>
+                    <input type="text" class="form-control" value="@Model.RINumber" disabled />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="SubmissionMethod" class="form-label fw-bold">Submission Method
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="submissionmethod" aria-label="Submission Method guidance">?</button>
+                    </label>
+                    <select asp-for="SubmissionMethod" class="form-select">
+                        <option value="">— Select —</option>
+                        <option>eCTD</option>
+                        <option>PRISM Portal</option>
+                        <option>Online Portal</option>
+                        <option>Paper / Email</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="AuthorityReferenceNumber" class="form-label fw-bold">Authority Reference No.
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="authorityref" aria-label="Authority Reference guidance">?</button>
+                    </label>
+                    <input asp-for="AuthorityReferenceNumber" class="form-control" placeholder="e.g. ARTG#, NDA#, EMA/H/..." />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Jurisdiction <span class="text-danger">*</span></label>
+                    <select id="JurisdictionId" asp-for="JurisdictionId" class="form-select">
+                        <option value="">— Select Jurisdiction —</option>
+                        @foreach (var item in ViewData["Jurisdictions"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList ?? new Microsoft.AspNetCore.Mvc.Rendering.SelectList(new List<object>()))
+                        {
+                            <option value="@item.Value" selected="@(item.Selected)">@item.Text</option>
+                        }
+                    </select>
+                    <div class="invalid-feedback" id="JurisdictionId-error">Please select a jurisdiction.</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Application Type <span class="text-danger">*</span></label>
+                    <select id="ApplicationTypeId" asp-for="ApplicationTypeId"
+                            asp-items='@(ViewData["ApplicationTypes"] as SelectList)'
+                            class="form-select">
+                        <option value="">— Select Application Type —</option>
+                    </select>
+                    <div class="invalid-feedback" id="ApplicationTypeId-error">Please select an application type.</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-bold">Priority / Expedited Designations
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="designations" aria-label="Expedited Designations guidance">?</button>
+                    </label>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="form-check">
+                            <input asp-for="IsOrphanDesignation" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsOrphanDesignation" class="form-check-label">Orphan Designation</label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="IsPriorityReview" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsPriorityReview" class="form-check-label">Priority Review</label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="IsBreakthroughTherapy" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsBreakthroughTherapy" class="form-check-label">Breakthrough Therapy</label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="IsPRIME" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsPRIME" class="form-check-label">PRIME</label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="IsConditionalApproval" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsConditionalApproval" class="form-check-label">Conditional Approval</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Product & Indication -->
+        <div class="tab-pane fade" id="tab2" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Product <span class="text-danger">*</span></label>
+                    <select id="ProductId" asp-for="ProductId"
+                            asp-items='@(ViewData["Products"] as SelectList)'
+                            class="form-select">
+                        <option value="">— Select Product —</option>
+                    </select>
+                    <div class="invalid-feedback" id="ProductId-error">Please select a product.</div>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ProductName" class="form-label fw-bold">Product Name (snapshot) <span class="text-danger">*</span>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="productsnapshot" aria-label="Product Name snapshot guidance">?</button>
+                    </label>
+                    <input asp-for="ProductName" id="ProductName" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ActiveSubstance" class="form-label fw-bold">Active Substance / INN</label>
+                    <input asp-for="ActiveSubstance" class="form-control" />
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="Indication" class="form-label fw-bold">Indication</label>
+                    <input asp-for="Indication" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="DosageForm" class="form-label fw-bold">Dosage Form</label>
+                    <input asp-for="DosageForm" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Strength" class="form-label fw-bold">Strength</label>
+                    <input asp-for="Strength" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Key Dates -->
+        <div class="tab-pane fade" id="tab3" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label asp-for="StrategyStartDate" class="form-label fw-bold">Strategy Start</label>
+                    <input asp-for="StrategyStartDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="PreSubMeetingDate" class="form-label fw-bold">Pre-Submission Meeting</label>
+                    <input asp-for="PreSubMeetingDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="DossierLockDate" class="form-label fw-bold">Dossier Lock Date</label>
+                    <input asp-for="DossierLockDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="SubmissionDate" class="form-label fw-bold">Submission Date</label>
+                    <input asp-for="SubmissionDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="AcknowledgementDate" class="form-label fw-bold">Acknowledgement Date</label>
+                    <input asp-for="AcknowledgementDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Day0Date" class="form-label fw-bold">Day 0 (Clock Start)
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="day0" aria-label="Day 0 guidance">?</button>
+                    </label>
+                    <input asp-for="Day0Date" id="Day0Date" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="TargetDecisionDate" class="form-label fw-bold">Target Decision Date</label>
+                    <input asp-for="TargetDecisionDate" id="TargetDecisionDate" type="date" class="form-control" />
+                    <div class="form-text">Auto-calculated from Day 0 + clock days.</div>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="ActualDecisionDate" class="form-label fw-bold">Actual Decision Date</label>
+                    <input asp-for="ActualDecisionDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="ApprovalDate" class="form-label fw-bold">Approval Date</label>
+                    <input asp-for="ApprovalDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="ExpiryDate" class="form-label fw-bold">Expiry / Renewal Date</label>
+                    <input asp-for="ExpiryDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="NextRenewalDue" class="form-label fw-bold">Next Renewal Due</label>
+                    <input asp-for="NextRenewalDue" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="AppealDeadline" class="form-label fw-bold">Appeal Deadline</label>
+                    <input asp-for="AppealDeadline" type="date" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Fees -->
+        <div class="tab-pane fade" id="tab4" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label asp-for="ApplicationFee" class="form-label fw-bold">Application Fee</label>
+                    <input asp-for="ApplicationFee" type="number" step="0.01" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="FeeCurrency" class="form-label fw-bold">Currency</label>
+                    <select asp-for="FeeCurrency" class="form-select">
+                        <option value="">—</option>
+                        <option>AUD</option><option>NZD</option><option>EUR</option>
+                        <option>USD</option><option>CAD</option><option>SGD</option>
+                        <option>MYR</option><option>BRL</option><option>MXN</option>
+                        <option>COP</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="FeePaidDate" class="form-label fw-bold">Fee Paid Date</label>
+                    <input asp-for="FeePaidDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check mt-4 pt-2">
+                        <input asp-for="FeeWaiverApplied" class="form-check-input" type="checkbox" />
+                        <label asp-for="FeeWaiverApplied" class="form-check-label fw-bold">Fee Waiver Applied</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label asp-for="FeeWaiverReason" class="form-label fw-bold">Fee Waiver Reason</label>
+                    <input asp-for="FeeWaiverReason" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Contacts & Strategy -->
+        <div class="tab-pane fade" id="tab5" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="InternalRALead" class="form-label fw-bold">Internal RA Lead</label>
+                    <select id="InternalRALead" asp-for="InternalRALead" asp-items='@(ViewBag.UsersList as SelectList)' class="form-select">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ExternalConsultant" class="form-label fw-bold">External RA Consultant</label>
+                    <input asp-for="ExternalConsultant" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="AuthorityRapporteur" class="form-label fw-bold">Authority Rapporteur / PM</label>
+                    <input asp-for="AuthorityRapporteur" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="AuthorityContactEmail" class="form-label fw-bold">Authority Contact Email</label>
+                    <input asp-for="AuthorityContactEmail" type="email" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ManufacturingSupplierId" class="form-label fw-bold">Manufacturing Supplier (CMO/CDMO)</label>
+                    <select asp-for="ManufacturingSupplierId"
+                            asp-items='@(ViewData["Suppliers"] as SelectList)'
+                            class="form-select">
+                        <option value="">— None / Not applicable —</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label asp-for="StrategyNotes" class="form-label fw-bold">Strategy Notes</label>
+                    <textarea asp-for="StrategyNotes" class="form-control" rows="5"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 6: Notes -->
+        <div class="tab-pane fade" id="tab6" role="tabpanel">
+            <div class="row g-3">
+                @if (Model.Status == RIApplicationStatus.Rejected)
+                {
+                    <div class="col-12">
+                        <label asp-for="RejectionReason" class="form-label fw-bold text-danger">Rejection Reason</label>
+                        <textarea asp-for="RejectionReason" class="form-control" rows="3"></textarea>
+                    </div>
+                }
+                @if (Model.Status == RIApplicationStatus.Withdrawn)
+                {
+                    <div class="col-12">
+                        <label asp-for="WithdrawalReason" class="form-label fw-bold text-warning">Withdrawal Reason</label>
+                        <textarea asp-for="WithdrawalReason" class="form-control" rows="3"></textarea>
+                    </div>
+                }
+                @if (Model.Conditions?.Any() == true)
+                {
+                    <div class="col-12">
+                        <h6>Conditions of Approval</h6>
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light"><tr><th>Condition</th><th>Type</th><th>Due Date</th><th>Status</th></tr></thead>
+                            <tbody>
+                                @foreach (var c in Model.Conditions)
+                                {
+                                    <tr>
+                                        <td>@c.ConditionDescription</td>
+                                        <td>@c.ConditionType</td>
+                                        <td>@c.DueDate?.ToString("dd MMM yyyy")</td>
+                                        <td>@EnumHelper.Display(c.Status)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-light">No conditions of approval on record. Conditions are added via the Details view after approval.</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Tab 7: Documents -->
+        <div class="tab-pane fade" id="tab7" role="tabpanel">
+            @if (Model.Documents?.Any() == true)
+            {
+                <table class="table table-sm table-hover mb-3">
+                    <thead class="table-light"><tr><th>File Name</th><th>Type</th><th>Version</th><th>Uploaded</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var doc in Model.Documents.OrderByDescending(d => d.UploadedAt))
+                        {
+                            <tr>
+                                <td><i class="fas fa-file me-1 text-muted"></i>@doc.FileName</td>
+                                <td>@doc.DocumentType</td>
+                                <td>v@doc.Version</td>
+                                <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy") <span class="text-muted small">@doc.UploadedBy</span></td>
+                                <td class="text-end text-nowrap">
+                                    <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary py-0">Download</a>
+                                    <form asp-action="DeleteDocument" asp-route-id="@doc.Id" method="post" class="d-inline" data-delete-reason="document">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger py-0 ms-1">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            <div class="border rounded p-3 bg-light">
+                <h6><i class="fas fa-upload me-1"></i>Upload Document</h6>
+                <form asp-action="UploadDocument" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="applicationId" value="@Model.Id" />
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-5">
+                            <label class="form-label small">File</label>
+                            <input type="file" name="file" class="form-control form-control-sm" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small">Document Type</label>
+                            <select name="documentType"
+                                    asp-items='@(ViewData["DocumentTypes"] as SelectList)'
+                                    class="form-select form-select-sm">
+                                <option value="">— Select Type —</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-sm btn-primary w-100">Upload</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-1"></i>Save Changes
+        </button>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</form>
+
+<!-- Field-help popover content (hidden, read by field-help.js) -->
+<div class="d-none">
+    <div id="help-submissionmethod">
+        <p class="mb-1"><strong>How the dossier is filed with the authority</strong></p>
+        <ul class="mb-0 ps-3">
+            <li><strong>eCTD</strong> — electronic Common Technical Document; the standard structured electronic submission (TGA, FDA, EMA).</li>
+            <li><strong>PRISM</strong> — Singapore HSA's online submission portal.</li>
+            <li><strong>Portal</strong> — an authority web portal that isn't eCTD (e.g. country-specific upload systems).</li>
+            <li><strong>Paper</strong> — a physical/PDF submission where electronic filing isn't available.</li>
+        </ul>
+    </div>
+    <div id="help-authorityref">
+        <p class="mb-0">The authority's own identifier for this application or product, used in all correspondence. Examples: <strong>ARTG</strong> number (TGA), <strong>NDA/BLA</strong> number (FDA), <strong>EMA/H/C/…</strong> (EMA), <strong>HSA</strong> registration number. Leave blank until the authority assigns one.</p>
+    </div>
+    <div id="help-designations">
+        <p class="mb-1"><strong>Expedited / priority pathways</strong> — tick any the authority has granted. They shorten timelines or relax requirements:</p>
+        <ul class="mb-0 ps-3">
+            <li><strong>Orphan Designation</strong> — for rare-disease products; brings fee relief and market exclusivity.</li>
+            <li><strong>Priority Review</strong> — shorter assessment clock for products of major therapeutic value.</li>
+            <li><strong>Breakthrough Therapy</strong> — FDA designation for therapies showing substantial improvement over existing options.</li>
+            <li><strong>PRIME</strong> — EMA's PRIority MEdicines scheme: enhanced support for unmet medical need.</li>
+            <li><strong>Conditional Approval</strong> — early authorisation on less complete data, subject to post-approval conditions.</li>
+        </ul>
+    </div>
+    <div id="help-productsnapshot">
+        <p class="mb-0">A frozen copy of the product name <em>as filed in this application</em>. The linked <strong>Product</strong> above stays live and may change over time; this snapshot preserves exactly what was submitted to the authority, so the regulatory record stays accurate even if the product is later renamed or superseded.</p>
+    </div>
+    <div id="help-day0">
+        <p class="mb-0"><strong>Day 0</strong> is the official start of the authority's review clock — the date validation completes and assessment formally begins (not the date you submitted). The <strong>Target Decision Date</strong> is calculated from Day 0 plus the jurisdiction's statutory review period. Clock-stops (e.g. responding to questions) pause this clock.</p>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/tab-form-validation.js" asp-append-version="true"></script>
+    <script src="~/js/field-help.js" asp-append-version="true"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#JurisdictionId').select2({ placeholder: '— Select Jurisdiction —', allowClear: true, width: '100%' });
+            $('#ApplicationTypeId').select2({ placeholder: '— Select Application Type —', allowClear: true, width: '100%' });
+            $('#ProductId').select2({ placeholder: '— Select Product —', allowClear: true, width: '100%' });
+            $('#InternalRALead').select2({ placeholder: '— Select RA Lead —', allowClear: true, width: '100%' });
+
+            $('#JurisdictionId').on('change', function () {
+                var jId = $(this).val();
+                var $appType = $('#ApplicationTypeId');
+                if (!jId) { $appType.empty().append('<option value="">— Select Jurisdiction first —</option>').trigger('change.select2'); return; }
+                $.getJSON('@Url.Action("GetApplicationTypes", "RegulatoryIntelligence")', { jurisdictionId: jId }, function (data) {
+                    $appType.empty().append('<option value="">— Select Application Type —</option>');
+                    $.each(data, function (_, item) { $appType.append(new Option(item.code + ' — ' + item.name, item.id)); });
+                    $appType.trigger('change.select2');
+                });
+            });
+
+            $('#Day0Date').on('change', function () {
+                var day0 = $(this).val(); var typeId = $('#ApplicationTypeId').val();
+                if (!day0 || !typeId) return;
+                $.getJSON('@Url.Action("CalculateTargetDate", "RegulatoryIntelligence")',
+                    { day0: day0, appTypeId: typeId }, function (r) { if (r.targetDate) $('#TargetDecisionDate').val(r.targetDate); });
+            });
+
+            $('#ProductId').on('change', function () {
+                var id = $(this).val();
+                if (!id) return;
+
+                $.getJSON('@Url.Action("GetProductDetails", "RegulatoryIntelligence")', { productId: id }, function (data) {
+                    if (!data) return;
+                    $('#ProductName').val(data.brandName || data.name || '');
+                    if (data.innName)    $('#ActiveSubstance').val(data.innName);
+                    if (data.dosageForm) $('#DosageForm').val(data.dosageForm);
+                    if (data.strengths)  $('#Strength').val(data.strengths);
+                });
+            });
+
+            // Clear validation errors on selection
+            $('#JurisdictionId, #ApplicationTypeId, #ProductId').on('change', function () {
+                var id = $(this).attr('id');
+                $(this).next('.select2-container').removeClass('is-invalid');
+                $(this).removeClass('is-invalid');
+                $('#' + id + '-error').hide();
+            });
+            $('#ProductName').on('input', function () { $(this).removeClass('is-invalid'); });
+
+            // Custom pre-submit validation
+            $('#editRIForm').on('submit', function (e) {
+                var valid = true;
+                [
+                    { id: 'JurisdictionId' },
+                    { id: 'ApplicationTypeId' },
+                    { id: 'ProductId' }
+                ].forEach(function (field) {
+                    var val = $('#' + field.id).val();
+                    var $container = $('#' + field.id).next('.select2-container');
+                    if (!val) {
+                        $container.addClass('is-invalid');
+                        $('#' + field.id + '-error').show();
+                        valid = false;
+                    } else {
+                        $container.removeClass('is-invalid');
+                        $('#' + field.id + '-error').hide();
+                    }
+                });
+                if (!$('#ProductName').val().trim()) {
+                    $('#ProductName').addClass('is-invalid');
+                    valid = false;
+                } else {
+                    $('#ProductName').removeClass('is-invalid');
+                }
+                if (!valid) {
+                    e.preventDefault();
+                    $('html, body').animate({ scrollTop: 0 }, 200);
+                    $('#tab1-tab').tab('show');
+                }
+            });
+        });
+    </script>
+    <style>
+        .select2-container.is-invalid .select2-selection {
+            border-color: #dc3545;
+        }
+        .select2-container.is-invalid + .invalid-feedback {
+            display: block;
+        }
+    </style>
+}

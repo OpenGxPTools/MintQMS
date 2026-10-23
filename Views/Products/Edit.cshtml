@@ -1,0 +1,338 @@
+@model OpenQMS.Models.Product
+@using OpenQMS.Models
+
+@{
+    ViewData["Title"] = "Edit Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var dosageForms = new[] {
+        "Tablet","Modified Release Tablet","Dispersible Tablet","Effervescent Tablet","Chewable Tablet","Sublingual Tablet",
+        "Capsule (Hard)","Capsule (Soft)","Modified Release Capsule","Lozenge","Granules",
+        "Oral Solution","Oral Suspension","Oral Drops","Syrup","Powder for Oral Solution",
+        "Solution for Injection","Powder for Injection","Lyophilised Powder for Injection",
+        "Suspension for Injection","Concentrate for Solution for Infusion","Solution for Infusion",
+        "Cream","Ointment","Gel","Lotion","Transdermal Patch","Topical Solution","Foam",
+        "Metered Dose Inhaler (MDI)","Dry Powder Inhaler (DPI)","Nebuliser Solution","Nasal Spray","Nasal Drops",
+        "Eye Drops","Eye Ointment","Ear Drops","Suppository","Pessary","Rectal Solution"
+    };
+    var cosmeticForms = new[] {
+        "Cream","Lotion","Gel","Spray","Powder","Liquid","Serum","Foam","Oil","Balm","Stick",
+        "Wax","Emulsion","Toner","Exfoliating Scrub","Mask","Mist","Mousse","Ointment","Paste",
+        "Solution","Suspension","Roll-on","Pencil","Foundation","Concealer"
+    };
+    var deviceCategories = new[] {
+        "Implant","Diagnostic Imaging Device","Software (SaMD)","Surgical Instrument",
+        "In Vitro Diagnostic (IVD)","Patient Monitoring Device","Therapeutic Device",
+        "Orthopaedic Device","Cardiovascular Device","Ophthalmic Device","Dental Device",
+        "Sterile Single-Use Device","Wearable Device","Prosthetic & Orthotic",
+        "Combination Product","General Hospital Device","Laboratory Equipment"
+    };
+    var rawMatCategories = new[] { "API","Excipient","Cosmetic Ingredient","Packaging","Device Part","Device Subcomponent","Consumable" };
+    var rawMatForms = new[] {
+        "Solid","Liquid","Gel","Granules","Powder","Device Part","Device Sub-Assembly",
+        "Metal Component","Plastic Component","Ceramic Component","Glass Component",
+        "Electronic Component","Carton","Plastic Bottle","Glass Bottle","Glass Jar",
+        "Plastic Jar","Tray","Grease/Lubricant","Cleaning Product"
+    };
+    var currentType = Model.ProductType?.ToString() ?? "";
+    bool showStrengths = Model.ProductType == null
+        || Model.ProductType == ProductType.Pharmaceutical
+        || Model.ProductType == ProductType.Biological
+        || Model.ProductType == ProductType.ConsumerHealth
+        || Model.ProductType == ProductType.Cosmetic;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <h4 class="mb-0">Edit Product &mdash; @Model.ProductId</h4>
+</div>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Error"]</div>
+}
+
+<form id="editForm" asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ProductId" value="@Model.ProductId" />
+    <input type="hidden" asp-for="GeneratedFrom" value="@Model.GeneratedFrom" />
+    <input type="hidden" asp-for="Version" />
+    <input type="hidden" asp-for="EditedBy" value="@Model.EditedBy" />
+    <input type="hidden" asp-for="EditedOn" value="@(Model.EditedOn.ToSite())" />
+    <input type="hidden" asp-for="ApprovedBy" value="@Model.ApprovedBy" />
+    <input type="hidden" asp-for="ApprovedOn" value="@(Model.ApprovedOn.ToSite())" />
+    <input type="hidden" asp-for="IsLocked" value="@Model.IsLocked" />
+    <input type="hidden" asp-for="Status" value="@Model.Status" />
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Product Identification</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Name" class="form-label fw-semibold"></label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ProductType" class="form-label fw-semibold"></label>
+                    @{ var ptStr = Model.ProductType?.ToString() ?? ""; }
+                    <select id="ProductType" name="ProductType" class="form-select">
+                        <option value="">-- Select Product Type --</option>
+                        <option value="Pharmaceutical" selected="@(ptStr == "Pharmaceutical" ? "selected" : null)">Pharmaceutical</option>
+                        <option value="Biological" selected="@(ptStr == "Biological" ? "selected" : null)">Biological</option>
+                        <option value="MedicalDevice" selected="@(ptStr == "MedicalDevice" ? "selected" : null)">Medical Device</option>
+                        <option value="ConsumerHealth" selected="@(ptStr == "ConsumerHealth" ? "selected" : null)">Consumer Health</option>
+                        <option value="Cosmetic" selected="@(ptStr == "Cosmetic" ? "selected" : null)">Cosmetic</option>
+                        <option value="RawMaterial" selected="@(ptStr == "RawMaterial" ? "selected" : null)">Raw Material</option>
+                    </select>
+                </div>
+
+                <!-- Pharma / Bio / Consumer Health -->
+                <div class="col-md-6" data-pt="Pharmaceutical,Biological,ConsumerHealth">
+                    <label asp-for="InnName" class="form-label"></label>
+                    <input asp-for="InnName" class="form-control" placeholder="e.g. paracetamol" />
+                </div>
+
+                <!-- Cosmetic -->
+                <div class="col-md-6" data-pt="Cosmetic">
+                    <label asp-for="InciName" class="form-label"></label>
+                    <input asp-for="InciName" class="form-control" placeholder="e.g. Aqua, Glycerin..." />
+                </div>
+
+                <!-- Medical Device -->
+                <div class="col-md-6" data-pt="MedicalDevice">
+                    <label asp-for="DeviceTypeCategory" class="form-label"></label>
+                    <select asp-for="DeviceTypeCategory" class="form-select">
+                        <option value="">-- Select --</option>
+                        @foreach (var opt in deviceCategories)
+                        {
+                            <option selected="@(Model.DeviceTypeCategory == opt)">@opt</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6" data-pt="MedicalDevice">
+                    <label asp-for="ModelVersion" class="form-label"></label>
+                    <input asp-for="ModelVersion" class="form-control" placeholder="e.g. v2.1" />
+                </div>
+
+                <!-- Raw Material -->
+                <div class="col-md-6" data-pt="RawMaterial">
+                    <label asp-for="StandardScientificName" class="form-label"></label>
+                    <input asp-for="StandardScientificName" class="form-control" />
+                </div>
+                <div class="col-md-6" data-pt="RawMaterial">
+                    <label asp-for="RawMaterialTypeCategory" class="form-label"></label>
+                    <select asp-for="RawMaterialTypeCategory" class="form-select">
+                        <option value="">-- Select --</option>
+                        @foreach (var opt in rawMatCategories)
+                        {
+                            <option selected="@(Model.RawMaterialTypeCategory == opt)">@opt</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Brand / Trade Name — all types -->
+                <div class="col-md-6">
+                    <label asp-for="BrandName" class="form-label"></label>
+                    <input asp-for="BrandName" class="form-control" />
+                </div>
+
+                <!-- Dosage Form — Pharma / Bio / Consumer only -->
+                <div class="col-md-6" data-pt="Pharmaceutical,Biological,ConsumerHealth">
+                    <label asp-for="DosageForm" class="form-label"></label>
+                    <select asp-for="DosageForm" class="form-select">
+                        <option value="">-- Select --</option>
+                        @foreach (var df in dosageForms)
+                        {
+                            <option selected="@(Model.DosageForm == df)">@df</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Presentation / Form — Cosmetic -->
+                <div class="col-md-6" data-pt="Cosmetic">
+                    <label asp-for="PresentationForm" class="form-label"></label>
+                    <select asp-for="PresentationForm" class="form-select">
+                        <option value="">-- Select --</option>
+                        @foreach (var opt in cosmeticForms)
+                        {
+                            <option selected="@(Model.PresentationForm == opt)">@opt</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Presentation / Form — Raw Material -->
+                <div class="col-md-6" data-pt="RawMaterial">
+                    <label asp-for="PresentationForm" class="form-label"></label>
+                    <select asp-for="PresentationForm" class="form-select">
+                        <option value="">-- Select --</option>
+                        @foreach (var opt in rawMatForms)
+                        {
+                            <option selected="@(Model.PresentationForm == opt)">@opt</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Grade — Raw Material -->
+                <div class="col-md-6" data-pt="RawMaterial">
+                    <label asp-for="Grade" class="form-label"></label>
+                    <input asp-for="Grade" class="form-control" placeholder="e.g. Pharmaceutical Grade" />
+                </div>
+
+                <!-- ARTG — all types -->
+                <div class="col-md-6">
+                    <label asp-for="ArtgReference" class="form-label"></label>
+                    <input asp-for="ArtgReference" class="form-control" />
+                </div>
+
+                <!-- Description — all types -->
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Related Documents</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Linked Approved Documents</label>
+                    <select id="relatedDocDropdown" class="form-select">
+                        <option value="">-- Add Document --</option>
+                        @foreach (var d in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
+                        {
+                            <option value="@d.Value" data-text="@d.Text">@d.Text</option>
+                        }
+                    </select>
+                    <div id="relatedDocTags" class="mt-2 d-flex flex-wrap gap-1"></div>
+                    <div id="relatedDocHidden" class="d-none"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<!-- Strength / Presentation — managed separately (not part of main form) -->
+<div id="strengthSection" class="card mb-4" @(showStrengths ? "" : "style=\"display:none\"")>
+    <div class="card-header fw-semibold">Strength / Presentation</div>
+    <div class="card-body">
+        @if (Model.Status == OpenQMS.Models.Product.ProductStatus.Approved)
+        {
+            <div class="alert alert-info py-2 mb-3">
+                <i class="fas fa-info-circle me-1"></i>
+                This product is <strong>Approved</strong>. Save the product above to create a new Draft revision before modifying strengths.
+            </div>
+        }
+        @if (Model.Strengths != null && Model.Strengths.Any())
+        {
+            <table class="table table-sm mb-3">
+                <thead class="table-light"><tr><th>Strength / Presentation</th><th style="width:80px"></th></tr></thead>
+                <tbody>
+                    @foreach (var s in Model.Strengths.OrderBy(x => x.Value))
+                    {
+                        <tr>
+                            <td>@s.Value</td>
+                            <td>
+                                @if (Model.Status == OpenQMS.Models.Product.ProductStatus.Draft)
+                                {
+                                    <form asp-action="RemoveStrength" method="post" style="display:inline"
+                                          onsubmit="return confirm('Remove @s.Value?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="strengthId" value="@s.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted small mb-3">No entries defined yet.</p>
+        }
+        @if (Model.Status == OpenQMS.Models.Product.ProductStatus.Draft)
+        {
+            <form asp-action="AddStrength" asp-route-productId="@Model.Id" method="post" class="d-flex gap-2 align-items-end">
+                @Html.AntiForgeryToken()
+                <div>
+                    <label class="form-label small mb-1">Add Strength / Presentation</label>
+                    <input type="text" name="value" class="form-control form-control-sm" placeholder="e.g. 500 mg" style="width:220px" required />
+                </div>
+                <button type="submit" class="btn btn-sm btn-outline-primary">Add</button>
+            </form>
+        }
+    </div>
+</div>
+
+<div class="d-flex gap-2 mb-4">
+    <input type="submit" form="editForm" value="Save" class="btn btn-primary" />
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Cancel</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+(function () {
+    var typesWithStrengths = ['Pharmaceutical','Biological','ConsumerHealth','Cosmetic'];
+
+    function applyProductType(type) {
+        document.querySelectorAll('[data-pt]').forEach(function(el) {
+            var types = el.dataset.pt.split(',');
+            el.style.display = (type && types.includes(type)) ? '' : 'none';
+        });
+        var sec = document.getElementById('strengthSection');
+        if (sec) sec.style.display = (type && typesWithStrengths.includes(type)) ? '' : 'none';
+    }
+
+    var sel = document.getElementById('ProductType');
+    sel.addEventListener('change', function () { applyProductType(this.value); });
+    applyProductType(sel.value);
+})();
+
+function setupPicker(dropdownId, tagsId, hiddenId, inputName, preselected) {
+    var selected = {};
+    preselected.forEach(function (item) { selected[item.id] = item.text; });
+    function render() {
+        var tagsDiv = document.getElementById(tagsId);
+        var hiddenDiv = document.getElementById(hiddenId);
+        tagsDiv.innerHTML = ''; hiddenDiv.innerHTML = '';
+        Object.keys(selected).forEach(function (id) {
+            var badge = document.createElement('span');
+            badge.className = 'badge bg-primary d-flex align-items-center gap-1';
+            badge.style.fontSize = '0.85rem';
+            badge.textContent = selected[id];
+            var btn = document.createElement('button');
+            btn.type = 'button'; btn.className = 'btn-close btn-close-white btn-sm ms-1'; btn.style.fontSize = '0.6rem';
+            btn.addEventListener('click', function () { delete selected[id]; render(); });
+            badge.appendChild(btn); tagsDiv.appendChild(badge);
+            var input = document.createElement('input');
+            input.type = 'hidden'; input.name = inputName; input.value = id;
+            hiddenDiv.appendChild(input);
+        });
+    }
+    document.getElementById(dropdownId).addEventListener('change', function () {
+        var id = this.value; var text = this.options[this.selectedIndex].dataset.text;
+        if (id && !selected[id]) { selected[id] = text; render(); }
+        this.value = '';
+    });
+    render();
+}
+var selRelatedDocs = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+    ((List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
+        .Where(x => ((List<int>)ViewBag.SelectedRelatedDocIds).Contains(int.Parse(x.Value)))
+        .Select(x => new { id = x.Value, text = x.Text }).ToList()));
+setupPicker('relatedDocDropdown', 'relatedDocTags', 'relatedDocHidden', 'selectedRelatedDocs', selRelatedDocs);
+</script>
+}

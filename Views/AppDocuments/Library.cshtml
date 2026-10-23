@@ -1,0 +1,168 @@
+@model IEnumerable<OpenQMS.Models.AppDocument>
+@using OpenQMS.Models
+
+@{
+    ViewData["Title"] = "Document Library";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var categories  = ViewData["Categories"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var docTypes    = ViewData["DocTypes"]   as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+    var searchVal   = ViewBag.Search as string ?? "";
+    var selCategory = ViewBag.Category as string ?? "";
+    var selDocType  = ViewBag.DocType  as string ?? "";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <h4 class="mb-0"><i class="bi bi-collection me-1"></i>Document Library</h4>
+    <span class="badge bg-success fs-6">Effective Documents</span>
+</div>
+<hr />
+
+<form asp-action="Library" method="get" class="mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label small text-muted">Search</label>
+            <input type="text" name="search" class="form-control" placeholder="Title, ID, description…"
+                   value="@searchVal" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small text-muted">Category</label>
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                @foreach (var c in categories)
+                {
+                    @if (c.Value == selCategory)
+                    {
+                        <option value="@c.Value" selected>@c.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@c.Value">@c.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small text-muted">Document Type</label>
+            <select name="docType" class="form-select">
+                <option value="">All Types</option>
+                @foreach (var t in docTypes)
+                {
+                    @if (t.Value == selDocType)
+                    {
+                        <option value="@t.Value" selected>@t.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@t.Value">@t.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-fill">
+                <i class="bi bi-search me-1"></i>Filter
+            </button>
+            @if (!string.IsNullOrEmpty(searchVal) || !string.IsNullOrEmpty(selCategory) || !string.IsNullOrEmpty(selDocType))
+            {
+                <a asp-action="Library" class="btn btn-outline-secondary">Clear</a>
+            }
+        </div>
+    </div>
+</form>
+
+@if (Model.Any())
+{
+    <p class="text-muted small">Showing @Model.Count() effective document(s).</p>
+    <div class="table-responsive">
+        <table class="table table-sm align-middle" id="libraryTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Doc ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Version</th>
+                    <th>Issued On</th>
+                    <th>Review Due</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var doc in Model)
+                {
+                    string? catName = null;
+                    if (doc.Category.HasValue)
+                    {
+                        var attr = typeof(AppDocument.DocumentCategory)
+                            .GetField(doc.Category.Value.ToString())?
+                            .GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
+                            .Cast<System.ComponentModel.DataAnnotations.DisplayAttribute>().FirstOrDefault();
+                        catName = attr?.Name ?? doc.Category.Value.ToString();
+                    }
+                    string? typeName = null;
+                    if (doc.DocType.HasValue)
+                    {
+                        var attr = typeof(AppDocument.DocumentType)
+                            .GetField(doc.DocType.Value.ToString())?
+                            .GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
+                            .Cast<System.ComponentModel.DataAnnotations.DisplayAttribute>().FirstOrDefault();
+                        typeName = attr?.Name ?? doc.DocType.Value.ToString();
+                    }
+                    var reviewDue = doc.ReviewDueDate;
+                    var reviewCls = reviewDue.HasValue && reviewDue.Value.Date < SiteTime.Today ? "text-danger" : "";
+
+                    <tr>
+                        <td>
+                            <a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@doc.Id">
+                                @doc.DocumentId
+                            </a>
+                        </td>
+                        <td>@doc.Title</td>
+                        <td>@(catName ?? "—")</td>
+                        <td>@(typeName ?? "—")</td>
+                        <td>@doc.Version.ToString("0.0")</td>
+                        <td>@(doc.IssuedOn.HasValue ? doc.IssuedOn.Value.ToSite().ToString("dd MMM yyyy") : "—")</td>
+                        <td class="@reviewCls">
+                            @if (reviewDue.HasValue)
+                            {
+                                @reviewDue.Value.ToString("dd MMM yyyy")
+                                @if (reviewDue.Value.Date < SiteTime.Today)
+                                {
+                                    <span class="badge bg-danger ms-1">Overdue</span>
+                                }
+                            }
+                            else { <span class="text-muted">—</span> }
+                        </td>
+                        <td>
+                            <a asp-controller="AppDocuments" asp-action="ViewFile" asp-route-id="@doc.Id"
+                               class="btn btn-outline-secondary btn-sm" target="_blank">
+                                <i class="bi bi-eye me-1"></i>View
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-1"></i>No effective documents found matching your filters.
+    </div>
+}
+
+@section Scripts {
+<script>
+$(document).ready(function () {
+    $('#libraryTable').DataTable({ paging: true, order: [[0,'asc']], dom: 'lBfrtip',
+        lengthMenu: [[10,25,50,-1],[10,25,50,'All']], displayLength: 25,
+        buttons: [
+            { extend: 'pdf',   footer: false },
+            { extend: 'excel', footer: false }
+        ]
+    });
+});
+</script>
+}
