@@ -1,3 +1,4 @@
+@using OpenQMS.Authorization
 @model OpenQMS.Models.Maintenance
 
 @{
@@ -229,6 +230,38 @@
         <dt class="col-sm-3">Cost</dt>
         <dd class="col-sm-9">@(Model.Cost.HasValue ? Model.Cost.Value.ToString("C") : "-")</dd>
     </dl>
+
+    @if (Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.InProgress
+         && (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole)
+             || User.IsInRole(Constants.QualityUserRole) || User.IsInRole(Constants.AuthorisedPersonRole)
+             || User.IsInRole(Constants.OperationsUserRole)))
+    {
+        <div class="card border-primary-subtle mt-3">
+            <div class="card-header fw-semibold"><i class="fas fa-pen me-1"></i>Record Work</div>
+            <div class="card-body">
+                <form asp-action="RecordWork" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-2">
+                        <label class="form-label" for="rw-work">Work performed</label>
+                        <textarea id="rw-work" name="workPerformed" class="form-control" rows="3">@Model.WorkPerformed</textarea>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <label class="form-label" for="rw-parts">Parts used</label>
+                            <input id="rw-parts" name="partsUsed" class="form-control" value="@Model.PartsUsed" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="rw-cost">Cost</label>
+                            <input id="rw-cost" name="cost" type="number" step="0.01" min="0" class="form-control"
+                                   value="@(Model.Cost?.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm mt-2">Save work details</button>
+                    <span class="form-text ms-2">Saved to the audit trail. Then use Complete Work when finished.</span>
+                </form>
+            </div>
+        </div>
+    }
 
     <hr />
 

@@ -79,24 +79,6 @@
         <div class="card-header fw-semibold">Display Preferences</div>
         <div class="card-body">
             <div class="mb-3 row">
-                <label asp-for="DateFormat" class="col-sm-3 col-form-label"></label>
-                <div class="col-sm-4">
-                    @if (canEdit)
-                    {
-                        <select asp-for="DateFormat" class="form-select">
-                            <option value="dd/MM/yyyy">dd/MM/yyyy (e.g. 25/03/2026)</option>
-                            <option value="MM/dd/yyyy">MM/dd/yyyy (e.g. 03/25/2026)</option>
-                            <option value="yyyy-MM-dd">yyyy-MM-dd (ISO 8601)</option>
-                        </select>
-                    }
-                    else
-                    {
-                        <input asp-for="DateFormat" class="form-control" disabled="@dis" />
-                    }
-                    <div class="form-text">Applied to reports and exports.</div>
-                </div>
-            </div>
-            <div class="mb-3 row">
                 <label asp-for="TimeZoneId" class="col-sm-3 col-form-label"></label>
                 <div class="col-sm-5">
                     @if (canEdit)

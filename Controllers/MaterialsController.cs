@@ -139,7 +139,7 @@ namespace OpenQMS.Controllers
 
             try
             {
-                var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole);
+                var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
                 if (!isAuthorized)
                 {
                     TempData["WorkflowError"] = "You do not have permission to perform this action.";
@@ -235,7 +235,7 @@ namespace OpenQMS.Controllers
             var material = await _context.Material.FirstOrDefaultAsync(x => x.Id == id);
             if (material == null) return NotFound();
 
-            var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole);
+            var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
             if (!isAuthorized)
             {
                 TempData["WorkflowError"] = "You do not have permission to send back for rework.";

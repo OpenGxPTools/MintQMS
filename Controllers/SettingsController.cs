@@ -99,7 +99,6 @@ namespace OpenQMS.Controllers
             // Compare and log each text/numeric field
             LogChange(settings.OrganisationName, model.OrganisationName, "OrganisationName", changedBy, now);
             LogChange(settings.OrganisationAddress, model.OrganisationAddress, "OrganisationAddress", changedBy, now);
-            LogChange(settings.DateFormat, model.DateFormat, "DateFormat", changedBy, now);
             LogChange(settings.TimeZoneId, model.TimeZoneId, "TimeZoneId", changedBy, now);
             LogChange(settings.DefaultPageSize.ToString(), model.DefaultPageSize.ToString(), "DefaultPageSize", changedBy, now);
             LogChange(settings.LcExpiryWarningDays.ToString(), model.LcExpiryWarningDays.ToString(), "LcExpiryWarningDays", changedBy, now);
@@ -151,7 +150,6 @@ namespace OpenQMS.Controllers
             // Apply values
             settings.OrganisationName               = model.OrganisationName;
             settings.OrganisationAddress            = model.OrganisationAddress;
-            settings.DateFormat                     = model.DateFormat;
             settings.TimeZoneId                     = model.TimeZoneId;
             settings.DefaultPageSize                = model.DefaultPageSize;
             settings.LcExpiryWarningDays            = model.LcExpiryWarningDays;

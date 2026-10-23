@@ -189,11 +189,13 @@ namespace OpenQMS.Controllers
                 .OrderBy(m => m.ScheduledDate)
                 .Take(10).ToList();
 
-            // Upcoming: scheduled within 14 days
+            // Upcoming: scheduled within the maintenance due warning window (System Settings)
+            var maintWarnDays = (await _context.SystemSettings.FindAsync(1))?.MaintenanceDueWarningDays ?? 30;
+            ViewBag.MaintenanceDueWarningDays = maintWarnDays;
             ViewBag.Upcoming = maintenances
                 .Where(m => m.Status == Maintenance.MaintenanceStatus.Scheduled
                     && m.ScheduledDate.Date >= today
-                    && m.ScheduledDate.Date <= today.AddDays(14))
+                    && m.ScheduledDate.Date <= today.AddDays(maintWarnDays))
                 .OrderBy(m => m.ScheduledDate)
                 .Take(10).ToList();
 
@@ -551,6 +553,48 @@ namespace OpenQMS.Controllers
 
             TempData["Success"] = "Maintenance work started.";
             TempData["ActiveTab"] = "auditlog";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        // POST: Maintenances/RecordWork/5
+        // The person carrying out the work records what was done while the job is In Progress
+        // (work performed, parts used, cost). Other fields stay with Edit (QM/AP/Admin).
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator,QualityManager,QualityUser,AuthorisedPerson,OperationsUser")]
+        public async Task<IActionResult> RecordWork(int id, string? workPerformed, string? partsUsed, decimal? cost)
+        {
+            var maintenance = await _context.Maintenance.FindAsync(id);
+            if (maintenance == null) return NotFound();
+            if (maintenance.Status != Maintenance.MaintenanceStatus.InProgress)
+            {
+                TempData["WorkflowError"] = "Work details can only be recorded while the maintenance is In Progress.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            if (cost is < 0)
+            {
+                TempData["WorkflowError"] = "Cost cannot be negative.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            var diff = new List<string>();
+            var newWork  = string.IsNullOrWhiteSpace(workPerformed) ? null : workPerformed.Trim();
+            var newParts = string.IsNullOrWhiteSpace(partsUsed) ? null : partsUsed.Trim();
+            AuditDiffHelper.Track(diff,          "Work Performed", maintenance.WorkPerformed, newWork);
+            AuditDiffHelper.Track(diff,          "Parts Used",     maintenance.PartsUsed,     newParts);
+            AuditDiffHelper.Track<decimal>(diff, "Cost",           maintenance.Cost,          cost);
+            if (diff.Count == 0)
+            {
+                TempData["Success"] = "No changes to the work details.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            maintenance.WorkPerformed = newWork;
+            maintenance.PartsUsed     = newParts;
+            maintenance.Cost          = cost;
+            AddAuditLog(maintenance.Id, "Work Recorded", null, null, AuditDiffHelper.Build(diff));
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Work details recorded.";
             return RedirectToAction(nameof(Details), new { id });
         }
 

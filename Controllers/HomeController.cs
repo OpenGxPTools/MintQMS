@@ -52,7 +52,9 @@ namespace OpenQMS.Controllers
         {
             var vm = new HomeViewModel();
             var today = SiteTime.Today;
-            var cutoff90 = today.AddDays(90);
+            var lcWarnDays = (await _context.SystemSettings.FindAsync(1))?.LcExpiryWarningDays ?? 90;
+            var cutoff90 = today.AddDays(lcWarnDays);   // LC expiry warning window (System Settings)
+            ViewBag.LcExpiryWarningDays = lcWarnDays;
 
             // ── Current user for My Items ─────────────────────────────────
             var currentUserName = _userManager.GetUserName(User) ?? string.Empty;

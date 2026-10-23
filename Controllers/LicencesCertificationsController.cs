@@ -1116,11 +1116,13 @@ namespace OpenQMS.Controllers
                 .ToDictionary(g => g.Key, g => g.Count());
             ViewBag.CategoryCounts = categoryCounts;
 
-            // Expiring within 90 days
+            // Expiring within the LC expiry warning window (System Settings)
+            var lcWarnDays = (await _context.SystemSettings.FindAsync(1))?.LcExpiryWarningDays ?? 90;
+            ViewBag.LcExpiryWarningDays = lcWarnDays;
             ViewBag.Expiring90 = all
                 .Where(r => r.ExpiryDate.HasValue
                          && r.ExpiryDate.Value.Date >= today
-                         && r.ExpiryDate.Value.Date <= today.AddDays(90)
+                         && r.ExpiryDate.Value.Date <= today.AddDays(lcWarnDays)
                          && r.Status != LCStatus.Expired
                          && r.Status != LCStatus.Withdrawn)
                 .OrderBy(r => r.ExpiryDate)

@@ -106,8 +106,13 @@ namespace OpenQMS.Controllers
 
             ViewBag.OverdueTrainings    = trainings.Where(t => t.Status == Training.TrainingStatus.Scheduled && t.DueDate.HasValue && t.DueDate.Value.Date < SiteTime.Today)
                                                    .OrderBy(t => t.DueDate).ToList();
-            ViewBag.UpcomingTrainings   = trainings.Where(t => t.Status == Training.TrainingStatus.Scheduled && (!t.DueDate.HasValue || t.DueDate.Value.Date >= SiteTime.Today))
-                                                   .OrderBy(t => t.DueDate).Take(10).ToList();
+            // Due soon: within the training due warning window (System Settings)
+            var trainWarnDays = (await _context.SystemSettings.FindAsync(1))?.TrainingDueWarningDays ?? 30;
+            ViewBag.TrainingDueWarningDays = trainWarnDays;
+            ViewBag.UpcomingTrainings   = trainings.Where(t => t.Status == Training.TrainingStatus.Scheduled && t.DueDate.HasValue
+                                                            && t.DueDate.Value.Date >= SiteTime.Today
+                                                            && t.DueDate.Value.Date <= SiteTime.Today.AddDays(trainWarnDays))
+                                                   .OrderBy(t => t.DueDate).ToList();
             ViewBag.RecentlyCompleted   = trainings.Where(t => t.Status == Training.TrainingStatus.Completed)
                                                    .OrderByDescending(t => t.CompletedOn).Take(10).ToList();
 

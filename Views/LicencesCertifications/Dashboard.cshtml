@@ -16,7 +16,7 @@
             <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>Register</a>
             <a asp-action="Calendar" class="btn btn-outline-secondary btn-sm"><i class="fas fa-calendar me-1"></i>Calendar</a>
             <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel me-1"></i>Export Register</a>
-            <a asp-action="ExpiryReport" asp-route-days="90" class="btn btn-outline-warning btn-sm"><i class="fas fa-file-excel me-1"></i>Expiry Report (90d)</a>
+            <a asp-action="ExpiryReport" asp-route-days="@(ViewBag.LcExpiryWarningDays ?? 90)" class="btn btn-outline-warning btn-sm"><i class="fas fa-file-excel me-1"></i>Expiry Report (90d)</a>
         </div>
     </div>
 
@@ -98,7 +98,7 @@
         <div class="col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-warning bg-opacity-10 fw-semibold">
-                    <i class="fas fa-clock me-1 text-warning"></i>Expiring Within 90 Days
+                    <i class="fas fa-clock me-1 text-warning"></i>Expiring Within @(ViewBag.LcExpiryWarningDays ?? 90) Days
                     <span class="badge bg-warning text-dark ms-2">@expiring90.Count</span>
                 </div>
                 <div class="card-body p-0">

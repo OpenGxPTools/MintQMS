@@ -1020,10 +1020,10 @@ else
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Licences &amp; Certs Expiring (90 days)</span>
+                <span class="fw-semibold">Licences &amp; Certs Expiring (@(ViewBag.LcExpiryWarningDays ?? 90) days)</span>
                 <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
             </div>
-            @if (!Model.LCExpiringSoon.Any()) { <div class="card-body text-muted small">No licences or certifications expiring within 90 days.</div> }
+            @if (!Model.LCExpiringSoon.Any()) { <div class="card-body text-muted small">No licences or certifications expiring within @(ViewBag.LcExpiryWarningDays ?? 90) days.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                     <thead class="table-light"><tr><th class="ps-3">LC#</th><th>Holder</th><th>Status</th><th class="pe-3">Expiry</th></tr></thead>

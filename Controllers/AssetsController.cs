@@ -134,7 +134,7 @@ namespace OpenQMS.Controllers
 
             try
             {
-                var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole);
+                var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
                 if (!isAuthorized)
                 {
                     TempData["WorkflowError"] = "You do not have permission to approve.";
@@ -230,7 +230,7 @@ namespace OpenQMS.Controllers
             var asset = await _context.Asset.FirstOrDefaultAsync(x => x.Id == id);
             if (asset == null) return NotFound();
 
-            var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole);
+            var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
             if (!isAuthorized)
             {
                 TempData["WorkflowError"] = "You do not have permission to send back for rework.";

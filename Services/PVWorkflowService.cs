@@ -32,6 +32,9 @@ namespace OpenQMS.Services
             switch (newStatus)
             {
                 case AdverseEvent.AEStatus.UnderMedicalReview:
+                    // Reject at approval returns the case to medical review; it passed the checks below on submission
+                    if (ae.Status == AdverseEvent.AEStatus.PendingApproval)
+                        break;
                     if (ae.Status != AdverseEvent.AEStatus.Draft)
                         return TransitionResult.Fail("Can only submit for review from Draft status.");
                     if (ae.IsSerious && !ae.Day0Date.HasValue)

@@ -118,7 +118,7 @@
     <div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-warning text-dark fw-semibold">
-                <i class="fas fa-calendar me-1"></i>Upcoming Trainings
+                <i class="fas fa-calendar me-1"></i>Due Within @(ViewBag.TrainingDueWarningDays ?? 30) Days
                 <span class="badge bg-dark ms-1">@upcoming.Count</span>
             </div>
             <div class="card-body p-0">
@@ -144,7 +144,7 @@
                 }
                 else
                 {
-                    <p class="text-muted p-3 mb-0">No upcoming trainings.</p>
+                    <p class="text-muted p-3 mb-0">None due within @(ViewBag.TrainingDueWarningDays ?? 30) days.</p>
                 }
             </div>
         </div>

@@ -28,6 +28,8 @@ password hash. The concurrent-login guard is cleared (`ActiveSession`) before ea
 | `test_sitetime.py` | Stored UTC shown in the site time zone (Settings), zone label, setting change audited |
 | `test_file_integrity.py` | Attachment downloads/views verify the upload SHA-256 (all 19 types); tampered files blocked + audited; uploads record the hash (needs `E2E_APP_ROOT`) |
 | `test_release_prep.py` | Account-confirmation page is Administrator-only; links use https behind a reverse proxy; image watermark banner/footer/diagonal drawn; only PNG/JPEG/GIF content decoded (needs `E2E_APP_ROOT`; optional `E2E_OUT` saves the images) |
+| `test_pv_workflow.py` | Adverse-event signed workflow incl. Reject (Pending Approval → Under Medical Review) and wrong-password refusal |
+| `test_settings_ap_maint.py` | Dashboards follow the LC/maintenance/training warning periods; Date format removed; Authorised Person approves all reference data; maintenance work recorded by the doer while In Progress |
 | `test_detail_reports.py` | Every module's per-record PDF detail report and CSV detail export |
 | `test_exports.py` | Every Export link returns a file (ClosedXML/CSV) |
 | `crawl.py` | BFS crawl of all GET-reachable pages; fails on any 5xx / exception page |

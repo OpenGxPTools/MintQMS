@@ -206,7 +206,7 @@
                     <dd class="col-sm-9">@(Model.RiskOwner ?? "—")</dd>
                     <dt class="col-sm-3">Initial RPN</dt>
                     <dd class="col-sm-9">
-                        <span class="badge @(Model.InitialRPN >= 75 ? "bg-danger" : Model.InitialRPN >= 30 ? "bg-warning text-dark" : "bg-success")">
+                        <span class="badge @(Model.InitialRPN >= 80 ? "bg-danger" : Model.InitialRPN >= 40 ? "bg-warning text-dark" : "bg-success")">
                             @Model.InitialRPN
                         </span>
                         <span class="text-muted small ms-1">(@Model.Severity &times; @Model.Probability &times; @Model.Detectability)</span>

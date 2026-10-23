@@ -58,7 +58,7 @@
         </div>
     </div>
 }
-@if ((User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole)) && Model.Status == OpenQMS.Models.Material.MaterialStatus.UnderReview)
+@if ((User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AuthorisedPersonRole)) && Model.Status == OpenQMS.Models.Material.MaterialStatus.UnderReview)
 {
     <div class="card border-primary mb-3">
         <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> Workflow Actions</div>
