@@ -208,6 +208,7 @@ namespace OpenQMS.Controllers
         // POST: Materials/SubmitForReview/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "QualityUser,QualityManager,Administrator")]
         public async Task<IActionResult> SubmitForReview(int id)
         {
             var material = await _context.Material.FirstOrDefaultAsync(x => x.Id == id);

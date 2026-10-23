@@ -93,6 +93,21 @@ for ctrl, table in [("Materials", "Material"), ("Processes", "Process"), ("Asset
     st = q1(f'select Status from "{table}" where Id=?', (rid,))["Status"]
     check(f"{ctrl}: Authorised Person can approve", st == approved, st)
 
+# ── Submit for Review is limited to Quality User / Quality Manager / Administrator ──
+tr = f"trainer-{run}@e2e.local"
+ensure_user(tr, ["Trainer"])
+st_ = login(tr)
+qu = f"qu-{run}@e2e.local"
+ensure_user(qu, ["QualityUser"])
+sq = login(qu)
+for ctrl, table in [("Products", "Product"), ("Materials", "Material"), ("Processes", "Process"),
+                    ("Assets", "Asset"), ("Services", "Service"), ("Customers", "Customer")]:
+    rid = raw_insert(table, {"Status": 0, "IsLocked": 0})
+    post_form(st_, f"/{ctrl}/SubmitForReview/{rid}", f"/{ctrl}/Details/{rid}", {})
+    check(f"{ctrl}: Trainer cannot submit for review", q1(f'select Status from "{table}" where Id=?', (rid,))["Status"] == 0)
+    post_form(sq, f"/{ctrl}/SubmitForReview/{rid}", f"/{ctrl}/Details/{rid}", {})
+    check(f"{ctrl}: Quality User can submit for review", q1(f'select Status from "{table}" where Id=?', (rid,))["Status"] == 3)
+
 # ── Maintenance: the doer records the work ───────────────────────────────────
 ops = f"ops-{run}@e2e.local"
 ensure_user(ops, ["OperationsUser"])

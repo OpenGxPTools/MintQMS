@@ -156,6 +156,7 @@ namespace OpenQMS.Controllers
         // POST: Services/SubmitForReview/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "QualityUser,QualityManager,Administrator")]
         public async Task<IActionResult> SubmitForReview(int id)
         {
             var service = await _context.Service.FirstOrDefaultAsync(x => x.Id == id);
