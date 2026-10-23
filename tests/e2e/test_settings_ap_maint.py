@@ -108,6 +108,43 @@ for ctrl, table in [("Products", "Product"), ("Materials", "Material"), ("Proces
     post_form(sq, f"/{ctrl}/SubmitForReview/{rid}", f"/{ctrl}/Details/{rid}", {})
     check(f"{ctrl}: Quality User can submit for review", q1(f'select Status from "{table}" where Id=?', (rid,))["Status"] == 3)
 
+# ── Periodic review of a document: author or document manager (QM / AP / Admin), per the SOP ──
+EFFECTIVE = 5
+qm = f"qm-{run}@e2e.local"
+ensure_user(qm, ["QualityManager"])
+sm = login(qm)
+
+
+def effective_doc():
+    did = f"DOC-R{uuid.uuid4().hex[:5]}"
+    return raw_insert("AppDocument", {"DocumentId": did, "Status": EFFECTIVE, "IsLocked": 0, "Version": 1.0,
+                                      "PeriodicReviewRequired": 1, "ReviewDueDate": day(-5),
+                                      "AuthoredBy": "someone-else@e2e.local"}), did
+
+
+doc, did = effective_doc()
+st_ = login(tr)          # login() resets the single-session guard, so sign in again right before use
+post_form(st_, f"/AppDocuments/InitiatePeriodicReview/{doc}", f"/AppDocuments/Library",
+          {"InputEmail": tr, "InputPassword": PW})
+check("Trainer (not author) cannot initiate periodic review",
+      q1("select count(*) n from AppDocument where DocumentId=?", (did,))["n"] == 1)
+sm = login(qm)
+page = get(sm, f"/AppDocuments/Details/{doc}").text
+check("Quality Manager sees Initiate periodic review", "InitiatePeriodicReview" in page)
+post_form(sm, f"/AppDocuments/InitiatePeriodicReview/{doc}", f"/AppDocuments/Details/{doc}",
+          {"InputEmail": qm, "InputPassword": PW})
+new = q("select AuthoredBy, Status from AppDocument where DocumentId=? and Id<>?", (did, doc))
+check("Quality Manager (not author) can initiate periodic review: new draft version created",
+      len(new) == 1 and new[0]["Status"] == 0, [dict(r) for r in new])
+check("initiator becomes author of the new version", len(new) == 1 and new[0]["AuthoredBy"] == qm)
+
+doc2, did2 = effective_doc()
+sa = login(ap)
+post_form(sa, f"/AppDocuments/InitiatePeriodicReview/{doc2}", f"/AppDocuments/Details/{doc2}",
+          {"InputEmail": ap, "InputPassword": PW})
+check("Authorised Person can initiate periodic review",
+      q1("select count(*) n from AppDocument where DocumentId=?", (did2,))["n"] == 2)
+
 # ── Maintenance: the doer records the work ───────────────────────────────────
 ops = f"ops-{run}@e2e.local"
 ensure_user(ops, ["OperationsUser"])

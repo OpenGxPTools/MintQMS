@@ -38,7 +38,8 @@
                        && (Model.Status == AppDocument.DocumentStatus.Approved || Model.Status == AppDocument.DocumentStatus.Effective);
     bool canIssue    = (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Approve)).Succeeded
                        && Model.Status == AppDocument.DocumentStatus.Approved;
-    bool canInitiateReview = (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Update)).Succeeded
+    bool canInitiateReview = ((await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Update)).Succeeded
+                              || (await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Approve)).Succeeded)
                              && Model.Status == AppDocument.DocumentStatus.Effective
                              && Model.PeriodicReviewRequired
                              && !Model.IsLocked

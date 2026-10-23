@@ -749,8 +749,11 @@ namespace OpenQMS.Controllers
             var document = await _context.AppDocument.FirstOrDefaultAsync(m => m.Id == id);
             if (document == null) return NotFound();
 
-            var isAuthorized = await _authorizationService.AuthorizeAsync(User, document, DocumentOperations.Update);
-            if (!isAuthorized.Succeeded) return Forbid();
+            // The author, or a document manager (Quality Manager / Authorised Person / Administrator), per the
+            // Document Control SOP. The initiator becomes the author of the new version (Reassign author can hand it on).
+            var isAuthorized = (await _authorizationService.AuthorizeAsync(User, document, DocumentOperations.Update)).Succeeded
+                            || (await _authorizationService.AuthorizeAsync(User, document, DocumentOperations.Approve)).Succeeded;
+            if (!isAuthorized) return Forbid();
 
             if (document.Status != AppDocument.DocumentStatus.Effective || document.IsLocked)
             {

@@ -1409,8 +1409,8 @@ download is watermarked with the document's status.
 | Submit for review | The author / Administrator |
 | **Approve; Reject; Issue** | **Quality Manager, Authorised Person or Administrator** |
 | Return for rework | Quality Manager / Authorised Person / Administrator |
-| Obsolete | The author / Quality Manager / Authorised Person / Administrator |
-| Initiate periodic review | Quality Manager / Authorised Person / Administrator |
+| Obsolete | Quality Manager / Authorised Person / Administrator |
+| Initiate periodic review | The document's author, Quality Manager, Authorised Person or Administrator |
 | Reassign author (in-progress drafts) | Quality Manager / Authorised Person / Administrator |
 | Delete | Administrator |
 
@@ -1424,8 +1424,8 @@ download is watermarked with the document's status.
 | Reject | Under Review → Rejected | **QM/AP/Admin** |
 | Issue (manual) | Approved → Effective | **QM/AP/Admin** |
 | Becomes effective automatically | Approved → Effective when all assigned training is complete | system |
-| Initiate periodic review | Effective → Under Review | QM/AP/Admin |
-| Obsolete | Approved/Effective → Obsolete | Author/QM/AP/Admin |
+| Initiate periodic review | Effective → new draft version | Author/QM/AP/Admin |
+| Obsolete | Approved/Effective → Obsolete | QM/AP/Admin |
 
 **Step-by-step walkthrough.**
 1. **Draft.** *Documents → Document Register → Create.* Author the document and upload the file. It starts in
@@ -1448,11 +1448,12 @@ and you can always see what was effective at any point.
 - **How a review is prompted.** If a document is marked for **periodic review**, a **review-due date** is set
   when it is approved. The home dashboard then flags documents whose review is **overdue** or **due within 30
   days**, so the cycle is prompted rather than relying on memory.
-- **Running a review / revision.** A Quality Manager, Authorised Person or Administrator uses **Initiate periodic review** on the
+- **Running a review / revision.** The document's author, a Quality Manager, an Authorised Person or an Administrator uses **Initiate periodic review** on the
   Effective document (available once its review-due date has passed). This opens a **new version** as a draft
   and runs it through Draft → Under Review → Approved/Effective again. While in draft the new version carries a
   minor number; on approval it is rounded up to the next whole version, the newly effective version supersedes
-  the previous one, and the previous version is kept in the history.
+  the previous one, and the previous version is kept in the history. Whoever initiates the review becomes the
+  author of the new version; a manager can hand the drafting to someone else with **Reassign author**.
 
 **Handling exceptions.**
 - **Return for rework:** a reviewer can send the document back to Draft for revision (signed).
