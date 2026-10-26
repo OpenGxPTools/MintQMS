@@ -104,3 +104,22 @@ the [GNU Affero General Public License](LICENSE) for more details.
 If you run a modified version of MintQMS for other people to use over a network, the AGPL requires you to
 offer them your modified source code. Set `SourceCodeUrl` (see [DEPLOYMENT.md](DEPLOYMENT.md)) so that the
 application's "Source code" link points to it.
+
+### Can my company use MintQMS?
+
+Yes. A plain-English summary for IT and Legal teams follows. It is not legal advice; the [licence](LICENSE)
+itself is what applies.
+
+- **Installing and using MintQMS unchanged**, for your own quality system, costs nothing and puts no
+  obligation on you. You do not have to publish anything about your company, your data or your
+  configuration.
+- **Your data stays yours.** Records, documents, users and settings held in MintQMS are not covered by the
+  licence and never have to be shared.
+- **Configuring it is not modifying it.** Settings, roles, users, reference data and your logo are all
+  changed through the application, not by editing its code.
+- **If you change the source code** and people use your changed version over a network, which can include
+  your own staff, you must offer those users the changed source code under the same licence. For internal use,
+  that means making it available to them, not publishing it to the world.
+- **You may charge for services** around MintQMS, such as hosting, installation, validation or support.
+
+Many organisations already run AGPL-licensed self-hosted software, for example Nextcloud and Grafana.
