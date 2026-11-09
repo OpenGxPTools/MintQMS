@@ -20,6 +20,7 @@
   words and phrases shared across screens (buttons, column headings, common labels), table controls
   (search, paging), built-in validation messages and password rules — 1,035 entries in each language.
   Module-specific page text follows in later releases; until then it shows in English.
+- Each page declares the language it is shown in (`<html lang>`), for screen readers and browsers.
 - Records never change language: audit trails, record fields, PDFs and stored values stay English
   whatever language the user has chosen (tested).
 - The menu bar wraps onto a second row when it does not fit, instead of pushing *Logout* off-screen

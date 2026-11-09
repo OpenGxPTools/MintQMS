@@ -110,7 +110,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account
 
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
-                ModelState.AddModelError(string.Empty, ErrorMessage);
+                ModelState.AddModelError(string.Empty, this.T(ErrorMessage));   // shown only; the English text is the key
             }
 
             returnUrl ??= Url.Content("~/");

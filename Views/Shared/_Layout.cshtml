@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @{ var _layoutSettings = await _layoutDb.SystemSettings.FindAsync(1); }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

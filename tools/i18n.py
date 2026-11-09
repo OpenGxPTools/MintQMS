@@ -98,6 +98,9 @@ def display_keys():
             text = open(f, encoding="utf-8-sig", errors="replace").read()
             for m in re.finditer(r'\[Display\([^)]*Name\s*=\s*"((?:[^"\\]|\\.)*)"[^\]]*\]\s*(?:\[[^\]]*\]\s*)*public\s', text):
                 used.setdefault(unescape_cs(m.group(1)), set()).add("label " + os.path.relpath(f, ROOT))
+            # custom validation messages ([Required(ErrorMessage = "…")], [StringLength(…, ErrorMessage = "…")], …)
+            for m in re.finditer(r'ErrorMessage\s*=\s*"((?:[^"\\]|\\.)*)"', text):
+                used.setdefault(unescape_cs(m.group(1)), set()).add("validation " + os.path.relpath(f, ROOT))
     return used
 
 
@@ -176,8 +179,9 @@ def problems(data, used):
                 errs.append(f"DataTables tokens differ ({lang}): {key!r} → {v!r}")
             if sorted(PLACEHOLDER.findall(key)) != sorted(PLACEHOLDER.findall(v)):
                 errs.append(f"placeholders differ ({lang}): {key!r} → {v!r}")
-            if re.search(r"<[a-zA-Z/]", v) and not re.search(r"<[a-zA-Z/]", key):
-                errs.append(f"HTML in translation ({lang}): {key!r} → {v!r}")
+            tags = lambda s: sorted(re.findall(r"</?[a-zA-Z][^>]*>", s))
+            if tags(key) != tags(v):
+                errs.append(f"HTML tags differ from the English ({lang}): {key!r} → {v!r}")
             if key[:1].isspace() != v[:1].isspace() or key[-1:].isspace() != v[-1:].isspace():
                 errs.append(f"leading/trailing space differs ({lang}): {key!r} → {v!r}")
     for key in sorted(set(data) - set(used)):
@@ -199,7 +203,8 @@ def main():
         errs, warns = problems(data, used)
         missing = sorted(k for k in used if k not in data and k.strip())
         lits = literal_keys()
-        missing_lit = [k for k in missing if k in lits]   # written in code as L["…"] but no entry yet
+        must = set(lits) | {k for k, w in used.items() if any(x.startswith("validation ") for x in w)}
+        missing_lit = [k for k in missing if k in must]   # L["…"] / custom validation message with no entry yet
         for w in warns:
             print("  · " + w)
         for k in missing_lit:
