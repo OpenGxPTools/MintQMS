@@ -16,7 +16,7 @@
         OpenQMS.Models.Maintenance.MaintenanceStatus.Suspended  => "bg-secondary",
         _                                                        => "bg-secondary"
     };
-    var statusLabel = EnumHelper.Display(Model.Status);
+    var statusLabel = L.Enum(Model.Status);
     var isApproved  = Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Reviewed
                    || Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Approved;
     var isSuspended = Model.Status == OpenQMS.Models.Maintenance.MaintenanceStatus.Suspended;
@@ -307,7 +307,7 @@
                 <dt class="col-sm-3">Next Occurrence</dt>
                 <dd class="col-sm-9">
                     <a asp-action="Details" asp-route-id="@child.Id">@child.MaintenanceId</a>
-                    &mdash; @EnumHelper.Display(child.Status) | Scheduled @child.ScheduledDate.ToShortDateString()
+                    &mdash; @LocalizerExtensions.Enum(L, (System.Enum?)child.Status) | Scheduled @child.ScheduledDate.ToShortDateString()
                 </dd>
             }
         </dl>

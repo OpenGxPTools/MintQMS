@@ -23,7 +23,7 @@
             <dt class="col-sm-4">@Html.DisplayNameFor(m => m.CustomerType)</dt>
             <dd class="col-sm-8">@Model.CustomerType</dd>
             <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Status)</dt>
-            <dd class="col-sm-8">@EnumHelper.Display(Model.Status)</dd>
+            <dd class="col-sm-8">@L.Enum(Model.Status)</dd>
             <dt class="col-sm-4">@Html.DisplayNameFor(m => m.EditedBy)</dt>
             <dd class="col-sm-8">@(Model.EditedBy ?? "-")</dd>
             <dt class="col-sm-4">@Html.DisplayNameFor(m => m.EditedOn)</dt>

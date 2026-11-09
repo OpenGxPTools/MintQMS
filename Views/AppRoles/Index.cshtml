@@ -42,7 +42,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         @foreach (var item in Model)
         {
             <tr>
-                <td><strong>@EnumHelper.RoleName(item.Name)</strong></td>
+                <td><strong>@L.Role(item.Name)</strong></td>
                 <td class="text-muted">@item.Description</td>
             </tr>
         }

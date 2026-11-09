@@ -31,7 +31,7 @@
         <h4 class="mb-0">Training &mdash; <span class="fw-bold">@Model.TrainingId</span></h4>
         <small class="text-muted">@Model.Name</small>
     </div>
-    <span class="badge @statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+    <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
 </div>
 <hr />
 
@@ -156,7 +156,7 @@
                     </dd>
 
                     <dt class="col-sm-3">Status</dt>
-                    <dd class="col-sm-9"><span class="badge @statusBadge">@EnumHelper.Display(Model.Status)</span></dd>
+                    <dd class="col-sm-9"><span class="badge @statusBadge">@L.Enum(Model.Status)</span></dd>
                 </dl>
             </div>
         </div>
@@ -254,7 +254,7 @@
                                 <strong>@(ut.Trainee.UserName)</strong><br />
                                 <small class="text-muted">@ut.Trainee.Email</small>
                             </td>
-                            <td><span class="badge @utBadge">@EnumHelper.Display(ut.Status)</span></td>
+                            <td><span class="badge @utBadge">@L.Enum(ut.Status)</span></td>
                             @if (isCA)
                             {
                                 @if (ut.ReadAcknowledgedOn.HasValue)

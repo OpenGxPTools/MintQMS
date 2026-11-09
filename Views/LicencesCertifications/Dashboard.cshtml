@@ -119,7 +119,7 @@
                                     <td><a asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
                                     <td>@r.ExpiryDate!.Value.ToString("dd MMM yyyy")</td>
                                     <td>@(d < 0 ? $"Expired {Math.Abs(d)}d ago" : $"{d}d")</td>
-                                    <td><span class="badge bg-secondary">@EnumHelper.Display(r.Status)</span></td>
+                                    <td><span class="badge bg-secondary">@L.Enum(r.Status)</span></td>
                                 </tr>
                             }
                             </tbody>
@@ -262,7 +262,7 @@
                                     <td><a asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
                                     <td>@r.RFIResponseDueDate!.Value.ToString("dd MMM yyyy")</td>
                                     <td>@d days overdue</td>
-                                    <td><span class="badge bg-danger">@EnumHelper.Display(r.Status)</span></td>
+                                    <td><span class="badge bg-danger">@L.Enum(r.Status)</span></td>
                                 </tr>
                             }
                             </tbody>

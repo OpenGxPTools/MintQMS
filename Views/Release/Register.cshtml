@@ -76,7 +76,7 @@
                 <td>@c.APFullNameQualification</td>
                 <td>@(c.ReleaseRecord?.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</td>
                 <td>@c.IssuedDate.ToSite().ToString("dd-MMM-yyyy")</td>
-                <td><span class="badge @cbadge">@EnumHelper.Display(c.Status)</span></td>
+                <td><span class="badge @cbadge">@L.Enum(c.Status)</span></td>
                 <td>
                     <a asp-action="ViewCertificate" asp-route-certificateId="@c.Id" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
                 </td>

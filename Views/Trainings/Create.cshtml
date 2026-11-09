@@ -89,7 +89,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="col-md-6">
                     <label class="form-label">Role</label>
                     <select name="roles" class="form-select"
-                            asp-items='new SelectList(roles.Select(r => new { Value = r.Name, Text = EnumHelper.RoleName(r.Name) }), "Value", "Text")'></select>
+                            asp-items='new SelectList(roles.Select(r => new { Value = r.Name, Text = L.Role(r.Name) }), "Value", "Text")'></select>
                 </div>
             </div>
         </div>

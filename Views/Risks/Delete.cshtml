@@ -38,7 +38,7 @@
             <dt class="col-sm-4">Linked To</dt>
             <dd class="col-sm-8">@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</dd>
             <dt class="col-sm-4">Status</dt>
-            <dd class="col-sm-8">@EnumHelper.Display(Model.Status)</dd>
+            <dd class="col-sm-8">@L.Enum(Model.Status)</dd>
         </dl>
     </div>
 </div>

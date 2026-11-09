@@ -76,7 +76,7 @@ else
                     <td>
                         @if (entry.Action == "Role Added" || entry.Action == "Role Removed")
                         {
-                            @EnumHelper.RoleName(entry.Detail)
+                            @L.Role(entry.Detail)
                         }
                         else
                         {

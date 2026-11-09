@@ -189,7 +189,7 @@
                         <tr class="table-danger">
                             <td><a asp-action="Details" asp-route-id="@d.Id">@d.DeviationId</a></td>
                             <td>@d.Title</td>
-                            <td>@EnumHelper.Display(d.Status)</td>
+                            <td>@L.Enum(d.Status)</td>
                             <td>@d.TargetResolutionDate!.Value.ToShortDateString()</td>
                             <td><strong>@over days</strong></td>
                         </tr>
@@ -218,7 +218,7 @@
                         <tr class="table-warning">
                             <td><a asp-action="Details" asp-route-id="@d.Id">@d.DeviationId</a></td>
                             <td>@d.Title</td>
-                            <td>@EnumHelper.Display(d.Status)</td>
+                            <td>@L.Enum(d.Status)</td>
                             <td>@d.IdentifiedOn.ToSite().ToShortDateString()</td>
                             <td><strong>@age days</strong></td>
                         </tr>

@@ -6,7 +6,7 @@ Run twice:
                                            →  menu offered; the choice is remembered; dates, numbers
                                               and every record stay exactly as they were.
 """
-import os, re
+import os, re, uuid
 from bs4 import BeautifulSoup
 from e2e_lib import *
 
@@ -87,13 +87,17 @@ else:
     check("enabled: date heading unchanged with Spanish selected (format culture pinned)",
           m_en and m_es and m_en.group(0) == m_es.group(0), (m_en and m_en.group(0), m_es and m_es.group(0)))
 
-    # Nothing is translated yet, so every page must read exactly as in English.
-    for path in ["/", "/AppDocuments", "/AppDocuments/Create", "/Deviations", "/Trainings", "/Settings"]:
-        a = visible(get(s, path).text)   # Spanish (cookie on the session)
-        s_en = requests.Session(); s_en.cookies.update({k: v for k, v in s.cookies.items() if k != ".MintQMS.Language"})
-        b = visible(s_en.get(BASE + path).text)
-        check(f"enabled: {path} reads the same in Spanish as in English (no translations yet)", a == b,
-              [w for w in set(a.split()) ^ set(b.split())][:10])
+    # Translated pages: Spanish menus in Spanish, English untouched, never a raw key on screen.
+    s_en = requests.Session(); s_en.cookies.update({k: v for k, v in s.cookies.items() if k != ".MintQMS.Language"})
+    for path in ["/", "/AppDocuments", "/AppDocuments/Create", "/Deviations", "/Deviations/Create", "/Trainings", "/Settings"]:
+        es_html, en_html = get(s, path).text, s_en.get(BASE + path).text
+        nav = BeautifulSoup(es_html, "html.parser").find("nav")
+        nav_text = " ".join(nav.get_text(" ").split()) if nav else ""
+        check(f"enabled: {path} shows the menu in Spanish", "Eventos de calidad" in nav_text and "Quality Events" not in nav_text, nav_text[:120])
+        check(f"enabled: {path} stays English without the cookie", "Quality Events" in en_html and "Eventos de calidad" not in en_html)
+        leaks = re.findall(r'@?\b[LH]\["[^"]{0,40}', visible(es_html) + visible(en_html))
+        check(f"enabled: {path} shows no raw translation key", not leaks, leaks[:3])
+    check("enabled: the home date heading stays the server format in Spanish", m_en and m_es and m_en.group(0) == m_es.group(0))
 
     r = set_lang(s, "pt-br", page="/")
     check("enabled: language codes accepted in any case", r.status_code == 302 and "uic%3Dpt-BR" in r.headers.get("Set-Cookie", ""),
@@ -112,5 +116,36 @@ else:
           r.status_code in (302, 403) and after == before and
           (r.status_code == 403 or "AccessDenied" in r.headers.get("Location", "")),
           (r.status_code, r.headers.get("Location"), before, after))
+
+    # Records stay English whatever the screen language: create a deviation with Spanish selected,
+    # then scan every audit-trail table for any Spanish or Portuguese wording.
+    import json as _json
+    es = login()
+    es.cookies.set(".MintQMS.Language", "c%3Des%7Cuic%3Des")
+    page = get(es, "/Deviations/Create").text
+    form = form_fields(page, "/Deviations/Create")
+    title = "lang-record-check " + uuid.uuid4().hex[:6]
+    form.update({"Title": title, "Identification": "Raised from the language test"})
+    r = es.post(BASE + "/Deviations/Create", data=form, allow_redirects=False)
+    dev = q1("select Id from Deviation where Title=?", (title,))
+    check("records: a deviation can be created with Spanish selected", r.status_code == 302 and dev is not None,
+          (r.status_code, r.headers.get("Location")))
+    if dev:
+        log = q("select Action, FromStatus, ToStatus from DeviationAuditLog where ParentId=?", (dev["Id"],))
+        check("records: its audit entry is written in English codes", any(row["Action"] == "Created" for row in log),
+              [dict(x) for x in log])
+    tr = _json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..",
+                                       "Resources", "Localization", "translations.json"), encoding="utf-8"))
+    foreign = {v for k, e in tr.items() for lang, v in e.items()
+               if lang in ("es", "pt-BR") and v and v != k and len(v) >= 6 and not v.isupper()}
+    found = []
+    for (tbl,) in [tuple(x) for x in q("select name from sqlite_master where type='table' and name like '%Audit%Log%'")]:
+        cols = [c["name"] for c in q(f"pragma table_info('{tbl}')") if c["type"].upper().startswith(("TEXT", "NVARCHAR", "VARCHAR"))]
+        for c in cols:
+            for (val,) in [tuple(x) for x in q(f'select distinct "{c}" from "{tbl}" where "{c}" is not null')]:
+                for f in foreign:
+                    if re.search(r"(?<![\w])" + re.escape(f) + r"(?![\w])", str(val)):
+                        found.append((tbl, c, f, str(val)[:60]))
+    check("records: no Spanish/Portuguese wording in any audit trail", not found, found[:5])
 
 sys.exit(summary())

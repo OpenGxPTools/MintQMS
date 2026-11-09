@@ -19,7 +19,7 @@
     <h4 class="mb-0">
         <i class="fas fa-broadcast-tower me-2 text-warning"></i>
         Signal Review — <em>@Model.MedDRAPT</em>
-        <span class="badge bg-@statusClass ms-2">@EnumHelper.Display(Model.Status)</span>
+        <span class="badge bg-@statusClass ms-2">@L.Enum(Model.Status)</span>
     </h4>
     <div>
         @if (Model.Status != PVSignalReview.SignalStatus.Closed &&
@@ -59,7 +59,7 @@
     <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center py-2">
         <i class="fas fa-exchange-alt me-2 text-primary"></i>
         <strong class="text-primary">Workflow Actions</strong>
-        <span class="ms-2 text-muted small">Current status: <strong>@EnumHelper.Display(Model.Status)</strong></span>
+        <span class="ms-2 text-muted small">Current status: <strong>@L.Enum(Model.Status)</strong></span>
     </div>
     <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
         @if (Model.Status == PVSignalReview.SignalStatus.Open)
@@ -146,7 +146,7 @@
                     </dd>
 
                     <dt class="col-sm-5">Status</dt>
-                    <dd class="col-sm-7"><span class="badge bg-@statusClass">@EnumHelper.Display(Model.Status)</span></dd>
+                    <dd class="col-sm-7"><span class="badge bg-@statusClass">@L.Enum(Model.Status)</span></dd>
                 </dl>
             </div>
         </div>
@@ -204,7 +204,7 @@
                 @linkedCapa.CapaId
             </a>
             — @linkedCapa.Title
-            <span class="badge bg-secondary ms-2">@EnumHelper.Display(linkedCapa.Status)</span>
+            <span class="badge bg-secondary ms-2">@L.Enum(linkedCapa.Status)</span>
         </div>
     </div>
 }
@@ -241,7 +241,7 @@
                                 else { <span class="text-muted">No</span> }
                             </td>
                             <td>@(ae.Outcome?.ToString() ?? "—")</td>
-                            <td><span class="badge bg-secondary">@EnumHelper.Display(ae.Status)</span></td>
+                            <td><span class="badge bg-secondary">@L.Enum(ae.Status)</span></td>
                             <td>
                                 <a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@ae.Id"
                                    class="btn btn-sm btn-outline-primary">View</a>

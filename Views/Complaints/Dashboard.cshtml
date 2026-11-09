@@ -232,7 +232,7 @@
                                 <tr class="table-danger">
                                     <td><a asp-action="Details" asp-route-id="@c.Id">@c.ComplaintId</a></td>
                                     <td>@c.Title</td>
-                                    <td>@EnumHelper.Display(c.Status)</td>
+                                    <td>@L.Enum(c.Status)</td>
                                     <td>@(c.Customer?.LegalName ?? "-")</td>
                                 </tr>
                             }
@@ -267,7 +267,7 @@
                             <td><a asp-action="Details" asp-route-id="@c.Id">@c.ComplaintId</a></td>
                             <td>@c.Title</td>
                             <td><span class="badge @sev">@c.Severity</span></td>
-                            <td>@EnumHelper.Display(c.Status)</td>
+                            <td>@L.Enum(c.Status)</td>
                             <td>@c.ReceivedOn.ToSite().ToShortDateString()</td>
                             <td><strong>@age</strong></td>
                         </tr>

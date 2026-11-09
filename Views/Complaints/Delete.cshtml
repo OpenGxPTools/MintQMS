@@ -35,7 +35,7 @@
         <dd class="col-sm-10">@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</dd>
 
         <dt class="col-sm-2">Status</dt>
-        <dd class="col-sm-10">@EnumHelper.Display(Model.Status)</dd>
+        <dd class="col-sm-10">@L.Enum(Model.Status)</dd>
     </dl>
 
     <form asp-action="Delete">

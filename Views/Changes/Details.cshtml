@@ -21,7 +21,7 @@
         _                                                    => "bg-secondary"
     };
 
-    var statusLabel = EnumHelper.Display(s);
+    var statusLabel = L.Enum(s);
 
     var today = SiteTime.Today;
     var isOverdue = Model.TargetImplementationDate.HasValue
@@ -268,11 +268,11 @@ else if (isApproaching)
                     @if (showAssessment)
                     {
                         <dt class="col-sm-4">Risk Classification</dt>
-                        <dd class="col-sm-8">@(Model.RiskClassification.HasValue ? EnumHelper.Display(Model.RiskClassification.Value) : "-")</dd>
+                        <dd class="col-sm-8">@(Model.RiskClassification.HasValue ? L.Enum(Model.RiskClassification.Value) : "-")</dd>
                         <dt class="col-sm-4">Change Type</dt>
-                        <dd class="col-sm-8">@(Model.ChangeType.HasValue ? EnumHelper.Display(Model.ChangeType.Value) : "-")</dd>
+                        <dd class="col-sm-8">@(Model.ChangeType.HasValue ? L.Enum(Model.ChangeType.Value) : "-")</dd>
                         <dt class="col-sm-4">Nature</dt>
-                        <dd class="col-sm-8">@(Model.Nature.HasValue ? EnumHelper.Display(Model.Nature.Value) : "-")</dd>
+                        <dd class="col-sm-8">@(Model.Nature.HasValue ? L.Enum(Model.Nature.Value) : "-")</dd>
                     }
                 </dl>
 
@@ -463,7 +463,7 @@ else if (isApproaching)
                                             <select name="rowStatus" class="form-select form-select-sm ap-status">
                                                 @foreach (var st in actionStatuses)
                                                 {
-                                                    <option value="@((int)st)" selected="@(it.Status == st)">@EnumHelper.Display(st)</option>
+                                                    <option value="@((int)st)" selected="@(it.Status == st)">@L.Enum(st)</option>
                                                 }
                                             </select>
                                         </td>
@@ -480,7 +480,7 @@ else if (isApproaching)
                         @if (suggestedActions.Any())
                         {
                             <button type="button" class="btn btn-outline-primary btn-sm" id="apLoadSuggested"
-                                    title="Insert the suggested actions for @EnumHelper.Display(Model.ChangeType!.Value)">
+                                    title="Insert the suggested actions for @L.Enum(Model.ChangeType!.Value)">
                                 <i class="bi bi-lightbulb me-1"></i>Load suggested actions
                             </button>
                         }
@@ -488,7 +488,7 @@ else if (isApproaching)
                     </div>
                 </form>
                 <div class="d-none" id="apStatusOptions">
-                    @foreach (var st in actionStatuses) { <span data-val="@((int)st)">@EnumHelper.Display(st)</span> }
+                    @foreach (var st in actionStatuses) { <span data-val="@((int)st)">@L.Enum(st)</span> }
                 </div>
                 <div class="d-none" id="apSuggested">
                     @foreach (var a in suggestedActions) { <span>@a</span> }
@@ -530,7 +530,7 @@ else if (isApproaching)
                                             <select name="rowStatus" class="form-select form-select-sm ap-status">
                                                 @foreach (var st in actionStatuses)
                                                 {
-                                                    <option value="@((int)st)" selected="@(it.Status == st)">@EnumHelper.Display(st)</option>
+                                                    <option value="@((int)st)" selected="@(it.Status == st)">@L.Enum(st)</option>
                                                 }
                                             </select>
                                         </td>
@@ -546,7 +546,7 @@ else if (isApproaching)
                     </div>
                 </form>
                 <div class="d-none" id="apStatusOptions">
-                    @foreach (var st in actionStatuses) { <span data-val="@((int)st)">@EnumHelper.Display(st)</span> }
+                    @foreach (var st in actionStatuses) { <span data-val="@((int)st)">@L.Enum(st)</span> }
                 </div>
             }
             else
@@ -565,7 +565,7 @@ else if (isApproaching)
                                         <td>@it.Action</td>
                                         <td>@(it.Owner ?? "-")</td>
                                         <td>@(it.TargetDate?.ToShortDateString() ?? "-")</td>
-                                        <td>@EnumHelper.Display(it.Status)</td>
+                                        <td>@L.Enum(it.Status)</td>
                                         <td>@(it.EvidenceReference ?? "-")</td>
                                         <td>@(it.CompletedDate?.ToShortDateString() ?? "-")</td>
                                     </tr>

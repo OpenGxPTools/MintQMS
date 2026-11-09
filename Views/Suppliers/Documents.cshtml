@@ -74,7 +74,7 @@
 else
 {
     <div class="alert alert-secondary">
-        <i class="bi bi-lock me-1"></i>Documents are locked while the supplier is <strong>@EnumHelper.Display(Model.Status)</strong>.
+        <i class="bi bi-lock me-1"></i>Documents are locked while the supplier is <strong>@L.Enum(Model.Status)</strong>.
         To add or replace documents (for example a renewed certificate), start a new review from
         <a asp-action="Reviews" asp-route-id="@Model.Id">Review History</a> — the documents reopen while the review is in progress.
     </div>

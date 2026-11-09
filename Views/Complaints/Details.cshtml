@@ -23,7 +23,7 @@
         OpenQMS.Models.Complaint.ComplaintStatus.Closed            => "bg-success",
         _ => "bg-secondary"
     };
-    var statusLabel = EnumHelper.Display(Model.Status);
+    var statusLabel = L.Enum(Model.Status);
 
     bool isQM = User.IsInRole("Administrator") || User.IsInRole("QualityManager") || User.IsInRole("AuthorisedPerson");
     bool isQU = isQM || User.IsInRole("QualityUser");
@@ -431,7 +431,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                     {
                         <tr>
                             <td><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@ae.Id">@ae.AENumber</a></td>
-                            <td><span class="badge bg-secondary">@EnumHelper.Display(ae.Status)</span></td>
+                            <td><span class="badge bg-secondary">@L.Enum(ae.Status)</span></td>
                             <td>@Html.Raw(ae.IsSerious ? "<span class=\"badge bg-danger\">Serious</span>" : "-")</td>
                             <td>@(SiteTime.ToSite((DateTime)ae.ReportDate).ToString("dd MMM yyyy"))</td>
                             <td>

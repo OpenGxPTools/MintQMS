@@ -27,8 +27,8 @@
                     _ => "secondary"
                 };
             }
-            <span class="badge bg-@statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
-            <span class="badge bg-info text-dark">@EnumHelper.Display(Model.PathwayType)</span>
+            <span class="badge bg-@statusBadge fs-6">@L.Enum(Model.Status)</span>
+            <span class="badge bg-info text-dark">@L.Enum(Model.PathwayType)</span>
             @if (Model.AEReportingRequired) { <span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle me-1"></i>AE Reporting Required</span> }
             @if (Model.ExpiryDate.HasValue && Model.ExpiryDate < SiteTime.Today) { <span class="badge bg-danger">Expired</span> }
             <span class="text-muted small">@authority — @Model.Application?.RINumber</span>
@@ -56,8 +56,8 @@
     <div class="card-body">
         <div class="row g-3">
             <div class="col-md-3"><label class="text-muted small">AP Number</label><div class="fw-bold">@Model.AccessNumber</div></div>
-            <div class="col-md-3"><label class="text-muted small">Pathway Type</label><div>@EnumHelper.Display(Model.PathwayType)</div></div>
-            <div class="col-md-3"><label class="text-muted small">Status</label><div><span class="badge bg-@statusBadge">@EnumHelper.Display(Model.Status)</span></div></div>
+            <div class="col-md-3"><label class="text-muted small">Pathway Type</label><div>@L.Enum(Model.PathwayType)</div></div>
+            <div class="col-md-3"><label class="text-muted small">Status</label><div><span class="badge bg-@statusBadge">@L.Enum(Model.Status)</span></div></div>
             <div class="col-md-3"><label class="text-muted small">AE Reporting</label><div>@(Model.AEReportingRequired ? "Required" : "Not required")</div></div>
 
             <div class="col-md-3"><label class="text-muted small">Patient Identifier</label><div>@(Model.PatientIdentifier ?? "—")</div></div>
@@ -143,7 +143,7 @@
                                 <td class="small">@r.QuantitySupplied @r.Unit</td>
                                 <td class="small">@(r.SubmittedToAuthorityDate?.ToString("dd MMM yyyy") ?? "—")</td>
                                 <td class="small">@(r.AuthorityReferenceNumber ?? "—")</td>
-                                <td><span class="badge bg-@rBadge">@EnumHelper.Display(r.Status)</span></td>
+                                <td><span class="badge bg-@rBadge">@L.Enum(r.Status)</span></td>
                                 <td class="small text-muted">@(r.Notes ?? "—")</td>
                                 <td class="text-nowrap">
                                     <button type="button" class="btn btn-sm btn-outline-primary edit-report-btn"

@@ -101,7 +101,7 @@
                 if (item.Material != null) iLinked.Add(item.Material.Name);
                 if (item.Supplier != null) iLinked.Add(item.Supplier.LegalName);
             }
-            var statusLabel = EnumHelper.Display(item.Status);
+            var statusLabel = L.Enum(item.Status);
             var statusBadge = item.Status switch
             {
                 OpenQMS.Models.Risk.RiskStatus.Identification    => "bg-secondary",

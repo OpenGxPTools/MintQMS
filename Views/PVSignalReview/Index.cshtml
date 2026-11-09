@@ -58,7 +58,7 @@
                         : s.AssignedTo;
                 }
                 <td>@if (assigneeLabel != null) { @assigneeLabel } else { <span class="text-muted">Unassigned</span> }</td>
-                <td><span class="badge bg-@statusClass">@EnumHelper.Display(s.Status)</span></td>
+                <td><span class="badge bg-@statusClass">@L.Enum(s.Status)</span></td>
                 <td>
                     @if (s.Conclusion.HasValue)
                     {

@@ -141,7 +141,7 @@
                 <td>@item.AuthoredOn.ToSite().ToString("dd/MM/yyyy")</td>
                 <td>@(item.ApprovedBy ?? "-")</td>
                 <td>@(item.ApprovedOn.HasValue ? item.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy") : "-")</td>
-                <td>@EnumHelper.Display(item.Status)</td>
+                <td>@L.Enum(item.Status)</td>
                 <td style="display:none">@item.IsExternal.ToString().ToLower()</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>

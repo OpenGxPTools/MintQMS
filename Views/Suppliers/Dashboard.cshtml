@@ -226,9 +226,9 @@
                         <tr>
                             <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
                             <td>@s.LegalName</td>
-                            <td><span class="badge bg-success">@EnumHelper.Display(s.ApprovalStatus!.Value)</span></td>
-                            <td>@EnumHelper.Display(s.Status)</td>
-                            <td>@EnumHelper.Display(s.ReviewTrigger)</td>
+                            <td><span class="badge bg-success">@L.Enum(s.ApprovalStatus!.Value)</span></td>
+                            <td>@L.Enum(s.Status)</td>
+                            <td>@L.Enum(s.ReviewTrigger)</td>
                             <td>@(reReviewStart.TryGetValue(s.Id, out var started) ? started.ToSite().ToString("dd/MM/yyyy") : "-")</td>
                         </tr>
                     }
@@ -328,7 +328,7 @@
                             <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
                             <td>@s.LegalName</td>
                             <td>@s.SupplierType</td>
-                            <td>@EnumHelper.Display(s.Status)</td>
+                            <td>@L.Enum(s.Status)</td>
                             <td>@(s.AssessedBy ?? "-")</td>
                         </tr>
                     }

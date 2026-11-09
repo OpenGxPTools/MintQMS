@@ -26,7 +26,7 @@
         <h4 class="mb-0">Product &mdash; <span class="fw-bold">@Model.ProductId</span></h4>
         <small class="text-muted">@Model.Name</small>
     </div>
-    <span class="badge @statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+    <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
 </div>
 <hr />
 
@@ -213,7 +213,7 @@
                     <dd class="col-sm-9">@Model.Version</dd>
 
                     <dt class="col-sm-3">Status</dt>
-                    <dd class="col-sm-9"><span class="badge @statusBadge">@EnumHelper.Display(Model.Status)</span></dd>
+                    <dd class="col-sm-9"><span class="badge @statusBadge">@L.Enum(Model.Status)</span></dd>
 
                     <dt class="col-sm-3">Edited By</dt>
                     <dd class="col-sm-9">@(Model.EditedBy ?? "-")</dd>
@@ -490,7 +490,7 @@
                                     <td><a asp-controller="Complaints" asp-action="Details" asp-route-id="@cp.Complaint!.Id">@cp.Complaint.ComplaintId</a></td>
                                     <td>@cp.Complaint.Title</td>
                                     <td>@cp.Complaint.Severity</td>
-                                    <td>@EnumHelper.Display(cp.Complaint.Status)</td>
+                                    <td>@L.Enum(cp.Complaint.Status)</td>
                                 </tr>
                             }
                         </tbody>

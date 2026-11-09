@@ -62,7 +62,7 @@
         {
             <span class="badge bg-warning text-dark fs-6"><i class="fas fa-file-import me-1"></i>External</span>
         }
-        <span class="badge @statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+        <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
     </div>
 </div>
 <hr />
@@ -256,7 +256,7 @@
             <dd class="col-sm-9">@Model.Version.ToString("0.00")</dd>
 
             <dt class="col-sm-3">Status</dt>
-            <dd class="col-sm-9"><span class="badge @statusBadge">@EnumHelper.Display(Model.Status)</span></dd>
+            <dd class="col-sm-9"><span class="badge @statusBadge">@L.Enum(Model.Status)</span></dd>
 
             <dt class="col-sm-3">File Type</dt>
             <dd class="col-sm-9">@(Model.FileExtension?.TrimStart('.').ToUpperInvariant() ?? "-")</dd>
@@ -506,7 +506,7 @@
                         var isCurrent = v.Id == Model.Id;
                         <tr class="@(isCurrent ? "table-primary fw-bold" : "")">
                             <td>@v.Version.ToString("0.00") @if (isCurrent) { <span class="badge bg-primary ms-1">current</span> }</td>
-                            <td><span class="badge @vBadge">@EnumHelper.Display(v.Status)</span></td>
+                            <td><span class="badge @vBadge">@L.Enum(v.Status)</span></td>
                             <td>@v.AuthoredBy</td>
                             <td>@(SiteTime.ToSite((DateTime)v.AuthoredOn).ToString("dd MMM yyyy"))</td>
                             <td>@(v.ApprovedBy ?? "-")</td>
@@ -577,7 +577,7 @@
                                 </span>
                             </td>
                             <td>v@req.DocumentVersion.ToString("0.00")</td>
-                            <td><span class="badge @tBadge">@EnumHelper.Display(t.Status)</span></td>
+                            <td><span class="badge @tBadge">@L.Enum(t.Status)</span></td>
                             <td>@(t.Trainees?.Count ?? 0)</td>
                             <td>@(SiteTime.ToSite((DateTime)req.CreatedOn).ToString("dd MMM yyyy"))</td>
                             <td>

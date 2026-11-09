@@ -18,7 +18,7 @@ Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
     var auditCount   = Model.AuditLogs?.Count ?? 0;
     var activeTab    = TempData["ActiveTab"]?.ToString() ?? "overview";
 
-    var statusLabel = EnumHelper.Display(Model.Status);
+    var statusLabel = L.Enum(Model.Status);
     var badgeClass = Model.Status switch
     {
         Capa.CapaStatus.Determination   => "bg-secondary",
@@ -103,7 +103,7 @@ else if (isApproaching)
             <a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@Model.LinkedAdverseEventId" class="fw-bold">
                 @Model.LinkedAdverseEvent.AENumber
             </a>
-            <span class="badge bg-secondary ms-1">@EnumHelper.Display(Model.LinkedAdverseEvent.Status)</span>
+            <span class="badge bg-secondary ms-1">@L.Enum(Model.LinkedAdverseEvent.Status)</span>
         </span>
     </div>
 }
@@ -203,7 +203,7 @@ else if (isApproaching)
                                 _                                    => "bg-secondary"
                             };
                         }
-                        <span class="badge @dTypeBadge">@EnumHelper.Display(Model.Type)</span>
+                        <span class="badge @dTypeBadge">@L.Enum(Model.Type)</span>
                     </dd>
 
                     <dt class="col-sm-4">Title</dt>
@@ -299,7 +299,7 @@ else if (isApproaching)
                                 <tr>
                                     <td><a href="/Changes/Details/@ch.Id">@ch.ChangeId</a></td>
                                     <td>@ch.Title</td>
-                                    <td>@EnumHelper.Display(ch.Status)</td>
+                                    <td>@L.Enum(ch.Status)</td>
                                 </tr>
                             }
                         </tbody>

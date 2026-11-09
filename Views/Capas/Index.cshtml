@@ -77,7 +77,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            var statusLabel = EnumHelper.Display(item.Status);
+            var statusLabel = L.Enum(item.Status);
             var statusBadge = item.Status switch
             {
                 Capa.CapaStatus.Determination     => "bg-secondary",
@@ -114,7 +114,7 @@
                             _                                    => "bg-secondary"
                         };
                     }
-                    <span class="badge @typeBadge">@EnumHelper.Display(item.Type)</span>
+                    <span class="badge @typeBadge">@L.Enum(item.Type)</span>
                 </td>
                 <td>@string.Join(", ", iLinked)</td>
                 <td>@item.DeterminedBy</td>

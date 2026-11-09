@@ -41,7 +41,7 @@
     var atOrPastMitigation        = isMitigation || isLegacyReview || isPendingReview || isClosed;
     var atOrPastPendingReview     = isLegacyReview || isPendingReview || isClosed;
 
-    var statusLabel = EnumHelper.Display(Model.Status);
+    var statusLabel = L.Enum(Model.Status);
 
     var statusBadge = Model.Status switch
     {

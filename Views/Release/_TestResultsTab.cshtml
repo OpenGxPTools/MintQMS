@@ -152,7 +152,7 @@ else
                             var tbadge = t.Status == TestResultStatus.Pass ? "bg-success"
                                        : t.Status == TestResultStatus.Fail ? "bg-danger"
                                        : "bg-secondary";
-                            <span class="badge @tbadge">@EnumHelper.Display(t.Status)</span>
+                            <span class="badge @tbadge">@L.Enum(t.Status)</span>
                         }
                     </td>
                     <td>

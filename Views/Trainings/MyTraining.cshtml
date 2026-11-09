@@ -127,7 +127,7 @@
                             }
                             else { <span class="text-muted">—</span> }
                         </td>
-                        <td><span class="badge @statusBadge">@EnumHelper.Display(row.Status)</span></td>
+                        <td><span class="badge @statusBadge">@L.Enum(row.Status)</span></td>
                         <td>
                             @if (row.Status == UserTrainingStatus.Scheduled)
                             {

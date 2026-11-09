@@ -373,7 +373,7 @@
                                         <td>@c.ConditionDescription</td>
                                         <td>@c.ConditionType</td>
                                         <td>@c.DueDate?.ToString("dd MMM yyyy")</td>
-                                        <td>@EnumHelper.Display(c.Status)</td>
+                                        <td>@L.Enum(c.Status)</td>
                                     </tr>
                                 }
                             </tbody>

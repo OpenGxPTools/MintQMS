@@ -27,7 +27,7 @@
     <div>
         <h4 class="mb-0">
             @Model.LCNumber
-            <span class="badge @statusBadge ms-2">@EnumHelper.Display(Model.Status)</span>
+            <span class="badge @statusBadge ms-2">@L.Enum(Model.Status)</span>
             @{
                 bool hasOpenConditions = Model.Conditions.Any(c => !c.IsDeleted && c.Status == LCConditionStatus.Active);
             }
@@ -96,7 +96,7 @@
         <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center py-2">
             <i class="fas fa-exchange-alt me-2 text-primary"></i>
             <strong class="text-primary">Workflow Actions</strong>
-            <span class="ms-2 text-muted small">Current status: <strong>@EnumHelper.Display(Model.Status)</strong></span>
+            <span class="ms-2 text-muted small">Current status: <strong>@L.Enum(Model.Status)</strong></span>
         </div>
         <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
             @foreach (var target in availableTransitions)
@@ -458,7 +458,7 @@
                                 { <br /><small class="text-muted">@cond.CompletionNotes</small> }
                             </td>
                             <td>@(cond.DueDate.HasValue ? cond.DueDate.Value.ToString("dd MMM yyyy") : "—")</td>
-                            <td><span class="badge @condBadge">@EnumHelper.Display(cond.Status)</span></td>
+                            <td><span class="badge @condBadge">@L.Enum(cond.Status)</span></td>
                             <td>
                                 @if (cond.LinkedCAPAId.HasValue)
                                 {
@@ -630,7 +630,7 @@
         {
             <div class="alert alert-danger mb-2">
                 <i class="fas fa-exclamation-triangle me-1"></i>
-                <strong>Supply Credential At Risk:</strong> This record is <strong>@EnumHelper.Display(Model.Status)</strong>. All @Model.Dependencies.Count linked product application(s) may be affected.
+                <strong>Supply Credential At Risk:</strong> This record is <strong>@L.Enum(Model.Status)</strong>. All @Model.Dependencies.Count linked product application(s) may be affected.
             </div>
         }
 
@@ -651,7 +651,7 @@
                         <tr>
                             <td><a asp-controller="RegulatoryIntelligence" asp-action="Details" asp-route-id="@dep.RegulatoryApplicationId" class="fw-bold">@riApp?.RINumber</a></td>
                             <td>@riApp?.ProductName</td>
-                            <td><span class="badge bg-secondary small">@EnumHelper.Display(riApp?.Status)</span></td>
+                            <td><span class="badge bg-secondary small">@L.Enum(riApp?.Status)</span></td>
                             <td><small>@dep.LinkedSince.ToSite().ToString("dd MMM yyyy")</small></td>
                             <td><small class="text-muted">@dep.Notes</small></td>
                             <td class="text-center">

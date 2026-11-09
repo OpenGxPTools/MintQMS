@@ -18,7 +18,7 @@
         <h4 class="mb-0">Document &mdash; <span class="fw-bold">@Model.DocumentId</span></h4>
         <small class="text-muted">@Model.Title</small>
     </div>
-    <span class="badge @statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+    <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
 </div>
 <hr />
 
@@ -38,7 +38,7 @@
             <dt class="col-sm-4">Version</dt>
             <dd class="col-sm-8">@Model.Version.ToString("0.00")</dd>
             <dt class="col-sm-4">Status</dt>
-            <dd class="col-sm-8"><span class="badge @statusBadge">@EnumHelper.Display(Model.Status)</span></dd>
+            <dd class="col-sm-8"><span class="badge @statusBadge">@L.Enum(Model.Status)</span></dd>
             <dt class="col-sm-4">Authored By</dt>
             <dd class="col-sm-8">@Model.AuthoredBy</dd>
             <dt class="col-sm-4">Authored On</dt>

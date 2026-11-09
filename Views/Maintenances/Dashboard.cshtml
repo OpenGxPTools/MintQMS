@@ -152,7 +152,7 @@
                                 <tr>
                                     <td><a asp-action="Details" asp-route-id="@m.Id">@m.MaintenanceId</a></td>
                                     <td>@(m.Asset?.Name ?? "-")</td>
-                                    <td>@EnumHelper.Display(m.Status)</td>
+                                    <td>@L.Enum(m.Status)</td>
                                     <td>@(m.PerformedOn.ToSite()?.ToShortDateString() ?? "-")</td>
                                 </tr>
                             }

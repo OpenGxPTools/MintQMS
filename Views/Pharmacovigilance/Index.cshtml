@@ -139,11 +139,11 @@
                             }
                             @if (statusClass == "voided")
                             {
-                                <span class="badge text-bg-light border text-muted text-decoration-line-through">@EnumHelper.Display(ae.Status)</span>
+                                <span class="badge text-bg-light border text-muted text-decoration-line-through">@L.Enum(ae.Status)</span>
                             }
                             else
                             {
-                                <span class="badge bg-@statusClass">@EnumHelper.Display(ae.Status)</span>
+                                <span class="badge bg-@statusClass">@L.Enum(ae.Status)</span>
                             }
                         </td>
                         <td>

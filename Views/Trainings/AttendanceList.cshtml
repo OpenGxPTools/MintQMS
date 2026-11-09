@@ -70,7 +70,7 @@
             </span>
             <br />
             <span class="badge @(Model.Status == Training.TrainingStatus.Completed ? "bg-success" : "bg-warning text-dark") mt-1">
-                @EnumHelper.Display(Model.Status)
+                @L.Enum(Model.Status)
             </span>
         </div>
     </div>
@@ -159,7 +159,7 @@
                             <td class="text-center">@(i++)</td>
                             <td>@fullName</td>
                             <td class="small text-muted">@(trainee?.Email ?? "-")</td>
-                            <td><span class="badge @statusBadge">@EnumHelper.Display(ut.Status)</span></td>
+                            <td><span class="badge @statusBadge">@L.Enum(ut.Status)</span></td>
                             <td>@(ut.CompetencyVerifiedOn.ToSite()?.ToString("dd-MMM-yyyy HH:mm") ?? "—")</td>
                             <td class="small">@(ut.CompetencyVerifiedBy ?? "—")</td>
                             <td class="small">@(ut.CompetencyNotes ?? "")</td>
@@ -197,7 +197,7 @@
                             <td class="text-center">@(j++)</td>
                             <td>@fullName</td>
                             <td class="small text-muted">@(trainee?.Email ?? "-")</td>
-                            <td><span class="badge @statusBadge">@EnumHelper.Display(ut.Status)</span></td>
+                            <td><span class="badge @statusBadge">@L.Enum(ut.Status)</span></td>
                             <td>@(ut.ReadAcknowledgedOn.ToSite()?.ToString("dd-MMM-yyyy HH:mm") ?? "—")</td>
                             <td class="small text-muted font-monospace">
                                 @if (!string.IsNullOrEmpty(ut.ReadAcknowledgedSignature))

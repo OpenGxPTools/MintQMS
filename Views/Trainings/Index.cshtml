@@ -140,7 +140,7 @@
                     @if (item.CompletedOn.HasValue) { @item.CompletedOn.Value.ToSite().ToString("dd/MM/yyyy") }
                     else { <span class="text-muted">—</span> }
                 </td>
-                <td><span class="badge @badge">@EnumHelper.Display(item.Status)</span></td>
+                <td><span class="badge @badge">@L.Enum(item.Status)</span></td>
                 <td>
                     @if ((User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole) || User.IsInRole(Constants.TrainerRole))
                          && item.Status != Training.TrainingStatus.Completed

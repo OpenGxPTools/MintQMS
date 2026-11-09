@@ -110,7 +110,7 @@
                 OpenQMS.Models.Audit.AuditStatus.Closed      => "bg-success",
                 _                                             => "bg-secondary"
             };
-            var statusLabel = EnumHelper.Display(item.Status);
+            var statusLabel = L.Enum(item.Status);
             var ratingLabel = item.OverallRating switch
             {
                 OpenQMS.Models.Audit.AuditRating.NeedsImprovement => "Needs Improvement",

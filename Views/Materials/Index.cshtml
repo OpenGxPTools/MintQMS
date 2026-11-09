@@ -88,7 +88,7 @@
                 <td>@item.MaterialId</td>
                 <td>@item.Name</td>
                 <td>@item.Version</td>
-                <td>@EnumHelper.Display(item.Status)</td>
+                <td>@L.Enum(item.Status)</td>
                 <td>@(item.EditedBy ?? "")</td>
                 <td>@item.EditedOn.ToSite().ToString("dd/MM/yyyy")</td>
                 <td>@(item.ApprovedBy ?? "")</td>

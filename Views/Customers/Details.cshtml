@@ -19,7 +19,7 @@
         <h4 class="mb-0">Customer &mdash; <span class="fw-bold">@Model.CustomerId</span></h4>
         <small class="text-muted">@Model.LegalName</small>
     </div>
-    <span class="badge @statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+    <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
 </div>
 <hr />
 
@@ -111,7 +111,7 @@
                     <dd class="col-sm-8">@Model.CustomerId</dd>
 
                     <dt class="col-sm-4">Status</dt>
-                    <dd class="col-sm-8"><span class="badge @statusBadge">@EnumHelper.Display(Model.Status)</span></dd>
+                    <dd class="col-sm-8"><span class="badge @statusBadge">@L.Enum(Model.Status)</span></dd>
 
                     <dt class="col-sm-4">Version</dt>
                     <dd class="col-sm-8">@Model.Version</dd>
@@ -262,7 +262,7 @@
                                     <td><a asp-controller="Complaints" asp-action="Details" asp-route-id="@complaint.Id">@complaint.ComplaintId</a></td>
                                     <td>@complaint.Title</td>
                                     <td>@complaint.Severity</td>
-                                    <td>@EnumHelper.Display(complaint.Status)</td>
+                                    <td>@L.Enum(complaint.Status)</td>
                                 </tr>
                             }
                         </tbody>

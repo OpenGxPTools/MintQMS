@@ -147,7 +147,7 @@
                         </td>
                         <td><small>@r.LicenceType?.DisplayName</small></td>
                         <td>
-                            <span class="badge @statusBadge">@EnumHelper.Display(r.Status)</span>
+                            <span class="badge @statusBadge">@L.Enum(r.Status)</span>
                             @if (r.Conditions.Any(c => c.Status == LCConditionStatus.Active))
                             {
                                 <span class="badge bg-warning text-dark ms-1" title="Has open conditions"><i class="fas fa-exclamation-triangle"></i></span>

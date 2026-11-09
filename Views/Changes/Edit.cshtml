@@ -310,11 +310,11 @@
                         {
                             <dl class="row mb-0">
                                 <dt class="col-sm-3">Risk Classification</dt>
-                                <dd class="col-sm-9">@(Model.RiskClassification.HasValue ? EnumHelper.Display(Model.RiskClassification.Value) : "-")</dd>
+                                <dd class="col-sm-9">@(Model.RiskClassification.HasValue ? L.Enum(Model.RiskClassification.Value) : "-")</dd>
                                 <dt class="col-sm-3">Change Type</dt>
-                                <dd class="col-sm-9">@(Model.ChangeType.HasValue ? EnumHelper.Display(Model.ChangeType.Value) : "-")</dd>
+                                <dd class="col-sm-9">@(Model.ChangeType.HasValue ? L.Enum(Model.ChangeType.Value) : "-")</dd>
                                 <dt class="col-sm-3">Nature</dt>
-                                <dd class="col-sm-9">@(Model.Nature.HasValue ? EnumHelper.Display(Model.Nature.Value) : "-")</dd>
+                                <dd class="col-sm-9">@(Model.Nature.HasValue ? L.Enum(Model.Nature.Value) : "-")</dd>
                                 <dt class="col-sm-3">Assessment</dt>
                                 <dd class="col-sm-9">@(Model.Assessment ?? "-")</dd>
                                 <dt class="col-sm-3">Detailed Action Plan</dt>

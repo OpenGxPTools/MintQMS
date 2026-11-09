@@ -29,7 +29,7 @@
             <dt class="col-sm-4">@Html.DisplayNameFor(model => model.ScheduledDate)</dt>
             <dd class="col-sm-8">@Model.ScheduledDate.ToString("yyyy-MM-dd")</dd>
             <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Status)</dt>
-            <dd class="col-sm-8">@EnumHelper.Display(Model.Status)</dd>
+            <dd class="col-sm-8">@L.Enum(Model.Status)</dd>
         </dl>
 
         @if (linkedDeviations?.Any() == true)

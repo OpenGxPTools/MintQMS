@@ -165,7 +165,7 @@
                                     <td><a asp-action="Details" asp-route-id="@r.Id">@r.RiskId</a></td>
                                     <td>@r.Title</td>
                                     <td><strong>@r.InitialRPN</strong></td>
-                                    <td>@EnumHelper.Display(r.Status)</td>
+                                    <td>@L.Enum(r.Status)</td>
                                 </tr>
                             }
                         </tbody>
@@ -223,7 +223,7 @@
                         <tr class="table-danger">
                             <td><a asp-action="Details" asp-route-id="@r.Id">@r.RiskId</a></td>
                             <td>@r.Title</td>
-                            <td>@EnumHelper.Display(r.Status)</td>
+                            <td>@L.Enum(r.Status)</td>
                             <td>@r.InitialRPN</td>
                             <td>@r.TargetCompletionDate.Value.ToShortDateString()</td>
                             <td><strong>@daysOver days</strong></td>
@@ -252,7 +252,7 @@
                         <tr class="table-warning">
                             <td><a asp-action="Details" asp-route-id="@r.Id">@r.RiskId</a></td>
                             <td>@r.Title</td>
-                            <td>@EnumHelper.Display(r.Status)</td>
+                            <td>@L.Enum(r.Status)</td>
                             <td>@r.TargetCompletionDate.Value.ToShortDateString()</td>
                             <td>@daysLeft days</td>
                         </tr>

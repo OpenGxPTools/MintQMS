@@ -34,11 +34,11 @@
         <div class="d-flex gap-2 align-items-center">
             @if (statusClass == "voided")
             {
-                <span class="badge text-bg-light border text-muted text-decoration-line-through fs-6">@EnumHelper.Display(Model.Status)</span>
+                <span class="badge text-bg-light border text-muted text-decoration-line-through fs-6">@L.Enum(Model.Status)</span>
             }
             else
             {
-                <span class="badge bg-@statusClass fs-6">@EnumHelper.Display(Model.Status)</span>
+                <span class="badge bg-@statusClass fs-6">@L.Enum(Model.Status)</span>
             }
             @if (Model.IsSerious) { <span class="badge bg-danger">Serious</span> }
             @if (Model.IsFatalOrLifeThreatening) { <span class="badge bg-dark">Fatal / Life-Threatening</span> }
@@ -309,7 +309,7 @@
                 <dt class="col-sm-3">Significant Safety Issue</dt>
                 <dd class="col-sm-9">@Html.Raw(reg.SignificantSafetyIssue ? "<span class=\"badge bg-danger\">SSI Flagged</span>" : "No")</dd>
                 <dt class="col-sm-3">Regulatory Status</dt>
-                <dd class="col-sm-9"><span class="badge bg-secondary">@EnumHelper.Display(reg.Status)</span></dd>
+                <dd class="col-sm-9"><span class="badge bg-secondary">@L.Enum(reg.Status)</span></dd>
             </dl>
 
             <hr />
@@ -700,7 +700,7 @@
         <div class="card-body">
             <a asp-controller="Capas" asp-action="Details" asp-route-id="@Model.LinkedCapaId" class="fw-bold">@Model.LinkedCapa.CapaId</a>
             — @Model.LinkedCapa.Title
-            <span class="badge bg-secondary ms-2">@EnumHelper.Display(Model.LinkedCapa.Status)</span>
+            <span class="badge bg-secondary ms-2">@L.Enum(Model.LinkedCapa.Status)</span>
         </div>
     </div>
 }
@@ -727,7 +727,7 @@
             {
                 <li class="list-group-item">
                     <a asp-action="Details" asp-route-id="@fu.Id">@fu.AENumber</a>
-                    <span class="badge bg-secondary ms-2">@EnumHelper.Display(fu.Status)</span>
+                    <span class="badge bg-secondary ms-2">@L.Enum(fu.Status)</span>
                 </li>
             }
         </ul>

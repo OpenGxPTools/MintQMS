@@ -144,7 +144,7 @@ $(document).ready(function () {
                                     <td><strong>@ae.AENumber</strong></td>
                                     <td>@ae.TGADeadlineDate!.Value.ToString("dd MMM yyyy")</td>
                                     <td><span class="badge bg-danger">@Math.Abs(days)d overdue</span></td>
-                                    <td><span class="badge bg-secondary">@EnumHelper.Display(ae.Status)</span></td>
+                                    <td><span class="badge bg-secondary">@L.Enum(ae.Status)</span></td>
                                     <td>
                                         <a asp-action="Details" asp-route-id="@ae.Id"
                                            class="btn btn-danger btn-sm">View</a>
@@ -160,7 +160,7 @@ $(document).ready(function () {
                                     <td><strong>@ae.AENumber</strong></td>
                                     <td>@ae.TGADeadlineDate!.Value.ToString("dd MMM yyyy")</td>
                                     <td><span class="badge bg-@badgeClass">@days d remaining</span></td>
-                                    <td><span class="badge bg-secondary">@EnumHelper.Display(ae.Status)</span></td>
+                                    <td><span class="badge bg-secondary">@L.Enum(ae.Status)</span></td>
                                     <td>
                                         <a asp-action="Details" asp-route-id="@ae.Id"
                                            class="btn btn-@badgeClass btn-sm">View</a>
@@ -218,7 +218,7 @@ $(document).ready(function () {
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>@ae.AENumber</strong>
-                                    <span class="badge bg-secondary ms-1">@EnumHelper.Display(ae.Status)</span>
+                                    <span class="badge bg-secondary ms-1">@L.Enum(ae.Status)</span>
                                     @if (ae.IsSerious) { <span class="badge bg-danger ms-1">Serious</span> }
                                     <br />
                                     <small class="text-muted">@(ae.MedDRAPT ?? "No MedDRA term")</small>

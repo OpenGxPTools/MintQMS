@@ -98,8 +98,8 @@
                                 || item.Status == OpenQMS.Models.SupplierStatus.Qualified
                                 ? "Complete"
                                 : itemReReview
-                                    ? "Re-review: " + EnumHelper.Display(item.Status)
-                                    : EnumHelper.Display(item.Status);
+                                    ? "Re-review: " + L.Enum(item.Status)
+                                    : L.Enum(item.Status);
             bool itemLocked = item.Status == OpenQMS.Models.SupplierStatus.Approved
                            || item.Status == OpenQMS.Models.SupplierStatus.Qualified
                            || item.Status == OpenQMS.Models.SupplierStatus.Suspended

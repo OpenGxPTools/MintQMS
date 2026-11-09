@@ -77,7 +77,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>
                     @if (item.Roles.Any())
                     {
-                        @string.Join(", ", item.Roles.Select(r => EnumHelper.RoleName(r)))
+                        @string.Join(", ", item.Roles.Select(r => L.Role(r)))
                     }
                     else
                     {

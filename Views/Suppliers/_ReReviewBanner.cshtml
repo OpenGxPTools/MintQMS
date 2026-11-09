@@ -17,14 +17,14 @@
         <i class="bi bi-arrow-repeat fs-5 me-2"></i>
         <div>
             <strong>Re-review in progress</strong> — this supplier remains
-            <strong>@EnumHelper.Display(Model.ApprovalStatus!.Value)</strong> for use until the new review is completed.
+            <strong>@L.Enum(Model.ApprovalStatus!.Value)</strong> for use until the new review is completed.
             <div class="small mt-1">
-                Trigger: @EnumHelper.Display(Model.ReviewTrigger)
+                Trigger: @L.Enum(Model.ReviewTrigger)
                 @if (startedOn.HasValue)
                 {
                     <span> · Started @startedOn.Value.ToSite().ToString("dd MMM yyyy")</span>
                 }
-                <span> · Current stage: @EnumHelper.Display(Model.Status)</span>
+                <span> · Current stage: @L.Enum(Model.Status)</span>
                 @if (Model.ExpiryDate.HasValue)
                 {
                     <span> · Approval expires @Model.ExpiryDate.Value.ToString("dd MMM yyyy")</span>

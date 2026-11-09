@@ -112,7 +112,7 @@
                 <td>@string.Join(", ", iLinked)</td>
                 <td>@(item.Customer?.LegalName ?? "-")</td>
                 <td>@item.ReceivedOn.ToSite().ToShortDateString()</td>
-                <td>@EnumHelper.Display(item.Status)</td>
+                <td>@L.Enum(item.Status)</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                     @if (item.Status != OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance

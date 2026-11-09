@@ -14,7 +14,7 @@
         OpenQMS.Models.Audit.AuditStatus.Closed      => "bg-success",
         _                                             => "bg-secondary"
     };
-    var statusLabel = EnumHelper.Display(Model.Status);
+    var statusLabel = L.Enum(Model.Status);
     var isClosed = Model.Status == OpenQMS.Models.Audit.AuditStatus.Closed;
     var canEdit  = Model.Status == OpenQMS.Models.Audit.AuditStatus.Scheduled
                 || Model.Status == OpenQMS.Models.Audit.AuditStatus.InProgress
@@ -83,7 +83,7 @@
 }
 else if (linkedCapa != null)
 {
-    <div class="alert alert-info">Linked CAPA: <a asp-controller="Capas" asp-action="Details" asp-route-id="@linkedCapa.Id"><strong>@linkedCapa.CapaId</strong></a> — @linkedCapa.Title (@EnumHelper.Display(linkedCapa.Status))</div>
+    <div class="alert alert-info">Linked CAPA: <a asp-controller="Capas" asp-action="Details" asp-route-id="@linkedCapa.Id"><strong>@linkedCapa.CapaId</strong></a> — @linkedCapa.Title (@L.Enum(linkedCapa.Status))</div>
 }
 
 <!-- Workflow action card — only show if there is at least one action available for this user -->

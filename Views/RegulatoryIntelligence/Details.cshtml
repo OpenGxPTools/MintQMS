@@ -28,7 +28,7 @@
                     _                                     => "secondary"
                 };
             }
-            <span class="badge bg-@statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+            <span class="badge bg-@statusBadge fs-6">@L.Enum(Model.Status)</span>
             @if (Model.IsLocked) { <span class="badge bg-secondary"><i class="fas fa-lock me-1"></i>Locked</span> }
             @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">Orphan</span> }
             @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">Priority</span> }
@@ -743,7 +743,7 @@
                                 @(c.DueDate?.ToString("dd MMM yyyy") ?? "—")
                                 @if (c.CompletedDate.HasValue) { <div class="small text-success">Closed: @c.CompletedDate.Value.ToString("dd MMM yyyy")</div> }
                             </td>
-                            <td><span class="badge bg-@cBadge">@EnumHelper.Display(c.Status)</span></td>
+                            <td><span class="badge bg-@cBadge">@L.Enum(c.Status)</span></td>
                             <td>
                                 @if (c.LinkedCAPAId.HasValue)
                                 {
@@ -987,7 +987,7 @@
                                         <div class="text-muted fst-italic mt-1">@v.Notes</div>
                                     }
                                 </td>
-                                <td><span class="badge bg-@vBadge">@EnumHelper.Display(v.Status)</span></td>
+                                <td><span class="badge bg-@vBadge">@L.Enum(v.Status)</span></td>
                                 <td class="small">@(v.SubmissionDate?.ToString("dd MMM yyyy") ?? "—")</td>
                                 <td class="small">@(v.ApprovalDate?.ToString("dd MMM yyyy") ?? "—")</td>
                                 <td class="text-end text-nowrap">
@@ -1286,7 +1286,7 @@
                         <td><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
                         <td>@r.Category</td>
                         <td>@(r.LicenceType?.DisplayName ?? "—")</td>
-                        <td><span class="badge @lcBadge">@EnumHelper.Display(r.Status)</span></td>
+                        <td><span class="badge @lcBadge">@L.Enum(r.Status)</span></td>
                         <td>@(r.ExpiryDate.HasValue ? r.ExpiryDate.Value.ToString("dd MMM yyyy") : "—")</td>
                         <td class="small text-muted">@(dep.Notes ?? "—")</td>
                         <td class="small text-muted">@(SiteTime.ToSite((DateTime)dep.LinkedSince).ToString("dd MMM yyyy"))</td>

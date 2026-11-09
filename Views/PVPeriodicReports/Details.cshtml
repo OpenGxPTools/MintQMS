@@ -50,7 +50,7 @@
     <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center py-2">
         <i class="fas fa-exchange-alt me-2 text-primary"></i>
         <strong class="text-primary">Workflow Actions</strong>
-        <span class="ms-2 text-muted small">Current status: <strong>@EnumHelper.Display(Model.Status)</strong></span>
+        <span class="ms-2 text-muted small">Current status: <strong>@L.Enum(Model.Status)</strong></span>
     </div>
     <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
         @if (Model.Status == PVPeriodicReport.PSURStatus.InPreparation)
@@ -211,7 +211,7 @@
                             <td><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@ae.Id">@ae.AENumber</a></td>
                             <td>@(ae.MedDRAPT ?? "—")</td>
                             <td>@Html.Raw(ae.IsSerious ? "<span class=\"badge bg-danger\">Yes</span>" : "No")</td>
-                            <td><span class="badge bg-secondary">@EnumHelper.Display(ae.Status)</span></td>
+                            <td><span class="badge bg-secondary">@L.Enum(ae.Status)</span></td>
                             <td>
                                 <form asp-action="LinkCase" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()

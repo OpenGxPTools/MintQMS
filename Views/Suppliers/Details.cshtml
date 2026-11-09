@@ -70,9 +70,9 @@
                 OpenQMS.Models.SupplierStatus.Cancelled => "bg-danger",
                 _                                       => "bg-secondary"
             };
-            <span class="badge @approvalBadge fs-6">Approval: @EnumHelper.Display(Model.ApprovalStatus.Value)</span>
+            <span class="badge @approvalBadge fs-6">Approval: @L.Enum(Model.ApprovalStatus.Value)</span>
         }
-        <span class="badge @statusBadge fs-6">@EnumHelper.Display(Model.Status)</span>
+        <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
     </div>
 </div>
 <hr />
@@ -486,7 +486,7 @@
                             <td><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
                             <td>@r.Category</td>
                             <td>@(r.LicenceType?.DisplayName ?? "—")</td>
-                            <td><span class="badge @lcBadge">@EnumHelper.Display(r.Status)</span></td>
+                            <td><span class="badge @lcBadge">@L.Enum(r.Status)</span></td>
                             <td>@(r.ExpiryDate.HasValue ? r.ExpiryDate.Value.ToString("dd MMM yyyy") : "—")</td>
                             <td><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">View</a></td>
                         </tr>
