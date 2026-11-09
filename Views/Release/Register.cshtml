@@ -74,8 +74,8 @@
                 <td>@c.ReleaseRecord?.ReleaseType</td>
                 <td>@c.CertificateType</td>
                 <td>@c.APFullNameQualification</td>
-                <td>@(c.ReleaseRecord?.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</td>
-                <td>@c.IssuedDate.ToSite().ToString("dd-MMM-yyyy")</td>
+                <td>@(c.ReleaseRecord?.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</td>
+                <td>@c.IssuedDate.ToSite().ToString("dd-MMM-yyyy", DisplayDates.Culture)</td>
                 <td><span class="badge @cbadge">@L.Enum(c.Status)</span></td>
                 <td>
                     <a asp-action="ViewCertificate" asp-route-certificateId="@c.Id" class="btn btn-sm btn-outline-primary" target="_blank">@L["View"]</a>

@@ -1667,7 +1667,9 @@ Spanish-speaking site); each user then gets a language menu, and every language 
 your validation. Both settings are Administrator-only and logged like all others. **The language never changes
 stored records:** states and choices are stored as codes, audit-trail entries and signature meanings are
 recorded in English, and free text is kept exactly as typed — your procedures should say which language
-records are written in. Dates and numbers keep the server's format whatever the language.
+records are written in. **Dates on screens follow the site language** ("09 nov. 2026", "lunes, 9 de noviembre
+de 2026"); numbers keep the server's format, and dates written into records, exports and PDFs keep the server's
+format too.
 
 ---
 

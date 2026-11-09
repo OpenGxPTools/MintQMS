@@ -21,7 +21,7 @@ else
             @foreach (var entry in Model.AuditEntries.OrderByDescending(a => a.Timestamp))
             {
                 <tr>
-                    <td><small>@entry.Timestamp.ToSite().ToString("dd-MMM-yyyy HH:mm")</small></td>
+                    <td><small>@entry.Timestamp.ToSite().ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture)</small></td>
                     <td><strong>@entry.Action</strong></td>
                     <td><small>@entry.Details</small></td>
                     <td><small>@entry.FromStatus</small></td>

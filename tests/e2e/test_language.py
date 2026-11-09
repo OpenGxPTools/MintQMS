@@ -148,10 +148,18 @@ else:
     sel = BeautifulSoup(home_es, "html.parser").find("select", {"id": "mintLanguage"})
     check("F: the menu now shows Spanish as selected",
           sel is not None and (sel.find("option", selected=True) or {}).get("value") == "es")
-    day = re.compile(r"(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), \d{1,2} \w+ \d{4}")
-    m_en, m_es = day.search(visible(home_en)), day.search(visible(home_es))
-    check("F: date heading unchanged with Spanish selected (format culture pinned)",
-          m_en and m_es and m_en.group(0) == m_es.group(0), (m_en and m_en.group(0), m_es and m_es.group(0)))
+    day_en = re.compile(r"(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), \d{1,2} \w+ \d{4}")
+    day_es = re.compile(r"(lunes|martes|miércoles|jueves|viernes|sábado|domingo), \d{1,2} de \w+ de \d{4}")
+    check("F: the date heading is English in English", day_en.search(visible(home_en)) is not None)
+    check("F: the date heading follows the language in Spanish (\"lunes, 9 de noviembre de 2026\")",
+          day_es.search(visible(home_es)) is not None and day_en.search(visible(home_es)) is None, visible(home_es)[:200])
+    # Numbers keep the server's format whatever the language (the format culture is pinned, so typed
+    # numbers are read the same way): document versions read identically in English and Spanish.
+    vers = lambda h: re.findall(r"\b\d+[.,]\d{2}\b", " ".join(td.get_text(" ", strip=True) for td in BeautifulSoup(h, "html.parser").select("table td")))
+    plain = requests.Session(); plain.cookies.update({k: v for k, v in s.cookies.items() if k != ".MintQMS.Language"})
+    v_en, v_es = vers(plain.get(BASE + "/AppDocuments").text), vers(get(s, "/AppDocuments").text)
+    check("F: numbers keep the server's format in Spanish (document versions identical)",
+          bool(v_es) and v_en == v_es and all("." in v for v in v_es), (v_en[:5], v_es[:5]))
     s_en = requests.Session(); s_en.cookies.update({k: v for k, v in s.cookies.items() if k != ".MintQMS.Language"})
     for path in ["/", "/AppDocuments", "/AppDocuments/Create", "/Deviations", "/Deviations/Create", "/Trainings", "/Settings"]:
         es_html, en_html = get(s, path).text, s_en.get(BASE + path).text
@@ -213,5 +221,16 @@ else:
                     if re.search(r"(?<![\w])" + re.escape(f) + r"(?![\w])", str(val)):
                         found.append((tbl, c, f, str(val)[:60]))
     check("records: no Spanish/Portuguese wording in any audit trail", not found, found[:5])
+    # Dates on screens follow the language; dates written into records must not.
+    months = re.compile(r"(?i)\b(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|"
+                        r"janeiro|fevereiro|março|maio|junho|julho|setembro|outubro|novembro|dezembro|"
+                        r"lunes|martes|miércoles|jueves|viernes|sábado|domingo|segunda-feira|terça-feira|sexta-feira)\b"
+                        r"|\b\d{1,2} (ene|feb|abr|ago|sept|dic|fev|mai|set|out|dez)\.")
+    dated = []
+    for (tbl,) in [tuple(x) for x in q("select name from sqlite_master where type='table' and name like '%Audit%Log%'")]:
+        for c in [c["name"] for c in q(f"pragma table_info('{tbl}')") if c["type"].upper().startswith(("TEXT", "NVARCHAR", "VARCHAR"))]:
+            for (val,) in [tuple(x) for x in q(f'select distinct "{c}" from "{tbl}" where "{c}" is not null')]:
+                if months.search(str(val)): dated.append((tbl, c, str(val)[:60]))
+    check("records: no Spanish/Portuguese month or day names in any audit trail", not dated, dated[:5])
 
 sys.exit(summary())

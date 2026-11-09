@@ -62,7 +62,7 @@
         <div>
             <h3 class="mb-1">Training Completion Record</h3>
             <div><strong>Training ID:</strong> @Model.TrainingId</div>
-            <div><strong>Generated:</strong> @SiteTime.Today.ToString("dd-MMM-yyyy")</div>
+            <div><strong>Generated:</strong> @SiteTime.Today.ToString("dd-MMM-yyyy", DisplayDates.Culture)</div>
         </div>
         <div class="text-end">
             <span class="badge @(isCA ? "bg-primary" : "bg-info text-dark") fs-6">
@@ -101,14 +101,14 @@
                     <span>@(Model.PolicyTitle ?? "-")</span>
                 }
             </div>
-            <div class="col-md-3"><strong>Due Date:</strong> @(Model.DueDate?.ToString("dd-MMM-yyyy") ?? "—")</div>
+            <div class="col-md-3"><strong>Due Date:</strong> @(Model.DueDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "—")</div>
             <div class="col-md-3"><strong>Trainer:</strong> @(Model.TrainerEmail ?? "—")</div>
         </div>
         @if (Model.CompletedOn.HasValue)
         {
             <div class="row mt-1">
                 <div class="col-md-6">
-                    <strong>Completed On:</strong> @Model.CompletedOn.Value.ToSite().ToString("dd-MMM-yyyy HH:mm")
+                    <strong>Completed On:</strong> @Model.CompletedOn.Value.ToSite().ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture)
                 </div>
                 <div class="col-md-6">
                     <strong>Completed By:</strong>
@@ -160,7 +160,7 @@
                             <td>@fullName</td>
                             <td class="small text-muted">@(trainee?.Email ?? "-")</td>
                             <td><span class="badge @statusBadge">@L.Enum(ut.Status)</span></td>
-                            <td>@(ut.CompetencyVerifiedOn.ToSite()?.ToString("dd-MMM-yyyy HH:mm") ?? "—")</td>
+                            <td>@(ut.CompetencyVerifiedOn.ToSite()?.ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture) ?? "—")</td>
                             <td class="small">@(ut.CompetencyVerifiedBy ?? "—")</td>
                             <td class="small">@(ut.CompetencyNotes ?? "")</td>
                         </tr>
@@ -198,7 +198,7 @@
                             <td>@fullName</td>
                             <td class="small text-muted">@(trainee?.Email ?? "-")</td>
                             <td><span class="badge @statusBadge">@L.Enum(ut.Status)</span></td>
-                            <td>@(ut.ReadAcknowledgedOn.ToSite()?.ToString("dd-MMM-yyyy HH:mm") ?? "—")</td>
+                            <td>@(ut.ReadAcknowledgedOn.ToSite()?.ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture) ?? "—")</td>
                             <td class="small text-muted font-monospace">
                                 @if (!string.IsNullOrEmpty(ut.ReadAcknowledgedSignature))
                                 {
@@ -216,7 +216,7 @@
     @* Footer note *@
     <div class="att-section">
         <p class="small text-muted mb-0">
-            This record was generated from the Quality Management System on @SiteTime.Now.ToString("dd-MMM-yyyy HH:mm").
+            This record was generated from the Quality Management System on @SiteTime.Now.ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture).
             Electronic signatures and completion timestamps are stored in the system audit log.
         </p>
     </div>

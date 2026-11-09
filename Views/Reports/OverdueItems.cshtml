@@ -36,7 +36,7 @@
     }
     else
     {
-        <span>item(s) overdue across all modules as at @today.ToString("dd MMM yyyy").</span>
+        <span>item(s) overdue across all modules as at @today.ToString("dd MMM yyyy", DisplayDates.Culture).</span>
     }
 </div>
 
@@ -79,7 +79,7 @@
                             <td><a asp-controller="Capas" asp-action="Details" asp-route-id="@c.Id">@c.CapaId</a></td>
                             <td>@c.Title</td>
                             <td><span class="badge bg-secondary">@L.Enum(c.Status)</span></td>
-                            <td>@c.TargetCompletionDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td>@c.TargetCompletionDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
                         </tr>
                     }
@@ -120,7 +120,7 @@
                             <td><a asp-controller="Changes" asp-action="Details" asp-route-id="@c.Id">@c.ChangeId</a></td>
                             <td>@c.Title</td>
                             <td><span class="badge bg-secondary">@L.Enum(c.Status)</span></td>
-                            <td>@c.TargetImplementationDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td>@c.TargetImplementationDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
                         </tr>
                     }
@@ -163,7 +163,7 @@
                             <td>@a.Title</td>
                             <td>@a.Type</td>
                             <td><span class="badge bg-secondary">@L.Enum(a.Status)</span></td>
-                            <td>@a.PlannedEndDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td>@a.PlannedEndDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
                         </tr>
                     }
@@ -209,7 +209,7 @@
                             <td>
                                 <span class="badge @(rpn >= 80 ? "bg-danger" : rpn >= 40 ? "bg-warning text-dark" : "bg-success")">@rpn</span>
                             </td>
-                            <td>@r.TargetCompletionDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td>@r.TargetCompletionDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
                         </tr>
                     }
@@ -250,7 +250,7 @@
                             <td><a asp-controller="Deviations" asp-action="Details" asp-route-id="@d.Id">@d.DeviationId</a></td>
                             <td>@d.Title</td>
                             <td><span class="badge bg-secondary">@L.Enum(d.Status)</span></td>
-                            <td>@d.IdentifiedOn.ToSite().ToString("dd MMM yyyy")</td>
+                            <td>@d.IdentifiedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
                         </tr>
                     }
@@ -297,7 +297,7 @@
                                 </span>
                             </td>
                             <td><span class="badge bg-secondary">@L.Enum(c.Status)</span></td>
-                            <td>@c.ReceivedOn.ToSite().ToString("dd MMM yyyy")</td>
+                            <td>@c.ReceivedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
                         </tr>
                     }
@@ -338,7 +338,7 @@
                             <td><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@d.Id">@d.DocumentId</a></td>
                             <td>@d.Title</td>
                             <td>@d.Version.ToString("0.0")</td>
-                            <td>@d.ReviewDueDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td>@d.ReviewDueDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
                         </tr>
                     }
@@ -379,7 +379,7 @@
                             <td><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@d.Id">@d.DocumentId</a></td>
                             <td>@d.Title</td>
                             <td>@d.Version.ToString("0.0")</td>
-                            <td>@d.ReviewDueDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td>@d.ReviewDueDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@daysLeft</strong></td>
                         </tr>
                     }

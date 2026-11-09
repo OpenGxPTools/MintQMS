@@ -118,14 +118,14 @@
 {
     <div class="alert alert-danger d-flex align-items-center gap-2 mb-3">
         <i class="fas fa-exclamation-circle"></i>
-        <span>Target implementation date <strong>@Model.TargetImplementationDate!.Value.ToString("dd MMM yyyy")</strong> is overdue.</span>
+        <span>Target implementation date <strong>@Model.TargetImplementationDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</strong> is overdue.</span>
     </div>
 }
 else if (isApproaching)
 {
     <div class="alert alert-warning d-flex align-items-center gap-2 mb-3">
         <i class="fas fa-clock"></i>
-        <span>Target implementation date <strong>@Model.TargetImplementationDate!.Value.ToString("dd MMM yyyy")</strong> is approaching (within 14 days).</span>
+        <span>Target implementation date <strong>@Model.TargetImplementationDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</strong> is approaching (within 14 days).</span>
     </div>
 }
 
@@ -263,7 +263,7 @@ else if (isApproaching)
 
                     <dt class="col-sm-4">@L["Target Date"]</dt>
                     <dd class="col-sm-8 @(isOverdue ? "text-danger fw-bold" : isApproaching ? "text-warning fw-bold" : "")">
-                        @(Model.TargetImplementationDate.HasValue ? Model.TargetImplementationDate.Value.ToString("dd MMM yyyy") : "-")
+                        @(Model.TargetImplementationDate.HasValue ? Model.TargetImplementationDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture) : "-")
                     </dd>
                     @if (showAssessment)
                     {
@@ -374,35 +374,35 @@ else if (isApproaching)
                     <dt class="col-sm-5">Proposed By</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ProposedBy))
-                        { <span>@Model.ProposedBy <span class="text-muted small">@Model.ProposedOn.ToSite().ToString("dd MMM yyyy")</span></span> }
+                        { <span>@Model.ProposedBy <span class="text-muted small">@Model.ProposedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</span></span> }
                         else { <span class="text-muted">-</span> }
                     </dd>
 
                     <dt class="col-sm-5">@L["Assessed By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.AssessedBy))
-                        { <span>@Model.AssessedBy <span class="text-muted small">@Model.AssessedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
+                        { <span>@Model.AssessedBy <span class="text-muted small">@Model.AssessedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture)</span></span> }
                         else { <span class="text-muted">-</span> }
                     </dd>
 
                     <dt class="col-sm-5">@L["Accepted By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.AcceptedBy))
-                        { <span>@Model.AcceptedBy <span class="text-muted small">@Model.AcceptedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
+                        { <span>@Model.AcceptedBy <span class="text-muted small">@Model.AcceptedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture)</span></span> }
                         else { <span class="text-muted">-</span> }
                     </dd>
 
                     <dt class="col-sm-5">Implemented By</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ImplementedBy))
-                        { <span>@Model.ImplementedBy <span class="text-muted small">@Model.ImplementedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
+                        { <span>@Model.ImplementedBy <span class="text-muted small">@Model.ImplementedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture)</span></span> }
                         else { <span class="text-muted">-</span> }
                     </dd>
 
                     <dt class="col-sm-5">@L["Approved By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ApprovedBy))
-                        { <span>@Model.ApprovedBy <span class="text-muted small">@Model.ApprovedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
+                        { <span>@Model.ApprovedBy <span class="text-muted small">@Model.ApprovedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture)</span></span> }
                         else { <span class="text-muted">-</span> }
                     </dd>
                 </dl>

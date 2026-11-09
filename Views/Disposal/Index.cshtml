@@ -88,19 +88,19 @@
                 <td><strong>@item.RecordReference</strong></td>
                 <td>@item.Title</td>
                 <td>@item.TerminalStatus</td>
-                <td>@item.TerminalDate.ToSite().ToString("dd MMM yyyy")</td>
-                <td>@item.RetainUntil.ToString("dd MMM yyyy")</td>
+                <td>@item.TerminalDate.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</td>
+                <td>@item.RetainUntil.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                 <td>
                     @if (item.RetentionExtended)
                     {
                         <span class="badge bg-warning text-dark" title="@item.RetentionExtendedComments">
-                            @item.RetentionExtendedReason — @item.RetentionExtendedBy (@item.RetentionExtendedOn?.ToString("dd MMM yyyy"))
+                            @item.RetentionExtendedReason — @item.RetentionExtendedBy (@item.RetentionExtendedOn?.ToString("dd MMM yyyy", DisplayDates.Culture))
                         </span>
                     }
                     else if (item.CooldownActive)
                     {
                         <span class="badge bg-info text-dark">
-                            Cooldown until @item.RetentionHoldCooldownUntil?.ToString("dd MMM yyyy")
+                            Cooldown until @item.RetentionHoldCooldownUntil?.ToString("dd MMM yyyy", DisplayDates.Culture)
                         </span>
                     }
                     else

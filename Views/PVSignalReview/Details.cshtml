@@ -134,7 +134,7 @@
                     <dd class="col-sm-7"><strong>@Model.MedDRAPT</strong></dd>
 
                     <dt class="col-sm-5">Detected On</dt>
-                    <dd class="col-sm-7">@Model.DetectedOn.ToSite().ToString("dd MMM yyyy")</dd>
+                    <dd class="col-sm-7">@Model.DetectedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</dd>
 
                     <dt class="col-sm-5">Detected By</dt>
                     <dd class="col-sm-7">@Model.DetectedBy</dd>
@@ -176,7 +176,7 @@
                     </dd>
 
                     <dt class="col-sm-5">Reviewed On</dt>
-                    <dd class="col-sm-7">@(Model.ReviewedOn.ToSite()?.ToString("dd MMM yyyy") ?? "—")</dd>
+                    <dd class="col-sm-7">@(Model.ReviewedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</dd>
 
                     <dt class="col-sm-5">@L["Reviewed By"]</dt>
                     <dd class="col-sm-7">@(Model.ReviewedBy ?? "—")</dd>
@@ -235,7 +235,7 @@
                     {
                         <tr>
                             <td><strong>@ae.AENumber</strong></td>
-                            <td>@(SiteTime.ToSite((DateTime)ae.ReportDate).ToString("dd MMM yyyy"))</td>
+                            <td>@(SiteTime.ToSite((DateTime)ae.ReportDate).ToString("dd MMM yyyy", DisplayDates.Culture))</td>
                             <td>
                                 @if (ae.IsSerious) { <span class="badge bg-danger">@L["Serious"]</span> }
                                 else { <span class="text-muted">@L["No"]</span> }
@@ -277,7 +277,7 @@
                         @foreach (var log in Model.AuditLogs.OrderByDescending(l => l.PerformedOn))
                         {
                             <tr>
-                                <td>@log.PerformedOn.ToSite().ToString("dd MMM yyyy HH:mm")</td>
+                                <td>@log.PerformedOn.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</td>
                                 <td>@log.Action</td>
                                 <td>@(log.FromStatus ?? "-")</td>
                                 <td>@(log.ToStatus ?? "-")</td>

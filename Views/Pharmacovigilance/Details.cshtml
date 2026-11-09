@@ -72,7 +72,7 @@
     var daysLeft = (Model.TGADeadlineDate.Value.Date - SiteTime.Today).Days;
     var alertClass = daysLeft < 0 ? "danger" : daysLeft <= 2 ? "danger" : daysLeft <= 5 ? "warning" : "info";
     <div class="alert alert-@alertClass mb-3">
-        <strong>TGA Reporting Deadline:</strong> @Model.TGADeadlineDate.Value.ToString("dd MMM yyyy")
+        <strong>TGA Reporting Deadline:</strong> @Model.TGADeadlineDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
         @if (daysLeft < 0) { <span class="badge bg-danger ms-2">OVERDUE by @(Math.Abs(daysLeft)) days</span> }
         else if (daysLeft == 0) { <span class="badge bg-danger ms-2">Due TODAY</span> }
         else { <span class="badge bg-@alertClass ms-2">@daysLeft day(s) remaining</span> }
@@ -111,21 +111,21 @@
     <div class="tab-pane fade show active" id="tab-report">
         <dl class="row">
             <dt class="col-sm-3">@L["Report Date"]</dt>
-            <dd class="col-sm-9">@Model.ReportDate.ToSite().ToString("dd MMM yyyy HH:mm")</dd>
+            <dd class="col-sm-9">@Model.ReportDate.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</dd>
             <dt class="col-sm-3">@L["Report Source"]</dt>
             <dd class="col-sm-9">@Model.ReportSource</dd>
             <dt class="col-sm-3">@L["Report Type"]</dt>
             <dd class="col-sm-9">@Model.ReportType</dd>
             <dt class="col-sm-3">@L["Day 0 Date"]</dt>
-            <dd class="col-sm-9">@(Model.Day0Date?.ToString("dd MMM yyyy") ?? "-")</dd>
+            <dd class="col-sm-9">@(Model.Day0Date?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
             <dt class="col-sm-3">@L["TGA Deadline"]</dt>
-            <dd class="col-sm-9">@(Model.TGADeadlineDate?.ToString("dd MMM yyyy") ?? "-")</dd>
+            <dd class="col-sm-9">@(Model.TGADeadlineDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
             <dt class="col-sm-3">@L["Created By"]</dt>
-            <dd class="col-sm-9">@Model.CreatedBy on @Model.CreatedOn.ToSite().ToString("dd MMM yyyy HH:mm")</dd>
+            <dd class="col-sm-9">@Model.CreatedBy on @Model.CreatedOn.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</dd>
             @if (Model.ModifiedBy != null)
             {
                 <dt class="col-sm-3">@L["Last Modified"]</dt>
-                <dd class="col-sm-9">@Model.ModifiedBy on @Model.ModifiedOn.ToSite()?.ToString("dd MMM yyyy HH:mm")</dd>
+                <dd class="col-sm-9">@Model.ModifiedBy on @Model.ModifiedOn.ToSite()?.ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</dd>
             }
         </dl>
         @if (rep != null)
@@ -156,7 +156,7 @@
                 <dt class="col-sm-3">@L["Age"]</dt>
                 <dd class="col-sm-9">@(pat.Age.HasValue ? $"{pat.Age} {pat.AgeUnit}" : "-")</dd>
                 <dt class="col-sm-3">@L["Date of Birth"]</dt>
-                <dd class="col-sm-9">@(pat.DateOfBirth?.ToString("dd MMM yyyy") ?? "-")</dd>
+                <dd class="col-sm-9">@(pat.DateOfBirth?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
                 <dt class="col-sm-3">@L["Sex"]</dt>
                 <dd class="col-sm-9">@(pat.Sex?.ToString() ?? "-")</dd>
                 <dt class="col-sm-3">Weight / Height</dt>
@@ -191,7 +191,7 @@
                 <dt class="col-sm-3">@L["Indication"]</dt>
                 <dd class="col-sm-9">@(sp.Indication ?? "-")</dd>
                 <dt class="col-sm-3">Treatment Dates</dt>
-                <dd class="col-sm-9">@(sp.TreatmentStartDate?.ToString("dd MMM yyyy") ?? "-") → @(sp.TreatmentEndDate?.ToString("dd MMM yyyy") ?? "-")</dd>
+                <dd class="col-sm-9">@(sp.TreatmentStartDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-") → @(sp.TreatmentEndDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
                 <dt class="col-sm-3">@L["Action Taken"]</dt>
                 <dd class="col-sm-9">@(sp.ActionTaken?.ToString() ?? "-")</dd>
                 <dt class="col-sm-3">Dechallenge / Rechallenge</dt>
@@ -211,7 +211,7 @@
             <dt class="col-sm-3">@L["MedDRA System Organ Class"]</dt>
             <dd class="col-sm-9">@(Model.MedDRASOC ?? "-")</dd>
             <dt class="col-sm-3">AE Dates</dt>
-            <dd class="col-sm-9">@(Model.AEStartDate?.ToString("dd MMM yyyy") ?? "-") → @(Model.AEEndDate?.ToString("dd MMM yyyy") ?? "-")</dd>
+            <dd class="col-sm-9">@(Model.AEStartDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-") → @(Model.AEEndDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
             <dt class="col-sm-3">@L["Outcome"]</dt>
             <dd class="col-sm-9">@(Model.Outcome?.ToString() ?? "-")</dd>
             <dt class="col-sm-3">@L["Seriousness Criteria"]</dt>
@@ -246,7 +246,7 @@
             <dt class="col-sm-3">@L["Medical Evaluator"]</dt>
             <dd class="col-sm-9">@(Model.MedicalEvaluator ?? "-")</dd>
             <dt class="col-sm-3">@L["Evaluation Date"]</dt>
-            <dd class="col-sm-9">@(Model.EvaluationDate?.ToString("dd MMM yyyy") ?? "-")</dd>
+            <dd class="col-sm-9">@(Model.EvaluationDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
             <dt class="col-sm-3">@L["Signal Detected"]</dt>
             <dd class="col-sm-9">@Html.Raw(Model.SignalDetected ? "<span class=\"badge bg-warning text-dark\">Yes</span>" : "No")</dd>
             <dt class="col-sm-3">@L["Medical Narrative"]</dt>
@@ -288,7 +288,7 @@
                 <dt class="col-sm-3">@L["TGA Submission Date"]</dt>
                 <dd class="col-sm-9">
                     @if (reg.TGASubmissionDate.HasValue) {
-                        <span class="badge bg-success">@reg.TGASubmissionDate.Value.ToString("dd MMM yyyy")</span>
+                        <span class="badge bg-success">@reg.TGASubmissionDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
                     } else { <span class="text-muted">Not yet submitted</span> }
                 </dd>
                 <dt class="col-sm-3">@L["Submission Method"]</dt>
@@ -436,7 +436,7 @@
                                 <td>@(string.IsNullOrEmpty(att.DocumentType) ? "—" : att.DocumentType)</td>
                                 <td>@(att.Description ?? "—")</td>
                                 <td>@att.UploadedBy</td>
-                                <td>@att.UploadedDate.ToSite().ToString("dd MMM yyyy")</td>
+                                <td>@att.UploadedDate.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                 <td>@((att.FileSize / 1024.0).ToString("F1")) KB</td>
                                 <td class="text-end text-nowrap">
                                     <a asp-action="ViewAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-eye me-1"></i>@L["View"]</a>
@@ -475,7 +475,7 @@
                     @foreach (var entry in auditLog)
                     {
                         <tr>
-                            <td>@(SiteTime.ToSite((DateTime)entry.PerformedOn).ToString("dd MMM yyyy HH:mm"))</td>
+                            <td>@(SiteTime.ToSite((DateTime)entry.PerformedOn).ToString("dd MMM yyyy HH:mm", DisplayDates.Culture))</td>
                             <td><span class="badge bg-secondary">@entry.Action</span></td>
                             <td>@entry.PerformedBy</td>
                             <td>@(!string.IsNullOrEmpty(entry.Notes) ? entry.Notes : (entry.NewValue ?? "-"))</td>

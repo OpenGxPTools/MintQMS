@@ -107,7 +107,7 @@
                             <dd class="col-sm-9">@(allCapas.Any() ? string.Join(", ", allCapas) : "-")</dd>
 
                             <dt class="col-sm-3">@L["Target Date"]</dt>
-                            <dd class="col-sm-9">@(Model.TargetImplementationDate.HasValue ? Model.TargetImplementationDate.Value.ToString("dd MMM yyyy") : "-")</dd>
+                            <dd class="col-sm-9">@(Model.TargetImplementationDate.HasValue ? Model.TargetImplementationDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture) : "-")</dd>
 
                             <dt class="col-sm-3">@L["Proposal"]</dt>
                             <dd class="col-sm-9">@(Model.Proposal ?? "-")</dd>

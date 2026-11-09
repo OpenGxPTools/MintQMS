@@ -246,8 +246,8 @@
                             _                                            => "bg-secondary"
                         };
                         var completedOn = isCA
-                            ? ut.CompetencyVerifiedOn.ToSite()?.ToString("dd MMM yyyy")
-                            : ut.ReadAcknowledgedOn.ToSite()?.ToString("dd MMM yyyy");
+                            ? ut.CompetencyVerifiedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture)
+                            : ut.ReadAcknowledgedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture);
 
                         <tr>
                             <td>
@@ -261,7 +261,7 @@
                                 {
                                     <td>
                                         <span class="badge bg-success">Read</span><br />
-                                        <small class="text-muted">@ut.ReadAcknowledgedOn.Value.ToSite().ToString("dd MMM yyyy")</small>
+                                        <small class="text-muted">@ut.ReadAcknowledgedOn.Value.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</small>
                                     </td>
                                 }
                                 else

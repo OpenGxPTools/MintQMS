@@ -4,7 +4,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0"><i class="fas fa-book-open me-2 text-primary"></i>Literature Search — @Model.SearchDate.ToString("dd MMM yyyy")</h4>
+    <h4 class="mb-0"><i class="fas fa-book-open me-2 text-primary"></i>Literature Search — @Model.SearchDate.ToString("dd MMM yyyy", DisplayDates.Culture)</h4>
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
             <i class="fas fa-edit me-1"></i>@L["Edit"]
@@ -32,7 +32,7 @@
     <div class="card-body">
         <dl class="row">
             <dt class="col-sm-3">Search Date</dt>
-            <dd class="col-sm-9">@Model.SearchDate.ToString("dd MMM yyyy")</dd>
+            <dd class="col-sm-9">@Model.SearchDate.ToString("dd MMM yyyy", DisplayDates.Culture)</dd>
             <dt class="col-sm-3">Searched By</dt>
             <dd class="col-sm-9">@Model.SearchedBy</dd>
             <dt class="col-sm-3">Databases Searched</dt>
@@ -41,9 +41,9 @@
             <dd class="col-sm-9" style="white-space:pre-wrap">@(Model.SearchTerms ?? "—")</dd>
             <dt class="col-sm-3">Publication Date Range</dt>
             <dd class="col-sm-9">
-                @(Model.DateRangeFrom?.ToString("dd MMM yyyy") ?? "—")
+                @(Model.DateRangeFrom?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
                 @if (Model.DateRangeFrom.HasValue && Model.DateRangeTo.HasValue) { <span> → </span> }
-                @(Model.DateRangeTo?.ToString("dd MMM yyyy") ?? "")
+                @(Model.DateRangeTo?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "")
             </dd>
             <dt class="col-sm-3">Total Results</dt>
             <dd class="col-sm-9">@Model.ResultsCount</dd>
@@ -81,7 +81,7 @@
                     @foreach (var log in Model.AuditLogs.OrderByDescending(l => l.PerformedOn))
                     {
                         <tr>
-                            <td>@log.PerformedOn.ToSite().ToString("dd MMM yyyy HH:mm")</td>
+                            <td>@log.PerformedOn.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</td>
                             <td>@log.Action</td>
                             <td>@(log.FromStatus ?? "-")</td>
                             <td>@(log.ToStatus ?? "-")</td>

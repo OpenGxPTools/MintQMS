@@ -14,7 +14,7 @@
 <p class="text-muted mb-3">
     Supporting documents attached to master data records (Products, Materials, Processes, Assets, Services,
     Customers, and Suppliers) that have an assigned expiry date. Organised by module and parent record.
-    Generated: @Model.GeneratedAt.ToSite().ToString("dd MMM yyyy HH:mm") UTC.
+    Generated: @Model.GeneratedAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) UTC.
 </p>
 
 @* Summary banner *@
@@ -126,7 +126,7 @@ else
                                             <i class="fas fa-file-alt text-muted me-1"></i>@doc.FileName
                                         </td>
                                         <td class="text-truncate text-muted small" style="max-width:180px;">@(doc.Description ?? "—")</td>
-                                        <td class="text-nowrap fw-semibold">@doc.ExpiryDate!.Value.ToString("dd MMM yyyy")</td>
+                                        <td class="text-nowrap fw-semibold">@doc.ExpiryDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                         <td class="text-nowrap small @(doc.IsExpired ? "text-danger" : doc.IsExpiringSoon ? "text-warning" : "text-muted")">@daysText</td>
                                         <td><span class="badge @badgeClass">@statusText</span></td>
                                     </tr>

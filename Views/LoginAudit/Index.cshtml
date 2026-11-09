@@ -91,7 +91,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 @foreach (var log in Model)
                 {
                     <tr>
-                        <td class="ps-3 text-nowrap">@log.Timestamp.ToSite().ToString("dd MMM yyyy HH:mm:ss")</td>
+                        <td class="ps-3 text-nowrap">@log.Timestamp.ToSite().ToString("dd MMM yyyy HH:mm:ss", DisplayDates.Culture)</td>
                         <td>@log.UserName</td>
                         <td><span class="badge @ActionBadge(log.Action)">@log.Action</span></td>
                         <td class="font-monospace">@log.IpAddress</td>

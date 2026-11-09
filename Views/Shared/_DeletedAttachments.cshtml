@@ -29,7 +29,7 @@
                         <tr class="text-muted">
                             <td><s>@f.FileName</s></td>
                             <td>@(f.DeletedBy ?? "-")</td>
-                            <td class="text-nowrap">@(f.DeletedOn.HasValue ? f.DeletedOn.Value.ToSite().ToString("dd MMM yyyy HH:mm") : "-")</td>
+                            <td class="text-nowrap">@(f.DeletedOn.HasValue ? f.DeletedOn.Value.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) : "-")</td>
                             <td>@(f.DeletionReason ?? "-")</td>
                             <td class="text-end">
                                 <a href="@Url.Action(Model.DownloadAction, route)" class="btn btn-sm btn-outline-secondary py-0"

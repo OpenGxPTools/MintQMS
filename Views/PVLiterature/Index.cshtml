@@ -43,14 +43,14 @@
         @foreach (var s in Model)
         {
             <tr class="@(s.AEsIdentified > 0 ? "table-warning" : "")">
-                <td>@s.SearchDate.ToString("dd MMM yyyy")</td>
+                <td>@s.SearchDate.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                 <td>@s.SearchedBy</td>
                 <td><small>@(s.DatabasesSearched ?? "—")</small></td>
                 <td>
                     <small>
-                        @(s.DateRangeFrom?.ToString("dd MMM yyyy") ?? "—")
+                        @(s.DateRangeFrom?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
                         @if (s.DateRangeFrom.HasValue) { <span>→</span> }
-                        @(s.DateRangeTo?.ToString("dd MMM yyyy") ?? "")
+                        @(s.DateRangeTo?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "")
                     </small>
                 </td>
                 <td class="text-center">@s.ResultsCount</td>

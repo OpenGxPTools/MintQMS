@@ -122,9 +122,9 @@
                 <td><span class="badge bg-secondary">@app.Jurisdiction?.Code</span></td>
                 <td class="small">@app.ApplicationType?.Code</td>
                 <td><span class="badge bg-@statusBadge">@L.Enum(app.Status)</span></td>
-                <td>@app.SubmissionDate?.ToString("dd MMM yyyy")</td>
-                <td class="@targetClass">@app.TargetDecisionDate?.ToString("dd MMM yyyy")</td>
-                <td class="@expiryClass">@app.ExpiryDate?.ToString("dd MMM yyyy")</td>
+                <td>@app.SubmissionDate?.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
+                <td class="@targetClass">@app.TargetDecisionDate?.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
+                <td class="@expiryClass">@app.ExpiryDate?.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@app.Id">@L["Details"]</a>
                     @if (!app.IsLocked && (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser")))

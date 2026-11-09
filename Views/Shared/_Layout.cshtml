@@ -98,6 +98,32 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             },
         };
         <script>$.extend(true, $.fn.dataTable.defaults, { language: @Json.Serialize(dtLanguage) });</script>
+        @* Dates on screen follow the language ("09 nov. 2026"). DataTables only recognises English month
+           names, so teach it this language's, or date columns would sort alphabetically. Mirrors the
+           built-in English detection: empty cells count as dates, anything else unrecognised → text. *@
+        var dtf = System.Globalization.CultureInfo.CurrentUICulture.DateTimeFormat;
+        var monthNames = dtf.AbbreviatedMonthNames.Concat(dtf.AbbreviatedMonthGenitiveNames)
+                            .Concat(dtf.MonthNames).Concat(dtf.MonthGenitiveNames).ToArray();
+        <script>
+            (function () {
+                var names = @Json.Serialize(monthNames), months = {};
+                names.forEach(function (n, i) { if (n) months[n.toLowerCase().replace(/\./g, '')] = (i % 13) + 1; });
+                var re = /^(\d{1,2})[ -]([^\d\s-][^\s-]*)[ -](\d{4}|\d{2})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/;
+                function parse(d) {
+                    if (d === null || d === undefined) return null;
+                    var s = String(d).replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+                    var m = re.exec(s); if (!m) return null;
+                    var mon = months[m[2].toLowerCase().replace(/\./g, '')]; if (!mon) return null;
+                    var y = +m[3]; if (m[3].length === 2) y += 2000;
+                    return Date.UTC(y, mon - 1, +m[1], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0));
+                }
+                $.fn.dataTable.ext.type.detect.unshift(function (d) {
+                    if (d === null || d === undefined || String(d).replace(/<[^>]*>/g, '').trim() === '') return 'mint-date';
+                    return parse(d) !== null ? 'mint-date' : null;
+                });
+                $.fn.dataTable.ext.type.order['mint-date-pre'] = function (d) { var v = parse(d); return v === null ? -Infinity : v; };
+            })();
+        </script>
     }
 
     <script src="~/lib/ChartJs/chart.min.js"></script>

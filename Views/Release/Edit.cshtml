@@ -206,9 +206,9 @@
                             <dt class="col-sm-4">Batch Number</dt><dd class="col-sm-8">@Model.BatchNumber</dd>
                             <dt class="col-sm-4">Batch Size</dt><dd class="col-sm-8">@(Model.BatchSize ?? "-")</dd>
                             <dt class="col-sm-4">Pack Size</dt><dd class="col-sm-8">@(Model.PackSize ?? "-")</dd>
-                            <dt class="col-sm-4">Mfg Date</dt><dd class="col-sm-8">@(Model.ManufacturingDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
-                            <dt class="col-sm-4">@L["Expiry Date"]</dt><dd class="col-sm-8">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
-                            <dt class="col-sm-4">Retest Date</dt><dd class="col-sm-8">@(Model.RetestDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                            <dt class="col-sm-4">Mfg Date</dt><dd class="col-sm-8">@(Model.ManufacturingDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
+                            <dt class="col-sm-4">@L["Expiry Date"]</dt><dd class="col-sm-8">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
+                            <dt class="col-sm-4">Retest Date</dt><dd class="col-sm-8">@(Model.RetestDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
                         </dl>
                         <input type="hidden" asp-for="BatchNumber" />
                         <input type="hidden" asp-for="BatchSize" />

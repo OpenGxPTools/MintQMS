@@ -74,7 +74,7 @@ else
                 <h3 class="mb-1">@certTitle</h3>
                 <div><strong>Certificate No.:</strong> @Model.CertificateNumber</div>
                 <div><strong>Record No.:</strong> @Model.RecordNumber</div>
-                <div><strong>Date of Issue:</strong> @Model.IssuedDate.ToSite().ToString("dd-MMM-yyyy")</div>
+                <div><strong>Date of Issue:</strong> @Model.IssuedDate.ToSite().ToString("dd-MMM-yyyy", DisplayDates.Culture)</div>
             </div>
             <div class="text-end">
                 <span class="badge bg-primary fs-6">@Model.ReleaseType</span><br />
@@ -141,15 +141,15 @@ else
             <div class="row">
                 <div class="col-md-3"><strong>Batch No.:</strong> @Model.BatchNumber</div>
                 <div class="col-md-3"><strong>Batch Size:</strong> @(Model.BatchSize ?? "-")</div>
-                <div class="col-md-3"><strong>Mfg Date:</strong> @(Model.ManufacturingDate?.ToString("dd-MMM-yyyy") ?? "-")</div>
+                <div class="col-md-3"><strong>Mfg Date:</strong> @(Model.ManufacturingDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</div>
                 <div class="col-md-3">
                     @if (Model.ExpiryDate.HasValue)
                     {
-                        <strong>Expiry Date:</strong> @Model.ExpiryDate.Value.ToString("dd-MMM-yyyy")
+                        <strong>Expiry Date:</strong> @Model.ExpiryDate.Value.ToString("dd-MMM-yyyy", DisplayDates.Culture)
                     }
                     else if (Model.RetestDate.HasValue)
                     {
-                        <strong>Retest Date:</strong> @Model.RetestDate.Value.ToString("dd-MMM-yyyy")
+                        <strong>Retest Date:</strong> @Model.RetestDate.Value.ToString("dd-MMM-yyyy", DisplayDates.Culture)
                     }
                     else { <strong>Expiry / Retest Date:</strong> <span>-</span> }
                 </div>
@@ -292,7 +292,7 @@ else
                 </div>
                 <div class="col-md-3">
                     <strong>Date of Issue:</strong><br />
-                    @(displayDate?.ToString("dd-MMM-yyyy") ?? "-")
+                    @(displayDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")
                 </div>
                 @if (!string.IsNullOrEmpty(Model.ReleaseRegisterRef))
                 {
@@ -307,7 +307,7 @@ else
                     <strong>Batch Certified By (AP):</strong> @Model.APName
                     @if (Model.CertificationDate.HasValue)
                     {
-                        <span> on @Model.CertificationDate.Value.ToSite().ToString("dd-MMM-yyyy")</span>
+                        <span> on @Model.CertificationDate.Value.ToSite().ToString("dd-MMM-yyyy", DisplayDates.Culture)</span>
                     }
                 </div>
             }

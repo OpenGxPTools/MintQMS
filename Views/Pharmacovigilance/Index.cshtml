@@ -93,7 +93,7 @@
                     if (ae.TGADeadlineDate.HasValue && ae.IsSerious)
                     {
                         var daysLeft = (ae.TGADeadlineDate.Value.Date - SiteTime.Today).Days;
-                        deadlineText = ae.TGADeadlineDate.Value.ToString("dd MMM yyyy");
+                        deadlineText = ae.TGADeadlineDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture);
                         deadlineBadge = daysLeft < 0 ? "danger" : daysLeft <= 2 ? "danger" : daysLeft <= 5 ? "warning" : "success";
                     }
                     var isOverdue = ae.IsSerious && ae.TGADeadlineDate.HasValue && ae.TGADeadlineDate.Value.Date < SiteTime.Today;
@@ -102,8 +102,8 @@
                         data-report-date="@ae.ReportDate.ToSite().ToString("yyyy-MM-dd")"
                         data-overdue="@(isOverdue ? "1" : "0")">
                         <td><a asp-action="Details" asp-route-id="@ae.Id" class="fw-semibold">@ae.AENumber</a></td>
-                        <td>@ae.ReportDate.ToSite().ToString("dd MMM yyyy")</td>
-                        <td>@(ae.Day0Date?.ToString("dd MMM yyyy") ?? "-")</td>
+                        <td>@ae.ReportDate.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</td>
+                        <td>@(ae.Day0Date?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</td>
                         <td>
                             @if (!string.IsNullOrEmpty(deadlineBadge))
                             {

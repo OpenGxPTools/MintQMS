@@ -82,7 +82,7 @@
                             <td class="fw-semibold small align-middle">@s.ProductGroupLabel</td>
                             <td class="small text-muted align-middle" title="@s.Statement">@preview</td>
                             <td class="small align-middle">@s.LastModifiedBy</td>
-                            <td class="small align-middle">@s.LastModifiedDate.ToSite()?.ToString("dd-MMM-yyyy")</td>
+                            <td class="small align-middle">@s.LastModifiedDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture)</td>
                             @if (canEdit)
                             {
                                 <td class="align-middle">
@@ -124,7 +124,7 @@
                     {
                         var rtLabel = releaseTypes.Where(rt => rt.Type == log.ReleaseType).Select(rt => rt.Label).FirstOrDefault() ?? log.ReleaseType.ToString();
                         <tr>
-                            <td class="small align-middle">@(SiteTime.ToSite((DateTime)log.ChangedOn).ToString("dd-MMM-yyyy HH:mm"))</td>
+                            <td class="small align-middle">@(SiteTime.ToSite((DateTime)log.ChangedOn).ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture))</td>
                             <td class="small align-middle">@rtLabel — @log.ProductGroupLabel</td>
                             <td class="small align-middle">
                                 <details>

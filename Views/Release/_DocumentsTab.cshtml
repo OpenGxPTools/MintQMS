@@ -65,7 +65,7 @@ else
                     <td><small>@doc.Description</small></td>
                     <td><small>@(doc.FileSizeBytes > 0 ? $"{doc.FileSizeBytes / 1024:N0} KB" : "-")</small></td>
                     <td><small>@doc.UploadedBy</small></td>
-                    <td><small>@doc.UploadedDate.ToSite().ToString("dd-MMM-yyyy")</small></td>
+                    <td><small>@doc.UploadedDate.ToSite().ToString("dd-MMM-yyyy", DisplayDates.Culture)</small></td>
                     <td class="text-nowrap">
                         <a asp-action="DownloadDocument" asp-route-documentId="@doc.Id" class="btn btn-sm btn-outline-primary">@L["Download"]</a>
                         @if (!Model.IsLocked)

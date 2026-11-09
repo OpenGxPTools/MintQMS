@@ -106,7 +106,7 @@
                 <td><span class="badge @badge">@ReleaseStatusLabel(r.Status)</span></td>
                 <td>@EnumDisplay(r.ReleaseType)</td>
                 <td>@(r.APFullNameQualification ?? "-")</td>
-                <td>@(r.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</td>
+                <td>@(r.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@r.Id">@L["Details"]</a>
                     @if (!r.IsLocked)

@@ -34,6 +34,8 @@ translation key, and anything without a translation is shown in English.
 - **States, types and roles on a page:** `@L.Enum(item.Status)` and `@L.Role(name)`. Never use these
   when writing records — `EnumHelper.Display` stays English for audit entries, PDFs and stored text.
 - **Messages from page models and controllers:** `this.T("Invalid login attempt.")`.
+- **Dates on a page:** `x.ToString("dd MMM yyyy", DisplayDates.Culture)` or `DisplayDates.Long(x)` — in views
+  only. Dates written into records, audit entries, exports and PDFs keep the server's format.
 - **Never translate anything that is stored** (audit-trail actions, record fields, file names) or
   compared in code or scripts (e.g. `data-status` values must match what the filtered column shows).
 - Add the Spanish and Portuguese to `Resources/Localization/translations.json`, then run

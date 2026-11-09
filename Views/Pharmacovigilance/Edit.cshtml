@@ -110,7 +110,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">@L["Report Date"]</label>
-                    <input class="form-control" value="@Model.ReportDate.ToSite().ToString("dd MMM yyyy")" disabled />
+                    <input class="form-control" value="@Model.ReportDate.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)" disabled />
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">@L["Status"]</label>
@@ -135,7 +135,7 @@
                         {
                             var daysLeft = (Model.TGADeadlineDate.Value.Date - SiteTime.Today).Days;
                             var cls = daysLeft < 0 ? "danger" : daysLeft <= 2 ? "danger" : daysLeft <= 5 ? "warning" : "success";
-                            <span class="badge bg-@cls fs-6">@Model.TGADeadlineDate.Value.ToString("dd MMM yyyy")</span>
+                            <span class="badge bg-@cls fs-6">@Model.TGADeadlineDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
                         }
                         else
                         {

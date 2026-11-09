@@ -153,9 +153,9 @@ function updateRemoveButtons() {
                         <div class="col-sm-3 text-muted">Original Version / Ref</div><div class="col-sm-9"><span class="badge bg-secondary">@document.ExternalVersion</span></div>
                     }
                     <div class="col-sm-3 text-muted">@L["Original Author"]</div><div class="col-sm-9">@(document.ExternalAuthorName ?? "-")</div>
-                    <div class="col-sm-3 text-muted">@L["Originally Authored On"]</div><div class="col-sm-9">@(document.ExternalAuthoredOn?.ToString("dd MMM yyyy") ?? "-")</div>
+                    <div class="col-sm-3 text-muted">@L["Originally Authored On"]</div><div class="col-sm-9">@(document.ExternalAuthoredOn?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</div>
                     <div class="col-sm-3 text-muted">@L["Original Approver"]</div><div class="col-sm-9">@(document.ExternalApproverName ?? "-")</div>
-                    <div class="col-sm-3 text-muted">@L["Originally Approved On"]</div><div class="col-sm-9">@(document.ExternalApprovedOn?.ToString("dd MMM yyyy") ?? "-")</div>
+                    <div class="col-sm-3 text-muted">@L["Originally Approved On"]</div><div class="col-sm-9">@(document.ExternalApprovedOn?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</div>
                 </div>
             </div>
         </div>

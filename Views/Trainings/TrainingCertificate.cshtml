@@ -73,7 +73,7 @@
         <div>
             <h3 class="mb-1">Training Completion Certificate</h3>
             <div><strong>Training ID:</strong> @Model.TrainingId</div>
-            <div><strong>Date of Issue:</strong> @SiteTime.Today.ToString("dd-MMM-yyyy")</div>
+            <div><strong>Date of Issue:</strong> @SiteTime.Today.ToString("dd-MMM-yyyy", DisplayDates.Culture)</div>
         </div>
         <div class="text-end">
             <span class="badge @(isCA ? "bg-primary" : "bg-info text-dark") fs-6">
@@ -106,7 +106,7 @@
         <div class="row mt-1">
             <div class="col-md-6">
                 <strong>@(isCA ? "Competency Verified On:" : "Acknowledged On:")</strong>
-                @(completedDate?.ToString("dd-MMM-yyyy") ?? "-")
+                @(completedDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")
             </div>
         </div>
         @if (!string.IsNullOrEmpty(Model.TrainerEmail))
@@ -154,13 +154,13 @@
             {
                 <text>This is to certify that <strong>@traineeName</strong> has successfully completed and passed the competency assessment for
                 <strong>@(policyDoc != null ? $"{policyDoc.DocumentId} v{docVersion?.ToString("0.00")} — {policyDoc.Title}" : Model.PolicyTitle)</strong>
-                on <strong>@(completedDate?.ToString("dd-MMM-yyyy") ?? "-")</strong>.</text>
+                on <strong>@(completedDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</strong>.</text>
             }
             else
             {
                 <text>This is to certify that <strong>@traineeName</strong> has read and acknowledged
                 <strong>@(policyDoc != null ? $"{policyDoc.DocumentId} v{docVersion?.ToString("0.00")} — {policyDoc.Title}" : Model.PolicyTitle)</strong>
-                on <strong>@(completedDate?.ToString("dd-MMM-yyyy") ?? "-")</strong>.</text>
+                on <strong>@(completedDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</strong>.</text>
             }
         </p>
         <div class="row mt-3">
@@ -170,7 +170,7 @@
             </div>
             <div class="col-md-4">
                 <strong>Completion Date:</strong><br />
-                @(completedDate?.ToString("dd-MMM-yyyy") ?? "-")
+                @(completedDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")
             </div>
             <div class="col-md-3">
                 <strong>Training ID:</strong><br />

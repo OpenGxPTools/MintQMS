@@ -46,7 +46,7 @@
                 _                                        => "secondary"
             };
             <tr class="@(s.Status == PVSignalReview.SignalStatus.Open ? "table-danger" : "")">
-                <td>@s.DetectedOn.ToSite().ToString("dd MMM yyyy")</td>
+                <td>@s.DetectedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                 <td><strong>@s.MedDRAPT</strong></td>
                 <td class="text-center">
                     <span class="badge bg-warning text-dark">@s.TriggerCount</span>
@@ -68,7 +68,7 @@
                     }
                     else { <span class="text-muted">—</span> }
                 </td>
-                <td>@(s.ReviewedOn.ToSite()?.ToString("dd MMM yyyy") ?? "—")</td>
+                <td>@(s.ReviewedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-primary">@L["View"]</a>
                     @if (s.Status != PVSignalReview.SignalStatus.Closed && s.Status != PVSignalReview.SignalStatus.Refuted)

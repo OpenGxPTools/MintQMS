@@ -424,7 +424,7 @@
                     {
                         var refDate = Model.NextRenewalDue ?? Model.ExpiryDate;
                         <div class="alert alert-info small mb-3">
-                            <i class="fas fa-info-circle me-1"></i>Renewal is otherwise tracked against @(Model.NextRenewalDue.HasValue ? "next renewal due" : "expiry") (@refDate!.Value.ToString("dd MMM yyyy")). Use this to start the renewal early.
+                            <i class="fas fa-info-circle me-1"></i>Renewal is otherwise tracked against @(Model.NextRenewalDue.HasValue ? "next renewal due" : "expiry") (@refDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)). Use this to start the renewal early.
                         </div>
                     }
                     <div class="mb-3">
@@ -599,11 +599,11 @@
                 </div>
             </div>
             <div class="col-md-3"><label class="text-muted small">@L["Created By"]</label><div>@Model.CreatedBy</div></div>
-            <div class="col-md-3"><label class="text-muted small">Created At</label><div>@Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm")</div></div>
+            <div class="col-md-3"><label class="text-muted small">Created At</label><div>@Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</div></div>
             @if (Model.ModifiedBy != null)
             {
                 <div class="col-md-3"><label class="text-muted small">Last Modified By</label><div>@Model.ModifiedBy</div></div>
-                <div class="col-md-3"><label class="text-muted small">@L["Last Modified"]</label><div>@Model.ModifiedAt.ToSite()?.ToString("dd MMM yyyy HH:mm")</div></div>
+                <div class="col-md-3"><label class="text-muted small">@L["Last Modified"]</label><div>@Model.ModifiedAt.ToSite()?.ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</div></div>
             }
         </div>
     </div>
@@ -633,7 +633,7 @@
                     <div class="col-md-3">
                         <label class="text-muted small">@label</label>
                         <div class="@(highlight && val < SiteTime.Today ? "text-danger fw-bold" : "")">
-                            @(val?.ToString("dd MMM yyyy") ?? "—")
+                            @(val?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
                         </div>
                     </div>
                 }
@@ -665,7 +665,7 @@
             <div class="col-md-3"><label class="text-muted small">@L["Application Fee"]</label>
                 <div>@(Model.ApplicationFee.HasValue ? $"{Model.FeeCurrency} {Model.ApplicationFee:N2}" : "—")</div>
             </div>
-            <div class="col-md-3"><label class="text-muted small">@L["Fee Paid Date"]</label><div>@(Model.FeePaidDate?.ToString("dd MMM yyyy") ?? "—")</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Fee Paid Date"]</label><div>@(Model.FeePaidDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</div></div>
             <div class="col-md-3"><label class="text-muted small">Fee Waiver</label>
                 <div>@(Model.FeeWaiverApplied ? "Yes — " + (Model.FeeWaiverReason ?? "") : "No")</div>
             </div>
@@ -740,8 +740,8 @@
                             </td>
                             <td><span class="badge bg-secondary">@c.ConditionType</span></td>
                             <td class="@(cOverdue ? "text-danger fw-bold" : cDueSoon ? "text-warning fw-bold" : "")">
-                                @(c.DueDate?.ToString("dd MMM yyyy") ?? "—")
-                                @if (c.CompletedDate.HasValue) { <div class="small text-success">Closed: @c.CompletedDate.Value.ToString("dd MMM yyyy")</div> }
+                                @(c.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
+                                @if (c.CompletedDate.HasValue) { <div class="small text-success">Closed: @c.CompletedDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</div> }
                             </td>
                             <td><span class="badge bg-@cBadge">@L.Enum(c.Status)</span></td>
                             <td>
@@ -851,7 +851,7 @@
                             <td>@(doc.DocumentType ?? "—")</td>
                             <td class="text-muted small">@($"{doc.FileSizeBytes / 1024.0:N0} KB")</td>
                             <td>v@(doc.Version)</td>
-                            <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy") <span class="text-muted small">@doc.UploadedBy</span></td>
+                            <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) <span class="text-muted small">@doc.UploadedBy</span></td>
                             <td class="text-end text-nowrap">
                                 <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary">
                                     <i class="fas fa-download me-1"></i>@L["Download"]
@@ -874,7 +874,7 @@
             <h6 class="text-uppercase small text-muted mt-3 mb-1">
                 <i class="fas fa-check-circle text-success me-1"></i>
                 Cycle @group.Key
-                @if (riSnap != null) { <span class="fw-normal">— Approved @riSnap.TakenAt.ToSite().ToString("dd MMM yyyy")</span> }
+                @if (riSnap != null) { <span class="fw-normal">— Approved @riSnap.TakenAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</span> }
             </h6>
             <table class="table table-sm table-hover mb-3">
                 <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Size"]</th><th>@L["Version"]</th><th>Uploaded</th><th></th></tr></thead>
@@ -886,7 +886,7 @@
                             <td>@(doc.DocumentType ?? "—")</td>
                             <td class="text-muted small">@($"{doc.FileSizeBytes / 1024.0:N0} KB")</td>
                             <td>v@(doc.Version)</td>
-                            <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy") <span class="text-muted small">@doc.UploadedBy</span></td>
+                            <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) <span class="text-muted small">@doc.UploadedBy</span></td>
                             <td class="text-end"><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>@L["Download"]</a></td>
                         </tr>
                     }
@@ -988,8 +988,8 @@
                                     }
                                 </td>
                                 <td><span class="badge bg-@vBadge">@L.Enum(v.Status)</span></td>
-                                <td class="small">@(v.SubmissionDate?.ToString("dd MMM yyyy") ?? "—")</td>
-                                <td class="small">@(v.ApprovalDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td class="small">@(v.SubmissionDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
+                                <td class="small">@(v.ApprovalDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
                                 <td class="text-end text-nowrap">
                                     @if (!isTerminal)
                                     {
@@ -1075,9 +1075,9 @@
                                 <td><span class="badge bg-info text-dark">@ap.PathwayType</span></td>
                                 <td class="small">@(ap.PatientIdentifier ?? "—")</td>
                                 <td><span class="badge bg-@apStatusBadge">@ap.Status</span></td>
-                                <td class="small">@(ap.ApprovalDate?.ToString("dd MMM yyyy") ?? "—")</td>
-                                <td class="small @(apExpired ? "text-danger fw-bold" : "")">@(ap.ExpiryDate?.ToString("dd MMM yyyy") ?? "—")</td>
-                                <td class="small @(reportOverdue ? "text-warning fw-bold" : "")">@(ap.NextSixMonthlyReportDue?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td class="small">@(ap.ApprovalDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
+                                <td class="small @(apExpired ? "text-danger fw-bold" : "")">@(ap.ExpiryDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
+                                <td class="small @(reportOverdue ? "text-warning fw-bold" : "")">@(ap.NextSixMonthlyReportDue?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
                                 <td class="text-center">
                                     @if (ap.AEReportingRequired) { <span class="badge bg-warning text-dark">@L["Yes"]</span> }
                                     else { <span class="text-muted">@L["No"]</span> }
@@ -1193,9 +1193,9 @@
                                     @if (m.IsClockStop) { <span class="badge bg-warning text-dark ms-1" title="Clock-stop milestone"><i class="fas fa-pause"></i></span> }
                                 </td>
                                 <td class="@(isEffectivelyOverdue ? "text-danger fw-bold" : "")">
-                                    @(m.PlannedDate?.ToString("dd MMM yyyy") ?? "—")
+                                    @(m.PlannedDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
                                 </td>
-                                <td>@(m.ActualDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td>@(m.ActualDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
                                 <td><span class="badge bg-@msBadge">@statusLabel</span></td>
                                 <td class="text-center">
                                     @if (m.IsClockStop)
@@ -1203,7 +1203,7 @@
                                         <i class="fas fa-pause text-warning" title="Clock-stop milestone"></i>
                                         @if (m.ClockRestartDate.HasValue)
                                         {
-                                            <span class="small text-muted d-block">Restart: @m.ClockRestartDate.Value.ToString("dd MMM yyyy")</span>
+                                            <span class="small text-muted d-block">Restart: @m.ClockRestartDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
                                         }
                                     }
                                 </td>
@@ -1287,9 +1287,9 @@
                         <td>@r.Category</td>
                         <td>@(r.LicenceType?.DisplayName ?? "—")</td>
                         <td><span class="badge @lcBadge">@L.Enum(r.Status)</span></td>
-                        <td>@(r.ExpiryDate.HasValue ? r.ExpiryDate.Value.ToString("dd MMM yyyy") : "—")</td>
+                        <td>@(r.ExpiryDate.HasValue ? r.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture) : "—")</td>
                         <td class="small text-muted">@(dep.Notes ?? "—")</td>
-                        <td class="small text-muted">@(SiteTime.ToSite((DateTime)dep.LinkedSince).ToString("dd MMM yyyy"))</td>
+                        <td class="small text-muted">@(SiteTime.ToSite((DateTime)dep.LinkedSince).ToString("dd MMM yyyy", DisplayDates.Culture))</td>
                         <td><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">@L["View"]</a></td>
                     </tr>
                 }
@@ -1308,7 +1308,7 @@
                     @foreach (var log in Model.AuditLogs)
                     {
                         <tr>
-                            <td class="small text-muted">@log.Timestamp.ToSite().ToString("dd MMM yyyy HH:mm")</td>
+                            <td class="small text-muted">@log.Timestamp.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</td>
                             <td><span class="badge bg-secondary">@log.Action</span></td>
                             <td class="small">@log.FieldChanged</td>
                             <td class="small text-muted">@log.OldValue</td>
@@ -1356,7 +1356,7 @@
                 <div class="card mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span class="fw-bold"><i class="fas fa-check-circle text-success me-2"></i>Cycle @snap.RenewalCycle</span>
-                        <small class="text-muted">Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy HH:mm") UTC</small>
+                        <small class="text-muted">Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) UTC</small>
                     </div>
                     <div class="card-body">
                         @foreach (var grp in riSections)
@@ -1767,7 +1767,7 @@
                     <p>This will create standard milestones for <strong>@Model.Jurisdiction?.Authority</strong> based on the review timeline for <strong>@Model.ApplicationType?.Name</strong>.</p>
                     <div class="alert alert-info small">
                         <i class="fas fa-info-circle me-1"></i>
-                        Milestone dates are calculated from <strong>Day 0 (@(Model.Day0Date?.ToString("dd MMM yyyy") ?? Model.SubmissionDate?.ToString("dd MMM yyyy") ?? "Submission Date"))</strong>.
+                        Milestone dates are calculated from <strong>Day 0 (@(Model.Day0Date?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? Model.SubmissionDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "Submission Date"))</strong>.
                         You can edit individual milestone dates after applying the template.
                     </div>
                     <p class="text-muted small">This action is only available when no milestones exist.</p>

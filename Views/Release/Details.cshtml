@@ -101,7 +101,7 @@
 @if (Model.Status == ReleaseStatus.OnHold && !string.IsNullOrEmpty(Model.HoldReason))
 {
     <div class="alert alert-warning">
-        <strong>@L["On Hold"]</strong> since @(Model.HoldDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "unknown")
+        <strong>@L["On Hold"]</strong> since @(Model.HoldDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "unknown")
         @if (!string.IsNullOrEmpty(Model.HoldBy)) { <text> by @Model.HoldBy</text> }
         <br /><em>@Model.HoldReason</em>
     </div>
@@ -111,7 +111,7 @@
 @if (Model.Status == ReleaseStatus.Rejected && !string.IsNullOrEmpty(Model.RejectionReason))
 {
     <div class="alert alert-danger">
-        <strong>@L["Rejected"]</strong> on @(Model.RejectionDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "unknown")
+        <strong>@L["Rejected"]</strong> on @(Model.RejectionDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "unknown")
         @if (!string.IsNullOrEmpty(Model.RejectedBy)) { <text> by @Model.RejectedBy</text> }
         <br /><em>@Model.RejectionReason</em>
     </div>
@@ -207,9 +207,9 @@
                     <dt class="col-sm-5">Batch Number</dt><dd class="col-sm-7">@Model.BatchNumber</dd>
                     <dt class="col-sm-5">Batch Size</dt><dd class="col-sm-7">@(Model.BatchSize ?? "-")</dd>
                     <dt class="col-sm-5">Pack Size</dt><dd class="col-sm-7">@(Model.PackSize ?? "-")</dd>
-                    <dt class="col-sm-5">Mfg Date</dt><dd class="col-sm-7">@(Model.ManufacturingDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
-                    <dt class="col-sm-5">@L["Expiry Date"]</dt><dd class="col-sm-7">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
-                    <dt class="col-sm-5">Retest Date</dt><dd class="col-sm-7">@(Model.RetestDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                    <dt class="col-sm-5">Mfg Date</dt><dd class="col-sm-7">@(Model.ManufacturingDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Expiry Date"]</dt><dd class="col-sm-7">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
+                    <dt class="col-sm-5">Retest Date</dt><dd class="col-sm-7">@(Model.RetestDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
                 </dl>
             </div>
         </div>
@@ -238,7 +238,7 @@
                 <dl class="row">
                     <dt class="col-sm-5">@L["Release Type"]</dt><dd class="col-sm-7">@ReleaseTypeDisplayName(Model.ReleaseType)</dd>
                     <dt class="col-sm-5">@L["AP"]</dt><dd class="col-sm-7">@(Model.APFullNameQualification ?? "-")</dd>
-                    <dt class="col-sm-5">Certification Date</dt><dd class="col-sm-7">@(Model.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                    <dt class="col-sm-5">Certification Date</dt><dd class="col-sm-7">@(Model.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
                     <dt class="col-sm-5">Register Ref.</dt><dd class="col-sm-7">@(Model.ReleaseRegisterRef ?? "-")</dd>
                     <dt class="col-sm-5">Storage Conditions</dt><dd class="col-sm-7">@(Model.StorageConditions ?? "-")</dd>
                     <dt class="col-sm-5">Distribution</dt><dd class="col-sm-7">@(Model.DistributionConditions ?? "-")</dd>
@@ -263,10 +263,10 @@
         <div class="mt-3">
             <h6 class="text-uppercase text-muted small border-bottom pb-1">Record Metadata</h6>
             <dl class="row">
-                <dt class="col-sm-3">@L["Created By"]</dt><dd class="col-sm-9">@Model.CreatedBy — @Model.CreatedDate.ToSite().ToString("dd-MMM-yyyy HH:mm")</dd>
+                <dt class="col-sm-3">@L["Created By"]</dt><dd class="col-sm-9">@Model.CreatedBy — @Model.CreatedDate.ToSite().ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture)</dd>
                 @if (Model.LastModifiedDate.HasValue)
                 {
-                    <dt class="col-sm-3">@L["Last Modified"]</dt><dd class="col-sm-9">@(Model.LastModifiedBy ?? "Unknown") — @Model.LastModifiedDate.Value.ToSite().ToString("dd-MMM-yyyy HH:mm")</dd>
+                    <dt class="col-sm-3">@L["Last Modified"]</dt><dd class="col-sm-9">@(Model.LastModifiedBy ?? "Unknown") — @Model.LastModifiedDate.Value.ToSite().ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture)</dd>
                 }
             </dl>
         </div>

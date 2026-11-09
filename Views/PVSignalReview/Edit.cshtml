@@ -19,7 +19,7 @@
             <dt class="col-sm-3">@L["MedDRA Preferred Term"]</dt>
             <dd class="col-sm-9"><strong>@Model.MedDRAPT</strong></dd>
             <dt class="col-sm-3">@L["Detected"]</dt>
-            <dd class="col-sm-9">@Model.DetectedOn.ToSite().ToString("dd MMM yyyy") by @Model.DetectedBy</dd>
+            <dd class="col-sm-9">@Model.DetectedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) by @Model.DetectedBy</dd>
             <dt class="col-sm-3">@L["Trigger Count"]</dt>
             <dd class="col-sm-9"><span class="badge bg-warning text-dark">@Model.TriggerCount cases in 90 days</span></dd>
         </dl>

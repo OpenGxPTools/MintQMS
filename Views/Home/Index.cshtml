@@ -31,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @* ── Page header ──────────────────────────────────────────────── *@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">Quality Overview</h2>
-    <span class="text-muted small">@SiteTime.Today.ToString("dddd, d MMMM yyyy")</span>
+    <span class="text-muted small">@DisplayDates.Long(SiteTime.Today)</span>
 </div>
 
 @* ══════════════════════════════════════════════════════════════════
@@ -137,7 +137,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                         <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -165,7 +165,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                         <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -193,7 +193,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                         <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -221,7 +221,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                         <td class="ps-3"><a asp-controller="Trainings" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -249,7 +249,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                         <td class="ps-3"><a asp-controller="Changes" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -277,7 +277,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                         <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -323,7 +323,7 @@ else
                                         <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -349,7 +349,7 @@ else
                                         <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -375,7 +375,7 @@ else
                                         <td class="ps-3"><a asp-controller="Changes" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -401,7 +401,7 @@ else
                                         <td class="ps-3"><a asp-controller="Audits" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -427,7 +427,7 @@ else
                                         <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -453,7 +453,7 @@ else
                                         <td class="ps-3"><a asp-controller="Complaints" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -479,7 +479,7 @@ else
                                         <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -509,7 +509,7 @@ else
                                         <td class="ps-3"><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -535,7 +535,7 @@ else
                                         <td class="ps-3"><a asp-controller="PVSignalReview" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -561,7 +561,7 @@ else
                                         <td class="ps-3"><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
                                         <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -753,7 +753,7 @@ else
                                 <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>
@@ -779,7 +779,7 @@ else
                                 <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>
@@ -805,7 +805,7 @@ else
                                 <td class="ps-3"><a asp-controller="Complaints" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>
@@ -831,7 +831,7 @@ else
                                 <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>
@@ -857,7 +857,7 @@ else
                                 <td class="ps-3"><a asp-controller="Audits" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>
@@ -883,7 +883,7 @@ else
                                 <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>
@@ -909,7 +909,7 @@ else
                                 <td class="ps-3"><a asp-controller="Trainings" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>
@@ -927,7 +927,7 @@ else
    ══════════════════════════════════════════════════════════════════ *@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">Regulatory Overview</h2>
-    <span class="text-muted small">@SiteTime.Today.ToString("dddd, d MMMM yyyy")</span>
+    <span class="text-muted small">@DisplayDates.Long(SiteTime.Today)</span>
 </div>
 
 <p class="text-uppercase text-muted fw-semibold small mb-2">Key Metrics</p>
@@ -1007,7 +1007,7 @@ else
                                 <td class="ps-3"><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>
@@ -1033,7 +1033,7 @@ else
                                 <td class="ps-3"><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>
@@ -1059,7 +1059,7 @@ else
                                 <td class="ps-3"><a asp-controller="RegulatoryIntelligence" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>
@@ -1085,7 +1085,7 @@ else
                                 <td class="ps-3"><a asp-controller="PVSignalReview" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy")</td>
+                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
                     </tbody>

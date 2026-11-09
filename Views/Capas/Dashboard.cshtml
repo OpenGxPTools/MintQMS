@@ -174,7 +174,7 @@
                             <td><a asp-action="Details" asp-route-id="@c.Id">@c.CapaId</a></td>
                             <td>@c.Title</td>
                             <td><span class="badge @csBadge">@csLabel</span></td>
-                            <td>@c.TargetCompletionDate!.Value.ToString("dd MMM yyyy")</td>
+                            <td>@c.TargetCompletionDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td class="text-danger fw-bold">@daysOver day@(daysOver == 1 ? "" : "s")</td>
                             <td class="small">
                                 @if (c.Deviation != null) { <span>Dev: @c.Deviation.DeviationId</span> }
@@ -207,7 +207,7 @@
                                     <td><a asp-action="Details" asp-route-id="@c.Id">@c.CapaId</a></td>
                                     <td class="text-truncate" style="max-width:180px">@c.Title</td>
                                     <td>@(c.AssessedBy ?? "-")</td>
-                                    <td>@(SiteTime.ToSite((DateTime?)c.AssessedOn)?.ToString("dd MMM yyyy") ?? "-")</td>
+                                    <td>@(SiteTime.ToSite((DateTime?)c.AssessedOn)?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</td>
                                 </tr>
                             }
                         </tbody>
@@ -235,7 +235,7 @@
                                     <td><a asp-action="Details" asp-route-id="@c.Id">@c.CapaId</a></td>
                                     <td class="text-truncate" style="max-width:180px">@c.Title</td>
                                     <td>@(c.AcceptedBy ?? "-")</td>
-                                    <td>@(SiteTime.ToSite((DateTime?)c.AcceptedOn)?.ToString("dd MMM yyyy") ?? "-")</td>
+                                    <td>@(SiteTime.ToSite((DateTime?)c.AcceptedOn)?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</td>
                                 </tr>
                             }
                         </tbody>
@@ -265,7 +265,7 @@
                     {
                         var capaLabel = recentCapaMap.TryGetValue(log.CapaId, out var lbl) ? lbl : $"#{log.CapaId}";
                         <tr>
-                            <td>@(SiteTime.ToSite((DateTime)log.PerformedOn).ToString("dd MMM yyyy HH:mm"))</td>
+                            <td>@(SiteTime.ToSite((DateTime)log.PerformedOn).ToString("dd MMM yyyy HH:mm", DisplayDates.Culture))</td>
                             <td><a asp-action="Details" asp-route-id="@log.CapaId">@capaLabel</a></td>
                             <td>@log.Action</td>
                             <td>@(log.FromStatus ?? "-")</td>

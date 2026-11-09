@@ -372,7 +372,7 @@
                                     <tr>
                                         <td>@c.ConditionDescription</td>
                                         <td>@c.ConditionType</td>
-                                        <td>@c.DueDate?.ToString("dd MMM yyyy")</td>
+                                        <td>@c.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                         <td>@L.Enum(c.Status)</td>
                                     </tr>
                                 }
@@ -402,7 +402,7 @@
                                 <td><i class="fas fa-file me-1 text-muted"></i>@doc.FileName</td>
                                 <td>@doc.DocumentType</td>
                                 <td>v@doc.Version</td>
-                                <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy") <span class="text-muted small">@doc.UploadedBy</span></td>
+                                <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) <span class="text-muted small">@doc.UploadedBy</span></td>
                                 <td class="text-end text-nowrap">
                                     <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary py-0">@L["Download"]</a>
                                     <form asp-action="DeleteDocument" asp-route-id="@doc.Id" method="post" class="d-inline" data-delete-reason="document">

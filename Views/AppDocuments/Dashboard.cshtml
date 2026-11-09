@@ -118,7 +118,7 @@
                                     <tr class="table-danger">
                                         <td>@d.DocumentId</td>
                                         <td>@d.Title</td>
-                                        <td>@d.ReviewDueDate.Value.ToString("dd MMM yyyy")</td>
+                                        <td>@d.ReviewDueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                         <td><span class="badge bg-danger">@daysOver days</span></td>
                                         <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-danger btn-sm">@L["View"]</a></td>
                                     </tr>
@@ -149,7 +149,7 @@
                                     <tr class="table-warning">
                                         <td>@d.DocumentId</td>
                                         <td>@d.Title</td>
-                                        <td>@d.ReviewDueDate.Value.ToString("dd MMM yyyy")</td>
+                                        <td>@d.ReviewDueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                         <td><span class="badge bg-warning text-dark">@daysLeft days</span></td>
                                         <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">@L["View"]</a></td>
                                     </tr>
@@ -218,7 +218,7 @@
                                     <td>@d.DocumentId</td>
                                     <td>@d.Title</td>
                                     <td>@d.Version.ToString("0.00")</td>
-                                    <td>@(d.ApprovedOn.HasValue ? SiteTime.ToSite((DateTime)d.ApprovedOn.Value).ToString("dd MMM yyyy") : "-")</td>
+                                    <td>@(d.ApprovedOn.HasValue ? SiteTime.ToSite((DateTime)d.ApprovedOn.Value).ToString("dd MMM yyyy", DisplayDates.Culture) : "-")</td>
                                     <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">@L["View"]</a></td>
                                 </tr>
                             }
@@ -251,7 +251,7 @@
                     {
                         var docId = recentDocMap.TryGetValue(log.AppDocumentId, out var did) ? did : $"#{log.AppDocumentId}";
                         <tr>
-                            <td>@(SiteTime.ToSite((DateTime)log.PerformedOn).ToString("dd MMM yyyy HH:mm"))</td>
+                            <td>@(SiteTime.ToSite((DateTime)log.PerformedOn).ToString("dd MMM yyyy HH:mm", DisplayDates.Culture))</td>
                             <td>
                                 <a asp-action="Details" asp-route-id="@log.AppDocumentId">@docId</a>
                             </td>

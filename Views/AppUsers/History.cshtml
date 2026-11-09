@@ -54,7 +54,7 @@ else
             @foreach (var entry in Model)
             {
                 <tr>
-                    <td>@entry.PerformedOn.ToSite().ToString("dd MMM yyyy HH:mm")</td>
+                    <td>@entry.PerformedOn.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</td>
                     <td>
                         @if (entry.Action == "User Created")
                         {

@@ -101,7 +101,7 @@
                         <tr class="table-danger">
                             <td>@t.TrainingId</td>
                             <td>@t.Name</td>
-                            <td>@(t.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
+                            <td>@(t.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</td>
                             <td><span class="badge bg-danger">@daysOver days</span></td>
                             <td>@t.TrainerEmail</td>
                             <td><a asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-danger btn-sm">@L["View"]</a></td>
@@ -134,7 +134,7 @@
                                 <tr>
                                     <td>@t.TrainingId</td>
                                     <td>@t.Name</td>
-                                    <td>@(t.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
+                                    <td>@(t.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</td>
                                     <td>@(t.Trainees?.Count ?? 0)</td>
                                     <td><a asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-secondary btn-sm">@L["View"]</a></td>
                                 </tr>
@@ -167,7 +167,7 @@
                                 <tr>
                                     <td>@t.TrainingId</td>
                                     <td>@t.Name</td>
-                                    <td>@(t.CompletedOn.HasValue ? SiteTime.ToSite((DateTime)t.CompletedOn.Value).ToString("dd MMM yyyy") : "-")</td>
+                                    <td>@(t.CompletedOn.HasValue ? SiteTime.ToSite((DateTime)t.CompletedOn.Value).ToString("dd MMM yyyy", DisplayDates.Culture) : "-")</td>
                                     <td>@(t.Trainees?.Count ?? 0)</td>
                                     <td><a asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-secondary btn-sm">@L["View"]</a></td>
                                 </tr>

@@ -22,12 +22,12 @@
                 Trigger: @L.Enum(Model.ReviewTrigger)
                 @if (startedOn.HasValue)
                 {
-                    <span> · Started @startedOn.Value.ToSite().ToString("dd MMM yyyy")</span>
+                    <span> · Started @startedOn.Value.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</span>
                 }
                 <span> · Current stage: @L.Enum(Model.Status)</span>
                 @if (Model.ExpiryDate.HasValue)
                 {
-                    <span> · Approval expires @Model.ExpiryDate.Value.ToString("dd MMM yyyy")</span>
+                    <span> · Approval expires @Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
                 }
             </div>
         </div>

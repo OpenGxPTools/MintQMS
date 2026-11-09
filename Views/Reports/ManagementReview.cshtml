@@ -40,7 +40,7 @@
 </form>
 
 <p class="text-muted small mb-4">
-    Showing period: <strong>@from.ToString("dd MMM yyyy")</strong> to <strong>@to.ToString("dd MMM yyyy")</strong>
+    Showing period: <strong>@from.ToString("dd MMM yyyy", DisplayDates.Culture)</strong> to <strong>@to.ToString("dd MMM yyyy", DisplayDates.Culture)</strong>
 </p>
 
 @* CAPAs *@

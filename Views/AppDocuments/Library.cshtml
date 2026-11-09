@@ -122,11 +122,11 @@
                         <td>@(catName ?? "—")</td>
                         <td>@(typeName ?? "—")</td>
                         <td>@doc.Version.ToString("0.0")</td>
-                        <td>@(doc.IssuedOn.HasValue ? doc.IssuedOn.Value.ToSite().ToString("dd MMM yyyy") : "—")</td>
+                        <td>@(doc.IssuedOn.HasValue ? doc.IssuedOn.Value.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) : "—")</td>
                         <td class="@reviewCls">
                             @if (reviewDue.HasValue)
                             {
-                                @reviewDue.Value.ToString("dd MMM yyyy")
+                                @reviewDue.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
                                 @if (reviewDue.Value.Date < SiteTime.Today)
                                 {
                                     <span class="badge bg-danger ms-1">@L["Overdue"]</span>

@@ -138,7 +138,7 @@
                             <input type="hidden" asp-for="PreventiveAction" />
 
                             <dt class="col-sm-3">@L["Target Completion"]</dt>
-                            <dd class="col-sm-9">@(Model.TargetCompletionDate.HasValue ? Model.TargetCompletionDate.Value.ToString("dd MMM yyyy") : "-")</dd>
+                            <dd class="col-sm-9">@(Model.TargetCompletionDate.HasValue ? Model.TargetCompletionDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture) : "-")</dd>
                             <input type="hidden" asp-for="TargetCompletionDate" />
                         </dl>
                     }

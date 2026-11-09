@@ -18,7 +18,7 @@
 
 <p class="text-muted mb-3">
     Approved documents that require periodic review, ordered by review due date.
-    Generated: @SiteTime.Now.ToString("dd MMM yyyy HH:mm") @SiteTime.Label.
+    Generated: @SiteTime.Now.ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) @SiteTime.Label.
 </p>
 
 @* Summary cards *@
@@ -107,8 +107,8 @@
                                 <td class="small text-muted">@(d.Category.HasValue ? d.Category.Value.ToString() : "—")</td>
                                 <td class="small text-muted">@(d.DocType.HasValue ? d.DocType.Value.ToString() : "—")</td>
                                 <td>@d.Version.ToString("0.0")</td>
-                                <td class="text-nowrap">@(d.ApprovedOn.HasValue ? d.ApprovedOn.Value.ToSite().ToString("dd MMM yyyy") : "—")</td>
-                                <td class="text-nowrap fw-semibold">@d.ReviewDueDate!.Value.ToString("dd MMM yyyy")</td>
+                                <td class="text-nowrap">@(d.ApprovedOn.HasValue ? d.ApprovedOn.Value.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) : "—")</td>
+                                <td class="text-nowrap fw-semibold">@d.ReviewDueDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                 <td class="text-nowrap small @daysClass">@daysVal</td>
                                 <td><span class="badge @badgeClass">@statusText</span></td>
                                 <td>

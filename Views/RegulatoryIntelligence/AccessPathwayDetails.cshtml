@@ -74,21 +74,21 @@
             </div>
 
             <div class="col-md-6"><label class="text-muted small">@authority Approval Letter / Reference</label><div>@(Model.TGAApprovalLetterNumber ?? "—")</div></div>
-            <div class="col-md-3"><label class="text-muted small">@L["Approval Date"]</label><div>@(Model.ApprovalDate?.ToString("dd MMM yyyy") ?? "—")</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Approval Date"]</label><div>@(Model.ApprovalDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</div></div>
             <div class="col-md-3">
                 <label class="text-muted small">@L["Expiry Date"]</label>
                 <div class="@(Model.ExpiryDate.HasValue && Model.ExpiryDate < SiteTime.Today ? "text-danger fw-bold" : "")">
-                    @(Model.ExpiryDate?.ToString("dd MMM yyyy") ?? "—")
+                    @(Model.ExpiryDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
                 </div>
             </div>
             <div class="col-md-3">
                 <label class="text-muted small">@L["Next Six-Monthly Report Due"]</label>
                 <div class="@(Model.NextSixMonthlyReportDue.HasValue && Model.NextSixMonthlyReportDue < SiteTime.Today ? "text-warning fw-bold" : "")">
-                    @(Model.NextSixMonthlyReportDue?.ToString("dd MMM yyyy") ?? "—")
+                    @(Model.NextSixMonthlyReportDue?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
                 </div>
             </div>
             <div class="col-md-3"><label class="text-muted small">@L["Created By"]</label><div>@Model.CreatedBy</div></div>
-            <div class="col-md-3"><label class="text-muted small">Created At</label><div>@Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm")</div></div>
+            <div class="col-md-3"><label class="text-muted small">Created At</label><div>@Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</div></div>
 
             @if (!string.IsNullOrEmpty(Model.ClinicalJustification))
             {
@@ -139,9 +139,9 @@
                                 _ => "secondary"
                             };
                             <tr class="@(r.Status == RIReportStatus.Overdue ? "table-danger" : "")">
-                                <td class="small">@r.PeriodStart.ToString("dd MMM yyyy") – @r.PeriodEnd.ToString("dd MMM yyyy")</td>
+                                <td class="small">@r.PeriodStart.ToString("dd MMM yyyy", DisplayDates.Culture) – @r.PeriodEnd.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                 <td class="small">@r.QuantitySupplied @r.Unit</td>
-                                <td class="small">@(r.SubmittedToAuthorityDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td class="small">@(r.SubmittedToAuthorityDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
                                 <td class="small">@(r.AuthorityReferenceNumber ?? "—")</td>
                                 <td><span class="badge bg-@rBadge">@L.Enum(r.Status)</span></td>
                                 <td class="small text-muted">@(r.Notes ?? "—")</td>

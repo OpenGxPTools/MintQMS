@@ -71,7 +71,7 @@ else
                     <td>v@cert.Version</td>
                     <td><span class="badge @cbadge">@L.Enum(cert.Status)</span></td>
                     <td><small>@cert.IssuedBy</small></td>
-                    <td>@cert.IssuedDate.ToSite().ToString("dd-MMM-yyyy")</td>
+                    <td>@cert.IssuedDate.ToSite().ToString("dd-MMM-yyyy", DisplayDates.Culture)</td>
                     <td><small>@cert.APFullNameQualification</small></td>
                     <td>
                         <a asp-action="ViewCertificate" asp-route-certificateId="@cert.Id" class="btn btn-sm btn-outline-primary" target="_blank">@L["View"]</a>

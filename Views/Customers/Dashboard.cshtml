@@ -105,7 +105,7 @@
                                 <tr class="@rowCls">
                                     <td><a asp-action="Details" asp-route-id="@c.Id">@c.CustomerId</a></td>
                                     <td>@c.LegalName</td>
-                                    <td>@c.ContractExpiryDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td>@c.ContractExpiryDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                     <td>@(d <= 0 ? $"Expires today" : $"{d}d")</td>
                                     <td><span class="badge bg-secondary">@c.CustomerType</span></td>
                                 </tr>
@@ -139,7 +139,7 @@
                                 <tr class="table-danger">
                                     <td><a asp-action="Details" asp-route-id="@c.Id">@c.CustomerId</a></td>
                                     <td>@c.LegalName</td>
-                                    <td>@c.ContractExpiryDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td>@c.ContractExpiryDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                     <td>@d days overdue</td>
                                     <td><span class="badge bg-secondary">@c.CustomerType</span></td>
                                     <td>@(c.ContactEmail ?? "-")</td>

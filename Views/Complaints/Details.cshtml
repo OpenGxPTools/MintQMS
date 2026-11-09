@@ -433,7 +433,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                             <td><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@ae.Id">@ae.AENumber</a></td>
                             <td><span class="badge bg-secondary">@L.Enum(ae.Status)</span></td>
                             <td>@Html.Raw(ae.IsSerious ? "<span class=\"badge bg-danger\">Serious</span>" : "-")</td>
-                            <td>@(SiteTime.ToSite((DateTime)ae.ReportDate).ToString("dd MMM yyyy"))</td>
+                            <td>@(SiteTime.ToSite((DateTime)ae.ReportDate).ToString("dd MMM yyyy", DisplayDates.Culture))</td>
                             <td>
                                 @if (ae.LinkedCapa != null)
                                 {

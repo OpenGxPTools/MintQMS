@@ -35,8 +35,9 @@
   Administrator sets the **Site Language** for everyone in *Settings → System Settings*; **Let Users Choose
   Their Language** (off by default) adds a language menu for users. Both changes are logged in the settings
   audit trail. Database change: two settings fields (existing sites stay English, user choice off).
-- The chosen language affects the words shown only. Dates and numbers keep the server's format, so a
-  typed number is always read the same way; stored records, audit trails and e-signatures are unchanged.
+- The language affects what is shown only: words, and dates on screens ("lunes, 9 de noviembre de 2026";
+  tables still sort dates chronologically). Numbers keep the server's format, so a typed number is always
+  read the same way; stored records, audit trails, e-signatures, exports and PDFs are unchanged.
 - ReadOnly users may change their own language; every other change remains refused for them.
 - Field labels: "DocType" now reads "Document Type", "HolderType" reads "Holder Type".
 - Tests: `tests/e2e/test_language.py` (run as-is, and with `E2E_LANGS=1` against an instance with the

@@ -126,7 +126,7 @@ else
                             }
                         </td>
                         <td><small>@item.ReviewedBy</small></td>
-                        <td><small>@item.ReviewedDate.ToSite()?.ToString("dd-MMM")</small></td>
+                        <td><small>@item.ReviewedDate.ToSite()?.ToString("dd-MMM", DisplayDates.Culture)</small></td>
                         @if (!checklistLocked)
                         {
                             <td>

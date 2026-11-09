@@ -67,21 +67,21 @@
     {
         <div class="alert alert-danger d-flex align-items-center mb-3">
             <i class="fas fa-exclamation-triangle me-2 fa-lg"></i>
-            <strong>EXPIRED</strong> — This licence/certification expired on @Model.ExpiryDate.Value.ToString("dd MMM yyyy") (@Math.Abs(expiryDays) days ago). Immediate action required.
+            <strong>EXPIRED</strong> — This licence/certification expired on @Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture) (@Math.Abs(expiryDays) days ago). Immediate action required.
         </div>
     }
     else if (expiryDays <= 30)
     {
         <div class="alert alert-danger d-flex align-items-center mb-3">
             <i class="fas fa-clock me-2 fa-lg"></i>
-            <strong>CRITICAL:</strong>&nbsp;Expires in <strong>@expiryDays days</strong> (@Model.ExpiryDate.Value.ToString("dd MMM yyyy")).
+            <strong>CRITICAL:</strong>&nbsp;Expires in <strong>@expiryDays days</strong> (@Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)).
         </div>
     }
     else if (expiryDays <= 90)
     {
         <div class="alert alert-warning d-flex align-items-center mb-3">
             <i class="fas fa-exclamation-circle me-2 fa-lg"></i>
-            <strong>Renewal Due Soon:</strong>&nbsp;Expires in @expiryDays days (@Model.ExpiryDate.Value.ToString("dd MMM yyyy")).
+            <strong>Renewal Due Soon:</strong>&nbsp;Expires in @expiryDays days (@Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)).
         </div>
     }
 }
@@ -248,10 +248,10 @@
             {
                 <div class="col-12"><label class="form-label text-muted small">Site Address</label><p>@Model.LinkedSiteAddress</p></div>
             }
-            <div class="col-md-4"><label class="form-label text-muted small">@L["Created By"]</label><p>@Model.CreatedBy &bull; @Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm") UTC</p></div>
+            <div class="col-md-4"><label class="form-label text-muted small">@L["Created By"]</label><p>@Model.CreatedBy &bull; @Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) UTC</p></div>
             @if (Model.ModifiedAt.HasValue)
             {
-                <div class="col-md-4"><label class="form-label text-muted small">@L["Last Modified"]</label><p>@Model.ModifiedBy &bull; @Model.ModifiedAt.Value.ToSite().ToString("dd MMM yyyy HH:mm") UTC</p></div>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Last Modified"]</label><p>@Model.ModifiedBy &bull; @Model.ModifiedAt.Value.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) UTC</p></div>
             }
         </div>
     </div>
@@ -295,25 +295,25 @@
             }
             @if (Model.ApplicationDate.HasValue)
             {
-                <div class="col-md-4"><label class="form-label text-muted small">Application Date</label><p>@Model.ApplicationDate.Value.ToString("dd MMM yyyy")</p></div>
+                <div class="col-md-4"><label class="form-label text-muted small">Application Date</label><p>@Model.ApplicationDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div>
             }
             @if (Model.IssueDate.HasValue)
             {
-                <div class="col-md-4"><label class="form-label text-muted small">@L["Issue Date"]</label><p>@Model.IssueDate.Value.ToString("dd MMM yyyy")</p></div>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Issue Date"]</label><p>@Model.IssueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div>
             }
             @if (Model.ExpiryDate.HasValue)
             {
                 <div class="col-md-4">
                     <label class="form-label text-muted small">@L["Expiry Date"]</label>
                     <p class="@(expiryBand == "danger" ? "text-danger fw-bold" : expiryBand == "warning" ? "text-warning fw-bold" : "")">
-                        @Model.ExpiryDate.Value.ToString("dd MMM yyyy")
+                        @Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
                         @if (expiryDays >= 0) { <small class="text-muted">(@expiryDays days)</small> }
                     </p>
                 </div>
             }
             @if (Model.NextRenewalDue.HasValue)
             {
-                <div class="col-md-4"><label class="form-label text-muted small">@L["Next Renewal Due"]</label><p>@Model.NextRenewalDue.Value.ToString("dd MMM yyyy")</p></div>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Next Renewal Due"]</label><p>@Model.NextRenewalDue.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div>
             }
             <div class="col-md-4"><label class="form-label text-muted small">Renewal Lead Time</label><p>@Model.RenewalLeadTimeDays days</p></div>
             @if (!string.IsNullOrEmpty(Model.Scope))
@@ -336,15 +336,15 @@
                 @if (!string.IsNullOrEmpty(Model.InspectionAuthority))
                 { <div class="col-md-4"><label class="form-label text-muted small">Inspection Authority</label><p>@Model.InspectionAuthority</p></div> }
                 @if (Model.LastInspectionDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">Last Inspection Date</label><p>@Model.LastInspectionDate.Value.ToString("dd MMM yyyy")</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">Last Inspection Date</label><p>@Model.LastInspectionDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (Model.RFIDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">RFI Issued</label><p>@Model.RFIDate.Value.ToString("dd MMM yyyy")</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">RFI Issued</label><p>@Model.RFIDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (Model.RFIResponseDueDate.HasValue)
                 { <div class="col-md-4"><label class="form-label text-muted small">RFI Response Due</label>
                     <p class="@(Model.RFIResponseSubmittedDate == null && Model.RFIResponseDueDate < SiteTime.Today ? "text-danger fw-bold" : "")">
-                        @Model.RFIResponseDueDate.Value.ToString("dd MMM yyyy")</p></div> }
+                        @Model.RFIResponseDueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (Model.RFIResponseSubmittedDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">@L["RFI Response Submitted"]</label><p class="text-success">@Model.RFIResponseSubmittedDate.Value.ToString("dd MMM yyyy")</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["RFI Response Submitted"]</label><p class="text-success">@Model.RFIResponseSubmittedDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (!string.IsNullOrEmpty(Model.ManufacturingStepsScope))
                 { <div class="col-12"><label class="form-label text-muted small">Manufacturing Steps Scope</label><p>@Model.ManufacturingStepsScope</p></div> }
                 <div class="col-md-4"><label class="form-label text-muted small">@L["Letter of Access Available"]</label>
@@ -362,22 +362,22 @@
                 @if (!string.IsNullOrEmpty(Model.StandardVersion))
                 { <div class="col-md-4"><label class="form-label text-muted small">@L["Standard Version"]</label><p>@Model.StandardVersion</p></div> }
                 @if (Model.Stage1AuditDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">@L["Stage 1 Audit"]</label><p>@Model.Stage1AuditDate.Value.ToString("dd MMM yyyy")</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["Stage 1 Audit"]</label><p>@Model.Stage1AuditDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (Model.Stage2AuditDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">@L["Stage 2 Audit"]</label><p>@Model.Stage2AuditDate.Value.ToString("dd MMM yyyy")</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["Stage 2 Audit"]</label><p>@Model.Stage2AuditDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (Model.NextSurveillanceAuditDate.HasValue)
                 {
                     int survDays = (Model.NextSurveillanceAuditDate.Value.Date - SiteTime.Today).Days;
                     <div class="col-md-4">
                         <label class="form-label text-muted small">Next Surveillance Audit</label>
                         <p class="@(survDays < 0 ? "text-danger fw-bold" : survDays <= 60 ? "text-warning" : "")">
-                            @Model.NextSurveillanceAuditDate.Value.ToString("dd MMM yyyy")
+                            @Model.NextSurveillanceAuditDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
                             @if (survDays >= 0) { <small class="text-muted">(@survDays days)</small> }
                         </p>
                     </div>
                 }
                 @if (Model.RecertificationDueDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">@L["Recertification Due"]</label><p>@Model.RecertificationDueDate.Value.ToString("dd MMM yyyy")</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["Recertification Due"]</label><p>@Model.RecertificationDueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (!string.IsNullOrEmpty(Model.CertificateScope))
                 { <div class="col-12"><label class="form-label text-muted small">Certificate Scope</label><p class="border rounded p-2 bg-light">@Model.CertificateScope</p></div> }
             </div>
@@ -407,7 +407,7 @@
             @if (Model.FeePaidDate.HasValue)
             {
                 <div class="col-md-3"><label class="form-label text-muted small">Fee Paid</label>
-                    <p>@Model.FeePaidDate.Value.ToString("dd MMM yyyy")</p></div>
+                    <p>@Model.FeePaidDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div>
             }
             @if (!string.IsNullOrEmpty(Model.FeeReference))
             {
@@ -457,7 +457,7 @@
                                 @if (!string.IsNullOrEmpty(cond.CompletionNotes))
                                 { <br /><small class="text-muted">@cond.CompletionNotes</small> }
                             </td>
-                            <td>@(cond.DueDate.HasValue ? cond.DueDate.Value.ToString("dd MMM yyyy") : "—")</td>
+                            <td>@(cond.DueDate.HasValue ? cond.DueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture) : "—")</td>
                             <td><span class="badge @condBadge">@L.Enum(cond.Status)</span></td>
                             <td>
                                 @if (cond.LinkedCAPAId.HasValue)
@@ -468,7 +468,7 @@
                             </td>
                             <td>
                                 @if (cond.CompletedAt.HasValue)
-                                { <small>@cond.CompletedAt.Value.ToSite().ToString("dd MMM yyyy")<br />@cond.CompletedBy</small> }
+                                { <small>@cond.CompletedAt.Value.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)<br />@cond.CompletedBy</small> }
                                 else { <text>—</text> }
                             </td>
                             <td class="text-center">
@@ -561,7 +561,7 @@
                             <td><span class="badge bg-light text-dark border small">@doc.DocumentType</span></td>
                             <td><small class="text-muted">@doc.Description</small></td>
                             <td><small>@doc.UploadedById</small></td>
-                            <td><small>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy")</small></td>
+                            <td><small>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</small></td>
                             <td><small>@(doc.FileSizeBytes > 1024 ? $"{doc.FileSizeBytes / 1024:N0} KB" : $"{doc.FileSizeBytes} B")</small></td>
                             <td class="text-nowrap">
                                 <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>@L["Download"]</a>
@@ -584,7 +584,7 @@
             <h6 class="text-uppercase small text-muted mt-3 mb-1">
                 <i class="fas fa-check-circle text-success me-1"></i>
                 Cycle @group.Key
-                @if (snap != null) { <span class="fw-normal">— Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy")</span> }
+                @if (snap != null) { <span class="fw-normal">— Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</span> }
             </h6>
             <table class="table table-sm table-hover mb-3">
                 <thead class="table-light">
@@ -598,7 +598,7 @@
                             <td><span class="badge bg-light text-dark border small">@doc.DocumentType</span></td>
                             <td><small class="text-muted">@doc.Description</small></td>
                             <td><small>@doc.UploadedById</small></td>
-                            <td><small>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy")</small></td>
+                            <td><small>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</small></td>
                             <td><small>@(doc.FileSizeBytes > 1024 ? $"{doc.FileSizeBytes / 1024:N0} KB" : $"{doc.FileSizeBytes} B")</small></td>
                             <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>@L["Download"]</a></td>
                         </tr>
@@ -652,7 +652,7 @@
                             <td><a asp-controller="RegulatoryIntelligence" asp-action="Details" asp-route-id="@dep.RegulatoryApplicationId" class="fw-bold">@riApp?.RINumber</a></td>
                             <td>@riApp?.ProductName</td>
                             <td><span class="badge bg-secondary small">@L.Enum(riApp?.Status)</span></td>
-                            <td><small>@dep.LinkedSince.ToSite().ToString("dd MMM yyyy")</small></td>
+                            <td><small>@dep.LinkedSince.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</small></td>
                             <td><small class="text-muted">@dep.Notes</small></td>
                             <td class="text-center">
                                 @if (!Model.IsLocked)
@@ -687,7 +687,7 @@
                     @foreach (var log in Model.AuditLogs.OrderByDescending(l => l.Timestamp))
                     {
                         <tr>
-                            <td><small>@log.Timestamp.ToSite().ToString("dd MMM yyyy HH:mm")</small></td>
+                            <td><small>@log.Timestamp.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</small></td>
                             <td><small>@log.UserName</small></td>
                             <td>@log.Action</td>
                             <td><small class="text-muted">@log.Details</small></td>
@@ -732,7 +732,7 @@
                 <div class="card mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span class="fw-bold"><i class="fas fa-check-circle text-success me-2"></i>Cycle @snap.RenewalCycle</span>
-                        <small class="text-muted">Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy HH:mm") UTC</small>
+                        <small class="text-muted">Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) UTC</small>
                     </div>
                     <div class="card-body">
                         @foreach (var grp in lcSections)
@@ -1021,7 +1021,7 @@
                     @if (Model.ExpiryDate.HasValue)
                     {
                         <div class="alert alert-info small mb-3">
-                            <i class="fas fa-info-circle me-1"></i>This record would otherwise be transitioned automatically within @(Model.RenewalLeadTimeDays > 0 ? Model.RenewalLeadTimeDays : 90) day(s) of its expiry (@Model.ExpiryDate.Value.ToString("dd MMM yyyy")). Use this to start the renewal early.
+                            <i class="fas fa-info-circle me-1"></i>This record would otherwise be transitioned automatically within @(Model.RenewalLeadTimeDays > 0 ? Model.RenewalLeadTimeDays : 90) day(s) of its expiry (@Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)). Use this to start the renewal early.
                         </div>
                     }
                     <div class="mb-3">

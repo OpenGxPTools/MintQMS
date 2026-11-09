@@ -110,16 +110,16 @@
                     <dd class="col-sm-8">@(Model.Product?.Name ?? "All Products")</dd>
                     <dt class="col-sm-4">@L["Period"]</dt>
                     <dd class="col-sm-8">
-                        @(Model.PeriodStart?.ToString("dd MMM yyyy") ?? "—")
+                        @(Model.PeriodStart?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
                         @if (Model.PeriodStart.HasValue && Model.PeriodEnd.HasValue) { <span>→</span> }
-                        @(Model.PeriodEnd?.ToString("dd MMM yyyy") ?? "")
+                        @(Model.PeriodEnd?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "")
                     </dd>
                     <dt class="col-sm-4">@L["Due Date"]</dt>
-                    <dd class="col-sm-8">@(Model.DueDate?.ToString("dd MMM yyyy") ?? "—")</dd>
+                    <dd class="col-sm-8">@(Model.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</dd>
                     <dt class="col-sm-4">@L["Submission Date"]</dt>
                     <dd class="col-sm-8">
                         @if (Model.SubmissionDate.HasValue) {
-                            <span class="badge bg-success">@Model.SubmissionDate.Value.ToString("dd MMM yyyy")</span>
+                            <span class="badge bg-success">@Model.SubmissionDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
                         } else { <span class="text-muted">Not yet submitted</span> }
                     </dd>
                     <dt class="col-sm-4">TGA Reference</dt>
@@ -170,7 +170,7 @@
                         <tr class="@(ae.IsSerious ? "table-danger" : "")">
                             <td>@caseNo</td>
                             <td><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@ae.Id">@ae.AENumber</a></td>
-                            <td>@(SiteTime.ToSite((DateTime)ae.ReportDate).ToString("dd MMM yyyy"))</td>
+                            <td>@(SiteTime.ToSite((DateTime)ae.ReportDate).ToString("dd MMM yyyy", DisplayDates.Culture))</td>
                             <td>@(ae.Patient?.PatientIdentifier ?? "—")</td>
                             <td>@(ae.SuspectProduct?.ProductName ?? "—")</td>
                             <td>@(ae.MedDRAPT ?? "—")</td>
@@ -179,7 +179,7 @@
                             <td>@(ae.Causality?.ToString() ?? "—")</td>
                             <td>
                                 @if (reg.TGASubmissionDate.HasValue) {
-                                    <span class="badge bg-success">@reg.TGASubmissionDate.Value.ToString("dd MMM yy")</span>
+                                    <span class="badge bg-success">@reg.TGASubmissionDate.Value.ToString("dd MMM yy", DisplayDates.Culture)</span>
                                 } else { <span class="text-muted">—</span> }
                             </td>
                         </tr>
@@ -285,7 +285,7 @@
                             <td><a asp-action="DownloadAttachment" asp-route-id="@att.Id"><i class="fas fa-file me-1 text-muted"></i>@att.FileName</a></td>
                             <td><small class="text-muted">@att.Description</small></td>
                             <td><small>@att.UploadedBy</small></td>
-                            <td><small>@att.UploadedAt.ToSite().ToString("dd MMM yyyy")</small></td>
+                            <td><small>@att.UploadedAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</small></td>
                             <td><small>@(att.FileSize > 1024 ? $"{att.FileSize / 1024:N0} KB" : $"{att.FileSize} B")</small></td>
                             <td><code class="small text-muted">@(att.FileHash != null ? att.FileHash[..Math.Min(12, att.FileHash.Length)] + "…" : "—")</code></td>
                             <td class="text-nowrap">
@@ -331,7 +331,7 @@
                     @foreach (var log in Model.AuditLogs.OrderByDescending(l => l.PerformedOn))
                     {
                         <tr>
-                            <td>@log.PerformedOn.ToSite().ToString("dd MMM yyyy HH:mm")</td>
+                            <td>@log.PerformedOn.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</td>
                             <td>@log.Action</td>
                             <td>@(log.FromStatus ?? "-")</td>
                             <td>@(log.ToStatus ?? "-")</td>

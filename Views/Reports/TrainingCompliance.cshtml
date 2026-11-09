@@ -58,7 +58,7 @@
 </form>
 
 <p class="text-muted small mb-4">
-    Showing period: <strong>@from.ToString("dd MMM yyyy")</strong> to <strong>@to.ToString("dd MMM yyyy")</strong>
+    Showing period: <strong>@from.ToString("dd MMM yyyy", DisplayDates.Culture)</strong> to <strong>@to.ToString("dd MMM yyyy", DisplayDates.Culture)</strong>
 </p>
 
 @* KPI Cards *@
@@ -129,7 +129,7 @@ else
                                 <a asp-controller="Trainings" asp-action="Details" asp-route-id="@t.Id">@t.TrainingId</a>
                             </td>
                             <td>@t.Name</td>
-                            <td>@(t.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
+                            <td>@(t.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</td>
                             <td>@(t.Trainees?.Count ?? 0)</td>
                             <td>
                                 @if (t.Status == Training.TrainingStatus.Completed)

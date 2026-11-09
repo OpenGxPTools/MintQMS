@@ -119,7 +119,7 @@
                         <td class="@dueCls">
                             @if (training.DueDate.HasValue)
                             {
-                                @training.DueDate.Value.ToString("dd MMM yyyy")
+                                @training.DueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
                                 @if (isOverdue)
                                 {
                                     <span class="badge bg-danger ms-1">@L["Overdue"]</span>
@@ -187,8 +187,8 @@ else
                             ? doc
                             : latestEffectiveDocs.GetValueOrDefault(doc.Id);
                     var completedOn = training.TrainingType == TrainingType.CompetencyAssessment
-                        ? SiteTime.ToSite((DateTime?)row.CompetencyVerifiedOn)?.ToString("dd MMM yyyy")
-                        : SiteTime.ToSite((DateTime?)row.ReadAcknowledgedOn)?.ToString("dd MMM yyyy");
+                        ? SiteTime.ToSite((DateTime?)row.CompetencyVerifiedOn)?.ToString("dd MMM yyyy", DisplayDates.Culture)
+                        : SiteTime.ToSite((DateTime?)row.ReadAcknowledgedOn)?.ToString("dd MMM yyyy", DisplayDates.Culture);
                     <tr>
                         <td><a asp-action="Details" asp-route-id="@training.Id">@training.TrainingId</a></td>
                         <td>@training.Name</td>

@@ -142,7 +142,7 @@ $(document).ready(function () {
                                 var days = (ae.TGADeadlineDate!.Value.Date - SiteTime.Today).Days;
                                 <tr class="table-danger">
                                     <td><strong>@ae.AENumber</strong></td>
-                                    <td>@ae.TGADeadlineDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td>@ae.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                     <td><span class="badge bg-danger">@Math.Abs(days)d overdue</span></td>
                                     <td><span class="badge bg-secondary">@L.Enum(ae.Status)</span></td>
                                     <td>
@@ -158,7 +158,7 @@ $(document).ready(function () {
                                 var badgeClass = days <= 2 ? "danger" : "warning";
                                 <tr class="@rowClass">
                                     <td><strong>@ae.AENumber</strong></td>
-                                    <td>@ae.TGADeadlineDate!.Value.ToString("dd MMM yyyy")</td>
+                                    <td>@ae.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                     <td><span class="badge bg-@badgeClass">@days d remaining</span></td>
                                     <td><span class="badge bg-secondary">@L.Enum(ae.Status)</span></td>
                                     <td>
@@ -264,7 +264,7 @@ $(document).ready(function () {
                                     _ => "secondary"
                                 };
                                 <tr>
-                                    <td class="small text-nowrap">@(SiteTime.ToSite((DateTime)entry.PerformedOn).ToString("dd MMM HH:mm"))</td>
+                                    <td class="small text-nowrap">@(SiteTime.ToSite((DateTime)entry.PerformedOn).ToString("dd MMM HH:mm", DisplayDates.Culture))</td>
                                     <td class="small">
                                         @if (entry.AdverseEvent != null)
                                         {

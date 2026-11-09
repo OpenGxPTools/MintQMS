@@ -110,8 +110,8 @@
                                      && ut.Training.DueDate!.Value.Date < SiteTime.Today
                                      && ut.Status != UserTrainingStatus.Completed;
                         var completedOn = ut.Training?.TrainingType == TrainingType.CompetencyAssessment
-                            ? ut.CompetencyVerifiedOn.ToSite()?.ToString("dd MMM yyyy")
-                            : ut.ReadAcknowledgedOn.ToSite()?.ToString("dd MMM yyyy");
+                            ? ut.CompetencyVerifiedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture)
+                            : ut.ReadAcknowledgedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture);
                         <tr class="@(isOverdue ? "table-danger" : "")">
                             <td>
                                 <strong>@(ut.Trainee?.UserName ?? "-")</strong><br />

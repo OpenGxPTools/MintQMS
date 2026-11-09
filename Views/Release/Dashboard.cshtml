@@ -171,7 +171,7 @@
                         <td>@EnumDisplay(r.ReleaseType)</td>
                         <td><span class="badge @badge">@ReleaseStatusLabel(r.Status)</span></td>
                         <td>@(r.APFullNameQualification ?? "-")</td>
-                        <td>@(r.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</td>
+                        <td>@(r.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</td>
                         <td><a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">@L["Details"]</a></td>
                     </tr>
                 }

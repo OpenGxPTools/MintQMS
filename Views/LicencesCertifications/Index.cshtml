@@ -156,7 +156,7 @@
                         <td>
                             @if (r.ExpiryDate.HasValue)
                             {
-                                <span class="@expiryClass">@r.ExpiryDate.Value.ToString("dd MMM yyyy")</span>
+                                <span class="@expiryClass">@r.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
                             }
                             else
                             {
