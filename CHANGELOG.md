@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+**Fixes (also in English)**
+
+- Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the
+  Approval Status column, but "Under Assessment" is a workflow stage shown in the Workflow column. It now
+  filters the Workflow column and finds both first assessments and re-reviews.
+- Option names that showed as code fragments now read properly: CoA, CoC (were "Co A", "Co C"),
+  CoA Template ("Co ATemplate"), ISO / Private Certification ("ISOPrivate Certification"), GMP Evidence
+  Package ("GMPEvidence Package"), TGA On-Site Inspection ("TGAInspection"), sNDA / sBLA ("sNDA_sBLA"),
+  SAS Category A / B / C ("SAS_A" …). Stored values are unchanged. Note for audit trails: a supplier
+  document upload records the document type's name, so new entries read "(CoA Template)" while earlier
+  entries keep "(Co ATemplate)" — history is never rewritten.
+
 **Spanish and Portuguese (Brazil) — shared parts translated**
 
 - Translated: menu bar, page layout, sign-in and account pages, every state/type/role name, the 417

@@ -58,6 +58,7 @@ namespace OpenQMS.Models
     public enum SupplierDocumentType
     {
         QualitySystemsCertificate,
+        [Display(Name = "CoA Template")]
         CoATemplate,
         SDS,
         AllergenStatement,

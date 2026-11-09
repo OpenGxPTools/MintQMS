@@ -54,7 +54,9 @@ namespace OpenQMS.Models.Release
 
     public enum CertificateType
     {
+        [Display(Name = "CoA")]
         CoA = 1,
+        [Display(Name = "CoC")]
         CoC = 2,
         Combined = 3
     }

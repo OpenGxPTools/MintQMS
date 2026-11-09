@@ -13,7 +13,18 @@
                     $('.status-filter').removeClass('active');
                     $(this).addClass('active');
                     var val = $(this).data('status');
-                    table.column(4).search(val ? '^' + val + '$' : '', true, false).draw();
+                    // Most buttons filter the Approval Status column (4). "Under Assessment" is a workflow
+                    // stage, not an approval outcome, so that button filters the Workflow column (5),
+                    // matching "Under Assessment" and "Re-review: Under Assessment".
+                    table.column(4).search('', true, false);
+                    table.column(5).search('', true, false);
+                    if (val) {
+                        if ($(this).data('col') === 5)
+                            table.column(5).search('(^|: )' + $.fn.dataTable.util.escapeRegex(val) + '$', true, false);
+                        else
+                            table.column(4).search('^' + val + '$', true, false);
+                    }
+                    table.draw();
                 });
                 $('.status-filter[data-status=""]').addClass('active');
             },
@@ -61,7 +72,7 @@
     <span class="text-muted small me-1">@L["Filter by status:"]</span>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Pending">Pending</button>
-    <button class="btn btn-outline-info btn-sm status-filter" data-status="UnderAssessment">Under Assessment</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Under Assessment"]" data-col="5">Under Assessment</button>
     <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">@L["Approved"]</button>
     <button class="btn btn-outline-primary btn-sm status-filter" data-status="Qualified">Qualified</button>
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="Suspended">@L["Suspended"]</button>

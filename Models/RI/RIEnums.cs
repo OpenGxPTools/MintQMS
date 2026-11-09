@@ -91,6 +91,7 @@ namespace OpenQMS.Models.RI
         AdminNotification = 8,
         PAS              = 9,
         CBE30            = 10,
+        [Display(Name = "sNDA / sBLA")]
         sNDA_sBLA        = 11,
         SNDS             = 12,
         CMN              = 13,
@@ -101,8 +102,11 @@ namespace OpenQMS.Models.RI
 
     public enum RIAccessPathwayType
     {
+        [Display(Name = "SAS Category A")]
         SAS_A               = 1,
+        [Display(Name = "SAS Category B")]
         SAS_B               = 2,
+        [Display(Name = "SAS Category C")]
         SAS_C               = 3,
         [Display(Name = "Authorised Prescriber")]
         AuthorisedPrescriber = 4,

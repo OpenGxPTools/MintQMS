@@ -26,6 +26,7 @@ namespace OpenQMS.Models.LC
     public enum LCCategory
     {
         RegulatoryLicence        = 1,   // Federal & state regulatory licences/permits
+        [Display(Name = "ISO / Private Certification")]
         ISOPrivateCertification  = 2,   // ISO / private quality certifications
         ThirdPartySiteApproval   = 3    // GMP clearances and third-party site approvals
     }
@@ -40,6 +41,7 @@ namespace OpenQMS.Models.LC
     {
         Certificate             = 1,
         InspectionReport        = 2,
+        [Display(Name = "GMP Evidence Package")]
         GMPEvidencePackage      = 3,
         AuthorityLetter         = 4,
         ApplicationForm         = 5,
@@ -53,6 +55,7 @@ namespace OpenQMS.Models.LC
     {
         MRA          = 1,   // Mutual Recognition Agreement country
         CV           = 2,   // Compliance Verification (recognised authority inspection)
+        [Display(Name = "TGA On-Site Inspection")]
         TGAInspection= 3    // TGA On-Site Inspection (no MRA/CV available)
     }
 
