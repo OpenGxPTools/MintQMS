@@ -1,0 +1,27 @@
+@using OpenQMS.Localization
+@inject Languages Languages
+@*
+    Language menu. Shown only when more than one language is enabled
+    (appsettings.json "Localization:Languages"); with English alone it renders nothing.
+    Pass "light" as the model for a dark background (the menu bar), anything else for a light page.
+*@
+@if (Languages.OffersChoice)
+{
+    var current = System.Globalization.CultureInfo.CurrentUICulture.Name;
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+    var onDark = (Model as string) == "light";
+    <form asp-controller="Language" asp-action="Set" asp-area="" method="post" class="d-flex align-items-center mint-language-menu">
+        <input type="hidden" name="returnUrl" value="@returnUrl" />
+        <label for="mintLanguage" class="visually-hidden">Language</label>
+        <i class="bi bi-translate me-1 @(onDark ? "text-white-50" : "text-muted")" aria-hidden="true"></i>
+        <select id="mintLanguage" name="culture" class="form-select form-select-sm" style="width:auto"
+                onchange="this.form.submit()">
+            @foreach (var code in Languages.Enabled)
+            {
+                <option value="@code" selected="@(string.Equals(code, current, StringComparison.OrdinalIgnoreCase))"
+                        lang="@code">@Languages.Known[code]</option>
+            }
+        </select>
+        <noscript><button type="submit" class="btn btn-sm btn-light ms-1">OK</button></noscript>
+    </form>
+}

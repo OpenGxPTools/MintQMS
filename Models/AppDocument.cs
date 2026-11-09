@@ -54,6 +54,7 @@ namespace OpenQMS.Models
         public string? ExportFilePath { get; set; }
         public DocumentStatus Status { get; set; }
         public DocumentCategory? Category { get; set; }
+        [Display(Name = "Document Type")]
         public DocumentType? DocType { get; set; }
         [Display(Name = "Issued On")]
         public DateTime? IssuedOn { get; set; }

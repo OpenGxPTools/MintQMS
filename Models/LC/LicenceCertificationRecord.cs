@@ -12,6 +12,7 @@ namespace OpenQMS.Models.LC
         [Display(Name = "LC Number")]
         public string LCNumber { get; set; } = string.Empty;           // LC-YYYY-NNNN
 
+        [Display(Name = "Holder Type")]
         public LCHolderType HolderType { get; set; } = LCHolderType.OwnCompany;
 
         [Required, MaxLength(300)]

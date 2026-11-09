@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+**Groundwork for Spanish and Portuguese** (no translations yet — every screen still reads in English)
+
+- Interface languages can be offered with the `Localization:Languages` setting (`en`, `es`, `pt-BR`); a
+  language menu then appears in the menu bar and on the sign-in page, and the choice is remembered in the
+  browser. With English alone (the default) nothing changes on screen.
+- The chosen language affects the words shown only. Dates and numbers keep the server's format, so a
+  typed number is always read the same way; stored records, audit trails and e-signatures are unchanged.
+- ReadOnly users may change their own language; every other change remains refused for them.
+- Field labels: "DocType" now reads "Document Type", "HolderType" reads "Holder Type".
+- Tests: `tests/e2e/test_language.py` (run as-is, and with `E2E_LANGS=1` against an instance with the
+  languages enabled).
+
 ## MintQMS 1.0.0 — first public release (2026-10-26)
 
 MintQMS was originally developed from the free AGPLv3 release of OpenQMS 1.3.0 (see the bottom of this file), which provided

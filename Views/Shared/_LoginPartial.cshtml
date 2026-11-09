@@ -24,6 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
+@inject OpenQMS.Localization.Languages Languages
 
 @{
     // Highlight the top-level menu matching the controller of the current page.
@@ -203,6 +204,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         }
                     </ul>
                     <ul class="navbar-nav">
+                        @if (Languages.OffersChoice)
+                        {
+                            <li class="nav-item d-flex align-items-center me-2">
+                                <partial name="_LanguageMenu" model="@("light")" />
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserAsync(User).Result.FirstName!</a>
                         </li>

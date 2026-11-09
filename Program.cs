@@ -35,6 +35,9 @@ using OpenQMS.Authorization;
 using OpenQMS.Data;
 using OpenQMS.Middleware;
 using OpenQMS.Services;
+using OpenQMS.Localization;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,11 +78,21 @@ builder.Services.AddDefaultIdentity<AppUser>(options =>
 })
     .AddRoles<AppRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+// Interface languages (see Localization/Languages.cs). Translations live in one shared file per
+// language; the English text is the key, so anything untranslated is shown in English.
+builder.Services.AddLocalization(o => o.ResourcesPath = "Resources");
+builder.Services.AddSingleton<Languages>();
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<OpenQMS.Authorization.ReadOnlyActionFilter>();
-});
-builder.Services.AddRazorPages();
+})
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization(o =>
+        o.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource)));
+builder.Services.AddRazorPages()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization(o =>
+        o.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource)));
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
@@ -238,6 +251,25 @@ app.Use(async (context, next) =>
     await next();
 });
 app.UseStaticFiles();
+
+// The chosen language (a cookie set by the language menu) changes the words on screen only.
+// Dates and numbers keep the server's own format — CurrentCulture is pinned to the culture the
+// process started with — so a typed number is always read the same way, whatever the language.
+{
+    var languages = app.Services.GetRequiredService<Languages>();
+    var formatCulture = CultureInfo.CurrentCulture;
+    app.UseRequestLocalization(new RequestLocalizationOptions
+    {
+        DefaultRequestCulture = new RequestCulture(formatCulture, new CultureInfo(Languages.Default)),
+        SupportedCultures = new List<CultureInfo> { formatCulture },
+        SupportedUICultures = languages.UiCultures,
+        RequestCultureProviders = new List<IRequestCultureProvider>
+        {
+            new CookieRequestCultureProvider { CookieName = Languages.CookieName },
+        },
+    });
+}
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

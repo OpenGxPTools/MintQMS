@@ -18,7 +18,10 @@ namespace OpenQMS.Authorization
                                  HttpMethods.IsDelete(method) ||
                                  HttpMethods.IsPatch(method);
 
-            if (isWriteRequest && context.HttpContext.User.IsInRole(Constants.ReadOnlyRole))
+            // A display preference (e.g. language) is not a record change; see AllowForReadOnlyAttribute.
+            var allowed = context.ActionDescriptor.EndpointMetadata.OfType<AllowForReadOnlyAttribute>().Any();
+
+            if (isWriteRequest && !allowed && context.HttpContext.User.IsInRole(Constants.ReadOnlyRole))
             {
                 context.Result = new ForbidResult();
             }

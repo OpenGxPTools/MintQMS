@@ -31,5 +31,6 @@ password hash. The concurrent-login guard is cleared (`ActiveSession`) before ea
 | `test_pv_workflow.py` | Adverse-event signed workflow incl. Reject (Pending Approval → Under Medical Review) and wrong-password refusal |
 | `test_settings_ap_maint.py` | Dashboards follow the LC/maintenance/training warning periods; Date format removed; Authorised Person approves all reference data; maintenance work recorded by the doer while In Progress |
 | `test_detail_reports.py` | Every module's per-record PDF detail report and CSV detail export |
+| `test_language.py` | Language menu and cookie: hidden with English only, refused for languages not enabled, anti-forgery, no off-site redirect; with `E2E_LANGS=1` (app started with `Localization__Languages__1=es`, `__2=pt-BR`) the choice is remembered, dates/numbers keep the server format, pages read the same until translated, ReadOnly users may change language but still cannot write |
 | `test_exports.py` | Every Export link returns a file (ClosedXML/CSV) |
 | `crawl.py` | BFS crawl of all GET-reachable pages; fails on any 5xx / exception page |
