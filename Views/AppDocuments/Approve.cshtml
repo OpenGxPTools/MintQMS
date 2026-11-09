@@ -3,7 +3,7 @@
 @using OpenQMS.Models.ViewModels
 
 @{
-    ViewData["Title"] = "Approve Document";
+    ViewData["Title"] = L["Approve Document"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var document      = ViewBag.Document as AppDocument;
@@ -50,7 +50,7 @@ $(document).ready(function () {
 // Only initialise Select2 on real group cards — never on the hidden template
 function initAllSelect2() { $('#groupsContainer .user-select2').each(function () { initSelect2($(this)); }); }
 function initSelect2($el) {
-    $el.select2({ placeholder: 'Select users…', allowClear: true, width: '100%',
+    $el.select2({ placeholder: @Json.Serialize(L["Select users…"].Value), allowClear: true, width: '100%',
         dropdownParent: $el.closest('.card') });
 }
 function toggleTrainer($sel) {
@@ -73,7 +73,7 @@ function updateRemoveButtons() {
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
         <h4 class="mb-0">
-            @(document?.IsExternal == true ? "Accept Document into QMS" : "Approve Document")
+            @(document?.IsExternal == true ? L["Accept Document into QMS"] : L["Approve Document"])
             &mdash; <span class="fw-bold">@document?.DocumentId</span>
         </h4>
         <small class="text-muted">@document?.Title</small>
@@ -87,7 +87,7 @@ function updateRemoveButtons() {
 @if (TempData["WorkflowError"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" id="approveError">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>@TempData["WorkflowError"]</strong>
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>@L.Message(TempData["WorkflowError"])</strong>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     <script>document.getElementById('approveError')?.scrollIntoView({ behavior: 'smooth', block: 'center' });</script>
@@ -109,28 +109,28 @@ function updateRemoveButtons() {
                     }
                 </div>
                 <div class="col-sm-3 text-muted">@L["Title"]</div><div class="col-sm-9">@document?.Title</div>
-                <div class="col-sm-3 text-muted">@(document?.IsExternal == true ? "Version after acceptance" : "Version after approval")</div>
+                <div class="col-sm-3 text-muted">@(document?.IsExternal == true ? L["Version after acceptance"] : L["Version after approval"])</div>
                 <div class="col-sm-9"><strong>@(Math.Ceiling(document?.Version ?? 0).ToString("0.0"))</strong></div>
-                <div class="col-sm-3 text-muted">Training Required</div>
+                <div class="col-sm-3 text-muted">@L["Training Required"]</div>
                 <div class="col-sm-9">
                     @if (document?.TrainingRequired == true)
                     {
-                        <span class="badge bg-warning text-dark">Yes — configure training groups below</span>
+                        <span class="badge bg-warning text-dark">@L["Yes — configure training groups below"]</span>
                     }
                     else
                     {
-                        <span class="badge bg-secondary">No — document becomes Effective immediately</span>
+                        <span class="badge bg-secondary">@L["No — document becomes Effective immediately"]</span>
                     }
                 </div>
-                <div class="col-sm-3 text-muted">Periodic Review</div>
+                <div class="col-sm-3 text-muted">@L["Periodic Review"]</div>
                 <div class="col-sm-9">
                     @if (document?.PeriodicReviewRequired == true)
                     {
-                        <span class="badge bg-info text-dark">Required — set review date below</span>
+                        <span class="badge bg-info text-dark">@L["Required — set review date below"]</span>
                     }
                     else
                     {
-                        <span class="badge bg-secondary">Not required</span>
+                        <span class="badge bg-secondary">@L["Not required"]</span>
                     }
                 </div>
             </div>
@@ -142,7 +142,7 @@ function updateRemoveButtons() {
         <div class="card mb-4 border-warning">
             <div class="card-header bg-warning bg-opacity-25 fw-semibold"><i class="fas fa-file-import me-1"></i>@L["Document Provenance"]</div>
             <div class="card-body py-2 small">
-                <p class="text-muted mb-2">You are accepting this externally-sourced document into the QMS. The original authorship details below are recorded for audit purposes and are separate from the system acceptance record.</p>
+                <p class="text-muted mb-2">@L["You are accepting this externally-sourced document into the QMS. The original authorship details below are recorded for audit purposes and are separate from the system acceptance record."]</p>
                 <div class="row g-1">
                     @if (!string.IsNullOrEmpty(document.ExternalSource))
                     {
@@ -150,7 +150,7 @@ function updateRemoveButtons() {
                     }
                     @if (!string.IsNullOrEmpty(document.ExternalVersion))
                     {
-                        <div class="col-sm-3 text-muted">Original Version / Ref</div><div class="col-sm-9"><span class="badge bg-secondary">@document.ExternalVersion</span></div>
+                        <div class="col-sm-3 text-muted">@L["Original Version / Ref"]</div><div class="col-sm-9"><span class="badge bg-secondary">@document.ExternalVersion</span></div>
                     }
                     <div class="col-sm-3 text-muted">@L["Original Author"]</div><div class="col-sm-9">@(document.ExternalAuthorName ?? "-")</div>
                     <div class="col-sm-3 text-muted">@L["Originally Authored On"]</div><div class="col-sm-9">@(document.ExternalAuthoredOn?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</div>
@@ -165,11 +165,11 @@ function updateRemoveButtons() {
     {
         <div class="card mb-4 border-info">
             <div class="card-header bg-info text-dark fw-semibold">
-                <i class="bi bi-calendar-check me-1"></i>Periodic Review Date
+                <i class="bi bi-calendar-check me-1"></i>@L["Periodic Review Date"]
             </div>
             <div class="card-body">
                 <p class="text-muted small mb-3">
-                    This document is marked as requiring periodic review. You must set the next review date before approving.
+                    @L["This document is marked as requiring periodic review. You must set the next review date before approving."]
                 </p>
                 <div class="row g-3">
                     <div class="col-md-4">
@@ -186,13 +186,13 @@ function updateRemoveButtons() {
     @if (document?.TrainingRequired == true)
     {
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="mb-0 fw-semibold"><i class="bi bi-people me-1"></i>Training Groups</h6>
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-people me-1"></i>@L["Training Groups"]</h6>
             <button type="button" id="addGroupBtn" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-plus-lg me-1"></i>Add Group
+                <i class="bi bi-plus-lg me-1"></i>@L["Add Group"]
             </button>
         </div>
         <p class="text-muted small mb-3">
-            Each group creates one Training record. The document becomes <strong>@L["Effective"]</strong> once all groups are completed.
+            @H["Each group creates one Training record. The document becomes <strong>{0}</strong> once all groups are completed.", L["Effective"].Value]
         </p>
 
         <div id="groupsContainer">
@@ -213,17 +213,17 @@ function updateRemoveButtons() {
 
     <div class="card border-primary mt-4">
         <div class="card-header bg-primary text-white fw-semibold">
-            <i class="bi bi-pen me-1"></i>Electronic Signature
+            <i class="bi bi-pen me-1"></i>@L["Electronic Signature"]
         </div>
         <div class="card-body">
             <p class="text-muted small mb-3">
                 @if (document?.IsExternal == true)
                 {
-                    <text>By signing below you confirm this document has been reviewed and meets the requirements for inclusion in the QMS, and you accept it into the system at version <strong>@(Math.Ceiling(document?.Version ?? 0).ToString("0.0"))</strong>.</text>
+                    <text>@H["By signing below you confirm this document has been reviewed and meets the requirements for inclusion in the QMS, and you accept it into the system at version <strong>{0}</strong>.", Math.Ceiling(document?.Version ?? 0).ToString("0.0")]</text>
                 }
                 else
                 {
-                    <text>By signing below you confirm this document meets all applicable quality and regulatory requirements and authorise its release at version <strong>@(Math.Ceiling(document?.Version ?? 0).ToString("0.0"))</strong>.</text>
+                    <text>@H["By signing below you confirm this document meets all applicable quality and regulatory requirements and authorise its release at version <strong>{0}</strong>.", Math.Ceiling(document?.Version ?? 0).ToString("0.0")]</text>
                 }
             </p>
             <div class="row g-3">
@@ -241,7 +241,7 @@ function updateRemoveButtons() {
             <a asp-action="Details" asp-route-id="@Model.DocumentId" class="btn btn-outline-secondary">@L["Cancel"]</a>
             <button type="submit" class="btn btn-success">
                 <i class="bi bi-check2-circle me-1"></i>
-                @(document?.IsExternal == true ? "Accept into QMS & Sign" : "Approve & Sign")
+                @(document?.IsExternal == true ? L["Accept into QMS & Sign"] : L["Approve & Sign"])
             </button>
         </div>
     </div>

@@ -2,7 +2,7 @@
 @using OpenQMS.Models.Navigation
 
 @{
-    ViewData["Title"] = "My Training";
+    ViewData["Title"] = L["My Training"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var outstanding        = ViewBag.Outstanding        as List<UserTraining>              ?? new();
@@ -16,7 +16,7 @@
     <h4 class="mb-0">@L["My Training"]</h4>
     @if (outstanding.Any(r => r.Training?.DueDate.HasValue == true && r.Training.DueDate!.Value.Date < SiteTime.Today))
     {
-        <span class="badge bg-danger fs-6"><i class="bi bi-exclamation-circle me-1"></i>Overdue items</span>
+        <span class="badge bg-danger fs-6"><i class="bi bi-exclamation-circle me-1"></i>@L["Overdue items"]</span>
     }
 </div>
 <hr />
@@ -24,21 +24,21 @@
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show">
-        @TempData["Success"]
+        @L.Message(TempData["Success"])
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 @if (TempData["WorkflowInfo"] != null)
 {
     <div class="alert alert-info alert-dismissible fade show">
-        <i class="bi bi-info-circle me-1"></i>@TempData["WorkflowInfo"]
+        <i class="bi bi-info-circle me-1"></i>@L.Message(TempData["WorkflowInfo"])
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 @if (TempData["WorkflowError"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show">
-        @TempData["WorkflowError"]
+        @L.Message(TempData["WorkflowError"])
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
@@ -85,7 +85,7 @@
                         <td>@training.Name</td>
                         <td>
                             <span class="badge @(training.TrainingType == TrainingType.CompetencyAssessment ? "bg-primary" : "bg-info text-dark")">
-                                @(training.TrainingType == TrainingType.CompetencyAssessment ? "Competency" : "Read & Ack")
+                                @(training.TrainingType == TrainingType.CompetencyAssessment ? L["Competency"] : L["Read & Ack"])
                             </span>
                         </td>
                         <td>
@@ -102,12 +102,12 @@
                                 {
                                     <a asp-controller="AppDocuments" asp-action="ViewFile" asp-route-id="@effectiveDoc.Id"
                                        class="btn btn-outline-primary btn-sm mt-1" target="_blank" rel="noopener">
-                                        <i class="bi bi-file-earmark-text me-1"></i>Open Document
+                                        <i class="bi bi-file-earmark-text me-1"></i>@L["Open Document"]
                                     </a>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-secondary mt-1">Superseded</span>
+                                    <span class="badge bg-secondary mt-1">@L["Superseded"]</span>
                                 }
                             }
                             else if (training.PolicyId > 0)
@@ -141,12 +141,12 @@
                                         data-training-type="@((int)training.TrainingType)"
                                         data-doc-ref="@docRef">
                                     <i class="bi bi-pen me-1"></i>
-                                    Acknowledge
+                                    @L["Acknowledge"]
                                 </button>
                             }
                             else if (row.Status == UserTrainingStatus.PendingTrainerConfirmation)
                             {
-                                <span class="text-muted small">Awaiting trainer</span>
+                                <span class="text-muted small">@L["Awaiting trainer"]</span>
                             }
                         </td>
                     </tr>
@@ -158,7 +158,7 @@
 else
 {
     <div class="alert alert-success mb-4">
-        <i class="bi bi-check-circle me-1"></i>No outstanding training items. Well done!
+        <i class="bi bi-check-circle me-1"></i>@L["No outstanding training items. Well done!"]
     </div>
 }
 
@@ -174,7 +174,7 @@ else
                     <th>@L["Name"]</th>
                     <th>@L["Type"]</th>
                     <th>@L["Source Document"]</th>
-                    <th>Completed / Acknowledged</th>
+                    <th>@L["Completed / Acknowledged"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -194,7 +194,7 @@ else
                         <td>@training.Name</td>
                         <td>
                             <span class="badge @(training.TrainingType == TrainingType.CompetencyAssessment ? "bg-primary" : "bg-info text-dark")">
-                                @(training.TrainingType == TrainingType.CompetencyAssessment ? "Competency" : "Read & Ack")
+                                @(training.TrainingType == TrainingType.CompetencyAssessment ? L["Competency"] : L["Read & Ack"])
                             </span>
                         </td>
                         <td>
@@ -211,12 +211,12 @@ else
                                 {
                                     <a asp-controller="AppDocuments" asp-action="DownloadFile" asp-route-id="@effectiveDocC.Id"
                                        class="btn btn-outline-secondary btn-sm mt-1" target="_blank">
-                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>Open Document
+                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>@L["Open Document"]
                                     </a>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-secondary mt-1">Superseded</span>
+                                    <span class="badge bg-secondary mt-1">@L["Superseded"]</span>
                                 }
                             }
                             else { <span class="text-muted">—</span> }
@@ -233,7 +233,7 @@ else
 }
 else
 {
-    <p class="text-muted">No completed training records yet.</p>
+    <p class="text-muted">@L["No completed training records yet."]</p>
 }
 
 @* Acknowledge Reading Modal *@
@@ -244,18 +244,18 @@ else
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="ackUserTrainingId" name="userTrainingId" />
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="ackModalTitle">Acknowledge Reading</h5>
+                    <h5 class="modal-title" id="ackModalTitle">@L["Acknowledge Reading"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <p id="ackModalBody">
-                        I confirm that I have read and understood the content of this document.
+                        @L["I confirm that I have read and understood the content of this document."]
                     </p>
                     <div class="alert alert-info py-2 px-3 mb-0" id="ackDocRef" style="display:none;">
                         <i class="bi bi-file-earmark-text me-1"></i><span id="ackDocRefText"></span>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to sign this acknowledgement.</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to sign this acknowledgement."]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email"] <span class="text-danger">*</span></label>
                         <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
@@ -267,7 +267,7 @@ else
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success" id="ackSubmitBtn">Acknowledge</button>
+                    <button type="submit" class="btn btn-success" id="ackSubmitBtn">@L["Acknowledge"]</button>
                 </div>
             </form>
         </div>

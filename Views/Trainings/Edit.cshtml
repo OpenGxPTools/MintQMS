@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @model OpenQMS.Models.Training
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = L["Edit"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     var policies = (List<AppDocument>)ViewData["Policies"];
     var trainer = (List<AppUser>)ViewData["Trainer"];
@@ -62,10 +62,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="col-md-6">
                     <label asp-for="DueDate" class="form-label"></label>
                     <input asp-for="DueDate" class="form-control" type="date" />
-                    <small class="form-text text-muted">Optional — deadline for trainees to complete this training.</small>
+                    <small class="form-text text-muted">@L["Optional — deadline for trainees to complete this training."]</small>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Policy</label>
+                    <label class="form-label">@L["Policy"]</label>
                     <select asp-for="PolicyId" class="form-select" asp-items='new SelectList(policies,"Id","Title")'>
                     </select>
                     <span asp-validation-for="PolicyId" class="text-danger small"></span>

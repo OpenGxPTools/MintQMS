@@ -31,7 +31,9 @@ namespace OpenQMS.Models
         public int Id { get; set; }
         [Display(Name = "ID")]
         public string TrainingId { get; set; }
+        [Display(Name = "Name")]
         public string Name { get; set; }
+        [Display(Name = "Description")]
         public string Description { get; set; }
         public DateTime CreatedOn { get; set; }
         public int PolicyId { get; set; }

@@ -21,6 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
 using System.Data;
+using OpenQMS.Localization;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -202,7 +203,7 @@ namespace OpenQMS.Controllers
                         : await _userManager.FindByIdAsync(training.TrainerId);
                     if (trainer == null && training.TrainingType == TrainingType.CompetencyAssessment)
                     {
-                        ModelState.AddModelError("TrainerId", "A trainer is required for Competency Assessment.");
+                        ModelState.AddModelError("TrainerId", this.T("A trainer is required for Competency Assessment."));
                         goto returnView;
                     }
 
@@ -228,13 +229,13 @@ namespace OpenQMS.Controllers
                     AddAuditLog(training.Id, "Created", null, "Scheduled",
                         $"ID: {training.TrainingId}; Name: {training.Name}; Policy: {training.PolicyTitle}; Trainer: {training.TrainerEmail}");
                     await _context.SaveChangesAsync();
-                    TempData["Success"] = $"Training {training.TrainingId} created successfully.";
+                    TempData["Success"] = this.T("Training {0} created successfully.", training.TrainingId);
                     return RedirectToAction(nameof(Details), new { id = training.Id });
                 }
             }
             catch (DataException)
             {
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                ModelState.AddModelError("", this.T("Unable to save changes. Try again, and if the problem persists see your system administrator."));
             }
 
             returnView:
@@ -337,7 +338,7 @@ namespace OpenQMS.Controllers
                 }
                 catch (DbUpdateException)
                 {
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                    ModelState.AddModelError("", this.T("Unable to save changes. Try again, and if the problem persists, see your system administrator."));
                 }
             }
 
@@ -471,7 +472,7 @@ namespace OpenQMS.Controllers
 
                 if (notAcknowledged.Any())
                 {
-                    TempData["WorkflowError"] = $"Cannot complete: the following trainee(s) have not yet acknowledged reading the document: {string.Join(", ", notAcknowledged)}.";
+                    TempData["WorkflowError"] = this.T("Cannot complete: the following trainee(s) have not yet acknowledged reading the document: {0}.", string.Join(", ", notAcknowledged));
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -485,7 +486,7 @@ namespace OpenQMS.Controllers
                     var reason = training.TrainingType == TrainingType.CompetencyAssessment
                         ? "competency assessment has not been trainer-verified as passed"
                         : "acknowledgement is not yet fully recorded";
-                    TempData["WorkflowError"] = $"Cannot complete: the following trainee(s) have outstanding requirements ({reason}): {string.Join(", ", notCompleted)}.";
+                    TempData["WorkflowError"] = this.T("Cannot complete: the following trainee(s) have outstanding requirements ({0}): {1}.", reason, string.Join(", ", notCompleted));
                     return RedirectToAction(nameof(Details), new { id });
                 }
             }
@@ -500,7 +501,7 @@ namespace OpenQMS.Controllers
                 $"Completed by: {currentUser.UserName}; Notes: {CompletionNotes.Trim()}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Training {training.TrainingId} competency verified and marked as Completed.";
+            TempData["Success"] = this.T("Training {0} competency verified and marked as Completed.", training.TrainingId);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -644,7 +645,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(training.Id, "Cancelled", Training.TrainingStatus.Scheduled.ToString(), Training.TrainingStatus.Cancelled.ToString(), reason);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Training {training.TrainingId} has been cancelled.";
+            TempData["Success"] = this.T("Training {0} has been cancelled.", training.TrainingId);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -958,7 +959,7 @@ namespace OpenQMS.Controllers
 
             if (!UploadRules.IsAllowed(file.FileName))
             {
-                TempData["WorkflowError"] = $"File type not allowed. Accepted: {UploadRules.AcceptedLabel}.";
+                TempData["WorkflowError"] = this.T("File type not allowed. Accepted: {0}.", UploadRules.AcceptedLabel);
                 TempData["ActiveTab"] = "trainees";
                 return RedirectToAction(nameof(Details), new { id = row.TrainingId });
             }

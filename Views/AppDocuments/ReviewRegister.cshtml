@@ -1,7 +1,7 @@
 @model List<OpenQMS.Models.AppDocument>
 
 @{
-    ViewData["Title"] = "Document Review Register";
+    ViewData["Title"] = L["Document Review Register"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     var today        = (DateTime)ViewBag.Today;
     var overdueCount = (int)ViewBag.OverdueCount;
@@ -10,7 +10,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Document Review Register</h4>
+    <h4 class="mb-0">@L["Document Review Register"]</h4>
     <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
         <i class="bi bi-arrow-left me-1"></i>@L["Dashboard"]
     </a>
@@ -28,14 +28,14 @@
             <div class="card-body py-3">
                 <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Overdue"]</p>
                 <h2 class="fw-bold mb-0 @(overdueCount > 0 ? "text-danger" : "")">@overdueCount</h2>
-                <p class="text-muted small mb-0">past review date</p>
+                <p class="text-muted small mb-0">@L["past review date"]</p>
             </div>
         </div>
     </div>
     <div class="col-sm-6 col-md-3">
         <div class="card border-0 shadow-sm text-center" style="border-left: 4px solid @(dueSoonCount > 0 ? "#fd7e14" : "#6c757d") !important;">
             <div class="card-body py-3">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Due Within 30 Days</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Due Within 30 Days"]</p>
                 <h2 class="fw-bold mb-0 @(dueSoonCount > 0 ? "text-warning" : "")">@dueSoonCount</h2>
             </div>
         </div>
@@ -43,18 +43,18 @@
     <div class="col-sm-6 col-md-3">
         <div class="card border-0 shadow-sm text-center" style="border-left: 4px solid #198754 !important;">
             <div class="card-body py-3">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Current</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Current"]</p>
                 <h2 class="fw-bold mb-0 text-success">@currentCount</h2>
-                <p class="text-muted small mb-0">review not due yet</p>
+                <p class="text-muted small mb-0">@L["review not due yet"]</p>
             </div>
         </div>
     </div>
     <div class="col-sm-6 col-md-3">
         <div class="card border-0 shadow-sm text-center" style="border-left: 4px solid #0d6efd !important;">
             <div class="card-body py-3">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Total Tracked</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Total Tracked"]</p>
                 <h2 class="fw-bold mb-0">@Model.Count</h2>
-                <p class="text-muted small mb-0">with review date set</p>
+                <p class="text-muted small mb-0">@L["with review date set"]</p>
             </div>
         </div>
     </div>
@@ -65,9 +65,9 @@
 {
     <div class="alert alert-light border small mb-4">
         <strong>@L["Colour coding:"]</strong>
-        <span class="badge bg-danger me-1">@L["Red"]</span> Overdue (past review date) &nbsp;
-        <span class="badge bg-warning text-dark me-1">@L["Amber"]</span> Due within 30 days &nbsp;
-        <span class="badge bg-success me-1">Green</span> Current (more than 30 days remaining)
+        <span class="badge bg-danger me-1">@L["Red"]</span> @L["Overdue (past review date)"] &nbsp;
+        <span class="badge bg-warning text-dark me-1">@L["Amber"]</span> @L["Due within 30 days"] &nbsp;
+        <span class="badge bg-success me-1">@L["Green"]</span> @L["Current (more than 30 days remaining)"]
     </div>
 
     <div class="card shadow-sm">
@@ -79,7 +79,7 @@
                             <th>@L["Document ID"]</th>
                             <th>@L["Title"]</th>
                             <th>@L["Category"]</th>
-                            <th>Doc Type</th>
+                            <th>@L["Doc Type"]</th>
                             <th>@L["Version"]</th>
                             <th class="text-nowrap">@L["Approved On"]</th>
                             <th class="text-nowrap">@L["Review Due"]</th>
@@ -128,7 +128,7 @@ else
     <div class="card shadow-sm">
         <div class="card-body text-muted text-center py-5">
             <i class="fas fa-check-circle text-success fs-3 d-block mb-2"></i>
-            No approved documents with a periodic review date are currently tracked.
+            @L["No approved documents with a periodic review date are currently tracked."]
         </div>
     </div>
 }

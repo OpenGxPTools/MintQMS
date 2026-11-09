@@ -198,7 +198,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        <div class="alert alert-danger">@L.Message(TempData["ErrorMessage"])</div>
     }
     @if ((bool)ViewData["HasLinkedRecords"] == true)
     {

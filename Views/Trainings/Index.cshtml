@@ -5,7 +5,7 @@
 }
 
 @{
-    ViewData["Title"] = "Trainings";
+    ViewData["Title"] = L["Trainings"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -51,7 +51,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Trainings</h4>
+    <h4 class="mb-0">@L["Trainings"]</h4>
     @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole) || User.IsInRole(Constants.TrainerRole))
     {
         <div class="d-flex gap-2">
@@ -68,7 +68,7 @@
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Scheduled"]">@L["Scheduled"]</button>
     <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["In Progress"]">@L["In Progress"]</button>
-    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Pending Trainer Confirmation"]">Pending Confirmation</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Pending Trainer Confirmation"]">@L["Pending Confirmation"]</button>
     <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Completed"]">@L["Completed"]</button>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Cancelled"]">@L["Cancelled"]</button>
     <a asp-action="MyTraining" class="btn btn-outline-success btn-sm ms-auto">

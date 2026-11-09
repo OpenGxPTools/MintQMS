@@ -2,7 +2,7 @@
 @using OpenQMS.Models
 
 @{
-    ViewData["Title"] = "Document Library";
+    ViewData["Title"] = L["Document Library"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var categories  = ViewData["Categories"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
@@ -13,22 +13,22 @@
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
-    <h4 class="mb-0"><i class="bi bi-collection me-1"></i>Document Library</h4>
-    <span class="badge bg-success fs-6">Effective Documents</span>
+    <h4 class="mb-0"><i class="bi bi-collection me-1"></i>@L["Document Library"]</h4>
+    <span class="badge bg-success fs-6">@L["Effective Documents"]</span>
 </div>
 <hr />
 
 <form asp-action="Library" method="get" class="mb-4">
     <div class="row g-2 align-items-end">
         <div class="col-md-4">
-            <label class="form-label small text-muted">Search</label>
-            <input type="text" name="search" class="form-control" placeholder="Title, ID, description…"
+            <label class="form-label small text-muted">@L["Search"]</label>
+            <input type="text" name="search" class="form-control" placeholder="@L["Title, ID, description…"]"
                    value="@searchVal" />
         </div>
         <div class="col-md-3">
             <label class="form-label small text-muted">@L["Category"]</label>
             <select name="category" class="form-select">
-                <option value="">All Categories</option>
+                <option value="">@L["All Categories"]</option>
                 @foreach (var c in categories)
                 {
                     @if (c.Value == selCategory)
@@ -45,7 +45,7 @@
         <div class="col-md-3">
             <label class="form-label small text-muted">@L["Document Type"]</label>
             <select name="docType" class="form-select">
-                <option value="">All Types</option>
+                <option value="">@L["All Types"]</option>
                 @foreach (var t in docTypes)
                 {
                     @if (t.Value == selDocType)
@@ -78,12 +78,12 @@
         <table class="table table-sm align-middle" id="libraryTable">
             <thead class="table-light">
                 <tr>
-                    <th>Doc ID</th>
+                    <th>@L["Doc ID"]</th>
                     <th>@L["Title"]</th>
                     <th>@L["Category"]</th>
                     <th>@L["Type"]</th>
                     <th>@L["Version"]</th>
-                    <th>Issued On</th>
+                    <th>@L["Issued On"]</th>
                     <th>@L["Review Due"]</th>
                     <th>@L["Actions"]</th>
                 </tr>
@@ -149,7 +149,7 @@
 else
 {
     <div class="alert alert-info">
-        <i class="bi bi-info-circle me-1"></i>No effective documents found matching your filters.
+        <i class="bi bi-info-circle me-1"></i>@L["No effective documents found matching your filters."]
     </div>
 }
 

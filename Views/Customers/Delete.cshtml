@@ -60,7 +60,7 @@
 
 @if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    <div class="alert alert-danger">@L.Message(TempData["ErrorMessage"])</div>
 }
 @if ((bool)ViewData["HasLinkedRecords"] == true)
 {

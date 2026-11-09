@@ -3,7 +3,7 @@
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService
 
 @{
-    ViewData["Title"] = "Documents";
+    ViewData["Title"] = L["Documents"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -64,7 +64,7 @@
     <h4 class="mb-0">@L["Documents"]</h4>
     @if (!User.IsInRole(Constants.ReadOnlyRole))
     {
-        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Document</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Document"]</a>
     }
 </div>
 <hr />
@@ -79,14 +79,14 @@
     <button class="btn btn-outline-danger btn-sm status-filter" data-status="@L["Rejected"]">@L["Rejected"]</button>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Obsolete"]">@L["Obsolete"]</button>
     <button class="btn btn-outline-warning btn-sm ms-3" id="externalFilterBtn" data-external="false">
-        <i class="fas fa-file-import me-1"></i>External Only
+        <i class="fas fa-file-import me-1"></i>@L["External Only"]
     </button>
 </div>
 
 <table id="docsTable" class="table" style="width:100%;">
     <thead>
         <tr>
-            <th>Doc ID</th>
+            <th>@L["Doc ID"]</th>
             <th>@L["Title"]</th>
             <th>@L["Category"]</th>
             <th>@L["Document Type"]</th>
@@ -96,7 +96,7 @@
             <th>@L["Approved By"]</th>
             <th>@L["Approved On"]</th>
             <th>@L["Status"]</th>
-            <th>IsExternal</th>
+            <th>@L["IsExternal"]</th>
             <th>@L["Action"]</th>
         </tr>
     </thead>
@@ -130,7 +130,7 @@
                     @item.DocumentId
                     @if (item.IsExternal)
                     {
-                        <span class="badge bg-warning text-dark ms-1" title="Externally sourced document"><i class="fas fa-file-import"></i> @L["External"]</span>
+                        <span class="badge bg-warning text-dark ms-1" title="@L["Externally sourced document"]"><i class="fas fa-file-import"></i> @L["External"]</span>
                     }
                 </td>
                 <td>@item.Title</td>

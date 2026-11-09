@@ -64,19 +64,19 @@
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show">
-        @TempData["Success"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        @L.Message(TempData["Success"]) <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 @if (TempData["WorkflowError"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show">
-        @TempData["WorkflowError"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        @L.Message(TempData["WorkflowError"]) <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show">
-        @TempData["Error"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        @L.Message(TempData["Error"]) <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 

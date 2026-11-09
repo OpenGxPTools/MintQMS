@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @model OpenQMS.Models.Training
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = L["Create"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     var policies = (List<AppDocument>)ViewData["Policies"];
     var trainer = (List<AppUser>)ViewData["Trainer"];
@@ -63,18 +63,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <div class="d-flex gap-4 mt-1">
                         <div class="form-check">
                             <input class="form-check-input" type="radio" asp-for="TrainingType" value="1" id="typeRA" checked />
-                            <label class="form-check-label" for="typeRA">Read &amp; Acknowledge</label>
+                            <label class="form-check-label" for="typeRA">@L["Read & Acknowledge"]</label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" asp-for="TrainingType" value="2" id="typeCA" />
-                            <label class="form-check-label" for="typeCA">Competency Assessment</label>
+                            <label class="form-check-label" for="typeCA">@L["Competency Assessment"]</label>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="DueDate" class="form-label"></label>
                     <input asp-for="DueDate" class="form-control" type="date" />
-                    <small class="form-text text-muted">Optional — deadline for trainees to complete this training.</small>
+                    <small class="form-text text-muted">@L["Optional — deadline for trainees to complete this training."]</small>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">@L["Document"]</label>
@@ -83,7 +83,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
                 <div class="col-md-6" id="trainerField">
                     <label class="form-label">@L["Trainer"] <span id="trainerRequired" class="text-danger d-none">*</span></label>
-                    <select asp-for="TrainerId" class="form-select" asp-items='new SelectList(trainer,"Id","Email")'><option value="">— None —</option></select>
+                    <select asp-for="TrainerId" class="form-select" asp-items='new SelectList(trainer,"Id","Email")'><option value="">@L["— None —"]</option></select>
                     <span asp-validation-for="TrainerId" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6">

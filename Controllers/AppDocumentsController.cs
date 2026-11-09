@@ -21,6 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
 using System.Data;
+using OpenQMS.Localization;
 using System.Text;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
@@ -245,7 +246,7 @@ namespace OpenQMS.Controllers
                         Notes         = "File hash mismatch detected on download. File may have been tampered with."
                     });
                     await _context.SaveChangesAsync();
-                    TempData["IntegrityWarning"] = $"WARNING: The file '{document.Title}' failed its integrity check. The stored hash does not match. This has been logged. Contact your system administrator.";
+                    TempData["IntegrityWarning"] = this.T("WARNING: The file '{0}' failed its integrity check. The stored hash does not match. This has been logged. Contact your system administrator.", document.Title);
                     return RedirectToAction(nameof(Details), new { id });
                 }
             }
@@ -563,7 +564,7 @@ namespace OpenQMS.Controllers
             {
                 TempData["Success"] = "Document approved successfully.";
                 if (document.DocType.HasValue && _trainingRelevantTypes.Contains(document.DocType.Value))
-                    TempData["TrainingReminder"] = $"Training required: this document type ({document.DocType}) typically requires personnel training. Please schedule training records for all affected staff.";
+                    TempData["TrainingReminder"] = this.T("Training required: this document type ({0}) typically requires personnel training. Please schedule training records for all affected staff.", this.T(EnumHelper.Display(document.DocType)));
             }
             else
             {
@@ -737,7 +738,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Document author reassigned to {newAuthor.FirstName} {newAuthor.LastName}.";
+            TempData["Success"] = this.T("Document author reassigned to {0}.", $"{newAuthor.FirstName} {newAuthor.LastName}");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -846,7 +847,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Periodic review initiated. Draft v{newVersion:0.00} created.";
+            TempData["Success"] = this.T("Periodic review initiated. Draft v{0} created.", newVersion.ToString("0.00"));
             return RedirectToAction(nameof(Details), new { id = newDoc.Id });
         }
 
@@ -1052,7 +1053,7 @@ namespace OpenQMS.Controllers
 
                     if (!hasTrainees)
                     {
-                        TempData["WorkflowError"] = $"Training group '{group.Name}' has no trainees assigned. Select at least one user or a role that has members, or remove the group.";
+                        TempData["WorkflowError"] = this.T("Training group '{0}' has no trainees assigned. Select at least one user or a role that has members, or remove the group.", group.Name);
                         await PopulateApproveViewData(document);
                         return View(vm);
                     }
@@ -1196,7 +1197,7 @@ namespace OpenQMS.Controllers
             {
                 await transaction.RollbackAsync();
                 _logger.LogError(ex, "Approval failed for document {DocumentId}", id);
-                TempData["WorkflowError"] = $"Approval failed: {ex.Message}";
+                TempData["WorkflowError"] = this.T("Approval failed: {0}", ex.Message);
                 await PopulateApproveViewData(document);
                 return View(vm);
             }
@@ -1451,7 +1452,7 @@ namespace OpenQMS.Controllers
                     document.AuthoredOn = DateTime.UtcNow;
                     if (file == null || file.Length == 0)
                     {
-                        ModelState.AddModelError("file", "Please select a file to upload.");
+                        ModelState.AddModelError("file", this.T("Please select a file to upload."));
                         return View(document);
                     }
 
@@ -1459,13 +1460,13 @@ namespace OpenQMS.Controllers
                     var fileExt = Path.GetExtension(file.FileName).ToLowerInvariant();
                     if (!allowedExtensions.Contains(fileExt))
                     {
-                        ModelState.AddModelError("file", $"File type '{fileExt}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.");
+                        ModelState.AddModelError("file", this.T("File type '{0}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.", fileExt));
                         return View(document);
                     }
 
                     if (file.Length > UploadRules.MaxBytes)
                     {
-                        ModelState.AddModelError("file", "File exceeds the 25 MB maximum size limit.");
+                        ModelState.AddModelError("file", this.T("File exceeds the 25 MB maximum size limit."));
                         return View(document);
                     }
 
@@ -1506,7 +1507,7 @@ namespace OpenQMS.Controllers
             catch (DataException /* dex */)
             {
                 //Log the error (uncomment dex variable name and add a line here to write a log.
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                ModelState.AddModelError("", this.T("Unable to save changes. Try again, and if the problem persists see your system administrator."));
             }
 
             PopulateViewData(document.Category);
@@ -1589,13 +1590,13 @@ namespace OpenQMS.Controllers
                         var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
                         if (!allowedExtensions.Contains(ext))
                         {
-                            ModelState.AddModelError("file", $"File type '{ext}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.");
+                            ModelState.AddModelError("file", this.T("File type '{0}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.", ext));
                             return View(document);
                         }
 
                         if (file.Length > UploadRules.MaxBytes)
                         {
-                            ModelState.AddModelError("file", "File exceeds the 25 MB maximum size limit.");
+                            ModelState.AddModelError("file", this.T("File exceeds the 25 MB maximum size limit."));
                             return View(document);
                         }
 
@@ -1777,7 +1778,7 @@ namespace OpenQMS.Controllers
                 || document.Status == AppDocument.DocumentStatus.UnderReview
                 || document.Status == AppDocument.DocumentStatus.Rejected)
             {
-                TempData["Error"] = $"Documents with status '{EnumHelper.Display(document.Status)}' cannot be deleted. Use the Obsolete workflow to retire active documents.";
+                TempData["Error"] = this.T("Documents with status '{0}' cannot be deleted. Use the Obsolete workflow to retire active documents.", this.T(EnumHelper.Display(document.Status)));
                 return RedirectToAction(nameof(Details), new { id });
             }
 

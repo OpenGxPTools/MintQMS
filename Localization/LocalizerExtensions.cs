@@ -18,6 +18,11 @@ namespace OpenQMS.Localization
             return english.Length == 0 ? english : localizer[english].Value;
         }
 
+        /// <summary>A message passed through TempData, shown in the interface language. Fixed English messages
+        /// are the translation key (no translation → English); anything else is shown as it is.</summary>
+        public static string Message(this IStringLocalizer localizer, object? value) =>
+            value is string s && s.Length > 0 ? localizer[s].Value : value?.ToString() ?? string.Empty;
+
         public static string Role(this IStringLocalizer localizer, string? roleName)
         {
             var english = EnumHelper.RoleName(roleName);

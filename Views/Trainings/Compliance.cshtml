@@ -3,7 +3,7 @@
 @using OpenQMS.Models.Navigation
 
 @{
-    ViewData["Title"] = "Training Compliance Matrix";
+    ViewData["Title"] = L["Training Compliance Matrix"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var documents   = ViewBag.Documents   as List<OpenQMS.Models.AppDocument> ?? new();
@@ -17,7 +17,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Training Compliance Matrix</h4>
+    <h4 class="mb-0">@L["Training Compliance Matrix"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm"><i class="fas fa-tachometer-alt me-1"></i>@L["Dashboard"]</a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>@L["Training Register"]</a>
@@ -27,13 +27,13 @@
 
 <!-- Filters -->
 <div class="card border-0 shadow-sm mb-4">
-    <div class="card-header bg-white fw-semibold">Filters</div>
+    <div class="card-header bg-white fw-semibold">@L["Filters"]</div>
     <div class="card-body">
         <form method="get" asp-action="Compliance" class="row g-3">
             <div class="col-md-4">
                 <label class="form-label">@L["Document"]</label>
                 <select name="documentId" class="form-select form-select-sm">
-                    <option value="">— All Documents —</option>
+                    <option value="">@L["— All Documents —"]</option>
                     @foreach (var d in documents)
                     {
                         <option value="@d.Id" selected="@(filterDocId == d.Id)">@d.DocumentId — @d.Title</option>
@@ -43,7 +43,7 @@
             <div class="col-md-3">
                 <label class="form-label">@L["Trainee"]</label>
                 <select name="userId" class="form-select form-select-sm">
-                    <option value="">— All Trainees —</option>
+                    <option value="">@L["— All Trainees —"]</option>
                     @foreach (var u in allUsers)
                     {
                         <option value="@u.Id" selected="@(filterUser == u.Id.ToString())">@u.UserName</option>
@@ -53,7 +53,7 @@
             <div class="col-md-2">
                 <label class="form-label">@L["Status"]</label>
                 <select name="status" class="form-select form-select-sm">
-                    <option value="">— All Statuses —</option>
+                    <option value="">@L["— All Statuses —"]</option>
                     @foreach (var s in statusValues)
                     {
                         <option value="@s" selected="@(filterStatus == s.ToString())">@L.Enum(s)</option>
@@ -63,7 +63,7 @@
             <div class="col-md-2 d-flex align-items-end">
                 <div class="form-check mb-1">
                     <input type="checkbox" class="form-check-input" name="overdueOnly" value="true" id="overdueCheck" @(overdueOnly ? "checked" : "") />
-                    <label class="form-check-label" for="overdueCheck">Overdue Only</label>
+                    <label class="form-check-label" for="overdueCheck">@L["Overdue Only"]</label>
                 </div>
             </div>
             <div class="col-md-1 d-flex align-items-end gap-1">
@@ -77,7 +77,7 @@
 <!-- Results -->
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
-        <span>Results <span class="badge bg-secondary ms-1">@Model.Count()</span></span>
+        <span>@L["Results"] <span class="badge bg-secondary ms-1">@Model.Count()</span></span>
     </div>
     <div class="card-body p-0">
         @if (Model.Any())
@@ -86,7 +86,7 @@
                 <thead class="table-light">
                     <tr>
                         <th>@L["Trainee"]</th>
-                        <th>Training</th>
+                        <th>@L["Training"]</th>
                         <th>@L["Type"]</th>
                         <th>@L["Document"]</th>
                         <th>@L["Date Created"]</th>
@@ -162,7 +162,7 @@
         }
         else
         {
-            <p class="text-muted p-3 mb-0">No records match the current filters.</p>
+            <p class="text-muted p-3 mb-0">@L["No records match the current filters."]</p>
         }
     </div>
 </div>

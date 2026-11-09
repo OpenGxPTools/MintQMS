@@ -2,11 +2,22 @@
 
 ## Unreleased
 
+**Documents and Training in Spanish and Portuguese**
+
+- Every page of the Documents and Training modules (registers, create/edit, approval and its signature
+  statements, review register, library, dashboards, My Training, compliance matrix), their messages and
+  validation errors, dropdown prompts and field labels. Training certificates and attendance lists — printable
+  records — stay in the server's language for now.
+- Messages after an action are translated where they are shown (all modules), so the code that sets them —
+  and anything recorded — is unchanged.
+
 **Fixes (also in English)**
 
 - Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the
   Approval Status column, but "Under Assessment" is a workflow stage shown in the Workflow column. It now
   filters the Workflow column and finds both first assessments and re-reviews.
+- A training reminder showed the document type's code name (e.g. "StandardOperatingProcedure"); it now shows
+  the type's proper name.
 - Option names that showed as code fragments now read properly: CoA, CoC (were "Co A", "Co C"),
   CoA Template ("Co ATemplate"), ISO / Private Certification ("ISOPrivate Certification"), GMP Evidence
   Package ("GMPEvidence Package"), TGA On-Site Inspection ("TGAInspection"), sNDA / sBLA ("sNDA_sBLA"),

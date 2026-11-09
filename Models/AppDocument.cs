@@ -30,7 +30,9 @@ namespace OpenQMS.Models
         [Display(Name = "ID")]
         public string DocumentId { get; set; }
         public string? GeneratedFrom { get; set; }
+        [Display(Name = "Title")]
         public string Title { get; set; }
+        [Display(Name = "Description")]
         public string Description { get; set; }
         public decimal Version { get; set; }
         public byte[]? Content { get; set; }
@@ -53,6 +55,7 @@ namespace OpenQMS.Models
         public DateTime? ObsoletedOn { get; set; }
         public string? ExportFilePath { get; set; }
         public DocumentStatus Status { get; set; }
+        [Display(Name = "Category")]
         public DocumentCategory? Category { get; set; }
         [Display(Name = "Document Type")]
         public DocumentType? DocType { get; set; }

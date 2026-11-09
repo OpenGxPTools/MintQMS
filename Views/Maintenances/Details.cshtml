@@ -45,15 +45,15 @@
 <!-- TempData alerts -->
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Success"]</div>
+    <div class="alert alert-success alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@L.Message(TempData["Success"])</div>
 }
 @if (TempData["WorkflowError"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["WorkflowError"]</div>
+    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@L.Message(TempData["WorkflowError"])</div>
 }
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-warning alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@TempData["Error"]</div>
+    <div class="alert alert-warning alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>@L.Message(TempData["Error"])</div>
 }
 
 <!-- Overdue banner -->

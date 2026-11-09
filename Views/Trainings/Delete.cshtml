@@ -23,13 +23,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @model OpenQMS.Models.Training
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = L["Delete"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Delete Training</h4>
+        <h4 class="mb-0">@L["Delete Training"]</h4>
     </div>
 </div>
 <hr />
@@ -56,7 +56,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <dd class="col-sm-8">
                 @Html.DisplayFor(model => model.Description)
             </dd>
-            <dt class="col-sm-4">Policy</dt>
+            <dt class="col-sm-4">@L["Policy"]</dt>
             <dd class="col-sm-8">
                 <a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@Model.PolicyId">@Html.DisplayFor(model => model.PolicyTitle)</a>
             </dd>

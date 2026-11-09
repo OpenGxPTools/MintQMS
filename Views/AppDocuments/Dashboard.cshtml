@@ -1,6 +1,6 @@
 @using static OpenQMS.Models.AppDocument
 @{
-    ViewData["Title"] = "Documents Dashboard";
+    ViewData["Title"] = L["Documents Dashboard"].Value;
 
     var statusCounts     = ViewBag.StatusCounts      as Dictionary<DocumentStatus, int> ?? new();
     var pendingApproval  = ViewBag.PendingApproval   as List<OpenQMS.Models.AppDocument> ?? new();
@@ -13,12 +13,12 @@
 
 <!-- Header -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Documents Dashboard</h4>
+    <h4 class="mb-0">@L["Documents Dashboard"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Register"]</a>
-        <a asp-action="ReviewRegister" class="btn btn-outline-info btn-sm">Review Register</a>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Document Register</a>
-        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Document</a>
+        <a asp-action="ReviewRegister" class="btn btn-outline-info btn-sm">@L["Review Register"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">@L["Document Register"]</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Document"]</a>
     </div>
 </div>
 
@@ -86,7 +86,7 @@
     </div>
     <div class="col-md-7">
         <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white fw-semibold">Status Counts</div>
+            <div class="card-header bg-white fw-semibold">@L["Status Counts"]</div>
             <div class="card-body">
                 <canvas id="statusBar" style="max-height:220px;"></canvas>
             </div>
@@ -103,7 +103,7 @@
             <div class="col-md-6">
                 <div class="card border-danger border-0 shadow-sm h-100">
                     <div class="card-header bg-danger text-white fw-semibold">
-                        <i class="fas fa-exclamation-circle me-1"></i>Review Overdue
+                        <i class="fas fa-exclamation-circle me-1"></i>@L["Review Overdue"]
                         <span class="badge bg-white text-danger ms-1">@reviewOverdue.Count</span>
                     </div>
                     <div class="card-body p-0">
@@ -134,13 +134,13 @@
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-warning text-dark fw-semibold">
-                        <i class="fas fa-clock me-1"></i>Review Due Within 30 Days
+                        <i class="fas fa-clock me-1"></i>@L["Review Due Within 30 Days"]
                         <span class="badge bg-dark ms-1">@reviewDueSoon.Count</span>
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-sm mb-0">
                             <thead class="table-light">
-                                <tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Review Due"]</th><th>Days Left</th><th></th></tr>
+                                <tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Review Due"]</th><th>@L["Days Left"]</th><th></th></tr>
                             </thead>
                             <tbody>
                                 @foreach (var d in reviewDueSoon)
@@ -168,7 +168,7 @@
     <div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-info text-dark fw-semibold">
-                <i class="fas fa-eye me-1"></i>Awaiting Approval (Under Review)
+                <i class="fas fa-eye me-1"></i>@L["Awaiting Approval (Under Review)"]
                 <span class="badge bg-dark ms-1">@pendingApproval.Count</span>
             </div>
             <div class="card-body p-0">
@@ -194,7 +194,7 @@
                 }
                 else
                 {
-                    <p class="text-muted p-3 mb-0">No documents awaiting approval.</p>
+                    <p class="text-muted p-3 mb-0">@L["No documents awaiting approval."]</p>
                 }
             </div>
         </div>
@@ -202,7 +202,7 @@
     <div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-success text-white fw-semibold">
-                <i class="fas fa-check-circle me-1"></i>Recently Approved
+                <i class="fas fa-check-circle me-1"></i>@L["Recently Approved"]
             </div>
             <div class="card-body p-0">
                 @if (recentlyApproved.Any())
@@ -227,7 +227,7 @@
                 }
                 else
                 {
-                    <p class="text-muted p-3 mb-0">No approved documents yet.</p>
+                    <p class="text-muted p-3 mb-0">@L["No approved documents yet."]</p>
                 }
             </div>
         </div>
@@ -266,7 +266,7 @@
         }
         else
         {
-            <p class="text-muted p-3 mb-0">No recent activity.</p>
+            <p class="text-muted p-3 mb-0">@L["No recent activity."]</p>
         }
     </div>
 </div>

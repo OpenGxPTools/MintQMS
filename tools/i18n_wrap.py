@@ -18,7 +18,7 @@ Always follow with: dotnet build, tools/i18n.py check, and the English page comp
 import argparse, html, re, sys
 
 NEVER = {"MintQMS", "OpenQMS", "SHA-256", "AGPLv3"}   # names and identifiers, never translated
-SAFE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 .,:;!?'’\"()/&%#+\-–—…]*$")
+SAFE = re.compile(r"^(?:[A-Za-z0-9]|-- |— )[A-Za-z0-9 .,:;!?'’\"()/&%#+\-–—…·]*$")
 PROTECT = re.compile(r"(@\*.*?\*@|<script\b.*?</script>|<style\b.*?</style>)", re.S | re.I)
 TEXT_NODE = re.compile(r">([^<>]*?)<")
 ATTR = re.compile(r'\b(placeholder|title|aria-label)="([^"@]*)"')
@@ -36,13 +36,16 @@ def candidate(raw):
     lead = raw[: len(raw) - len(raw.lstrip())]
     trail = raw[len(raw.rstrip()):]
     core = raw.strip()
-    if "&" in core and re.search(r"&(?!amp;)[a-zA-Z#][a-zA-Z0-9]*;", core):
+    if "&" in core and re.search(r"&(?!amp;|mdash;|middot;|ndash;)[a-zA-Z#][a-zA-Z0-9]*;", core):
         return None                     # other entities: by hand
     text = " ".join(html.unescape(core).split()) if "\n" in core else html.unescape(core)
     if not re.search(r"[A-Za-z]{2}", text) or not SAFE.match(text):
         return None
     if text.startswith(("L[", "@")) or "=" in text or "{" in text or "}" in text:
         return None
+    if re.match(r"(if|else|var|foreach|for|while|switch|return|case|break|using|new|await)\b[ (]", text) \
+            or re.search(r"[a-z]\.[A-Z]|\w\(\)|\)\.\w|;", text):
+        return None                     # C# statements inside @if/@foreach blocks, method calls
     if re.fullmatch(r"[\d\s.,:;%#+\-()/]+", text) or text in NEVER:
         return None
     return lead, text, trail

@@ -64,7 +64,7 @@
 
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">@TempData["Error"]</div>
+    <div class="alert alert-danger">@L.Message(TempData["Error"])</div>
 }
 
 @if (!ViewData.ModelState.IsValid)

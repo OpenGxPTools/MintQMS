@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Trainings Dashboard";
+    ViewData["Title"] = L["Trainings Dashboard"].Value;
 
     var overdue          = ViewBag.OverdueTrainings   as List<OpenQMS.Models.Training> ?? new();
     var upcoming         = ViewBag.UpcomingTrainings  as List<OpenQMS.Models.Training> ?? new();
@@ -8,10 +8,10 @@
 
 <!-- Header -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Trainings Dashboard</h4>
+    <h4 class="mb-0">@L["Trainings Dashboard"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="Compliance" class="btn btn-outline-info btn-sm">
-            <i class="fas fa-clipboard-check me-1"></i>Compliance Matrix
+            <i class="fas fa-clipboard-check me-1"></i>@L["Compliance Matrix"]
         </a>
         <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">
             <i class="fas fa-file-excel me-1"></i>@L["Export Register"]
@@ -55,7 +55,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-danger border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-danger">@ViewBag.OverdueCount</div>
-                <div class="text-muted small">Overdue (Scheduled past date)</div>
+                <div class="text-muted small">@L["Overdue (Scheduled past date)"]</div>
             </div>
         </div>
     </div>
@@ -73,7 +73,7 @@
     </div>
     <div class="col-md-7">
         <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white fw-semibold">Status Counts</div>
+            <div class="card-header bg-white fw-semibold">@L["Status Counts"]</div>
             <div class="card-body">
                 <canvas id="statusBar" style="max-height:220px;"></canvas>
             </div>
@@ -86,7 +86,7 @@
 {
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-danger text-white fw-semibold">
-            <i class="fas fa-exclamation-circle me-1"></i>Overdue — Scheduled Past Date
+            <i class="fas fa-exclamation-circle me-1"></i>@L["Overdue — Scheduled Past Date"]
             <span class="badge bg-white text-danger ms-1">@overdue.Count</span>
         </div>
         <div class="card-body p-0">
@@ -152,7 +152,7 @@
     <div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-success text-white fw-semibold">
-                <i class="fas fa-check-circle me-1"></i>Recently Completed
+                <i class="fas fa-check-circle me-1"></i>@L["Recently Completed"]
             </div>
             <div class="card-body p-0">
                 @if (recentlyCompleted.Any())
@@ -177,7 +177,7 @@
                 }
                 else
                 {
-                    <p class="text-muted p-3 mb-0">No completed trainings yet.</p>
+                    <p class="text-muted p-3 mb-0">@L["No completed trainings yet."]</p>
                 }
             </div>
         </div>

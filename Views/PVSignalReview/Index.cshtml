@@ -15,7 +15,7 @@
 
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]
+    <div class="alert alert-success alert-dismissible fade show">@L.Message(TempData["Success"])
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
