@@ -19,44 +19,44 @@
 
 <div class="card mb-3 group-card">
     <div class="card-header d-flex justify-content-between align-items-center bg-light">
-        <span class="fw-semibold">Group <span class="group-num">@cardNum</span></span>
+        <span class="fw-semibold">@L["Group"] <span class="group-num">@cardNum</span></span>
         <button type="button" class="btn btn-outline-danger btn-sm removeGroupBtn">
-            <i class="bi bi-trash me-1"></i>Remove
+            <i class="bi bi-trash me-1"></i>@L["Remove"]
         </button>
     </div>
     <div class="card-body">
         <div class="row g-3">
 
             <div class="col-md-6">
-                <label class="form-label">Group Name <span class="text-danger">*</span></label>
+                <label class="form-label">@L["Group Name"] <span class="text-danger">*</span></label>
                 <input type="text" name="TrainingGroups[@idx].Name" class="form-control"
-                       value="@g.Name" placeholder="e.g. All Staff — Document Awareness" required />
+                       value="@g.Name" placeholder="@L["e.g. All Staff — Document Awareness"]" required />
             </div>
 
             <div class="col-md-3">
-                <label class="form-label">Training Type</label>
+                <label class="form-label">@L["Training Type"]</label>
                 <select name="TrainingGroups[@idx].TrainingType" class="form-select training-type-select">
                     @if (isCA)
                     {
-                        <option value="1">Read &amp; Acknowledge</option>
-                        <option value="2" selected>Competency Assessment</option>
+                        <option value="1">@L["Read & Acknowledge"]</option>
+                        <option value="2" selected>@L["Competency Assessment"]</option>
                     }
                     else
                     {
-                        <option value="1" selected>Read &amp; Acknowledge</option>
-                        <option value="2">Competency Assessment</option>
+                        <option value="1" selected>@L["Read & Acknowledge"]</option>
+                        <option value="2">@L["Competency Assessment"]</option>
                     }
                 </select>
             </div>
 
             <div class="col-md-3">
-                <label class="form-label">Due Date</label>
+                <label class="form-label">@L["Due Date"]</label>
                 <input type="date" name="TrainingGroups[@idx].DueDate" class="form-control"
                        value="@(g.DueDate.HasValue ? g.DueDate.Value.ToString("yyyy-MM-dd") : "")" />
             </div>
 
             <div class="col-md-6 trainer-row" @(isCA ? "" : "style=\"display:none\"")>
-                <label class="form-label">Trainer</label>
+                <label class="form-label">@L["Trainer"]</label>
                 <select name="TrainingGroups[@idx].TrainerId" class="form-select">
                     <option value="">— None —</option>
                     @foreach (var t in trainers)
@@ -74,16 +74,16 @@
             </div>
 
             <div class="col-12">
-                <label class="form-label">Description</label>
+                <label class="form-label">@L["Description"]</label>
                 <textarea name="TrainingGroups[@idx].Description" class="form-control" rows="2"
-                          placeholder="Optional notes…">@g.Description</textarea>
+                          placeholder="@L["Optional notes…"]">@g.Description</textarea>
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Assign by Role</label>
+                <label class="form-label">@L["Assign by Role"]</label>
                 <div class="border rounded p-2" style="max-height:160px;overflow-y:auto">
                     <div class="alert alert-warning role-zero-warning py-1 small mb-2" style="display:none">
-                        <i class="bi bi-exclamation-triangle me-1"></i>One or more selected roles have no active users.
+                        <i class="bi bi-exclamation-triangle me-1"></i>@L["One or more selected roles have no active users."]
                     </div>
                     @foreach (var role in roles)
                     {
@@ -112,7 +112,7 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Assign Specific Users</label>
+                <label class="form-label">@L["Assign Specific Users"]</label>
                 <select name="TrainingGroups[@idx].SelectedUserIds" class="form-select user-select2" multiple>
                     @foreach (var u in users)
                     {

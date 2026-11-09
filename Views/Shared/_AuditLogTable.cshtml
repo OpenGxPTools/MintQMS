@@ -9,12 +9,12 @@
     <table class="table table-sm table-hover mb-0">
         <thead class="table-light">
             <tr>
-                <th class="text-nowrap">Date / Time <span class="fw-normal text-muted">(@SiteTime.Label)</span></th>
-                <th>Action</th>
-                <th>From Status</th>
-                <th>To Status</th>
-                <th>Performed By</th>
-                <th>Notes</th>
+                <th class="text-nowrap">@L["Date / Time"] <span class="fw-normal text-muted">(@SiteTime.Label)</span></th>
+                <th>@L["Action"]</th>
+                <th>@L["From Status"]</th>
+                <th>@L["To Status"]</th>
+                <th>@L["Performed By"]</th>
+                <th>@L["Notes"]</th>
             </tr>
         </thead>
         <tbody>
@@ -38,7 +38,7 @@
                         else
                         {
                             <details>
-                                <summary style="cursor:pointer;list-style:none" title="Click to expand">@row.Notes[..TruncateAt]<span class="text-muted">… <small>[show more]</small></span></summary>
+                                <summary style="cursor:pointer;list-style:none" title="@L["Click to expand"]">@row.Notes[..TruncateAt]<span class="text-muted">… <small>[show more]</small></span></summary>
                                 <div class="mt-1 small border-start ps-2">@row.Notes</div>
                             </details>
                         }
@@ -50,5 +50,5 @@
 }
 else
 {
-    <p class="text-muted mb-0">No audit log entries yet.</p>
+    <p class="text-muted mb-0">@L["No audit log entries yet."]</p>
 }

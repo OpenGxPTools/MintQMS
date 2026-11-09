@@ -12,7 +12,7 @@
     var onDark = (Model as string) == "light";
     <form asp-controller="Language" asp-action="Set" asp-area="" method="post" class="d-flex align-items-center mint-language-menu">
         <input type="hidden" name="returnUrl" value="@returnUrl" />
-        <label for="mintLanguage" class="visually-hidden">Language</label>
+        <label for="mintLanguage" class="visually-hidden">@L["Language"]</label>
         <i class="bi bi-translate me-1 @(onDark ? "text-white-50" : "text-muted")" aria-hidden="true"></i>
         <select id="mintLanguage" name="culture" class="form-select form-select-sm" style="width:auto"
                 onchange="this.form.submit()">
@@ -22,6 +22,6 @@
                         lang="@code">@Languages.Known[code]</option>
             }
         </select>
-        <noscript><button type="submit" class="btn btn-sm btn-light ms-1">OK</button></noscript>
+        <noscript><button type="submit" class="btn btn-sm btn-light ms-1">@L["OK"]</button></noscript>
     </form>
 }

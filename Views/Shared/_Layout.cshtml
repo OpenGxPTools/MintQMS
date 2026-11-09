@@ -47,11 +47,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
     <footer class="border-top footer text-muted">
         <div class="container-fluid px-4">
-            &copy; 2026 MintQMS contributors &middot; Free software (AGPLv3), provided without warranty and not
-            validated for regulated use &middot; <a asp-area="" asp-controller="Home" asp-action="About">About &amp; disclaimer</a>
+            &copy; 2026 MintQMS contributors &middot; @L["Free software (AGPLv3), provided without warranty and not validated for regulated use"] &middot; <a asp-area="" asp-controller="Home" asp-action="About">@L["About & disclaimer"]</a>
             @if (!string.IsNullOrWhiteSpace(_layoutConfig["SourceCodeUrl"]))
             {
-                <text>&middot; <a href="@_layoutConfig["SourceCodeUrl"]" target="_blank" rel="noopener">Source code</a></text>
+                <text>&middot; <a href="@_layoutConfig["SourceCodeUrl"]" target="_blank" rel="noopener">@L["Source code"]</a></text>
             }
         </div>
     </footer>
@@ -93,18 +92,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="modal-content">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" id="idleWarningLabel">
-                        <i class="fas fa-clock me-2"></i>Session Expiring
+                        <i class="fas fa-clock me-2"></i>@L["Session Expiring"]
                     </h5>
                 </div>
                 <div class="modal-body">
-                    <p>You have been inactive for a while. For security, you will be logged out in:</p>
+                    <p>@L["You have been inactive for a while. For security, you will be logged out in:"]</p>
                     <p class="text-center fs-3 fw-bold" id="idle-countdown"></p>
-                    <p class="text-muted small mb-0">Click <strong>Stay Signed In</strong> to continue your session.</p>
+                    <p class="text-muted small mb-0">@H["Click <strong>{0}</strong> to continue your session.", L["Stay Signed In"].Value]</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="idle-stay-btn">Stay Signed In</button>
+                    <button type="button" class="btn btn-primary" id="idle-stay-btn">@L["Stay Signed In"]</button>
                     <button type="button" class="btn btn-outline-secondary"
-                            onclick="document.getElementById('idle-logout-form').submit()">Log Out Now</button>
+                            onclick="document.getElementById('idle-logout-form').submit()">@L["Log Out Now"]</button>
                 </div>
             </div>
         </div>
@@ -176,18 +175,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteReasonLabel">Delete <span id="delete-reason-item"></span></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="deleteReasonLabel">@L["Delete"] <span id="delete-reason-item"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@L["Close"]"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="small text-muted">The file is removed from the list but retained in the system for traceability. The deletion and its reason are recorded in the audit trail.</p>
-                    <label for="delete-reason-text" class="form-label">Reason for deletion <span class="text-danger">*</span></label>
+                    <p class="small text-muted">@L["The file is removed from the list but retained in the system for traceability. The deletion and its reason are recorded in the audit trail."]</p>
+                    <label for="delete-reason-text" class="form-label">@L["Reason for deletion"] <span class="text-danger">*</span></label>
                     <textarea id="delete-reason-text" class="form-control" rows="3" maxlength="1000"></textarea>
-                    <div class="invalid-feedback">A reason is required.</div>
+                    <div class="invalid-feedback">@L["A reason is required."]</div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="delete-reason-confirm">Delete</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="button" class="btn btn-danger" id="delete-reason-confirm">@L["Delete"]</button>
                 </div>
             </div>
         </div>
