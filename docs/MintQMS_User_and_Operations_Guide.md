@@ -1658,6 +1658,17 @@ trails, exports and watermarks — and the "today" used for due and overdue flag
 changed. Set it to your site's own time zone (the initial value is Brisbane). Release-certification statement
 templates are maintained under *Settings → Release Certification Statements*.
 
+**Display Preferences → Site Language** sets the language every screen is shown in, for every user, including
+the sign-in page (English, Spanish or Portuguese (Brazil) — whichever are installed on the server, see
+DEPLOYMENT.md). **Let Users Choose Their Language** is off by default: everyone then sees the site language, so
+there is one configuration to validate and your procedures, training material and screenshots match the
+screens. Turn it on only if users need different languages (for example an English-speaking auditor at a
+Spanish-speaking site); each user then gets a language menu, and every language in use should be covered by
+your validation. Both settings are Administrator-only and logged like all others. **The language never changes
+stored records:** states and choices are stored as codes, audit-trail entries and signature meanings are
+recorded in English, and free text is kept exactly as typed — your procedures should say which language
+records are written in. Dates and numbers keep the server's format whatever the language.
+
 ---
 
 ### 11.3 Login History

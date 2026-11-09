@@ -204,7 +204,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         }
                     </ul>
                     <ul class="navbar-nav">
-                        @if (Languages.OffersChoice)
+                        @if (Languages.MenuShown(Context))
                         {
                             <li class="nav-item d-flex align-items-center me-2">
                                 <partial name="_LanguageMenu" model="@("light")" />

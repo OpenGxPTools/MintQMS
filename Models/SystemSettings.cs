@@ -61,6 +61,17 @@ namespace OpenQMS.Models
         [Range(1, 90)]
         public int CriticalComplaintResolutionDays { get; set; } = 7;
 
+        // ── Interface language ────────────────────────────────────────────
+        // The language every screen is shown in, for every user (installed languages: appsettings
+        // "Localization:Languages"). Users may pick their own only when AllowUserLanguageChoice is on.
+        // Changes are audited like every other setting. Stored records never change language.
+        [Display(Name = "Site Language")]
+        [MaxLength(10)]
+        public string SiteLanguage { get; set; } = "en";
+
+        [Display(Name = "Let Users Choose Their Language")]
+        public bool AllowUserLanguageChoice { get; set; } = false;
+
         // ── Security Policy ───────────────────────────────────────────────
         [Display(Name = "Password Expiry (days)")]
         [Range(0, 365)]

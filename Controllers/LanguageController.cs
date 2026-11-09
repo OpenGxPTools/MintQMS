@@ -24,8 +24,8 @@ namespace OpenQMS.Controllers
         public IActionResult Set(string? culture, string? returnUrl)
         {
             var lang = _languages.Find(culture);
-            if (lang == null)
-                return BadRequest();   // only an enabled language can be chosen
+            if (lang == null || !_languages.MenuShown(HttpContext))
+                return BadRequest();   // only an installed language, and only when users may choose
 
             Response.Cookies.Append(
                 Languages.CookieName,

@@ -15,7 +15,7 @@ namespace OpenQMS.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
@@ -7642,6 +7642,9 @@ namespace OpenQMS.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("AllowUserLanguageChoice")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("AuditRetentionYears")
                         .HasColumnType("INTEGER");
 
@@ -7734,6 +7737,11 @@ namespace OpenQMS.Migrations
 
                     b.Property<int>("RiskRetentionYears")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("SiteLanguage")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SmtpHost")
                         .HasMaxLength(200)

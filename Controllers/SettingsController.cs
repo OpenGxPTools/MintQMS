@@ -1,3 +1,4 @@
+using OpenQMS.Localization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +15,16 @@ namespace OpenQMS.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
         private readonly string _backupStatusFile;
+        private readonly OpenQMS.Localization.Languages _languages;
 
         private static readonly string[] AllowedLogoExtensions = { ".png", ".jpg", ".jpeg", ".gif" };
         private const long MaxLogoBytes = 2 * 1024 * 1024; // 2 MB
 
-        public SettingsController(ApplicationDbContext context, IWebHostEnvironment env, IConfiguration configuration)
+        public SettingsController(ApplicationDbContext context, IWebHostEnvironment env, IConfiguration configuration,
+            OpenQMS.Localization.Languages languages)
         {
             _context = context;
+            _languages = languages;
             _env = env;
             _backupStatusFile = configuration["BackupStatusFile"] ?? "/var/backups/mintqms/backup_status.json";
         }
@@ -55,6 +59,13 @@ namespace OpenQMS.Controllers
 
             if (!SiteTime.IsValid(model.TimeZoneId))
                 ModelState.AddModelError(nameof(SystemSettings.TimeZoneId), "Unknown time zone.");
+
+            // Only an installed language (appsettings "Localization:Languages"), stored in canonical form.
+            var siteLanguage = _languages.Find(model.SiteLanguage);
+            if (siteLanguage == null)
+                ModelState.AddModelError(nameof(SystemSettings.SiteLanguage), this.T("This language is not installed on this server."));
+            else
+                model.SiteLanguage = siteLanguage;
 
             if (!ModelState.IsValid)
             {
@@ -100,6 +111,8 @@ namespace OpenQMS.Controllers
             LogChange(settings.OrganisationName, model.OrganisationName, "OrganisationName", changedBy, now);
             LogChange(settings.OrganisationAddress, model.OrganisationAddress, "OrganisationAddress", changedBy, now);
             LogChange(settings.TimeZoneId, model.TimeZoneId, "TimeZoneId", changedBy, now);
+            LogChange(settings.SiteLanguage, model.SiteLanguage, "SiteLanguage", changedBy, now);
+            LogChange(settings.AllowUserLanguageChoice.ToString(), model.AllowUserLanguageChoice.ToString(), "AllowUserLanguageChoice", changedBy, now);
             LogChange(settings.DefaultPageSize.ToString(), model.DefaultPageSize.ToString(), "DefaultPageSize", changedBy, now);
             LogChange(settings.LcExpiryWarningDays.ToString(), model.LcExpiryWarningDays.ToString(), "LcExpiryWarningDays", changedBy, now);
             LogChange(settings.MaintenanceDueWarningDays.ToString(), model.MaintenanceDueWarningDays.ToString(), "MaintenanceDueWarningDays", changedBy, now);
@@ -151,6 +164,8 @@ namespace OpenQMS.Controllers
             settings.OrganisationName               = model.OrganisationName;
             settings.OrganisationAddress            = model.OrganisationAddress;
             settings.TimeZoneId                     = model.TimeZoneId;
+            settings.SiteLanguage                   = model.SiteLanguage;
+            settings.AllowUserLanguageChoice        = model.AllowUserLanguageChoice;
             settings.DefaultPageSize                = model.DefaultPageSize;
             settings.LcExpiryWarningDays            = model.LcExpiryWarningDays;
             settings.MaintenanceDueWarningDays      = model.MaintenanceDueWarningDays;

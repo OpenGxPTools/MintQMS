@@ -1,6 +1,7 @@
 @using OpenQMS.Authorization
 @model OpenQMS.Models.SystemSettings
 
+@inject OpenQMS.Localization.Languages Languages
 @{
     ViewData["Title"] = "System Settings";
     bool canEdit = ViewBag.CanEdit == true;
@@ -96,6 +97,29 @@
                     }
                     <span asp-validation-for="TimeZoneId" class="text-danger small"></span>
                     <div class="form-text">Times are stored in UTC and shown in this zone on screens, exports and certificates.</div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="SiteLanguage" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-5">
+                    <select asp-for="SiteLanguage" class="form-select" disabled="@dis">
+                        @foreach (var code in Languages.Enabled)
+                        {
+                            <option value="@code">@Languages.Known[code]</option>
+                        }
+                    </select>
+                    <span asp-validation-for="SiteLanguage" class="text-danger small"></span>
+                    <div class="form-text">@L["The language every screen is shown in. Stored records never change language. Languages installed on this server are set in appsettings.json (Localization:Languages)."]</div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <div class="col-sm-3 col-form-label">@L["User choice"]</div>
+                <div class="col-sm-9">
+                    <div class="form-check">
+                        <input asp-for="AllowUserLanguageChoice" class="form-check-input" disabled="@dis" />
+                        <label asp-for="AllowUserLanguageChoice" class="form-check-label"></label>
+                    </div>
+                    <div class="form-text">@L["Off (recommended): everyone sees the site language — one configuration to validate, and procedures and training match the screens. On: a language menu lets each user pick from the installed languages; validate each one used."]</div>
                 </div>
             </div>
             <div class="mb-3 row">

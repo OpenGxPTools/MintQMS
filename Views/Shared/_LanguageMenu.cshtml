@@ -5,7 +5,7 @@
     (appsettings.json "Localization:Languages"); with English alone it renders nothing.
     Pass "light" as the model for a dark background (the menu bar), anything else for a light page.
 *@
-@if (Languages.OffersChoice)
+@if (Languages.MenuShown(Context))
 {
     var current = System.Globalization.CultureInfo.CurrentUICulture.Name;
     var returnUrl = Context.Request.Path + Context.Request.QueryString;

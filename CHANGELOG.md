@@ -31,9 +31,10 @@
 
 **Groundwork for Spanish and Portuguese**
 
-- Interface languages can be offered with the `Localization:Languages` setting (`en`, `es`, `pt-BR`); a
-  language menu then appears in the menu bar and on the sign-in page, and the choice is remembered in the
-  browser. With English alone (the default) nothing changes on screen.
+- Languages are installed on the server with the `Localization:Languages` setting (`en`, `es`, `pt-BR`). An
+  Administrator sets the **Site Language** for everyone in *Settings → System Settings*; **Let Users Choose
+  Their Language** (off by default) adds a language menu for users. Both changes are logged in the settings
+  audit trail. Database change: two settings fields (existing sites stay English, user choice off).
 - The chosen language affects the words shown only. Dates and numbers keep the server's format, so a
   typed number is always read the same way; stored records, audit trails and e-signatures are unchanged.
 - ReadOnly users may change their own language; every other change remains refused for them.

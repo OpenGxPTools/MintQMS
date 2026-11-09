@@ -9,9 +9,10 @@ namespace OpenQMS.Localization
     public class SharedResource { }
 
     /// <summary>
-    /// The interface languages this installation offers. Configured in appsettings.json under
-    /// "Localization:Languages" (e.g. ["en", "es", "pt-BR"]). Only the languages MintQMS knows
-    /// (<see cref="Known"/>) are accepted; English is always available and is the default.
+    /// The interface languages INSTALLED on this server: appsettings.json "Localization:Languages"
+    /// (e.g. ["en", "es", "pt-BR"]). Only the languages MintQMS knows (<see cref="Known"/>) are accepted;
+    /// English is always installed. Which one is used — for everyone, or per user — is decided by the
+    /// administrator in System Settings (see <see cref="SiteLanguageCultureProvider"/>).
     ///
     /// The language changes the words on screen only. Dates and numbers keep the server's own
     /// format, so a typed number is always read the same way whatever language is chosen.
@@ -45,8 +46,12 @@ namespace OpenQMS.Localization
             Enabled = list;
         }
 
-        /// <summary>True when more than one language is enabled — only then is a language menu shown.</summary>
+        /// <summary>True when more than one language is installed (a precondition for any choice).</summary>
         public bool OffersChoice => Enabled.Count > 1;
+
+        /// <summary>True when this request may show the language menu: installed languages to choose
+        /// from AND the administrator allows users to choose (System Settings).</summary>
+        public bool MenuShown(HttpContext http) => OffersChoice && SiteLanguageCultureProvider.UserMayChoose(http);
 
         /// <summary>The enabled language matching <paramref name="code"/> (any case), or null.</summary>
         public string? Find(string? code) =>

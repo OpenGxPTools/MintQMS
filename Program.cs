@@ -267,10 +267,8 @@ app.UseStaticFiles();
         DefaultRequestCulture = new RequestCulture(formatCulture, new CultureInfo(Languages.Default)),
         SupportedCultures = new List<CultureInfo> { formatCulture },
         SupportedUICultures = languages.UiCultures,
-        RequestCultureProviders = new List<IRequestCultureProvider>
-        {
-            new CookieRequestCultureProvider { CookieName = Languages.CookieName },
-        },
+        // Site Language and "Let Users Choose Their Language" (System Settings) decide the language.
+        RequestCultureProviders = new List<IRequestCultureProvider> { new SiteLanguageCultureProvider() },
     });
 }
 
