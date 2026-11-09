@@ -14,7 +14,7 @@ import os, re, uuid
 from bs4 import BeautifulSoup
 from e2e_lib import *
 
-ENABLED = os.environ.get("E2E_LANGS") == "1"
+ENABLED = os.environ.get("E2E_LANGS") == "1"   # also switched on below when the server has other languages installed
 
 
 def menu(html):
@@ -68,6 +68,8 @@ def nav_text(html):
 
 s = login()
 get(s, "/Settings")                                   # a fresh site creates its settings row here
+_installed = [o.get("value") for o in BeautifulSoup(get(s, "/Settings").text, "html.parser").select("select[name=SiteLanguage] option")]
+ENABLED = ENABLED or len(_installed) > 1
 
 if not ENABLED:
     # --- English only installed (the shipped default) -------------------------------------------

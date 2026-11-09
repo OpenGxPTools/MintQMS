@@ -38,7 +38,9 @@ src = os.environ.get("E2E_SOURCE_URL")      # set when the app was started with 
 if src:
     check("About page links the source code", src in r.text)
 r = anon.get(BASE + "/Identity/Account/Login")
-check("login page footer links About & disclaimer", "About &amp; disclaimer" in r.text and "/Home/About" in r.text)
+import html as _html
+check("login page footer links About & disclaimer",
+      any(w in _html.unescape(r.text) for w in any_language("About & disclaimer")) and "/Home/About" in r.text)
 if src:
     check("login page footer links the source code", src in r.text)
 for gone in ("Terms", "UnderConstruction", "UpgradePlan"):

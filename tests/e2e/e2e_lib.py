@@ -132,3 +132,15 @@ def form_fields(html, action_substr):
                     out.setdefault(n, el.get("value", ""))
             return out
     return None
+
+
+def any_language(english):
+    """The English text plus its translations (Resources/Localization/translations.json), so a check can
+    pass whatever the site language is."""
+    import json
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "Resources", "Localization", "translations.json")
+    try:
+        entry = json.load(open(path, encoding="utf-8")).get(english, {})
+    except OSError:
+        entry = {}
+    return [english] + [v for k, v in entry.items() if k != "note" and v]

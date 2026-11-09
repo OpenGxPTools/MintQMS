@@ -10,6 +10,7 @@
 """
 import hashlib, re, subprocess, tempfile
 from e2e_lib import *
+from html import unescape as _unescape
 
 run = uuid.uuid4().hex[:6]
 now = "2026-09-01 00:00:00"
@@ -34,7 +35,8 @@ exec_sql("insert into PVPeriodicReport (Title, Status, CreatedBy, CreatedOn) val
 html = get(s, "/PVPeriodicReports").text
 check("6 PVPeriodicReports: raw product markup not rendered", f'id="xss2{run}"' not in html)
 check("6 PVPeriodicReports: product shown encoded", f"xss2{run}" in html)
-check("6 PVPeriodicReports: 'All' still shown for no product", re.search(r'<span class="text-muted">All</span>', html) is not None)
+check("6 PVPeriodicReports: 'All' still shown for no product",
+      any(re.search(r'<span class="text-muted">' + re.escape(w) + '</span>', _unescape(html)) for w in any_language("All")))
 
 LAB = f"</script><b id=\"xss3{run}\">L'ab\\ \"q\""
 STR = f"</script><b id=\"xss4{run}\">5'mg"
