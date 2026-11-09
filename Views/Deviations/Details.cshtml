@@ -2,7 +2,7 @@
 @using OpenQMS.Authorization
 
 @{
-    ViewData["Title"] = $"Deviation — {Model.DeviationId}";
+    ViewData["Title"] = L["Deviation — {0}", Model.DeviationId].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var isLocked     = Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Approved;
@@ -69,7 +69,7 @@
 <!-- Header -->
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Deviation &mdash; <span class="fw-bold">@Model.DeviationId</span></h4>
+        <h4 class="mb-0">@L["Deviation —"] <span class="fw-bold">@Model.DeviationId</span></h4>
         <small class="text-muted">@Model.Title</small>
     </div>
     <div class="d-flex gap-2 align-items-center">
@@ -108,21 +108,19 @@
 @if (isOverdue)
 {
     <div class="alert alert-danger">
-        <strong>Overdue:</strong> Target resolution date was @Model.TargetResolutionDate!.Value.ToShortDateString()
-        (@Math.Abs(daysUntilDeadline!.Value) day(s) past deadline).
+        <strong>@L["Overdue:"]</strong> @L["Target resolution date was {0} ({1} day(s) past deadline).", Model.TargetResolutionDate!.Value.ToShortDateString(), Math.Abs(daysUntilDeadline!.Value)]
     </div>
 }
 else if (isApproaching)
 {
     <div class="alert alert-warning">
-        <strong>Deadline approaching:</strong> Target resolution date is @Model.TargetResolutionDate!.Value.ToShortDateString()
-        (@daysUntilDeadline day(s) remaining).
+        <strong>@L["Deadline approaching:"]</strong> @L["Target resolution date is {0} ({1} day(s) remaining).", Model.TargetResolutionDate!.Value.ToShortDateString(), daysUntilDeadline]
     </div>
 }
 @if (isAged)
 {
     <div class="alert alert-warning">
-        <strong>Aged Deviation:</strong> Identified @ageDays days ago and not yet approved.
+        <strong>@L["Aged Deviation:"]</strong> @L["Identified {0} days ago and not yet approved.", ageDays]
     </div>
 }
 
@@ -139,7 +137,7 @@ else if (isApproaching)
             @if (canForwardToEvaluation)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitEvaluationModal">
-                    <i class="fas fa-arrow-right me-1"></i>Submit for Evaluation
+                    <i class="fas fa-arrow-right me-1"></i>@L["Submit for Evaluation"]
                 </button>
             }
             @if (canSubmitEvaluation)
@@ -151,7 +149,7 @@ else if (isApproaching)
             @if (canAccept)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#acceptModal">
-                    <i class="fas fa-check-circle me-1"></i>Accept Deviation
+                    <i class="fas fa-check-circle me-1"></i>@L["Accept Deviation"]
                 </button>
             }
             @if (canSubmitResolution)
@@ -163,7 +161,7 @@ else if (isApproaching)
             @if (canApprove)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveModal">
-                    <i class="fas fa-thumbs-up me-1"></i>Approve Deviation
+                    <i class="fas fa-thumbs-up me-1"></i>@L["Approve Deviation"]
                 </button>
             }
             @if (canReturn)
@@ -212,7 +210,7 @@ else if (isApproaching)
         <div class="row">
             <!-- Left column: record details -->
             <div class="col-md-6">
-                <h6 class="text-muted text-uppercase small mb-2">Deviation Details</h6>
+                <h6 class="text-muted text-uppercase small mb-2">@L["Deviation Details"]</h6>
                 <dl class="row">
                     <dt class="col-sm-4">@L["Deviation ID"]</dt>
                     <dd class="col-sm-8">@Model.DeviationId</dd>
@@ -246,7 +244,7 @@ else if (isApproaching)
                         <dd class="col-sm-8 @(isOverdue ? "text-danger fw-bold" : isApproaching ? "text-warning fw-bold" : "")">
                             @Model.TargetResolutionDate.Value.ToShortDateString()
                             @if (isOverdue) { <span class="badge bg-danger ms-1">@L["Overdue"]</span> }
-                            else if (isApproaching) { <span class="badge bg-warning text-dark ms-1">Approaching</span> }
+                            else if (isApproaching) { <span class="badge bg-warning text-dark ms-1">@L["Approaching"]</span> }
                         </dd>
                     }
                 </dl>
@@ -409,7 +407,7 @@ else if (isApproaching)
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Evaluation Started By</dt>
+                    <dt class="col-sm-5">@L["Evaluation Started By"]</dt>
                     <dd class="col-sm-7">
                         @if (evalStartLog != null)
                         { <span>@evalStartLog.PerformedBy <span class="text-muted small">@evalStartLog.PerformedOn.ToSite().ToShortDateString()</span></span> }
@@ -430,7 +428,7 @@ else if (isApproaching)
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Submitted for Approval By</dt>
+                    <dt class="col-sm-5">@L["Submitted for Approval By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ResolvedBy))
                         { <span>@Model.ResolvedBy <span class="text-muted small">@Model.ResolvedOn.ToSite()?.ToShortDateString()</span></span> }
@@ -593,7 +591,7 @@ else if (isApproaching)
                     </div>
                     <div class="modal-body">
                         <p class="text-muted small">Moves the deviation to <strong>@L["Pending Acceptance"]</strong> and locks the evaluation fields. A QA Manager will review and accept or return the record.</p>
-                        <p class="text-muted small">All four fields must be completed: <strong>Evaluation, Investigation, Root Cause Category, Corrective and Preventive Action</strong>.</p>
+                        <p class="text-muted small">All four fields must be completed: <strong>@L["Evaluation, Investigation, Root Cause Category, Corrective and Preventive Action"]</strong>.</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -682,7 +680,7 @@ else if (isApproaching)
                         <div class="mb-3">
                             <label class="form-label">@L["Reason for Return"] <span class="text-danger">*</span></label>
                             <textarea name="reason" class="form-control" rows="3" required
-                                placeholder="Describe why this record is being returned and what needs to be addressed."></textarea>
+                                placeholder="@L["Describe why this record is being returned and what needs to be addressed."]"></textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">@L["Email"]</label>
@@ -771,7 +769,7 @@ else if (isApproaching)
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                        <button type="submit" class="btn btn-success">Confirm Approve</button>
+                        <button type="submit" class="btn btn-success">@L["Confirm Approve"]</button>
                     </div>
                 </form>
             </div>

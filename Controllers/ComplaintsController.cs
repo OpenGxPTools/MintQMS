@@ -4,6 +4,7 @@ Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
 This program is offered under a commercial and under the AGPL license.
 */
 using ClosedXML.Excel;
+using OpenQMS.Localization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -292,7 +293,7 @@ namespace OpenQMS.Controllers
                     $"ID: {complaint.ComplaintId}; Title: {complaint.Title}; Severity: {complaint.Severity}; Received by: {complaint.ReceivedBy}");
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = $"Complaint {complaint.ComplaintId} created successfully.";
+                TempData["Success"] = this.T("Complaint {0} created successfully.", complaint.ComplaintId);
                 return RedirectToAction(nameof(Details), new { id = complaint.Id });
             }
 
@@ -535,7 +536,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(complaint.Id, "Sent for Evaluation", fromStatus, Complaint.ComplaintStatus.Evaluation.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Complaint {complaint.ComplaintId} sent for Evaluation.";
+            TempData["Success"] = this.T("Complaint {0} sent for Evaluation.", complaint.ComplaintId);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -587,7 +588,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(complaint.Id, "Submitted for Acceptance", fromStatus, Complaint.ComplaintStatus.PendingAcceptance.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Complaint {complaint.ComplaintId} submitted for Acceptance.";
+            TempData["Success"] = this.T("Complaint {0} submitted for Acceptance.", complaint.ComplaintId);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -622,7 +623,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(complaint.Id, "Accepted", fromStatus, Complaint.ComplaintStatus.Accepted.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Complaint {complaint.ComplaintId} accepted by {complaint.AcceptedBy}.";
+            TempData["Success"] = this.T("Complaint {0} accepted by {1}.", complaint.ComplaintId, complaint.AcceptedBy);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -663,7 +664,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(complaint.Id, "Submitted for Closure", fromStatus, Complaint.ComplaintStatus.Resolution.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Complaint {complaint.ComplaintId} submitted for closure by {userName}.";
+            TempData["Success"] = this.T("Complaint {0} submitted for closure by {1}.", complaint.ComplaintId, userName);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -705,7 +706,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(complaint.Id, "Closed", fromStatus, Complaint.ComplaintStatus.Closed.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Complaint {complaint.ComplaintId} closed by {complaint.ClosedBy}.";
+            TempData["Success"] = this.T("Complaint {0} closed by {1}.", complaint.ComplaintId, complaint.ClosedBy);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -780,7 +781,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(complaint.Id, $"Returned to {toStatus}", fromStatus.ToString(), toStatus.ToString(), reason);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Complaint {complaint.ComplaintId} returned to {toStatus} status.";
+            TempData["Success"] = this.T("Complaint {0} returned to {1} status.", complaint.ComplaintId, this.T(EnumHelper.Display(toStatus)));
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -1014,7 +1015,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(complaintId, "Attachment uploaded", null, null, file.FileName);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"File '{file.FileName}' uploaded successfully.";
+            TempData["Success"] = this.T("File '{0}' uploaded successfully.", file.FileName);
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = complaintId });
         }
@@ -1184,7 +1185,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(complaintId, "Adverse Event linked", null, null, ae.AENumber);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Linked adverse event {ae.AENumber}.";
+            TempData["Success"] = this.T("Linked adverse event {0}.", ae.AENumber);
             TempData["ActiveTab"] = "pv";
             return RedirectToAction(nameof(Details), new { id = complaintId });
         }

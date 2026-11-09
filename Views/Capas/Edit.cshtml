@@ -2,7 +2,7 @@
 @using OpenQMS.Authorization
 
 @{
-    ViewData["Title"] = $"Edit — {Model.CapaId}";
+    ViewData["Title"] = L["Edit — {0}", Model.CapaId].Value;
 
     var products   = (List<SelectListItem>)ViewData["Products"];
     var processes  = (List<SelectListItem>)ViewData["Processes"];
@@ -66,7 +66,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Edit CAPA &mdash; <span class="fw-bold">@Model.CapaId</span></h4>
+        <h4 class="mb-0">@L["Edit CAPA —"] <span class="fw-bold">@Model.CapaId</span></h4>
         <small class="text-muted">@Model.Title</small>
     </div>
     <span class="badge @badgeClass fs-6">@statusLabel</span>
@@ -93,7 +93,7 @@
                     }
                 </div>
                 <div class="card-body">
-                    <p class="text-muted small mb-3">Define the corrective and preventive actions required to address the root cause.</p>
+                    <p class="text-muted small mb-3">@L["Define the corrective and preventive actions required to address the root cause."]</p>
                     @if (!planEditable)
                     {
                         <dl class="row mb-0">
@@ -153,7 +153,7 @@
                             <div class="col-md-6">
                                 <label asp-for="Type" class="form-label">
                                     @L["CAPA Type"]
-                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="capatype" aria-label="CAPA Type guidance">?</button>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="capatype" aria-label="@L["CAPA Type guidance"]">?</button>
                                 </label>
                                 <select asp-for="Type" asp-items="Html.GetEnumSelectList<OpenQMS.Models.Capa.CapaType>()" class="form-select"></select>
                                 <span asp-validation-for="Type" class="text-danger small"></span>
@@ -168,7 +168,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">@L["Products"]</label>
                                 <select id="productDropdown" class="form-select form-select-sm">
-                                    <option value="">-- Add Product --</option>
+                                    <option value="">@L["-- Add Product --"]</option>
                                     @foreach (var item in products)
                                     {
                                         <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -182,7 +182,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">@L["Processes"]</label>
                                 <select id="processDropdown" class="form-select form-select-sm">
-                                    <option value="">-- Add Process --</option>
+                                    <option value="">@L["-- Add Process --"]</option>
                                     @foreach (var item in processes)
                                     {
                                         <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -196,7 +196,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">@L["Assets"]</label>
                                 <select id="assetDropdown" class="form-select form-select-sm">
-                                    <option value="">-- Add Asset --</option>
+                                    <option value="">@L["-- Add Asset --"]</option>
                                     @foreach (var item in assets)
                                     {
                                         <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -210,7 +210,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">@L["Materials"]</label>
                                 <select id="materialDropdown" class="form-select form-select-sm">
-                                    <option value="">-- Add Material --</option>
+                                    <option value="">@L["-- Add Material --"]</option>
                                     @foreach (var item in materials)
                                     {
                                         <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -224,7 +224,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">@L["Suppliers"]</label>
                                 <select id="supplierDropdown" class="form-select form-select-sm">
-                                    <option value="">-- Add Supplier --</option>
+                                    <option value="">@L["-- Add Supplier --"]</option>
                                     @foreach (var item in suppliers)
                                     {
                                         <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -238,7 +238,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">@L["Linked Deviations"]</label>
                                 <select id="deviationDropdown" class="form-select form-select-sm">
-                                    <option value="">-- Add Deviation --</option>
+                                    <option value="">@L["-- Add Deviation --"]</option>
                                     @foreach (var item in deviations)
                                     {
                                         <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -252,7 +252,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">@L["Linked Complaints"]</label>
                                 <select id="complaintDropdown" class="form-select form-select-sm">
-                                    <option value="">-- Add Complaint --</option>
+                                    <option value="">@L["-- Add Complaint --"]</option>
                                     @foreach (var item in complaints)
                                     {
                                         <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -264,9 +264,9 @@
 
                             <!-- Audits -->
                             <div class="col-md-6">
-                                <label class="form-label">Linked Audits</label>
+                                <label class="form-label">@L["Linked Audits"]</label>
                                 <select id="auditDropdown" class="form-select form-select-sm">
-                                    <option value="">-- Add Audit --</option>
+                                    <option value="">@L["-- Add Audit --"]</option>
                                     @foreach (var item in audits)
                                     {
                                         <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -279,7 +279,7 @@
                             <div class="col-12">
                                 <label asp-for="CorrectiveAction" class="form-label">
                                     @L["Corrective Action"] <span class="text-danger">*</span>
-                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="corrective" aria-label="Corrective action guidance">?</button>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="corrective" aria-label="@L["Corrective action guidance"]">?</button>
                                 </label>
                                 <textarea asp-for="CorrectiveAction" class="form-control" rows="4"></textarea>
                                 <span asp-validation-for="CorrectiveAction" class="text-danger small"></span>
@@ -287,7 +287,7 @@
                             <div class="col-12">
                                 <label asp-for="PreventiveAction" class="form-label">
                                     @L["Preventive Action"] <span class="text-danger">*</span>
-                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="preventive" aria-label="Preventive action guidance">?</button>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="preventive" aria-label="@L["Preventive action guidance"]">?</button>
                                 </label>
                                 <textarea asp-for="PreventiveAction" class="form-control" rows="4"></textarea>
                                 <span asp-validation-for="PreventiveAction" class="text-danger small"></span>
@@ -311,7 +311,7 @@
                     }
                 </div>
                 <div class="card-body">
-                    <p class="text-muted small mb-3">Assess the impact, risk, and adequacy of the proposed corrective and preventive actions.</p>
+                    <p class="text-muted small mb-3">@L["Assess the impact, risk, and adequacy of the proposed corrective and preventive actions."]</p>
                     @if (!planEditable)
                     {
                         <dl class="row mb-0">
@@ -325,7 +325,7 @@
                         <div class="col-12">
                             <label asp-for="Assessment" class="form-label">
                                 @L["Assessment"] <span class="text-danger">*</span>
-                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="assessment" aria-label="Assessment guidance">?</button>
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="assessment" aria-label="@L["Assessment guidance"]">?</button>
                             </label>
                             <textarea asp-for="Assessment" class="form-control" rows="5"></textarea>
                         </div>
@@ -342,11 +342,11 @@
                         <span class="badge bg-warning text-dark">@L["Action Required"]</span>
                     </div>
                     <div class="card-body">
-                        <p class="text-muted small mb-3">Document all completed CAPA actions with evidence, confirm root cause elimination, and record the effectiveness check.</p>
+                        <p class="text-muted small mb-3">@L["Document all completed CAPA actions with evidence, confirm root cause elimination, and record the effectiveness check."]</p>
                         <div class="col-12">
                             <label asp-for="Implementation" class="form-label">
                                 @L["Implementation"] <span class="text-danger">*</span>
-                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="implementation" aria-label="Implementation guidance">?</button>
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="implementation" aria-label="@L["Implementation guidance"]">?</button>
                             </label>
                             <textarea asp-for="Implementation" class="form-control" rows="5"></textarea>
                         </div>
@@ -367,39 +367,39 @@
         <p class="mb-0">Recall / Market Action makes this CAPA the master record for a recall; Improvement Opportunity is a planned business improvement, not a response to a problem.</p>
     </div>
     <div id="help-corrective">
-        <p class="mb-1"><strong>Corrective Action must include:</strong></p>
+        <p class="mb-1"><strong>@L["Corrective Action must include:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>A description of each action to eliminate the identified root cause</li>
-            <li>The person responsible for each action</li>
+            <li>@L["A description of each action to eliminate the identified root cause"]</li>
+            <li>@L["The person responsible for each action"]</li>
             <li>@L["Target completion date for each action"]</li>
             <li>@L["How effectiveness will be verified"]</li>
         </ul>
     </div>
     <div id="help-preventive">
-        <p class="mb-1"><strong>Preventive Action must include:</strong></p>
+        <p class="mb-1"><strong>@L["Preventive Action must include:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>Actions to prevent recurrence of this or similar issues</li>
-            <li>Systemic or process improvements proposed</li>
-            <li>Review of related processes, procedures, or controls</li>
-            <li>Training or documentation updates required</li>
+            <li>@L["Actions to prevent recurrence of this or similar issues"]</li>
+            <li>@L["Systemic or process improvements proposed"]</li>
+            <li>@L["Review of related processes, procedures, or controls"]</li>
+            <li>@L["Training or documentation updates required"]</li>
         </ul>
     </div>
     <div id="help-assessment">
-        <p class="mb-1"><strong>Assessment must address:</strong></p>
+        <p class="mb-1"><strong>@L["Assessment must address:"]</strong></p>
         <ul class="mb-0 ps-3">
             <li>@L["Impact on product quality and patient safety"]</li>
-            <li>Risk level if actions are not completed on time</li>
-            <li>Adequacy and feasibility of the proposed corrective and preventive actions</li>
-            <li>Whether the target completion date is realistic</li>
+            <li>@L["Risk level if actions are not completed on time"]</li>
+            <li>@L["Adequacy and feasibility of the proposed corrective and preventive actions"]</li>
+            <li>@L["Whether the target completion date is realistic"]</li>
         </ul>
     </div>
     <div id="help-implementation">
-        <p class="mb-1"><strong>Implementation must document:</strong></p>
+        <p class="mb-1"><strong>@L["Implementation must document:"]</strong></p>
         <ul class="mb-0 ps-3">
             <li>All CAPA actions completed, with evidence (e.g. SOP revised on [date], training completed by [names] on [date])</li>
-            <li>Confirmation that the root cause has been eliminated</li>
-            <li>Effectiveness check result — confirm the issue has not recurred</li>
-            <li>Date each action was completed and by whom</li>
+            <li>@L["Confirmation that the root cause has been eliminated"]</li>
+            <li>@L["Effectiveness check result — confirm the issue has not recurred"]</li>
+            <li>@L["Date each action was completed and by whom"]</li>
         </ul>
     </div>
 </div>

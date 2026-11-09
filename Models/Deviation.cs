@@ -48,11 +48,13 @@ namespace OpenQMS.Models
         [Display(Name = "Linked CAPA ID")]
         public int? LinkedCapaId { get; set; }
         public virtual ICollection<Capa>? Capas { get; set; }
+        [Display(Name = "Title")]
         public string Title { get; set; } = string.Empty;
         [Display(Name = "Event Type")]
         public DeviationEventType? EventType { get; set; }
         [Display(Name = "Severity")]
         public DeviationSeverity? Severity { get; set; }
+        [Display(Name = "Identification")]
         public string Identification { get; set; } = string.Empty;
         [Display(Name = "Identified By")]
         public string IdentifiedBy { get; set; } = string.Empty;
@@ -60,11 +62,13 @@ namespace OpenQMS.Models
         public DateTime IdentifiedOn { get; set; }
         [Display(Name = "Target Resolution Date")]
         public DateTime? TargetResolutionDate { get; set; }
+        [Display(Name = "Evaluation")]
         public string? Evaluation { get; set; }
         [Display(Name = "Evaluated By")]
         public string? EvaluatedBy { get; set; }
         [Display(Name = "Evaluated On")]
         public DateTime? EvaluatedOn { get; set; }
+        [Display(Name = "Investigation")]
         public string? Investigation { get; set; }
         [Display(Name = "Investigated By")]
         public string? InvestigatedBy { get; set; }
@@ -88,6 +92,7 @@ namespace OpenQMS.Models
         public string? AcceptedBy { get; set; }
         [Display(Name = "Accepted On")]
         public DateTime? AcceptedOn { get; set; }
+        [Display(Name = "Resolution")]
         public string? Resolution { get; set; }
         [Display(Name = "Resolved By")]
         public string? ResolvedBy { get; set; }

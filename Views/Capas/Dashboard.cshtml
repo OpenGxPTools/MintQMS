@@ -1,6 +1,6 @@
 @using static OpenQMS.Models.Capa
 @{
-    ViewData["Title"] = "CAPA Dashboard";
+    ViewData["Title"] = L["CAPA Dashboard"].Value;
 
     var statusCounts     = ViewBag.StatusCounts     as Dictionary<string, int>    ?? new();
     var overdueCAPAs     = ViewBag.OverdueCAPAs     as List<OpenQMS.Models.Capa>   ?? new();
@@ -14,7 +14,7 @@
 
 <!-- Header -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">CAPA Dashboard</h4>
+    <h4 class="mb-0">@L["CAPA Dashboard"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Register"]</a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">@L["CAPA Register"]</a>
@@ -28,7 +28,7 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-primary">@ViewBag.TotalCapas</div>
-                <div class="text-muted small">Total CAPAs</div>
+                <div class="text-muted small">@L["Total CAPAs"]</div>
             </div>
         </div>
     </div>
@@ -60,7 +60,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-info border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-info">@pendingAccept.Count</div>
-                <div class="text-muted small">Awaiting Acceptance</div>
+                <div class="text-muted small">@L["Awaiting Acceptance"]</div>
             </div>
         </div>
     </div>
@@ -68,7 +68,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-secondary border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-secondary">@pendingApprove.Count</div>
-                <div class="text-muted small">Awaiting Approval</div>
+                <div class="text-muted small">@L["Awaiting Approval"]</div>
             </div>
         </div>
     </div>
@@ -78,7 +78,7 @@
 <div class="row g-3 mb-4">
     <div class="col-md-5">
         <div class="card shadow-sm h-100">
-            <div class="card-header fw-semibold"><i class="fas fa-chart-bar me-1"></i>CAPAs by Status</div>
+            <div class="card-header fw-semibold"><i class="fas fa-chart-bar me-1"></i>@L["CAPAs by Status"]</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
                     <tbody>
@@ -125,7 +125,7 @@
     </div>
     <div class="col-md-3">
         <div class="card shadow-sm h-100">
-            <div class="card-header fw-semibold"><i class="fas fa-clock me-1 text-warning"></i>Approaching Deadline</div>
+            <div class="card-header fw-semibold"><i class="fas fa-clock me-1 text-warning"></i>@L["Approaching Deadline"]</div>
             <div class="card-body p-0">
                 @if (approachingCAPAs.Any())
                 {
@@ -143,7 +143,7 @@
                 }
                 else
                 {
-                    <div class="p-3 text-muted small">None approaching in the next 14 days.</div>
+                    <div class="p-3 text-muted small">@L["None approaching in the next 14 days."]</div>
                 }
             </div>
         </div>
@@ -199,7 +199,7 @@
                 @if (pendingAccept.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>Submitted By</th><th>Submitted On</th></tr></thead>
+                        <thead class="table-light"><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Submitted By"]</th><th>@L["Submitted On"]</th></tr></thead>
                         <tbody>
                             @foreach (var c in pendingAccept)
                             {
@@ -215,7 +215,7 @@
                 }
                 else
                 {
-                    <div class="p-3 text-muted small">No CAPAs awaiting acceptance.</div>
+                    <div class="p-3 text-muted small">@L["No CAPAs awaiting acceptance."]</div>
                 }
             </div>
         </div>
@@ -227,7 +227,7 @@
                 @if (pendingApprove.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Accepted By"]</th><th>Accepted On</th></tr></thead>
+                        <thead class="table-light"><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Accepted By"]</th><th>@L["Accepted On"]</th></tr></thead>
                         <tbody>
                             @foreach (var c in pendingApprove)
                             {
@@ -243,7 +243,7 @@
                 }
                 else
                 {
-                    <div class="p-3 text-muted small">No CAPAs awaiting approval.</div>
+                    <div class="p-3 text-muted small">@L["No CAPAs awaiting approval."]</div>
                 }
             </div>
         </div>
@@ -278,7 +278,7 @@
         }
         else
         {
-            <div class="p-3 text-muted small">No audit log activity yet.</div>
+            <div class="p-3 text-muted small">@L["No audit log activity yet."]</div>
         }
     </div>
 </div>

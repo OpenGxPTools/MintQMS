@@ -1,6 +1,6 @@
 @model OpenQMS.Models.Complaint
 @{
-    ViewData["Title"] = "New Complaint";
+    ViewData["Title"] = L["New Complaint"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var products  = ViewData["Products"]  as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
@@ -17,7 +17,7 @@
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
         <h4 class="mb-0">@L["New Complaint"]</h4>
-        <small class="text-muted">Complete the intake details and submit to open the complaint record.</small>
+        <small class="text-muted">@L["Complete the intake details and submit to open the complaint record."]</small>
     </div>
 </div>
 <hr />
@@ -28,9 +28,9 @@
 
             <!-- ── Complaint Intake ────────────────────────────────────────────── -->
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Complaint Intake</div>
+                <div class="card-header fw-semibold">@L["Complaint Intake"]</div>
                 <div class="card-body">
-                    <p class="text-muted small mb-3">Record the complaint source, product involved, and the full description of the issue reported.</p>
+                    <p class="text-muted small mb-3">@L["Record the complaint source, product involved, and the full description of the issue reported."]</p>
                     <div class="row g-3">
                         <div class="col-md-8">
                             <label asp-for="Title" class="form-label"></label>
@@ -49,25 +49,25 @@
                             <span asp-validation-for="Severity" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="CustomerId" class="form-label">Customer (from Master Data)</label>
+                            <label asp-for="CustomerId" class="form-label">@L["Customer (from Master Data)"]</label>
                             <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.CustomerId" id="CustomerIdSelect">
-                                <option value="">-- Select Customer --</option>
+                                <option value="">@L["-- Select Customer --"]</option>
                             </select>
                         </div>
                         <div class="col-md-6" id="CustomerNameRow">
                             <label asp-for="CustomerName" class="form-label">
-                                Customer Name <span class="text-muted small">(if not in system)</span>
+                                @L["Customer Name"] <span class="text-muted small">(if not in system)</span>
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="customername"
-                                        aria-label="Customer name guidance">?</button>
+                                        aria-label="@L["Customer name guidance"]">?</button>
                             </label>
                             <input asp-for="CustomerName" class="form-control"
-                                   placeholder="e.g. Pharmacy name, patient reference..." />
+                                   placeholder="@L["e.g. Pharmacy name, patient reference..."]" />
                         </div>
                         <div class="col-md-6">
                             <label asp-for="CustomerContact" class="form-label">
                                 @Html.DisplayNameFor(m => m.CustomerContact)
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="customercontact"
-                                        aria-label="Customer contact guidance">?</button>
+                                        aria-label="@L["Customer contact guidance"]">?</button>
                             </label>
                             <input asp-for="CustomerContact" class="form-control" />
                         </div>
@@ -80,7 +80,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select">
-                                <option value="">-- Add Product --</option>
+                                <option value="">@L["-- Add Product --"]</option>
                                 @foreach (var p in products)
                                 {
                                     <option value="@p.Value" data-text="@p.Text">@p.Text</option>
@@ -94,7 +94,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select">
-                                <option value="">-- Add Process --</option>
+                                <option value="">@L["-- Add Process --"]</option>
                                 @foreach (var p in processes)
                                 {
                                     <option value="@p.Value" data-text="@p.Text">@p.Text</option>
@@ -108,7 +108,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select">
-                                <option value="">-- Add Material --</option>
+                                <option value="">@L["-- Add Material --"]</option>
                                 @foreach (var p in materials)
                                 {
                                     <option value="@p.Value" data-text="@p.Text">@p.Text</option>
@@ -122,7 +122,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select">
-                                <option value="">-- Add Supplier --</option>
+                                <option value="">@L["-- Add Supplier --"]</option>
                                 @foreach (var p in suppliers)
                                 {
                                     <option value="@p.Value" data-text="@p.Text">@p.Text</option>
@@ -136,7 +136,7 @@
                             <label asp-for="Description" class="form-label">
                                 @L["Description"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="description"
-                                        aria-label="Description guidance">?</button>
+                                        aria-label="@L["Description guidance"]">?</button>
                             </label>
                             <textarea asp-for="Description" class="form-control" rows="5"></textarea>
                             <span asp-validation-for="Description" class="text-danger small"></span>
@@ -156,31 +156,31 @@
     <div id="help-severity">
         <p class="mb-1"><strong>@L["Severity Definitions"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li><strong>@L["Critical"]</strong> — Poses an immediate or potential risk to patient safety, product sterility or efficacy. Requires priority handling and may trigger regulatory reporting or recall assessment.</li>
-            <li><strong>@L["Major"]</strong> — Significant quality failure or departure from specifications. No immediate safety risk but requires full investigation and CAPA. Typical SLA: 30 days.</li>
-            <li><strong>@L["Minor"]</strong> — Low-risk issue with no direct impact on product quality or patient safety. Administrative or cosmetic in nature. Typical SLA: 60 days.</li>
+            <li><strong>@L["Critical"]</strong> @L["— Poses an immediate or potential risk to patient safety, product sterility or efficacy. Requires priority handling and may trigger regulatory reporting or recall assessment."]</li>
+            <li><strong>@L["Major"]</strong> @L["— Significant quality failure or departure from specifications. No immediate safety risk but requires full investigation and CAPA. Typical SLA: 30 days."]</li>
+            <li><strong>@L["Minor"]</strong> @L["— Low-risk issue with no direct impact on product quality or patient safety. Administrative or cosmetic in nature. Typical SLA: 60 days."]</li>
         </ul>
     </div>
     <div id="help-customername">
-        <p class="mb-0">Only complete if the complainant is not recorded in the Customer Master. If entered here, no linked customer record will be created.</p>
+        <p class="mb-0">@L["Only complete if the complainant is not recorded in the Customer Master. If entered here, no linked customer record will be created."]</p>
     </div>
     <div id="help-customercontact">
-        <p class="mb-1"><strong>Customer Contact details:</strong></p>
+        <p class="mb-1"><strong>@L["Customer Contact details:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>Contact name</li>
-            <li>Role / job title</li>
-            <li>Phone number</li>
-            <li>Email address</li>
+            <li>@L["Contact name"]</li>
+            <li>@L["Role / job title"]</li>
+            <li>@L["Phone number"]</li>
+            <li>@L["Email address"]</li>
         </ul>
     </div>
     <div id="help-description">
-        <p class="mb-1"><strong>Description must cover:</strong></p>
+        <p class="mb-1"><strong>@L["Description must cover:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>What the complainant reported (verbatim or paraphrased)</li>
-            <li>Product or batch involved, if known</li>
-            <li>When the issue was first observed</li>
-            <li>How the complaint was received (phone, email, written)</li>
-            <li>Any immediate actions already taken</li>
+            <li>@L["What the complainant reported (verbatim or paraphrased)"]</li>
+            <li>@L["Product or batch involved, if known"]</li>
+            <li>@L["When the issue was first observed"]</li>
+            <li>@L["How the complaint was received (phone, email, written)"]</li>
+            <li>@L["Any immediate actions already taken"]</li>
         </ul>
     </div>
 </div>

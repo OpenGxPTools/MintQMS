@@ -109,7 +109,8 @@ def _wrap_markup(src, only=None, attrs=False, skipped=None):
                 if skipped is not None and m.group(1).strip():
                     skipped.append("[HTML inside a C# string] " + m.group(1).strip()[:60])
                 return m.group(0)               # markup built inside a C# string: by hand
-            if INLINE_AFTER.match(part[m.end() - 1:m.end() + 12]) or INLINE_BEFORE.search(part[max(0, m.start() - 10):m.start() + 1]):
+            definition = m.group(1).strip().startswith("— ") and not INLINE_AFTER.match(part[m.end() - 1:m.end() + 12])
+            if not definition and (INLINE_AFTER.match(part[m.end() - 1:m.end() + 12]) or INLINE_BEFORE.search(part[max(0, m.start() - 10):m.start() + 1])):
                 if skipped is not None and m.group(1).strip():
                     skipped.append("[sentence with markup] " + m.group(1).strip()[:70])
                 return m.group(0)               # part of a sentence with <strong>/<a>…: whole sentence by hand

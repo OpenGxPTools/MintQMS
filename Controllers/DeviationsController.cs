@@ -21,6 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
 using System.Text;
+using OpenQMS.Localization;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -312,13 +313,13 @@ namespace OpenQMS.Controllers
                         $"ID: {deviation.DeviationId}; Title: {deviation.Title}; Event Type: {deviation.EventType}; Identified by: {deviation.IdentifiedBy}");
                     await _context.SaveChangesAsync();
 
-                    TempData["Success"] = $"Deviation {deviation.DeviationId} created successfully.";
+                    TempData["Success"] = this.T("Deviation {0} created successfully.", deviation.DeviationId);
                     return RedirectToAction(nameof(Details), new { id = deviation.Id });
                 }
             }
             catch (Exception)
             {
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                ModelState.AddModelError("", this.T("Unable to save changes. Try again, and if the problem persists, see your system administrator."));
             }
 
             PopulateViewData();
@@ -571,7 +572,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(deviation.Id, "Submitted for Evaluation", fromStatus, DeviationStatus.Evaluation.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Deviation {deviation.DeviationId} submitted for evaluation.";
+            TempData["Success"] = this.T("Deviation {0} submitted for evaluation.", deviation.DeviationId);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -646,7 +647,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(deviation.Id, "Evaluation Submitted", fromStatus, DeviationStatus.PendingAcceptance.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Deviation {deviation.DeviationId} evaluation submitted by {userName} — awaiting QA Manager acceptance.";
+            TempData["Success"] = this.T("Deviation {0} evaluation submitted by {1} — awaiting QA Manager acceptance.", deviation.DeviationId, userName);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -700,7 +701,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(deviation.Id, "Submitted for Approval", fromStatus, DeviationStatus.Resolution.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Deviation {deviation.DeviationId} submitted for approval by {userName}.";
+            TempData["Success"] = this.T("Deviation {0} submitted for approval by {1}.", deviation.DeviationId, userName);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -745,7 +746,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(deviation.Id, "Accepted", fromStatus, DeviationStatus.Accepted.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Deviation {deviation.DeviationId} accepted by {deviation.AcceptedBy}.";
+            TempData["Success"] = this.T("Deviation {0} accepted by {1}.", deviation.DeviationId, deviation.AcceptedBy);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -827,7 +828,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(deviation.Id, $"Returned to {toStatus}", fromStatus.ToString(), toStatus.ToString(), reason);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Deviation {deviation.DeviationId} returned to {toStatus} status.";
+            TempData["Success"] = this.T("Deviation {0} returned to {1} status.", deviation.DeviationId, this.T(EnumHelper.Display(toStatus)));
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -880,7 +881,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(deviation.Id, "Approved", fromStatus, DeviationStatus.Approved.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Deviation {deviation.DeviationId} approved by {deviation.ApprovedBy}.";
+            TempData["Success"] = this.T("Deviation {0} approved by {1}.", deviation.DeviationId, deviation.ApprovedBy);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -1243,7 +1244,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(deviationId, "Attachment uploaded", null, null, file.FileName);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"File '{file.FileName}' uploaded successfully.";
+            TempData["Success"] = this.T("File '{0}' uploaded successfully.", file.FileName);
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = deviationId });
         }

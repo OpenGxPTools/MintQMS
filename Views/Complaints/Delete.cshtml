@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Complaint
 
 @{
-    ViewData["Title"] = "Delete Complaint";
+    ViewData["Title"] = L["Delete Complaint"].Value;
 
     var iLinked = new List<string>();
     if (Model.LinkedProducts?.Any()  == true) iLinked.AddRange(Model.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
@@ -17,7 +17,7 @@
     }
 }
 
-<h4>Delete Complaint</h4>
+<h4>@L["Delete Complaint"]</h4>
 <hr />
 <h5 class="text-danger">@L["Are you sure you want to delete this?"]</h5>
 <div>

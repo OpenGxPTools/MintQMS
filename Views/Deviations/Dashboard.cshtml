@@ -1,6 +1,6 @@
 @using OpenQMS.Authorization
 @{
-    ViewData["Title"] = "Deviations Dashboard";
+    ViewData["Title"] = L["Deviations Dashboard"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var statusCounts = (Dictionary<string, int>)ViewBag.StatusCounts;
@@ -11,7 +11,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Deviations Dashboard</h2>
+    <h2 class="mb-0">@L["Deviations Dashboard"]</h2>
     <div class="d-flex gap-2">
         <a asp-action="ExportRegister" class="btn btn-outline-success">@L["Export Excel"]</a>
         <a asp-action="Index" class="btn btn-outline-secondary">@L["Register"]</a>
@@ -28,7 +28,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-primary">@ViewBag.Total</div>
-                <div class="text-muted">Total Deviations</div>
+                <div class="text-muted">@L["Total Deviations"]</div>
             </div>
         </div>
     </div>
@@ -60,7 +60,7 @@
         <div class="card text-center h-100 @(overdue.Count > 0 ? "border-danger" : "")">
             <div class="card-body">
                 <div class="display-5 fw-bold @(overdue.Count > 0 ? "text-danger" : "text-secondary")">@overdue.Count</div>
-                <div class="text-muted">Overdue (past target)</div>
+                <div class="text-muted">@L["Overdue (past target)"]</div>
             </div>
         </div>
     </div>
@@ -176,7 +176,7 @@
 {
     <div class="card mb-4 border-danger">
         <div class="card-header bg-danger text-white d-flex justify-content-between">
-            <span>Overdue Open Deviations (past target resolution date)</span>
+            <span>@L["Overdue Open Deviations (past target resolution date)"]</span>
             <span class="badge bg-dark">@overdue.Count</span>
         </div>
         <div class="card-body p-0">
@@ -210,7 +210,7 @@
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
-                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Identified On"]</th><th>Age (days)</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Identified On"]</th><th>@L["Age (days)"]</th></tr></thead>
                 <tbody>
                     @foreach (var d in aged)
                     {

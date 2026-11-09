@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Capa
 
 @{
-    ViewData["Title"] = "Attachments";
+    ViewData["Title"] = L["Attachments"].Value;
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -9,7 +9,7 @@
         <h4 class="mb-0">@L["Attachments"]</h4>
         <small class="text-muted">@Model.CapaId — @Model.Title</small>
     </div>
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to CAPA</a>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to CAPA"]</a>
 </div>
 <hr />
 
@@ -27,7 +27,7 @@
                     </div>
                     <div class="col-md-8">
                         <label class="form-label">@L["Description (optional)"]</label>
-                        <input type="text" class="form-control" name="description" placeholder="e.g., Root Cause Analysis Report" />
+                        <input type="text" class="form-control" name="description" placeholder="@L["e.g., Root Cause Analysis Report"]" />
                     </div>
                 </div>
                 <div class="mt-3">
@@ -40,7 +40,7 @@
 else
 {
     <div class="alert alert-warning">
-        <strong>@L["Record Approved:"]</strong> This CAPA is approved. No new attachments can be uploaded.
+        <strong>@L["Record Approved:"]</strong> @L["This CAPA is approved. No new attachments can be uploaded."]
     </div>
 }
 

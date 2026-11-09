@@ -61,6 +61,7 @@ namespace OpenQMS.Models
         public virtual ICollection<Change>? Changes { get; set; }
         [Display(Name = "CAPA Type")]
         public CapaType Type { get; set; } = CapaType.StandardCapa;
+        [Display(Name = "Title")]
         public string Title { get; set; }
         [Display(Name = "Corrective Action")]
         public string CorrectiveAction { get; set; }
@@ -72,6 +73,7 @@ namespace OpenQMS.Models
         public string DeterminedBy { get; set; } = string.Empty;
         [Display(Name = "Determined On")]
         public DateTime DeterminedOn { get; set; }
+        [Display(Name = "Assessment")]
         public string? Assessment { get; set; }
         [Display(Name = "Assessed By")]
         public string? AssessedBy { get; set; }
@@ -81,6 +83,7 @@ namespace OpenQMS.Models
         public string? AcceptedBy { get; set; }
         [Display(Name = "Accepted On")]
         public DateTime? AcceptedOn { get; set; }
+        [Display(Name = "Implementation")]
         public string? Implementation { get; set; }
         [Display(Name = "Implemented By")]
         public string? ImplementedBy { get; set; }

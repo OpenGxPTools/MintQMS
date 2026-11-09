@@ -7,7 +7,7 @@ Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
 @using OpenQMS.Authorization
 
 @{
-    ViewData["Title"] = $"CAPA — {Model.CapaId}";
+    ViewData["Title"] = L["CAPA — {0}", Model.CapaId].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var isLocked     = Model.Status == Capa.CapaStatus.Approved;
@@ -50,7 +50,7 @@ Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
 <!-- Header -->
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">CAPA &mdash; <span class="fw-bold">@Model.CapaId</span></h4>
+        <h4 class="mb-0">@L["CAPA —"] <span class="fw-bold">@Model.CapaId</span></h4>
         <small class="text-muted">@Model.Title</small>
     </div>
     <span class="badge @badgeClass fs-6">@statusLabel</span>
@@ -84,14 +84,14 @@ Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
 {
     <div class="alert alert-danger d-flex align-items-center gap-2 mb-3">
         <i class="fas fa-exclamation-circle"></i>
-        <span>Target completion date <strong>@Model.TargetCompletionDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</strong> is overdue.</span>
+        <span>@H["Target completion date <strong>{0}</strong> is overdue.", Model.TargetCompletionDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]</span>
     </div>
 }
 else if (isApproaching)
 {
     <div class="alert alert-warning d-flex align-items-center gap-2 mb-3">
         <i class="fas fa-clock"></i>
-        <span>Target completion date <strong>@Model.TargetCompletionDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</strong> is approaching (within 14 days).</span>
+        <span>@H["Target completion date <strong>{0}</strong> is approaching (within 14 days).", Model.TargetCompletionDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]</span>
     </div>
 }
 
@@ -99,7 +99,7 @@ else if (isApproaching)
 {
     <div class="alert alert-info d-flex align-items-center gap-2 mb-3">
         <i class="fas fa-shield-virus"></i>
-        <span>Linked Adverse Event:
+        <span>@L["Linked Adverse Event:"]
             <a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@Model.LinkedAdverseEventId" class="fw-bold">
                 @Model.LinkedAdverseEvent.AENumber
             </a>
@@ -126,7 +126,7 @@ else if (isApproaching)
             @if (canAccept)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#acceptModal">
-                    <i class="fas fa-check-circle me-1"></i>Accept CAPA
+                    <i class="fas fa-check-circle me-1"></i>@L["Accept CAPA"]
                 </button>
             }
             @if (canSubmitForApproval)
@@ -138,7 +138,7 @@ else if (isApproaching)
             @if (canApprove)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveModal">
-                    <i class="fas fa-thumbs-up me-1"></i>Approve CAPA
+                    <i class="fas fa-thumbs-up me-1"></i>@L["Approve CAPA"]
                 </button>
             }
             @if (canReturn)
@@ -188,7 +188,7 @@ else if (isApproaching)
 
             <!-- Left column: record details + linked records + exports -->
             <div class="col-md-6">
-                <h6 class="text-muted text-uppercase small mb-2">CAPA Details</h6>
+                <h6 class="text-muted text-uppercase small mb-2">@L["CAPA Details"]</h6>
                 <dl class="row">
                     <dt class="col-sm-4">@L["CAPA ID"]</dt>
                     <dd class="col-sm-8">@Model.CapaId</dd>
@@ -288,7 +288,7 @@ else if (isApproaching)
 
                 @if (Model.Changes != null && Model.Changes.Any())
                 {
-                    <h6 class="text-muted text-uppercase small mb-2 mt-3">Linked Changes</h6>
+                    <h6 class="text-muted text-uppercase small mb-2 mt-3">@L["Linked Changes"]</h6>
                     <table class="table table-sm table-hover">
                         <thead class="table-light">
                             <tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th></tr>
@@ -334,7 +334,7 @@ else if (isApproaching)
 
                 <h6 class="text-muted text-uppercase small mb-2 mt-3">@L["Workflow Trail"]</h6>
                 <dl class="row">
-                    <dt class="col-sm-5">Determined By</dt>
+                    <dt class="col-sm-5">@L["Determined By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.DeterminedBy))
                         { <span>@Model.DeterminedBy <span class="text-muted small">@Model.DeterminedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</span></span> }
@@ -355,7 +355,7 @@ else if (isApproaching)
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Submitted for Approval By</dt>
+                    <dt class="col-sm-5">@L["Submitted for Approval By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ImplementedBy))
                         { <span>@Model.ImplementedBy <span class="text-muted small">@Model.ImplementedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture)</span></span> }
@@ -436,7 +436,7 @@ else if (isApproaching)
         }
         else
         {
-            <p class="text-muted">No attachments uploaded yet.</p>
+            <p class="text-muted">@L["No attachments uploaded yet."]</p>
         }
         <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
     </div>
@@ -486,9 +486,9 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>This will lock the CAPA for Quality Manager review. Corrective Action, Preventive Action and Assessment must all be completed.</p>
+                        <p>@L["This will lock the CAPA for Quality Manager review. Corrective Action, Preventive Action and Assessment must all be completed."]</p>
                         <div class="mb-3">
-                            <label class="form-label">Your Email</label>
+                            <label class="form-label">@L["Your Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
@@ -520,13 +520,13 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title">Accept CAPA</h5>
+                        <h5 class="modal-title">@L["Accept CAPA"]</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <p>Accepting moves this CAPA from <strong>@L["Pending Assessment"]</strong> to <strong>@L["Implementation"]</strong>. Implementation can begin immediately.</p>
                         <div class="mb-3">
-                            <label class="form-label">Your Email</label>
+                            <label class="form-label">@L["Your Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
@@ -540,7 +540,7 @@ else if (isApproaching)
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                        <button type="submit" class="btn btn-success">Accept CAPA</button>
+                        <button type="submit" class="btn btn-success">@L["Accept CAPA"]</button>
                     </div>
                 </form>
             </div>
@@ -564,7 +564,7 @@ else if (isApproaching)
                     <div class="modal-body">
                         <p>This will lock the CAPA for Quality Manager approval (<strong>@L["Implementation"]</strong> → <strong>@L["Pending Approval"]</strong>).</p>
                         <div class="mb-3">
-                            <label class="form-label">Your Email</label>
+                            <label class="form-label">@L["Your Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
@@ -596,13 +596,13 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title">Approve CAPA</h5>
+                        <h5 class="modal-title">@L["Approve CAPA"]</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <p>Approving moves this CAPA from <strong>@L["Pending Approval"]</strong> to <strong>@L["Approved"]</strong>.</p>
                         <div class="mb-3">
-                            <label class="form-label">Your Email</label>
+                            <label class="form-label">@L["Your Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
@@ -616,7 +616,7 @@ else if (isApproaching)
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                        <button type="submit" class="btn btn-success">Approve CAPA</button>
+                        <button type="submit" class="btn btn-success">@L["Approve CAPA"]</button>
                     </div>
                 </form>
             </div>
@@ -651,7 +651,7 @@ else if (isApproaching)
                             <p>This will return the CAPA to <strong>@L["Determination"]</strong> for full rework. The acceptance and assessment stamps will be cleared.</p>
                         }
                         <div class="mb-3">
-                            <label class="form-label">Your Email</label>
+                            <label class="form-label">@L["Your Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">

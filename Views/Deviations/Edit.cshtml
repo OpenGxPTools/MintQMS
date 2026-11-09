@@ -5,7 +5,7 @@
 @using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
-    ViewData["Title"] = $"Edit — {Model.DeviationId}";
+    ViewData["Title"] = L["Edit — {0}", Model.DeviationId].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     static string EnumDisplayName(Enum? value)
@@ -68,7 +68,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Edit Deviation — <span class="fw-bold">@Model.DeviationId</span></h4>
+        <h4 class="mb-0">@L["Edit Deviation —"] <span class="fw-bold">@Model.DeviationId</span></h4>
         <small class="text-muted">@Model.Title</small>
     </div>
     <div class="d-flex gap-2 align-items-center">
@@ -116,7 +116,7 @@
                     }
                 </div>
                 <div class="card-body">
-                    <p class="text-muted small mb-3">Record what happened, when, where, and the immediate actions taken.</p>
+                    <p class="text-muted small mb-3">@L["Record what happened, when, where, and the immediate actions taken."]</p>
                     @if (!identEditable)
                     {
                         <dl class="row mb-0">
@@ -168,11 +168,11 @@
                                 <div class="col-md-4">
                                     <label asp-for="EventType" class="form-label">
                                         @L["Event Type"]
-                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="eventtype" aria-label="Event Type guidance">?</button>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="eventtype" aria-label="@L["Event Type guidance"]">?</button>
                                     </label>
                                     <select asp-for="EventType" class="form-select"
                                             asp-items="Html.GetEnumSelectList<OpenQMS.Models.DeviationEventType>()">
-                                        <option value="">-- Select Event Type --</option>
+                                        <option value="">@L["-- Select Event Type --"]</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -182,7 +182,7 @@
                                     </label>
                                     <select asp-for="Severity" class="form-select"
                                             asp-items="Html.GetEnumSelectList<OpenQMS.Models.DeviationSeverity>()">
-                                        <option value="">-- Select Severity --</option>
+                                        <option value="">@L["-- Select Severity --"]</option>
                                     </select>
                                 </div>
 
@@ -190,7 +190,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Products"]</label>
                                     <select id="productDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add Product --</option>
+                                        <option value="">@L["-- Add Product --"]</option>
                                         @foreach (var p in products)
                                         {
                                             <option value="@p.Value" data-text="@p.Text">@p.Text</option>
@@ -204,7 +204,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Processes"]</label>
                                     <select id="processDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add Process --</option>
+                                        <option value="">@L["-- Add Process --"]</option>
                                         @foreach (var p in processes)
                                         {
                                             <option value="@p.Value" data-text="@p.Text">@p.Text</option>
@@ -218,7 +218,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Assets"]</label>
                                     <select id="assetDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add Asset --</option>
+                                        <option value="">@L["-- Add Asset --"]</option>
                                         @foreach (var p in assets)
                                         {
                                             <option value="@p.Value" data-text="@p.Text">@p.Text</option>
@@ -232,7 +232,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Materials"]</label>
                                     <select id="materialDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add Material --</option>
+                                        <option value="">@L["-- Add Material --"]</option>
                                         @foreach (var p in materials)
                                         {
                                             <option value="@p.Value" data-text="@p.Text">@p.Text</option>
@@ -246,7 +246,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Suppliers"]</label>
                                     <select id="supplierDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add Supplier --</option>
+                                        <option value="">@L["-- Add Supplier --"]</option>
                                         @foreach (var p in suppliers)
                                         {
                                             <option value="@p.Value" data-text="@p.Text">@p.Text</option>
@@ -259,7 +259,7 @@
                                 <div class="col-12">
                                     <label asp-for="Identification" class="form-label">
                                         @L["Identification"]
-                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="identification" aria-label="Identification guidance">?</button>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="identification" aria-label="@L["Identification guidance"]">?</button>
                                     </label>
                                     <textarea asp-for="Identification" class="form-control" rows="5"></textarea>
                                     <span asp-validation-for="Identification" class="text-danger small"></span>
@@ -286,7 +286,7 @@
                         }
                     </div>
                     <div class="card-body">
-                        <p class="text-muted small mb-3">Assess the impact of the deviation and document the investigation findings and root cause.</p>
+                        <p class="text-muted small mb-3">@L["Assess the impact of the deviation and document the investigation findings and root cause."]</p>
                         @if (isResolution || isAccepted)
                         {
                             <dl class="row mb-0">
@@ -296,7 +296,7 @@
                                 <dd class="col-sm-9">@(Model.Investigation ?? "-")</dd>
                                 <dt class="col-sm-3">@L["Root Cause Category"]</dt>
                                 <dd class="col-sm-9">@(Model.RootCauseCategory?.ToString() ?? "-")</dd>
-                                <dt class="col-sm-3">Corrective &amp; Preventive Action</dt>
+                                <dt class="col-sm-3">@L["Corrective & Preventive Action"]</dt>
                                 <dd class="col-sm-9">@(Model.CorrectiveAction ?? "-")</dd>
                             </dl>
                             <input type="hidden" asp-for="Evaluation" />
@@ -310,31 +310,31 @@
                                 <div class="col-12">
                                     <label asp-for="Evaluation" class="form-label">
                                         @L["Evaluation"] <span class="text-danger">*</span>
-                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="evaluation" aria-label="Evaluation guidance">?</button>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="evaluation" aria-label="@L["Evaluation guidance"]">?</button>
                                     </label>
                                     <textarea asp-for="Evaluation" class="form-control" rows="5"></textarea>
                                 </div>
                                 <div class="col-12">
                                     <label asp-for="Investigation" class="form-label">
                                         @L["Investigation"] <span class="text-danger">*</span>
-                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="investigation" aria-label="Investigation guidance">?</button>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="investigation" aria-label="@L["Investigation guidance"]">?</button>
                                     </label>
                                     <textarea asp-for="Investigation" class="form-control" rows="5"></textarea>
                                 </div>
                                 <div class="col-md-6">
                                     <label asp-for="RootCauseCategory" class="form-label">
                                         @L["Root Cause Category"] <span class="text-danger">*</span>
-                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="rootcause" aria-label="Root cause category guidance">?</button>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="rootcause" aria-label="@L["Root cause category guidance"]">?</button>
                                     </label>
                                     <select asp-for="RootCauseCategory" class="form-select"
                                             asp-items="Html.GetEnumSelectList<OpenQMS.Models.RootCauseCategory>()">
-                                        <option value="">-- Select Root Cause Category --</option>
+                                        <option value="">@L["-- Select Root Cause Category --"]</option>
                                     </select>
                                 </div>
                                 <div class="col-12">
                                     <label asp-for="CorrectiveAction" class="form-label">
                                         @L["Corrective and Preventive Action"] <span class="text-danger">*</span>
-                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="capa" aria-label="CAPA guidance">?</button>
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="capa" aria-label="@L["CAPA guidance"]">?</button>
                                     </label>
                                     <textarea asp-for="CorrectiveAction" class="form-control" rows="5"></textarea>
                                 </div>
@@ -360,7 +360,7 @@
                         }
                     </div>
                     <div class="card-body">
-                        <p class="text-muted small mb-3">Document all completed CAPA actions with evidence, confirm root cause is eliminated, and record the effectiveness check.</p>
+                        <p class="text-muted small mb-3">@L["Document all completed CAPA actions with evidence, confirm root cause is eliminated, and record the effectiveness check."]</p>
                         @if (isResolution)
                         {
                             <dl class="row mb-0">
@@ -368,14 +368,14 @@
                                 <dd class="col-sm-9">@(Model.Resolution ?? "-")</dd>
                             </dl>
                             <input type="hidden" asp-for="Resolution" />
-                            <small class="text-muted">Record is pending final approval. Use <strong>@L["Return for Rework"]</strong> from the Details page if changes are needed.</small>
+                            <small class="text-muted">@H["Record is pending final approval. Use <strong>{0}</strong> from the Details page if changes are needed.", L["Return for Rework"].Value]</small>
                         }
                         else
                         {
                             <div class="col-12">
                                 <label asp-for="Resolution" class="form-label">
                                     @L["Resolution"] <span class="text-danger">*</span>
-                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="resolution" aria-label="Resolution guidance">?</button>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="resolution" aria-label="@L["Resolution guidance"]">?</button>
                                 </label>
                                 <textarea asp-for="Resolution" class="form-control" rows="5"></textarea>
                             </div>
@@ -410,61 +410,61 @@
 
 <!-- Popover help content (hidden, read by JS) -->
 <div class="d-none">
-    <div id="help-identification"><p class="mb-0">A clear, factual description of a deviation, outlining what occurred, when and where it happened, how it was detected, and the immediate actions taken. Attach supporting documentation and photos, where relevant.</p></div>
+    <div id="help-identification"><p class="mb-0">@L["A clear, factual description of a deviation, outlining what occurred, when and where it happened, how it was detected, and the immediate actions taken. Attach supporting documentation and photos, where relevant."]</p></div>
     <div id="help-severity">
         <p class="mb-1"><strong>@L["Severity Definitions"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li><strong>@L["Critical"]</strong> — Directly impacts patient safety, product sterility or efficacy.</li>
-            <li><strong>@L["Major"]</strong> — Significant departure from GMP or SOPs. Requires full investigation and CAPA.</li>
-            <li><strong>@L["Minor"]</strong> — Low-risk departure with no direct impact on product quality or patient safety.</li>
+            <li><strong>@L["Critical"]</strong> @L["— Directly impacts patient safety, product sterility or efficacy."]</li>
+            <li><strong>@L["Major"]</strong> @L["— Significant departure from GMP or SOPs. Requires full investigation and CAPA."]</li>
+            <li><strong>@L["Minor"]</strong> @L["— Low-risk departure with no direct impact on product quality or patient safety."]</li>
         </ul>
     </div>
     <div id="help-evaluation">
-        <p class="mb-1"><strong>Evaluation must address all of:</strong></p>
+        <p class="mb-1"><strong>@L["Evaluation must address all of:"]</strong></p>
         <ul class="mb-0 ps-3">
             <li>@L["Impact on product quality and patient safety"]</li>
-            <li>Impact on data integrity</li>
-            <li>Regulatory and compliance obligations</li>
-            <li>Whether affected batches, lots or materials require quarantine, re-testing or recall</li>
+            <li>@L["Impact on data integrity"]</li>
+            <li>@L["Regulatory and compliance obligations"]</li>
+            <li>@L["Whether affected batches, lots or materials require quarantine, re-testing or recall"]</li>
         </ul>
     </div>
     <div id="help-investigation">
-        <p class="mb-1"><strong>Investigation must document:</strong></p>
+        <p class="mb-1"><strong>@L["Investigation must document:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>Methodology used (e.g. 5-Why, fishbone/Ishikawa)</li>
-            <li>Evidence reviewed (records, samples, equipment logs)</li>
-            <li>Timeline of events</li>
-            <li>Findings that led to the root cause determination</li>
+            <li>@L["Methodology used (e.g. 5-Why, fishbone/Ishikawa)"]</li>
+            <li>@L["Evidence reviewed (records, samples, equipment logs)"]</li>
+            <li>@L["Timeline of events"]</li>
+            <li>@L["Findings that led to the root cause determination"]</li>
         </ul>
     </div>
-    <div id="help-rootcause"><p class="mb-0"><strong>@L["Root Cause Category"]</strong> — Select the primary category. If multiple apply, choose the most significant and document the others in Investigation.</p></div>
+    <div id="help-rootcause"><p class="mb-0"><strong>@L["Root Cause Category"]</strong> @L["— Select the primary category. If multiple apply, choose the most significant and document the others in Investigation."]</p></div>
     <div id="help-eventtype">
-        <p class="mb-1"><strong>Event Type Definitions</strong></p>
+        <p class="mb-1"><strong>@L["Event Type Definitions"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li><strong>Process Deviation</strong> — Deviation from stipulated process, procedure or relevant quality documentation</li>
-            <li><strong>Supplier Non-conformance</strong> — Quality issues identified in sourced materials, products or outsourced activities</li>
-            <li><strong>Quality Incident</strong> — Unexpected event or accident impacting quality</li>
-            <li><strong>Equipment Failure</strong> — Facility, equipment, hardware or utility failure impacting quality</li>
-            <li><strong>OOS</strong> — Laboratory testing result that fails acceptance criteria</li>
-            <li><strong>Adverse Trend</strong> — A confirmed trend with negative quality impact</li>
-            <li><strong>Near Miss</strong> — Unplanned event that did not result in a Deviation but had the potential to impact quality</li>
+            <li><strong>@L["Process Deviation"]</strong> @L["— Deviation from stipulated process, procedure or relevant quality documentation"]</li>
+            <li><strong>@L["Supplier Non-conformance"]</strong> @L["— Quality issues identified in sourced materials, products or outsourced activities"]</li>
+            <li><strong>@L["Quality Incident"]</strong> @L["— Unexpected event or accident impacting quality"]</li>
+            <li><strong>@L["Equipment Failure"]</strong> @L["— Facility, equipment, hardware or utility failure impacting quality"]</li>
+            <li><strong>@L["OOS"]</strong> @L["— Laboratory testing result that fails acceptance criteria"]</li>
+            <li><strong>@L["Adverse Trend"]</strong> @L["— A confirmed trend with negative quality impact"]</li>
+            <li><strong>@L["Near Miss"]</strong> @L["— Unplanned event that did not result in a Deviation but had the potential to impact quality"]</li>
         </ul>
     </div>
     <div id="help-capa">
-        <p class="mb-1"><strong>Corrective and Preventive Action must include:</strong></p>
+        <p class="mb-1"><strong>@L["Corrective and Preventive Action must include:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>A description of each action</li>
-            <li>The responsible person for each action</li>
+            <li>@L["A description of each action"]</li>
+            <li>@L["The responsible person for each action"]</li>
             <li>@L["Target completion date for each action"]</li>
             <li>@L["How effectiveness will be verified"]</li>
         </ul>
     </div>
     <div id="help-resolution">
-        <p class="mb-1"><strong>Resolution must document:</strong></p>
+        <p class="mb-1"><strong>@L["Resolution must document:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>All CAPA actions completed with evidence</li>
-            <li>Confirmation that the root cause has been eliminated</li>
-            <li>Effectiveness check result</li>
+            <li>@L["All CAPA actions completed with evidence"]</li>
+            <li>@L["Confirmation that the root cause has been eliminated"]</li>
+            <li>@L["Effectiveness check result"]</li>
         </ul>
     </div>
 </div>

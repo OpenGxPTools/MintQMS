@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Capa
 
 @{
-    ViewData["Title"] = "Delete CAPA";
+    ViewData["Title"] = L["Delete CAPA"].Value;
 
     var delLinked = new List<string>();
     if (Model.LinkedProducts?.Any()   == true) delLinked.AddRange(Model.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
@@ -21,7 +21,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Delete CAPA</h4>
+        <h4 class="mb-0">@L["Delete CAPA"]</h4>
     </div>
 </div>
 <hr />
@@ -44,7 +44,7 @@
 
         @if (Model.Changes.Any())
         {
-            <h6 class="mt-3 text-uppercase small text-muted">Linked Changes</h6>
+            <h6 class="mt-3 text-uppercase small text-muted">@L["Linked Changes"]</h6>
             <table class="table table-sm">
                 <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th></tr></thead>
                 <tbody>

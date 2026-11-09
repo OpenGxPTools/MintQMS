@@ -2,7 +2,7 @@
 @using OpenQMS.Authorization
 
 @{
-    ViewData["Title"] = $"Complaint — {Model.ComplaintId}";
+    ViewData["Title"] = L["Complaint — {0}", Model.ComplaintId].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var isLocked     = Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Closed;
@@ -50,7 +50,7 @@
 <!-- Header -->
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Complaint &mdash; <span class="fw-bold">@Model.ComplaintId</span></h4>
+        <h4 class="mb-0">@L["Complaint —"] <span class="fw-bold">@Model.ComplaintId</span></h4>
         <small class="text-muted">@Model.Title</small>
     </div>
     <div class="d-flex gap-2 align-items-center">
@@ -84,14 +84,13 @@
 {
     <div class="alert alert-danger">
         <i class="bi bi-alarm-fill me-1"></i>
-        <strong>Overdue:</strong> Target resolution date was @Model.TargetResolutionDate!.Value.ToShortDateString()
-        (@Math.Abs(daysUntilDeadline!.Value) day(s) past deadline).
+        <strong>@L["Overdue:"]</strong> @L["Target resolution date was {0} ({1} day(s) past deadline).", Model.TargetResolutionDate!.Value.ToShortDateString(), Math.Abs(daysUntilDeadline!.Value)]
     </div>
 }
 else if (Model.Severity == OpenQMS.Models.Complaint.ComplaintSeverity.Critical && !isLocked)
 {
     <div class="alert alert-danger">
-        <strong>Critical Complaint</strong> — requires priority handling.
+        <strong>@L["Critical Complaint"]</strong> — @L["requires priority handling."]
         @if (daysUntilDeadline.HasValue)
         {
             <span>Target resolution: @Model.TargetResolutionDate!.Value.ToShortDateString() (@daysUntilDeadline day(s) remaining).</span>
@@ -102,14 +101,14 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
 {
     <div class="alert alert-warning">
         <i class="bi bi-exclamation-triangle-fill me-1"></i>
-        <strong>Deadline approaching:</strong> Target resolution date is @Model.TargetResolutionDate.Value.ToShortDateString() (@daysUntilDeadline day(s) remaining).
+        <strong>@L["Deadline approaching:"]</strong> @L["Target resolution date is {0} ({1} day(s) remaining).", Model.TargetResolutionDate.Value.ToShortDateString(), daysUntilDeadline]
     </div>
 }
 
 @if (isAged)
 {
     <div class="alert alert-warning">
-        <strong>Aged Complaint:</strong> Received @ageDays days ago and not yet closed.
+        <strong>@L["Aged Complaint:"]</strong> @L["Received {0} days ago and not yet closed.", ageDays]
     </div>
 }
 
@@ -126,7 +125,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Received && isQU)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#evaluationModal">
-                    <i class="fas fa-arrow-right me-1"></i>Submit for Evaluation
+                    <i class="fas fa-arrow-right me-1"></i>@L["Submit for Evaluation"]
                 </button>
             }
             @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Evaluation && isQU)
@@ -138,19 +137,19 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance && isQM)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#acceptModal">
-                    <i class="fas fa-check-circle me-1"></i>Accept Complaint
+                    <i class="fas fa-check-circle me-1"></i>@L["Accept Complaint"]
                 </button>
             }
             @if (canSubmitResolution)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitResolutionModal">
-                    <i class="fas fa-arrow-right me-1"></i>Submit for Closure
+                    <i class="fas fa-arrow-right me-1"></i>@L["Submit for Closure"]
                 </button>
             }
             @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Resolution && isQM)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#closedModal">
-                    <i class="fas fa-lock me-1"></i>Close Complaint
+                    <i class="fas fa-lock me-1"></i>@L["Close Complaint"]
                 </button>
             }
             @if (canReturn)
@@ -182,7 +181,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
     <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#overview">@L["Overview"]</button></li>
     <li class="nav-item">
         <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#pv">
-            Pharmacovigilance <span class="badge bg-secondary">@linkedAEs.Count</span>
+            @L["Pharmacovigilance"] <span class="badge bg-secondary">@linkedAEs.Count</span>
         </button>
     </li>
     <li class="nav-item">
@@ -204,7 +203,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
         <div class="row">
             <!-- Left column: record details -->
             <div class="col-md-6">
-                <h6 class="text-muted text-uppercase small mb-2">Complaint Details</h6>
+                <h6 class="text-muted text-uppercase small mb-2">@L["Complaint Details"]</h6>
                 <dl class="row">
                     <dt class="col-sm-4">@L["Complaint ID"]</dt><dd class="col-sm-8">@Model.ComplaintId</dd>
                     <dt class="col-sm-4">@L["Title"]</dt><dd class="col-sm-8">@Model.Title</dd>
@@ -225,7 +224,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                             }
                             else if (!isLocked && daysUntilDeadline <= 5)
                             {
-                                <span class="badge bg-warning text-dark ms-1">Due soon</span>
+                                <span class="badge bg-warning text-dark ms-1">@L["Due soon"]</span>
                             }
                         </dd>
                     }
@@ -238,10 +237,10 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                         @if (Model.Customer != null)
                         { <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.CustomerId">@Model.Customer.LegalName</a> }
                         else if (!string.IsNullOrEmpty(Model.CustomerName))
-                        { <span>@Model.CustomerName <span class="badge bg-secondary ms-1 small">Not in system</span></span> }
+                        { <span>@Model.CustomerName <span class="badge bg-secondary ms-1 small">@L["Not in system"]</span></span> }
                         else { <span class="text-muted">-</span> }
                     </dd>
-                    <dt class="col-sm-4">Contact</dt><dd class="col-sm-8">@(Model.CustomerContact ?? "-")</dd>
+                    <dt class="col-sm-4">@L["Contact"]</dt><dd class="col-sm-8">@(Model.CustomerContact ?? "-")</dd>
                     <dt class="col-sm-4">@L["Reference"]</dt><dd class="col-sm-8">@(Model.CustomerReference ?? "-")</dd>
                 </dl>
 
@@ -355,14 +354,14 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
 
                 <h6 class="text-muted text-uppercase small mb-2 mt-3">@L["Workflow Trail"]</h6>
                 <dl class="row">
-                    <dt class="col-sm-5">Received By</dt>
+                    <dt class="col-sm-5">@L["Received By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ReceivedBy))
                         { <span>@Model.ReceivedBy <span class="text-muted small">@Model.ReceivedOn.ToSite().ToShortDateString()</span></span> }
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Evaluation Started By</dt>
+                    <dt class="col-sm-5">@L["Evaluation Started By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.InvestigatedBy))
                         { <span>@Model.InvestigatedBy <span class="text-muted small">@Model.InvestigatedOn.ToSite()?.ToShortDateString()</span></span> }
@@ -383,7 +382,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Submitted for Closure By</dt>
+                    <dt class="col-sm-5">@L["Submitted for Closure By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ResolvedBy))
                         { <span>@Model.ResolvedBy <span class="text-muted small">@Model.ResolvedOn.ToSite()?.ToShortDateString()</span></span> }
@@ -404,21 +403,21 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
     <!-- Pharmacovigilance Tab -->
     <div class="tab-pane fade" id="pv">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="text-muted text-uppercase small mb-0">Linked Adverse Event</h6>
+            <h6 class="text-muted text-uppercase small mb-0">@L["Linked Adverse Event"]</h6>
             @if (!isLocked && !linkedAEs.Any())
             {
                 <div class="d-flex gap-2">
                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#linkAEModal">
-                        <i class="fas fa-link me-1"></i>Link existing AE
+                        <i class="fas fa-link me-1"></i>@L["Link existing AE"]
                     </button>
                     <a asp-controller="Pharmacovigilance" asp-action="Create" asp-route-complaintId="@Model.Id"
-                       class="btn btn-sm btn-outline-danger"><i class="fas fa-exclamation-triangle me-1"></i>Raise Adverse Event</a>
+                       class="btn btn-sm btn-outline-danger"><i class="fas fa-exclamation-triangle me-1"></i>@L["Raise Adverse Event"]</a>
                 </div>
             }
         </div>
         @if (linkedAEs.Count > 1)
         {
-            <div class="alert alert-warning small py-2"><i class="fas fa-exclamation-triangle me-1"></i>This complaint has multiple linked adverse events from before one-to-one linking was enforced. Unlink extras to keep a single association.</div>
+            <div class="alert alert-warning small py-2"><i class="fas fa-exclamation-triangle me-1"></i>@L["This complaint has multiple linked adverse events from before one-to-one linking was enforced. Unlink extras to keep a single association."]</div>
         }
         @if (linkedAEs.Any())
         {
@@ -446,7 +445,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                                 @if (!isLocked)
                                 {
                                     <form asp-action="UnlinkAdverseEvent" method="post" class="d-inline"
-                                          onsubmit="return confirm('Unlink adverse event @ae.AENumber from this complaint?');">
+                                          data-confirm="@L["Unlink adverse event {0} from this complaint?", ae.AENumber]" onsubmit="return confirm(this.dataset.confirm);">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="complaintId" value="@Model.Id" />
                                         <input type="hidden" name="adverseEventId" value="@ae.Id" />
@@ -463,7 +462,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
         }
         else
         {
-            <p class="text-muted">No adverse events linked to this complaint.</p>
+            <p class="text-muted">@L["No adverse events linked to this complaint."]</p>
         }
     </div>
 
@@ -490,7 +489,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                 </div>
             </div>
         }
-        else { <div class="alert alert-secondary">Record is closed — no new attachments can be added.</div> }
+        else { <div class="alert alert-secondary">@L["Record is closed — no new attachments can be added."]</div> }
 
         @if (Model.Attachments != null && Model.Attachments.Any())
         {
@@ -574,7 +573,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                <button type="submit" class="btn btn-info text-dark">Confirm</button>
+                <button type="submit" class="btn btn-info text-dark">@L["Confirm"]</button>
             </div>
         </form>
     </div></div>
@@ -594,7 +593,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                 <p class="text-muted small">
                     Submits the complaint to <strong>@L["Pending Acceptance"]</strong> for QA Manager review. The record will be
                     locked for editing until accepted or returned. Before confirming, ensure the following fields are completed:
-                    <strong>Evaluation, Root Cause Category, Corrective and Preventive Action.</strong>
+                    <strong>@L["Evaluation, Root Cause Category, Corrective and Preventive Action."]</strong>
                 </p>
                 <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
@@ -653,7 +652,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             <div class="modal-body">
                 <p class="text-muted small">
                     Moves the complaint to <strong>@L["Resolution"]</strong> status for final QA Manager review and closure.
-                    The <strong>Resolution summary</strong> field must be completed before confirming.
+                    The <strong>@L["Resolution summary"]</strong> field must be completed before confirming.
                 </p>
                 <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
@@ -680,9 +679,9 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-body">
                 <p class="text-muted small">
-                    Closes the complaint and <strong>permanently locks the record</strong>. The retention period
+                    Closes the complaint and <strong>@L["permanently locks the record"]</strong>. The retention period
                     will be calculated from today. Before confirming, ensure the
-                    <strong>Resolution summary</strong> field is completed. Enter your credentials to confirm.
+                    <strong>@L["Resolution summary"]</strong> field is completed. Enter your credentials to confirm.
                 </p>
                 <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
@@ -690,7 +689,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                <button type="submit" class="btn btn-success">Confirm Close</button>
+                <button type="submit" class="btn btn-success">@L["Confirm Close"]</button>
             </div>
         </form>
     </div></div>
@@ -721,7 +720,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                 </p>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">@L["Reason for Return"] <span class="text-danger">*</span></label>
-                    <textarea name="reason" class="form-control" rows="3" required placeholder="Describe why this complaint is being returned and what needs to be addressed..."></textarea>
+                    <textarea name="reason" class="form-control" rows="3" required placeholder="@L["Describe why this complaint is being returned and what needs to be addressed..."]"></textarea>
                 </div>
                 <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                 <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
@@ -792,11 +791,11 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                     }
                     @if (anyAE)
                     {
-                        <p class="text-muted small">Select an existing adverse event to associate with this complaint. Only unlinked, non-voided cases are listed.</p>
+                        <p class="text-muted small">@L["Select an existing adverse event to associate with this complaint. Only unlinked, non-voided cases are listed."]</p>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Adverse Event <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">@L["Adverse Event"] <span class="text-danger">*</span></label>
                             <select name="adverseEventId" class="form-select" required>
-                                <option value="">— Select an adverse event —</option>
+                                <option value="">@L["— Select an adverse event —"]</option>
                                 @foreach (dynamic ae in availableAEList!)
                                 {
                                     <option value="@ae.Id">@ae.Label</option>
@@ -813,7 +812,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     @if (anyAE)
                     {
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-link me-1"></i>Link</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-link me-1"></i>@L["Link"]</button>
                     }
                 </div>
             </form>

@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
-    ViewData["Title"] = "New Deviation";
+    ViewData["Title"] = L["New Deviation"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     var products  = ViewData["Products"]  as List<SelectListItem> ?? new();
     var processes = ViewData["Processes"] as List<SelectListItem> ?? new();
@@ -19,8 +19,8 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">New Deviation</h4>
-        <small class="text-muted">Record what happened, classify the event, and submit for evaluation.</small>
+        <h4 class="mb-0">@L["New Deviation"]</h4>
+        <small class="text-muted">@L["Record what happened, classify the event, and submit for evaluation."]</small>
     </div>
 </div>
 <hr />
@@ -35,7 +35,7 @@
             <div class="card mb-4">
                 <div class="card-header fw-semibold">@L["Identification"]</div>
                 <div class="card-body">
-                    <p class="text-muted small mb-3">Record what happened, when, where, and the immediate actions taken.</p>
+                    <p class="text-muted small mb-3">@L["Record what happened, when, where, and the immediate actions taken."]</p>
                     <div class="row g-3">
                         <div class="col-md-8">
                             <label asp-for="Title" class="form-label"></label>
@@ -46,11 +46,11 @@
                             <label asp-for="EventType" class="form-label">
                                 @L["Event Type"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="eventtype"
-                                        aria-label="Event Type guidance">?</button>
+                                        aria-label="@L["Event Type guidance"]">?</button>
                             </label>
                             <select asp-for="EventType" class="form-select"
                                     asp-items="Html.GetEnumSelectList<OpenQMS.Models.DeviationEventType>()">
-                                <option value="">-- Select Event Type --</option>
+                                <option value="">@L["-- Select Event Type --"]</option>
                             </select>
                             <span asp-validation-for="EventType" class="text-danger small"></span>
                         </div>
@@ -62,7 +62,7 @@
                             </label>
                             <select asp-for="Severity" class="form-select"
                                     asp-items="Html.GetEnumSelectList<OpenQMS.Models.DeviationSeverity>()">
-                                <option value="">-- Select Severity --</option>
+                                <option value="">@L["-- Select Severity --"]</option>
                             </select>
                         </div>
 
@@ -70,7 +70,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select">
-                                <option value="">-- Add Product --</option>
+                                <option value="">@L["-- Add Product --"]</option>
                                 @foreach (var p in products)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -82,7 +82,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select">
-                                <option value="">-- Add Process --</option>
+                                <option value="">@L["-- Add Process --"]</option>
                                 @foreach (var p in processes)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -94,7 +94,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Assets"]</label>
                             <select id="assetDropdown" class="form-select">
-                                <option value="">-- Add Asset --</option>
+                                <option value="">@L["-- Add Asset --"]</option>
                                 @foreach (var p in assets)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -106,7 +106,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select">
-                                <option value="">-- Add Material --</option>
+                                <option value="">@L["-- Add Material --"]</option>
                                 @foreach (var p in materials)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -118,7 +118,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select">
-                                <option value="">-- Add Supplier --</option>
+                                <option value="">@L["-- Add Supplier --"]</option>
                                 @foreach (var p in suppliers)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -130,7 +130,7 @@
                             <label asp-for="Identification" class="form-label">
                                 @L["Identification"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="identification"
-                                        aria-label="Identification guidance">?</button>
+                                        aria-label="@L["Identification guidance"]">?</button>
                             </label>
                             <textarea asp-for="Identification" class="form-control" rows="5"></textarea>
                             <span asp-validation-for="Identification" class="text-danger small"></span>
@@ -150,27 +150,27 @@
 <!-- Popover help content (hidden, read by JS) -->
 <div class="d-none">
     <div id="help-eventtype">
-        <p class="mb-1"><strong>Event Type Definitions</strong></p>
+        <p class="mb-1"><strong>@L["Event Type Definitions"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li><strong>Process Deviation</strong> — Deviation from stipulated process, procedure or relevant quality documentation</li>
-            <li><strong>Supplier Non-conformance</strong> — Quality issues identified in sourced materials, products or outsourced activities</li>
-            <li><strong>Quality Incident</strong> — Unexpected event or accident impacting quality</li>
-            <li><strong>Equipment Failure</strong> — Facility, equipment, hardware or utility failure impacting quality</li>
-            <li><strong>OOS</strong> — Laboratory testing result (analytical, measurement or observation) that fails acceptance criteria</li>
-            <li><strong>Adverse Trend</strong> — A confirmed trend with negative quality impact or risk, out of trend results or repeated quality events (typically 3 similar events in the last 12 months)</li>
-            <li><strong>Near Miss</strong> — Unplanned event or "close call" that did not result in a Deviation but had the potential to impact quality</li>
+            <li><strong>@L["Process Deviation"]</strong> @L["— Deviation from stipulated process, procedure or relevant quality documentation"]</li>
+            <li><strong>@L["Supplier Non-conformance"]</strong> @L["— Quality issues identified in sourced materials, products or outsourced activities"]</li>
+            <li><strong>@L["Quality Incident"]</strong> @L["— Unexpected event or accident impacting quality"]</li>
+            <li><strong>@L["Equipment Failure"]</strong> @L["— Facility, equipment, hardware or utility failure impacting quality"]</li>
+            <li><strong>@L["OOS"]</strong> @L["— Laboratory testing result (analytical, measurement or observation) that fails acceptance criteria"]</li>
+            <li><strong>@L["Adverse Trend"]</strong> @L["— A confirmed trend with negative quality impact or risk, out of trend results or repeated quality events (typically 3 similar events in the last 12 months)"]</li>
+            <li><strong>@L["Near Miss"]</strong> @L["— Unplanned event or \"close call\" that did not result in a Deviation but had the potential to impact quality"]</li>
         </ul>
     </div>
     <div id="help-severity">
         <p class="mb-1"><strong>@L["Severity Definitions"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li><strong>@L["Critical"]</strong> — Directly impacts patient safety, product sterility or efficacy. May require immediate batch quarantine, recall or regulatory reporting.</li>
-            <li><strong>@L["Major"]</strong> — Significant departure from GMP or SOPs. Indirect potential impact on product quality. Requires full investigation and CAPA.</li>
-            <li><strong>@L["Minor"]</strong> — Low-risk departure with no direct impact on product quality or patient safety. Administrative or documentation in nature.</li>
+            <li><strong>@L["Critical"]</strong> @L["— Directly impacts patient safety, product sterility or efficacy. May require immediate batch quarantine, recall or regulatory reporting."]</li>
+            <li><strong>@L["Major"]</strong> @L["— Significant departure from GMP or SOPs. Indirect potential impact on product quality. Requires full investigation and CAPA."]</li>
+            <li><strong>@L["Minor"]</strong> @L["— Low-risk departure with no direct impact on product quality or patient safety. Administrative or documentation in nature."]</li>
         </ul>
     </div>
     <div id="help-identification">
-        <p class="mb-0">A clear, factual description of a deviation, outlining what occurred, when and where it happened, how it was detected, and the immediate actions taken. Attach supporting documentation and photos, where relevant.</p>
+        <p class="mb-0">@L["A clear, factual description of a deviation, outlining what occurred, when and where it happened, how it was detected, and the immediate actions taken. Attach supporting documentation and photos, where relevant."]</p>
     </div>
 </div>
 

@@ -2,7 +2,7 @@
 @using OpenQMS.Authorization
 
 @{
-    ViewData["Title"] = "CAPA Register";
+    ViewData["Title"] = L["CAPA Register"].Value;
 }
 
 @section Scripts {
@@ -67,8 +67,8 @@
             <th>@L["Title"]</th>
             <th>@L["Type"]</th>
             <th>@L["Linked To"]</th>
-            <th>Determined By</th>
-            <th>Determined On</th>
+            <th>@L["Determined By"]</th>
+            <th>@L["Determined On"]</th>
             <th>@L["Target Date"]</th>
             <th>@L["Status"]</th>
             <th>@L["Action"]</th>

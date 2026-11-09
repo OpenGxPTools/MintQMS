@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Deviation
 
 @{
-    ViewData["Title"] = "Attachments";
+    ViewData["Title"] = L["Attachments"].Value;
 }
 
 <h2>Attachments for Deviation: @Model.Title</h2>
@@ -16,17 +16,17 @@
                 <input type="hidden" name="deviationId" value="@Model.Id" />
                 
                 <div class="form-group mb-3">
-                    <label>Select File:</label>
+                    <label>@L["Select File:"]</label>
                     <input type="file" class="form-control" name="file" required />
                 </div>
                 
                 <div class="form-group mb-3">
-                    <label>Description (optional):</label>
-                    <input type="text" class="form-control" name="description" placeholder="e.g., Investigation Report" />
+                    <label>@L["Description (optional):"]</label>
+                    <input type="text" class="form-control" name="description" placeholder="@L["e.g., Investigation Report"]" />
                 </div>
                 
                 <button type="submit" class="btn btn-primary">@L["Upload"]</button>
-                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Back to Deviation</a>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">@L["Back to Deviation"]</a>
             </form>
         </div>
     </div>
@@ -34,9 +34,9 @@
 else
 {
     <div class="alert alert-warning">
-        <strong>@L["Record Approved:"]</strong> This deviation is approved. No new attachments can be uploaded.
+        <strong>@L["Record Approved:"]</strong> @L["This deviation is approved. No new attachments can be uploaded."]
         <br />
-        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary mt-2">Back to Deviation</a>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary mt-2">@L["Back to Deviation"]</a>
     </div>
 }
 

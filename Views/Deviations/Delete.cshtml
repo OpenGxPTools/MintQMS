@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Deviation
 
 @{
-    ViewData["Title"] = "Delete Deviation";
+    ViewData["Title"] = L["Delete Deviation"].Value;
 
     var iLinked = new List<string>();
     if (Model.LinkedProducts?.Any()  == true) iLinked.AddRange(Model.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
@@ -19,7 +19,7 @@
     }
 }
 
-<h4>Delete Deviation</h4>
+<h4>@L["Delete Deviation"]</h4>
 <hr />
 <h5 class="text-danger">@L["Are you sure you want to delete this?"]</h5>
 <div>
@@ -45,10 +45,10 @@
         <dt class="col-sm-2">@L["Evaluation"]</dt>
         <dd class="col-sm-10">@(Model.Evaluation ?? "-")</dd>
 
-        <dt class="col-sm-2">Evaluated By</dt>
+        <dt class="col-sm-2">@L["Evaluated By"]</dt>
         <dd class="col-sm-10">@(Model.EvaluatedBy ?? "-")</dd>
 
-        <dt class="col-sm-2">Evaluated On</dt>
+        <dt class="col-sm-2">@L["Evaluated On"]</dt>
         <dd class="col-sm-10">@(Model.EvaluatedOn.HasValue ? Model.EvaluatedOn.Value.ToSite().ToShortDateString() : "-")</dd>
 
         <dt class="col-sm-2">@L["Status"]</dt>

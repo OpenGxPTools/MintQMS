@@ -4,9 +4,57 @@
   "pt-BR": "(filtrado de _MAX_ registros no total)",
   "note": "DataTables: keep _MAX_ as is"
  },
+ "-- Add Asset --": {
+  "es": "-- Agregar activo --",
+  "pt-BR": "-- Adicionar ativo --"
+ },
+ "-- Add Audit --": {
+  "es": "-- Agregar auditoría --",
+  "pt-BR": "-- Adicionar auditoria --"
+ },
+ "-- Add Complaint --": {
+  "es": "-- Agregar reclamación --",
+  "pt-BR": "-- Adicionar reclamação --"
+ },
+ "-- Add Deviation --": {
+  "es": "-- Agregar desviación --",
+  "pt-BR": "-- Adicionar desvio --"
+ },
+ "-- Add Material --": {
+  "es": "-- Agregar material --",
+  "pt-BR": "-- Adicionar material --"
+ },
+ "-- Add Process --": {
+  "es": "-- Agregar proceso --",
+  "pt-BR": "-- Adicionar processo --"
+ },
+ "-- Add Product --": {
+  "es": "-- Agregar producto --",
+  "pt-BR": "-- Adicionar produto --"
+ },
+ "-- Add Supplier --": {
+  "es": "-- Agregar proveedor --",
+  "pt-BR": "-- Adicionar fornecedor --"
+ },
  "-- Select category --": {
   "es": "-- Seleccione una categoría --",
   "pt-BR": "-- Selecione uma categoria --"
+ },
+ "-- Select Customer --": {
+  "es": "-- Seleccione un cliente --",
+  "pt-BR": "-- Selecione um cliente --"
+ },
+ "-- Select Event Type --": {
+  "es": "-- Seleccione el tipo de evento --",
+  "pt-BR": "-- Selecione o tipo de evento --"
+ },
+ "-- Select Root Cause Category --": {
+  "es": "-- Seleccione la categoría de causa raíz --",
+  "pt-BR": "-- Selecione a categoria da causa-raiz --"
+ },
+ "-- Select Severity --": {
+  "es": "-- Seleccione la gravedad --",
+  "pt-BR": "-- Selecione a gravidade --"
  },
  "-- Select type --": {
   "es": "-- Seleccione un tipo --",
@@ -16,6 +64,27 @@
   "es": "Se desactivó la 2FA. Puede volver a activarla cuando configure una aplicación de autenticación.",
   "pt-BR": "A 2FA foi desativada. Você pode reativá-la ao configurar um aplicativo autenticador.",
   "note": "status message"
+ },
+ "<strong>{0} critical open complaint(s)</strong> require immediate attention.": {
+  "es": "<strong>{0} reclamación(es) crítica(s) abierta(s)</strong> requieren atención inmediata.",
+  "pt-BR": "<strong>{0} reclamação(ões) crítica(s) aberta(s)</strong> exigem atenção imediata."
+ },
+ "A clear, factual description of a deviation, outlining what occurred, when and where it happened, how it was detected, and the immediate actions taken. Attach supporting documentation and photos, where relevant.": {
+  "es": "Una descripción clara y objetiva de la desviación: qué ocurrió, cuándo y dónde, cómo se detectó y las acciones inmediatas tomadas. Adjunte documentación de respaldo y fotos cuando corresponda.",
+  "pt-BR": "Uma descrição clara e objetiva do desvio: o que ocorreu, quando e onde, como foi detectado e as ações imediatas tomadas. Anexe documentação de suporte e fotos, quando pertinente.",
+  "note": "GUIDANCE — review"
+ },
+ "A description of each action": {
+  "es": "Una descripción de cada acción",
+  "pt-BR": "Uma descrição de cada ação"
+ },
+ "A description of each action (corrective and preventive)": {
+  "es": "Una descripción de cada acción (correctiva y preventiva)",
+  "pt-BR": "Uma descrição de cada ação (corretiva e preventiva)"
+ },
+ "A description of each action to eliminate the identified root cause": {
+  "es": "Una descripción de cada acción para eliminar la causa raíz identificada",
+  "pt-BR": "Uma descrição de cada ação para eliminar a causa-raiz identificada"
  },
  "A reason is required.": {
   "es": "Se requiere un motivo.",
@@ -44,6 +113,21 @@
  "About & disclaimer": {
   "es": "Acerca de y aviso legal",
   "pt-BR": "Sobre e aviso legal"
+ },
+ "Accept CAPA": {
+  "es": "Aceptar CAPA",
+  "pt-BR": "Aceitar CAPA",
+  "note": "WORKFLOW — review"
+ },
+ "Accept Complaint": {
+  "es": "Aceptar reclamación",
+  "pt-BR": "Aceitar reclamação",
+  "note": "WORKFLOW — review"
+ },
+ "Accept Deviation": {
+  "es": "Aceptar desviación",
+  "pt-BR": "Aceitar desvio",
+  "note": "WORKFLOW — review"
  },
  "Accept Document into QMS": {
   "es": "Aceptar el documento en el SGC",
@@ -81,6 +165,10 @@
   "pt-BR": "Aceito no SGQ em",
   "note": "SIGNATURE — review"
  },
+ "Accepted On": {
+  "es": "Aceptado el",
+  "pt-BR": "Aceito em"
+ },
  "Accepted: {0} · Max 25 MB": {
   "es": "Aceptados: {0} · Máx. 25 MB",
   "pt-BR": "Aceitos: {0} · Máx. 25 MB"
@@ -115,6 +203,14 @@
   "es": "Acción",
   "pt-BR": "Ação"
  },
+ "Action By": {
+  "es": "Acción realizada por",
+  "pt-BR": "Ação realizada por"
+ },
+ "Action On": {
+  "es": "Acción realizada el",
+  "pt-BR": "Ação realizada em"
+ },
  "Action Required": {
   "es": "Acción requerida",
   "pt-BR": "Ação necessária"
@@ -126,6 +222,10 @@
  "Actions": {
   "es": "Acciones",
   "pt-BR": "Ações"
+ },
+ "Actions to prevent recurrence of this or similar issues": {
+  "es": "Acciones para evitar la repetición de este u otros problemas similares",
+  "pt-BR": "Ações para evitar a recorrência deste ou de problemas semelhantes"
  },
  "Active": {
   "es": "Activo",
@@ -151,6 +251,10 @@
   "es": "Dirección",
   "pt-BR": "Endereço"
  },
+ "Adequacy and feasibility of the proposed corrective and preventive actions": {
+  "es": "Adecuación y viabilidad de las acciones correctivas y preventivas propuestas",
+  "pt-BR": "Adequação e viabilidade das ações corretivas e preventivas propostas"
+ },
  "Admin Notification": {
   "es": "Notificación administrativa",
   "pt-BR": "Notificação administrativa"
@@ -172,6 +276,10 @@
  "Administrator": {
   "es": "Administrador",
   "pt-BR": "Administrador"
+ },
+ "Adverse Event": {
+  "es": "Evento adverso",
+  "pt-BR": "Evento adverso"
  },
  "Adverse Events": {
   "es": "Eventos adversos",
@@ -202,6 +310,18 @@
   "es": "Edad",
   "pt-BR": "Idade"
  },
+ "Age (days)": {
+  "es": "Antigüedad (días)",
+  "pt-BR": "Idade (dias)"
+ },
+ "Aged Complaint:": {
+  "es": "Reclamación antigua:",
+  "pt-BR": "Reclamação antiga:"
+ },
+ "Aged Deviation:": {
+  "es": "Desviación antigua:",
+  "pt-BR": "Desvio antigo:"
+ },
  "Agreements": {
   "es": "Acuerdos",
   "pt-BR": "Acordos"
@@ -209,6 +329,10 @@
  "All": {
   "es": "Todos",
   "pt-BR": "Todos"
+ },
+ "All CAPA actions completed with evidence": {
+  "es": "Todas las acciones de la CAPA completadas con evidencia",
+  "pt-BR": "Todas as ações da CAPA concluídas com evidência"
  },
  "All Categories": {
   "es": "Todas las categorías",
@@ -254,6 +378,10 @@
   "es": "Anual",
   "pt-BR": "Anual"
  },
+ "Any immediate actions already taken": {
+  "es": "Cualquier acción inmediata ya tomada",
+  "pt-BR": "Quaisquer ações imediatas já tomadas"
+ },
  "AP": {
   "es": "PA",
   "pt-BR": "PA",
@@ -279,6 +407,14 @@
   "es": "Solicitado",
   "pt-BR": "Solicitado"
  },
+ "Approaching": {
+  "es": "Próximo",
+  "pt-BR": "Próximo"
+ },
+ "Approaching Deadline": {
+  "es": "Plazo próximo",
+  "pt-BR": "Prazo próximo"
+ },
  "Approval": {
   "es": "Aprobación",
   "pt-BR": "Aprovação"
@@ -299,6 +435,16 @@
  "Approve & Sign": {
   "es": "Aprobar y firmar",
   "pt-BR": "Aprovar e assinar",
+  "note": "SIGNATURE — review"
+ },
+ "Approve CAPA": {
+  "es": "Aprobar CAPA",
+  "pt-BR": "Aprovar CAPA",
+  "note": "SIGNATURE — review"
+ },
+ "Approve Deviation": {
+  "es": "Aprobar desviación",
+  "pt-BR": "Aprovar desvio",
   "note": "SIGNATURE — review"
  },
  "Approve Document": {
@@ -337,13 +483,41 @@
   "es": "Según necesidad",
   "pt-BR": "Conforme necessário"
  },
+ "Assess the complaint, conduct the investigation, identify the root cause, and plan corrective actions.": {
+  "es": "Evalúe la reclamación, realice la investigación, identifique la causa raíz y planifique las acciones correctivas.",
+  "pt-BR": "Avalie a reclamação, conduza a investigação, identifique a causa-raiz e planeje as ações corretivas.",
+  "note": "GUIDANCE — review"
+ },
+ "Assess the impact of the deviation and document the investigation findings and root cause.": {
+  "es": "Evalúe el impacto de la desviación y documente los hallazgos de la investigación y la causa raíz.",
+  "pt-BR": "Avalie o impacto do desvio e documente as constatações da investigação e a causa-raiz.",
+  "note": "GUIDANCE — review"
+ },
+ "Assess the impact, risk, and adequacy of the proposed corrective and preventive actions.": {
+  "es": "Evalúe el impacto, el riesgo y la adecuación de las acciones correctivas y preventivas propuestas.",
+  "pt-BR": "Avalie o impacto, o risco e a adequação das ações corretivas e preventivas propostas.",
+  "note": "GUIDANCE — review"
+ },
  "Assessed By": {
   "es": "Evaluado por",
   "pt-BR": "Avaliado por"
  },
+ "Assessed On": {
+  "es": "Evaluado el",
+  "pt-BR": "Avaliado em"
+ },
  "Assessment": {
   "es": "Evaluación",
   "pt-BR": "Avaliação"
+ },
+ "Assessment guidance": {
+  "es": "Guía de evaluación",
+  "pt-BR": "Orientação de avaliação"
+ },
+ "Assessment must address:": {
+  "es": "La evaluación debe abordar:",
+  "pt-BR": "A avaliação deve abordar:",
+  "note": "GUIDANCE — review"
  },
  "Assessment Notes": {
   "es": "Notas de la evaluación",
@@ -462,6 +636,14 @@
   "es": "Completado automáticamente",
   "pt-BR": "Concluído automaticamente"
  },
+ "Awaiting Acceptance": {
+  "es": "En espera de aceptación",
+  "pt-BR": "Aguardando aceitação"
+ },
+ "Awaiting Approval": {
+  "es": "En espera de aprobación",
+  "pt-BR": "Aguardando aprovação"
+ },
  "Awaiting Approval (Under Review)": {
   "es": "En espera de aprobación (en revisión)",
   "pt-BR": "Aguardando aprovação (em revisão)"
@@ -474,9 +656,21 @@
   "es": "Volver",
   "pt-BR": "Voltar"
  },
+ "Back to CAPA": {
+  "es": "Volver a la CAPA",
+  "pt-BR": "Voltar à CAPA"
+ },
+ "Back to Complaint": {
+  "es": "Volver a la reclamación",
+  "pt-BR": "Voltar à reclamação"
+ },
  "Back to Details": {
   "es": "Volver a los detalles",
   "pt-BR": "Voltar aos detalhes"
+ },
+ "Back to Deviation": {
+  "es": "Volver a la desviación",
+  "pt-BR": "Voltar ao desvio"
  },
  "Back to List": {
   "es": "Volver a la lista",
@@ -558,6 +752,14 @@
   "es": "Panel de CAPA",
   "pt-BR": "Painel de CAPA"
  },
+ "CAPA Details": {
+  "es": "Detalles de la CAPA",
+  "pt-BR": "Detalhes da CAPA"
+ },
+ "CAPA guidance": {
+  "es": "Guía de CAPA",
+  "pt-BR": "Orientação de CAPA"
+ },
  "CAPA ID": {
   "es": "ID de la CAPA",
   "pt-BR": "ID da CAPA"
@@ -566,14 +768,34 @@
   "es": "Registro de CAPA",
   "pt-BR": "Registro de CAPA"
  },
+ "CAPA returned for rework ({0}).": {
+  "es": "CAPA devuelta para corrección ({0}).",
+  "pt-BR": "CAPA devolvida para retrabalho ({0})."
+ },
  "CAPA Type": {
   "es": "Tipo de CAPA",
   "pt-BR": "Tipo de CAPA"
+ },
+ "CAPA Type guidance": {
+  "es": "Guía de tipos de CAPA",
+  "pt-BR": "Orientação sobre tipos de CAPA"
+ },
+ "CAPA —": {
+  "es": "CAPA —",
+  "pt-BR": "CAPA —"
+ },
+ "CAPA — {0}": {
+  "es": "CAPA — {0}",
+  "pt-BR": "CAPA — {0}"
  },
  "CAPAs": {
   "es": "CAPA",
   "pt-BR": "CAPAs",
   "note": "ES keeps CAPA invariable"
+ },
+ "CAPAs by Status": {
+  "es": "CAPA por estado",
+  "pt-BR": "CAPAs por status"
  },
  "Category": {
   "es": "Categoría",
@@ -716,6 +938,11 @@
   "es": "Cerrar",
   "pt-BR": "Fechar"
  },
+ "Close Complaint": {
+  "es": "Cerrar reclamación",
+  "pt-BR": "Fechar reclamação",
+  "note": "SIGNATURE — review"
+ },
  "Closed": {
   "es": "Cerrado",
   "pt-BR": "Fechado"
@@ -796,21 +1023,73 @@
   "es": "Panel de reclamaciones",
   "pt-BR": "Painel de reclamações"
  },
+ "Complaint Details": {
+  "es": "Detalles de la reclamación",
+  "pt-BR": "Detalhes da reclamação"
+ },
  "Complaint ID": {
   "es": "ID de la reclamación",
   "pt-BR": "ID da reclamação"
+ },
+ "Complaint Intake": {
+  "es": "Recepción de la reclamación",
+  "pt-BR": "Recebimento da reclamação"
  },
  "Complaint Register": {
   "es": "Registro de reclamaciones",
   "pt-BR": "Registro de reclamações"
  },
+ "Complaint {0} accepted by {1}.": {
+  "es": "{1} aceptó la reclamación {0}.",
+  "pt-BR": "A reclamação {0} foi aceita por {1}."
+ },
+ "Complaint {0} closed by {1}.": {
+  "es": "{1} cerró la reclamación {0}.",
+  "pt-BR": "A reclamação {0} foi fechada por {1}."
+ },
+ "Complaint {0} created successfully.": {
+  "es": "La reclamación {0} se creó correctamente.",
+  "pt-BR": "A reclamação {0} foi criada com sucesso."
+ },
+ "Complaint {0} returned to {1} status.": {
+  "es": "La reclamación {0} volvió al estado {1}.",
+  "pt-BR": "A reclamação {0} voltou ao status {1}."
+ },
+ "Complaint {0} sent for Evaluation.": {
+  "es": "La reclamación {0} se envió a evaluación.",
+  "pt-BR": "A reclamação {0} foi enviada para avaliação."
+ },
+ "Complaint {0} submitted for Acceptance.": {
+  "es": "La reclamación {0} se envió para aceptación.",
+  "pt-BR": "A reclamação {0} foi enviada para aceitação."
+ },
+ "Complaint {0} submitted for closure by {1}.": {
+  "es": "{1} envió la reclamación {0} para cierre.",
+  "pt-BR": "A reclamação {0} foi enviada para fechamento por {1}."
+ },
+ "Complaint —": {
+  "es": "Reclamación —",
+  "pt-BR": "Reclamação —"
+ },
+ "Complaint — {0}": {
+  "es": "Reclamación — {0}",
+  "pt-BR": "Reclamação — {0}"
+ },
  "Complaints": {
   "es": "Reclamaciones",
   "pt-BR": "Reclamações"
  },
+ "Complaints Dashboard": {
+  "es": "Panel de reclamaciones",
+  "pt-BR": "Painel de reclamações"
+ },
  "Complete": {
   "es": "Completo",
   "pt-BR": "Concluído"
+ },
+ "Complete the intake details and submit to open the complaint record.": {
+  "es": "Complete los datos de recepción y envíelos para abrir el registro de la reclamación.",
+  "pt-BR": "Preencha os dados de recebimento e envie para abrir o registro da reclamação."
  },
  "Completed": {
   "es": "Completado",
@@ -907,10 +1186,20 @@
   "pt-BR": "Confirmar aprovação",
   "note": "SIGNATURE — review"
  },
+ "Confirm Approve": {
+  "es": "Confirmar aprobación",
+  "pt-BR": "Confirmar aprovação",
+  "note": "SIGNATURE — review"
+ },
  "Confirm Cancellation": {
   "es": "Confirmar cancelación",
   "pt-BR": "Confirmar cancelamento",
   "note": "WORKFLOW — review"
+ },
+ "Confirm Close": {
+  "es": "Confirmar cierre",
+  "pt-BR": "Confirmar fechamento",
+  "note": "SIGNATURE — review"
  },
  "Confirm Completion": {
   "es": "Confirmar finalización",
@@ -953,6 +1242,14 @@
   "pt-BR": "Link de confirmação para alterar o e-mail enviado. Verifique seu e-mail.",
   "note": "status message"
  },
+ "Confirmation that the root cause has been addressed": {
+  "es": "Confirmación de que se atendió la causa raíz",
+  "pt-BR": "Confirmação de que a causa-raiz foi tratada"
+ },
+ "Confirmation that the root cause has been eliminated": {
+  "es": "Confirmación de que se eliminó la causa raíz",
+  "pt-BR": "Confirmação de que a causa-raiz foi eliminada"
+ },
  "Confirmatory Study": {
   "es": "Estudio confirmatorio",
   "pt-BR": "Estudo confirmatório"
@@ -977,11 +1274,19 @@
   "es": "Salud del consumidor",
   "pt-BR": "Saúde do consumidor"
  },
+ "Contact": {
+  "es": "Contacto",
+  "pt-BR": "Contato"
+ },
  "Contact Email": {
   "es": "Correo de contacto",
   "pt-BR": "E-mail de contato"
  },
  "Contact Name": {
+  "es": "Nombre de contacto",
+  "pt-BR": "Nome do contato"
+ },
+ "Contact name": {
   "es": "Nombre de contacto",
   "pt-BR": "Nome do contato"
  },
@@ -997,13 +1302,40 @@
   "es": "Copiar",
   "pt-BR": "Copiar"
  },
+ "Corrective & Preventive Action": {
+  "es": "Acción correctiva y preventiva",
+  "pt-BR": "Ação corretiva e preventiva"
+ },
  "Corrective Action": {
   "es": "Acción correctiva",
   "pt-BR": "Ação corretiva"
  },
+ "Corrective action guidance": {
+  "es": "Guía de acción correctiva",
+  "pt-BR": "Orientação de ação corretiva"
+ },
+ "Corrective Action is required.": {
+  "es": "La acción correctiva es obligatoria.",
+  "pt-BR": "A ação corretiva é obrigatória."
+ },
+ "Corrective Action must include:": {
+  "es": "La acción correctiva debe incluir:",
+  "pt-BR": "A ação corretiva deve incluir:",
+  "note": "GUIDANCE — review"
+ },
  "Corrective and Preventive Action": {
   "es": "Acción correctiva y preventiva",
   "pt-BR": "Ação corretiva e preventiva"
+ },
+ "Corrective and Preventive Action must include:": {
+  "es": "La acción correctiva y preventiva debe incluir:",
+  "pt-BR": "A ação corretiva e preventiva deve incluir:",
+  "note": "GUIDANCE — review"
+ },
+ "Corrective and Preventive Action — define the actions required to address the root cause and prevent recurrence.": {
+  "es": "Acción correctiva y preventiva: defina las acciones necesarias para atender la causa raíz y evitar la repetición.",
+  "pt-BR": "Ação corretiva e preventiva — defina as ações necessárias para tratar a causa-raiz e evitar a recorrência.",
+  "note": "GUIDANCE — review"
  },
  "Corrective Maintenance": {
   "es": "Mantenimiento correctivo",
@@ -1057,6 +1389,14 @@
   "es": "Crítico",
   "pt-BR": "Crítico"
  },
+ "Critical Complaint": {
+  "es": "Reclamación crítica",
+  "pt-BR": "Reclamação crítica"
+ },
+ "Critical Open": {
+  "es": "Críticas abiertas",
+  "pt-BR": "Críticas abertas"
+ },
  "CRO": {
   "es": "CRO",
   "pt-BR": "CRO"
@@ -1094,6 +1434,22 @@
   "es": "Cliente",
   "pt-BR": "Cliente"
  },
+ "Customer (from Master Data)": {
+  "es": "Cliente (de datos maestros)",
+  "pt-BR": "Cliente (dos dados mestres)"
+ },
+ "Customer Contact": {
+  "es": "Contacto del cliente",
+  "pt-BR": "Contato do cliente"
+ },
+ "Customer Contact details:": {
+  "es": "Datos de contacto del cliente:",
+  "pt-BR": "Dados de contato do cliente:"
+ },
+ "Customer contact guidance": {
+  "es": "Guía de contacto del cliente",
+  "pt-BR": "Orientação sobre contato do cliente"
+ },
  "Customer Dashboard": {
   "es": "Panel de clientes",
   "pt-BR": "Painel de clientes"
@@ -1101,6 +1457,27 @@
  "Customer ID": {
   "es": "ID del cliente",
   "pt-BR": "ID do cliente"
+ },
+ "Customer Legal Name": {
+  "es": "Razón social del cliente",
+  "pt-BR": "Razão social do cliente"
+ },
+ "Customer Name": {
+  "es": "Nombre del cliente",
+  "pt-BR": "Nome do cliente"
+ },
+ "Customer name guidance": {
+  "es": "Guía del nombre del cliente",
+  "pt-BR": "Orientação sobre nome do cliente"
+ },
+ "Customer Reference": {
+  "es": "Referencia del cliente",
+  "pt-BR": "Referência do cliente"
+ },
+ "CustomerId": {
+  "es": "Cliente",
+  "pt-BR": "Cliente",
+  "note": "English shows the code name \"CustomerId\" — fix the English label"
  },
  "Customers": {
   "es": "Clientes",
@@ -1138,6 +1515,10 @@
   "es": "Fecha de creación",
   "pt-BR": "Data de criação"
  },
+ "Date each action was completed and by whom": {
+  "es": "Fecha en que se completó cada acción y quién la realizó",
+  "pt-BR": "Data em que cada ação foi concluída e por quem"
+ },
  "Date of Birth": {
   "es": "Fecha de nacimiento",
   "pt-BR": "Data de nascimento"
@@ -1162,17 +1543,43 @@
   "es": "Días de atraso",
   "pt-BR": "Dias de atraso"
  },
+ "Deadline approaching:": {
+  "es": "Plazo próximo:",
+  "pt-BR": "Prazo próximo:"
+ },
  "Death": {
   "es": "Muerte",
   "pt-BR": "Óbito"
+ },
+ "Define the corrective and preventive actions required to address the root cause.": {
+  "es": "Defina las acciones correctivas y preventivas necesarias para atender la causa raíz.",
+  "pt-BR": "Defina as ações corretivas e preventivas necessárias para tratar a causa-raiz.",
+  "note": "GUIDANCE — review"
+ },
+ "Define the corrective and preventive actions, link to source quality records, and set a target completion date.": {
+  "es": "Defina las acciones correctivas y preventivas, vincúlelas a los registros de calidad de origen y fije una fecha objetivo de cumplimiento.",
+  "pt-BR": "Defina as ações corretivas e preventivas, vincule-as aos registros de qualidade de origem e defina uma data-alvo de conclusão.",
+  "note": "GUIDANCE — review"
  },
  "Delete": {
   "es": "Eliminar",
   "pt-BR": "Excluir"
  },
+ "Delete CAPA": {
+  "es": "Eliminar CAPA",
+  "pt-BR": "Excluir CAPA"
+ },
+ "Delete Complaint": {
+  "es": "Eliminar reclamación",
+  "pt-BR": "Excluir reclamação"
+ },
  "Delete data and close my account": {
   "es": "Eliminar los datos y cerrar mi cuenta",
   "pt-BR": "Excluir os dados e encerrar minha conta"
+ },
+ "Delete Deviation": {
+  "es": "Eliminar desviación",
+  "pt-BR": "Excluir desvio"
  },
  "Delete Document": {
   "es": "Eliminar documento",
@@ -1214,6 +1621,10 @@
   "es": "Describa qué cambios se necesitan antes de volver a enviarlo...",
   "pt-BR": "Descreva quais alterações são necessárias antes de reenviar..."
  },
+ "Describe why this complaint is being returned and what needs to be addressed...": {
+  "es": "Describa por qué se devuelve esta reclamación y qué se debe corregir...",
+  "pt-BR": "Descreva por que esta reclamação está sendo devolvida e o que precisa ser tratado..."
+ },
  "Describe why this document is being rejected...": {
   "es": "Describa por qué se rechaza este documento...",
   "pt-BR": "Descreva por que este documento está sendo rejeitado..."
@@ -1222,6 +1633,10 @@
   "es": "Describa por qué se revisa este documento...",
   "pt-BR": "Descreva por que este documento está sendo revisado..."
  },
+ "Describe why this record is being returned and what needs to be addressed.": {
+  "es": "Describa por qué se devuelve este registro y qué se debe corregir.",
+  "pt-BR": "Descreva por que este registro está sendo devolvido e o que precisa ser tratado."
+ },
  "Description": {
   "es": "Descripción",
   "pt-BR": "Descrição"
@@ -1229,6 +1644,19 @@
  "Description (optional)": {
   "es": "Descripción (opcional)",
   "pt-BR": "Descrição (opcional)"
+ },
+ "Description (optional):": {
+  "es": "Descripción (opcional):",
+  "pt-BR": "Descrição (opcional):"
+ },
+ "Description guidance": {
+  "es": "Guía de descripción",
+  "pt-BR": "Orientação sobre a descrição"
+ },
+ "Description must cover:": {
+  "es": "La descripción debe cubrir:",
+  "pt-BR": "A descrição deve abranger:",
+  "note": "GUIDANCE — review"
  },
  "Design & Development": {
   "es": "Diseño y desarrollo",
@@ -1249,6 +1677,14 @@
  "Determination": {
   "es": "Determinación",
   "pt-BR": "Determinação"
+ },
+ "Determined By": {
+  "es": "Determinado por",
+  "pt-BR": "Determinado por"
+ },
+ "Determined On": {
+  "es": "Determinado el",
+  "pt-BR": "Determinado em"
  },
  "Development": {
   "es": "Development",
@@ -1271,6 +1707,10 @@
   "es": "Panel de desviaciones",
   "pt-BR": "Painel de desvios"
  },
+ "Deviation Details": {
+  "es": "Detalles de la desviación",
+  "pt-BR": "Detalhes do desvio"
+ },
  "Deviation ID": {
   "es": "ID de la desviación",
   "pt-BR": "ID do desvio"
@@ -1279,9 +1719,49 @@
   "es": "Registro de desviaciones",
   "pt-BR": "Registro de desvios"
  },
+ "Deviation {0} accepted by {1}.": {
+  "es": "{1} aceptó la desviación {0}.",
+  "pt-BR": "O desvio {0} foi aceito por {1}."
+ },
+ "Deviation {0} approved by {1}.": {
+  "es": "{1} aprobó la desviación {0}.",
+  "pt-BR": "O desvio {0} foi aprovado por {1}."
+ },
+ "Deviation {0} created successfully.": {
+  "es": "La desviación {0} se creó correctamente.",
+  "pt-BR": "O desvio {0} foi criado com sucesso."
+ },
+ "Deviation {0} evaluation submitted by {1} — awaiting QA Manager acceptance.": {
+  "es": "{1} envió la evaluación de la desviación {0}; en espera de aceptación del gerente de AC.",
+  "pt-BR": "A avaliação do desvio {0} foi enviada por {1} — aguardando aceitação do gerente de GQ."
+ },
+ "Deviation {0} returned to {1} status.": {
+  "es": "La desviación {0} volvió al estado {1}.",
+  "pt-BR": "O desvio {0} voltou ao status {1}."
+ },
+ "Deviation {0} submitted for approval by {1}.": {
+  "es": "{1} envió la desviación {0} a aprobación.",
+  "pt-BR": "O desvio {0} foi enviado para aprovação por {1}."
+ },
+ "Deviation {0} submitted for evaluation.": {
+  "es": "La desviación {0} se envió a evaluación.",
+  "pt-BR": "O desvio {0} foi enviado para avaliação."
+ },
+ "Deviation —": {
+  "es": "Desviación —",
+  "pt-BR": "Desvio —"
+ },
+ "Deviation — {0}": {
+  "es": "Desviación — {0}",
+  "pt-BR": "Desvio — {0}"
+ },
  "Deviations": {
   "es": "Desviaciones",
   "pt-BR": "Desvios"
+ },
+ "Deviations Dashboard": {
+  "es": "Panel de desviaciones",
+  "pt-BR": "Painel de desvios"
  },
  "Device Type / Category": {
   "es": "Tipo / categoría de dispositivo",
@@ -1342,6 +1822,16 @@
  "Document / procedural": {
   "es": "Documental / procedimental",
   "pt-BR": "Documental / procedimental"
+ },
+ "Document all completed CAPA actions with evidence, confirm root cause elimination, and record the effectiveness check.": {
+  "es": "Documente todas las acciones de la CAPA completadas con evidencia, confirme la eliminación de la causa raíz y registre la verificación de eficacia.",
+  "pt-BR": "Documente todas as ações da CAPA concluídas com evidência, confirme a eliminação da causa-raiz e registre a verificação de eficácia.",
+  "note": "GUIDANCE — review"
+ },
+ "Document all completed CAPA actions with evidence, confirm root cause is eliminated, and record the effectiveness check.": {
+  "es": "Documente todas las acciones de la CAPA completadas con evidencia, confirme que se eliminó la causa raíz y registre la verificación de eficacia.",
+  "pt-BR": "Documente todas as ações da CAPA concluídas com evidência, confirme que a causa-raiz foi eliminada e registre a verificação de eficácia.",
+  "note": "GUIDANCE — review"
  },
  "Document Details": {
   "es": "Detalles del documento",
@@ -1456,6 +1946,10 @@
   "es": "Fecha límite",
   "pt-BR": "Data limite"
  },
+ "Due soon": {
+  "es": "Vence pronto",
+  "pt-BR": "Vence em breve"
+ },
  "Due Within 30 Days": {
   "es": "Vence en 30 días o menos",
   "pt-BR": "Vence em até 30 dias"
@@ -1480,6 +1974,10 @@
   "es": "p. ej., el autor original dejó la empresa; se entregó el borrador para continuarlo.",
   "pt-BR": "ex.: o autor original saiu da empresa; o rascunho foi repassado para continuidade."
  },
+ "e.g. Pharmacy name, patient reference...": {
+  "es": "p. ej., nombre de la farmacia, referencia del paciente...",
+  "pt-BR": "ex.: nome da farmácia, referência do paciente..."
+ },
  "e.g. Rev C, v2.1": {
   "es": "p. ej., Rev. C, v2.1",
   "pt-BR": "ex.: Rev. C, v2.1"
@@ -1492,6 +1990,18 @@
   "es": "p. ej., reemplazado por una regulación externa, proceso discontinuado...",
   "pt-BR": "ex.: substituído por regulamentação externa, processo descontinuado..."
  },
+ "e.g., Customer Photo, Lab Report": {
+  "es": "p. ej., foto del cliente, informe de laboratorio",
+  "pt-BR": "ex.: foto do cliente, laudo de laboratório"
+ },
+ "e.g., Investigation Report": {
+  "es": "p. ej., informe de investigación",
+  "pt-BR": "ex.: relatório de investigação"
+ },
+ "e.g., Root Cause Analysis Report": {
+  "es": "p. ej., informe de análisis de causa raíz",
+  "pt-BR": "ex.: relatório de análise de causa-raiz"
+ },
  "E2B(R3) EDI": {
   "es": "E2B(R3) EDI",
   "pt-BR": "E2B(R3) EDI"
@@ -1503,6 +2013,22 @@
  "Edit": {
   "es": "Editar",
   "pt-BR": "Editar"
+ },
+ "Edit CAPA —": {
+  "es": "Editar CAPA —",
+  "pt-BR": "Editar CAPA —"
+ },
+ "Edit Complaint —": {
+  "es": "Editar reclamación —",
+  "pt-BR": "Editar reclamação —"
+ },
+ "Edit Deviation —": {
+  "es": "Editar desviación —",
+  "pt-BR": "Editar desvio —"
+ },
+ "Edit — {0}": {
+  "es": "Editar — {0}",
+  "pt-BR": "Editar — {0}"
  },
  "Edited By": {
   "es": "Editado por",
@@ -1519,6 +2045,14 @@
  "Effective Documents": {
   "es": "Documentos vigentes",
   "pt-BR": "Documentos vigentes"
+ },
+ "Effectiveness check result": {
+  "es": "Resultado de la verificación de eficacia",
+  "pt-BR": "Resultado da verificação de eficácia"
+ },
+ "Effectiveness check result — confirm the issue has not recurred": {
+  "es": "Resultado de la verificación de eficacia: confirme que el problema no se repitió",
+  "pt-BR": "Resultado da verificação de eficácia — confirme que o problema não se repetiu"
  },
  "Electronic Signature": {
   "es": "Firma electrónica",
@@ -1542,6 +2076,10 @@
   "pt-BR": "O e-mail \"{0}\" é inválido."
  },
  "Email Address": {
+  "es": "Dirección de correo electrónico",
+  "pt-BR": "Endereço de e-mail"
+ },
+ "Email address": {
   "es": "Dirección de correo electrónico",
   "pt-BR": "Endereço de e-mail"
  },
@@ -1645,6 +2183,14 @@
   "es": "Error.",
   "pt-BR": "Erro."
  },
+ "Evaluated By": {
+  "es": "Evaluado por",
+  "pt-BR": "Avaliado por"
+ },
+ "Evaluated On": {
+  "es": "Evaluado el",
+  "pt-BR": "Avaliado em"
+ },
  "Evaluation": {
   "es": "Evaluación",
   "pt-BR": "Avaliação"
@@ -1653,9 +2199,51 @@
   "es": "Fecha de evaluación",
   "pt-BR": "Data da avaliação"
  },
+ "Evaluation guidance": {
+  "es": "Guía de evaluación",
+  "pt-BR": "Orientação de avaliação"
+ },
+ "Evaluation must address all of:": {
+  "es": "La evaluación debe abordar todo lo siguiente:",
+  "pt-BR": "A avaliação deve abordar todos os itens a seguir:",
+  "note": "GUIDANCE — review"
+ },
+ "Evaluation must address:": {
+  "es": "La evaluación debe abordar:",
+  "pt-BR": "A avaliação deve abordar:",
+  "note": "GUIDANCE — review"
+ },
+ "Evaluation Started By": {
+  "es": "Evaluación iniciada por",
+  "pt-BR": "Avaliação iniciada por"
+ },
+ "Evaluation, Investigation, Root Cause Category, Corrective and Preventive Action": {
+  "es": "Evaluación, investigación, categoría de causa raíz, acción correctiva y preventiva",
+  "pt-BR": "Avaliação, investigação, categoria da causa-raiz, ação corretiva e preventiva"
+ },
+ "Evaluation, Root Cause Category, Corrective and Preventive Action.": {
+  "es": "Evaluación, categoría de causa raíz, acción correctiva y preventiva.",
+  "pt-BR": "Avaliação, categoria da causa-raiz, ação corretiva e preventiva."
+ },
  "Event Type": {
   "es": "Tipo de evento",
   "pt-BR": "Tipo de evento"
+ },
+ "Event Type Definitions": {
+  "es": "Definiciones de tipos de evento",
+  "pt-BR": "Definições de tipos de evento"
+ },
+ "Event Type guidance": {
+  "es": "Guía de tipos de evento",
+  "pt-BR": "Orientação sobre tipos de evento"
+ },
+ "Evidence reviewed (batch records, complaints history, samples, distribution data)": {
+  "es": "Evidencia revisada (registros de lote, historial de reclamaciones, muestras, datos de distribución)",
+  "pt-BR": "Evidências analisadas (registros de lote, histórico de reclamações, amostras, dados de distribuição)"
+ },
+ "Evidence reviewed (records, samples, equipment logs)": {
+  "es": "Evidencia revisada (registros, muestras, bitácoras de equipos)",
+  "pt-BR": "Evidências analisadas (registros, amostras, diários de equipamentos)"
  },
  "Expanded Access": {
   "es": "Acceso ampliado",
@@ -1761,6 +2349,10 @@
   "es": "Archivo",
   "pt-BR": "Arquivo"
  },
+ "File '{0}' uploaded successfully.": {
+  "es": "El archivo «{0}» se cargó correctamente.",
+  "pt-BR": "O arquivo \"{0}\" foi enviado com sucesso."
+ },
  "File exceeds the 25 MB maximum size limit.": {
   "es": "El archivo supera el tamaño máximo de 25 MB.",
   "pt-BR": "O arquivo excede o tamanho máximo de 25 MB."
@@ -1796,6 +2388,10 @@
  "Filters": {
   "es": "Filtros",
   "pt-BR": "Filtros"
+ },
+ "Findings that led to the root cause determination": {
+  "es": "Hallazgos que llevaron a determinar la causa raíz",
+  "pt-BR": "Constatações que levaram à determinação da causa-raiz"
  },
  "First": {
   "es": "Primero",
@@ -1934,6 +2530,14 @@
   "es": "Cómo se verificará la eficacia",
   "pt-BR": "Como a eficácia será verificada"
  },
+ "How effectiveness will be verified (success criteria)": {
+  "es": "Cómo se verificará la eficacia (criterios de éxito)",
+  "pt-BR": "Como a eficácia será verificada (critérios de sucesso)"
+ },
+ "How the complaint was received (phone, email, written)": {
+  "es": "Cómo se recibió la reclamación (teléfono, correo electrónico, por escrito)",
+  "pt-BR": "Como a reclamação foi recebida (telefone, e-mail, por escrito)"
+ },
  "I confirm that I have read and understood the content of this document.": {
   "es": "Confirmo que leí y comprendí el contenido de este documento.",
   "pt-BR": "Confirmo que li e compreendi o conteúdo deste documento.",
@@ -1947,6 +2551,10 @@
   "es": "Identificación",
   "pt-BR": "Identificação"
  },
+ "Identification guidance": {
+  "es": "Guía de identificación",
+  "pt-BR": "Orientação de identificação"
+ },
  "Identified": {
   "es": "Identificado",
   "pt-BR": "Identificado"
@@ -1958,6 +2566,10 @@
  "Identified On": {
   "es": "Identificado el",
   "pt-BR": "Identificado em"
+ },
+ "Identified {0} days ago and not yet approved.": {
+  "es": "Identificada hace {0} días y aún no aprobada.",
+  "pt-BR": "Identificado há {0} dias e ainda não aprovado."
  },
  "Identity": {
   "es": "Identidad",
@@ -1979,6 +2591,10 @@
   "es": "Si restablece la clave de autenticación, su aplicación de autenticación no funcionará hasta que la vuelva a configurar.",
   "pt-BR": "Se você redefinir a chave do autenticador, seu aplicativo autenticador não funcionará até ser reconfigurado."
  },
+ "Impact on data integrity": {
+  "es": "Impacto en la integridad de datos",
+  "pt-BR": "Impacto na integridade de dados"
+ },
  "Impact on product quality and patient safety": {
   "es": "Impacto en la calidad del producto y la seguridad del paciente",
   "pt-BR": "Impacto na qualidade do produto e na segurança do paciente"
@@ -1986,6 +2602,23 @@
  "Implementation": {
   "es": "Implementación",
   "pt-BR": "Implementação"
+ },
+ "Implementation guidance": {
+  "es": "Guía de implementación",
+  "pt-BR": "Orientação de implementação"
+ },
+ "Implementation must document:": {
+  "es": "La implementación debe documentar:",
+  "pt-BR": "A implementação deve documentar:",
+  "note": "GUIDANCE — review"
+ },
+ "Implemented By": {
+  "es": "Implementado por",
+  "pt-BR": "Implementado por"
+ },
+ "Implemented On": {
+  "es": "Implementado el",
+  "pt-BR": "Implementado em"
  },
  "Improvement Opportunity": {
   "es": "Oportunidad de mejora",
@@ -2007,6 +2640,10 @@
   "es": "Contraseña incorrecta.",
   "pt-BR": "Senha incorreta.",
   "note": "E-SIGNATURE — shown when a signature password is wrong; review"
+ },
+ "Index": {
+  "es": "Índice",
+  "pt-BR": "Índice"
  },
  "Indication": {
   "es": "Indicación",
@@ -2071,9 +2708,26 @@
   "es": "Token no válido.",
   "pt-BR": "Token inválido."
  },
+ "Investigated By": {
+  "es": "Investigado por",
+  "pt-BR": "Investigado por"
+ },
+ "Investigated On": {
+  "es": "Investigado el",
+  "pt-BR": "Investigado em"
+ },
  "Investigation": {
   "es": "Investigación",
   "pt-BR": "Investigação"
+ },
+ "Investigation guidance": {
+  "es": "Guía de investigación",
+  "pt-BR": "Orientação de investigação"
+ },
+ "Investigation must document:": {
+  "es": "La investigación debe documentar:",
+  "pt-BR": "A investigação deve documentar:",
+  "note": "GUIDANCE — review"
  },
  "iOS": {
   "es": "iOS",
@@ -2234,9 +2888,41 @@
   "es": "Potencialmente mortal",
   "pt-BR": "Risco de morte"
  },
+ "Link": {
+  "es": "Vincular",
+  "pt-BR": "Vincular"
+ },
+ "Link existing AE": {
+  "es": "Vincular EA existente",
+  "pt-BR": "Vincular EA existente"
+ },
+ "Link this CAPA to its source quality record — a Deviation, Complaint, or Audit finding. Multiple records can be linked.": {
+  "es": "Vincule esta CAPA a su registro de calidad de origen: una desviación, una reclamación o un hallazgo de auditoría. Se pueden vincular varios registros.",
+  "pt-BR": "Vincule esta CAPA ao registro de qualidade de origem — um desvio, uma reclamação ou uma constatação de auditoria. Vários registros podem ser vinculados."
+ },
+ "Linked Adverse Event": {
+  "es": "Evento adverso vinculado",
+  "pt-BR": "Evento adverso vinculado"
+ },
+ "Linked Adverse Event ID": {
+  "es": "ID del evento adverso vinculado",
+  "pt-BR": "ID do evento adverso vinculado"
+ },
+ "Linked adverse event {0}.": {
+  "es": "Se vinculó el evento adverso {0}.",
+  "pt-BR": "Evento adverso {0} vinculado."
+ },
+ "Linked Adverse Event:": {
+  "es": "Evento adverso vinculado:",
+  "pt-BR": "Evento adverso vinculado:"
+ },
  "Linked Approved Documents": {
   "es": "Documentos aprobados vinculados",
   "pt-BR": "Documentos aprovados vinculados"
+ },
+ "Linked Audits": {
+  "es": "Auditorías vinculadas",
+  "pt-BR": "Auditorias vinculadas"
  },
  "Linked CAPA": {
   "es": "CAPA vinculada",
@@ -2250,6 +2936,10 @@
   "es": "CAPA vinculadas",
   "pt-BR": "CAPAs vinculadas"
  },
+ "Linked Changes": {
+  "es": "Cambios vinculados",
+  "pt-BR": "Mudanças vinculadas"
+ },
  "Linked Complaints": {
   "es": "Reclamaciones vinculadas",
   "pt-BR": "Reclamações vinculadas"
@@ -2257,6 +2947,14 @@
  "Linked Deviations": {
   "es": "Desviaciones vinculadas",
   "pt-BR": "Desvios vinculados"
+ },
+ "Linked from Adverse Event: <strong>{0}</strong>": {
+  "es": "Vinculado desde el evento adverso: <strong>{0}</strong>",
+  "pt-BR": "Vinculado a partir do evento adverso: <strong>{0}</strong>"
+ },
+ "Linked from Signal Review: <strong>{0}</strong>": {
+  "es": "Vinculado desde la revisión de señal: <strong>{0}</strong>",
+  "pt-BR": "Vinculado a partir da revisão de sinal: <strong>{0}</strong>"
  },
  "Linked Records": {
   "es": "Registros vinculados",
@@ -2484,6 +3182,10 @@
   "es": "Acta de reunión",
   "pt-BR": "Ata de reunião"
  },
+ "Methodology used (e.g. 5-Why, fishbone/Ishikawa)": {
+  "es": "Metodología utilizada (p. ej., 5 porqués, espina de pescado/Ishikawa)",
+  "pt-BR": "Metodologia utilizada (ex.: 5 porquês, espinha de peixe/Ishikawa)"
+ },
  "Mild": {
   "es": "Leve",
   "pt-BR": "Leve"
@@ -2573,6 +3275,10 @@
   "es": "Nueva reclamación",
   "pt-BR": "Nova reclamação"
  },
+ "New Deviation": {
+  "es": "Nueva desviación",
+  "pt-BR": "Novo desvio"
+ },
  "New Document": {
   "es": "Nuevo documento",
   "pt-BR": "Novo documento"
@@ -2633,6 +3339,10 @@
   "es": "Aún no se ha registrado actividad.",
   "pt-BR": "Nenhuma atividade registrada ainda."
  },
+ "No adverse events linked to this complaint.": {
+  "es": "No hay eventos adversos vinculados a esta reclamación.",
+  "pt-BR": "Nenhum evento adverso vinculado a esta reclamação."
+ },
  "No approved documents with a periodic review date are currently tracked.": {
   "es": "Actualmente no hay documentos aprobados con fecha de revisión periódica.",
   "pt-BR": "No momento, não há documentos aprovados com data de revisão periódica."
@@ -2640,6 +3350,10 @@
  "No approved documents yet.": {
   "es": "Aún no hay documentos aprobados.",
   "pt-BR": "Ainda não há documentos aprovados."
+ },
+ "No attachments uploaded yet.": {
+  "es": "Aún no se cargaron adjuntos.",
+  "pt-BR": "Nenhum anexo enviado ainda."
  },
  "No attachments yet.": {
   "es": "Aún no hay adjuntos.",
@@ -2649,9 +3363,21 @@
   "es": "Sin adjuntos.",
   "pt-BR": "Sem anexos."
  },
+ "No audit log activity yet.": {
+  "es": "Aún no hay actividad en la pista de auditoría.",
+  "pt-BR": "Ainda não há atividade na trilha de auditoria."
+ },
  "No audit log entries yet.": {
   "es": "Aún no hay entradas en la pista de auditoría.",
   "pt-BR": "Ainda não há registros na trilha de auditoria."
+ },
+ "No CAPAs awaiting acceptance.": {
+  "es": "No hay CAPA en espera de aceptación.",
+  "pt-BR": "Nenhuma CAPA aguardando aceitação."
+ },
+ "No CAPAs awaiting approval.": {
+  "es": "No hay CAPA en espera de aprobación.",
+  "pt-BR": "Nenhuma CAPA aguardando aprovação."
  },
  "No completed training records yet.": {
   "es": "Aún no hay registros de capacitación completados.",
@@ -2697,6 +3423,10 @@
   "es": "No se encontraron registros coincidentes",
   "pt-BR": "Nenhum registro correspondente encontrado"
  },
+ "No open critical complaints.": {
+  "es": "No hay reclamaciones críticas abiertas.",
+  "pt-BR": "Nenhuma reclamação crítica aberta."
+ },
  "No outstanding training items. Well done!": {
   "es": "No tiene capacitaciones pendientes. ¡Bien hecho!",
   "pt-BR": "Nenhum treinamento pendente. Muito bem!"
@@ -2729,6 +3459,14 @@
   "es": "Ninguno",
   "pt-BR": "Nenhum"
  },
+ "None approaching in the next 14 days.": {
+  "es": "Ninguno vence en los próximos 14 días.",
+  "pt-BR": "Nenhum vence nos próximos 14 dias."
+ },
+ "None awaiting acceptance.": {
+  "es": "Ninguno en espera de aceptación.",
+  "pt-BR": "Nenhum aguardando aceitação."
+ },
  "None pending.": {
   "es": "Nada pendiente.",
   "pt-BR": "Nada pendente."
@@ -2744,6 +3482,10 @@
  "Not Assessed": {
   "es": "No evaluado",
   "pt-BR": "Não avaliado"
+ },
+ "Not in system": {
+  "es": "No está en el sistema",
+  "pt-BR": "Não está no sistema"
  },
  "Not Read": {
   "es": "No leído",
@@ -2825,9 +3567,21 @@
   "es": "Monitoreo continuo",
   "pt-BR": "Monitoramento contínuo"
  },
+ "Only complete if the complainant is not recorded in the Customer Master. If entered here, no linked customer record will be created.": {
+  "es": "Complete solo si el reclamante no está registrado en los datos maestros de clientes. Si lo ingresa aquí, no se creará un registro de cliente vinculado.",
+  "pt-BR": "Preencha somente se o reclamante não estiver cadastrado nos dados mestres de clientes. Se informado aqui, nenhum registro de cliente vinculado será criado."
+ },
+ "OOS": {
+  "es": "OOS",
+  "pt-BR": "OOS"
+ },
  "Open": {
   "es": "Abierto",
   "pt-BR": "Aberto"
+ },
+ "Open Critical Complaints": {
+  "es": "Reclamaciones críticas abiertas",
+  "pt-BR": "Reclamações críticas abertas"
  },
  "Open Document": {
   "es": "Abrir documento",
@@ -2929,6 +3683,10 @@
   "es": "Vencido (fecha de revisión pasada)",
   "pt-BR": "Atrasado (data de revisão passada)"
  },
+ "Overdue (past target)": {
+  "es": "Vencido (pasada la fecha objetivo)",
+  "pt-BR": "Atrasado (após a data-alvo)"
+ },
  "Overdue (Scheduled past date)": {
   "es": "Vencido (programado con fecha pasada)",
   "pt-BR": "Atrasado (programado com data passada)"
@@ -2946,9 +3704,17 @@
   "es": "Solo vencidos",
   "pt-BR": "Somente atrasados"
  },
+ "Overdue Open Deviations (past target resolution date)": {
+  "es": "Desviaciones abiertas vencidas (pasada la fecha objetivo de resolución)",
+  "pt-BR": "Desvios abertos atrasados (após a data-alvo de resolução)"
+ },
  "Overdue — Scheduled Past Date": {
   "es": "Vencido: programado con fecha pasada",
   "pt-BR": "Atrasado — programado com data passada"
+ },
+ "Overdue:": {
+  "es": "Vencido:",
+  "pt-BR": "Atrasado:"
  },
  "Overview": {
   "es": "Resumen",
@@ -3054,6 +3820,10 @@
   "es": "Pendiente de confirmación",
   "pt-BR": "Pendente de confirmação"
  },
+ "Pending Evaluation (Received)": {
+  "es": "Pendiente de evaluación (recibida)",
+  "pt-BR": "Pendente de avaliação (recebida)"
+ },
  "Pending Review": {
   "es": "Pendiente de revisión",
   "pt-BR": "Pendente de revisão"
@@ -3102,6 +3872,11 @@
   "es": "Permanente",
   "pt-BR": "Permanente"
  },
+ "permanently locks the record": {
+  "es": "bloquea el registro de forma permanente",
+  "pt-BR": "bloqueia o registro permanentemente",
+  "note": "SIGNATURE context — review"
+ },
  "Personal Data": {
   "es": "Datos personales",
   "pt-BR": "Dados pessoais"
@@ -3113,6 +3888,10 @@
  "Personnel": {
   "es": "Personal",
   "pt-BR": "Pessoal"
+ },
+ "Personnel involved": {
+  "es": "Personal involucrado",
+  "pt-BR": "Pessoal envolvido"
  },
  "Personnel/Training": {
   "es": "Personal / capacitación",
@@ -3185,6 +3964,19 @@
  "Preventive Action": {
   "es": "Acción preventiva",
   "pt-BR": "Ação preventiva"
+ },
+ "Preventive action guidance": {
+  "es": "Guía de acción preventiva",
+  "pt-BR": "Orientação de ação preventiva"
+ },
+ "Preventive Action is required.": {
+  "es": "La acción preventiva es obligatoria.",
+  "pt-BR": "A ação preventiva é obrigatória."
+ },
+ "Preventive Action must include:": {
+  "es": "La acción preventiva debe incluir:",
+  "pt-BR": "A ação preventiva deve incluir:",
+  "note": "GUIDANCE — review"
  },
  "Preventive Maintenance": {
   "es": "Mantenimiento preventivo",
@@ -3261,6 +4053,10 @@
  "Product Name (snapshot)": {
   "es": "Nombre del producto (copia)",
   "pt-BR": "Nome do produto (cópia)"
+ },
+ "Product or batch involved, if known": {
+  "es": "Producto o lote involucrado, si se conoce",
+  "pt-BR": "Produto ou lote envolvido, se conhecido"
  },
  "Product Quality": {
   "es": "Calidad del producto",
@@ -3362,6 +4158,10 @@
   "es": "Supervisión de calidad",
   "pt-BR": "Supervisão da qualidade"
  },
+ "Quality Record guidance": {
+  "es": "Guía de registros de calidad",
+  "pt-BR": "Orientação sobre registros de qualidade"
+ },
  "Quality System": {
   "es": "Sistema de calidad",
   "pt-BR": "Sistema da qualidade"
@@ -3381,6 +4181,10 @@
  "Quarterly": {
   "es": "Trimestral",
   "pt-BR": "Trimestral"
+ },
+ "Raise Adverse Event": {
+  "es": "Registrar evento adverso",
+  "pt-BR": "Registrar evento adverso"
  },
  "Raw Material": {
   "es": "Materia prima",
@@ -3450,9 +4254,17 @@
   "es": "Recibido",
   "pt-BR": "Recebido"
  },
+ "Received By": {
+  "es": "Recibido por",
+  "pt-BR": "Recebido por"
+ },
  "Received On": {
   "es": "Recibido el",
   "pt-BR": "Recebido em"
+ },
+ "Received {0} days ago and not yet closed.": {
+  "es": "Recibida hace {0} días y aún no cerrada.",
+  "pt-BR": "Recebida há {0} dias e ainda não fechada."
  },
  "Recent Activity": {
   "es": "Actividad reciente",
@@ -3490,13 +4302,35 @@
   "es": "El registro está aprobado: no se pueden agregar adjuntos.",
   "pt-BR": "O registro está aprovado — não é possível adicionar anexos."
  },
+ "Record is closed — no new attachments can be added.": {
+  "es": "El registro está cerrado: no se pueden agregar adjuntos.",
+  "pt-BR": "O registro está fechado — não é possível adicionar anexos."
+ },
+ "Record is pending final approval. Use <strong>{0}</strong> from the Details page if changes are needed.": {
+  "es": "El registro está pendiente de aprobación final. Use <strong>{0}</strong> en la página de detalles si se necesitan cambios.",
+  "pt-BR": "O registro está pendente de aprovação final. Use <strong>{0}</strong> na página de detalhes se forem necessárias alterações."
+ },
  "Record No.": {
   "es": "N.º de registro",
   "pt-BR": "Nº do registro"
  },
+ "Record the complaint source, product involved, and the full description of the issue reported.": {
+  "es": "Registre el origen de la reclamación, el producto involucrado y la descripción completa del problema informado.",
+  "pt-BR": "Registre a origem da reclamação, o produto envolvido e a descrição completa do problema relatado.",
+  "note": "GUIDANCE — review"
+ },
  "Record the original authorship and approval details as they appear on the document itself. These are separate from the system workflow records.": {
   "es": "Registre los datos originales de autoría y aprobación tal como figuran en el propio documento. Son independientes de los registros del flujo del sistema.",
   "pt-BR": "Registre os dados originais de autoria e aprovação conforme constam no próprio documento. Eles são independentes dos registros do fluxo do sistema."
+ },
+ "Record what happened, classify the event, and submit for evaluation.": {
+  "es": "Registre lo ocurrido, clasifique el evento y envíelo a evaluación.",
+  "pt-BR": "Registre o ocorrido, classifique o evento e envie para avaliação."
+ },
+ "Record what happened, when, where, and the immediate actions taken.": {
+  "es": "Registre qué ocurrió, cuándo, dónde y las acciones inmediatas tomadas.",
+  "pt-BR": "Registre o que ocorreu, quando, onde e as ações imediatas tomadas.",
+  "note": "GUIDANCE — review"
  },
  "Records": {
   "es": "Registros",
@@ -3569,6 +4403,10 @@
  "Regulatory / Compliance": {
   "es": "Regulatorio / cumplimiento",
   "pt-BR": "Regulatório / conformidade"
+ },
+ "Regulatory and compliance obligations": {
+  "es": "Obligaciones regulatorias y de cumplimiento",
+  "pt-BR": "Obrigações regulatórias e de conformidade"
  },
  "Regulatory Approval": {
   "es": "Aprobación regulatoria",
@@ -3749,6 +4587,10 @@
   "es": "Requerida: fije la fecha de revisión abajo",
   "pt-BR": "Obrigatória — defina a data de revisão abaixo"
  },
+ "requires priority handling.": {
+  "es": "requiere atención prioritaria.",
+  "pt-BR": "exige tratamento prioritário."
+ },
  "Resend": {
   "es": "Reenviar",
   "pt-BR": "Reenviar"
@@ -3789,9 +4631,30 @@
   "es": "Resolución",
   "pt-BR": "Resolução"
  },
+ "Resolution guidance": {
+  "es": "Guía de resolución",
+  "pt-BR": "Orientação de resolução"
+ },
+ "Resolution must document:": {
+  "es": "La resolución debe documentar:",
+  "pt-BR": "A resolução deve documentar:",
+  "note": "GUIDANCE — review"
+ },
+ "Resolution summary": {
+  "es": "Resumen de la resolución",
+  "pt-BR": "Resumo da resolução"
+ },
  "Resolved": {
   "es": "Resuelto",
   "pt-BR": "Resolvido"
+ },
+ "Resolved By": {
+  "es": "Resuelto por",
+  "pt-BR": "Resolvido por"
+ },
+ "Resolved On": {
+  "es": "Resuelto el",
+  "pt-BR": "Resolvido em"
  },
  "Resolving": {
   "es": "En resolución",
@@ -3845,6 +4708,10 @@
  "review not due yet": {
   "es": "revisión aún no vencida",
   "pt-BR": "revisão ainda não vencida"
+ },
+ "Review of related processes, procedures, or controls": {
+  "es": "Revisión de procesos, procedimientos o controles relacionados",
+  "pt-BR": "Revisão de processos, procedimentos ou controles relacionados"
  },
  "Review Overdue": {
   "es": "Revisión vencida",
@@ -3902,6 +4769,10 @@
   "es": "Nivel de riesgo",
   "pt-BR": "Nível de risco"
  },
+ "Risk level if actions are not completed on time": {
+  "es": "Nivel de riesgo si las acciones no se completan a tiempo",
+  "pt-BR": "Nível de risco se as ações não forem concluídas no prazo"
+ },
  "Risk Management": {
   "es": "Gestión de riesgos",
   "pt-BR": "Gestão de riscos"
@@ -3919,13 +4790,33 @@
   "es": "Rol",
   "pt-BR": "Perfil"
  },
+ "Role / job title": {
+  "es": "Rol / cargo",
+  "pt-BR": "Função / cargo"
+ },
  "Roles": {
   "es": "Roles",
   "pt-BR": "Perfis"
  },
+ "Root Cause": {
+  "es": "Causa raíz",
+  "pt-BR": "Causa-raiz"
+ },
+ "Root Cause By": {
+  "es": "Causa raíz determinada por",
+  "pt-BR": "Causa-raiz determinada por"
+ },
  "Root Cause Category": {
   "es": "Categoría de causa raíz",
   "pt-BR": "Categoria da causa-raiz"
+ },
+ "Root cause category guidance": {
+  "es": "Guía de categorías de causa raíz",
+  "pt-BR": "Orientação sobre categorias de causa-raiz"
+ },
+ "Root Cause On": {
+  "es": "Causa raíz determinada el",
+  "pt-BR": "Causa-raiz determinada em"
  },
  "Safety Equipment": {
   "es": "Equipos de seguridad",
@@ -3995,9 +4886,17 @@
   "es": "Buscar:",
   "pt-BR": "Pesquisar:"
  },
+ "Select an existing adverse event to associate with this complaint. Only unlinked, non-voided cases are listed.": {
+  "es": "Seleccione un evento adverso existente para asociarlo a esta reclamación. Solo se muestran casos no vinculados y no anulados.",
+  "pt-BR": "Selecione um evento adverso existente para associar a esta reclamação. Só são listados casos não vinculados e não anulados."
+ },
  "Select File": {
   "es": "Seleccionar archivo",
   "pt-BR": "Selecionar arquivo"
+ },
+ "Select File:": {
+  "es": "Seleccionar archivo:",
+  "pt-BR": "Selecionar arquivo:"
  },
  "Select users…": {
   "es": "Seleccione usuarios…",
@@ -4055,6 +4954,10 @@
  "Severity": {
   "es": "Gravedad",
   "pt-BR": "Gravidade"
+ },
+ "Severity Breakdown": {
+  "es": "Desglose por gravedad",
+  "pt-BR": "Detalhamento por gravidade"
  },
  "Severity Definitions": {
   "es": "Definiciones de gravedad",
@@ -4252,6 +5155,16 @@
   "pt-BR": "Enviar para aprovação",
   "note": "WORKFLOW — review"
  },
+ "Submit for Closure": {
+  "es": "Enviar para cierre",
+  "pt-BR": "Enviar para fechamento",
+  "note": "WORKFLOW — review"
+ },
+ "Submit for Evaluation": {
+  "es": "Enviar a evaluación",
+  "pt-BR": "Enviar para avaliação",
+  "note": "WORKFLOW — review"
+ },
  "Submit for Review": {
   "es": "Enviar a revisión",
   "pt-BR": "Enviar para revisão",
@@ -4261,13 +5174,34 @@
   "es": "Enviado",
   "pt-BR": "Enviado"
  },
+ "Submitted By": {
+  "es": "Enviado por",
+  "pt-BR": "Enviado por"
+ },
  "Submitted for Acceptance By": {
   "es": "Enviado para aceptación por",
   "pt-BR": "Enviado para aceitação por"
  },
+ "Submitted for Approval By": {
+  "es": "Enviado a aprobación por",
+  "pt-BR": "Enviado para aprovação por"
+ },
+ "Submitted for Closure By": {
+  "es": "Enviado para cierre por",
+  "pt-BR": "Enviado para fechamento por"
+ },
+ "Submitted On": {
+  "es": "Enviado el",
+  "pt-BR": "Enviado em"
+ },
  "Submitted to TGA": {
   "es": "Enviado a la TGA",
   "pt-BR": "Enviado à TGA"
+ },
+ "Summarise how the complaint was resolved, confirm all actions are complete, and document the outcome for the customer.": {
+  "es": "Resuma cómo se resolvió la reclamación, confirme que todas las acciones están completas y documente el resultado para el cliente.",
+  "pt-BR": "Resuma como a reclamação foi resolvida, confirme que todas as ações foram concluídas e documente o resultado para o cliente.",
+  "note": "GUIDANCE — review"
  },
  "Superseded": {
   "es": "Reemplazado",
@@ -4341,13 +5275,33 @@
   "es": "Configuración del sistema",
   "pt-BR": "Configurações do sistema"
  },
+ "Systemic or process improvements proposed": {
+  "es": "Mejoras sistémicas o de procesos propuestas",
+  "pt-BR": "Melhorias sistêmicas ou de processo propostas"
+ },
  "Target Completion": {
   "es": "Cumplimiento objetivo",
   "pt-BR": "Conclusão prevista"
  },
+ "Target Completion Date": {
+  "es": "Fecha objetivo de cumplimiento",
+  "pt-BR": "Data-alvo de conclusão"
+ },
+ "Target completion date <strong>{0}</strong> is approaching (within 14 days).": {
+  "es": "La fecha objetivo de cumplimiento <strong>{0}</strong> está próxima (dentro de 14 días).",
+  "pt-BR": "A data-alvo de conclusão <strong>{0}</strong> está próxima (em até 14 dias)."
+ },
+ "Target completion date <strong>{0}</strong> is overdue.": {
+  "es": "La fecha objetivo de cumplimiento <strong>{0}</strong> está vencida.",
+  "pt-BR": "A data-alvo de conclusão <strong>{0}</strong> está atrasada."
+ },
  "Target completion date for each action": {
   "es": "Fecha objetivo de cumplimiento de cada acción",
   "pt-BR": "Data-alvo de conclusão de cada ação"
+ },
+ "Target completion date must be today or in the future.": {
+  "es": "La fecha objetivo de cumplimiento debe ser hoy o una fecha futura.",
+  "pt-BR": "A data-alvo de conclusão deve ser hoje ou uma data futura."
  },
  "Target Date": {
   "es": "Fecha objetivo",
@@ -4356,6 +5310,18 @@
  "Target Resolution": {
   "es": "Resolución objetivo",
   "pt-BR": "Resolução prevista"
+ },
+ "Target Resolution Date": {
+  "es": "Fecha objetivo de resolución",
+  "pt-BR": "Data-alvo de resolução"
+ },
+ "Target resolution date is {0} ({1} day(s) remaining).": {
+  "es": "La fecha objetivo de resolución es {0} (faltan {1} día(s)).",
+  "pt-BR": "A data-alvo de resolução é {0} (faltam {1} dia(s))."
+ },
+ "Target resolution date was {0} ({1} day(s) past deadline).": {
+  "es": "La fecha objetivo de resolución era {0} ({1} día(s) de atraso).",
+  "pt-BR": "A data-alvo de resolução era {0} ({1} dia(s) de atraso)."
  },
  "Technical": {
   "es": "Técnico",
@@ -4479,6 +5445,14 @@
   "es": "La contraseña y su confirmación no coinciden.",
   "pt-BR": "A senha e a confirmação não coincidem."
  },
+ "The person responsible for each action": {
+  "es": "La persona responsable de cada acción",
+  "pt-BR": "A pessoa responsável por cada ação"
+ },
+ "The responsible person for each action": {
+  "es": "La persona responsable de cada acción",
+  "pt-BR": "A pessoa responsável por cada ação"
+ },
  "The supplied value is invalid for {0}.": {
   "es": "El valor indicado no es válido para {0}.",
   "pt-BR": "O valor informado não é válido para {0}."
@@ -4539,6 +5513,22 @@
   "es": "Esta acción solo desactiva la 2FA.",
   "pt-BR": "Esta ação apenas desativa a 2FA."
  },
+ "This CAPA is approved. No new attachments can be uploaded.": {
+  "es": "Esta CAPA está aprobada. No se pueden cargar nuevos adjuntos.",
+  "pt-BR": "Esta CAPA está aprovada. Não é possível enviar novos anexos."
+ },
+ "This complaint has multiple linked adverse events from before one-to-one linking was enforced. Unlink extras to keep a single association.": {
+  "es": "Esta reclamación tiene varios eventos adversos vinculados de antes de que se exigiera la vinculación uno a uno. Desvincule los adicionales para mantener una sola asociación.",
+  "pt-BR": "Esta reclamação tem vários eventos adversos vinculados de antes da exigência de vínculo um a um. Desvincule os extras para manter uma única associação."
+ },
+ "This complaint is closed. No new attachments can be uploaded.": {
+  "es": "Esta reclamación está cerrada. No se pueden cargar nuevos adjuntos.",
+  "pt-BR": "Esta reclamação está fechada. Não é possível enviar novos anexos."
+ },
+ "This deviation is approved. No new attachments can be uploaded.": {
+  "es": "Esta desviación está aprobada. No se pueden cargar nuevos adjuntos.",
+  "pt-BR": "Este desvio está aprovado. Não é possível enviar novos anexos."
+ },
  "This document is due for review on <strong>{0}</strong> ({1} days remaining).": {
   "es": "Este documento debe revisarse el <strong>{0}</strong> (faltan {1} días).",
   "pt-BR": "Este documento deve ser revisado em <strong>{0}</strong> (faltam {1} dias)."
@@ -4571,6 +5561,11 @@
   "es": "Este proceso desactiva la 2FA hasta que verifique su aplicación de autenticación. Si no completa la configuración de la aplicación, podría perder el acceso a su cuenta.",
   "pt-BR": "Este processo desativa a 2FA até que você verifique seu aplicativo autenticador. Se você não concluir a configuração do aplicativo, poderá perder o acesso à sua conta."
  },
+ "This will lock the CAPA for Quality Manager review. Corrective Action, Preventive Action and Assessment must all be completed.": {
+  "es": "Esto bloqueará la CAPA para la revisión del gerente de calidad. La acción correctiva, la acción preventiva y la evaluación deben estar completas.",
+  "pt-BR": "Isso bloqueará a CAPA para revisão do gerente da qualidade. A ação corretiva, a ação preventiva e a avaliação devem estar concluídas.",
+  "note": "WORKFLOW — review"
+ },
  "Three Yearly": {
   "es": "Trienal",
   "pt-BR": "Trienal"
@@ -4579,9 +5574,17 @@
   "es": "Hora",
   "pt-BR": "Hora"
  },
+ "Timeline of events": {
+  "es": "Cronología de los hechos",
+  "pt-BR": "Cronologia dos fatos"
+ },
  "Title": {
   "es": "Título",
   "pt-BR": "Título"
+ },
+ "Title is required.": {
+  "es": "El título es obligatorio.",
+  "pt-BR": "O título é obrigatório."
  },
  "Title, ID, description…": {
   "es": "Título, ID, descripción…",
@@ -4610,6 +5613,14 @@
  "Total": {
   "es": "Total",
   "pt-BR": "Total"
+ },
+ "Total CAPAs": {
+  "es": "Total de CAPA",
+  "pt-BR": "Total de CAPAs"
+ },
+ "Total Deviations": {
+  "es": "Total de desviaciones",
+  "pt-BR": "Total de desvios"
  },
  "Total Tracked": {
   "es": "Total en seguimiento",
@@ -4670,6 +5681,10 @@
  "Training Material": {
   "es": "Material de capacitación",
   "pt-BR": "Material de treinamento"
+ },
+ "Training or documentation updates required": {
+  "es": "Actualizaciones de capacitación o documentación requeridas",
+  "pt-BR": "Atualizações de treinamento ou documentação necessárias"
  },
  "Training Register": {
   "es": "Registro de capacitación",
@@ -4815,6 +5830,10 @@
  "Unlink": {
   "es": "Desvincular",
   "pt-BR": "Desvincular"
+ },
+ "Unlink adverse event {0} from this complaint?": {
+  "es": "¿Desvincular el evento adverso {0} de esta reclamación?",
+  "pt-BR": "Desvincular o evento adverso {0} desta reclamação?"
  },
  "Unsatisfactory": {
   "es": "Insatisfactorio",
@@ -5033,6 +6052,46 @@
   "es": "Semanas",
   "pt-BR": "Semanas"
  },
+ "What the complainant reported (verbatim or paraphrased)": {
+  "es": "Lo que informó el reclamante (textual o parafraseado)",
+  "pt-BR": "O que o reclamante relatou (literal ou parafraseado)"
+ },
+ "When the issue was first observed": {
+  "es": "Cuándo se observó el problema por primera vez",
+  "pt-BR": "Quando o problema foi observado pela primeira vez"
+ },
+ "Whether a batch recall or field safety action is needed": {
+  "es": "Si se necesita un retiro de lote o una acción de seguridad en campo",
+  "pt-BR": "Se é necessário recolhimento de lote ou ação de segurança em campo"
+ },
+ "Whether a formal CAPA record has been raised (link below)": {
+  "es": "Si se abrió un registro formal de CAPA (vínculo abajo)",
+  "pt-BR": "Se foi aberto um registro formal de CAPA (vínculo abaixo)"
+ },
+ "Whether a regulatory report (e.g. MDR, PSUR) is required": {
+  "es": "Si se requiere una notificación regulatoria (p. ej., MDR, PSUR)",
+  "pt-BR": "Se é necessária uma notificação regulatória (ex.: MDR, PSUR)"
+ },
+ "Whether a response or compensation was issued to the complainant": {
+  "es": "Si se dio una respuesta o compensación al reclamante",
+  "pt-BR": "Se foi emitida resposta ou compensação ao reclamante"
+ },
+ "Whether affected batches, lots or materials require quarantine, re-testing or recall": {
+  "es": "Si los lotes o materiales afectados requieren cuarentena, reanálisis o retiro",
+  "pt-BR": "Se lotes ou materiais afetados exigem quarentena, reanálise ou recolhimento"
+ },
+ "Whether the complaint is an isolated event or part of a trend": {
+  "es": "Si la reclamación es un hecho aislado o parte de una tendencia",
+  "pt-BR": "Se a reclamação é um evento isolado ou parte de uma tendência"
+ },
+ "Whether the complaint is substantiated (verified)": {
+  "es": "Si la reclamación es fundada (verificada)",
+  "pt-BR": "Se a reclamação é procedente (verificada)"
+ },
+ "Whether the target completion date is realistic": {
+  "es": "Si la fecha objetivo de cumplimiento es realista",
+  "pt-BR": "Se a data-alvo de conclusão é realista"
+ },
  "with review date set": {
   "es": "con fecha de revisión fijada",
   "pt-BR": "com data de revisão definida"
@@ -5158,6 +6217,16 @@
   "pt-BR": "Seu perfil foi atualizado",
   "note": "status message"
  },
+ "— A confirmed trend with negative quality impact": {
+  "es": "— Una tendencia confirmada con impacto negativo en la calidad",
+  "pt-BR": "— Uma tendência confirmada com impacto negativo na qualidade",
+  "note": "GUIDANCE — review"
+ },
+ "— A confirmed trend with negative quality impact or risk, out of trend results or repeated quality events (typically 3 similar events in the last 12 months)": {
+  "es": "— Una tendencia confirmada con impacto o riesgo negativo para la calidad, resultados fuera de tendencia o eventos de calidad repetidos (normalmente 3 eventos similares en los últimos 12 meses)",
+  "pt-BR": "— Uma tendência confirmada com impacto ou risco negativo à qualidade, resultados fora de tendência ou eventos de qualidade repetidos (normalmente 3 eventos semelhantes nos últimos 12 meses)",
+  "note": "GUIDANCE — review"
+ },
  "— All Documents —": {
   "es": "— Todos los documentos —",
   "pt-BR": "— Todos os documentos —"
@@ -5170,9 +6239,64 @@
   "es": "— Todos los participantes —",
   "pt-BR": "— Todos os participantes —"
  },
+ "— Deviation from stipulated process, procedure or relevant quality documentation": {
+  "es": "— Desviación respecto del proceso, procedimiento o documentación de calidad establecidos",
+  "pt-BR": "— Desvio em relação ao processo, procedimento ou documentação de qualidade estabelecidos",
+  "note": "GUIDANCE — review"
+ },
+ "— Directly impacts patient safety, product sterility or efficacy.": {
+  "es": "— Afecta directamente la seguridad del paciente, la esterilidad o la eficacia del producto.",
+  "pt-BR": "— Afeta diretamente a segurança do paciente, a esterilidade ou a eficácia do produto.",
+  "note": "GUIDANCE — review"
+ },
+ "— Directly impacts patient safety, product sterility or efficacy. May require immediate batch quarantine, recall or regulatory reporting.": {
+  "es": "— Afecta directamente la seguridad del paciente, la esterilidad o la eficacia del producto. Puede requerir cuarentena inmediata del lote, retiro del mercado o notificación regulatoria.",
+  "pt-BR": "— Afeta diretamente a segurança do paciente, a esterilidade ou a eficácia do produto. Pode exigir quarentena imediata do lote, recolhimento ou notificação regulatória.",
+  "note": "GUIDANCE — review"
+ },
+ "— Facility, equipment, hardware or utility failure impacting quality": {
+  "es": "— Falla de instalaciones, equipos, hardware o servicios auxiliares que afecta la calidad",
+  "pt-BR": "— Falha de instalações, equipamentos, hardware ou utilidades que afeta a qualidade",
+  "note": "GUIDANCE — review"
+ },
+ "— Laboratory testing result (analytical, measurement or observation) that fails acceptance criteria": {
+  "es": "— Resultado de ensayo de laboratorio (analítico, de medición u observación) que no cumple los criterios de aceptación",
+  "pt-BR": "— Resultado de ensaio laboratorial (analítico, de medição ou observação) que não atende aos critérios de aceitação",
+  "note": "GUIDANCE — review"
+ },
+ "— Laboratory testing result that fails acceptance criteria": {
+  "es": "— Resultado de ensayo de laboratorio que no cumple los criterios de aceptación",
+  "pt-BR": "— Resultado de ensaio laboratorial que não atende aos critérios de aceitação",
+  "note": "GUIDANCE — review"
+ },
+ "— Low-risk departure with no direct impact on product quality or patient safety.": {
+  "es": "— Desviación de bajo riesgo sin impacto directo en la calidad del producto ni en la seguridad del paciente.",
+  "pt-BR": "— Desvio de baixo risco sem impacto direto na qualidade do produto ou na segurança do paciente.",
+  "note": "GUIDANCE — review"
+ },
+ "— Low-risk departure with no direct impact on product quality or patient safety. Administrative or documentation in nature.": {
+  "es": "— Desviación de bajo riesgo sin impacto directo en la calidad del producto ni en la seguridad del paciente. De naturaleza administrativa o documental.",
+  "pt-BR": "— Desvio de baixo risco sem impacto direto na qualidade do produto ou na segurança do paciente. De natureza administrativa ou documental.",
+  "note": "GUIDANCE — review"
+ },
+ "— Low-risk issue with no direct impact on product quality or patient safety. Administrative or cosmetic in nature. Typical SLA: 60 days.": {
+  "es": "— Problema de bajo riesgo sin impacto directo en la calidad del producto ni en la seguridad del paciente. De naturaleza administrativa o estética. Plazo típico: 60 días.",
+  "pt-BR": "— Problema de baixo risco sem impacto direto na qualidade do produto ou na segurança do paciente. De natureza administrativa ou estética. Prazo típico: 60 dias.",
+  "note": "GUIDANCE — review"
+ },
  "— None —": {
   "es": "— Ninguno —",
   "pt-BR": "— Nenhum —"
+ },
+ "— Poses an immediate or potential risk to patient safety, product sterility or efficacy. Requires priority handling and may trigger regulatory reporting or recall assessment.": {
+  "es": "— Representa un riesgo inmediato o potencial para la seguridad del paciente, la esterilidad o la eficacia del producto. Requiere atención prioritaria y puede dar lugar a una notificación regulatoria o a la evaluación de un retiro.",
+  "pt-BR": "— Representa risco imediato ou potencial à segurança do paciente, à esterilidade ou à eficácia do produto. Exige tratamento prioritário e pode levar a notificação regulatória ou avaliação de recolhimento.",
+  "note": "GUIDANCE — review"
+ },
+ "— Quality issues identified in sourced materials, products or outsourced activities": {
+  "es": "— Problemas de calidad identificados en materiales o productos adquiridos o en actividades tercerizadas",
+  "pt-BR": "— Problemas de qualidade identificados em materiais ou produtos adquiridos ou em atividades terceirizadas",
+  "note": "GUIDANCE — review"
  },
  "— retained for traceability; click to show": {
   "es": "— conservados por trazabilidad; haga clic para mostrarlos",
@@ -5181,5 +6305,47 @@
  "— select a user —": {
   "es": "— seleccione un usuario —",
   "pt-BR": "— selecione um usuário —"
+ },
+ "— Select an adverse event —": {
+  "es": "— Seleccione un evento adverso —",
+  "pt-BR": "— Selecione um evento adverso —"
+ },
+ "— Select the primary category. If multiple apply, choose the most significant and document the others in Investigation.": {
+  "es": "— Seleccione la categoría principal. Si aplican varias, elija la más significativa y documente las demás en la investigación.",
+  "pt-BR": "— Selecione a categoria principal. Se várias se aplicarem, escolha a mais significativa e documente as demais na investigação."
+ },
+ "— Select the primary category. If multiple categories apply, select the most significant one and document the others in Investigation.": {
+  "es": "— Seleccione la categoría principal. Si aplican varias categorías, seleccione la más significativa y documente las demás en la investigación.",
+  "pt-BR": "— Selecione a categoria principal. Se várias categorias se aplicarem, selecione a mais significativa e documente as demais na investigação."
+ },
+ "— Significant departure from GMP or SOPs. Indirect potential impact on product quality. Requires full investigation and CAPA.": {
+  "es": "— Desviación significativa de las BPM o los PNT. Impacto potencial indirecto en la calidad del producto. Requiere investigación completa y CAPA.",
+  "pt-BR": "— Desvio significativo das BPF ou dos POPs. Impacto potencial indireto na qualidade do produto. Exige investigação completa e CAPA.",
+  "note": "GUIDANCE — review"
+ },
+ "— Significant departure from GMP or SOPs. Requires full investigation and CAPA.": {
+  "es": "— Desviación significativa de las BPM o los PNT. Requiere investigación completa y CAPA.",
+  "pt-BR": "— Desvio significativo das BPF ou dos POPs. Exige investigação completa e CAPA.",
+  "note": "GUIDANCE — review"
+ },
+ "— Significant quality failure or departure from specifications. No immediate safety risk but requires full investigation and CAPA. Typical SLA: 30 days.": {
+  "es": "— Falla de calidad significativa o desviación de especificaciones. Sin riesgo inmediato para la seguridad, pero requiere investigación completa y CAPA. Plazo típico: 30 días.",
+  "pt-BR": "— Falha de qualidade significativa ou desvio de especificações. Sem risco imediato à segurança, mas exige investigação completa e CAPA. Prazo típico: 30 dias.",
+  "note": "GUIDANCE — review"
+ },
+ "— Unexpected event or accident impacting quality": {
+  "es": "— Evento inesperado o accidente que afecta la calidad",
+  "pt-BR": "— Evento inesperado ou acidente que afeta a qualidade",
+  "note": "GUIDANCE — review"
+ },
+ "— Unplanned event or \"close call\" that did not result in a Deviation but had the potential to impact quality": {
+  "es": "— Evento no planificado o «casi incidente» que no resultó en una desviación, pero pudo afectar la calidad",
+  "pt-BR": "— Evento não planejado ou \"quase incidente\" que não resultou em desvio, mas poderia afetar a qualidade",
+  "note": "GUIDANCE — review"
+ },
+ "— Unplanned event that did not result in a Deviation but had the potential to impact quality": {
+  "es": "— Evento no planificado que no resultó en una desviación, pero pudo afectar la calidad",
+  "pt-BR": "— Evento não planejado que não resultou em desvio, mas poderia afetar a qualidade",
+  "note": "GUIDANCE — review"
  }
 }

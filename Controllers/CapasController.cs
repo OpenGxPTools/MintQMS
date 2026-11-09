@@ -21,6 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
 using System.Data;
+using OpenQMS.Localization;
 using System.Text;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
@@ -281,7 +282,7 @@ namespace OpenQMS.Controllers
                 return Forbid();
 
             if (capa.TargetCompletionDate.HasValue && capa.TargetCompletionDate.Value.Date < SiteTime.Today)
-                ModelState.AddModelError(nameof(capa.TargetCompletionDate), "Target completion date must be today or in the future.");
+                ModelState.AddModelError(nameof(capa.TargetCompletionDate), this.T("Target completion date must be today or in the future."));
 
             try
             {
@@ -372,7 +373,7 @@ namespace OpenQMS.Controllers
             }
             catch (Exception)
             {
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                ModelState.AddModelError("", this.T("Unable to save changes. Try again, and if the problem persists, see your system administrator."));
             }
 
             PopulateViewData();
@@ -487,13 +488,13 @@ namespace OpenQMS.Controllers
             int? linkedAEId      = int.TryParse(form["LinkedAdverseEventId"], out var ae) ? ae : (int?)null;
 
             if (string.IsNullOrWhiteSpace(title))
-                ModelState.AddModelError("Title", "Title is required.");
+                ModelState.AddModelError("Title", this.T("Title is required."));
             if (string.IsNullOrWhiteSpace(correctiveAction))
-                ModelState.AddModelError("CorrectiveAction", "Corrective Action is required.");
+                ModelState.AddModelError("CorrectiveAction", this.T("Corrective Action is required."));
             if (string.IsNullOrWhiteSpace(preventiveAction))
-                ModelState.AddModelError("PreventiveAction", "Preventive Action is required.");
+                ModelState.AddModelError("PreventiveAction", this.T("Preventive Action is required."));
             if (targetDate.HasValue && targetDate.Value.Date < SiteTime.Today && targetDate != capa.TargetCompletionDate)
-                ModelState.AddModelError("TargetCompletionDate", "Target completion date must be today or in the future.");
+                ModelState.AddModelError("TargetCompletionDate", this.T("Target completion date must be today or in the future."));
 
             if (!ModelState.IsValid)
             {
@@ -1057,7 +1058,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"CAPA returned for rework ({action}).";
+            TempData["Success"] = this.T("CAPA returned for rework ({0}).", this.T(action));   // action stays English: it is also the audit entry
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -1465,7 +1466,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"File '{file.FileName}' uploaded successfully.";
+            TempData["Success"] = this.T("File '{0}' uploaded successfully.", file.FileName);
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = capaId });
         }

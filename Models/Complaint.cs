@@ -43,6 +43,8 @@ namespace OpenQMS.Models
         [ForeignKey("SupplierId")]
         public virtual Supplier? Supplier { get; set; }
         
+        [Display(Name = "Title")]
+        
         public string Title { get; set; } = string.Empty;
         
         public int? CustomerId { get; set; }
@@ -58,9 +60,15 @@ namespace OpenQMS.Models
         [Display(Name = "Customer Reference")]
         public string? CustomerReference { get; set; }
         
+        [Display(Name = "Description")]
+        
         public string Description { get; set; } = string.Empty;
         
+        [Display(Name = "Evaluation")]
+        
         public string? Evaluation { get; set; }
+        
+        [Display(Name = "Severity")]
         
         public ComplaintSeverity Severity { get; set; }
         
@@ -72,6 +80,8 @@ namespace OpenQMS.Models
 
         [Display(Name = "Target Resolution Date")]
         public DateTime? TargetResolutionDate { get; set; }
+        
+        [Display(Name = "Investigation")]
         
         public string? Investigation { get; set; }
 
@@ -97,6 +107,8 @@ namespace OpenQMS.Models
 
         [Display(Name = "Accepted On")]
         public DateTime? AcceptedOn { get; set; }
+
+        [Display(Name = "Resolution")]
 
         public string? Resolution { get; set; }
         
