@@ -26,7 +26,7 @@
                    value="@searchVal" />
         </div>
         <div class="col-md-3">
-            <label class="form-label small text-muted">Category</label>
+            <label class="form-label small text-muted">@L["Category"]</label>
             <select name="category" class="form-select">
                 <option value="">All Categories</option>
                 @foreach (var c in categories)
@@ -43,7 +43,7 @@
             </select>
         </div>
         <div class="col-md-3">
-            <label class="form-label small text-muted">Document Type</label>
+            <label class="form-label small text-muted">@L["Document Type"]</label>
             <select name="docType" class="form-select">
                 <option value="">All Types</option>
                 @foreach (var t in docTypes)
@@ -61,11 +61,11 @@
         </div>
         <div class="col-md-2 d-flex gap-2">
             <button type="submit" class="btn btn-primary flex-fill">
-                <i class="bi bi-search me-1"></i>Filter
+                <i class="bi bi-search me-1"></i>@L["Filter"]
             </button>
             @if (!string.IsNullOrEmpty(searchVal) || !string.IsNullOrEmpty(selCategory) || !string.IsNullOrEmpty(selDocType))
             {
-                <a asp-action="Library" class="btn btn-outline-secondary">Clear</a>
+                <a asp-action="Library" class="btn btn-outline-secondary">@L["Clear"]</a>
             }
         </div>
     </div>
@@ -79,13 +79,13 @@
             <thead class="table-light">
                 <tr>
                     <th>Doc ID</th>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Type</th>
-                    <th>Version</th>
+                    <th>@L["Title"]</th>
+                    <th>@L["Category"]</th>
+                    <th>@L["Type"]</th>
+                    <th>@L["Version"]</th>
                     <th>Issued On</th>
-                    <th>Review Due</th>
-                    <th>Actions</th>
+                    <th>@L["Review Due"]</th>
+                    <th>@L["Actions"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -129,7 +129,7 @@
                                 @reviewDue.Value.ToString("dd MMM yyyy")
                                 @if (reviewDue.Value.Date < SiteTime.Today)
                                 {
-                                    <span class="badge bg-danger ms-1">Overdue</span>
+                                    <span class="badge bg-danger ms-1">@L["Overdue"]</span>
                                 }
                             }
                             else { <span class="text-muted">—</span> }
@@ -137,7 +137,7 @@
                         <td>
                             <a asp-controller="AppDocuments" asp-action="ViewFile" asp-route-id="@doc.Id"
                                class="btn btn-outline-secondary btn-sm" target="_blank">
-                                <i class="bi bi-eye me-1"></i>View
+                                <i class="bi bi-eye me-1"></i>@L["View"]
                             </a>
                         </td>
                     </tr>

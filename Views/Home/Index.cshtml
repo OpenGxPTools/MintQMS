@@ -129,7 +129,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.MyRecentCAPAs)
                                 {
@@ -157,7 +157,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.MyRecentDeviations)
                                 {
@@ -185,7 +185,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Authored</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">Authored</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.MyRecentDocuments)
                                 {
@@ -213,7 +213,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Name</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Name"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.MyRecentTrainings)
                                 {
@@ -241,7 +241,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Proposed</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">Proposed</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.MyRecentChanges)
                                 {
@@ -269,7 +269,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Identified</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Identified"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.MyRecentRisks)
                                 {
@@ -316,7 +316,7 @@ else
                     @if (!Model.PendingCAPAs.Any()) { <div class="card-body text-muted small">No CAPAs pending your action.</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Date</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingCAPAs) {
                                     <tr>
@@ -342,7 +342,7 @@ else
                     @if (!Model.PendingDeviations.Any()) { <div class="card-body text-muted small">No deviations pending your action.</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Date</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingDeviations) {
                                     <tr>
@@ -368,7 +368,7 @@ else
                     @if (!Model.PendingChanges.Any()) { <div class="card-body text-muted small">No changes pending your action.</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Date</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingChanges) {
                                     <tr>
@@ -394,7 +394,7 @@ else
                     @if (!Model.PendingAudits.Any()) { <div class="card-body text-muted small">No audits pending action.</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Scheduled</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Scheduled"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingAudits) {
                                     <tr>
@@ -420,7 +420,7 @@ else
                     @if (!Model.PendingDocuments.Any()) { <div class="card-body text-muted small">No documents pending approval.</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Authored</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">Authored</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingDocuments) {
                                     <tr>
@@ -446,7 +446,7 @@ else
                     @if (!Model.PendingComplaints.Any()) { <div class="card-body text-muted small">No complaints pending your action.</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Received</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Received"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingComplaints) {
                                     <tr>
@@ -472,7 +472,7 @@ else
                     @if (!Model.PendingRisks.Any()) { <div class="card-body text-muted small">No risks pending your action.</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Action Required</th><th class="pe-3">Identified</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Identified"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingRisks) {
                                     <tr>
@@ -502,7 +502,7 @@ else
                     @if (!Model.PendingAdverseEvents.Any()) { <div class="card-body text-muted small">No adverse events pending approval.</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">AE#</th><th>MedDRA Term</th><th>Action Required</th><th class="pe-3">Deadline</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">AE#</th><th>MedDRA Term</th><th>@L["Action Required"]</th><th class="pe-3">Deadline</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingAdverseEvents) {
                                     <tr>
@@ -528,7 +528,7 @@ else
                     @if (!Model.PendingSignalReviews.Any()) { <div class="card-body text-muted small">No confirmed signals requiring action.</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">SIG#</th><th>MedDRA Term</th><th>Action Required</th><th class="pe-3">Detected</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">SIG#</th><th>MedDRA Term</th><th>@L["Action Required"]</th><th class="pe-3">@L["Detected"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingSignalReviews) {
                                     <tr>
@@ -554,7 +554,7 @@ else
                     @if (!Model.PendingLCRenewals.Any()) { <div class="card-body text-muted small">No licences or certifications with renewal due.</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">LC#</th><th>Holder</th><th>Action Required</th><th class="pe-3">Expiry</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">LC#</th><th>Holder</th><th>@L["Action Required"]</th><th class="pe-3">@L["Expiry"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingLCRenewals) {
                                     <tr>
@@ -746,7 +746,7 @@ else
             @if (!Model.RecentCAPAs.Any()) { <div class="card-body text-muted small">No open CAPAs.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentCAPAs) {
                             <tr>
@@ -772,7 +772,7 @@ else
             @if (!Model.RecentDeviations.Any()) { <div class="card-body text-muted small">No open deviations.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentDeviations) {
                             <tr>
@@ -798,7 +798,7 @@ else
             @if (!Model.RecentComplaints.Any()) { <div class="card-body text-muted small">No open complaints.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Received</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Received"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentComplaints) {
                             <tr>
@@ -824,7 +824,7 @@ else
             @if (!Model.RecentRisks.Any()) { <div class="card-body text-muted small">No open risks.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Identified</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Identified"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentRisks) {
                             <tr>
@@ -850,7 +850,7 @@ else
             @if (!Model.RecentAudits.Any()) { <div class="card-body text-muted small">No active audits.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Scheduled</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Scheduled"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentAudits) {
                             <tr>
@@ -876,7 +876,7 @@ else
             @if (!Model.RecentDocuments.Any()) { <div class="card-body text-muted small">No documents pending review.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Title</th><th>Status</th><th class="pe-3">Authored</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">Authored</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentDocuments) {
                             <tr>
@@ -902,7 +902,7 @@ else
             @if (!Model.RecentTrainings.Any()) { <div class="card-body text-muted small">No scheduled trainings.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>Name</th><th>Status</th><th class="pe-3">Date</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Name"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentTrainings) {
                             <tr>
@@ -1000,7 +1000,7 @@ else
             @if (!Model.RecentAdverseEvents.Any()) { <div class="card-body text-muted small">No open adverse events.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">AE#</th><th>MedDRA Term</th><th>Status</th><th class="pe-3">Deadline</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">AE#</th><th>MedDRA Term</th><th>@L["Status"]</th><th class="pe-3">Deadline</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentAdverseEvents) {
                             <tr>
@@ -1026,7 +1026,7 @@ else
             @if (!Model.LCExpiringSoon.Any()) { <div class="card-body text-muted small">No licences or certifications expiring within @(ViewBag.LcExpiryWarningDays ?? 90) days.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">LC#</th><th>Holder</th><th>Status</th><th class="pe-3">Expiry</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">LC#</th><th>Holder</th><th>@L["Status"]</th><th class="pe-3">@L["Expiry"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.LCExpiringSoon) {
                             <tr>
@@ -1052,7 +1052,7 @@ else
             @if (!Model.RecentRIApplications.Any()) { <div class="card-body text-muted small">No active regulatory applications.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">RI#</th><th>Product</th><th>Status</th><th class="pe-3">Target</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">RI#</th><th>@L["Product"]</th><th>@L["Status"]</th><th class="pe-3">Target</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentRIApplications) {
                             <tr>
@@ -1078,7 +1078,7 @@ else
             @if (!Model.RecentSignalReviews.Any()) { <div class="card-body text-muted small">No open signal reviews.</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">ID</th><th>MedDRA Term</th><th>Status</th><th class="pe-3">Detected</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>MedDRA Term</th><th>@L["Status"]</th><th class="pe-3">@L["Detected"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentSignalReviews) {
                             <tr>

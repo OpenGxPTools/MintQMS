@@ -70,7 +70,7 @@
     <input type="hidden" asp-for="Status" value="@Model.Status" />
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Product Identification</div>
+        <div class="card-header fw-semibold">@L["Product Identification"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -83,7 +83,7 @@
                     @{ var ptStr = Model.ProductType?.ToString() ?? ""; }
                     <select id="ProductType" name="ProductType" class="form-select">
                         <option value="">-- Select Product Type --</option>
-                        <option value="Pharmaceutical" selected="@(ptStr == "Pharmaceutical" ? "selected" : null)">Pharmaceutical</option>
+                        <option value="Pharmaceutical" selected="@(ptStr == "Pharmaceutical" ? "selected" : null)">@L["Pharmaceutical"]</option>
                         <option value="Biological" selected="@(ptStr == "Biological" ? "selected" : null)">Biological</option>
                         <option value="MedicalDevice" selected="@(ptStr == "MedicalDevice" ? "selected" : null)">Medical Device</option>
                         <option value="ConsumerHealth" selected="@(ptStr == "ConsumerHealth" ? "selected" : null)">Consumer Health</option>
@@ -201,11 +201,11 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Related Documents</div>
+        <div class="card-header fw-semibold">@L["Related Documents"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
-                    <label class="form-label">Linked Approved Documents</label>
+                    <label class="form-label">@L["Linked Approved Documents"]</label>
                     <select id="relatedDocDropdown" class="form-select">
                         <option value="">-- Add Document --</option>
                         @foreach (var d in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
@@ -224,19 +224,19 @@
 
 <!-- Strength / Presentation — managed separately (not part of main form) -->
 <div id="strengthSection" class="card mb-4" @(showStrengths ? "" : "style=\"display:none\"")>
-    <div class="card-header fw-semibold">Strength / Presentation</div>
+    <div class="card-header fw-semibold">@L["Strength / Presentation"]</div>
     <div class="card-body">
         @if (Model.Status == OpenQMS.Models.Product.ProductStatus.Approved)
         {
             <div class="alert alert-info py-2 mb-3">
                 <i class="fas fa-info-circle me-1"></i>
-                This product is <strong>Approved</strong>. Save the product above to create a new Draft revision before modifying strengths.
+                This product is <strong>@L["Approved"]</strong>. Save the product above to create a new Draft revision before modifying strengths.
             </div>
         }
         @if (Model.Strengths != null && Model.Strengths.Any())
         {
             <table class="table table-sm mb-3">
-                <thead class="table-light"><tr><th>Strength / Presentation</th><th style="width:80px"></th></tr></thead>
+                <thead class="table-light"><tr><th>@L["Strength / Presentation"]</th><th style="width:80px"></th></tr></thead>
                 <tbody>
                     @foreach (var s in Model.Strengths.OrderBy(x => x.Value))
                     {
@@ -249,7 +249,7 @@
                                           onsubmit="return confirm('Remove @s.Value?')">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="strengthId" value="@s.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">@L["Remove"]</button>
                                     </form>
                                 }
                             </td>
@@ -270,15 +270,15 @@
                     <label class="form-label small mb-1">Add Strength / Presentation</label>
                     <input type="text" name="value" class="form-control form-control-sm" placeholder="e.g. 500 mg" style="width:220px" required />
                 </div>
-                <button type="submit" class="btn btn-sm btn-outline-primary">Add</button>
+                <button type="submit" class="btn btn-sm btn-outline-primary">@L["Add"]</button>
             </form>
         }
     </div>
 </div>
 
 <div class="d-flex gap-2 mb-4">
-    <input type="submit" form="editForm" value="Save" class="btn btn-primary" />
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Cancel</a>
+    <input type="submit" form="editForm" value="@L["Save"]" class="btn btn-primary" />
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Cancel"]</a>
 </div>
 
 @section Scripts {

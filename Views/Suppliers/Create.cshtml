@@ -7,7 +7,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">New Supplier</h4>
+        <h4 class="mb-0">@L["New Supplier"]</h4>
     </div>
 </div>
 <hr />
@@ -16,7 +16,7 @@
     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Identity</div>
+        <div class="card-header fw-semibold">@L["Identity"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
@@ -41,7 +41,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Address</div>
+        <div class="card-header fw-semibold">@L["Address"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -69,7 +69,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Primary Contact</div>
+        <div class="card-header fw-semibold">@L["Primary Contact"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
@@ -89,7 +89,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Classification</div>
+        <div class="card-header fw-semibold">@L["Classification"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
@@ -138,8 +138,8 @@
     </div>
 
     <div class="d-flex gap-2">
-        <input type="submit" value="Create" class="btn btn-primary" />
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+        <input type="submit" value="@L["Create"]" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </form>
 

@@ -84,7 +84,7 @@
 
     @* Trainee *@
     <div class="cert-section">
-        <h6 class="text-uppercase text-muted small mb-2">Trainee</h6>
+        <h6 class="text-uppercase text-muted small mb-2">@L["Trainee"]</h6>
         <div class="row">
             <div class="col-md-6"><strong>Name:</strong> @traineeName</div>
             <div class="col-md-6"><strong>Email:</strong> @(trainee?.Email ?? "-")</div>
@@ -93,7 +93,7 @@
 
     @* Training Details *@
     <div class="cert-section">
-        <h6 class="text-uppercase text-muted small mb-2">Training Details</h6>
+        <h6 class="text-uppercase text-muted small mb-2">@L["Training Details"]</h6>
         <div class="row">
             <div class="col-md-12"><strong>Training Name:</strong> @Model.Name</div>
         </div>
@@ -119,7 +119,7 @@
 
     @* Source Document *@
     <div class="cert-section">
-        <h6 class="text-uppercase text-muted small mb-2">Source Document</h6>
+        <h6 class="text-uppercase text-muted small mb-2">@L["Source Document"]</h6>
         @if (policyDoc != null)
         {
             <div class="row">

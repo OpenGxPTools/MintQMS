@@ -31,8 +31,8 @@
         <a asp-action="ExportTrainingCompliance"
            asp-route-from="@from.ToString("yyyy-MM-dd")"
            asp-route-to="@to.ToString("yyyy-MM-dd")"
-           class="btn btn-outline-success">Export Excel</a>
-        <a asp-action="Index" class="btn btn-outline-secondary">Reports Hub</a>
+           class="btn btn-outline-success">@L["Export Excel"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">@L["Reports Hub"]</a>
     </div>
 </div>
 
@@ -44,11 +44,11 @@
 <form method="get" class="card card-body mb-4">
     <div class="row g-3 align-items-end">
         <div class="col-md-4">
-            <label class="form-label fw-semibold">From</label>
+            <label class="form-label fw-semibold">@L["From"]</label>
             <input type="date" name="from" class="form-control" value="@from.ToString("yyyy-MM-dd")" />
         </div>
         <div class="col-md-4">
-            <label class="form-label fw-semibold">To</label>
+            <label class="form-label fw-semibold">@L["To"]</label>
             <input type="date" name="to" class="form-control" value="@to.ToString("yyyy-MM-dd")" />
         </div>
         <div class="col-md-4">
@@ -75,7 +75,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-success">@ViewBag.CompletedTrainings</div>
-                <div class="text-muted">Completed</div>
+                <div class="text-muted">@L["Completed"]</div>
             </div>
         </div>
     </div>
@@ -114,11 +114,11 @@ else
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Training ID</th>
-                        <th>Name</th>
-                        <th>Due Date</th>
+                        <th>@L["Training ID"]</th>
+                        <th>@L["Name"]</th>
+                        <th>@L["Due Date"]</th>
                         <th>Attendees</th>
-                        <th>Status</th>
+                        <th>@L["Status"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -134,11 +134,11 @@ else
                             <td>
                                 @if (t.Status == Training.TrainingStatus.Completed)
                                 {
-                                    <span class="badge bg-success">Completed</span>
+                                    <span class="badge bg-success">@L["Completed"]</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-warning text-dark">Scheduled</span>
+                                    <span class="badge bg-warning text-dark">@L["Scheduled"]</span>
                                 }
                             </td>
                         </tr>
@@ -157,8 +157,8 @@ else
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>Name</th>
-                            <th>Email</th>
+                            <th>@L["Name"]</th>
+                            <th>@L["Email"]</th>
                             <th>Sessions Attended</th>
                             <th>Sessions Completed</th>
                             <th>Compliance %</th>

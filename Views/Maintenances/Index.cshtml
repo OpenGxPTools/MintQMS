@@ -57,26 +57,26 @@
 <hr />
 
 <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
-    <span class="text-muted small me-1">Filter by status:</span>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Scheduled">Scheduled</button>
-    <button class="btn btn-outline-info btn-sm status-filter" data-status="In Progress">In Progress</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Completed">Completed</button>
-    <button class="btn btn-outline-success btn-sm status-filter" data-status="Reviewed">Reviewed</button>
-    <button class="btn btn-outline-danger btn-sm status-filter" data-status="Overdue">Overdue</button>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Suspended">Suspended</button>
+    <span class="text-muted small me-1">@L["Filter by status:"]</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Scheduled"]">@L["Scheduled"]</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["In Progress"]">@L["In Progress"]</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Completed"]">@L["Completed"]</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Reviewed"]">Reviewed</button>
+    <button class="btn btn-outline-danger btn-sm status-filter" data-status="@L["Overdue"]">@L["Overdue"]</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Suspended"]">@L["Suspended"]</button>
 </div>
 
 <table id="maintenancesTable" class="table" style="width:100%;">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Asset</th>
-            <th>Type</th>
+            <th>@L["ID"]</th>
+            <th>@L["Title"]</th>
+            <th>@L["Asset"]</th>
+            <th>@L["Type"]</th>
             <th>Scheduled Date</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th>@L["Status"]</th>
+            <th>@L["Action"]</th>
         </tr>
     </thead>
     <tbody>
@@ -90,14 +90,14 @@
                 <td>@item.ScheduledDate.ToShortDateString()</td>
                 <td>@L.Enum(item.Status)</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if (item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Reviewed
                       && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Approved
                       && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Overdue
                       && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Suspended)
                     {
                         <text> | </text>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">@L["Edit"]</a>
                     }
                     @if ((User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole))
                          && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.InProgress
@@ -106,7 +106,7 @@
                          && item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Approved)
                     {
                         <text> | </text>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">@L["Delete"]</a>
                     }
                 </td>
             </tr>

@@ -50,7 +50,7 @@
             <input type="hidden" asp-for="NextScheduledDate" />
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Basic Information</div>
+                <div class="card-header fw-semibold">@L["Basic Information"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-12">
@@ -79,7 +79,7 @@
                             }
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Asset</label>
+                            <label class="form-label">@L["Asset"]</label>
                             @if (isScheduled)
                             {
                                 <select asp-for="AssetId" class="form-select"
@@ -239,7 +239,7 @@
             @if (isCompleted)
             {
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Review</div>
+                <div class="card-header fw-semibold">@L["Review"]</div>
                 <div class="card-body">
                     <div class="col-12">
                         <label asp-for="ReviewComments" class="form-label"></label>
@@ -262,9 +262,9 @@
             }
 
             <div class="d-flex gap-2 mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">View Details</a>
-                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+                <input type="submit" value="@L["Save"]" class="btn btn-primary" />
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">@L["View Details"]</a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
             </div>
         </form>
 

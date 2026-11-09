@@ -23,12 +23,12 @@
 <table class="table table-striped table-hover" id="signalTable">
     <thead class="table-dark">
         <tr>
-            <th>Detected</th>
-            <th>MedDRA Preferred Term</th>
-            <th class="text-center">Trigger Count</th>
-            <th>Assigned To</th>
-            <th>Status</th>
-            <th>Conclusion</th>
+            <th>@L["Detected"]</th>
+            <th>@L["MedDRA Preferred Term"]</th>
+            <th class="text-center">@L["Trigger Count"]</th>
+            <th>@L["Assigned To"]</th>
+            <th>@L["Status"]</th>
+            <th>@L["Conclusion"]</th>
             <th>Reviewed On</th>
             <th></th>
         </tr>
@@ -70,7 +70,7 @@
                 </td>
                 <td>@(s.ReviewedOn.ToSite()?.ToString("dd MMM yyyy") ?? "—")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-primary">View</a>
+                    <a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-primary">@L["View"]</a>
                     @if (s.Status != PVSignalReview.SignalStatus.Closed && s.Status != PVSignalReview.SignalStatus.Refuted)
                     {
                         <a asp-action="Edit" asp-route-id="@s.Id" class="btn btn-sm btn-outline-secondary ms-1">Assess</a>

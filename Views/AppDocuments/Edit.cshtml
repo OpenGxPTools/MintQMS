@@ -110,7 +110,7 @@
                 {
                     <div class="col-12">
                         <div class="card border-warning mt-2">
-                            <div class="card-header bg-warning bg-opacity-25 fw-semibold"><i class="fas fa-file-import me-1"></i>Document Provenance</div>
+                            <div class="card-header bg-warning bg-opacity-25 fw-semibold"><i class="fas fa-file-import me-1"></i>@L["Document Provenance"]</div>
                             <div class="card-body">
                                 <p class="text-muted small mb-3">Original authorship and approval details as they appear on the document.</p>
                                 <div class="row g-3">
@@ -124,7 +124,7 @@
                                         }
                                     </datalist>
                                     <div class="col-md-6">
-                                        <label asp-for="ExternalSource" class="form-label">Source / Origin</label>
+                                        <label asp-for="ExternalSource" class="form-label">@L["Source / Origin"]</label>
                                         <input asp-for="ExternalSource" class="form-control" placeholder="e.g. Acme Pharma Ltd, ISO, TGA" />
                                     </div>
                                     <div class="col-md-6">
@@ -132,19 +132,19 @@
                                         <input asp-for="ExternalVersion" class="form-control" placeholder="e.g. Rev C, v2.1" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label asp-for="ExternalAuthorName" class="form-label">Original Author</label>
+                                        <label asp-for="ExternalAuthorName" class="form-label">@L["Original Author"]</label>
                                         <input asp-for="ExternalAuthorName" class="form-control" list="systemUsersList" placeholder="Type name or select from system users…" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label asp-for="ExternalAuthoredOn" class="form-label">Originally Authored On</label>
+                                        <label asp-for="ExternalAuthoredOn" class="form-label">@L["Originally Authored On"]</label>
                                         <input asp-for="ExternalAuthoredOn" class="form-control" type="date" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label asp-for="ExternalApproverName" class="form-label">Original Approver</label>
+                                        <label asp-for="ExternalApproverName" class="form-label">@L["Original Approver"]</label>
                                         <input asp-for="ExternalApproverName" class="form-control" list="systemUsersList" placeholder="Type name or select from system users…" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label asp-for="ExternalApprovedOn" class="form-label">Originally Approved On</label>
+                                        <label asp-for="ExternalApprovedOn" class="form-label">@L["Originally Approved On"]</label>
                                         <input asp-for="ExternalApprovedOn" class="form-control" type="date" />
                                     </div>
                                 </div>
@@ -165,8 +165,8 @@
 
     <div class="d-flex gap-2">
         <input type="submit" value="@(isNewVersion ? "Create New Version" : "Save Changes")" class="btn btn-primary" />
-        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info btn-sm"><i class="fas fa-eye me-1"></i>View Details</a>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info btn-sm"><i class="fas fa-eye me-1"></i>@L["View Details"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </form>
 

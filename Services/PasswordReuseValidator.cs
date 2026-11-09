@@ -10,11 +10,14 @@ namespace OpenQMS.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IPasswordHasher<AppUser> _hasher;
+        private readonly Microsoft.Extensions.Localization.IStringLocalizer<OpenQMS.Localization.SharedResource>? _l;
 
-        public PasswordReuseValidator(ApplicationDbContext context, IPasswordHasher<AppUser> hasher)
+        public PasswordReuseValidator(ApplicationDbContext context, IPasswordHasher<AppUser> hasher,
+            Microsoft.Extensions.Localization.IStringLocalizer<OpenQMS.Localization.SharedResource>? l = null)
         {
             _context = context;
             _hasher  = hasher;
+            _l       = l;
         }
 
         public async Task<IdentityResult> ValidateAsync(UserManager<AppUser> manager, AppUser user, string password)
@@ -39,7 +42,9 @@ namespace OpenQMS.Services
                     return IdentityResult.Failed(new IdentityError
                     {
                         Code        = "PasswordReuse",
-                        Description = $"You cannot reuse any of your last {historyCount} passwords."
+                        Description = OpenQMS.Localization.LocalizedIdentityErrorDescriber.English || _l == null
+                            ? $"You cannot reuse any of your last {historyCount} passwords."
+                            : _l["You cannot reuse any of your last {0} passwords.", historyCount].Value
                     });
                 }
             }

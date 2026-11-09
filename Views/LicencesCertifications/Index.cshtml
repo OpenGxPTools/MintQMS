@@ -36,13 +36,13 @@
             <div class="col-md-2">
                 <label class="form-label small mb-1">Holder Type</label>
                 <select name="holderType" class="form-select form-select-sm">
-                    <option value="">All</option>
-                    <option value="OwnCompany" selected="@(ViewBag.SelectedHolderType == "OwnCompany")">Own Company</option>
+                    <option value="">@L["All"]</option>
+                    <option value="OwnCompany" selected="@(ViewBag.SelectedHolderType == "OwnCompany")">@L["Own Company"]</option>
                     <option value="ThirdParty" selected="@(ViewBag.SelectedHolderType == "ThirdParty")">Third Party</option>
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label small mb-1">Category</label>
+                <label class="form-label small mb-1">@L["Category"]</label>
                 <select name="category" class="form-select form-select-sm">
                     <option value="">All Categories</option>
                     @foreach (var c in Enum.GetValues<LCCategory>())
@@ -56,7 +56,7 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label small mb-1">Status</label>
+                <label class="form-label small mb-1">@L["Status"]</label>
                 <select name="status" class="form-select form-select-sm">
                     <option value="">All Statuses</option>
                     @foreach (var s in Enum.GetValues<LCStatus>())
@@ -66,7 +66,7 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label small mb-1">Licence Type</label>
+                <label class="form-label small mb-1">@L["Licence Type"]</label>
                 <select name="licenceTypeId" asp-items='@(ViewBag.LicenceTypes as SelectList)' class="form-select form-select-sm">
                     <option value="">All Types</option>
                 </select>
@@ -82,8 +82,8 @@
                 </select>
             </div>
             <div class="col-md-2 d-flex gap-2 align-items-end">
-                <button type="submit" class="btn btn-sm btn-outline-primary flex-fill"><i class="fas fa-search me-1"></i>Filter</button>
-                <a asp-action="Index" class="btn btn-sm btn-outline-secondary flex-fill"><i class="fas fa-times me-1"></i>Clear</a>
+                <button type="submit" class="btn btn-sm btn-outline-primary flex-fill"><i class="fas fa-search me-1"></i>@L["Filter"]</button>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary flex-fill"><i class="fas fa-times me-1"></i>@L["Clear"]</a>
             </div>
         </form>
     </div>
@@ -95,12 +95,12 @@
         <table id="lcTable" class="table table-hover table-sm mb-0">
             <thead class="table-light">
                 <tr>
-                    <th>LC Number</th>
+                    <th>@L["LC Number"]</th>
                     <th>Holder / Site</th>
-                    <th>Category</th>
-                    <th>Licence Type</th>
-                    <th>Status</th>
-                    <th>Expiry Date</th>
+                    <th>@L["Category"]</th>
+                    <th>@L["Licence Type"]</th>
+                    <th>@L["Status"]</th>
+                    <th>@L["Expiry Date"]</th>
                     <th>Days to Expiry</th>
                     <th></th>
                 </tr>
@@ -171,11 +171,11 @@
                             else { <span class="text-muted">—</span> }
                         </td>
                         <td>
-                            <a asp-action="Details" asp-route-id="@r.Id">Details</a>
+                            <a asp-action="Details" asp-route-id="@r.Id">@L["Details"]</a>
                             @if (canEdit)
                             {
                                 <text> | </text>
-                                <a asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                                <a asp-action="Edit" asp-route-id="@r.Id">@L["Edit"]</a>
                             }
                         </td>
                     </tr>

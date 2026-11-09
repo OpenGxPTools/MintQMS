@@ -28,13 +28,13 @@
                 <div class="col-md-6">
                     <label asp-for="ReviewTrigger" class="form-label"></label>
                     <select asp-for="ReviewTrigger" class="form-select" id="reviewTrigger">
-                        <option value="0">Scheduled</option>
-                        <option value="1">Deviation</option>
-                        <option value="2">Complaint</option>
-                        <option value="3">Audit</option>
-                        <option value="4">Risk</option>
-                        <option value="5">Change</option>
-                        <option value="6">Other</option>
+                        <option value="0">@L["Scheduled"]</option>
+                        <option value="1">@L["Deviation"]</option>
+                        <option value="2">@L["Complaint"]</option>
+                        <option value="3">@L["Audit"]</option>
+                        <option value="4">@L["Risk"]</option>
+                        <option value="5">@L["Change"]</option>
+                        <option value="6">@L["Other"]</option>
                     </select>
                 </div>
                 <div class="col-md-6" id="qualityRecordSection" style="display:none;">

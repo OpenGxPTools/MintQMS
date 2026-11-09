@@ -60,7 +60,7 @@
     <div class="d-flex gap-2 align-items-center">
         @if (Model.IsExternal)
         {
-            <span class="badge bg-warning text-dark fs-6"><i class="fas fa-file-import me-1"></i>External</span>
+            <span class="badge bg-warning text-dark fs-6"><i class="fas fa-file-import me-1"></i>@L["External"]</span>
         }
         <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
     </div>
@@ -129,12 +129,12 @@
 @if (canSubmit || canApprove || canReject || canReturn || canObsolete || canInitiateReview || canIssue || canReassign)
 {
     <div class="card border-primary mb-3">
-        <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> Workflow Actions</div>
+        <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> @L["Workflow Actions"]</div>
         <div class="card-body d-flex gap-2 flex-wrap">
             @if (canSubmit)
             {
                 <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#submitReviewModal">
-                    <i class="fas fa-paper-plane me-1"></i>Submit for Review
+                    <i class="fas fa-paper-plane me-1"></i>@L["Submit for Review"]
                 </button>
             }
             @if (canApprove)
@@ -158,7 +158,7 @@
             @if (canReturn)
             {
                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#returnForReworkModal">
-                    <i class="fas fa-undo me-1"></i>Return for Rework
+                    <i class="fas fa-undo me-1"></i>@L["Return for Rework"]
                 </button>
             }
             @if (canObsolete)
@@ -187,7 +187,7 @@
 <ul class="nav nav-tabs mb-3" id="docTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link @(activeTab == "overview" ? "active" : "")" id="tab-overview"
-                data-bs-toggle="tab" data-bs-target="#pane-overview" type="button">Overview</button>
+                data-bs-toggle="tab" data-bs-target="#pane-overview" type="button">@L["Overview"]</button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link @(activeTab == "versions" ? "active" : "")" id="tab-versions"
@@ -204,7 +204,7 @@
     <li class="nav-item" role="presentation">
         <button class="nav-link @(activeTab == "auditlog" ? "active" : "")" id="tab-auditlog"
                 data-bs-toggle="tab" data-bs-target="#pane-auditlog" type="button">
-            Audit Log <span class="badge bg-secondary ms-1">@(Model.AuditLogs?.Count ?? 0)</span>
+            @L["Audit Log"] <span class="badge bg-secondary ms-1">@(Model.AuditLogs?.Count ?? 0)</span>
         </button>
     </li>
 </ul>
@@ -215,16 +215,16 @@
     <div class="tab-pane fade @(activeTab == "overview" ? "show active" : "")" id="pane-overview" role="tabpanel">
 
         <dl class="row">
-            <dt class="col-sm-3">ID</dt>
+            <dt class="col-sm-3">@L["ID"]</dt>
             <dd class="col-sm-9">@Model.DocumentId</dd>
 
-            <dt class="col-sm-3">Title</dt>
+            <dt class="col-sm-3">@L["Title"]</dt>
             <dd class="col-sm-9">@Model.Title</dd>
 
-            <dt class="col-sm-3">Description</dt>
+            <dt class="col-sm-3">@L["Description"]</dt>
             <dd class="col-sm-9">@(Model.Description ?? "-")</dd>
 
-            <dt class="col-sm-3">Category</dt>
+            <dt class="col-sm-3">@L["Category"]</dt>
             <dd class="col-sm-9">
                 @if (Model.Category.HasValue)
                 {
@@ -238,7 +238,7 @@
                 else { <span class="text-muted">-</span> }
             </dd>
 
-            <dt class="col-sm-3">Document Type</dt>
+            <dt class="col-sm-3">@L["Document Type"]</dt>
             <dd class="col-sm-9">
                 @if (Model.DocType.HasValue)
                 {
@@ -252,10 +252,10 @@
                 else { <span class="text-muted">-</span> }
             </dd>
 
-            <dt class="col-sm-3">Version</dt>
+            <dt class="col-sm-3">@L["Version"]</dt>
             <dd class="col-sm-9">@Model.Version.ToString("0.00")</dd>
 
-            <dt class="col-sm-3">Status</dt>
+            <dt class="col-sm-3">@L["Status"]</dt>
             <dd class="col-sm-9"><span class="badge @statusBadge">@L.Enum(Model.Status)</span></dd>
 
             <dt class="col-sm-3">File Type</dt>
@@ -281,11 +281,11 @@
                 <dd class="col-sm-9">
                     @if (Model.TrainingRequired)
                     {
-                        <span class="badge bg-warning text-dark">Yes</span>
+                        <span class="badge bg-warning text-dark">@L["Yes"]</span>
                     }
                     else
                     {
-                        <span class="badge bg-secondary">No</span>
+                        <span class="badge bg-secondary">@L["No"]</span>
                     }
                 </dd>
             </dl>
@@ -311,17 +311,17 @@
                         <dt class="col-sm-3">Group Name</dt>
                         <dd class="col-sm-9">@t.Name</dd>
 
-                        <dt class="col-sm-3">Training Type</dt>
+                        <dt class="col-sm-3">@L["Training Type"]</dt>
                         <dd class="col-sm-9">
                             @(t.TrainingType == TrainingType.CompetencyAssessment
                                 ? "Competency Assessment"
                                 : "Read & Acknowledge")
                         </dd>
 
-                        <dt class="col-sm-3">Trainer</dt>
+                        <dt class="col-sm-3">@L["Trainer"]</dt>
                         <dd class="col-sm-9">@(string.IsNullOrEmpty(t.TrainerEmail) ? "—" : t.TrainerEmail)</dd>
 
-                        <dt class="col-sm-3">Trainees</dt>
+                        <dt class="col-sm-3">@L["Trainees"]</dt>
                         <dd class="col-sm-9">
                             @if (traineeNames.Any())
                             {
@@ -333,14 +333,14 @@
                             }
                         </dd>
 
-                        <dt class="col-sm-3">Due Date</dt>
+                        <dt class="col-sm-3">@L["Due Date"]</dt>
                         <dd class="col-sm-9">
                             @(t.DueDate.HasValue ? t.DueDate.Value.ToString("dd MMM yyyy") : "—")
                         </dd>
 
                         @if (!string.IsNullOrWhiteSpace(t.Description))
                         {
-                            <dt class="col-sm-3">Description</dt>
+                            <dt class="col-sm-3">@L["Description"]</dt>
                             <dd class="col-sm-9">@t.Description</dd>
                         }
                     </dl>
@@ -378,7 +378,7 @@
                 <dd class="col-sm-9">@Model.IssueCommentary</dd>
             }
 
-            <dt class="col-sm-3">Next Review Date</dt>
+            <dt class="col-sm-3">@L["Next Review Date"]</dt>
             <dd class="col-sm-9">
                 @if (Model.ReviewDueDate.HasValue)
                 {
@@ -388,7 +388,7 @@
                     <span class="@dClass">@Model.ReviewDueDate.Value.ToString("dd MMM yyyy")</span>
                     if (daysToReview.Value < 0)
                     {
-                        <span class="badge bg-danger ms-2">Overdue</span>
+                        <span class="badge bg-danger ms-2">@L["Overdue"]</span>
                     }
                     else if (daysToReview.Value <= 30)
                     {
@@ -400,7 +400,7 @@
 
             @if (Model.Status == AppDocument.DocumentStatus.Obsolete && Model.RetainUntil.HasValue)
             {
-                <dt class="col-sm-3">Retain Until</dt>
+                <dt class="col-sm-3">@L["Retain Until"]</dt>
                 <dd class="col-sm-9">
                     @Model.RetainUntil.Value.ToString("dd MMM yyyy")
                     @if (Model.RetainUntil.Value.Date < SiteTime.Today)
@@ -414,12 +414,12 @@
         @if (Model.IsExternal)
         {
             <hr />
-            <h6 class="text-uppercase text-muted small fw-bold mb-2"><i class="fas fa-file-import me-1"></i>Document Provenance</h6>
+            <h6 class="text-uppercase text-muted small fw-bold mb-2"><i class="fas fa-file-import me-1"></i>@L["Document Provenance"]</h6>
             <p class="text-muted small mb-2">Original authorship and approval details as recorded on the document itself, independent of the system acceptance workflow above.</p>
             <dl class="row">
                 @if (!string.IsNullOrEmpty(Model.ExternalSource))
                 {
-                    <dt class="col-sm-3">Source / Origin</dt>
+                    <dt class="col-sm-3">@L["Source / Origin"]</dt>
                     <dd class="col-sm-9">@Model.ExternalSource</dd>
                 }
                 @if (!string.IsNullOrEmpty(Model.ExternalVersion))
@@ -427,16 +427,16 @@
                     <dt class="col-sm-3">Original Version / Ref</dt>
                     <dd class="col-sm-9"><span class="badge bg-secondary">@Model.ExternalVersion</span></dd>
                 }
-                <dt class="col-sm-3">Original Author</dt>
+                <dt class="col-sm-3">@L["Original Author"]</dt>
                 <dd class="col-sm-9">@(Model.ExternalAuthorName ?? "-")</dd>
 
-                <dt class="col-sm-3">Originally Authored On</dt>
+                <dt class="col-sm-3">@L["Originally Authored On"]</dt>
                 <dd class="col-sm-9">@(Model.ExternalAuthoredOn?.ToString("dd MMM yyyy") ?? "-")</dd>
 
-                <dt class="col-sm-3">Original Approver</dt>
+                <dt class="col-sm-3">@L["Original Approver"]</dt>
                 <dd class="col-sm-9">@(Model.ExternalApproverName ?? "-")</dd>
 
-                <dt class="col-sm-3">Originally Approved On</dt>
+                <dt class="col-sm-3">@L["Originally Approved On"]</dt>
                 <dd class="col-sm-9">@(Model.ExternalApprovedOn?.ToString("dd MMM yyyy") ?? "-")</dd>
             </dl>
         }
@@ -471,7 +471,7 @@
                 </a>
             }
             <a class="btn btn-outline-secondary btn-sm" asp-action="ExportDetailInCSV" asp-route-id="@Model.Id">
-                <i class="fas fa-file-csv me-1"></i>Export CSV
+                <i class="fas fa-file-csv me-1"></i>@L["Export CSV"]
             </a>
         </div>
     </div>
@@ -483,13 +483,13 @@
             <table class="table table-sm table-bordered">
                 <thead class="table-light">
                     <tr>
-                        <th>Version</th>
-                        <th>Status</th>
-                        <th>Authored By</th>
-                        <th>Authored On</th>
-                        <th>Approved By</th>
-                        <th>Approved On</th>
-                        <th>Actions</th>
+                        <th>@L["Version"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Authored By"]</th>
+                        <th>@L["Authored On"]</th>
+                        <th>@L["Approved By"]</th>
+                        <th>@L["Approved On"]</th>
+                        <th>@L["Actions"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -514,16 +514,16 @@
                             <td>
                                 @if (!isCurrent)
                                 {
-                                    <a asp-action="Details" asp-route-id="@v.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-info-circle me-1"></i>Details</a>
+                                    <a asp-action="Details" asp-route-id="@v.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-info-circle me-1"></i>@L["Details"]</a>
                                 }
                                 @if (v.Content != null && v.Content.Length > 0)
                                 {
                                     <a asp-action="ViewFile" asp-route-id="@v.Id" class="btn btn-outline-primary btn-sm ms-1" target="_blank" rel="noopener">
-                                        <i class="fas fa-eye me-1"></i>View
+                                        <i class="fas fa-eye me-1"></i>@L["View"]
                                     </a>
                                 }
                                 <a asp-action="DownloadFile" asp-route-id="@v.Id" class="btn btn-outline-secondary btn-sm ms-1">
-                                    <i class="fas fa-download me-1"></i>Download
+                                    <i class="fas fa-download me-1"></i>@L["Download"]
                                 </a>
                             </td>
                         </tr>
@@ -544,12 +544,12 @@
             <table class="table table-sm table-bordered">
                 <thead class="table-light">
                     <tr>
-                        <th>Training ID</th>
-                        <th>Name</th>
-                        <th>Type</th>
+                        <th>@L["Training ID"]</th>
+                        <th>@L["Name"]</th>
+                        <th>@L["Type"]</th>
                         <th>Version Trained On</th>
-                        <th>Status</th>
-                        <th>Trainees</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Trainees"]</th>
                         <th>Created On</th>
                         <th></th>
                     </tr>
@@ -582,7 +582,7 @@
                             <td>@(SiteTime.ToSite((DateTime)req.CreatedOn).ToString("dd MMM yyyy"))</td>
                             <td>
                                 <a asp-controller="Trainings" asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-secondary btn-sm">
-                                    <i class="fas fa-eye me-1"></i>View
+                                    <i class="fas fa-eye me-1"></i>@L["View"]
                                 </a>
                             </td>
                         </tr>
@@ -609,7 +609,7 @@
     @if ((await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Update)).Succeeded && !Model.IsLocked && Model.Status == AppDocument.DocumentStatus.Draft)
     {
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">
-            <i class="fas fa-edit me-1"></i>Edit
+            <i class="fas fa-edit me-1"></i>@L["Edit"]
         </a>
     }
     @if ((await AuthorizationService.AuthorizeAsync(User, Model, DocumentOperations.Update)).Succeeded
@@ -620,7 +620,7 @@
         </a>
     }
     <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-        <i class="fas fa-arrow-left me-1"></i>Back to List
+        <i class="fas fa-arrow-left me-1"></i>@L["Back to List"]
     </a>
 </div>
 
@@ -633,7 +633,7 @@
                 <form asp-action="SubmitForReview" asp-route-id="@Model.Id" method="post">
                     @Html.AntiForgeryToken()
                     <div class="modal-header bg-info text-dark">
-                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>Submit for Review</h5>
+                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>@L["Submit for Review"]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
@@ -645,13 +645,13 @@
                             <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Password"] <span class="text-danger">*</span></label>
                             <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-info">Submit for Review</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                        <button type="submit" class="btn btn-info">@L["Submit for Review"]</button>
                     </div>
                 </form>
             </div>
@@ -685,16 +685,16 @@
                         <hr />
                         <p class="text-muted small mb-2">Enter your credentials to confirm.</p>
                         <div class="mb-3">
-                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Email"] <span class="text-danger">*</span></label>
                             <input type="email" name="InputEmail" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Password"] <span class="text-danger">*</span></label>
                             <input type="password" name="InputPassword" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                         <button type="submit" class="btn btn-success">Issue Document</button>
                     </div>
                 </form>
@@ -731,13 +731,13 @@
                             <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Password"] <span class="text-danger">*</span></label>
                             <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-times-circle me-1"></i>Reject</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">@L["Cancel"]</button>
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-times-circle me-1"></i>@L["Reject"]</button>
                     </div>
                 </form>
             </div>
@@ -771,12 +771,12 @@
                             <input type="email" name="InputEmail" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Password</label>
+                            <label class="form-label fw-semibold">@L["Password"]</label>
                             <input type="password" name="InputPassword" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">@L["Cancel"]</button>
                         <button type="submit" class="btn btn-secondary btn-sm"><i class="fas fa-archive me-1"></i>Mark Obsolete</button>
                     </div>
                 </form>
@@ -831,12 +831,12 @@
                             <input type="email" name="InputEmail" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Password</label>
+                            <label class="form-label fw-semibold">@L["Password"]</label>
                             <input type="password" name="InputPassword" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">@L["Cancel"]</button>
                         <button type="submit" class="btn btn-dark btn-sm"><i class="fas fa-user-edit me-1"></i>Reassign Author</button>
                     </div>
                 </form>
@@ -854,13 +854,13 @@
                 <form asp-action="ReturnForRework" asp-route-id="@Model.Id" method="post">
                     @Html.AntiForgeryToken()
                     <div class="modal-header bg-warning text-dark">
-                        <h5 class="modal-title"><i class="fas fa-undo me-1"></i>Return for Rework</h5>
+                        <h5 class="modal-title"><i class="fas fa-undo me-1"></i>@L["Return for Rework"]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <p>Returning <strong>@Model.Title</strong> v@(Model.Version.ToString("0.00")) to Draft. The author will be able to make changes and resubmit for review.</p>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Reason for Return <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">@L["Reason for Return"] <span class="text-danger">*</span></label>
                             <textarea name="ReturnReason" class="form-control" rows="3" required
                                       placeholder="Describe what changes are needed before resubmission..."></textarea>
                         </div>
@@ -871,13 +871,13 @@
                             <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Password"] <span class="text-danger">*</span></label>
                             <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-warning btn-sm"><i class="fas fa-undo me-1"></i>Return for Rework</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">@L["Cancel"]</button>
+                        <button type="submit" class="btn btn-warning btn-sm"><i class="fas fa-undo me-1"></i>@L["Return for Rework"]</button>
                     </div>
                 </form>
             </div>
@@ -909,12 +909,12 @@
                             <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Password"] <span class="text-danger">*</span></label>
                             <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                         <button type="submit" class="btn btn-warning">Initiate Periodic Review</button>
                     </div>
                 </form>

@@ -13,7 +13,7 @@
 
 
 <div class="d-flex align-items-center justify-content-between mb-2">
-    <h4 class="mb-0">My Training</h4>
+    <h4 class="mb-0">@L["My Training"]</h4>
     @if (outstanding.Any(r => r.Training?.DueDate.HasValue == true && r.Training.DueDate!.Value.Date < SiteTime.Today))
     {
         <span class="badge bg-danger fs-6"><i class="bi bi-exclamation-circle me-1"></i>Overdue items</span>
@@ -51,12 +51,12 @@
         <table class="table table-sm align-middle">
             <thead class="table-light">
                 <tr>
-                    <th>Training ID</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Source Document</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
+                    <th>@L["Training ID"]</th>
+                    <th>@L["Name"]</th>
+                    <th>@L["Type"]</th>
+                    <th>@L["Source Document"]</th>
+                    <th>@L["Due Date"]</th>
+                    <th>@L["Status"]</th>
                     <th></th>
                 </tr>
             </thead>
@@ -122,7 +122,7 @@
                                 @training.DueDate.Value.ToString("dd MMM yyyy")
                                 @if (isOverdue)
                                 {
-                                    <span class="badge bg-danger ms-1">Overdue</span>
+                                    <span class="badge bg-danger ms-1">@L["Overdue"]</span>
                                 }
                             }
                             else { <span class="text-muted">—</span> }
@@ -170,10 +170,10 @@ else
         <table class="table table-sm align-middle">
             <thead class="table-light">
                 <tr>
-                    <th>Training ID</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Source Document</th>
+                    <th>@L["Training ID"]</th>
+                    <th>@L["Name"]</th>
+                    <th>@L["Type"]</th>
+                    <th>@L["Source Document"]</th>
                     <th>Completed / Acknowledged</th>
                 </tr>
             </thead>
@@ -257,16 +257,16 @@ else
                     <hr />
                     <p class="text-muted small mb-2">Enter your credentials to sign this acknowledgement.</p>
                     <div class="mb-3">
-                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Email"] <span class="text-danger">*</span></label>
                         <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Password"] <span class="text-danger">*</span></label>
                         <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-success" id="ackSubmitBtn">Acknowledge</button>
                 </div>
             </form>

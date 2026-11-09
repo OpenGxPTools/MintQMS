@@ -1,12 +1,12 @@
 ﻿@page
 @model LoginWith2faModel
 @{
-    ViewData["Title"] = "Two-factor authentication";
+    ViewData["Title"] = L["Two-factor authentication"].Value;
 }
 
 <h1>@ViewData["Title"]</h1>
 <hr />
-<p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>
+<p>@L["Your login is protected with an authenticator app. Enter your authenticator code below."]</p>
 <div class="row">
     <div class="col-md-4">
         <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
@@ -26,14 +26,14 @@
                 </div>
             </div>
             <div>
-                <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                <button type="submit" class="w-100 btn btn-lg btn-primary">@L["Log in"]</button>
             </div>
         </form>
     </div>
 </div>
 <p>
-    Don't have access to your authenticator device? You can
-    <a id="recovery-code-login" asp-page="./LoginWithRecoveryCode" asp-route-returnUrl="@Model.ReturnUrl">log in with a recovery code</a>.
+    @H["Don't have access to your authenticator device? You can {0}.",
+        HtmlPieces.Link(Url.Page("./LoginWithRecoveryCode", new { returnUrl = Model.ReturnUrl }), L["log in with a recovery code"].Value, "recovery-code-login")]
 </p>
 
 @section Scripts {

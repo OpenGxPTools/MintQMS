@@ -37,17 +37,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 @if (!Model.Any())
 {
-    <p class="text-muted fst-italic">No audit log entries yet.</p>
+    <p class="text-muted fst-italic">@L["No audit log entries yet."]</p>
 }
 else
 {
     <table class="table table-sm table-bordered">
         <thead class="table-light">
             <tr>
-                <th>Date / Time (UTC)</th>
-                <th>Action</th>
+                <th>@L["Date / Time (UTC)"]</th>
+                <th>@L["Action"]</th>
                 <th>Detail</th>
-                <th>Performed By</th>
+                <th>@L["Performed By"]</th>
             </tr>
         </thead>
         <tbody>

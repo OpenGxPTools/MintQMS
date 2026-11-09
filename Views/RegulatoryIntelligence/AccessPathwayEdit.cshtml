@@ -26,18 +26,18 @@
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label asp-for="AccessNumber" class="form-label">AP Number</label>
+                    <label asp-for="AccessNumber" class="form-label">@L["AP Number"]</label>
                     <input asp-for="AccessNumber" class="form-control" />
                     <span asp-validation-for="AccessNumber" class="text-danger small"></span>
                 </div>
                 <div class="col-md-4">
-                    <label asp-for="PathwayType" class="form-label">Pathway Type <span class="text-danger">*</span></label>
+                    <label asp-for="PathwayType" class="form-label">@L["Pathway Type"] <span class="text-danger">*</span></label>
                     <select asp-for="PathwayType" class="form-select"
                             asp-items="Html.GetEnumSelectList<RIAccessPathwayType>()"></select>
                     <span asp-validation-for="PathwayType" class="text-danger small"></span>
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="Status" class="form-label">Status</label>
+                    <label asp-for="Status" class="form-label">@L["Status"]</label>
                     <select asp-for="Status" class="form-select"
                             asp-items="Html.GetEnumSelectList<RIAccessPathwayStatus>()"></select>
                 </div>
@@ -45,7 +45,7 @@
                     <label class="form-label d-block">&nbsp;</label>
                     <div class="form-check mt-2">
                         <input asp-for="AEReportingRequired" class="form-check-input" type="checkbox" />
-                        <label asp-for="AEReportingRequired" class="form-check-label">AE Reporting Required</label>
+                        <label asp-for="AEReportingRequired" class="form-check-label">@L["AE Reporting Required"]</label>
                     </div>
                 </div>
             </div>
@@ -57,15 +57,15 @@
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label asp-for="PatientIdentifier" class="form-label">Patient Identifier <span class="text-muted small">(pseudonymised)</span></label>
+                    <label asp-for="PatientIdentifier" class="form-label">@L["Patient Identifier"] <span class="text-muted small">(pseudonymised)</span></label>
                     <input asp-for="PatientIdentifier" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label asp-for="PrescriberName" class="form-label">Prescriber Name</label>
+                    <label asp-for="PrescriberName" class="form-label">@L["Prescriber Name"]</label>
                     <input asp-for="PrescriberName" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label asp-for="PrescriberId" class="form-label">Prescriber ID</label>
+                    <label asp-for="PrescriberId" class="form-label">@L["Prescriber ID"]</label>
                     <input asp-for="PrescriberId" class="form-control" />
                 </div>
             </div>
@@ -81,15 +81,15 @@
                     <input asp-for="TGAApprovalLetterNumber" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="ApprovalDate" class="form-label">Approval Date</label>
+                    <label asp-for="ApprovalDate" class="form-label">@L["Approval Date"]</label>
                     <input asp-for="ApprovalDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="ExpiryDate" class="form-label">Expiry Date</label>
+                    <label asp-for="ExpiryDate" class="form-label">@L["Expiry Date"]</label>
                     <input asp-for="ExpiryDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="NextSixMonthlyReportDue" class="form-label">Next Six-Monthly Report Due</label>
+                    <label asp-for="NextSixMonthlyReportDue" class="form-label">@L["Next Six-Monthly Report Due"]</label>
                     <input asp-for="NextSixMonthlyReportDue" type="date" class="form-control" />
                 </div>
             </div>
@@ -97,7 +97,7 @@
     </div>
 
     <div class="card mb-3">
-        <div class="card-header fw-semibold">Clinical Justification</div>
+        <div class="card-header fw-semibold">@L["Clinical Justification"]</div>
         <div class="card-body">
             <textarea asp-for="ClinicalJustification" class="form-control" rows="4"></textarea>
         </div>
@@ -105,8 +105,8 @@
 
     <div class="d-flex gap-2">
         <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save me-1"></i>Save Changes
+            <i class="fas fa-save me-1"></i>@L["Save Changes"]
         </button>
-        <a asp-action="AccessPathwayDetails" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancel</a>
+        <a asp-action="AccessPathwayDetails" asp-route-id="@Model.Id" class="btn btn-outline-secondary">@L["Cancel"]</a>
     </div>
 </form>

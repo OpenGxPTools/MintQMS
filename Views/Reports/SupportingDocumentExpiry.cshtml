@@ -8,7 +8,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">Record Attachments — Expiry Register</h4>
-    <a asp-action="Index" class="btn btn-outline-secondary">Reports Hub</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">@L["Reports Hub"]</a>
 </div>
 
 <p class="text-muted mb-3">
@@ -31,7 +31,7 @@ else
         <div class="col-sm-6 col-md-3">
             <div class="card border-0 shadow-sm text-center @(Model.TotalExpired > 0 ? "border-danger" : "")" style="border-left: 4px solid @(Model.TotalExpired > 0 ? "#dc3545" : "#6c757d") !important;">
                 <div class="card-body py-3">
-                    <p class="text-uppercase text-muted small fw-semibold mb-1">Expired</p>
+                    <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Expired"]</p>
                     <h2 class="fw-bold mb-0 @(Model.TotalExpired > 0 ? "text-danger" : "")">@Model.TotalExpired</h2>
                 </div>
             </div>
@@ -66,9 +66,9 @@ else
     </div>
 
     <div class="alert alert-light border small mb-4">
-        <strong>Colour coding:</strong>
-        <span class="badge bg-danger me-1">Red</span> Expired (past expiry date) &nbsp;
-        <span class="badge bg-warning text-dark me-1">Amber</span> Expiring soon (within per-document reminder days) &nbsp;
+        <strong>@L["Colour coding:"]</strong>
+        <span class="badge bg-danger me-1">@L["Red"]</span> Expired (past expiry date) &nbsp;
+        <span class="badge bg-warning text-dark me-1">@L["Amber"]</span> Expiring soon (within per-document reminder days) &nbsp;
         <span class="badge bg-success me-1">Green</span> Valid (not yet in reminder period)
     </div>
 }
@@ -105,11 +105,11 @@ else
                         <table class="table table-sm table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Document</th>
-                                    <th>Description</th>
-                                    <th class="text-nowrap">Expiry Date</th>
-                                    <th class="text-nowrap">Days</th>
-                                    <th>Status</th>
+                                    <th>@L["Document"]</th>
+                                    <th>@L["Description"]</th>
+                                    <th class="text-nowrap">@L["Expiry Date"]</th>
+                                    <th class="text-nowrap">@L["Days"]</th>
+                                    <th>@L["Status"]</th>
                                 </tr>
                             </thead>
                             <tbody>

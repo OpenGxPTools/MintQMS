@@ -20,7 +20,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">New Change</h4>
+        <h4 class="mb-0">@L["New Change"]</h4>
         <small class="text-muted">Propose a change, describe the rationale, and link to affected processes or products.</small>
     </div>
 </div>
@@ -48,7 +48,7 @@
 
                         <!-- Products -->
                         <div class="col-md-6">
-                            <label class="form-label">Products</label>
+                            <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Product --</option>
                                 @foreach (var item in products)
@@ -62,7 +62,7 @@
 
                         <!-- Processes -->
                         <div class="col-md-6">
-                            <label class="form-label">Processes</label>
+                            <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Process --</option>
                                 @foreach (var item in processes)
@@ -76,7 +76,7 @@
 
                         <!-- Assets -->
                         <div class="col-md-6">
-                            <label class="form-label">Assets</label>
+                            <label class="form-label">@L["Assets"]</label>
                             <select id="assetDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Asset --</option>
                                 @foreach (var item in assets)
@@ -90,7 +90,7 @@
 
                         <!-- Materials -->
                         <div class="col-md-6">
-                            <label class="form-label">Materials</label>
+                            <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Material --</option>
                                 @foreach (var item in materials)
@@ -104,7 +104,7 @@
 
                         <!-- Suppliers -->
                         <div class="col-md-6">
-                            <label class="form-label">Suppliers</label>
+                            <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Supplier --</option>
                                 @foreach (var item in suppliers)
@@ -118,7 +118,7 @@
 
                         <!-- CAPAs -->
                         <div class="col-md-6">
-                            <label class="form-label">Linked CAPAs</label>
+                            <label class="form-label">@L["Linked CAPAs"]</label>
                             <select id="capaDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add CAPA --</option>
                                 @foreach (var item in capas)
@@ -135,13 +135,13 @@
 
             <!-- ── Proposal ───────────────────────────────────────────────── -->
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Proposal</div>
+                <div class="card-header fw-semibold">@L["Proposal"]</div>
                 <div class="card-body">
                     <p class="text-muted small mb-3">Describe the proposed change, its rationale, expected benefits, and potential risks or impacts on product quality, GMP compliance, or regulatory status.</p>
                     <div class="row g-3">
                         <div class="col-12">
                             <label asp-for="Proposal" class="form-label">
-                                Proposal
+                                @L["Proposal"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="proposal"
                                         aria-label="Proposal guidance">?</button>
                             </label>
@@ -153,8 +153,8 @@
             </div>
 
             <div class="d-flex gap-2">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+                <input type="submit" value="@L["Create"]" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
             </div>
         </form>
 

@@ -73,6 +73,32 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script src="~/lib/DataTables/JSZip/jszip.min.js"></script>
     <script src="~/lib/DataTables/pdfmake/pdfmake.min.js"></script>
     <script src="~/lib/DataTables/pdfmake/vfs_fonts.js"></script>
+    @if (System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName != "en")
+    {
+        @* Table controls in the interface language. English keeps DataTables' own defaults untouched. *@
+        var dtLanguage = new Dictionary<string, object>
+        {
+            ["lengthMenu"] = L["Show _MENU_ entries"].Value,
+            ["search"] = L["Search:"].Value,
+            ["info"] = L["Showing _START_ to _END_ of _TOTAL_ entries"].Value,
+            ["infoEmpty"] = L["Showing 0 to 0 of 0 entries"].Value,
+            ["infoFiltered"] = L["(filtered from _MAX_ total entries)"].Value,
+            ["zeroRecords"] = L["No matching records found"].Value,
+            ["emptyTable"] = L["No data available in table"].Value,
+            ["loadingRecords"] = L["Loading..."].Value,
+            ["processing"] = L["Processing..."].Value,
+            ["paginate"] = new Dictionary<string, string>
+            {
+                ["first"] = L["First"].Value, ["last"] = L["Last"].Value,
+                ["next"] = L["Next"].Value, ["previous"] = L["Previous"].Value,
+            },
+            ["buttons"] = new Dictionary<string, string>
+            {
+                ["colvis"] = L["Column visibility"].Value, ["copy"] = L["Copy"].Value, ["print"] = L["Print"].Value,
+            },
+        };
+        <script>$.extend(true, $.fn.dataTable.defaults, { language: @Json.Serialize(dtLanguage) });</script>
+    }
 
     <script src="~/lib/ChartJs/chart.min.js"></script>
 

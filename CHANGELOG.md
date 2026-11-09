@@ -2,7 +2,21 @@
 
 ## Unreleased
 
-**Groundwork for Spanish and Portuguese** (no translations yet — every screen still reads in English)
+**Spanish and Portuguese (Brazil) — shared parts translated**
+
+- Translated: menu bar, page layout, sign-in and account pages, every state/type/role name, the 417
+  words and phrases shared across screens (buttons, column headings, common labels), table controls
+  (search, paging), built-in validation messages and password rules — 1,035 entries in each language.
+  Module-specific page text follows in later releases; until then it shows in English.
+- Records never change language: audit trails, record fields, PDFs and stored values stay English
+  whatever language the user has chosen (tested).
+- The menu bar wraps onto a second row when it does not fit, instead of pushing *Logout* off-screen
+  (this also affected English on screens narrower than about 1600 pixels).
+- Status filters on registers keep working in every language (tested in a browser on all 15 registers).
+- Tools for contributors: `tools/i18n.py` (build/check/report/review) and `tools/i18n_wrap.py`;
+  see CONTRIBUTING.md.
+
+**Groundwork for Spanish and Portuguese**
 
 - Interface languages can be offered with the `Localization:Languages` setting (`en`, `es`, `pt-BR`); a
   language menu then appears in the menu bar and on the sign-in page, and the choice is remembered in the

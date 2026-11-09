@@ -40,7 +40,7 @@
 {
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span>Upload Document</span>
+            <span>@L["Upload Document"]</span>
             <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Accepted: @UploadRules.AcceptedLabel &middot; Max 25 MB</small>
         </div>
         <div class="card-body">
@@ -49,27 +49,27 @@
                 <input type="hidden" name="customerId" value="@Model.Id" />
                 <div class="row g-3">
                     <div class="col-md-5">
-                        <label class="form-label">File <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["File"] <span class="text-danger">*</span></label>
                         <input type="file" name="file" class="form-control form-control-sm" required
                                accept="@UploadRules.Accept" />
                     </div>
                     <div class="col-md-5">
-                        <label class="form-label">Description</label>
+                        <label class="form-label">@L["Description"]</label>
                         <input type="text" name="description" class="form-control form-control-sm" />
                     </div>
                 </div>
                 <div class="row g-3 mt-1">
                     <div class="col-md-3">
-                        <label class="form-label">Issue Date</label>
+                        <label class="form-label">@L["Issue Date"]</label>
                         <input type="date" name="issueDate" class="form-control form-control-sm" />
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">Expiry Date</label>
+                        <label class="form-label">@L["Expiry Date"]</label>
                         <input type="date" name="expiryDate" class="form-control form-control-sm" />
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-upload me-1"></i>Upload
+                            <i class="fas fa-upload me-1"></i>@L["Upload"]
                         </button>
                     </div>
                 </div>
@@ -79,26 +79,26 @@
 }
 else
 {
-    <div class="alert alert-secondary">Attachments can only be added or removed while the record is in Draft or Under Review.</div>
+    <div class="alert alert-secondary">@L["Attachments can only be added or removed while the record is in Draft or Under Review."]</div>
 }
 
 @if (Model.Documents == null || !Model.Documents.Any())
 {
-    <p class="text-muted">No documents uploaded yet.</p>
+    <p class="text-muted">@L["No documents uploaded yet."]</p>
 }
 else
 {
     <table class="table table-sm table-hover" id="docsTable">
         <thead class="table-light">
             <tr>
-                <th>File Name</th>
-                <th>Description</th>
-                <th>Issue Date</th>
-                <th>Expiry Date</th>
-                <th>Status</th>
-                <th>Uploaded By</th>
-                <th>Uploaded Date</th>
-                <th class="text-end">Actions</th>
+                <th>@L["File Name"]</th>
+                <th>@L["Description"]</th>
+                <th>@L["Issue Date"]</th>
+                <th>@L["Expiry Date"]</th>
+                <th>@L["Status"]</th>
+                <th>@L["Uploaded By"]</th>
+                <th>@L["Uploaded Date"]</th>
+                <th class="text-end">@L["Actions"]</th>
             </tr>
         </thead>
         <tbody>
@@ -116,7 +116,7 @@ else
                     <td>@doc.UploadedDate.ToSite().ToString("dd/MM/yyyy")</td>
                     <td class="text-end">
                         <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-outline-secondary btn-sm">
-                            <i class="fas fa-download me-1"></i>Download
+                            <i class="fas fa-download me-1"></i>@L["Download"]
                         </a>
                         @if (!isLocked)
                         {
@@ -125,7 +125,7 @@ else
                                 <input type="hidden" name="id" value="@doc.Id" />
                                 <input type="hidden" name="customerId" value="@Model.Id" />
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
-                                    <i class="fas fa-trash me-1"></i>Delete
+                                    <i class="fas fa-trash me-1"></i>@L["Delete"]
                                 </button>
                             </form>
                         }
@@ -138,8 +138,8 @@ else
 <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadDocument", Noun: "documents")' />
 
 <div class="mt-3 d-flex gap-3">
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to Details</a>
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>Back to List</a>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-arrow-left me-1"></i>@L["Back to Details"]</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>@L["Back to List"]</a>
 </div>
 
 @section Scripts {

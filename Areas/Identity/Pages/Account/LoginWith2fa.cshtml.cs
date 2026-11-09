@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using OpenQMS.Localization;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -131,7 +132,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account
             else
             {
                 _logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", user.Id);
-                ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
+                ModelState.AddModelError(string.Empty, this.T("Invalid authenticator code."));
                 return Page();
             }
         }

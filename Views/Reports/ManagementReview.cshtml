@@ -12,8 +12,8 @@
         <a asp-action="ExportManagementReview"
            asp-route-from="@from.ToString("yyyy-MM-dd")"
            asp-route-to="@to.ToString("yyyy-MM-dd")"
-           class="btn btn-outline-success">Export Excel</a>
-        <a asp-action="Index" class="btn btn-outline-secondary">Reports Hub</a>
+           class="btn btn-outline-success">@L["Export Excel"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">@L["Reports Hub"]</a>
     </div>
 </div>
 
@@ -26,11 +26,11 @@
 <form method="get" class="card card-body mb-4">
     <div class="row g-3 align-items-end">
         <div class="col-md-4">
-            <label class="form-label fw-semibold">From</label>
+            <label class="form-label fw-semibold">@L["From"]</label>
             <input type="date" name="from" class="form-control" value="@from.ToString("yyyy-MM-dd")" />
         </div>
         <div class="col-md-4">
-            <label class="form-label fw-semibold">To</label>
+            <label class="form-label fw-semibold">@L["To"]</label>
             <input type="date" name="to" class="form-control" value="@to.ToString("yyyy-MM-dd")" />
         </div>
         <div class="col-md-4">
@@ -68,7 +68,7 @@
             </div>
             <div class="col-6 col-md">
                 <div class="display-6 fw-bold @(ViewBag.CapaOverdue > 0 ? "text-danger" : "text-success")">@ViewBag.CapaOverdue</div>
-                <div class="text-muted small">Overdue</div>
+                <div class="text-muted small">@L["Overdue"]</div>
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@
 @* Deviations *@
 <div class="card mb-4">
     <div class="card-header bg-primary text-white fw-semibold">
-        Deviations
+        @L["Deviations"]
     </div>
     <div class="card-body">
         <div class="row g-3 text-center mb-3">
@@ -103,15 +103,15 @@
         <div class="row g-3 text-center mb-3">
             <div class="col-4">
                 <div class="display-6 fw-bold @(ViewBag.DevCritical > 0 ? "text-danger" : "text-muted")">@ViewBag.DevCritical</div>
-                <div class="text-muted small">Critical</div>
+                <div class="text-muted small">@L["Critical"]</div>
             </div>
             <div class="col-4">
                 <div class="display-6 fw-bold @(ViewBag.DevMajor > 0 ? "text-warning" : "text-muted")">@ViewBag.DevMajor</div>
-                <div class="text-muted small">Major</div>
+                <div class="text-muted small">@L["Major"]</div>
             </div>
             <div class="col-4">
                 <div class="display-6 fw-bold text-secondary">@ViewBag.DevMinor</div>
-                <div class="text-muted small">Minor</div>
+                <div class="text-muted small">@L["Minor"]</div>
             </div>
         </div>
         @{
@@ -137,7 +137,7 @@
 @* Changes *@
 <div class="card mb-4">
     <div class="card-header bg-primary text-white fw-semibold">
-        Changes
+        @L["Changes"]
     </div>
     <div class="card-body">
         <div class="row g-3 text-center">
@@ -159,7 +159,7 @@
             </div>
             <div class="col-6 col-md">
                 <div class="display-6 fw-bold @(ViewBag.ChangeOverdue > 0 ? "text-danger" : "text-success")">@ViewBag.ChangeOverdue</div>
-                <div class="text-muted small">Overdue</div>
+                <div class="text-muted small">@L["Overdue"]</div>
             </div>
         </div>
     </div>
@@ -168,7 +168,7 @@
 @* Complaints *@
 <div class="card mb-4">
     <div class="card-header bg-primary text-white fw-semibold">
-        Complaints
+        @L["Complaints"]
     </div>
     <div class="card-body">
         <div class="row g-3 text-center mb-3">
@@ -194,15 +194,15 @@
         <div class="row g-3 text-center">
             <div class="col-4">
                 <div class="display-6 fw-bold @(ViewBag.ComplaintCritical > 0 ? "text-danger" : "text-muted")">@ViewBag.ComplaintCritical</div>
-                <div class="text-muted small">Critical</div>
+                <div class="text-muted small">@L["Critical"]</div>
             </div>
             <div class="col-4">
                 <div class="display-6 fw-bold @(ViewBag.ComplaintMajor > 0 ? "text-warning" : "text-muted")">@ViewBag.ComplaintMajor</div>
-                <div class="text-muted small">Major</div>
+                <div class="text-muted small">@L["Major"]</div>
             </div>
             <div class="col-4">
                 <div class="display-6 fw-bold text-secondary">@ViewBag.ComplaintMinor</div>
-                <div class="text-muted small">Minor</div>
+                <div class="text-muted small">@L["Minor"]</div>
             </div>
         </div>
     </div>
@@ -217,11 +217,11 @@
         <div class="row g-3 text-center">
             <div class="col-6 col-md-2">
                 <div class="display-6 fw-bold text-primary">@ViewBag.AuditScheduledInPeriod</div>
-                <div class="text-muted small">Scheduled</div>
+                <div class="text-muted small">@L["Scheduled"]</div>
             </div>
             <div class="col-6 col-md-2">
                 <div class="display-6 fw-bold text-success">@ViewBag.AuditCompletedInPeriod</div>
-                <div class="text-muted small">Completed</div>
+                <div class="text-muted small">@L["Completed"]</div>
             </div>
             <div class="col-6 col-md-2">
                 <div class="display-6 fw-bold @(ViewBag.AuditCriticalFindings > 0 ? "text-danger" : "text-muted")">@ViewBag.AuditCriticalFindings</div>
@@ -252,7 +252,7 @@
         <div class="row g-3 text-center">
             <div class="col-6 col-md-2">
                 <div class="display-6 fw-bold text-primary">@ViewBag.RiskTotal</div>
-                <div class="text-muted small">Total</div>
+                <div class="text-muted small">@L["Total"]</div>
             </div>
             <div class="col-6 col-md-2">
                 <div class="display-6 fw-bold @(ViewBag.RiskHigh > 0 ? "text-danger" : "text-muted")">@ViewBag.RiskHigh</div>
@@ -268,11 +268,11 @@
             </div>
             <div class="col-6 col-md-2">
                 <div class="display-6 fw-bold text-warning">@ViewBag.RiskOpen</div>
-                <div class="text-muted small">Open</div>
+                <div class="text-muted small">@L["Open"]</div>
             </div>
             <div class="col-6 col-md-2">
                 <div class="display-6 fw-bold text-success">@ViewBag.RiskClosed</div>
-                <div class="text-muted small">Closed</div>
+                <div class="text-muted small">@L["Closed"]</div>
             </div>
         </div>
     </div>

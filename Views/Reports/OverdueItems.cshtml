@@ -18,8 +18,8 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Overdue Items</h4>
-    <a asp-action="Index" class="btn btn-outline-secondary">Reports Hub</a>
+    <h4 class="mb-0">@L["Overdue Items"]</h4>
+    <a asp-action="Index" class="btn btn-outline-secondary">@L["Reports Hub"]</a>
 </div>
 
 <p class="text-muted mb-3">
@@ -41,9 +41,9 @@
 </div>
 
 <div class="alert alert-light border small mb-4">
-    <strong>Colour coding:</strong>
-    <span class="badge bg-danger me-1">Red</span> &gt;60 days overdue &nbsp;
-    <span class="badge bg-warning text-dark me-1">Amber</span> 31–60 days overdue &nbsp;
+    <strong>@L["Colour coding:"]</strong>
+    <span class="badge bg-danger me-1">@L["Red"]</span> &gt;60 days overdue &nbsp;
+    <span class="badge bg-warning text-dark me-1">@L["Amber"]</span> 31–60 days overdue &nbsp;
     <span class="badge bg-light text-dark border me-1">White</span> up to 30 days overdue.<br />
     Deviations and Complaints have no formal due date — they appear here when open for more than 30 days.
 </div>
@@ -51,7 +51,7 @@
 @* CAPAs *@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(overdueCapas.Any() ? "bg-danger text-white" : "bg-success text-white")">
-        <span class="fw-semibold">CAPAs</span>
+        <span class="fw-semibold">@L["CAPAs"]</span>
         <span class="badge bg-white text-dark">@overdueCapas.Count overdue</span>
     </div>
     @if (!overdueCapas.Any())
@@ -64,11 +64,11 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>CAPA ID</th>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Target Date</th>
-                        <th>Days Overdue</th>
+                        <th>@L["CAPA ID"]</th>
+                        <th>@L["Title"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Target Date"]</th>
+                        <th>@L["Days Overdue"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,7 +92,7 @@
 @* Changes *@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(overdueChanges.Any() ? "bg-danger text-white" : "bg-success text-white")">
-        <span class="fw-semibold">Changes</span>
+        <span class="fw-semibold">@L["Changes"]</span>
         <span class="badge bg-white text-dark">@overdueChanges.Count overdue</span>
     </div>
     @if (!overdueChanges.Any())
@@ -105,11 +105,11 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Change ID</th>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Target Date</th>
-                        <th>Days Overdue</th>
+                        <th>@L["Change ID"]</th>
+                        <th>@L["Title"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Target Date"]</th>
+                        <th>@L["Days Overdue"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -133,7 +133,7 @@
 @* Audits *@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(overdueAudits.Any() ? "bg-danger text-white" : "bg-success text-white")">
-        <span class="fw-semibold">Audits</span>
+        <span class="fw-semibold">@L["Audits"]</span>
         <span class="badge bg-white text-dark">@overdueAudits.Count overdue</span>
     </div>
     @if (!overdueAudits.Any())
@@ -146,12 +146,12 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Audit ID</th>
-                        <th>Title</th>
-                        <th>Type</th>
-                        <th>Status</th>
+                        <th>@L["Audit ID"]</th>
+                        <th>@L["Title"]</th>
+                        <th>@L["Type"]</th>
+                        <th>@L["Status"]</th>
                         <th>Planned End</th>
-                        <th>Days Overdue</th>
+                        <th>@L["Days Overdue"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -189,12 +189,12 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Risk ID</th>
-                        <th>Title</th>
-                        <th>Status</th>
+                        <th>@L["Risk ID"]</th>
+                        <th>@L["Title"]</th>
+                        <th>@L["Status"]</th>
                         <th>RPN</th>
-                        <th>Target Date</th>
-                        <th>Days Overdue</th>
+                        <th>@L["Target Date"]</th>
+                        <th>@L["Days Overdue"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -235,10 +235,10 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Deviation ID</th>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Identified On</th>
+                        <th>@L["Deviation ID"]</th>
+                        <th>@L["Title"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Identified On"]</th>
                         <th>Days Open</th>
                     </tr>
                 </thead>
@@ -276,11 +276,11 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Complaint ID</th>
-                        <th>Title</th>
-                        <th>Severity</th>
-                        <th>Status</th>
-                        <th>Received On</th>
+                        <th>@L["Complaint ID"]</th>
+                        <th>@L["Title"]</th>
+                        <th>@L["Severity"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Received On"]</th>
                         <th>Days Open</th>
                     </tr>
                 </thead>
@@ -323,11 +323,11 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Document ID</th>
-                        <th>Title</th>
-                        <th>Version</th>
+                        <th>@L["Document ID"]</th>
+                        <th>@L["Title"]</th>
+                        <th>@L["Version"]</th>
                         <th>Review Due Date</th>
-                        <th>Days Overdue</th>
+                        <th>@L["Days Overdue"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -364,9 +364,9 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Document ID</th>
-                        <th>Title</th>
-                        <th>Version</th>
+                        <th>@L["Document ID"]</th>
+                        <th>@L["Title"]</th>
+                        <th>@L["Version"]</th>
                         <th>Review Due Date</th>
                         <th>Days Until Due</th>
                     </tr>

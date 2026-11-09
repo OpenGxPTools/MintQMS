@@ -77,11 +77,15 @@ builder.Services.AddDefaultIdentity<AppUser>(options =>
     options.Lockout.AllowedForNewUsers = true;
 })
     .AddRoles<AppRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 // Interface languages (see Localization/Languages.cs). Translations live in one shared file per
 // language; the English text is the key, so anything untranslated is shown in English.
 builder.Services.AddLocalization(o => o.ResourcesPath = "Resources");
+builder.Services.AddSingleton<Microsoft.Extensions.Localization.IStringLocalizerFactory, CaseInsensitiveLocalizerFactory>();
 builder.Services.AddSingleton<Languages>();
+// Built-in validation and model-binding messages in the user's language (English unchanged).
+builder.Services.AddSingleton<Microsoft.Extensions.Options.IConfigureOptions<Microsoft.AspNetCore.Mvc.MvcOptions>, LocalizedValidationSetup>();
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<OpenQMS.Authorization.ReadOnlyActionFilter>();

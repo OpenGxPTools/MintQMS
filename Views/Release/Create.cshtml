@@ -8,7 +8,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">New Release Record</h4>
+        <h4 class="mb-0">@L["New Release Record"]</h4>
     </div>
 </div>
 <hr />
@@ -17,7 +17,7 @@
     <div asp-validation-summary="All" class="text-danger mb-3" id="validationSummary"></div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Release Type</div>
+        <div class="card-header fw-semibold">@L["Release Type"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -32,7 +32,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Product Identification</div>
+        <div class="card-header fw-semibold">@L["Product Identification"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -102,7 +102,7 @@
 
                 <!-- Strength / Presentation — Pharma / Bio / Consumer / Cosmetic -->
                 <div class="col-md-6 rel-group" data-rpt="Pharmaceutical,Biological,ConsumerHealth,Cosmetic" style="display:none">
-                    <label asp-for="Strength" class="form-label">Strength / Presentation</label>
+                    <label asp-for="Strength" class="form-label">@L["Strength / Presentation"]</label>
                     <select asp-for="Strength" id="Strength" class="form-select">
                         <option value="">-- Select product first --</option>
                     </select>
@@ -117,7 +117,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Batch Details</div>
+        <div class="card-header fw-semibold">@L["Batch Details"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
@@ -151,7 +151,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Manufacturing &amp; Testing Sites</div>
+        <div class="card-header fw-semibold">@L["Manufacturing & Testing Sites"]</div>
         <div class="card-body">
             <div class="row g-3">
 
@@ -174,7 +174,7 @@
 
                 <!-- Packaging Site -->
                 <div class="col-12">
-                    <label class="form-label fw-semibold">Packaging Site</label>
+                    <label class="form-label fw-semibold">@L["Packaging Site"]</label>
                     <select id="pkgSiteSel" class="form-select mb-1" onchange="handleSite(this,'pkgSiteOther','PackagingSite')">
                         <option value="">-- Select Approved Supplier (Service) --</option>
                         @foreach (var s in (ViewBag.ServiceSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
@@ -199,7 +199,7 @@
 
                 <!-- Releasing Company -->
                 <div class="col-12">
-                    <label class="form-label fw-semibold">Releasing Company</label>
+                    <label class="form-label fw-semibold">@L["Releasing Company"]</label>
                     <select id="relCoSel" class="form-select mb-1" onchange="handleSite(this,'relCoOther','ReleasingCompany')">
                         <option value="">-- Select --</option>
                         @if (!string.IsNullOrEmpty(ViewBag.OwnCompanyName as string)) { <option value="@ViewBag.OwnCompanyName">@ViewBag.OwnCompanyName (Own Company)</option> }
@@ -258,7 +258,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Notes</div>
+        <div class="card-header fw-semibold">@L["Notes"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -271,7 +271,7 @@
 
     <div class="d-flex gap-2">
         <input type="submit" value="Create Release Record" class="btn btn-primary" />
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </form>
 

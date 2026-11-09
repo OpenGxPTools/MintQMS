@@ -82,15 +82,15 @@ else
         <thead class="table-light">
             <tr>
                 <th>#</th>
-                <th>Test Parameter</th>
-                <th>Test Method</th>
-                <th>Acceptance Criterion</th>
+                <th>@L["Test Parameter"]</th>
+                <th>@L["Test Method"]</th>
+                <th>@L["Acceptance Criterion"]</th>
                 <th>Result</th>
-                <th>Status</th>
+                <th>@L["Status"]</th>
                 <th>Comment</th>
                 @if (!locked)
                 {
-                    <th>Actions</th>
+                    <th>@L["Actions"]</th>
                 }
             </tr>
         </thead>
@@ -171,7 +171,7 @@ else
                             <button type="button" class="btn btn-xs btn-outline-secondary btn-sm me-1 edit-result" data-id="@t.Id" title="Edit parameter, method and criterion">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button type="button" class="btn btn-xs btn-outline-primary btn-sm me-1 save-result" data-id="@t.Id">Save</button>
+                            <button type="button" class="btn btn-xs btn-outline-primary btn-sm me-1 save-result" data-id="@t.Id">@L["Save"]</button>
                             <form asp-action="DeleteTestResult" asp-route-resultId="@t.Id" method="post" style="display:inline" onsubmit="return confirm('Delete this result?')">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-xs btn-outline-danger btn-sm">Del</button>

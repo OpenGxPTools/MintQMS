@@ -64,7 +64,7 @@
                     Complaint Intake
                     @if (isAccepted)
                     {
-                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
                     }
                 </div>
                 <div class="card-body">
@@ -73,15 +73,15 @@
                     {
                         <!-- Read-only view — intake is locked once accepted -->
                         <dl class="row mb-0">
-                            <dt class="col-sm-3">Title</dt>
+                            <dt class="col-sm-3">@L["Title"]</dt>
                             <dd class="col-sm-9">@Model.Title</dd>
                             <input type="hidden" asp-for="Title" />
 
-                            <dt class="col-sm-3">Severity</dt>
+                            <dt class="col-sm-3">@L["Severity"]</dt>
                             <dd class="col-sm-9"><span class="badge @severityBadge">@Model.Severity</span></dd>
                             <input type="hidden" asp-for="Severity" />
 
-                            <dt class="col-sm-3">Customer</dt>
+                            <dt class="col-sm-3">@L["Customer"]</dt>
                             <dd class="col-sm-9">
                                 @if (Model.Customer != null) { <span>@Model.Customer.LegalName</span> }
                                 else if (!string.IsNullOrEmpty(Model.CustomerName)) { <span>@Model.CustomerName <span class="badge bg-secondary ms-1 small">Not in system</span></span> }
@@ -98,7 +98,7 @@
                             <dd class="col-sm-9">@(Model.CustomerReference ?? "-")</dd>
                             <input type="hidden" asp-for="CustomerReference" />
 
-                            <dt class="col-sm-3">Products</dt>
+                            <dt class="col-sm-3">@L["Products"]</dt>
                             <dd class="col-sm-9">
                                 @{
                                     var lockedProducts = Model.LinkedProducts?.Any() == true
@@ -109,7 +109,7 @@
                                 @(lpList.Any() ? string.Join(", ", lpList) : "-")
                             </dd>
 
-                            <dt class="col-sm-3">Processes</dt>
+                            <dt class="col-sm-3">@L["Processes"]</dt>
                             <dd class="col-sm-9">
                                 @{
                                     var lockedProcesses = Model.LinkedProcesses?.Any() == true
@@ -120,7 +120,7 @@
                                 @(lprList.Any() ? string.Join(", ", lprList) : "-")
                             </dd>
 
-                            <dt class="col-sm-3">Materials</dt>
+                            <dt class="col-sm-3">@L["Materials"]</dt>
                             <dd class="col-sm-9">
                                 @{
                                     var lockedMaterials = Model.LinkedMaterials?.Any() == true
@@ -131,7 +131,7 @@
                                 @(lmList.Any() ? string.Join(", ", lmList) : "-")
                             </dd>
 
-                            <dt class="col-sm-3">Suppliers</dt>
+                            <dt class="col-sm-3">@L["Suppliers"]</dt>
                             <dd class="col-sm-9">
                                 @{
                                     var lockedSuppliers = Model.LinkedSuppliers?.Any() == true
@@ -142,7 +142,7 @@
                                 @(lsList.Any() ? string.Join(", ", lsList) : "-")
                             </dd>
 
-                            <dt class="col-sm-3">Description</dt>
+                            <dt class="col-sm-3">@L["Description"]</dt>
                             <dd class="col-sm-9">@(Model.Description ?? "-")</dd>
                             <input type="hidden" asp-for="Description" />
                         </dl>
@@ -158,9 +158,9 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label asp-for="Severity" class="form-label">
-                                        Severity
+                                        @L["Severity"]
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="severity"
-                                                aria-label="Severity guidance">?</button>
+                                                aria-label="@L["Severity guidance"]">?</button>
                                     </label>
                                     <select asp-for="Severity" class="form-select"
                                             asp-items="Html.GetEnumSelectList<OpenQMS.Models.Complaint.ComplaintSeverity>()"></select>
@@ -195,7 +195,7 @@
 
                                 <!-- Product picker -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Products</label>
+                                    <label class="form-label">@L["Products"]</label>
                                     <select id="productDropdown" class="form-select">
                                         <option value="">-- Add Product --</option>
                                         @foreach (var p in products)
@@ -209,7 +209,7 @@
 
                                 <!-- Process picker -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Processes</label>
+                                    <label class="form-label">@L["Processes"]</label>
                                     <select id="processDropdown" class="form-select">
                                         <option value="">-- Add Process --</option>
                                         @foreach (var p in processes)
@@ -223,7 +223,7 @@
 
                                 <!-- Material picker -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Materials</label>
+                                    <label class="form-label">@L["Materials"]</label>
                                     <select id="materialDropdown" class="form-select">
                                         <option value="">-- Add Material --</option>
                                         @foreach (var p in materials)
@@ -237,7 +237,7 @@
 
                                 <!-- Supplier picker -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Suppliers</label>
+                                    <label class="form-label">@L["Suppliers"]</label>
                                     <select id="supplierDropdown" class="form-select">
                                         <option value="">-- Add Supplier --</option>
                                         @foreach (var p in suppliers)
@@ -251,7 +251,7 @@
 
                                 <div class="col-12">
                                     <label asp-for="Description" class="form-label">
-                                        Description
+                                        @L["Description"]
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="description"
                                                 aria-label="Description guidance">?</button>
                                     </label>
@@ -272,11 +272,11 @@
                         Evaluation &amp; Investigation
                         @if (isAccepted)
                         {
-                            <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                            <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
                         }
                         else
                         {
-                            <span class="badge bg-info text-dark">In Progress</span>
+                            <span class="badge bg-info text-dark">@L["In Progress"]</span>
                         }
                     </div>
                     <div class="card-body">
@@ -284,13 +284,13 @@
                         @if (isAccepted)
                         {
                             <dl class="row mb-0">
-                                <dt class="col-sm-3">Evaluation</dt>
+                                <dt class="col-sm-3">@L["Evaluation"]</dt>
                                 <dd class="col-sm-9">@(Model.Evaluation ?? "-")</dd>
-                                <dt class="col-sm-3">Investigation</dt>
+                                <dt class="col-sm-3">@L["Investigation"]</dt>
                                 <dd class="col-sm-9">@(Model.Investigation ?? "-")</dd>
-                                <dt class="col-sm-3">Root Cause Category</dt>
+                                <dt class="col-sm-3">@L["Root Cause Category"]</dt>
                                 <dd class="col-sm-9">@(Model.RootCauseCategory?.ToString() ?? "-")</dd>
-                                <dt class="col-sm-3">Corrective and Preventive Action</dt>
+                                <dt class="col-sm-3">@L["Corrective and Preventive Action"]</dt>
                                 <dd class="col-sm-9">@(Model.CorrectiveAction ?? "-")</dd>
                             </dl>
                             <input type="hidden" asp-for="Evaluation" />
@@ -303,7 +303,7 @@
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label asp-for="Evaluation" class="form-label">
-                                        Evaluation <span class="text-danger">*</span>
+                                        @L["Evaluation"] <span class="text-danger">*</span>
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="evaluation"
                                                 aria-label="Evaluation guidance">?</button>
                                     </label>
@@ -311,7 +311,7 @@
                                 </div>
                                 <div class="col-12">
                                     <label asp-for="Investigation" class="form-label">
-                                        Investigation
+                                        @L["Investigation"]
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="investigation"
                                                 aria-label="Investigation guidance">?</button>
                                     </label>
@@ -319,7 +319,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label asp-for="RootCauseCategory" class="form-label">
-                                        Root Cause Category <span class="text-danger">*</span>
+                                        @L["Root Cause Category"] <span class="text-danger">*</span>
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="rootcause"
                                                 aria-label="Root cause category guidance">?</button>
                                     </label>
@@ -330,7 +330,7 @@
                                 </div>
                                 <div class="col-12">
                                     <label asp-for="CorrectiveAction" class="form-label">
-                                        Corrective and Preventive Action <span class="text-danger">*</span>
+                                        @L["Corrective and Preventive Action"] <span class="text-danger">*</span>
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="capa"
                                                 aria-label="CAPA guidance">?</button>
                                     </label>
@@ -347,14 +347,14 @@
             {
                 <div class="card mb-4">
                     <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-                        Resolution
-                        <span class="badge bg-warning text-dark">Action Required</span>
+                        @L["Resolution"]
+                        <span class="badge bg-warning text-dark">@L["Action Required"]</span>
                     </div>
                     <div class="card-body">
                         <p class="text-muted small mb-3">Summarise how the complaint was resolved, confirm all actions are complete, and document the outcome for the customer.</p>
                         <div class="col-12">
                             <label asp-for="Resolution" class="form-label">
-                                Resolution <span class="text-danger">*</span>
+                                @L["Resolution"] <span class="text-danger">*</span>
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="resolution"
                                         aria-label="Resolution guidance">?</button>
                             </label>
@@ -365,9 +365,9 @@
             }
 
             <div class="d-flex gap-2">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">View Details</a>
-                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+                <input type="submit" value="@L["Save"]" class="btn btn-primary" />
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">@L["View Details"]</a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
             </div>
         </form>
 
@@ -382,19 +382,19 @@
         else
         {
             <div class="alert alert-info mt-3">
-                <strong>Linked CAPA:</strong>
-                <a asp-controller="Capas" asp-action="Details" asp-route-id="@Model.LinkedCapaId">View CAPA</a>
+                <strong>@L["Linked CAPA:"]</strong>
+                <a asp-controller="Capas" asp-action="Details" asp-route-id="@Model.LinkedCapaId">@L["View CAPA"]</a>
             </div>
         }
 
 <!-- Popover help content (hidden, read by JS) -->
 <div class="d-none">
     <div id="help-severity">
-        <p class="mb-1"><strong>Severity Definitions</strong></p>
+        <p class="mb-1"><strong>@L["Severity Definitions"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li><strong>Critical</strong> — Poses an immediate or potential risk to patient safety, product sterility or efficacy. Requires priority handling and may trigger regulatory reporting or recall assessment.</li>
-            <li><strong>Major</strong> — Significant quality failure or departure from specifications. No immediate safety risk but requires full investigation and CAPA. Typical SLA: 30 days.</li>
-            <li><strong>Minor</strong> — Low-risk issue with no direct impact on product quality or patient safety. Administrative or cosmetic in nature. Typical SLA: 60 days.</li>
+            <li><strong>@L["Critical"]</strong> — Poses an immediate or potential risk to patient safety, product sterility or efficacy. Requires priority handling and may trigger regulatory reporting or recall assessment.</li>
+            <li><strong>@L["Major"]</strong> — Significant quality failure or departure from specifications. No immediate safety risk but requires full investigation and CAPA. Typical SLA: 30 days.</li>
+            <li><strong>@L["Minor"]</strong> — Low-risk issue with no direct impact on product quality or patient safety. Administrative or cosmetic in nature. Typical SLA: 60 days.</li>
         </ul>
     </div>
     <div id="help-customername">
@@ -423,7 +423,7 @@
         <p class="mb-1"><strong>Evaluation must address:</strong></p>
         <ul class="mb-0 ps-3">
             <li>Whether the complaint is substantiated (verified)</li>
-            <li>Impact on product quality and patient safety</li>
+            <li>@L["Impact on product quality and patient safety"]</li>
             <li>Whether a regulatory report (e.g. MDR, PSUR) is required</li>
             <li>Whether a batch recall or field safety action is needed</li>
             <li>Whether the complaint is an isolated event or part of a trend</li>
@@ -440,14 +440,14 @@
         </ul>
     </div>
     <div id="help-rootcause">
-        <p class="mb-0"><strong>Root Cause Category</strong> — Select the primary category. If multiple categories apply, select the most significant one and document the others in Investigation.</p>
+        <p class="mb-0"><strong>@L["Root Cause Category"]</strong> — Select the primary category. If multiple categories apply, select the most significant one and document the others in Investigation.</p>
     </div>
     <div id="help-capa">
         <p class="mb-1"><strong>Corrective and Preventive Action must include:</strong></p>
         <ul class="mb-0 ps-3">
             <li>A description of each action (corrective and preventive)</li>
             <li>The responsible person for each action</li>
-            <li>Target completion date for each action</li>
+            <li>@L["Target completion date for each action"]</li>
             <li>How effectiveness will be verified (success criteria)</li>
             <li>Whether a formal CAPA record has been raised (link below)</li>
         </ul>

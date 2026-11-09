@@ -16,13 +16,13 @@
 <div class="card mb-4">
     <div class="card-body">
         <dl class="row">
-            <dt class="col-sm-4">Supplier ID</dt>
+            <dt class="col-sm-4">@L["Supplier ID"]</dt>
             <dd class="col-sm-8">@Model.SupplierCode</dd>
-            <dt class="col-sm-4">Legal Name</dt>
+            <dt class="col-sm-4">@L["Legal Name"]</dt>
             <dd class="col-sm-8">@Model.LegalName</dd>
-            <dt class="col-sm-4">Type</dt>
+            <dt class="col-sm-4">@L["Type"]</dt>
             <dd class="col-sm-8">@Model.SupplierType</dd>
-            <dt class="col-sm-4">Status</dt>
+            <dt class="col-sm-4">@L["Status"]</dt>
             <dd class="col-sm-8">@L.Enum(Model.Status)</dd>
         </dl>
     </div>
@@ -31,7 +31,7 @@
 <form asp-action="Delete">
     <input type="hidden" asp-for="Id" />
     <div class="d-flex gap-2">
-        <input type="submit" value="Delete" class="btn btn-danger" />
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        <input type="submit" value="@L["Delete"]" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </form>

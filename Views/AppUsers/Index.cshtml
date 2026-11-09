@@ -48,10 +48,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Roles</th>
+            <th>@L["Name"]</th>
+            <th>@L["Email"]</th>
+            <th>@L["Status"]</th>
+            <th>@L["Roles"]</th>
             @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole))
             {
                 <th></th>

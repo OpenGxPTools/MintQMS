@@ -26,19 +26,19 @@
     <!-- 6-Tab Navigation -->
     <ul class="nav nav-tabs mb-0" id="lcTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button"><i class="fas fa-fingerprint me-1"></i>Identification</button>
+            <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button"><i class="fas fa-fingerprint me-1"></i>@L["Identification"]</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button"><i class="fas fa-tag me-1"></i>Classification</button>
+            <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button"><i class="fas fa-tag me-1"></i>@L["Classification"]</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button"><i class="fas fa-calendar-alt me-1"></i>Licence Details</button>
+            <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button"><i class="fas fa-calendar-alt me-1"></i>@L["Licence Details"]</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button"><i class="fas fa-microscope me-1"></i>GMP / ISO Specifics</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button"><i class="fas fa-user me-1"></i>Contacts</button>
+            <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button"><i class="fas fa-user me-1"></i>@L["Contacts"]</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button"><i class="fas fa-dollar-sign me-1"></i>Fees &amp; Notes</button>
@@ -51,14 +51,14 @@
         <div class="tab-pane fade show active" id="tab1" role="tabpanel">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">LC Number</label>
+                    <label class="form-label fw-bold">@L["LC Number"]</label>
                     <input type="text" class="form-control" value="Auto-generated on save" disabled />
                     <input type="hidden" asp-for="LCNumber" value="PENDING" />
                 </div>
                 <div class="col-md-4">
                     <label asp-for="HolderType" class="form-label fw-bold"></label>
                     <select asp-for="HolderType" class="form-select" id="holderTypeSelect">
-                        <option value="OwnCompany">Own Company</option>
+                        <option value="OwnCompany">@L["Own Company"]</option>
                         <option value="ThirdParty">Third Party / CMO / CDMO</option>
                     </select>
                 </div>
@@ -91,7 +91,7 @@
         <div class="tab-pane fade" id="tab2" role="tabpanel">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label asp-for="Category" class="form-label fw-bold">Category
+                    <label asp-for="Category" class="form-label fw-bold">@L["Category"]
                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="lccategory" aria-label="Category guidance">?</button>
                     </label>
                     <select asp-for="Category" class="form-select" id="categorySelect">
@@ -102,7 +102,7 @@
                     </select>
                 </div>
                 <div class="col-md-8">
-                    <label asp-for="LicenceTypeId" class="form-label fw-bold">Licence / Certification Type</label>
+                    <label asp-for="LicenceTypeId" class="form-label fw-bold">@L["Licence / Certification Type"]</label>
                     <select asp-for="LicenceTypeId" asp-items='@(ViewBag.LicenceTypesList as SelectList)' class="form-select select2-type" id="licenceTypeSelect">
                         <option value="">— Select Category first —</option>
                     </select>
@@ -118,7 +118,7 @@
                     <input asp-for="IssuingBodyUrl" class="form-control" placeholder="https://..." />
                 </div>
                 <div class="col-md-8">
-                    <label asp-for="IssuingBodyPortal" class="form-label fw-bold">Authority Portal / Login URL</label>
+                    <label asp-for="IssuingBodyPortal" class="form-label fw-bold">@L["Authority Portal / Login URL"]</label>
                     <input asp-for="IssuingBodyPortal" class="form-control" placeholder="Portal URL where applications are submitted or tracked" />
                 </div>
                 <div class="col-md-4">
@@ -170,7 +170,7 @@
                 <h6 class="text-muted text-uppercase small mb-3 border-bottom pb-1"><i class="fas fa-shield-alt me-1"></i>GMP Clearance Details (Third-Party Site Approvals)</h6>
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label asp-for="GmcPathway" class="form-label fw-bold">GMP Clearance Pathway
+                        <label asp-for="GmcPathway" class="form-label fw-bold">@L["GMP Clearance Pathway"]
                             <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="gmcpathway" aria-label="GMP Clearance Pathway guidance">?</button>
                         </label>
                         <select asp-for="GmcPathway" class="form-select">
@@ -203,7 +203,7 @@
                         <input asp-for="RFIResponseDueDate" type="date" class="form-control" />
                     </div>
                     <div class="col-md-4">
-                        <label asp-for="RFIResponseSubmittedDate" class="form-label fw-bold">RFI Response Submitted</label>
+                        <label asp-for="RFIResponseSubmittedDate" class="form-label fw-bold">@L["RFI Response Submitted"]</label>
                         <input asp-for="RFIResponseSubmittedDate" type="date" class="form-control" />
                     </div>
                     <div class="col-md-8">
@@ -213,7 +213,7 @@
                     <div class="col-md-4">
                         <div class="form-check mt-4">
                             <input asp-for="LetterOfAccessAvailable" class="form-check-input" type="checkbox" />
-                            <label asp-for="LetterOfAccessAvailable" class="form-check-label fw-bold">Letter of Access Available</label>
+                            <label asp-for="LetterOfAccessAvailable" class="form-check-label fw-bold">@L["Letter of Access Available"]</label>
                         </div>
                     </div>
                 </div>
@@ -234,7 +234,7 @@
                         <input asp-for="CertificationBodyAccreditation" class="form-control" placeholder="JAS-ANZ accreditation number" />
                     </div>
                     <div class="col-md-4">
-                        <label asp-for="StandardVersion" class="form-label fw-bold">Standard Version</label>
+                        <label asp-for="StandardVersion" class="form-label fw-bold">@L["Standard Version"]</label>
                         <input asp-for="StandardVersion" class="form-control" placeholder="e.g. ISO 9001:2015" />
                     </div>
                     <div class="col-md-4">
@@ -265,7 +265,7 @@
         <div class="tab-pane fade" id="tab5" role="tabpanel">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label asp-for="InternalResponsiblePersonId" class="form-label fw-bold">Internal Responsible Person</label>
+                    <label asp-for="InternalResponsiblePersonId" class="form-label fw-bold">@L["Internal Responsible Person"]</label>
                     <select asp-for="InternalResponsiblePersonId" asp-items='@(ViewBag.UsersList as SelectList)' class="form-select select2-users">
                         <option value="">— Select user —</option>
                     </select>
@@ -315,7 +315,7 @@
     </div><!-- end tab-content -->
 
     <div class="d-flex justify-content-end gap-2">
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        <a asp-action="Index" class="btn btn-secondary">@L["Cancel"]</a>
         <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Record</button>
     </div>
 </form>
@@ -344,10 +344,10 @@
     <div id="help-isolifecycle">
         <p class="mb-1"><strong>The ISO certification cycle</strong> (typically a 3-year certificate):</p>
         <ul class="mb-0 ps-3">
-            <li><strong>Stage 1 Audit</strong> — readiness/documentation review by the certification body.</li>
-            <li><strong>Stage 2 Audit</strong> — the full on-site certification audit; passing it leads to the certificate being issued.</li>
+            <li><strong>@L["Stage 1 Audit"]</strong> — readiness/documentation review by the certification body.</li>
+            <li><strong>@L["Stage 2 Audit"]</strong> — the full on-site certification audit; passing it leads to the certificate being issued.</li>
             <li><strong>Surveillance Audit</strong> — periodic (usually annual) checks that the system remains compliant.</li>
-            <li><strong>Recertification Due</strong> — the full re-audit before the certificate expires (end of the cycle).</li>
+            <li><strong>@L["Recertification Due"]</strong> — the full re-audit before the certificate expires (end of the cycle).</li>
         </ul>
     </div>
 </div>

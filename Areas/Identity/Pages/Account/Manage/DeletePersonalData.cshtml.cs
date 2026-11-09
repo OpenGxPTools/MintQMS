@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using OpenQMS.Localization;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -48,6 +49,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account.Manage
             /// </summary>
             [Required]
             [DataType(DataType.Password)]
+            [Display(Name = "Password")]
             public string Password { get; set; }
         }
 
@@ -82,7 +84,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account.Manage
             {
                 if (!await _userManager.CheckPasswordAsync(user, Input.Password))
                 {
-                    ModelState.AddModelError(string.Empty, "Incorrect password.");
+                    ModelState.AddModelError(string.Empty, this.T("Incorrect password."));
                     return Page();
                 }
             }

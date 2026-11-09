@@ -68,7 +68,7 @@
                         <small class="text-muted">Select record type above to load available records.</small>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Notes</label>
+                        <label class="form-label">@L["Notes"]</label>
                         <textarea name="notes" class="form-control" rows="2"></textarea>
                     </div>
                     <div class="col-12">
@@ -84,7 +84,7 @@ else
     <div class="alert alert-secondary">Quality records can only be linked while the supplier is not locked.</div>
 }
 
-<h6 class="text-muted text-uppercase small mt-3">Linked Records</h6>
+<h6 class="text-muted text-uppercase small mt-3">@L["Linked Records"]</h6>
 
 @if (Model.QualityRecords == null || !Model.QualityRecords.Any())
 {
@@ -95,13 +95,13 @@ else
     <table class="table table-striped" id="qrTable">
         <thead>
             <tr>
-                <th>Type</th>
+                <th>@L["Type"]</th>
                 <th>Id</th>
-                <th>Title</th>
-                <th>Notes</th>
+                <th>@L["Title"]</th>
+                <th>@L["Notes"]</th>
                 <th>Linked By</th>
                 <th>Linked On</th>
-                <th>Action</th>
+                <th>@L["Action"]</th>
             </tr>
         </thead>
         <tbody>
@@ -164,7 +164,7 @@ else
                                 <input type="hidden" name="id" value="@qr.Id" />
                                 <input type="hidden" name="supplierId" value="@Model.Id" />
                                 <button type="submit" class="btn btn-link p-0 text-danger"
-                                        onclick="return confirm('Remove this linked record?')">Remove</button>
+                                        onclick="return confirm('Remove this linked record?')">@L["Remove"]</button>
                             </form>
                         }
                     </td>
@@ -175,8 +175,8 @@ else
 }
 
 <div class="mt-3 d-flex gap-2">
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Details</a>
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list me-1"></i>Back to List</a>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to Details"]</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list me-1"></i>@L["Back to List"]</a>
 </div>
 
 @section Scripts {

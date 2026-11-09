@@ -18,8 +18,8 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">Regulatory Intelligence Dashboard</h4>
     <div class="d-flex gap-2">
-        <a asp-action="ExportApplications" class="btn btn-outline-success btn-sm">Export Register</a>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">RI Register</a>
+        <a asp-action="ExportApplications" class="btn btn-outline-success btn-sm">@L["Export Register"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">@L["RI Register"]</a>
         <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Application</a>
     </div>
 </div>
@@ -108,7 +108,7 @@
             <div class="card-header fw-semibold"><i class="fas fa-globe me-1"></i>Applications by Jurisdiction</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
-                    <thead class="table-light"><tr><th>Jurisdiction</th><th>Authority</th><th class="text-end">Count</th></tr></thead>
+                    <thead class="table-light"><tr><th>@L["Jurisdiction"]</th><th>Authority</th><th class="text-end">@L["Count"]</th></tr></thead>
                     <tbody>
                         @foreach (var g in jurisdictionGroups)
                         {
@@ -137,7 +137,7 @@
                 @if (approachingDec.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>Application</th><th>Authority</th><th>Target Date</th><th>Days</th></tr></thead>
+                        <thead class="table-light"><tr><th>Application</th><th>Authority</th><th>@L["Target Date"]</th><th>@L["Days"]</th></tr></thead>
                         <tbody>
                             @foreach (var a in approachingDec)
                             {
@@ -168,7 +168,7 @@
                 @if (expiringApp.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>Application</th><th>Authority</th><th>Expiry</th><th>Days</th></tr></thead>
+                        <thead class="table-light"><tr><th>Application</th><th>Authority</th><th>@L["Expiry"]</th><th>@L["Days"]</th></tr></thead>
                         <tbody>
                             @foreach (var a in expiringApp)
                             {
@@ -203,7 +203,7 @@
                 @if (openConditions.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>Application</th><th>Type</th><th>Due</th><th>Status</th></tr></thead>
+                        <thead class="table-light"><tr><th>Application</th><th>@L["Type"]</th><th>Due</th><th>@L["Status"]</th></tr></thead>
                         <tbody>
                             @foreach (var c in openConditions)
                             {
@@ -232,7 +232,7 @@
                 @if (expiringPathways.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>AP Number</th><th>Type</th><th>Expiry</th><th>Days</th></tr></thead>
+                        <thead class="table-light"><tr><th>@L["AP Number"]</th><th>@L["Type"]</th><th>@L["Expiry"]</th><th>@L["Days"]</th></tr></thead>
                         <tbody>
                             @foreach (var ap in expiringPathways)
                             {
@@ -267,7 +267,7 @@
                 @if (overdueMilestones.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>Application</th><th>Milestone</th><th>Planned</th><th>Days</th></tr></thead>
+                        <thead class="table-light"><tr><th>Application</th><th>Milestone</th><th>Planned</th><th>@L["Days"]</th></tr></thead>
                         <tbody>
                             @foreach (var m in overdueMilestones)
                             {
@@ -288,12 +288,12 @@
     </div>
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
-            <div class="card-header fw-semibold"><i class="fas fa-history me-1"></i>Recent Activity</div>
+            <div class="card-header fw-semibold"><i class="fas fa-history me-1"></i>@L["Recent Activity"]</div>
             <div class="card-body p-0">
                 @if (recentActivity.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>Date</th><th>Application</th><th>Action</th><th>User</th></tr></thead>
+                        <thead class="table-light"><tr><th>@L["Date"]</th><th>Application</th><th>@L["Action"]</th><th>@L["User"]</th></tr></thead>
                         <tbody>
                             @foreach (var log in recentActivity)
                             {

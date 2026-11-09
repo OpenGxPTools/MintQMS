@@ -23,12 +23,12 @@
 <table class="table table-striped table-hover" id="psurTable">
     <thead class="table-dark">
         <tr>
-            <th>Title</th>
-            <th>Product</th>
-            <th>Period</th>
-            <th>Due Date</th>
-            <th>Status</th>
-            <th>Submission Date</th>
+            <th>@L["Title"]</th>
+            <th>@L["Product"]</th>
+            <th>@L["Period"]</th>
+            <th>@L["Due Date"]</th>
+            <th>@L["Status"]</th>
+            <th>@L["Submission Date"]</th>
             <th></th>
         </tr>
     </thead>
@@ -46,9 +46,9 @@
             <tr class="@(overdue ? "table-warning" : "")">
                 <td>
                     <strong>@r.Title</strong>
-                    @if (overdue) { <span class="badge bg-danger ms-1">Overdue</span> }
+                    @if (overdue) { <span class="badge bg-danger ms-1">@L["Overdue"]</span> }
                 </td>
-                <td>@if (r.Product?.Name != null) { @r.Product.Name } else { <span class="text-muted">All</span> }</td>
+                <td>@if (r.Product?.Name != null) { @r.Product.Name } else { <span class="text-muted">@L["All"]</span> }</td>
                 <td>
                     @(r.PeriodStart?.ToString("dd MMM yyyy") ?? "—")
                     @if (r.PeriodStart.HasValue && r.PeriodEnd.HasValue) { <span class="text-muted">→</span> }
@@ -58,8 +58,8 @@
                 <td><span class="badge bg-@statusClass">@r.Status</span></td>
                 <td>@(r.SubmissionDate?.ToString("dd MMM yyyy") ?? "—")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Details</a>
-                    <a asp-action="Edit"    asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">@L["Details"]</a>
+                    <a asp-action="Edit"    asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">@L["Edit"]</a>
                 </td>
             </tr>
         }

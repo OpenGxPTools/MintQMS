@@ -14,13 +14,13 @@
             <i class="fas fa-clipboard-check me-1"></i>Compliance Matrix
         </a>
         <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">
-            <i class="fas fa-file-excel me-1"></i>Export Register
+            <i class="fas fa-file-excel me-1"></i>@L["Export Register"]
         </a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-list me-1"></i>Training Register
+            <i class="fas fa-list me-1"></i>@L["Training Register"]
         </a>
         <a asp-action="Create" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus-circle me-1"></i>New Training
+            <i class="fas fa-plus-circle me-1"></i>@L["New Training"]
         </a>
     </div>
 </div>
@@ -31,7 +31,7 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-primary">@ViewBag.TotalTrainings</div>
-                <div class="text-muted small">Total</div>
+                <div class="text-muted small">@L["Total"]</div>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-warning border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-warning">@ViewBag.ScheduledCount</div>
-                <div class="text-muted small">Scheduled</div>
+                <div class="text-muted small">@L["Scheduled"]</div>
             </div>
         </div>
     </div>
@@ -47,7 +47,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-success border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-success">@ViewBag.CompletedCount</div>
-                <div class="text-muted small">Completed</div>
+                <div class="text-muted small">@L["Completed"]</div>
             </div>
         </div>
     </div>
@@ -65,7 +65,7 @@
 <div class="row g-3 mb-4">
     <div class="col-md-5">
         <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white fw-semibold">Status Distribution</div>
+            <div class="card-header bg-white fw-semibold">@L["Status Distribution"]</div>
             <div class="card-body d-flex justify-content-center align-items-center">
                 <canvas id="statusDoughnut" style="max-height:220px;"></canvas>
             </div>
@@ -92,7 +92,7 @@
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
                 <thead class="table-light">
-                    <tr><th>ID</th><th>Name</th><th>Due Date</th><th>Days Overdue</th><th>Trainer</th><th></th></tr>
+                    <tr><th>@L["ID"]</th><th>@L["Name"]</th><th>@L["Due Date"]</th><th>@L["Days Overdue"]</th><th>@L["Trainer"]</th><th></th></tr>
                 </thead>
                 <tbody>
                     @foreach (var t in overdue)
@@ -104,7 +104,7 @@
                             <td>@(t.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
                             <td><span class="badge bg-danger">@daysOver days</span></td>
                             <td>@t.TrainerEmail</td>
-                            <td><a asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-danger btn-sm">View</a></td>
+                            <td><a asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-danger btn-sm">@L["View"]</a></td>
                         </tr>
                     }
                 </tbody>
@@ -126,7 +126,7 @@
                 {
                     <table class="table table-sm mb-0">
                         <thead class="table-light">
-                            <tr><th>ID</th><th>Name</th><th>Due Date</th><th>Trainees</th><th></th></tr>
+                            <tr><th>@L["ID"]</th><th>@L["Name"]</th><th>@L["Due Date"]</th><th>@L["Trainees"]</th><th></th></tr>
                         </thead>
                         <tbody>
                             @foreach (var t in upcoming)
@@ -136,7 +136,7 @@
                                     <td>@t.Name</td>
                                     <td>@(t.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
                                     <td>@(t.Trainees?.Count ?? 0)</td>
-                                    <td><a asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-secondary btn-sm">View</a></td>
+                                    <td><a asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-secondary btn-sm">@L["View"]</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -159,7 +159,7 @@
                 {
                     <table class="table table-sm mb-0">
                         <thead class="table-light">
-                            <tr><th>ID</th><th>Name</th><th>Completed On</th><th>Trainees</th><th></th></tr>
+                            <tr><th>@L["ID"]</th><th>@L["Name"]</th><th>@L["Completed On"]</th><th>@L["Trainees"]</th><th></th></tr>
                         </thead>
                         <tbody>
                             @foreach (var t in recentlyCompleted)
@@ -169,7 +169,7 @@
                                     <td>@t.Name</td>
                                     <td>@(t.CompletedOn.HasValue ? SiteTime.ToSite((DateTime)t.CompletedOn.Value).ToString("dd MMM yyyy") : "-")</td>
                                     <td>@(t.Trainees?.Count ?? 0)</td>
-                                    <td><a asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-secondary btn-sm">View</a></td>
+                                    <td><a asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-secondary btn-sm">@L["View"]</a></td>
                                 </tr>
                             }
                         </tbody>

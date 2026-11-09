@@ -8,12 +8,12 @@
     <h4 class="mb-0">Adverse Events</h4>
     <div class="d-flex gap-2">
         <a asp-controller="Pharmacovigilance" asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-chart-bar me-1"></i>Dashboard
+            <i class="fas fa-chart-bar me-1"></i>@L["Dashboard"]
         </a>
         @if (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser"))
         {
             <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> New Adverse Event
+                <i class="bi bi-plus-circle"></i> @L["New Adverse Event"]
             </a>
         }
     </div>
@@ -33,9 +33,9 @@
     <div class="card-body py-2">
         <div class="row g-2 align-items-end">
             <div class="col-md-2">
-                <label class="form-label small fw-bold mb-1">Status</label>
+                <label class="form-label small fw-bold mb-1">@L["Status"]</label>
                 <select id="filterStatus" class="form-select form-select-sm">
-                    <option value="">All</option>
+                    <option value="">@L["All"]</option>
                     @foreach (var s in allStatuses)
                     {
                         <option value="@s">@s</option>
@@ -45,8 +45,8 @@
             <div class="col-md-2">
                 <label class="form-label small fw-bold mb-1">Seriousness</label>
                 <select id="filterSerious" class="form-select form-select-sm">
-                    <option value="">All</option>
-                    <option value="Serious">Serious</option>
+                    <option value="">@L["All"]</option>
+                    <option value="Serious">@L["Serious"]</option>
                     <option value="Non-Serious">Non-Serious</option>
                 </select>
             </div>
@@ -76,13 +76,13 @@
         <table class="table table-hover mb-0" id="aeTable">
             <thead class="table-light">
                 <tr>
-                    <th>AE Number</th>
-                    <th>Report Date</th>
-                    <th>Day 0 Date</th>
-                    <th>TGA Deadline</th>
-                    <th>Serious</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>@L["AE Number"]</th>
+                    <th>@L["Report Date"]</th>
+                    <th>@L["Day 0 Date"]</th>
+                    <th>@L["TGA Deadline"]</th>
+                    <th>@L["Serious"]</th>
+                    <th>@L["Status"]</th>
+                    <th>@L["Actions"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -117,7 +117,7 @@
                         <td>
                             @if (ae.IsSerious)
                             {
-                                <span class="badge bg-danger">Serious</span>
+                                <span class="badge bg-danger">@L["Serious"]</span>
                             }
                             else
                             {
@@ -147,11 +147,11 @@
                             }
                         </td>
                         <td>
-                            <a asp-action="Details" asp-route-id="@ae.Id">Details</a>
+                            <a asp-action="Details" asp-route-id="@ae.Id">@L["Details"]</a>
                             @if (!ae.IsLocked && ae.Status != AdverseEvent.AEStatus.Voided && (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser")))
                             {
                                 <text> | </text>
-                                <a asp-action="Edit" asp-route-id="@ae.Id">Edit</a>
+                                <a asp-action="Edit" asp-route-id="@ae.Id">@L["Edit"]</a>
                             }
                         </td>
                     </tr>

@@ -61,8 +61,8 @@
                     } else { <span class="text-muted">0</span> }
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-primary">View</a>
-                    <a asp-action="Edit"    asp-route-id="@s.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-primary">@L["View"]</a>
+                    <a asp-action="Edit"    asp-route-id="@s.Id" class="btn btn-sm btn-outline-secondary">@L["Edit"]</a>
                 </td>
             </tr>
         }

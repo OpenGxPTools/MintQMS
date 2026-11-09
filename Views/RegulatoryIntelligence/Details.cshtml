@@ -29,23 +29,23 @@
                 };
             }
             <span class="badge bg-@statusBadge fs-6">@L.Enum(Model.Status)</span>
-            @if (Model.IsLocked) { <span class="badge bg-secondary"><i class="fas fa-lock me-1"></i>Locked</span> }
+            @if (Model.IsLocked) { <span class="badge bg-secondary"><i class="fas fa-lock me-1"></i>@L["Locked"]</span> }
             @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">Orphan</span> }
             @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">Priority</span> }
             @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">Breakthrough</span> }
-            @if (Model.IsPRIME)               { <span class="badge bg-danger">PRIME</span> }
+            @if (Model.IsPRIME)               { <span class="badge bg-danger">@L["PRIME"]</span> }
             @if (Model.IsConditionalApproval) { <span class="badge bg-warning text-dark">Conditional</span> }
             <span class="text-muted small">@Model.Jurisdiction?.Authority — @Model.Jurisdiction?.Name</span>
         </div>
     </div>
     <div class="d-flex gap-2">
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-arrow-left me-1"></i>Register
+            <i class="fas fa-arrow-left me-1"></i>@L["Register"]
         </a>
         @if (!Model.IsLocked && !OpenQMS.Services.RIWorkflowService.IsTerminal(Model.Status))
         {
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">
-                <i class="fas fa-edit me-1"></i>Edit
+                <i class="fas fa-edit me-1"></i>@L["Edit"]
             </a>
         }
         @if (User.IsInRole("Administrator"))
@@ -54,7 +54,7 @@
                   onsubmit="return confirm('Soft-delete this application?')">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-outline-danger btn-sm">
-                    <i class="fas fa-trash me-1"></i>Delete
+                    <i class="fas fa-trash me-1"></i>@L["Delete"]
                 </button>
             </form>
         }
@@ -162,10 +162,10 @@
                     </button>
                 </form>
                 <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
-                    <i class="fas fa-check me-1"></i>Approve
+                    <i class="fas fa-check me-1"></i>@L["Approve"]
                 </button>
                 <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                    <i class="fas fa-times-circle me-1"></i>Reject
+                    <i class="fas fa-times-circle me-1"></i>@L["Reject"]
                 </button>
                 <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal">
                     <i class="fas fa-ban me-1"></i>Withdraw
@@ -281,21 +281,21 @@
                     {
                         <div class="alert alert-info small">
                             <i class="fas fa-info-circle me-1"></i>
-                            <strong>Conditional Approval</strong> flag is set — status will be set to <strong>Conditions Active</strong>. All conditions must be closed before transitioning to full Approval.
+                            <strong>@L["Conditional Approval"]</strong> flag is set — status will be set to <strong>Conditions Active</strong>. All conditions must be closed before transitioning to full Approval.
                         </div>
                     }
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label">@L["Password"]</label>
                         <input type="password" name="pwd" class="form-control" required />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>Confirm Approval</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>@L["Confirm Approval"]</button>
                 </div>
             </form>
         </div>
@@ -316,20 +316,20 @@
                 <div class="modal-body">
                     <p>Enter your credentials and rejection reason for <strong>@Model.RINumber</strong>.</p>
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label">@L["Password"]</label>
                         <input type="password" name="pwd" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Rejection Reason <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Rejection Reason"] <span class="text-danger">*</span></label>
                         <textarea name="reason" class="form-control" rows="3" required placeholder="State the grounds for rejection..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-danger"><i class="fas fa-times-circle me-1"></i>Confirm Rejection</button>
                 </div>
             </form>
@@ -351,20 +351,20 @@
                 <div class="modal-body">
                     <p>Enter your credentials and withdrawal reason for <strong>@Model.RINumber</strong>.</p>
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label">@L["Password"]</label>
                         <input type="password" name="pwd" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Withdrawal Reason <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Withdrawal Reason"] <span class="text-danger">*</span></label>
                         <textarea name="reason" class="form-control" rows="3" required placeholder="State the reason for withdrawal..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-dark"><i class="fas fa-ban me-1"></i>Confirm Withdrawal</button>
                 </div>
             </form>
@@ -384,23 +384,23 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will mark <strong>@Model.RINumber</strong> as <strong class="text-danger">Suspended</strong> and lock the record. Enter your credentials and the suspension reason.</p>
+                    <p>This will mark <strong>@Model.RINumber</strong> as <strong class="text-danger">@L["Suspended"]</strong> and lock the record. Enter your credentials and the suspension reason.</p>
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label">@L["Password"]</label>
                         <input type="password" name="pwd" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Suspension Reason <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Suspension Reason"] <span class="text-danger">*</span></label>
                         <textarea name="reason" class="form-control" rows="3" required placeholder="State the reason for suspension..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger"><i class="fas fa-pause-circle me-1"></i>Confirm Suspension</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-pause-circle me-1"></i>@L["Confirm Suspension"]</button>
                 </div>
             </form>
         </div>
@@ -419,7 +419,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will move <strong>@Model.RINumber</strong> to <strong class="text-warning-emphasis">Renewal Due</strong> so the renewal submission can be progressed.</p>
+                    <p>This will move <strong>@Model.RINumber</strong> to <strong class="text-warning-emphasis">@L["Renewal Due"]</strong> so the renewal submission can be progressed.</p>
                     @if (Model.NextRenewalDue.HasValue || Model.ExpiryDate.HasValue)
                     {
                         var refDate = Model.NextRenewalDue ?? Model.ExpiryDate;
@@ -433,7 +433,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-warning"><i class="fas fa-sync me-1"></i>Initiate Renewal</button>
                 </div>
             </form>
@@ -500,10 +500,10 @@
 <!-- Tab Navigation -->
 <ul class="nav nav-tabs mb-0" id="detailTabs" role="tablist">
     <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dtab1" type="button"><i class="fas fa-file-alt me-1"></i>Application</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab2" type="button"><i class="fas fa-pills me-1"></i>Product</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab2" type="button"><i class="fas fa-pills me-1"></i>@L["Product"]</button></li>
     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab3" type="button"><i class="fas fa-calendar-alt me-1"></i>Dates</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab4" type="button"><i class="fas fa-dollar-sign me-1"></i>Fees</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab5" type="button"><i class="fas fa-users me-1"></i>Contacts</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab4" type="button"><i class="fas fa-dollar-sign me-1"></i>@L["Fees"]</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab5" type="button"><i class="fas fa-users me-1"></i>@L["Contacts"]</button></li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab6" type="button">
             <i class="fas fa-clipboard-check me-1"></i>Conditions
@@ -565,7 +565,7 @@
     </li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab8" type="button">
-            <i class="fas fa-history me-1"></i>Audit Log
+            <i class="fas fa-history me-1"></i>@L["Audit Log"]
         </button>
     </li>
     <li class="nav-item">
@@ -581,29 +581,29 @@
     <!-- Tab 1: Application Info -->
     <div class="tab-pane fade show active" id="dtab1" role="tabpanel">
         <div class="row g-3">
-            <div class="col-md-3"><label class="text-muted small">RI Number</label><div class="fw-bold">@Model.RINumber</div></div>
-            <div class="col-md-3"><label class="text-muted small">Jurisdiction</label><div>@Model.Jurisdiction?.Name (@Model.Jurisdiction?.Code)</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["RI Number"]</label><div class="fw-bold">@Model.RINumber</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Jurisdiction"]</label><div>@Model.Jurisdiction?.Name (@Model.Jurisdiction?.Code)</div></div>
             <div class="col-md-3"><label class="text-muted small">Authority</label><div>@Model.Jurisdiction?.Authority</div></div>
-            <div class="col-md-3"><label class="text-muted small">Application Type</label><div>@Model.ApplicationType?.Name</div></div>
-            <div class="col-md-3"><label class="text-muted small">Submission Method</label><div>@(Model.SubmissionMethod ?? "—")</div></div>
-            <div class="col-md-3"><label class="text-muted small">Authority Reference No.</label><div>@(Model.AuthorityReferenceNumber ?? "—")</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Application Type"]</label><div>@Model.ApplicationType?.Name</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Submission Method"]</label><div>@(Model.SubmissionMethod ?? "—")</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Authority Reference No."]</label><div>@(Model.AuthorityReferenceNumber ?? "—")</div></div>
             <div class="col-md-6">
                 <label class="text-muted small">Designations</label>
                 <div class="d-flex flex-wrap gap-1">
                     @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">Orphan</span> }
-                    @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">Priority Review</span> }
-                    @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">Breakthrough Therapy</span> }
-                    @if (Model.IsPRIME)               { <span class="badge bg-danger">PRIME</span> }
-                    @if (Model.IsConditionalApproval) { <span class="badge bg-warning text-dark">Conditional Approval</span> }
-                    @if (!Model.IsOrphanDesignation && !Model.IsPriorityReview && !Model.IsBreakthroughTherapy && !Model.IsPRIME && !Model.IsConditionalApproval) { <span class="text-muted">None</span> }
+                    @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">@L["Priority Review"]</span> }
+                    @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">@L["Breakthrough Therapy"]</span> }
+                    @if (Model.IsPRIME)               { <span class="badge bg-danger">@L["PRIME"]</span> }
+                    @if (Model.IsConditionalApproval) { <span class="badge bg-warning text-dark">@L["Conditional Approval"]</span> }
+                    @if (!Model.IsOrphanDesignation && !Model.IsPriorityReview && !Model.IsBreakthroughTherapy && !Model.IsPRIME && !Model.IsConditionalApproval) { <span class="text-muted">@L["None"]</span> }
                 </div>
             </div>
-            <div class="col-md-3"><label class="text-muted small">Created By</label><div>@Model.CreatedBy</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Created By"]</label><div>@Model.CreatedBy</div></div>
             <div class="col-md-3"><label class="text-muted small">Created At</label><div>@Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm")</div></div>
             @if (Model.ModifiedBy != null)
             {
                 <div class="col-md-3"><label class="text-muted small">Last Modified By</label><div>@Model.ModifiedBy</div></div>
-                <div class="col-md-3"><label class="text-muted small">Last Modified</label><div>@Model.ModifiedAt.ToSite()?.ToString("dd MMM yyyy HH:mm")</div></div>
+                <div class="col-md-3"><label class="text-muted small">@L["Last Modified"]</label><div>@Model.ModifiedAt.ToSite()?.ToString("dd MMM yyyy HH:mm")</div></div>
             }
         </div>
     </div>
@@ -611,16 +611,16 @@
     <!-- Tab 2: Product & Indication -->
     <div class="tab-pane fade" id="dtab2" role="tabpanel">
         <div class="row g-3">
-            <div class="col-md-6"><label class="text-muted small">Product</label>
+            <div class="col-md-6"><label class="text-muted small">@L["Product"]</label>
                 <div>
                     <a asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductId">@Model.Product?.Name</a>
                 </div>
             </div>
-            <div class="col-md-6"><label class="text-muted small">Product Name (snapshot)</label><div>@Model.ProductName</div></div>
-            <div class="col-md-4"><label class="text-muted small">Active Substance / INN</label><div>@(Model.ActiveSubstance ?? "—")</div></div>
-            <div class="col-md-8"><label class="text-muted small">Indication</label><div>@(Model.Indication ?? "—")</div></div>
-            <div class="col-md-4"><label class="text-muted small">Dosage Form</label><div>@(Model.DosageForm ?? "—")</div></div>
-            <div class="col-md-4"><label class="text-muted small">Strength</label><div>@(Model.Strength ?? "—")</div></div>
+            <div class="col-md-6"><label class="text-muted small">@L["Product Name (snapshot)"]</label><div>@Model.ProductName</div></div>
+            <div class="col-md-4"><label class="text-muted small">@L["Active Substance / INN"]</label><div>@(Model.ActiveSubstance ?? "—")</div></div>
+            <div class="col-md-8"><label class="text-muted small">@L["Indication"]</label><div>@(Model.Indication ?? "—")</div></div>
+            <div class="col-md-4"><label class="text-muted small">@L["Dosage Form"]</label><div>@(Model.DosageForm ?? "—")</div></div>
+            <div class="col-md-4"><label class="text-muted small">@L["Strength"]</label><div>@(Model.Strength ?? "—")</div></div>
         </div>
     </div>
 
@@ -662,10 +662,10 @@
     <!-- Tab 4: Fees -->
     <div class="tab-pane fade" id="dtab4" role="tabpanel">
         <div class="row g-3">
-            <div class="col-md-3"><label class="text-muted small">Application Fee</label>
+            <div class="col-md-3"><label class="text-muted small">@L["Application Fee"]</label>
                 <div>@(Model.ApplicationFee.HasValue ? $"{Model.FeeCurrency} {Model.ApplicationFee:N2}" : "—")</div>
             </div>
-            <div class="col-md-3"><label class="text-muted small">Fee Paid Date</label><div>@(Model.FeePaidDate?.ToString("dd MMM yyyy") ?? "—")</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Fee Paid Date"]</label><div>@(Model.FeePaidDate?.ToString("dd MMM yyyy") ?? "—")</div></div>
             <div class="col-md-3"><label class="text-muted small">Fee Waiver</label>
                 <div>@(Model.FeeWaiverApplied ? "Yes — " + (Model.FeeWaiverReason ?? "") : "No")</div>
             </div>
@@ -675,10 +675,10 @@
     <!-- Tab 5: Contacts & Strategy -->
     <div class="tab-pane fade" id="dtab5" role="tabpanel">
         <div class="row g-3">
-            <div class="col-md-6"><label class="text-muted small">Internal RA Lead</label><div>@(ViewData["RALeadName"] as string ?? Model.InternalRALead ?? "—")</div></div>
-            <div class="col-md-6"><label class="text-muted small">External RA Consultant</label><div>@(Model.ExternalConsultant ?? "—")</div></div>
+            <div class="col-md-6"><label class="text-muted small">@L["Internal RA Lead"]</label><div>@(ViewData["RALeadName"] as string ?? Model.InternalRALead ?? "—")</div></div>
+            <div class="col-md-6"><label class="text-muted small">@L["External RA Consultant"]</label><div>@(Model.ExternalConsultant ?? "—")</div></div>
             <div class="col-md-6"><label class="text-muted small">Authority Rapporteur / PM</label><div>@(Model.AuthorityRapporteur ?? "—")</div></div>
-            <div class="col-md-6"><label class="text-muted small">Authority Contact Email</label>
+            <div class="col-md-6"><label class="text-muted small">@L["Authority Contact Email"]</label>
                 <div>@(Model.AuthorityContactEmail != null ? Model.AuthorityContactEmail : "—")</div>
             </div>
             <div class="col-md-6"><label class="text-muted small">Manufacturing Supplier</label>
@@ -692,7 +692,7 @@
             </div>
             @if (!string.IsNullOrEmpty(Model.StrategyNotes))
             {
-                <div class="col-12"><label class="text-muted small">Strategy Notes</label>
+                <div class="col-12"><label class="text-muted small">@L["Strategy Notes"]</label>
                     <div class="border rounded p-2 bg-light" style="white-space:pre-wrap">@Model.StrategyNotes</div>
                 </div>
             }
@@ -714,7 +714,7 @@
         {
             <table class="table table-sm table-hover align-middle">
                 <thead class="table-light">
-                    <tr><th>Condition</th><th>Type</th><th>Due Date</th><th>Status</th><th>CAPA</th><th class="text-end">Actions</th></tr>
+                    <tr><th>@L["Condition"]</th><th>@L["Type"]</th><th>@L["Due Date"]</th><th>@L["Status"]</th><th>@L["CAPA"]</th><th class="text-end">@L["Actions"]</th></tr>
                 </thead>
                 <tbody>
                     @foreach (var c in Model.Conditions.OrderBy(x => x.DueDate))
@@ -760,7 +760,7 @@
                                             data-type="@((int)c.ConditionType)"
                                             data-due="@(c.DueDate?.ToString("yyyy-MM-dd") ?? "")"
                                             data-status="@((int)c.Status)">
-                                        <i class="fas fa-edit me-1"></i>Edit
+                                        <i class="fas fa-edit me-1"></i>@L["Edit"]
                                     </button>
                                     @if (canClose)
                                     {
@@ -768,7 +768,7 @@
                                                 data-bs-toggle="modal" data-bs-target="#closeConditionModal"
                                                 data-id="@c.Id"
                                                 data-desc="@c.ConditionDescription">
-                                            <i class="fas fa-check me-1"></i>Close
+                                            <i class="fas fa-check me-1"></i>@L["Close"]
                                         </button>
                                     }
                                     @if (!c.LinkedCAPAId.HasValue)
@@ -787,7 +787,7 @@
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@c.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="fas fa-trash me-1"></i>Delete
+                                            <i class="fas fa-trash me-1"></i>@L["Delete"]
                                         </button>
                                     </form>
                                 }
@@ -804,7 +804,7 @@
                     <i class="fas fa-info-circle me-1"></i>
                     @if (openRemaining == 0)
                     {
-                        <span>All conditions are satisfied. Application will auto-transition to <strong>Approved</strong> when the final condition is closed.</span>
+                        <span>All conditions are satisfied. Application will auto-transition to <strong>@L["Approved"]</strong> when the final condition is closed.</span>
                     }
                     else
                     {
@@ -842,7 +842,7 @@
         {
             <h6 class="text-uppercase small text-muted mt-2 mb-1">Current (Pending Approval)</h6>
             <table class="table table-sm table-hover mb-3">
-                <thead class="table-light"><tr><th>File Name</th><th>Type</th><th>Size</th><th>Version</th><th>Uploaded</th><th></th></tr></thead>
+                <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Size"]</th><th>@L["Version"]</th><th>Uploaded</th><th></th></tr></thead>
                 <tbody>
                     @foreach (var doc in riPendingDocs)
                     {
@@ -854,12 +854,12 @@
                             <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy") <span class="text-muted small">@doc.UploadedBy</span></td>
                             <td class="text-end text-nowrap">
                                 <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-download me-1"></i>Download
+                                    <i class="fas fa-download me-1"></i>@L["Download"]
                                 </a>
                                 <form asp-action="DeleteDocument" method="post" class="d-inline" data-delete-reason="document">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@doc.Id" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger ms-1"><i class="fas fa-trash me-1"></i>Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger ms-1"><i class="fas fa-trash me-1"></i>@L["Delete"]</button>
                                 </form>
                             </td>
                         </tr>
@@ -877,7 +877,7 @@
                 @if (riSnap != null) { <span class="fw-normal">— Approved @riSnap.TakenAt.ToSite().ToString("dd MMM yyyy")</span> }
             </h6>
             <table class="table table-sm table-hover mb-3">
-                <thead class="table-light"><tr><th>File Name</th><th>Type</th><th>Size</th><th>Version</th><th>Uploaded</th><th></th></tr></thead>
+                <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Size"]</th><th>@L["Version"]</th><th>Uploaded</th><th></th></tr></thead>
                 <tbody>
                     @foreach (var doc in group.OrderByDescending(d => d.UploadedAt))
                     {
@@ -887,7 +887,7 @@
                             <td class="text-muted small">@($"{doc.FileSizeBytes / 1024.0:N0} KB")</td>
                             <td>v@(doc.Version)</td>
                             <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy") <span class="text-muted small">@doc.UploadedBy</span></td>
-                            <td class="text-end"><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>Download</a></td>
+                            <td class="text-end"><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>@L["Download"]</a></td>
                         </tr>
                     }
                 </tbody>
@@ -899,17 +899,17 @@
         @if (!Model.IsLocked)
         {
         <div class="border rounded p-3 bg-light">
-            <h6><i class="fas fa-upload me-1"></i>Upload Document</h6>
+            <h6><i class="fas fa-upload me-1"></i>@L["Upload Document"]</h6>
             <form asp-action="UploadDocument" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="applicationId" value="@Model.Id" />
                 <div class="row g-2 align-items-end">
                     <div class="col-md-5">
-                        <label class="form-label small">File</label>
+                        <label class="form-label small">@L["File"]</label>
                         <input type="file" name="file" class="form-control form-control-sm" required />
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label small">Document Type</label>
+                        <label class="form-label small">@L["Document Type"]</label>
                         <select name="documentType" class="form-select form-select-sm">
                             <option value="">— Select Type —</option>
                             <option>eCTD Module</option>
@@ -919,12 +919,12 @@
                             <option>SmPC</option><option>REMS</option><option>RMP</option>
                             <option>Condition Letter</option>
                             <option>Assessment Report</option>
-                            <option>Labelling</option><option>Other</option>
+                            <option>Labelling</option><option>@L["Other"]</option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-sm btn-primary w-100">
-                            <i class="fas fa-upload me-1"></i>Upload
+                            <i class="fas fa-upload me-1"></i>@L["Upload"]
                         </button>
                     </div>
                 </div>
@@ -957,12 +957,12 @@
                     <thead class="table-light">
                         <tr>
                             <th>Variation Number</th>
-                            <th>Type</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Submitted</th>
-                            <th>Approved</th>
-                            <th class="text-end">Actions</th>
+                            <th>@L["Type"]</th>
+                            <th>@L["Description"]</th>
+                            <th>@L["Status"]</th>
+                            <th>@L["Submitted"]</th>
+                            <th>@L["Approved"]</th>
+                            <th class="text-end">@L["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1002,14 +1002,14 @@
                                                 data-submitted="@(v.SubmissionDate?.ToString("yyyy-MM-dd") ?? "")"
                                                 data-approved="@(v.ApprovalDate?.ToString("yyyy-MM-dd") ?? "")"
                                                 data-notes="@(v.Notes ?? "")">
-                                            <i class="fas fa-edit me-1"></i>Edit
+                                            <i class="fas fa-edit me-1"></i>@L["Edit"]
                                         </button>
                                         <form asp-action="DeleteVariation" method="post" class="d-inline ms-1"
                                               onsubmit="return confirm('Delete variation @v.VariationNumber?')">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="id" value="@v.Id" />
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-trash me-1"></i>Delete
+                                                <i class="fas fa-trash me-1"></i>@L["Delete"]
                                             </button>
                                         </form>
                                     }
@@ -1043,15 +1043,15 @@
                 <table class="table table-sm table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>AP Number</th>
-                            <th>Type</th>
+                            <th>@L["AP Number"]</th>
+                            <th>@L["Type"]</th>
                             <th>Patient ID</th>
-                            <th>Status</th>
-                            <th>Approval</th>
-                            <th>Expiry</th>
+                            <th>@L["Status"]</th>
+                            <th>@L["Approval"]</th>
+                            <th>@L["Expiry"]</th>
                             <th>Next Report Due</th>
                             <th class="text-center">AE Rep.</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-end">@L["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1079,22 +1079,22 @@
                                 <td class="small @(apExpired ? "text-danger fw-bold" : "")">@(ap.ExpiryDate?.ToString("dd MMM yyyy") ?? "—")</td>
                                 <td class="small @(reportOverdue ? "text-warning fw-bold" : "")">@(ap.NextSixMonthlyReportDue?.ToString("dd MMM yyyy") ?? "—")</td>
                                 <td class="text-center">
-                                    @if (ap.AEReportingRequired) { <span class="badge bg-warning text-dark">Yes</span> }
-                                    else { <span class="text-muted">No</span> }
+                                    @if (ap.AEReportingRequired) { <span class="badge bg-warning text-dark">@L["Yes"]</span> }
+                                    else { <span class="text-muted">@L["No"]</span> }
                                 </td>
                                 <td class="text-end text-nowrap">
                                     <a asp-action="AccessPathwayDetails" asp-route-id="@ap.Id" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-eye me-1"></i>View
+                                        <i class="fas fa-eye me-1"></i>@L["View"]
                                     </a>
                                     <a asp-action="EditAccessPathway" asp-route-id="@ap.Id" class="btn btn-sm btn-outline-secondary">
-                                        <i class="fas fa-edit me-1"></i>Edit
+                                        <i class="fas fa-edit me-1"></i>@L["Edit"]
                                     </a>
                                     <form asp-action="DeleteAccessPathway" method="post" class="d-inline"
                                           onsubmit="return confirm('Delete access pathway @ap.AccessNumber?')">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@ap.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="fas fa-trash me-1"></i>Delete
+                                            <i class="fas fa-trash me-1"></i>@L["Delete"]
                                         </button>
                                     </form>
                                 </td>
@@ -1159,10 +1159,10 @@
                             <th>Milestone</th>
                             <th>Planned Date</th>
                             <th>Actual Date</th>
-                            <th>Status</th>
+                            <th>@L["Status"]</th>
                             <th>Clock Stop</th>
-                            <th>Notes</th>
-                            <th class="text-end">Actions</th>
+                            <th>@L["Notes"]</th>
+                            <th class="text-end">@L["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1219,14 +1219,14 @@
                                             data-clockstop="@(m.IsClockStop ? "true" : "false")"
                                             data-clockrestart="@(m.ClockRestartDate?.ToString("yyyy-MM-dd") ?? "")"
                                             data-notes="@(m.Notes ?? "")">
-                                        <i class="fas fa-edit me-1"></i>Edit
+                                        <i class="fas fa-edit me-1"></i>@L["Edit"]
                                     </button>
                                     <form asp-action="DeleteMilestone" method="post" class="d-inline ms-1"
                                           onsubmit="return confirm('Delete this milestone?')">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@m.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="fas fa-trash me-1"></i>Delete
+                                            <i class="fas fa-trash me-1"></i>@L["Delete"]
                                         </button>
                                     </form>
                                 </td>
@@ -1259,12 +1259,12 @@
             <table class="table table-sm table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th>LC Number</th>
-                        <th>Category</th>
-                        <th>Licence Type</th>
-                        <th>Status</th>
-                        <th>Expiry</th>
-                        <th>Notes</th>
+                        <th>@L["LC Number"]</th>
+                        <th>@L["Category"]</th>
+                        <th>@L["Licence Type"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Expiry"]</th>
+                        <th>@L["Notes"]</th>
                         <th>Linked Since</th>
                         <th></th>
                     </tr>
@@ -1290,7 +1290,7 @@
                         <td>@(r.ExpiryDate.HasValue ? r.ExpiryDate.Value.ToString("dd MMM yyyy") : "—")</td>
                         <td class="small text-muted">@(dep.Notes ?? "—")</td>
                         <td class="small text-muted">@(SiteTime.ToSite((DateTime)dep.LinkedSince).ToString("dd MMM yyyy"))</td>
-                        <td><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">View</a></td>
+                        <td><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">@L["View"]</a></td>
                     </tr>
                 }
                 </tbody>
@@ -1303,7 +1303,7 @@
         @if (Model.AuditLogs?.Any() == true)
         {
             <table class="table table-sm table-hover">
-                <thead class="table-light"><tr><th>Timestamp <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>Action</th><th>Field</th><th>From</th><th>To</th><th>User</th><th>Notes</th></tr></thead>
+                <thead class="table-light"><tr><th>Timestamp <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>@L["Action"]</th><th>Field</th><th>@L["From"]</th><th>@L["To"]</th><th>@L["User"]</th><th>@L["Notes"]</th></tr></thead>
                 <tbody>
                     @foreach (var log in Model.AuditLogs)
                     {
@@ -1327,7 +1327,7 @@
     <div class="tab-pane fade" id="dtabHistory" role="tabpanel">
         @if (Model.ApprovalSnapshots?.Any() != true)
         {
-            <p class="text-muted">No approval cycles recorded yet. A snapshot is captured automatically each time this application is transitioned to <strong>Approved</strong>.</p>
+            <p class="text-muted">No approval cycles recorded yet. A snapshot is captured automatically each time this application is transitioned to <strong>@L["Approved"]</strong>.</p>
         }
         else
         {
@@ -1381,7 +1381,7 @@
                         {
                             <h6 class="small text-uppercase text-muted mb-1">Documents at Approval</h6>
                             <table class="table table-sm table-bordered mb-2">
-                                <thead class="table-light"><tr><th>File Name</th><th>Type</th><th>SHA-256</th></tr></thead>
+                                <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["SHA-256"]</th></tr></thead>
                                 <tbody>
                                     @foreach (var doc in docArr.EnumerateArray())
                                     {
@@ -1444,13 +1444,13 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Due Date</label>
+                            <label class="form-label">@L["Due Date"]</label>
                             <input type="date" name="dueDate" class="form-control" />
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Add Condition</button>
                 </div>
             </form>
@@ -1485,11 +1485,11 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Due Date</label>
+                            <label class="form-label">@L["Due Date"]</label>
                             <input type="date" name="dueDate" id="editConditionDue" class="form-control" />
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Status</label>
+                            <label class="form-label">@L["Status"]</label>
                             <select name="status" id="editConditionStatus" class="form-select">
                                 @foreach (RIConditionStatus cs in Enum.GetValues(typeof(RIConditionStatus)))
                                 {
@@ -1500,8 +1500,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Changes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>@L["Save Changes"]</button>
                 </div>
             </form>
         </div>
@@ -1525,17 +1525,17 @@
                     {
                         <div class="alert alert-info small">
                             <i class="fas fa-info-circle me-1"></i>
-                            If this is the last open condition, the application will automatically transition to <strong>Approved</strong>.
+                            If this is the last open condition, the application will automatically transition to <strong>@L["Approved"]</strong>.
                         </div>
                     }
                     <div class="mb-3">
-                        <label class="form-label">Completion Notes</label>
+                        <label class="form-label">@L["Completion Notes"]</label>
                         <textarea name="completionNotes" class="form-control" rows="3"
                                   placeholder="Describe how this condition was satisfied..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>Close Condition</button>
                 </div>
             </form>
@@ -1566,23 +1566,23 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Submission Date</label>
+                            <label class="form-label">@L["Submission Date"]</label>
                             <input type="date" name="submissionDate" class="form-control" />
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Description <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Description"] <span class="text-danger">*</span></label>
                             <textarea name="variationDescription" class="form-control" rows="3" required maxlength="300"
                                       placeholder="Describe the proposed variation..."></textarea>
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Notes</label>
+                            <label class="form-label">@L["Notes"]</label>
                             <textarea name="notes" class="form-control" rows="2" maxlength="500"
                                       placeholder="Additional context or regulatory strategy notes..."></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Add Variation</button>
                 </div>
             </form>
@@ -1613,7 +1613,7 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Status</label>
+                            <label class="form-label">@L["Status"]</label>
                             <select name="status" id="editVarStatus" class="form-select">
                                 @foreach (RIApplicationStatus vs in Enum.GetValues(typeof(RIApplicationStatus)))
                                 {
@@ -1622,26 +1622,26 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Submission Date</label>
+                            <label class="form-label">@L["Submission Date"]</label>
                             <input type="date" name="submissionDate" id="editVarSubmitted" class="form-control" />
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Approval Date</label>
+                            <label class="form-label">@L["Approval Date"]</label>
                             <input type="date" name="approvalDate" id="editVarApproved" class="form-control" />
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Description <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Description"] <span class="text-danger">*</span></label>
                             <textarea name="variationDescription" id="editVarDesc" class="form-control" rows="3" required maxlength="300"></textarea>
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Notes</label>
+                            <label class="form-label">@L["Notes"]</label>
                             <textarea name="notes" id="editVarNotes" class="form-control" rows="2" maxlength="500"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Changes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>@L["Save Changes"]</button>
                 </div>
             </form>
         </div>
@@ -1677,12 +1677,12 @@
                         <div class="form-text">Check if this milestone triggers a regulatory clock stop.</div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Notes</label>
+                        <label class="form-label">@L["Notes"]</label>
                         <textarea name="notes" class="form-control" rows="2" maxlength="500"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Add Milestone</button>
                 </div>
             </form>
@@ -1716,7 +1716,7 @@
                             <input type="date" name="actualDate" id="editActualDate" class="form-control" />
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Status</label>
+                            <label class="form-label">@L["Status"]</label>
                             <select name="status" id="editStatus" class="form-select">
                                 @foreach (RIMilestoneStatus s in Enum.GetValues(typeof(RIMilestoneStatus)))
                                 {
@@ -1738,14 +1738,14 @@
                             <input type="date" name="clockRestartDate" id="editClockRestartDate" class="form-control" />
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Notes</label>
+                            <label class="form-label">@L["Notes"]</label>
                             <textarea name="notes" id="editNotes" class="form-control" rows="2" maxlength="500"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Changes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>@L["Save Changes"]</button>
                 </div>
             </form>
         </div>
@@ -1773,7 +1773,7 @@
                     <p class="text-muted small">This action is only available when no milestones exist.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-secondary"><i class="fas fa-magic me-1"></i>Apply Template</button>
                 </div>
             </form>

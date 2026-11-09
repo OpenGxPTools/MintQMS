@@ -37,7 +37,7 @@
             }
             @if (Model.IsLocked)
             {
-                <span class="badge bg-dark ms-1"><i class="bi bi-lock me-1"></i>Locked</span>
+                <span class="badge bg-dark ms-1"><i class="bi bi-lock me-1"></i>@L["Locked"]</span>
             }
         </h4>
         <small class="text-muted">@Model.LicenceType?.DisplayName &bull; @Model.HolderName</small>
@@ -45,9 +45,9 @@
     <div class="d-flex gap-2">
         @if (!Model.IsLocked)
         {
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-sm"><i class="fas fa-edit me-1"></i>@L["Edit"]</a>
         }
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Register</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>@L["Register"]</a>
     </div>
 </div>
 
@@ -95,7 +95,7 @@
     <div class="card mb-3 border-primary">
         <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center py-2">
             <i class="fas fa-exchange-alt me-2 text-primary"></i>
-            <strong class="text-primary">Workflow Actions</strong>
+            <strong class="text-primary">@L["Workflow Actions"]</strong>
             <span class="ms-2 text-muted small">Current status: <strong>@L.Enum(Model.Status)</strong></span>
         </div>
         <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
@@ -192,11 +192,11 @@
 
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-0" id="detailsTabs" role="tablist">
-    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dtab1" type="button"><i class="fas fa-fingerprint me-1"></i>Identification</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab2" type="button"><i class="fas fa-tag me-1"></i>Classification</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab3" type="button"><i class="fas fa-calendar-alt me-1"></i>Licence Details</button></li>
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dtab1" type="button"><i class="fas fa-fingerprint me-1"></i>@L["Identification"]</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab2" type="button"><i class="fas fa-tag me-1"></i>@L["Classification"]</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab3" type="button"><i class="fas fa-calendar-alt me-1"></i>@L["Licence Details"]</button></li>
     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab4" type="button"><i class="fas fa-microscope me-1"></i>GMP / ISO</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab5" type="button"><i class="fas fa-user me-1"></i>Contacts</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab5" type="button"><i class="fas fa-user me-1"></i>@L["Contacts"]</button></li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab6" type="button">
             <i class="fas fa-tasks me-1"></i>Conditions
@@ -217,7 +217,7 @@
             @if (depCount > 0) { <span class="badge bg-primary ms-1">@depCount</span> }
         </button>
     </li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab9" type="button"><i class="fas fa-history me-1"></i>Audit Log</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab9" type="button"><i class="fas fa-history me-1"></i>@L["Audit Log"]</button></li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab10" type="button">
             <i class="fas fa-layer-group me-1"></i>Approval History
@@ -231,7 +231,7 @@
     <!-- ── Tab 1: Identification ───────────────────────────────────────── -->
     <div class="tab-pane fade show active" id="dtab1" role="tabpanel">
         <div class="row g-3">
-            <div class="col-md-4"><label class="form-label text-muted small">LC Number</label><p class="fw-bold">@Model.LCNumber</p></div>
+            <div class="col-md-4"><label class="form-label text-muted small">@L["LC Number"]</label><p class="fw-bold">@Model.LCNumber</p></div>
             <div class="col-md-4"><label class="form-label text-muted small">Holder Type</label><p>@Model.HolderType</p></div>
             <div class="col-md-4"><label class="form-label text-muted small">Holder Name</label><p class="fw-bold">@Model.HolderName</p></div>
             @if (Model.Supplier != null)
@@ -248,10 +248,10 @@
             {
                 <div class="col-12"><label class="form-label text-muted small">Site Address</label><p>@Model.LinkedSiteAddress</p></div>
             }
-            <div class="col-md-4"><label class="form-label text-muted small">Created By</label><p>@Model.CreatedBy &bull; @Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm") UTC</p></div>
+            <div class="col-md-4"><label class="form-label text-muted small">@L["Created By"]</label><p>@Model.CreatedBy &bull; @Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm") UTC</p></div>
             @if (Model.ModifiedAt.HasValue)
             {
-                <div class="col-md-4"><label class="form-label text-muted small">Last Modified</label><p>@Model.ModifiedBy &bull; @Model.ModifiedAt.Value.ToSite().ToString("dd MMM yyyy HH:mm") UTC</p></div>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Last Modified"]</label><p>@Model.ModifiedBy &bull; @Model.ModifiedAt.Value.ToSite().ToString("dd MMM yyyy HH:mm") UTC</p></div>
             }
         </div>
     </div>
@@ -259,11 +259,11 @@
     <!-- ── Tab 2: Classification ───────────────────────────────────────── -->
     <div class="tab-pane fade" id="dtab2" role="tabpanel">
         <div class="row g-3">
-            <div class="col-md-4"><label class="form-label text-muted small">Category</label>
+            <div class="col-md-4"><label class="form-label text-muted small">@L["Category"]</label>
                 <p>@(Model.Category == LCCategory.RegulatoryLicence ? "Regulatory Licence" :
                      Model.Category == LCCategory.ISOPrivateCertification ? "ISO / Private Certification" :
                      "Third-Party Site Approval")</p></div>
-            <div class="col-md-8"><label class="form-label text-muted small">Licence / Certification Type</label><p class="fw-bold">@Model.LicenceType?.DisplayName</p></div>
+            <div class="col-md-8"><label class="form-label text-muted small">@L["Licence / Certification Type"]</label><p class="fw-bold">@Model.LicenceType?.DisplayName</p></div>
             @if (!string.IsNullOrEmpty(Model.IssuingBody))
             {
                 <div class="col-md-6"><label class="form-label text-muted small">Issuing Body</label><p>@Model.IssuingBody</p></div>
@@ -275,7 +275,7 @@
             }
             @if (!string.IsNullOrEmpty(Model.IssuingBodyPortal))
             {
-                <div class="col-md-8"><label class="form-label text-muted small">Authority Portal / Login URL</label>
+                <div class="col-md-8"><label class="form-label text-muted small">@L["Authority Portal / Login URL"]</label>
                     <p><a href="@Model.IssuingBodyPortal" target="_blank">@Model.IssuingBodyPortal</a></p></div>
             }
             @if (!string.IsNullOrEmpty(Model.AuthorityPortalUsername))
@@ -299,12 +299,12 @@
             }
             @if (Model.IssueDate.HasValue)
             {
-                <div class="col-md-4"><label class="form-label text-muted small">Issue Date</label><p>@Model.IssueDate.Value.ToString("dd MMM yyyy")</p></div>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Issue Date"]</label><p>@Model.IssueDate.Value.ToString("dd MMM yyyy")</p></div>
             }
             @if (Model.ExpiryDate.HasValue)
             {
                 <div class="col-md-4">
-                    <label class="form-label text-muted small">Expiry Date</label>
+                    <label class="form-label text-muted small">@L["Expiry Date"]</label>
                     <p class="@(expiryBand == "danger" ? "text-danger fw-bold" : expiryBand == "warning" ? "text-warning fw-bold" : "")">
                         @Model.ExpiryDate.Value.ToString("dd MMM yyyy")
                         @if (expiryDays >= 0) { <small class="text-muted">(@expiryDays days)</small> }
@@ -313,7 +313,7 @@
             }
             @if (Model.NextRenewalDue.HasValue)
             {
-                <div class="col-md-4"><label class="form-label text-muted small">Next Renewal Due</label><p>@Model.NextRenewalDue.Value.ToString("dd MMM yyyy")</p></div>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Next Renewal Due"]</label><p>@Model.NextRenewalDue.Value.ToString("dd MMM yyyy")</p></div>
             }
             <div class="col-md-4"><label class="form-label text-muted small">Renewal Lead Time</label><p>@Model.RenewalLeadTimeDays days</p></div>
             @if (!string.IsNullOrEmpty(Model.Scope))
@@ -330,7 +330,7 @@
             <h6 class="text-uppercase small text-muted border-bottom pb-1 mb-3"><i class="fas fa-shield-alt me-1"></i>GMP Clearance Details</h6>
             <div class="row g-3">
                 @if (Model.GmcPathway.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">GMP Clearance Pathway</label><p>@Model.GmcPathway</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["GMP Clearance Pathway"]</label><p>@Model.GmcPathway</p></div> }
                 @if (!string.IsNullOrEmpty(Model.SiteCountry))
                 { <div class="col-md-4"><label class="form-label text-muted small">Site Country</label><p>@Model.SiteCountry</p></div> }
                 @if (!string.IsNullOrEmpty(Model.InspectionAuthority))
@@ -344,10 +344,10 @@
                     <p class="@(Model.RFIResponseSubmittedDate == null && Model.RFIResponseDueDate < SiteTime.Today ? "text-danger fw-bold" : "")">
                         @Model.RFIResponseDueDate.Value.ToString("dd MMM yyyy")</p></div> }
                 @if (Model.RFIResponseSubmittedDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">RFI Response Submitted</label><p class="text-success">@Model.RFIResponseSubmittedDate.Value.ToString("dd MMM yyyy")</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["RFI Response Submitted"]</label><p class="text-success">@Model.RFIResponseSubmittedDate.Value.ToString("dd MMM yyyy")</p></div> }
                 @if (!string.IsNullOrEmpty(Model.ManufacturingStepsScope))
                 { <div class="col-12"><label class="form-label text-muted small">Manufacturing Steps Scope</label><p>@Model.ManufacturingStepsScope</p></div> }
-                <div class="col-md-4"><label class="form-label text-muted small">Letter of Access Available</label>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Letter of Access Available"]</label>
                     <p>@(Model.LetterOfAccessAvailable ? "Yes" : "No")</p></div>
             </div>
         }
@@ -360,11 +360,11 @@
                 @if (!string.IsNullOrEmpty(Model.CertificationBodyAccreditation))
                 { <div class="col-md-6"><label class="form-label text-muted small">Accreditation No.</label><p>@Model.CertificationBodyAccreditation</p></div> }
                 @if (!string.IsNullOrEmpty(Model.StandardVersion))
-                { <div class="col-md-4"><label class="form-label text-muted small">Standard Version</label><p>@Model.StandardVersion</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["Standard Version"]</label><p>@Model.StandardVersion</p></div> }
                 @if (Model.Stage1AuditDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">Stage 1 Audit</label><p>@Model.Stage1AuditDate.Value.ToString("dd MMM yyyy")</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["Stage 1 Audit"]</label><p>@Model.Stage1AuditDate.Value.ToString("dd MMM yyyy")</p></div> }
                 @if (Model.Stage2AuditDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">Stage 2 Audit</label><p>@Model.Stage2AuditDate.Value.ToString("dd MMM yyyy")</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["Stage 2 Audit"]</label><p>@Model.Stage2AuditDate.Value.ToString("dd MMM yyyy")</p></div> }
                 @if (Model.NextSurveillanceAuditDate.HasValue)
                 {
                     int survDays = (Model.NextSurveillanceAuditDate.Value.Date - SiteTime.Today).Days;
@@ -377,7 +377,7 @@
                     </div>
                 }
                 @if (Model.RecertificationDueDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">Recertification Due</label><p>@Model.RecertificationDueDate.Value.ToString("dd MMM yyyy")</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["Recertification Due"]</label><p>@Model.RecertificationDueDate.Value.ToString("dd MMM yyyy")</p></div> }
                 @if (!string.IsNullOrEmpty(Model.CertificateScope))
                 { <div class="col-12"><label class="form-label text-muted small">Certificate Scope</label><p class="border rounded p-2 bg-light">@Model.CertificateScope</p></div> }
             </div>
@@ -391,17 +391,17 @@
     <!-- ── Tab 5: Contacts ────────────────────────────────────────────── -->
     <div class="tab-pane fade" id="dtab5" role="tabpanel">
         <div class="row g-3">
-            <div class="col-md-6"><label class="form-label text-muted small">Internal Responsible Person</label>
+            <div class="col-md-6"><label class="form-label text-muted small">@L["Internal Responsible Person"]</label>
                 <p>@(ViewBag.ResponsiblePersonName ?? Model.InternalResponsiblePersonId ?? "—")</p></div>
             <div class="col-md-6"><label class="form-label text-muted small">External Consultant</label>
                 <p>@(string.IsNullOrEmpty(Model.ExternalConsultant) ? "—" : Model.ExternalConsultant)</p></div>
-            <div class="col-md-6"><label class="form-label text-muted small">Authority Contact Email</label>
+            <div class="col-md-6"><label class="form-label text-muted small">@L["Authority Contact Email"]</label>
                 <p>@if (!string.IsNullOrEmpty(Model.AuthorityContactEmail))
                 { <a href="mailto:@Model.AuthorityContactEmail">@Model.AuthorityContactEmail</a> }
                 else { <text>—</text> }</p></div>
             @if (Model.ApplicationFee.HasValue)
             {
-                <div class="col-md-3"><label class="form-label text-muted small">Application Fee</label>
+                <div class="col-md-3"><label class="form-label text-muted small">@L["Application Fee"]</label>
                     <p>@Model.ApplicationFee.Value.ToString("N2") @Model.FeeCurrency</p></div>
             }
             @if (Model.FeePaidDate.HasValue)
@@ -439,7 +439,7 @@
         {
             <table class="table table-sm table-hover">
                 <thead class="table-light">
-                    <tr><th>Description</th><th>Due Date</th><th>Status</th><th>Linked CAPA</th><th>Completed</th><th class="text-center">Actions</th></tr>
+                    <tr><th>@L["Description"]</th><th>@L["Due Date"]</th><th>@L["Status"]</th><th>@L["Linked CAPA"]</th><th>@L["Completed"]</th><th class="text-center">@L["Actions"]</th></tr>
                 </thead>
                 <tbody>
                     @foreach (var cond in Model.Conditions.OrderBy(c => c.DueDate))
@@ -462,7 +462,7 @@
                             <td>
                                 @if (cond.LinkedCAPAId.HasValue)
                                 {
-                                    <a asp-controller="Capas" asp-action="Details" asp-route-id="@cond.LinkedCAPAId">View CAPA</a>
+                                    <a asp-controller="Capas" asp-action="Details" asp-route-id="@cond.LinkedCAPAId">@L["View CAPA"]</a>
                                 }
                                 else { <text>—</text> }
                             </td>
@@ -479,7 +479,7 @@
                                             data-id="@cond.Id"
                                             data-desc="@Html.Raw(System.Text.Json.JsonSerializer.Serialize(cond.ConditionDescription))"
                                             data-due="@(cond.DueDate.HasValue ? cond.DueDate.Value.ToString("yyyy-MM-dd") : "")">
-                                        <i class="fas fa-edit me-1"></i>Edit
+                                        <i class="fas fa-edit me-1"></i>@L["Edit"]
                                     </button>
                                     <button class="btn btn-sm btn-outline-success ms-1"
                                             data-bs-toggle="modal" data-bs-target="#completeConditionModal"
@@ -509,7 +509,7 @@
                                         <input type="hidden" name="conditionId" value="@cond.Id" />
                                         <input type="hidden" name="recordId" value="@Model.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="fas fa-trash me-1"></i>Delete
+                                            <i class="fas fa-trash me-1"></i>@L["Delete"]
                                         </button>
                                     </form>
                                 }
@@ -524,11 +524,11 @@
     <!-- ── Tab 7: Documents ───────────────────────────────────────────── -->
     <div class="tab-pane fade" id="dtab7" role="tabpanel">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="text-uppercase small text-muted mb-0">Attachments</h6>
+            <h6 class="text-uppercase small text-muted mb-0">@L["Attachments"]</h6>
             @if (!Model.IsLocked)
             {
                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#uploadDocModal">
-                    <i class="fas fa-upload me-1"></i>Upload Document
+                    <i class="fas fa-upload me-1"></i>@L["Upload Document"]
                 </button>
             }
         </div>
@@ -551,7 +551,7 @@
             <h6 class="text-uppercase small text-muted mt-2 mb-1">Current (Pending Approval)</h6>
             <table class="table table-sm table-hover mb-3">
                 <thead class="table-light">
-                    <tr><th>File Name</th><th>Type</th><th>Description</th><th>Uploaded By</th><th>Date</th><th>Size</th><th></th></tr>
+                    <tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Description"]</th><th>@L["Uploaded By"]</th><th>@L["Date"]</th><th>@L["Size"]</th><th></th></tr>
                 </thead>
                 <tbody>
                     @foreach (var doc in pendingDocs)
@@ -564,12 +564,12 @@
                             <td><small>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy")</small></td>
                             <td><small>@(doc.FileSizeBytes > 1024 ? $"{doc.FileSizeBytes / 1024:N0} KB" : $"{doc.FileSizeBytes} B")</small></td>
                             <td class="text-nowrap">
-                                <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>Download</a>
+                                <a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>@L["Download"]</a>
                                 <form asp-action="DeleteDocument" method="post" class="d-inline ms-1" data-delete-reason="document">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="docId" value="@doc.Id" />
                                     <input type="hidden" name="recordId" value="@Model.Id" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash me-1"></i>Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash me-1"></i>@L["Delete"]</button>
                                 </form>
                             </td>
                         </tr>
@@ -588,7 +588,7 @@
             </h6>
             <table class="table table-sm table-hover mb-3">
                 <thead class="table-light">
-                    <tr><th>File Name</th><th>Type</th><th>Description</th><th>Uploaded By</th><th>Date</th><th>Size</th><th></th></tr>
+                    <tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Description"]</th><th>@L["Uploaded By"]</th><th>@L["Date"]</th><th>@L["Size"]</th><th></th></tr>
                 </thead>
                 <tbody>
                     @foreach (var doc in group.OrderByDescending(d => d.UploadedAt))
@@ -600,7 +600,7 @@
                             <td><small>@doc.UploadedById</small></td>
                             <td><small>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy")</small></td>
                             <td><small>@(doc.FileSizeBytes > 1024 ? $"{doc.FileSizeBytes / 1024:N0} KB" : $"{doc.FileSizeBytes} B")</small></td>
-                            <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>Download</a></td>
+                            <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>@L["Download"]</a></td>
                         </tr>
                     }
                 </tbody>
@@ -642,7 +642,7 @@
         {
             <table class="table table-sm table-hover mt-2">
                 <thead class="table-light">
-                    <tr><th>RI Number</th><th>Product Name</th><th>App Status</th><th>Linked Since</th><th>Notes</th><th class="text-center">Actions</th></tr>
+                    <tr><th>@L["RI Number"]</th><th>@L["Product Name"]</th><th>App Status</th><th>Linked Since</th><th>@L["Notes"]</th><th class="text-center">@L["Actions"]</th></tr>
                 </thead>
                 <tbody>
                     @foreach (var dep in Model.Dependencies.OrderBy(d => d.LinkedSince))
@@ -662,7 +662,7 @@
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="dependencyId" value="@dep.Id" />
                                         <input type="hidden" name="recordId" value="@Model.Id" />
-                                        <button type="submit" class="btn btn-xs btn-outline-danger btn-sm py-0 px-1"><i class="fas fa-unlink me-1"></i>Unlink</button>
+                                        <button type="submit" class="btn btn-xs btn-outline-danger btn-sm py-0 px-1"><i class="fas fa-unlink me-1"></i>@L["Unlink"]</button>
                                     </form>
                                 }
                             </td>
@@ -682,7 +682,7 @@
         else
         {
             <table class="table table-sm">
-                <thead class="table-light"><tr><th>Timestamp (UTC)</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+                <thead class="table-light"><tr><th>Timestamp (UTC)</th><th>@L["User"]</th><th>@L["Action"]</th><th>@L["Details"]</th></tr></thead>
                 <tbody>
                     @foreach (var log in Model.AuditLogs.OrderByDescending(l => l.Timestamp))
                     {
@@ -757,7 +757,7 @@
                         {
                             <h6 class="small text-uppercase text-muted mb-1">Documents at Approval</h6>
                             <table class="table table-sm table-bordered mb-2">
-                                <thead class="table-light"><tr><th>File Name</th><th>Type</th><th>SHA-256</th></tr></thead>
+                                <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["SHA-256"]</th></tr></thead>
                                 <tbody>
                                     @foreach (var doc in docArr.EnumerateArray())
                                     {
@@ -825,13 +825,13 @@
                                   placeholder="Describe the condition imposed by the authority or certification body..." required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Due Date</label>
+                        <label class="form-label fw-bold">@L["Due Date"]</label>
                         <input type="date" name="dueDate" class="form-control" />
                         <small class="text-muted">Date by which the condition must be satisfied.</small>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-warning"><i class="fas fa-plus me-1"></i>Add Condition</button>
                 </div>
             </form>
@@ -857,13 +857,13 @@
                         <textarea name="conditionDescription" id="editConditionDesc" class="form-control" rows="4" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Due Date</label>
+                        <label class="form-label fw-bold">@L["Due Date"]</label>
                         <input type="date" name="dueDate" id="editConditionDue" class="form-control" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Changes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>@L["Save Changes"]</button>
                 </div>
             </form>
         </div>
@@ -884,13 +884,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Completion Notes</label>
+                        <label class="form-label fw-bold">@L["Completion Notes"]</label>
                         <textarea name="completionNotes" class="form-control" rows="3"
                                   placeholder="Describe how the condition was satisfied, reference evidence submitted..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>Mark Complete</button>
                 </div>
             </form>
@@ -919,7 +919,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-info text-white"><i class="fas fa-ban me-1"></i>Confirm Waiver</button>
                 </div>
             </form>
@@ -935,12 +935,12 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="recordId" value="@Model.Id" />
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="fas fa-upload me-2"></i>Upload Document</h5>
+                    <h5 class="modal-title"><i class="fas fa-upload me-2"></i>@L["Upload Document"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Document Type <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">@L["Document Type"] <span class="text-danger">*</span></label>
                         <select name="documentType" class="form-select" required>
                             @foreach (var dt in Enum.GetValues<LCDocumentType>())
                             {
@@ -949,20 +949,20 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">File <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">@L["File"] <span class="text-danger">*</span></label>
                         <input type="file" name="file" class="form-control" required
                                accept="@UploadRules.Accept" />
                         <small class="text-muted">Accepted: @UploadRules.AcceptedLabel. Max 25 MB.</small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Description (optional)</label>
+                        <label class="form-label fw-bold">@L["Description (optional)"]</label>
                         <input type="text" name="description" class="form-control"
                                placeholder="Brief description of this document's purpose" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-upload me-1"></i>Upload</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-upload me-1"></i>@L["Upload"]</button>
                 </div>
             </form>
         </div>
@@ -990,13 +990,13 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Notes (optional)</label>
+                        <label class="form-label fw-bold">@L["Notes (optional)"]</label>
                         <input type="text" name="notes" class="form-control"
                                placeholder="e.g. GMP Clearance required for ARTG 123456 supply" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-link me-1"></i>Link Application</button>
                 </div>
             </form>
@@ -1017,7 +1017,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will move <strong>@Model.LCNumber</strong> to <strong class="text-warning-emphasis">Renewal Due</strong> so the renewal application can be progressed.</p>
+                    <p>This will move <strong>@Model.LCNumber</strong> to <strong class="text-warning-emphasis">@L["Renewal Due"]</strong> so the renewal application can be progressed.</p>
                     @if (Model.ExpiryDate.HasValue)
                     {
                         <div class="alert alert-info small mb-3">
@@ -1030,7 +1030,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-warning"><i class="fas fa-sync me-1"></i>Initiate Renewal</button>
                 </div>
             </form>
@@ -1062,7 +1062,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-success"><i class="fas fa-check-circle me-1"></i>Confirm Issue</button>
                 </div>
             </form>
@@ -1082,10 +1082,10 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will mark <strong>@Model.LCNumber</strong> as <strong class="text-danger">Suspended</strong> and lock the record.</p>
+                    <p>This will mark <strong>@Model.LCNumber</strong> as <strong class="text-danger">@L["Suspended"]</strong> and lock the record.</p>
                     <div class="alert alert-danger small"><i class="fas fa-exclamation-triangle me-1"></i>All linked product applications will be flagged as Supply Credential At Risk.</div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Suspension Reason <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">@L["Suspension Reason"] <span class="text-danger">*</span></label>
                         <textarea name="reason" class="form-control" rows="3" placeholder="Regulatory action, inspection finding, authority-directed suspension..." required></textarea>
                     </div>
                     <div class="mb-3">
@@ -1098,8 +1098,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger"><i class="fas fa-pause-circle me-1"></i>Confirm Suspension</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-pause-circle me-1"></i>@L["Confirm Suspension"]</button>
                 </div>
             </form>
         </div>
@@ -1120,7 +1120,7 @@
                 <div class="modal-body">
                     <p>This will mark <strong>@Model.LCNumber</strong> as <strong>Withdrawn</strong> and lock the record.</p>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Withdrawal Reason <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">@L["Withdrawal Reason"] <span class="text-danger">*</span></label>
                         <textarea name="reason" class="form-control" rows="3" placeholder="Voluntary surrender, business model change, superseded by new record..." required></textarea>
                     </div>
                     <div class="mb-3">
@@ -1133,7 +1133,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-dark"><i class="fas fa-times-circle me-1"></i>Confirm Withdrawal</button>
                 </div>
             </form>
@@ -1162,7 +1162,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-secondary"><i class="fas fa-ban me-1"></i>Confirm Not Applicable</button>
                 </div>
             </form>

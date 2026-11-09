@@ -29,7 +29,7 @@
     <input type="hidden" asp-for="TestingRequirement" />
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Identity</div>
+        <div class="card-header fw-semibold">@L["Identity"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
@@ -82,7 +82,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Primary Contact</div>
+        <div class="card-header fw-semibold">@L["Primary Contact"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
@@ -102,7 +102,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Classification</div>
+        <div class="card-header fw-semibold">@L["Classification"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
@@ -151,7 +151,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Assessment</div>
+        <div class="card-header fw-semibold">@L["Assessment"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
@@ -178,8 +178,8 @@
                 <div class="col-md-4">
                     <label asp-for="QualificationRequired" class="form-label"></label>
                     <select asp-for="QualificationRequired" id="qualReqSelect" class="form-select">
-                        <option value="false">No</option>
-                        <option value="true">Yes</option>
+                        <option value="false">@L["No"]</option>
+                        <option value="true">@L["Yes"]</option>
                     </select>
                 </div>
                 <div class="col-12" id="qualJustGroup" style="display:none">
@@ -196,9 +196,9 @@
     </div>
 
     <div class="d-flex gap-2">
-        <input type="submit" value="Save" class="btn btn-primary" />
-        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Details</a>
-        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        <input type="submit" value="@L["Save"]" class="btn btn-primary" />
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">@L["Details"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">@L["Back to List"]</a>
     </div>
 </form>
 

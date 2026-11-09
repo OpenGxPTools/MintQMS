@@ -19,8 +19,8 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">Training Compliance Matrix</h4>
     <div class="d-flex gap-2">
-        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>Training Register</a>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm"><i class="fas fa-tachometer-alt me-1"></i>@L["Dashboard"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>@L["Training Register"]</a>
     </div>
 </div>
 <hr />
@@ -31,7 +31,7 @@
     <div class="card-body">
         <form method="get" asp-action="Compliance" class="row g-3">
             <div class="col-md-4">
-                <label class="form-label">Document</label>
+                <label class="form-label">@L["Document"]</label>
                 <select name="documentId" class="form-select form-select-sm">
                     <option value="">— All Documents —</option>
                     @foreach (var d in documents)
@@ -41,7 +41,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label class="form-label">Trainee</label>
+                <label class="form-label">@L["Trainee"]</label>
                 <select name="userId" class="form-select form-select-sm">
                     <option value="">— All Trainees —</option>
                     @foreach (var u in allUsers)
@@ -51,7 +51,7 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label">Status</label>
+                <label class="form-label">@L["Status"]</label>
                 <select name="status" class="form-select form-select-sm">
                     <option value="">— All Statuses —</option>
                     @foreach (var s in statusValues)
@@ -67,8 +67,8 @@
                 </div>
             </div>
             <div class="col-md-1 d-flex align-items-end gap-1">
-                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-                <a asp-action="Compliance" class="btn btn-outline-secondary btn-sm">Clear</a>
+                <button type="submit" class="btn btn-primary btn-sm">@L["Filter"]</button>
+                <a asp-action="Compliance" class="btn btn-outline-secondary btn-sm">@L["Clear"]</a>
             </div>
         </form>
     </div>
@@ -85,14 +85,14 @@
             <table class="table table-sm table-hover mb-0" id="complianceTable">
                 <thead class="table-light">
                     <tr>
-                        <th>Trainee</th>
+                        <th>@L["Trainee"]</th>
                         <th>Training</th>
-                        <th>Type</th>
-                        <th>Document</th>
-                        <th>Date Created</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                        <th>Completed On</th>
+                        <th>@L["Type"]</th>
+                        <th>@L["Document"]</th>
+                        <th>@L["Date Created"]</th>
+                        <th>@L["Due Date"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Completed On"]</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -143,7 +143,7 @@
                                 @if (ut.Training?.DueDate.HasValue == true)
                                 {
                                     @ut.Training.DueDate.Value.ToString("dd/MM/yyyy")
-                                    @if (isOverdue) { <span class="badge bg-danger ms-1">Overdue</span> }
+                                    @if (isOverdue) { <span class="badge bg-danger ms-1">@L["Overdue"]</span> }
                                 }
                                 else { <span class="text-muted">—</span> }
                             </td>
@@ -152,7 +152,7 @@
                             <td>
                                 @if (ut.Training != null)
                                 {
-                                    <a asp-action="Details" asp-route-id="@ut.Training.Id" class="btn btn-outline-secondary btn-sm">View</a>
+                                    <a asp-action="Details" asp-route-id="@ut.Training.Id" class="btn btn-outline-secondary btn-sm">@L["View"]</a>
                                 }
                             </td>
                         </tr>

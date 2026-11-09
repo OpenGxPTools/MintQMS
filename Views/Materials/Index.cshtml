@@ -53,32 +53,32 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Materials</h4>
+    <h4 class="mb-0">@L["Materials"]</h4>
     <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Material</a>
 </div>
 <hr />
 
 <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
-    <span class="text-muted small me-1">Filter by status:</span>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Draft">Draft</button>
-    <button class="btn btn-outline-info btn-sm status-filter" data-status="Under Review">Under Review</button>
-    <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">Approved</button>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Obsolete">Obsolete</button>
+    <span class="text-muted small me-1">@L["Filter by status:"]</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Draft"]">@L["Draft"]</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Under Review"]">@L["Under Review"]</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Approved"]">@L["Approved"]</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Obsolete"]">@L["Obsolete"]</button>
 </div>
 
 <table id="materialsTable" class="table" style="width:100%;">
     <thead>
         <tr>
             <th>Material ID</th>
-            <th>Name</th>
-            <th>Version</th>
-            <th>Status</th>
-            <th>Edited By</th>
-            <th>Edited On</th>
-            <th>Approved By</th>
-            <th>Approved On</th>
-            <th>Action</th>
+            <th>@L["Name"]</th>
+            <th>@L["Version"]</th>
+            <th>@L["Status"]</th>
+            <th>@L["Edited By"]</th>
+            <th>@L["Edited On"]</th>
+            <th>@L["Approved By"]</th>
+            <th>@L["Approved On"]</th>
+            <th>@L["Action"]</th>
         </tr>
     </thead>
     <tbody>
@@ -94,16 +94,16 @@
                 <td>@(item.ApprovedBy ?? "")</td>
                 <td>@(item.ApprovedOn.HasValue ? item.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy") : "")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if (item.IsLocked != true && item.Status != OpenQMS.Models.Material.MaterialStatus.UnderReview)
                     {
                         <text> | </text>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">@L["Edit"]</a>
                     }
                     @if (item.Status == OpenQMS.Models.Material.MaterialStatus.Draft)
                     {
                         <text> | </text>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">@L["Delete"]</a>
                     }
                 </td>
             </tr>

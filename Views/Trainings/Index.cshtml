@@ -55,40 +55,40 @@
     @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole) || User.IsInRole(Constants.TrainerRole))
     {
         <div class="d-flex gap-2">
-            <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel me-1"></i>Export Register</a>
-            <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
-            <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Training</a>
+            <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel me-1"></i>@L["Export Register"]</a>
+            <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm"><i class="fas fa-tachometer-alt me-1"></i>@L["Dashboard"]</a>
+            <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Training"]</a>
         </div>
     }
 </div>
 <hr />
 
 <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
-    <span class="text-muted small me-1">Filter by status:</span>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Scheduled">Scheduled</button>
-    <button class="btn btn-outline-primary btn-sm status-filter" data-status="In Progress">In Progress</button>
-    <button class="btn btn-outline-info btn-sm status-filter" data-status="Pending Trainer Confirmation">Pending Confirmation</button>
-    <button class="btn btn-outline-success btn-sm status-filter" data-status="Completed">Completed</button>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Cancelled">Cancelled</button>
+    <span class="text-muted small me-1">@L["Filter by status:"]</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Scheduled"]">@L["Scheduled"]</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["In Progress"]">@L["In Progress"]</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Pending Trainer Confirmation"]">Pending Confirmation</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Completed"]">@L["Completed"]</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Cancelled"]">@L["Cancelled"]</button>
     <a asp-action="MyTraining" class="btn btn-outline-success btn-sm ms-auto">
-        <i class="bi bi-person-check me-1"></i>My Training
+        <i class="bi bi-person-check me-1"></i>@L["My Training"]
     </a>
 </div>
 
 <table id="trainingsTable" class="table" style="width:100%;">
     <thead>
         <tr>
-            <th>Training ID</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Date Created</th>
-            <th>Source Document</th>
-            <th>Trainer</th>
-            <th>Due Date</th>
-            <th>Completed On</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th>@L["Training ID"]</th>
+            <th>@L["Name"]</th>
+            <th>@L["Type"]</th>
+            <th>@L["Date Created"]</th>
+            <th>@L["Source Document"]</th>
+            <th>@L["Trainer"]</th>
+            <th>@L["Due Date"]</th>
+            <th>@L["Completed On"]</th>
+            <th>@L["Status"]</th>
+            <th>@L["Action"]</th>
         </tr>
     </thead>
     <tbody>
@@ -134,7 +134,7 @@
                 <td class="@(isOverdue ? "text-danger fw-semibold" : "")">
                     @if (item.DueDate.HasValue) { @item.DueDate.Value.ToString("dd/MM/yyyy") }
                     else { <span class="text-muted">—</span> }
-                    @if (isOverdue) { <span class="badge bg-danger ms-1">Overdue</span> }
+                    @if (isOverdue) { <span class="badge bg-danger ms-1">@L["Overdue"]</span> }
                 </td>
                 <td>
                     @if (item.CompletedOn.HasValue) { @item.CompletedOn.Value.ToSite().ToString("dd/MM/yyyy") }
@@ -146,13 +146,13 @@
                          && item.Status != Training.TrainingStatus.Completed
                          && item.Status != Training.TrainingStatus.Cancelled)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">@L["Edit"]</a>
                     }
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">@L["Details"]</a>
                     @if ((User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole) || User.IsInRole(Constants.TrainerRole))
                          && item.Status == Training.TrainingStatus.Scheduled)
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">@L["Delete"]</a>
                     }
                 </td>
             </tr>

@@ -78,38 +78,38 @@
                     Proposal Details
                     @if (!proposalEditable)
                     {
-                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
                     }
                 </div>
                 <div class="card-body">
                     @if (!proposalEditable)
                     {
                         <dl class="row mb-0">
-                            <dt class="col-sm-3">Title</dt>
+                            <dt class="col-sm-3">@L["Title"]</dt>
                             <dd class="col-sm-9">@Model.Title</dd>
 
-                            <dt class="col-sm-3">Products</dt>
+                            <dt class="col-sm-3">@L["Products"]</dt>
                             <dd class="col-sm-9">@(allProducts.Any() ? string.Join(", ", allProducts) : "-")</dd>
 
-                            <dt class="col-sm-3">Processes</dt>
+                            <dt class="col-sm-3">@L["Processes"]</dt>
                             <dd class="col-sm-9">@(allProcesses.Any() ? string.Join(", ", allProcesses) : "-")</dd>
 
-                            <dt class="col-sm-3">Assets</dt>
+                            <dt class="col-sm-3">@L["Assets"]</dt>
                             <dd class="col-sm-9">@(allAssets.Any() ? string.Join(", ", allAssets) : "-")</dd>
 
-                            <dt class="col-sm-3">Materials</dt>
+                            <dt class="col-sm-3">@L["Materials"]</dt>
                             <dd class="col-sm-9">@(allMaterials.Any() ? string.Join(", ", allMaterials) : "-")</dd>
 
-                            <dt class="col-sm-3">Suppliers</dt>
+                            <dt class="col-sm-3">@L["Suppliers"]</dt>
                             <dd class="col-sm-9">@(allSuppliers.Any() ? string.Join(", ", allSuppliers) : "-")</dd>
 
-                            <dt class="col-sm-3">Linked CAPAs</dt>
+                            <dt class="col-sm-3">@L["Linked CAPAs"]</dt>
                             <dd class="col-sm-9">@(allCapas.Any() ? string.Join(", ", allCapas) : "-")</dd>
 
-                            <dt class="col-sm-3">Target Date</dt>
+                            <dt class="col-sm-3">@L["Target Date"]</dt>
                             <dd class="col-sm-9">@(Model.TargetImplementationDate.HasValue ? Model.TargetImplementationDate.Value.ToString("dd MMM yyyy") : "-")</dd>
 
-                            <dt class="col-sm-3">Proposal</dt>
+                            <dt class="col-sm-3">@L["Proposal"]</dt>
                             <dd class="col-sm-9">@(Model.Proposal ?? "-")</dd>
                         </dl>
                     }
@@ -118,7 +118,7 @@
                         <fieldset>
                             <div class="row g-3">
                                 <div class="col-md-8">
-                                    <label class="form-label">Title <span class="text-danger">*</span></label>
+                                    <label class="form-label">@L["Title"] <span class="text-danger">*</span></label>
                                     <input name="Title" value="@Model.Title" class="form-control" required />
                                 </div>
                                 <div class="col-md-4">
@@ -130,7 +130,7 @@
 
                                 <!-- Products -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Products</label>
+                                    <label class="form-label">@L["Products"]</label>
                                     <select id="productDropdown" class="form-select form-select-sm">
                                         <option value="">-- Add Product --</option>
                                         @foreach (var item in products)
@@ -144,7 +144,7 @@
 
                                 <!-- Processes -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Processes</label>
+                                    <label class="form-label">@L["Processes"]</label>
                                     <select id="processDropdown" class="form-select form-select-sm">
                                         <option value="">-- Add Process --</option>
                                         @foreach (var item in processes)
@@ -158,7 +158,7 @@
 
                                 <!-- Assets -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Assets</label>
+                                    <label class="form-label">@L["Assets"]</label>
                                     <select id="assetDropdown" class="form-select form-select-sm">
                                         <option value="">-- Add Asset --</option>
                                         @foreach (var item in assets)
@@ -172,7 +172,7 @@
 
                                 <!-- Materials -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Materials</label>
+                                    <label class="form-label">@L["Materials"]</label>
                                     <select id="materialDropdown" class="form-select form-select-sm">
                                         <option value="">-- Add Material --</option>
                                         @foreach (var item in materials)
@@ -186,7 +186,7 @@
 
                                 <!-- Suppliers -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Suppliers</label>
+                                    <label class="form-label">@L["Suppliers"]</label>
                                     <select id="supplierDropdown" class="form-select form-select-sm">
                                         <option value="">-- Add Supplier --</option>
                                         @foreach (var item in suppliers)
@@ -200,7 +200,7 @@
 
                                 <!-- CAPAs -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Linked CAPAs</label>
+                                    <label class="form-label">@L["Linked CAPAs"]</label>
                                     <select id="capaDropdown" class="form-select form-select-sm">
                                         <option value="">-- Add CAPA --</option>
                                         @foreach (var item in capas)
@@ -214,7 +214,7 @@
 
                                 <div class="col-12">
                                     <label class="form-label">
-                                        Proposal <span class="text-danger">*</span>
+                                        @L["Proposal"] <span class="text-danger">*</span>
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="proposal"
                                                 aria-label="Proposal guidance">?</button>
                                     </label>
@@ -234,11 +234,11 @@
                         Assessment
                         @if (isAssessment)
                         {
-                            <span class="badge bg-info text-dark">In Progress</span>
+                            <span class="badge bg-info text-dark">@L["In Progress"]</span>
                         }
                         else
                         {
-                            <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                            <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
                         }
                     </div>
                     <div class="card-body">
@@ -281,7 +281,7 @@
 
                                 <div class="col-12">
                                     <label class="form-label">
-                                        Assessment
+                                        @L["Assessment"]
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="assessment"
                                                 aria-label="Assessment guidance">?</button>
                                     </label>
@@ -315,7 +315,7 @@
                                 <dd class="col-sm-9">@(Model.ChangeType.HasValue ? L.Enum(Model.ChangeType.Value) : "-")</dd>
                                 <dt class="col-sm-3">Nature</dt>
                                 <dd class="col-sm-9">@(Model.Nature.HasValue ? L.Enum(Model.Nature.Value) : "-")</dd>
-                                <dt class="col-sm-3">Assessment</dt>
+                                <dt class="col-sm-3">@L["Assessment"]</dt>
                                 <dd class="col-sm-9">@(Model.Assessment ?? "-")</dd>
                                 <dt class="col-sm-3">Detailed Action Plan</dt>
                                 <dd class="col-sm-9">@(Model.DetailedActionPlanRequired ? "Required" : "Not required")</dd>
@@ -330,14 +330,14 @@
             {
                 <div class="card mb-4">
                     <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-                        Implementation
-                        <span class="badge bg-warning text-dark">Action Required</span>
+                        @L["Implementation"]
+                        <span class="badge bg-warning text-dark">@L["Action Required"]</span>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-12">
                                 <label class="form-label">
-                                    Implementation
+                                    @L["Implementation"]
                                     <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="implementation"
                                             aria-label="Implementation guidance">?</button>
                                 </label>
@@ -349,9 +349,9 @@
             }
 
             <div class="d-flex gap-2">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">View Details</a>
-                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+                <input type="submit" value="@L["Save"]" class="btn btn-primary" />
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">@L["View Details"]</a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
             </div>
         </form>
 
@@ -369,9 +369,9 @@
     <div id="help-classification">
         <p class="mb-1"><strong>Risk classification</strong> sets the depth of assessment and the action plan:</p>
         <ul class="mb-0 ps-3">
-            <li><strong>Minor</strong> — no impact on approved requirements, product quality or validated state (e.g. like-for-like, editorial)</li>
-            <li><strong>Major</strong> — affects a specification, process, validated state, supplier or requirement, within the existing registration</li>
-            <li><strong>Critical</strong> — may affect safety/efficacy, a registration or condition, or GMP compliance (e.g. new API source, site change)</li>
+            <li><strong>@L["Minor"]</strong> — no impact on approved requirements, product quality or validated state (e.g. like-for-like, editorial)</li>
+            <li><strong>@L["Major"]</strong> — affects a specification, process, validated state, supplier or requirement, within the existing registration</li>
+            <li><strong>@L["Critical"]</strong> — may affect safety/efficacy, a registration or condition, or GMP compliance (e.g. new API source, site change)</li>
         </ul>
     </div>
     <div id="help-changetype">

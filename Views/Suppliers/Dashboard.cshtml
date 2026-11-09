@@ -19,9 +19,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="mb-0">Supplier Dashboard</h4>
     <div class="d-flex gap-2">
-        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">Export Excel</a>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Register</a>
-        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Supplier</a>
+        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Excel"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">@L["Register"]</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Supplier"]</a>
     </div>
 </div>
 
@@ -67,7 +67,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-info">@ViewBag.PendingCount</div>
-                <div class="text-muted">Pending Approval</div>
+                <div class="text-muted">@L["Pending Approval"]</div>
             </div>
         </div>
     </div>
@@ -85,7 +85,7 @@
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="card h-100">
-            <div class="card-header">Status Distribution</div>
+            <div class="card-header">@L["Status Distribution"]</div>
             <div class="card-body d-flex justify-content-center align-items-center">
                 <canvas id="statusChart" style="max-height:220px"></canvas>
             </div>
@@ -96,7 +96,7 @@
             <div class="card-header">By Supplier Type</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
-                    <thead><tr><th>Type</th><th>Count</th><th style="width:35%">Progress</th></tr></thead>
+                    <thead><tr><th>@L["Type"]</th><th>@L["Count"]</th><th style="width:35%">@L["Progress"]</th></tr></thead>
                     <tbody>
                         @foreach (var kv in typeCounts.Where(k => k.Value > 0))
                         {
@@ -117,7 +117,7 @@
             <div class="card-header">Risk Level Breakdown (Approved/Qualified)</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
-                    <thead><tr><th>Risk</th><th>Count</th></tr></thead>
+                    <thead><tr><th>@L["Risk"]</th><th>@L["Count"]</th></tr></thead>
                     <tbody>
                         @{ var rlColors = new Dictionary<string,string> {["Critical"]="danger",["High"]="warning text-dark",["Medium"]="info text-dark",["Low"]="secondary",["NotAssessed"]="secondary"}; }
                         @foreach (var kv in riskCounts.Where(k => k.Value > 0))
@@ -150,7 +150,7 @@
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-sm mb-0">
-                        <thead><tr><th>ID</th><th>Legal Name</th><th>Status</th><th>Next Review</th></tr></thead>
+                        <thead><tr><th>@L["ID"]</th><th>@L["Legal Name"]</th><th>@L["Status"]</th><th>@L["Next Review"]</th></tr></thead>
                         <tbody>
                             @foreach (var s in overdueReview)
                             {
@@ -187,7 +187,7 @@
                 @if (approaching.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead><tr><th>ID</th><th>Legal Name</th><th>Status</th><th>Due Date</th></tr></thead>
+                        <thead><tr><th>@L["ID"]</th><th>@L["Legal Name"]</th><th>@L["Status"]</th><th>@L["Due Date"]</th></tr></thead>
                         <tbody>
                             @foreach (var s in approaching)
                             {
@@ -219,7 +219,7 @@
         @if (reReviews.Any())
         {
             <table class="table table-sm mb-0">
-                <thead><tr><th>ID</th><th>Legal Name</th><th>Standing Approval</th><th>Stage</th><th>Trigger</th><th>Started</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Legal Name"]</th><th>Standing Approval</th><th>Stage</th><th>Trigger</th><th>Started</th></tr></thead>
                 <tbody>
                     @foreach (var s in reReviews.OrderBy(x => reReviewStart.TryGetValue(x.Id, out var d) ? d : DateTime.MaxValue))
                     {
@@ -253,7 +253,7 @@
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-sm mb-0">
-                            <thead><tr><th>ID</th><th>Legal Name</th><th>Status</th><th>Approval Expiry</th></tr></thead>
+                            <thead><tr><th>@L["ID"]</th><th>@L["Legal Name"]</th><th>@L["Status"]</th><th>@L["Approval Expiry"]</th></tr></thead>
                             <tbody>
                                 @foreach (var s in expiredSups)
                                 {
@@ -289,7 +289,7 @@
                     @if (expiringSups.Any())
                     {
                         <table class="table table-sm mb-0">
-                            <thead><tr><th>ID</th><th>Legal Name</th><th>Status</th><th>Approval Expiry</th></tr></thead>
+                            <thead><tr><th>@L["ID"]</th><th>@L["Legal Name"]</th><th>@L["Status"]</th><th>@L["Approval Expiry"]</th></tr></thead>
                             <tbody>
                                 @foreach (var s in expiringSups)
                                 {
@@ -320,7 +320,7 @@
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
-                <thead><tr><th>ID</th><th>Legal Name</th><th>Type</th><th>Workflow Status</th><th>Assessed By</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Legal Name"]</th><th>@L["Type"]</th><th>Workflow Status</th><th>@L["Assessed By"]</th></tr></thead>
                 <tbody>
                     @foreach (var s in pendingAppr)
                     {
@@ -340,12 +340,12 @@
 
 <!-- Recent Activity -->
 <div class="card">
-    <div class="card-header">Recent Activity</div>
+    <div class="card-header">@L["Recent Activity"]</div>
     <div class="card-body p-0">
         @if (recentLogs != null && recentLogs.Any())
         {
             <table class="table table-sm mb-0">
-                <thead><tr><th>Time</th><th>Supplier</th><th>Action</th><th>By</th></tr></thead>
+                <thead><tr><th>@L["Time"]</th><th>@L["Supplier"]</th><th>@L["Action"]</th><th>@L["By"]</th></tr></thead>
                 <tbody>
                     @foreach (var log in recentLogs)
                     {
@@ -368,7 +368,7 @@
                 </tbody>
             </table>
         }
-        else { <p class="text-muted p-3 mb-0">No activity recorded yet.</p> }
+        else { <p class="text-muted p-3 mb-0">@L["No activity recorded yet."]</p> }
     </div>
 </div>
 

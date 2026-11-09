@@ -19,8 +19,8 @@
 <div class="d-flex align-items-center justify-content-between mb-2">
     <h4 class="mb-0">Edit Release Record &mdash; <span class="fw-bold">@Model.RecordNumber</span></h4>
     <div class="d-flex gap-2">
-        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">View Details</a>
-        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">@L["View Details"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">@L["Back to List"]</a>
     </div>
 </div>
 <hr />
@@ -41,7 +41,7 @@
 @if (s == ReleaseStatus.UnderReview)
 {
     <div class="alert alert-info">
-        <i class="bi bi-info-circle me-1"></i>This record is <strong>Under Review</strong>. Product, Batch, Site, and Storage details are locked. You may update Quality Notes below.
+        <i class="bi bi-info-circle me-1"></i>This record is <strong>@L["Under Review"]</strong>. Product, Batch, Site, and Storage details are locked. You may update Quality Notes below.
     </div>
 }
 @if (s == ReleaseStatus.PendingAPDecision)
@@ -55,10 +55,10 @@
 <ul class="nav nav-tabs mb-3" id="editTabs">
     <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabRecord">Record Details</button></li>
     <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabChecklist">Checklist</button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabTests">Analytical Results</button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabDocs">Attachments</button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabLinked">Linked Records</button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAudit">Audit Log</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabTests">@L["Analytical Results"]</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabDocs">@L["Attachments"]</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabLinked">@L["Linked Records"]</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAudit">@L["Audit Log"]</button></li>
 </ul>
 
 <div class="tab-content">
@@ -92,40 +92,40 @@
             <!-- ── Section 1: Product Identification ─────────────────────────── -->
             <div class="card mb-4 @(coreLocked ? "opacity-50" : "")">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <strong>Product Identification</strong>
-                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span> }
-                    else { <span class="badge bg-primary">In Progress</span> }
+                    <strong>@L["Product Identification"]</strong>
+                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>@L["Locked"]</span> }
+                    else { <span class="badge bg-primary">@L["In Progress"]</span> }
                 </div>
                 <div class="card-body">
                     @if (coreLocked)
                     {
                         <dl class="row mb-1">
-                            <dt class="col-sm-4">Release Type</dt><dd class="col-sm-8">@Model.ReleaseType</dd>
-                            <dt class="col-sm-4">Product Name</dt><dd class="col-sm-8">@Model.ProductName</dd>
+                            <dt class="col-sm-4">@L["Release Type"]</dt><dd class="col-sm-8">@Model.ReleaseType</dd>
+                            <dt class="col-sm-4">@L["Product Name"]</dt><dd class="col-sm-8">@Model.ProductName</dd>
                             <dt class="col-sm-4">Brand Name</dt><dd class="col-sm-8">@(Model.BrandName ?? "-")</dd>
                             @if (!ept.HasValue || ept == OpenQMS.Models.ProductType.Pharmaceutical || ept == OpenQMS.Models.ProductType.Biological || ept == OpenQMS.Models.ProductType.ConsumerHealth)
                             {
                                 <dt class="col-sm-4">INN / Generic</dt><dd class="col-sm-8">@(Model.InnName ?? "-")</dd>
-                                <dt class="col-sm-4">Dosage Form</dt><dd class="col-sm-8">@(Model.DosageForm ?? "-")</dd>
-                                <dt class="col-sm-4">Strength / Presentation</dt><dd class="col-sm-8">@(Model.Strength ?? "-")</dd>
+                                <dt class="col-sm-4">@L["Dosage Form"]</dt><dd class="col-sm-8">@(Model.DosageForm ?? "-")</dd>
+                                <dt class="col-sm-4">@L["Strength / Presentation"]</dt><dd class="col-sm-8">@(Model.Strength ?? "-")</dd>
                             }
                             @if (ept == OpenQMS.Models.ProductType.Cosmetic)
                             {
                                 <dt class="col-sm-4">INCI Name / Ingredient Ref.</dt><dd class="col-sm-8">@(Model.InciName ?? "-")</dd>
-                                <dt class="col-sm-4">Presentation / Form</dt><dd class="col-sm-8">@(Model.PresentationForm ?? "-")</dd>
-                                <dt class="col-sm-4">Strength / Presentation</dt><dd class="col-sm-8">@(Model.Strength ?? "-")</dd>
+                                <dt class="col-sm-4">@L["Presentation / Form"]</dt><dd class="col-sm-8">@(Model.PresentationForm ?? "-")</dd>
+                                <dt class="col-sm-4">@L["Strength / Presentation"]</dt><dd class="col-sm-8">@(Model.Strength ?? "-")</dd>
                             }
                             @if (ept == OpenQMS.Models.ProductType.MedicalDevice)
                             {
-                                <dt class="col-sm-4">Device Type / Category</dt><dd class="col-sm-8">@(Model.DeviceTypeCategory ?? "-")</dd>
-                                <dt class="col-sm-4">Model / Version</dt><dd class="col-sm-8">@(Model.ModelVersion ?? "-")</dd>
+                                <dt class="col-sm-4">@L["Device Type / Category"]</dt><dd class="col-sm-8">@(Model.DeviceTypeCategory ?? "-")</dd>
+                                <dt class="col-sm-4">@L["Model / Version"]</dt><dd class="col-sm-8">@(Model.ModelVersion ?? "-")</dd>
                             }
                             @if (ept == OpenQMS.Models.ProductType.RawMaterial)
                             {
-                                <dt class="col-sm-4">Standard / Scientific Name</dt><dd class="col-sm-8">@(Model.StandardScientificName ?? "-")</dd>
-                                <dt class="col-sm-4">Material Type / Category</dt><dd class="col-sm-8">@(Model.RawMaterialTypeCategory ?? "-")</dd>
+                                <dt class="col-sm-4">@L["Standard / Scientific Name"]</dt><dd class="col-sm-8">@(Model.StandardScientificName ?? "-")</dd>
+                                <dt class="col-sm-4">@L["Material Type / Category"]</dt><dd class="col-sm-8">@(Model.RawMaterialTypeCategory ?? "-")</dd>
                                 <dt class="col-sm-4">Grade</dt><dd class="col-sm-8">@(Model.Grade ?? "-")</dd>
-                                <dt class="col-sm-4">Presentation / Form</dt><dd class="col-sm-8">@(Model.PresentationForm ?? "-")</dd>
+                                <dt class="col-sm-4">@L["Presentation / Form"]</dt><dd class="col-sm-8">@(Model.PresentationForm ?? "-")</dd>
                             }
                             <dt class="col-sm-4">ARTG Reference</dt><dd class="col-sm-8">@(Model.ArtgReference ?? "-")</dd>
                         </dl>
@@ -195,9 +195,9 @@
             <!-- ── Section 2: Batch Details ──────────────────────────────────── -->
             <div class="card mb-4 @(coreLocked ? "opacity-50" : "")">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <strong>Batch Details</strong>
-                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span> }
-                    else { <span class="badge bg-primary">In Progress</span> }
+                    <strong>@L["Batch Details"]</strong>
+                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>@L["Locked"]</span> }
+                    else { <span class="badge bg-primary">@L["In Progress"]</span> }
                 </div>
                 <div class="card-body">
                     @if (coreLocked)
@@ -207,7 +207,7 @@
                             <dt class="col-sm-4">Batch Size</dt><dd class="col-sm-8">@(Model.BatchSize ?? "-")</dd>
                             <dt class="col-sm-4">Pack Size</dt><dd class="col-sm-8">@(Model.PackSize ?? "-")</dd>
                             <dt class="col-sm-4">Mfg Date</dt><dd class="col-sm-8">@(Model.ManufacturingDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
-                            <dt class="col-sm-4">Expiry Date</dt><dd class="col-sm-8">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                            <dt class="col-sm-4">@L["Expiry Date"]</dt><dd class="col-sm-8">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
                             <dt class="col-sm-4">Retest Date</dt><dd class="col-sm-8">@(Model.RetestDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
                         </dl>
                         <input type="hidden" asp-for="BatchNumber" />
@@ -269,9 +269,9 @@
             <!-- ── Section 3: Sites ──────────────────────────────────────────── -->
             <div class="card mb-4 @(coreLocked ? "opacity-50" : "")">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <strong>Manufacturing &amp; Testing Sites</strong>
-                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span> }
-                    else { <span class="badge bg-primary">In Progress</span> }
+                    <strong>@L["Manufacturing & Testing Sites"]</strong>
+                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>@L["Locked"]</span> }
+                    else { <span class="badge bg-primary">@L["In Progress"]</span> }
                 </div>
                 <div class="card-body">
                     @if (coreLocked)
@@ -279,7 +279,7 @@
                         <dl class="row mb-1">
                             <dt class="col-sm-4">Mfg Site</dt><dd class="col-sm-8">@Model.ManufacturingSite</dd>
                             <dt class="col-sm-4">Mfg GMP Ref.</dt><dd class="col-sm-8">@(Model.ManufacturingSiteGmpRef ?? "-")</dd>
-                            <dt class="col-sm-4">Packaging Site</dt><dd class="col-sm-8">@(Model.PackagingSite ?? "-")</dd>
+                            <dt class="col-sm-4">@L["Packaging Site"]</dt><dd class="col-sm-8">@(Model.PackagingSite ?? "-")</dd>
                             <dt class="col-sm-4">Pkg GMP Ref.</dt><dd class="col-sm-8">@(Model.PackagingSiteGmpRef ?? "-")</dd>
                             <dt class="col-sm-4">Testing Lab(s)</dt>
                             <dd class="col-sm-8">
@@ -292,7 +292,7 @@
                                 }
                                 else { <span>-</span> }
                             </dd>
-                            <dt class="col-sm-4">Releasing Company</dt><dd class="col-sm-8">@(Model.ReleasingCompany ?? "-")</dd>
+                            <dt class="col-sm-4">@L["Releasing Company"]</dt><dd class="col-sm-8">@(Model.ReleasingCompany ?? "-")</dd>
                             <dt class="col-sm-4">TGA Licence / Clearance</dt><dd class="col-sm-8">@(Model.ReleasingCompanyLicenceRef ?? "-")</dd>
                         </dl>
                         <input type="hidden" asp-for="ManufacturingSite" />
@@ -323,7 +323,7 @@
                         </div>
                         <!-- Packaging Site -->
                         <div class="mb-2">
-                            <label class="form-label fw-semibold">Packaging Site</label>
+                            <label class="form-label fw-semibold">@L["Packaging Site"]</label>
                             <select id="editPkgSiteSel" class="form-select mb-1" onchange="handleSite(this,'editPkgSiteOther','PackagingSite')">
                                 <option value="">-- Select Approved Supplier (Service) --</option>
                                 @foreach (var s in (ViewBag.ServiceSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
@@ -346,7 +346,7 @@
                         </div>
                         <!-- Releasing Company -->
                         <div class="mb-2">
-                            <label class="form-label fw-semibold">Releasing Company <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">@L["Releasing Company"] <span class="text-danger">*</span></label>
                             <select id="editRelCoSel" class="form-select mb-1" onchange="handleSite(this,'editRelCoOther','ReleasingCompany')">
                                 <option value="">-- Select --</option>
                                 @if (!string.IsNullOrEmpty(ViewBag.OwnCompanyName as string)) { <option value="@ViewBag.OwnCompanyName">@ViewBag.OwnCompanyName (Own Company)</option> }
@@ -372,7 +372,7 @@
                     <div class="card mb-4 opacity-50">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <strong>Delegation / Technical Agreement</strong>
-                            <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span>
+                            <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>@L["Locked"]</span>
                         </div>
                         <div class="card-body">
                             <dl class="row mb-1">
@@ -391,7 +391,7 @@
                 <div id="finalReleaseSection" class="card mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <strong>Delegation / Technical Agreement</strong>
-                        <span class="badge bg-primary">In Progress</span>
+                        <span class="badge bg-primary">@L["In Progress"]</span>
                     </div>
                     <div class="card-body">
                         <div class="mb-2">
@@ -410,8 +410,8 @@
             <div class="card mb-4 @(coreLocked ? "opacity-50" : "")">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <strong>Specification &amp; Storage</strong>
-                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span> }
-                    else { <span class="badge bg-primary">In Progress</span> }
+                    @if (coreLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>@L["Locked"]</span> }
+                    else { <span class="badge bg-primary">@L["In Progress"]</span> }
                 </div>
                 <div class="card-body">
                     @if (coreLocked)
@@ -448,9 +448,9 @@
             <div class="card mb-4 @(allLocked ? "opacity-50" : "")">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <strong>Quality Notes</strong>
-                    @if (allLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>Locked</span> }
-                    else if (s == ReleaseStatus.UnderReview) { <span class="badge bg-warning text-dark">Action Required</span> }
-                    else { <span class="badge bg-primary">In Progress</span> }
+                    @if (allLocked) { <span class="badge bg-secondary"><i class="bi bi-lock me-1"></i>@L["Locked"]</span> }
+                    else if (s == ReleaseStatus.UnderReview) { <span class="badge bg-warning text-dark">@L["Action Required"]</span> }
+                    else { <span class="badge bg-primary">@L["In Progress"]</span> }
                 </div>
                 <div class="card-body">
                     @if (allLocked)
@@ -458,7 +458,7 @@
                         <dl class="row mb-1">
                             <dt class="col-sm-4">Open Deviations / Exceptions</dt><dd class="col-sm-8">@(Model.OpenDeviationsNotes ?? "-")</dd>
                             <dt class="col-sm-4">Limitations / Conditions</dt><dd class="col-sm-8">@(Model.LimitationsNotes ?? "-")</dd>
-                            <dt class="col-sm-4">Notes</dt><dd class="col-sm-8">@(Model.Notes ?? "-")</dd>
+                            <dt class="col-sm-4">@L["Notes"]</dt><dd class="col-sm-8">@(Model.Notes ?? "-")</dd>
                         </dl>
                         <input type="hidden" asp-for="OpenDeviationsNotes" />
                         <input type="hidden" asp-for="LimitationsNotes" />
@@ -486,14 +486,14 @@
             @if (!allLocked)
             {
                 <div class="d-flex gap-2 mt-4">
-                    <input type="submit" value="Save Changes" class="btn btn-primary" />
-                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Cancel</a>
+                    <input type="submit" value="@L["Save Changes"]" class="btn btn-primary" />
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Cancel"]</a>
                 </div>
             }
             else
             {
                 <div class="mt-4">
-                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Details</a>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to Details"]</a>
                 </div>
             }
         </form>
@@ -525,21 +525,21 @@
                     <div class="col-md-3">
                         <select name="moduleType" class="form-select form-select-sm" required>
                             <option value="">-- Module Type --</option>
-                            <option>Deviation</option>
-                            <option>CAPA</option>
-                            <option>Supplier</option>
+                            <option>@L["Deviation"]</option>
+                            <option>@L["CAPA"]</option>
+                            <option>@L["Supplier"]</option>
                             <option>LicCert</option>
-                            <option>Change</option>
+                            <option>@L["Change"]</option>
                         </select>
                     </div>
                     <div class="col-md-2">
                         <input name="linkedRecordNumber" class="form-control form-control-sm" placeholder="Record Number" />
                     </div>
                     <div class="col-md-5">
-                        <input name="notes" class="form-control form-control-sm" placeholder="Notes (optional)" />
+                        <input name="notes" class="form-control form-control-sm" placeholder="@L["Notes (optional)"]" />
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-sm btn-primary w-100">Add</button>
+                        <button type="submit" class="btn btn-sm btn-primary w-100">@L["Add"]</button>
                     </div>
                 </div>
             </form>
@@ -552,7 +552,7 @@
         else
         {
             <table class="table table-sm">
-                <thead class="table-light"><tr><th>Module</th><th>Record</th><th>Notes</th><th></th></tr></thead>
+                <thead class="table-light"><tr><th>@L["Module"]</th><th>@L["Record"]</th><th>@L["Notes"]</th><th></th></tr></thead>
                 <tbody>
                     @foreach (var x in Model.CrossReferences)
                     {
@@ -565,7 +565,7 @@
                                 {
                                     <form asp-action="DeleteCrossReference" asp-route-id="@x.Id" method="post" style="display:inline" onsubmit="return confirm('Remove this link?')">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">@L["Remove"]</button>
                                     </form>
                                 }
                             </td>

@@ -23,9 +23,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="mb-0">Release Dashboard</h4>
     <div class="d-flex gap-2">
-        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">Export Register</a>
+        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Register"]</a>
         <a asp-action="Register" class="btn btn-outline-secondary btn-sm">AP Register</a>
-        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Release Record</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Release Record"]</a>
     </div>
 </div>
 
@@ -67,7 +67,7 @@
         <div class="card text-center h-100 @(Model.OnHold > 0 ? "border-danger" : "")">
             <div class="card-body">
                 <div class="display-5 fw-bold @(Model.OnHold > 0 ? "text-danger" : "text-secondary")">@Model.OnHold</div>
-                <div class="text-muted">On Hold</div>
+                <div class="text-muted">@L["On Hold"]</div>
             </div>
         </div>
     </div>
@@ -108,7 +108,7 @@
             <div class="card-header">Status Summary</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
-                    <thead><tr><th>Status</th><th>Count</th><th style="width:35%">Share</th></tr></thead>
+                    <thead><tr><th>@L["Status"]</th><th>@L["Count"]</th><th style="width:35%">Share</th></tr></thead>
                     <tbody>
                         @{
                             var total = Model.ByStatus.Values.Sum();
@@ -139,13 +139,13 @@
         <table class="table table-sm mb-0">
             <thead>
                 <tr>
-                    <th>Record No.</th>
-                    <th>Product</th>
+                    <th>@L["Record No."]</th>
+                    <th>@L["Product"]</th>
                     <th>Batch</th>
-                    <th>Release Type</th>
-                    <th>Status</th>
-                    <th>AP</th>
-                    <th>Cert. Date</th>
+                    <th>@L["Release Type"]</th>
+                    <th>@L["Status"]</th>
+                    <th>@L["AP"]</th>
+                    <th>@L["Cert. Date"]</th>
                     <th></th>
                 </tr>
             </thead>
@@ -172,7 +172,7 @@
                         <td><span class="badge @badge">@ReleaseStatusLabel(r.Status)</span></td>
                         <td>@(r.APFullNameQualification ?? "-")</td>
                         <td>@(r.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</td>
-                        <td><a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Details</a></td>
+                        <td><a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">@L["Details"]</a></td>
                     </tr>
                 }
             </tbody>

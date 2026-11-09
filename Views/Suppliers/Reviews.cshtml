@@ -37,18 +37,18 @@ else
     <table class="table table-striped" id="snapshotsTable">
         <thead>
             <tr>
-                <th>Supplier ID</th>
-                <th>Legal Name</th>
-                <th>Type</th>
-                <th>Risk Level</th>
+                <th>@L["Supplier ID"]</th>
+                <th>@L["Legal Name"]</th>
+                <th>@L["Type"]</th>
+                <th>@L["Risk Level"]</th>
                 <th>Supplier Status</th>
                 <th>Completed By</th>
-                <th>Completed On</th>
+                <th>@L["Completed On"]</th>
                 <th>Review Trigger</th>
                 <th>Next Review Was</th>
-                <th>Documents</th>
+                <th>@L["Documents"]</th>
                 <th>Quality Records</th>
-                <th>Details</th>
+                <th>@L["Details"]</th>
             </tr>
         </thead>
         <tbody>
@@ -78,7 +78,7 @@ else
                     <td>@(snap.NextReviewDate.HasValue ? snap.NextReviewDate.Value.ToString("dd/MM/yyyy") : "-")</td>
                     <td>@(snap.Documents?.Count ?? 0)</td>
                     <td>@(snap.QualityRecords?.Count ?? 0)</td>
-                    <td><a asp-action="SnapshotDetails" asp-route-id="@snap.Id">View</a></td>
+                    <td><a asp-action="SnapshotDetails" asp-route-id="@snap.Id">@L["View"]</a></td>
                 </tr>
             }
         </tbody>
@@ -86,8 +86,8 @@ else
 }
 
 <div class="mt-3 d-flex gap-2">
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Details</a>
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list me-1"></i>Back to List</a>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to Details"]</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list me-1"></i>@L["Back to List"]</a>
 </div>
 
 @section Scripts {

@@ -26,7 +26,7 @@
     <input type="hidden" asp-for="Status" value="@Model.Status" />
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Identity</div>
+        <div class="card-header fw-semibold">@L["Identity"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
@@ -64,7 +64,7 @@
                             <option>Clinical Trial Site</option>
                         </optgroup>
                         <optgroup label="Life Sciences Industry">
-                            <option>Pharmaceutical</option>
+                            <option>@L["Pharmaceutical"]</option>
                             <option>Biotechnology</option>
                             <option>Medical Devices</option>
                         </optgroup>
@@ -78,7 +78,7 @@
                         </optgroup>
                         <optgroup label="Other">
                             <option>Veterinary</option>
-                            <option>Other</option>
+                            <option>@L["Other"]</option>
                         </optgroup>
                     </select>
                 </div>
@@ -95,7 +95,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Address</div>
+        <div class="card-header fw-semibold">@L["Address"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -123,7 +123,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Primary Contact</div>
+        <div class="card-header fw-semibold">@L["Primary Contact"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
@@ -143,7 +143,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Commercial</div>
+        <div class="card-header fw-semibold">@L["Commercial"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
@@ -163,7 +163,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Notes</div>
+        <div class="card-header fw-semibold">@L["Notes"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -175,11 +175,11 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Related Documents</div>
+        <div class="card-header fw-semibold">@L["Related Documents"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
-                    <label class="form-label">Linked Approved Documents</label>
+                    <label class="form-label">@L["Linked Approved Documents"]</label>
                     <select id="relatedDocDropdown" class="form-select">
                         <option value="">-- Add Document --</option>
                         @foreach (var d in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
@@ -195,8 +195,8 @@
     </div>
 
     <div class="d-flex gap-2">
-        <input type="submit" value="Save" class="btn btn-primary" />
-        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Cancel</a>
+        <input type="submit" value="@L["Save"]" class="btn btn-primary" />
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Cancel"]</a>
     </div>
 </form>
 

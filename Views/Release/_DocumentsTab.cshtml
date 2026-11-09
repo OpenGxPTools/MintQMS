@@ -9,16 +9,16 @@
 {
     <form asp-action="UploadDocument" asp-route-releaseRecordId="@Model.Id" method="post" enctype="multipart/form-data" class="card mb-4 p-3 bg-light">
         @Html.AntiForgeryToken()
-        <h6 class="mb-3">Upload Document</h6>
+        <h6 class="mb-3">@L["Upload Document"]</h6>
         <div class="row g-2">
             <div class="col-md-4">
-                <label class="form-label small">File <span class="text-danger">*</span></label>
+                <label class="form-label small">@L["File"] <span class="text-danger">*</span></label>
                 <input type="file" name="file" class="form-control form-control-sm" required
                        accept="@UploadRules.Accept" />
                 <small class="text-muted">@UploadRules.AcceptedLabel — max 25 MB</small>
             </div>
             <div class="col-md-3">
-                <label class="form-label small">Category</label>
+                <label class="form-label small">@L["Category"]</label>
                 <select name="category" class="form-select form-select-sm">
                     <option value="">-- Select --</option>
                     @foreach (var cat in categories)
@@ -28,11 +28,11 @@
                 </select>
             </div>
             <div class="col-md-4">
-                <label class="form-label small">Description</label>
-                <input name="description" class="form-control form-control-sm" placeholder="Optional description" />
+                <label class="form-label small">@L["Description"]</label>
+                <input name="description" class="form-control form-control-sm" placeholder="@L["Optional description"]" />
             </div>
             <div class="col-md-1 d-flex align-items-end">
-                <button type="submit" class="btn btn-sm btn-primary w-100">Upload</button>
+                <button type="submit" class="btn btn-sm btn-primary w-100">@L["Upload"]</button>
             </div>
         </div>
     </form>
@@ -47,13 +47,13 @@ else
     <table class="table table-sm">
         <thead class="table-light">
             <tr>
-                <th>File</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th>Size</th>
-                <th>Uploaded By</th>
-                <th>Date</th>
-                <th>Actions</th>
+                <th>@L["File"]</th>
+                <th>@L["Category"]</th>
+                <th>@L["Description"]</th>
+                <th>@L["Size"]</th>
+                <th>@L["Uploaded By"]</th>
+                <th>@L["Date"]</th>
+                <th>@L["Actions"]</th>
             </tr>
         </thead>
         <tbody>
@@ -67,12 +67,12 @@ else
                     <td><small>@doc.UploadedBy</small></td>
                     <td><small>@doc.UploadedDate.ToSite().ToString("dd-MMM-yyyy")</small></td>
                     <td class="text-nowrap">
-                        <a asp-action="DownloadDocument" asp-route-documentId="@doc.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                        <a asp-action="DownloadDocument" asp-route-documentId="@doc.Id" class="btn btn-sm btn-outline-primary">@L["Download"]</a>
                         @if (!Model.IsLocked)
                         {
                             <form asp-action="DeleteDocument" asp-route-documentId="@doc.Id" method="post" style="display:inline" data-delete-reason="document">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-outline-danger ms-1">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger ms-1">@L["Delete"]</button>
                             </form>
                         }
                     </td>

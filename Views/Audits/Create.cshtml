@@ -16,7 +16,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">New Audit</h4>
+        <h4 class="mb-0">@L["New Audit"]</h4>
     </div>
 </div>
 <hr />
@@ -26,7 +26,7 @@
     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Basic Information</div>
+                <div class="card-header fw-semibold">@L["Basic Information"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-8">
@@ -74,7 +74,7 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Audit Team</div>
+                <div class="card-header fw-semibold">@L["Audit Team"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -102,7 +102,7 @@
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Products</label>
+                            <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select">
                                 <option value="">-- Add Product --</option>
                                 @foreach (var p in products)
@@ -112,7 +112,7 @@
                             <div id="productHidden" class="d-none"></div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Processes</label>
+                            <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select">
                                 <option value="">-- Add Process --</option>
                                 @foreach (var p in processes)
@@ -122,7 +122,7 @@
                             <div id="processHidden" class="d-none"></div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Assets</label>
+                            <label class="form-label">@L["Assets"]</label>
                             <select id="assetDropdown" class="form-select">
                                 <option value="">-- Add Asset --</option>
                                 @foreach (var p in assets)
@@ -132,7 +132,7 @@
                             <div id="assetHidden" class="d-none"></div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Materials</label>
+                            <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select">
                                 <option value="">-- Add Material --</option>
                                 @foreach (var p in materials)
@@ -142,7 +142,7 @@
                             <div id="materialHidden" class="d-none"></div>
                         </div>
                         <div class="col-md-6" id="supplierPickerRow" style="display:none;">
-                            <label class="form-label">Suppliers</label>
+                            <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select">
                                 <option value="">-- Add Supplier --</option>
                                 @foreach (var p in suppliers)
@@ -164,8 +164,8 @@
             </div>
 
             <div class="d-flex gap-2">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+                <input type="submit" value="@L["Create"]" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
             </div>
         </form>
 

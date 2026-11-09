@@ -33,7 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 </div>
 <hr />
-<h5 class="text-danger">Are you sure you want to delete this?</h5>
+<h5 class="text-danger">@L["Are you sure you want to delete this?"]</h5>
 
 <div class="card mb-4">
     <div class="card-body">
@@ -56,7 +56,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <dd class="col-sm-8">
                 @Html.DisplayFor(model => model.Description)
             </dd>
-            <dt class="col-sm-4">Products</dt>
+            <dt class="col-sm-4">@L["Products"]</dt>
             <dd class="col-sm-8">
                 @if (Model.LinkedProducts?.Any() == true)
                 {
@@ -64,7 +64,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 }
                 else { <text>-</text> }
             </dd>
-            <dt class="col-sm-4">Processes</dt>
+            <dt class="col-sm-4">@L["Processes"]</dt>
             <dd class="col-sm-8">
                 @if (Model.LinkedProcesses?.Any() == true)
                 {
@@ -106,13 +106,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <div>
 
-    <h4>Changes</h4>
+    <h4>@L["Changes"]</h4>
     <div class="row">
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
+                    <th>@L["ID"]</th>
+                    <th>@L["Title"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -128,13 +128,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
     <br />
 
-    <h4>Deviations</h4>
+    <h4>@L["Deviations"]</h4>
     <div class=" row">
         <table class=" table table-border">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
+                    <th>@L["ID"]</th>
+                    <th>@L["Title"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -150,13 +150,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 
     <br />
-    <h4>CAPA</h4>
+    <h4>@L["CAPA"]</h4>
     <div class="row">
         <table class="table table-border">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
+                    <th>@L["ID"]</th>
+                    <th>@L["Title"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -174,15 +174,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
     <br />
 
-    <h4>Documents</h4>
+    <h4>@L["Documents"]</h4>
     <div class="row">
         <table class="table table-border">
             <thead>
                 <tr>
-                    <th>File Name</th>
-                    <th>Description</th>
-                    <th>Uploaded By</th>
-                    <th>Uploaded Date</th>
+                    <th>@L["File Name"]</th>
+                    <th>@L["Description"]</th>
+                    <th>@L["Uploaded By"]</th>
+                    <th>@L["Uploaded Date"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -214,8 +214,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <div class="d-flex gap-2">
-            <input type="submit" value="Delete" class="btn btn-danger" disabled="@((bool)ViewData["HasLinkedRecords"] == true ? "disabled" : null)" />
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+            <input type="submit" value="@L["Delete"]" class="btn btn-danger" disabled="@((bool)ViewData["HasLinkedRecords"] == true ? "disabled" : null)" />
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
         </div>
     </form>
 </div>

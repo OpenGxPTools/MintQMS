@@ -61,7 +61,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Documents</h4>
+    <h4 class="mb-0">@L["Documents"]</h4>
     @if (!User.IsInRole(Constants.ReadOnlyRole))
     {
         <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Document</a>
@@ -70,14 +70,14 @@
 <hr />
 
 <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
-    <span class="text-muted small me-1">Filter by status:</span>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Draft">Draft</button>
-    <button class="btn btn-outline-info btn-sm status-filter" data-status="Under Review">Under Review</button>
-    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Approved">Approved</button>
-    <button class="btn btn-outline-success btn-sm status-filter" data-status="Effective">Effective</button>
-    <button class="btn btn-outline-danger btn-sm status-filter" data-status="Rejected">Rejected</button>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Obsolete">Obsolete</button>
+    <span class="text-muted small me-1">@L["Filter by status:"]</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Draft"]">@L["Draft"]</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Under Review"]">@L["Under Review"]</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["Approved"]">@L["Approved"]</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Effective"]">@L["Effective"]</button>
+    <button class="btn btn-outline-danger btn-sm status-filter" data-status="@L["Rejected"]">@L["Rejected"]</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Obsolete"]">@L["Obsolete"]</button>
     <button class="btn btn-outline-warning btn-sm ms-3" id="externalFilterBtn" data-external="false">
         <i class="fas fa-file-import me-1"></i>External Only
     </button>
@@ -87,17 +87,17 @@
     <thead>
         <tr>
             <th>Doc ID</th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Document Type</th>
-            <th>Version</th>
-            <th>Authored By</th>
-            <th>Authored On</th>
-            <th>Approved By</th>
-            <th>Approved On</th>
-            <th>Status</th>
+            <th>@L["Title"]</th>
+            <th>@L["Category"]</th>
+            <th>@L["Document Type"]</th>
+            <th>@L["Version"]</th>
+            <th>@L["Authored By"]</th>
+            <th>@L["Authored On"]</th>
+            <th>@L["Approved By"]</th>
+            <th>@L["Approved On"]</th>
+            <th>@L["Status"]</th>
             <th>IsExternal</th>
-            <th>Action</th>
+            <th>@L["Action"]</th>
         </tr>
     </thead>
     <tbody>
@@ -130,7 +130,7 @@
                     @item.DocumentId
                     @if (item.IsExternal)
                     {
-                        <span class="badge bg-warning text-dark ms-1" title="Externally sourced document"><i class="fas fa-file-import"></i> External</span>
+                        <span class="badge bg-warning text-dark ms-1" title="Externally sourced document"><i class="fas fa-file-import"></i> @L["External"]</span>
                     }
                 </td>
                 <td>@item.Title</td>
@@ -144,16 +144,16 @@
                 <td>@L.Enum(item.Status)</td>
                 <td style="display:none">@item.IsExternal.ToString().ToLower()</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if ((await AuthorizationService.AuthorizeAsync(User, item, DocumentOperations.Update)).Succeeded && item.IsLocked != true && item.Status == AppDocument.DocumentStatus.Draft)
                     {
                         <text> | </text>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">@L["Edit"]</a>
                     }
                     @if (item.Status == AppDocument.DocumentStatus.Draft && User.IsInRole(Constants.AdministratorsRole))
                     {
                         <text> | </text>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">@L["Delete"]</a>
                     }
                 </td>
             </tr>

@@ -30,8 +30,8 @@
         <span class="text-muted small">Stage: @stageLabel</span>
     </div>
     <div class="d-flex gap-2">
-        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">Details</a>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">@L["Details"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </div>
 <hr />
@@ -42,7 +42,7 @@
             <input type="hidden" asp-for="Id" />
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Basic Information</div>
+                <div class="card-header fw-semibold">@L["Basic Information"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-8">
@@ -101,7 +101,7 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Audit Team</div>
+                <div class="card-header fw-semibold">@L["Audit Team"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -227,7 +227,7 @@
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Products</label>
+                            <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select">
                                 <option value="">-- Add Product --</option>
                                 @foreach (var p in products)
@@ -237,7 +237,7 @@
                             <div id="productHidden" class="d-none"></div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Processes</label>
+                            <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select">
                                 <option value="">-- Add Process --</option>
                                 @foreach (var p in processes)
@@ -247,7 +247,7 @@
                             <div id="processHidden" class="d-none"></div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Assets</label>
+                            <label class="form-label">@L["Assets"]</label>
                             <select id="assetDropdown" class="form-select">
                                 <option value="">-- Add Asset --</option>
                                 @foreach (var p in assets)
@@ -257,7 +257,7 @@
                             <div id="assetHidden" class="d-none"></div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Materials</label>
+                            <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select">
                                 <option value="">-- Add Material --</option>
                                 @foreach (var p in materials)
@@ -267,7 +267,7 @@
                             <div id="materialHidden" class="d-none"></div>
                         </div>
                         <div class="col-md-6" id="supplierPickerRow">
-                            <label class="form-label">Suppliers</label>
+                            <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select">
                                 <option value="">-- Add Supplier --</option>
                                 @foreach (var p in suppliers)
@@ -282,8 +282,8 @@
             } @* end @if (isScheduledStage) — Links *@
 
             <div class="d-flex gap-2">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">View Details</a>
+                <input type="submit" value="@L["Save"]" class="btn btn-primary" />
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">@L["View Details"]</a>
             </div>
         </form>
 
@@ -297,8 +297,8 @@
         else
         {
             <div class="alert alert-info mt-3">
-                <strong>Linked CAPA:</strong>
-                <a asp-controller="Capas" asp-action="Details" asp-route-id="@Model.LinkedCapaId">View CAPA</a>
+                <strong>@L["Linked CAPA:"]</strong>
+                <a asp-controller="Capas" asp-action="Details" asp-route-id="@Model.LinkedCapaId">@L["View CAPA"]</a>
             </div>
         }
 

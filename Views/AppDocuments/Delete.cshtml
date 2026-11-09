@@ -29,19 +29,19 @@
 <div class="card mb-3">
     <div class="card-body">
         <dl class="row mb-0">
-            <dt class="col-sm-4">ID</dt>
+            <dt class="col-sm-4">@L["ID"]</dt>
             <dd class="col-sm-8">@Model.DocumentId</dd>
-            <dt class="col-sm-4">Title</dt>
+            <dt class="col-sm-4">@L["Title"]</dt>
             <dd class="col-sm-8">@Model.Title</dd>
-            <dt class="col-sm-4">Description</dt>
+            <dt class="col-sm-4">@L["Description"]</dt>
             <dd class="col-sm-8">@(Model.Description ?? "-")</dd>
-            <dt class="col-sm-4">Version</dt>
+            <dt class="col-sm-4">@L["Version"]</dt>
             <dd class="col-sm-8">@Model.Version.ToString("0.00")</dd>
-            <dt class="col-sm-4">Status</dt>
+            <dt class="col-sm-4">@L["Status"]</dt>
             <dd class="col-sm-8"><span class="badge @statusBadge">@L.Enum(Model.Status)</span></dd>
-            <dt class="col-sm-4">Authored By</dt>
+            <dt class="col-sm-4">@L["Authored By"]</dt>
             <dd class="col-sm-8">@Model.AuthoredBy</dd>
-            <dt class="col-sm-4">Authored On</dt>
+            <dt class="col-sm-4">@L["Authored On"]</dt>
             <dd class="col-sm-8">@Model.AuthoredOn.ToSite().ToString("dd/MM/yyyy HH:mm")</dd>
         </dl>
     </div>
@@ -51,10 +51,10 @@
     <input type="hidden" asp-for="Id" />
     <div class="mt-3 d-flex gap-3">
         <button type="submit" class="btn btn-danger btn-sm">
-            <i class="fas fa-trash me-1"></i>Delete
+            <i class="fas fa-trash me-1"></i>@L["Delete"]
         </button>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-arrow-left me-1"></i>Back to List
+            <i class="fas fa-arrow-left me-1"></i>@L["Back to List"]
         </a>
     </div>
 </form>

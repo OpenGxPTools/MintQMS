@@ -13,9 +13,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="mb-0">Risk Dashboard</h4>
     <div class="d-flex gap-2">
-        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">Export Excel</a>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Register</a>
-        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Risk</a>
+        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Excel"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">@L["Register"]</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Risk"]</a>
     </div>
 </div>
 
@@ -41,7 +41,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-warning">@ViewBag.OpenCount</div>
-                <div class="text-muted">Open</div>
+                <div class="text-muted">@L["Open"]</div>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-success">@ViewBag.ClosedCount</div>
-                <div class="text-muted">Closed</div>
+                <div class="text-muted">@L["Closed"]</div>
             </div>
         </div>
     </div>
@@ -107,7 +107,7 @@
 <div class="row g-3 mb-4">
     <div class="col-md-5">
         <div class="card h-100">
-            <div class="card-header">Status Distribution</div>
+            <div class="card-header">@L["Status Distribution"]</div>
             <div class="card-body d-flex justify-content-center align-items-center">
                 <canvas id="statusChart" style="max-height:220px"></canvas>
             </div>
@@ -115,10 +115,10 @@
     </div>
     <div class="col-md-7">
         <div class="card h-100">
-            <div class="card-header">Status Breakdown</div>
+            <div class="card-header">@L["Status Breakdown"]</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
-                    <thead><tr><th>Status</th><th>Count</th><th style="width:40%">Progress</th></tr></thead>
+                    <thead><tr><th>@L["Status"]</th><th>@L["Count"]</th><th style="width:40%">@L["Progress"]</th></tr></thead>
                     <tbody>
                         @foreach (var kv in statusCounts)
                         {
@@ -157,7 +157,7 @@
                 @if (highRPNList.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead><tr><th>ID</th><th>Title</th><th>RPN</th><th>Status</th></tr></thead>
+                        <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>RPN</th><th>@L["Status"]</th></tr></thead>
                         <tbody>
                             @foreach (var r in highRPNList)
                             {
@@ -185,7 +185,7 @@
                 @if (pendingAssess.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead><tr><th>ID</th><th>Title</th><th>RPN</th><th>Identified</th></tr></thead>
+                        <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>RPN</th><th>@L["Identified"]</th></tr></thead>
                         <tbody>
                             @foreach (var r in pendingAssess)
                             {
@@ -199,7 +199,7 @@
                         </tbody>
                     </table>
                 }
-                else { <p class="text-muted p-3 mb-0">None pending.</p> }
+                else { <p class="text-muted p-3 mb-0">@L["None pending."]</p> }
             </div>
         </div>
     </div>
@@ -215,7 +215,7 @@
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
-                <thead><tr><th>ID</th><th>Title</th><th>Status</th><th>RPN</th><th>Target Date</th><th>Days Overdue</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>RPN</th><th>@L["Target Date"]</th><th>@L["Days Overdue"]</th></tr></thead>
                 <tbody>
                     @foreach (var r in overdue)
                     {
@@ -244,7 +244,7 @@
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
-                <thead><tr><th>ID</th><th>Title</th><th>Status</th><th>Target Date</th><th>Days Remaining</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Target Date"]</th><th>Days Remaining</th></tr></thead>
                 <tbody>
                     @foreach (var r in approaching)
                     {
@@ -265,7 +265,7 @@
 
 <!-- Recent Activity -->
 <div class="card">
-    <div class="card-header">Recent Activity</div>
+    <div class="card-header">@L["Recent Activity"]</div>
     <div class="card-body p-0">
         @{
             var recentActivity = ViewBag.RecentActivity as dynamic;
@@ -273,7 +273,7 @@
         @if (recentActivity != null)
         {
             <table class="table table-sm mb-0">
-                <thead><tr><th>Time</th><th>Risk</th><th>Action</th><th>By</th></tr></thead>
+                <thead><tr><th>@L["Time"]</th><th>@L["Risk"]</th><th>@L["Action"]</th><th>@L["By"]</th></tr></thead>
                 <tbody>
                     @foreach (var entry in recentActivity)
                     {
@@ -287,7 +287,7 @@
                 </tbody>
             </table>
         }
-        else { <p class="text-muted p-3 mb-0">No activity recorded yet.</p> }
+        else { <p class="text-muted p-3 mb-0">@L["No activity recorded yet."]</p> }
     </div>
 </div>
 

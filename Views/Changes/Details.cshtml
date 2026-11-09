@@ -134,7 +134,7 @@ else if (isApproaching)
 {
     <div class="card mb-3">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-tasks me-2"></i>Workflow Actions</strong>
+            <strong><i class="fas fa-tasks me-2"></i>@L["Workflow Actions"]</strong>
             <span class="small">Current: @statusLabel</span>
         </div>
         <div class="card-body py-2 d-flex flex-wrap gap-2">
@@ -150,14 +150,14 @@ else if (isApproaching)
                 {
                     <button class="btn btn-success btn-sm" disabled
                             title="@apMissingOwnerTarget action(s) still need an owner and target date">
-                        <i class="fas fa-paper-plane me-1"></i>Submit for Acceptance
+                        <i class="fas fa-paper-plane me-1"></i>@L["Submit for Acceptance"]
                     </button>
                     <span class="text-warning small align-self-center"><i class="bi bi-exclamation-triangle me-1"></i>@apMissingOwnerTarget action(s) need owner + target date</span>
                 }
                 else
                 {
                     <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitForAcceptanceModal">
-                        <i class="fas fa-paper-plane me-1"></i>Submit for Acceptance
+                        <i class="fas fa-paper-plane me-1"></i>@L["Submit for Acceptance"]
                     </button>
                 }
             }
@@ -175,14 +175,14 @@ else if (isApproaching)
                         ? $"{apOutstanding} action-plan item(s) outstanding — complete or mark them Not applicable first"
                         : $"{apMissingEvidence} action(s) still need an evidence / reference";
                     <button class="btn btn-success btn-sm" disabled title="@_apMsg">
-                        <i class="fas fa-paper-plane me-1"></i>Submit for Approval
+                        <i class="fas fa-paper-plane me-1"></i>@L["Submit for Approval"]
                     </button>
                     <span class="text-warning small align-self-center"><i class="bi bi-exclamation-triangle me-1"></i>@(apOutstanding > 0 ? $"{apOutstanding} action(s) outstanding" : $"{apMissingEvidence} action(s) need evidence")</span>
                 }
                 else
                 {
                     <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitForApprovalModal">
-                        <i class="fas fa-paper-plane me-1"></i>Submit for Approval
+                        <i class="fas fa-paper-plane me-1"></i>@L["Submit for Approval"]
                     </button>
                 }
             }
@@ -195,7 +195,7 @@ else if (isApproaching)
             @if (canReturn)
             {
                 <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#returnModal">
-                    <i class="fas fa-undo me-1"></i>Return for Rework
+                    <i class="fas fa-undo me-1"></i>@L["Return for Rework"]
                 </button>
             }
         </div>
@@ -206,11 +206,11 @@ else if (isApproaching)
 {
     <div class="card mb-3 border-danger">
         <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+            <strong><i class="fas fa-lock-open me-2"></i>@L["Administrative Controls"]</strong>
         </div>
         <div class="card-body py-2">
             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
-                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+                <i class="fas fa-lock-open me-1"></i>@L["Administratively Reopen"]
             </button>
         </div>
     </div>
@@ -218,7 +218,7 @@ else if (isApproaching)
 
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-3" id="changeTabs">
-    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#overview">Overview</button></li>
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#overview">@L["Overview"]</button></li>
     @if (showActionPlan)
     {
         <li class="nav-item">
@@ -233,12 +233,12 @@ else if (isApproaching)
     }
     <li class="nav-item">
         <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#attachments">
-            Attachments <span class="badge bg-secondary">@attachCount</span>
+            @L["Attachments"] <span class="badge bg-secondary">@attachCount</span>
         </button>
     </li>
     <li class="nav-item">
         <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#auditlog">
-            Audit Log <span class="badge bg-secondary">@auditCount</span>
+            @L["Audit Log"] <span class="badge bg-secondary">@auditCount</span>
         </button>
     </li>
 </ul>
@@ -252,16 +252,16 @@ else if (isApproaching)
             <div class="col-md-6">
                 <h6 class="text-muted text-uppercase small mb-2">Change Details</h6>
                 <dl class="row">
-                    <dt class="col-sm-4">Change ID</dt>
+                    <dt class="col-sm-4">@L["Change ID"]</dt>
                     <dd class="col-sm-8">@Model.ChangeId</dd>
 
-                    <dt class="col-sm-4">Title</dt>
+                    <dt class="col-sm-4">@L["Title"]</dt>
                     <dd class="col-sm-8">@Model.Title</dd>
 
-                    <dt class="col-sm-4">Status</dt>
+                    <dt class="col-sm-4">@L["Status"]</dt>
                     <dd class="col-sm-8"><span class="badge @badgeClass">@statusLabel</span></dd>
 
-                    <dt class="col-sm-4">Target Date</dt>
+                    <dt class="col-sm-4">@L["Target Date"]</dt>
                     <dd class="col-sm-8 @(isOverdue ? "text-danger fw-bold" : isApproaching ? "text-warning fw-bold" : "")">
                         @(Model.TargetImplementationDate.HasValue ? Model.TargetImplementationDate.Value.ToString("dd MMM yyyy") : "-")
                     </dd>
@@ -276,9 +276,9 @@ else if (isApproaching)
                     }
                 </dl>
 
-                <h6 class="text-muted text-uppercase small mb-2 mt-3">Linked Records</h6>
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">@L["Linked Records"]</h6>
                 <dl class="row">
-                    <dt class="col-sm-4">Products</dt>
+                    <dt class="col-sm-4">@L["Products"]</dt>
                     <dd class="col-sm-8">
                         @{
                             var dProducts = Model.LinkedProducts?.Where(x => x.Product != null).ToList();
@@ -289,7 +289,7 @@ else if (isApproaching)
                             else { <span class="text-muted">-</span> }
                         }
                     </dd>
-                    <dt class="col-sm-4">Processes</dt>
+                    <dt class="col-sm-4">@L["Processes"]</dt>
                     <dd class="col-sm-8">
                         @{
                             var dProcesses = Model.LinkedProcesses?.Where(x => x.Process != null).ToList();
@@ -300,7 +300,7 @@ else if (isApproaching)
                             else { <span class="text-muted">-</span> }
                         }
                     </dd>
-                    <dt class="col-sm-4">Assets</dt>
+                    <dt class="col-sm-4">@L["Assets"]</dt>
                     <dd class="col-sm-8">
                         @{
                             var dAssets = Model.LinkedAssets?.Where(x => x.Asset != null).ToList();
@@ -311,7 +311,7 @@ else if (isApproaching)
                             else { <span class="text-muted">-</span> }
                         }
                     </dd>
-                    <dt class="col-sm-4">Materials</dt>
+                    <dt class="col-sm-4">@L["Materials"]</dt>
                     <dd class="col-sm-8">
                         @{
                             var dMaterials = Model.LinkedMaterials?.Where(x => x.Material != null).ToList();
@@ -322,7 +322,7 @@ else if (isApproaching)
                             else { <span class="text-muted">-</span> }
                         }
                     </dd>
-                    <dt class="col-sm-4">Suppliers</dt>
+                    <dt class="col-sm-4">@L["Suppliers"]</dt>
                     <dd class="col-sm-8">
                         @{
                             var dSuppliers = Model.LinkedSuppliers?.Where(x => x.Supplier != null).ToList();
@@ -333,7 +333,7 @@ else if (isApproaching)
                             else { <span class="text-muted">-</span> }
                         }
                     </dd>
-                    <dt class="col-sm-4">CAPAs</dt>
+                    <dt class="col-sm-4">@L["CAPAs"]</dt>
                     <dd class="col-sm-8">
                         @{
                             var dCapas = Model.LinkedCapas?.Where(x => x.Capa != null).ToList();
@@ -347,29 +347,29 @@ else if (isApproaching)
                 </dl>
 
                 <div class="mt-3 d-flex gap-2">
-                    <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
-                    <a asp-action="ExportChangeDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+                    <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>@L["Export CSV"]</a>
+                    <a asp-action="ExportChangeDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>@L["Export PDF"]</a>
                 </div>
             </div>
 
             <!-- Right column: content sections + workflow trail -->
             <div class="col-md-6">
-                <h6 class="text-muted text-uppercase small mb-2">Proposal</h6>
+                <h6 class="text-muted text-uppercase small mb-2">@L["Proposal"]</h6>
                 <div class="p-3 bg-light rounded mb-3">@(Model.Proposal ?? "-")</div>
 
                 @if (showAssessment)
                 {
-                    <h6 class="text-muted text-uppercase small mb-2">Assessment</h6>
+                    <h6 class="text-muted text-uppercase small mb-2">@L["Assessment"]</h6>
                     <div class="p-3 bg-light rounded mb-3">@(Model.Assessment ?? "-")</div>
                 }
 
                 @if (showImplementation)
                 {
-                    <h6 class="text-muted text-uppercase small mb-2">Implementation</h6>
+                    <h6 class="text-muted text-uppercase small mb-2">@L["Implementation"]</h6>
                     <div class="p-3 bg-light rounded mb-3">@(Model.Implementation ?? "-")</div>
                 }
 
-                <h6 class="text-muted text-uppercase small mb-2 mt-3">Workflow Trail</h6>
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">@L["Workflow Trail"]</h6>
                 <dl class="row">
                     <dt class="col-sm-5">Proposed By</dt>
                     <dd class="col-sm-7">
@@ -378,14 +378,14 @@ else if (isApproaching)
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Assessed By</dt>
+                    <dt class="col-sm-5">@L["Assessed By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.AssessedBy))
                         { <span>@Model.AssessedBy <span class="text-muted small">@Model.AssessedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Accepted By</dt>
+                    <dt class="col-sm-5">@L["Accepted By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.AcceptedBy))
                         { <span>@Model.AcceptedBy <span class="text-muted small">@Model.AcceptedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
@@ -399,7 +399,7 @@ else if (isApproaching)
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Approved By</dt>
+                    <dt class="col-sm-5">@L["Approved By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ApprovedBy))
                         { <span>@Model.ApprovedBy <span class="text-muted small">@Model.ApprovedOn.ToSite()?.ToString("dd MMM yyyy")</span></span> }
@@ -446,7 +446,7 @@ else if (isApproaching)
                                     <th style="width:26%">Action / task</th>
                                     <th style="width:13%">Owner</th>
                                     <th style="width:12%">Target date</th>
-                                    <th style="width:13%">Status</th>
+                                    <th style="width:13%">@L["Status"]</th>
                                     <th style="width:18%">Evidence / reference</th>
                                     <th style="width:12%">Completed date</th>
                                     <th style="width:6%"></th>
@@ -498,7 +498,7 @@ else if (isApproaching)
             {
                 <div class="alert alert-info py-2 small mb-2">
                     <i class="bi bi-lock-fill me-1"></i>The action plan was <strong>accepted</strong> and is now
-                    locked for execution. You can update each action's <strong>Status</strong>,
+                    locked for execution. You can update each action's <strong>@L["Status"]</strong>,
                     <strong>Evidence / reference</strong> and <strong>Completed date</strong>. To add, remove or
                     change an action (or its owner or target date), <strong>return the change for rework</strong>
                     so the revised plan is re-accepted.
@@ -511,7 +511,7 @@ else if (isApproaching)
                                     <th style="width:28%">Action / task</th>
                                     <th style="width:13%">Owner</th>
                                     <th style="width:12%">Target date</th>
-                                    <th style="width:14%">Status</th>
+                                    <th style="width:14%">@L["Status"]</th>
                                     <th style="width:20%">Evidence / reference</th>
                                     <th style="width:13%">Completed date</th>
                                 </tr>
@@ -556,7 +556,7 @@ else if (isApproaching)
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered align-middle">
                             <thead class="table-light">
-                                <tr><th>Action / task</th><th>Owner</th><th>Target date</th><th>Status</th><th>Evidence / reference</th><th>Completed date</th></tr>
+                                <tr><th>Action / task</th><th>Owner</th><th>Target date</th><th>@L["Status"]</th><th>Evidence / reference</th><th>Completed date</th></tr>
                             </thead>
                             <tbody>
                                 @foreach (var it in apItems)
@@ -587,7 +587,7 @@ else if (isApproaching)
         @if (!isLocked)
         {
             <div class="card mb-3">
-                <div class="card-header">Upload Attachment</div>
+                <div class="card-header">@L["Upload Attachment"]</div>
                 <div class="card-body">
                     <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data" class="row g-3">
                         @Html.AntiForgeryToken()
@@ -597,10 +597,10 @@ else if (isApproaching)
                                    accept="@UploadRules.Accept" />
                         </div>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" name="description" placeholder="Description (optional)" />
+                            <input type="text" class="form-control" name="description" placeholder="@L["Description (optional)"]" />
                         </div>
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                            <button type="submit" class="btn btn-primary w-100">@L["Upload"]</button>
                         </div>
                     </form>
                 </div>
@@ -608,14 +608,14 @@ else if (isApproaching)
         }
         else
         {
-            <div class="alert alert-secondary">Record is approved — no new attachments can be added.</div>
+            <div class="alert alert-secondary">@L["Record is approved — no new attachments can be added."]</div>
         }
 
         @if (Model.Attachments != null && Model.Attachments.Any())
         {
             <table class="table table-hover">
                 <thead>
-                    <tr><th>File Name</th><th>Description</th><th>Size</th><th>Uploaded By</th><th>Date</th><th>Actions</th></tr>
+                    <tr><th>@L["File Name"]</th><th>@L["Description"]</th><th>@L["Size"]</th><th>@L["Uploaded By"]</th><th>@L["Date"]</th><th>@L["Actions"]</th></tr>
                 </thead>
                 <tbody>
                     @foreach (var att in Model.Attachments.OrderByDescending(a => a.UploadedDate))
@@ -627,14 +627,14 @@ else if (isApproaching)
                             <td>@att.UploadedBy</td>
                             <td>@att.UploadedDate.ToSite().ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
-                                <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                                <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">@L["Download"]</a>
                                 @if (!isLocked)
                                 {
                                     <form asp-action="DeleteAttachment" method="post" class="d-inline" data-delete-reason="attachment">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@att.Id" />
                                         <input type="hidden" name="changeId" value="@Model.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">@L["Delete"]</button>
                                     </form>
                                 }
                             </td>
@@ -645,7 +645,7 @@ else if (isApproaching)
         }
         else
         {
-            <p class="text-muted">No attachments yet.</p>
+            <p class="text-muted">@L["No attachments yet."]</p>
         }
         <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
     </div>
@@ -661,9 +661,9 @@ else if (isApproaching)
 <div class="mt-3 d-flex gap-3">
     @if (canEdit)
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>@L["Edit"]</a>
     }
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>@L["Back to List"]</a>
 </div>
 
 <!-- Submit for Assessment Modal -->
@@ -680,23 +680,23 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the change from <strong>Proposal</strong> to <strong>Assessment</strong>. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">Moves the change from <strong>@L["Proposal"]</strong> to <strong>@L["Assessment"]</strong>. Enter your credentials to confirm.</p>
                         <div class="mb-3">
-                            <label class="form-label">Notes (optional)</label>
+                            <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">@L["Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password</label>
+                            <label class="form-label">@L["Password"]</label>
                             <input type="password" name="pwd" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success">Confirm Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                        <button type="submit" class="btn btn-success">@L["Confirm Submit"]</button>
                     </div>
                 </form>
             </div>
@@ -718,23 +718,23 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the change from <strong>Assessment</strong> to <strong>Pending Acceptance</strong> for Quality Manager review. Assessment must be completed. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">Moves the change from <strong>@L["Assessment"]</strong> to <strong>@L["Pending Acceptance"]</strong> for Quality Manager review. Assessment must be completed. Enter your credentials to confirm.</p>
                         <div class="mb-3">
-                            <label class="form-label">Notes (optional)</label>
+                            <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">@L["Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password</label>
+                            <label class="form-label">@L["Password"]</label>
                             <input type="password" name="pwd" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success">Confirm Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                        <button type="submit" class="btn btn-success">@L["Confirm Submit"]</button>
                     </div>
                 </form>
             </div>
@@ -756,23 +756,23 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Confirms the assessment package is complete and acceptable. Moves from <strong>Pending Acceptance</strong> to <strong>Implementation</strong>. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">Confirms the assessment package is complete and acceptable. Moves from <strong>@L["Pending Acceptance"]</strong> to <strong>@L["Implementation"]</strong>. Enter your credentials to confirm.</p>
                         <div class="mb-3">
-                            <label class="form-label">Notes (optional)</label>
+                            <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">@L["Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password</label>
+                            <label class="form-label">@L["Password"]</label>
                             <input type="password" name="pwd" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success">Confirm Accept</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                        <button type="submit" class="btn btn-success">@L["Confirm Accept"]</button>
                     </div>
                 </form>
             </div>
@@ -794,23 +794,23 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the change from <strong>Implementation</strong> to <strong>Pending Approval</strong> for Quality Manager review. Implementation details must be completed. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">Moves the change from <strong>@L["Implementation"]</strong> to <strong>@L["Pending Approval"]</strong> for Quality Manager review. Implementation details must be completed. Enter your credentials to confirm.</p>
                         <div class="mb-3">
-                            <label class="form-label">Notes (optional)</label>
+                            <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">@L["Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password</label>
+                            <label class="form-label">@L["Password"]</label>
                             <input type="password" name="pwd" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success">Confirm Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                        <button type="submit" class="btn btn-success">@L["Confirm Submit"]</button>
                     </div>
                 </form>
             </div>
@@ -832,22 +832,22 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the change from <strong>Pending Approval</strong> to <strong>Approved</strong> and locks the record. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">Moves the change from <strong>@L["Pending Approval"]</strong> to <strong>@L["Approved"]</strong> and locks the record. Enter your credentials to confirm.</p>
                         <div class="mb-3">
-                            <label class="form-label">Notes (optional)</label>
+                            <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">@L["Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password</label>
+                            <label class="form-label">@L["Password"]</label>
                             <input type="password" name="pwd" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                         <button type="submit" class="btn btn-success">Confirm Approve</button>
                     </div>
                 </form>
@@ -872,29 +872,29 @@ else if (isApproaching)
                     <div class="modal-body">
                         <p class="text-muted small">
                             @if (s == OpenQMS.Models.Change.ChangeStatus.PendingAssessment)
-                            { <text>Returns to <strong>Proposal</strong> — assessment stamp will be cleared. All fields will be editable.</text> }
+                            { <text>Returns to <strong>@L["Proposal"]</strong> — assessment stamp will be cleared. All fields will be editable.</text> }
                             else if (s == OpenQMS.Models.Change.ChangeStatus.PendingApproval)
-                            { <text>Returns to <strong>Implementation</strong> — implementation stamp will be cleared.</text> }
+                            { <text>Returns to <strong>@L["Implementation"]</strong> — implementation stamp will be cleared.</text> }
                             else if (s == OpenQMS.Models.Change.ChangeStatus.Implementation)
-                            { <text>Returns to <strong>Proposal</strong> — all intermediate stamps will be cleared. All fields will be editable.</text> }
+                            { <text>Returns to <strong>@L["Proposal"]</strong> — all intermediate stamps will be cleared. All fields will be editable.</text> }
                         </p>
                         <div class="mb-3">
-                            <label class="form-label">Reason for Return <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Reason for Return"] <span class="text-danger">*</span></label>
                             <textarea name="notes" class="form-control" rows="3" required
                                       placeholder="Describe why this record is being returned and what needs to be addressed."></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">@L["Email"]</label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password</label>
+                            <label class="form-label">@L["Password"]</label>
                             <input type="password" name="pwd" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-warning">Confirm Return</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                        <button type="submit" class="btn btn-warning">@L["Confirm Return"]</button>
                     </div>
                 </form>
             </div>
@@ -909,31 +909,31 @@ else if (isApproaching)
             <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>@L["Administrative Reopen"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>Warning:</strong> Administratively reopening a completed record reverts it to the Implementation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
+                        <strong>@L["Warning:"]</strong> Administratively reopening a completed record reverts it to the Implementation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                        <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="@L["Provide a detailed justification for reopening this record..."]"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to authorise this action."]</p>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Password"] <span class="text-danger">*</span></label>
                         <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-danger">@L["Reopen Record"]</button>
                 </div>
             </form>
         </div></div>

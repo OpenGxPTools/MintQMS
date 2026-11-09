@@ -15,7 +15,7 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">Documents Dashboard</h4>
     <div class="d-flex gap-2">
-        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">Export Register</a>
+        <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Register"]</a>
         <a asp-action="ReviewRegister" class="btn btn-outline-info btn-sm">Review Register</a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Document Register</a>
         <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Document</a>
@@ -28,7 +28,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-success border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-success">@ViewBag.EffectiveCount</div>
-                <div class="text-muted small">Effective</div>
+                <div class="text-muted small">@L["Effective"]</div>
             </div>
         </div>
     </div>
@@ -36,7 +36,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-primary border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-primary">@ViewBag.ApprovedCount</div>
-                <div class="text-muted small">Approved</div>
+                <div class="text-muted small">@L["Approved"]</div>
             </div>
         </div>
     </div>
@@ -44,7 +44,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-warning border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-warning">@ViewBag.DraftCount</div>
-                <div class="text-muted small">Draft</div>
+                <div class="text-muted small">@L["Draft"]</div>
             </div>
         </div>
     </div>
@@ -52,7 +52,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-info border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-info">@ViewBag.UnderReviewCount</div>
-                <div class="text-muted small">Under Review</div>
+                <div class="text-muted small">@L["Under Review"]</div>
             </div>
         </div>
     </div>
@@ -60,7 +60,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-danger border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-danger">@ViewBag.RejectedCount</div>
-                <div class="text-muted small">Rejected</div>
+                <div class="text-muted small">@L["Rejected"]</div>
             </div>
         </div>
     </div>
@@ -68,7 +68,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-secondary border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-secondary">@ViewBag.ObsoleteCount</div>
-                <div class="text-muted small">Obsolete</div>
+                <div class="text-muted small">@L["Obsolete"]</div>
             </div>
         </div>
     </div>
@@ -78,7 +78,7 @@
 <div class="row g-3 mb-4">
     <div class="col-md-5">
         <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white fw-semibold">Status Distribution</div>
+            <div class="card-header bg-white fw-semibold">@L["Status Distribution"]</div>
             <div class="card-body d-flex justify-content-center align-items-center">
                 <canvas id="statusDoughnut" style="max-height:220px;"></canvas>
             </div>
@@ -109,7 +109,7 @@
                     <div class="card-body p-0">
                         <table class="table table-sm mb-0">
                             <thead class="table-light">
-                                <tr><th>ID</th><th>Title</th><th>Review Due</th><th>Days Overdue</th><th></th></tr>
+                                <tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Review Due"]</th><th>@L["Days Overdue"]</th><th></th></tr>
                             </thead>
                             <tbody>
                                 @foreach (var d in reviewOverdue)
@@ -120,7 +120,7 @@
                                         <td>@d.Title</td>
                                         <td>@d.ReviewDueDate.Value.ToString("dd MMM yyyy")</td>
                                         <td><span class="badge bg-danger">@daysOver days</span></td>
-                                        <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-danger btn-sm">View</a></td>
+                                        <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-danger btn-sm">@L["View"]</a></td>
                                     </tr>
                                 }
                             </tbody>
@@ -140,7 +140,7 @@
                     <div class="card-body p-0">
                         <table class="table table-sm mb-0">
                             <thead class="table-light">
-                                <tr><th>ID</th><th>Title</th><th>Review Due</th><th>Days Left</th><th></th></tr>
+                                <tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Review Due"]</th><th>Days Left</th><th></th></tr>
                             </thead>
                             <tbody>
                                 @foreach (var d in reviewDueSoon)
@@ -151,7 +151,7 @@
                                         <td>@d.Title</td>
                                         <td>@d.ReviewDueDate.Value.ToString("dd MMM yyyy")</td>
                                         <td><span class="badge bg-warning text-dark">@daysLeft days</span></td>
-                                        <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">View</a></td>
+                                        <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">@L["View"]</a></td>
                                     </tr>
                                 }
                             </tbody>
@@ -176,7 +176,7 @@
                 {
                     <table class="table table-sm mb-0">
                         <thead class="table-light">
-                            <tr><th>ID</th><th>Title</th><th>Version</th><th>Authored By</th><th></th></tr>
+                            <tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Version"]</th><th>@L["Authored By"]</th><th></th></tr>
                         </thead>
                         <tbody>
                             @foreach (var d in pendingApproval)
@@ -186,7 +186,7 @@
                                     <td>@d.Title</td>
                                     <td>@d.Version.ToString("0.00")</td>
                                     <td>@d.AuthoredBy</td>
-                                    <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">View</a></td>
+                                    <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">@L["View"]</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -209,7 +209,7 @@
                 {
                     <table class="table table-sm mb-0">
                         <thead class="table-light">
-                            <tr><th>ID</th><th>Title</th><th>Version</th><th>Approved On</th><th></th></tr>
+                            <tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Version"]</th><th>@L["Approved On"]</th><th></th></tr>
                         </thead>
                         <tbody>
                             @foreach (var d in recentlyApproved)
@@ -219,7 +219,7 @@
                                     <td>@d.Title</td>
                                     <td>@d.Version.ToString("0.00")</td>
                                     <td>@(d.ApprovedOn.HasValue ? SiteTime.ToSite((DateTime)d.ApprovedOn.Value).ToString("dd MMM yyyy") : "-")</td>
-                                    <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">View</a></td>
+                                    <td><a asp-action="Details" asp-route-id="@d.Id" class="btn btn-outline-secondary btn-sm">@L["View"]</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -237,14 +237,14 @@
 <!-- Recent Activity -->
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-header bg-white fw-semibold">
-        <i class="fas fa-history me-1"></i>Recent Activity
+        <i class="fas fa-history me-1"></i>@L["Recent Activity"]
     </div>
     <div class="card-body p-0">
         @if (recentActivity.Any())
         {
             <table class="table table-sm mb-0">
                 <thead class="table-light">
-                    <tr><th>Date/Time <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>Document</th><th>Action</th><th>From</th><th>To</th><th>Performed By</th></tr>
+                    <tr><th>@L["Date/Time"] <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>@L["Document"]</th><th>@L["Action"]</th><th>@L["From"]</th><th>@L["To"]</th><th>@L["Performed By"]</th></tr>
                 </thead>
                 <tbody>
                     @foreach (var log in recentActivity)

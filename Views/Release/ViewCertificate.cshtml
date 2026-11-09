@@ -91,7 +91,7 @@ else
 
         <!-- Product & Batch Identification -->
         <div class="cert-section">
-            <h6 class="text-uppercase text-muted small mb-2">Product Identification</h6>
+            <h6 class="text-uppercase text-muted small mb-2">@L["Product Identification"]</h6>
             @{
                 var cpt = Model?.ProductType;
             }
@@ -137,7 +137,7 @@ else
         </div>
 
         <div class="cert-section">
-            <h6 class="text-uppercase text-muted small mb-2">Batch Details</h6>
+            <h6 class="text-uppercase text-muted small mb-2">@L["Batch Details"]</h6>
             <div class="row">
                 <div class="col-md-3"><strong>Batch No.:</strong> @Model.BatchNumber</div>
                 <div class="col-md-3"><strong>Batch Size:</strong> @(Model.BatchSize ?? "-")</div>
@@ -163,7 +163,7 @@ else
         </div>
 
         <div class="cert-section">
-            <h6 class="text-uppercase text-muted small mb-2">Manufacturing &amp; Testing Sites</h6>
+            <h6 class="text-uppercase text-muted small mb-2">@L["Manufacturing & Testing Sites"]</h6>
             <div class="row g-2">
                 <div class="col-md-6">
                     <strong>Manufacturing Site:</strong> @(Model.ManufacturingSite ?? "-")<br />
@@ -202,7 +202,7 @@ else
         {
             <!-- Analytical Results -->
             <div class="cert-section">
-                <h6 class="text-uppercase text-muted small mb-2">Analytical Results</h6>
+                <h6 class="text-uppercase text-muted small mb-2">@L["Analytical Results"]</h6>
                 @if (Model.TestResults.Any())
                 {
                     bool anyFail = Model.TestResults.Any(t => t.Status == TestResultStatus.Fail);
@@ -220,11 +220,11 @@ else
                     <table class="table table-sm table-bordered">
                         <thead class="table-light">
                             <tr>
-                                <th>Test Parameter</th>
-                                <th>Test Method</th>
-                                <th>Acceptance Criterion</th>
+                                <th>@L["Test Parameter"]</th>
+                                <th>@L["Test Method"]</th>
+                                <th>@L["Acceptance Criterion"]</th>
                                 <th>Result</th>
-                                <th>Status</th>
+                                <th>@L["Status"]</th>
                             </tr>
                         </thead>
                         <tbody>

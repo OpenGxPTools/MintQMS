@@ -27,8 +27,8 @@
         <span class="text-muted small">Stage: @stageLabel</span>
     </div>
     <div class="d-flex gap-2">
-        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">Details</a>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">@L["Details"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </div>
 <hr />
@@ -40,7 +40,7 @@
     @if (isIdentificationStage)
     {
         <div class="card mb-4">
-            <div class="card-header fw-semibold">Basic Information</div>
+            <div class="card-header fw-semibold">@L["Basic Information"]</div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-12">
@@ -71,7 +71,7 @@
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">Products</label>
+                        <label class="form-label">@L["Products"]</label>
                         <select id="productDropdown" class="form-select">
                             <option value="">-- Add Product --</option>
                             @foreach (var p in products)
@@ -81,7 +81,7 @@
                         <div id="productHidden" class="d-none"></div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Processes</label>
+                        <label class="form-label">@L["Processes"]</label>
                         <select id="processDropdown" class="form-select">
                             <option value="">-- Add Process --</option>
                             @foreach (var p in processes)
@@ -91,7 +91,7 @@
                         <div id="processHidden" class="d-none"></div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Assets</label>
+                        <label class="form-label">@L["Assets"]</label>
                         <select id="assetDropdown" class="form-select">
                             <option value="">-- Add Asset --</option>
                             @foreach (var p in assets)
@@ -101,7 +101,7 @@
                         <div id="assetHidden" class="d-none"></div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Materials</label>
+                        <label class="form-label">@L["Materials"]</label>
                         <select id="materialDropdown" class="form-select">
                             <option value="">-- Add Material --</option>
                             @foreach (var p in materials)
@@ -111,7 +111,7 @@
                         <div id="materialHidden" class="d-none"></div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Suppliers</label>
+                        <label class="form-label">@L["Suppliers"]</label>
                         <select id="supplierDropdown" class="form-select">
                             <option value="">-- Add Supplier --</option>
                             @foreach (var p in suppliers)
@@ -125,7 +125,7 @@
         </div>
 
         <div class="card mb-4">
-            <div class="card-header fw-semibold">Initial Risk Assessment</div>
+            <div class="card-header fw-semibold">@L["Initial Risk Assessment"]</div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-4">
@@ -198,13 +198,13 @@
             <div class="card-header fw-semibold bg-light">Risk Summary</div>
             <div class="card-body">
                 <dl class="row mb-0">
-                    <dt class="col-sm-3">Title</dt>
+                    <dt class="col-sm-3">@L["Title"]</dt>
                     <dd class="col-sm-9">@Model.Title</dd>
-                    <dt class="col-sm-3">Category</dt>
+                    <dt class="col-sm-3">@L["Category"]</dt>
                     <dd class="col-sm-9">@Html.DisplayFor(m => m.Category)</dd>
                     <dt class="col-sm-3">Risk Owner</dt>
                     <dd class="col-sm-9">@(Model.RiskOwner ?? "—")</dd>
-                    <dt class="col-sm-3">Initial RPN</dt>
+                    <dt class="col-sm-3">@L["Initial RPN"]</dt>
                     <dd class="col-sm-9">
                         <span class="badge @(Model.InitialRPN >= 80 ? "bg-danger" : Model.InitialRPN >= 40 ? "bg-warning text-dark" : "bg-success")">
                             @Model.InitialRPN
@@ -216,7 +216,7 @@
         </div>
 
         <div class="card mb-4">
-            <div class="card-header fw-semibold">Mitigation</div>
+            <div class="card-header fw-semibold">@L["Mitigation"]</div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-12">
@@ -333,9 +333,9 @@
     }
 
     <div class="d-flex gap-2">
-        <input type="submit" value="Save" class="btn btn-primary" />
-        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Details</a>
-        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        <input type="submit" value="@L["Save"]" class="btn btn-primary" />
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">@L["Details"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </form>
 

@@ -33,7 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 </div>
 <hr />
-<h5 class="text-danger">Are you sure you want to delete this?</h5>
+<h5 class="text-danger">@L["Are you sure you want to delete this?"]</h5>
 
 <div class="card mb-4">
     <div class="card-body">
@@ -60,14 +60,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <dd class="col-sm-8">
                 <a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@Model.PolicyId">@Html.DisplayFor(model => model.PolicyTitle)</a>
             </dd>
-            <dt class="col-sm-4">Trainer</dt>
+            <dt class="col-sm-4">@L["Trainer"]</dt>
             <dd class="col-sm-8">
                 @Html.DisplayFor(model => model.TrainerEmail)
             </dd>
         </dl>
         <table class="table table-sm">
             <thead>
-                <tr><th>Trainees</th></tr>
+                <tr><th>@L["Trainees"]</th></tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.Trainees)
@@ -84,7 +84,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <form asp-action="Delete">
     <input type="hidden" asp-for="Id" />
     <div class="d-flex gap-2">
-        <input type="submit" value="Delete" class="btn btn-danger" />
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        <input type="submit" value="@L["Delete"]" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </form>

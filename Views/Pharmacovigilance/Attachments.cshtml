@@ -5,7 +5,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">Attachments — @Model.AENumber</h4>
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Back to Details</a>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">@L["Back to Details"]</a>
 </div>
 
 @if (TempData["Success"] != null)
@@ -21,36 +21,36 @@
 @if (!Model.IsLocked)
 {
     <div class="card mb-4">
-        <div class="card-header"><strong>Upload New Attachment</strong></div>
+        <div class="card-header"><strong>@L["Upload New Attachment"]</strong></div>
         <div class="card-body">
             <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="aeId" value="@Model.Id" />
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label">File</label>
+                        <label class="form-label">@L["File"]</label>
                         <input type="file" name="file" class="form-control" required />
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Document Type</label>
+                        <label class="form-label">@L["Document Type"]</label>
                         <select name="documentType" class="form-select">
                             <option value="">— Select Type —</option>
                             <option>CIOMS Form</option>
                             <option>MedWatch / Authority Form</option>
-                            <option>Source Document</option>
+                            <option>@L["Source Document"]</option>
                             <option>Medical Records</option>
                             <option>Lab Report</option>
-                            <option>Medical Narrative</option>
+                            <option>@L["Medical Narrative"]</option>
                             <option>Causality Assessment</option>
                             <option>Correspondence</option>
-                            <option>Other</option>
+                            <option>@L["Other"]</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Description (optional)</label>
+                        <label class="form-label">@L["Description (optional)"]</label>
                         <input type="text" name="description" class="form-control" placeholder="optional notes..." />
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary">Upload</button>
+                        <button type="submit" class="btn btn-primary">@L["Upload"]</button>
                     </div>
                 </div>
             </form>
@@ -67,12 +67,12 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>File Name</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                        <th>Uploaded By</th>
-                        <th>Date</th>
-                        <th>Size</th>
+                        <th>@L["File Name"]</th>
+                        <th>@L["Type"]</th>
+                        <th>@L["Description"]</th>
+                        <th>@L["Uploaded By"]</th>
+                        <th>@L["Date"]</th>
+                        <th>@L["Size"]</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -87,14 +87,14 @@
                             <td>@att.UploadedDate.ToSite().ToString("dd MMM yyyy")</td>
                             <td>@((att.FileSize / 1024.0).ToString("F1")) KB</td>
                             <td class="text-end">
-                                <a asp-action="ViewAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-eye me-1"></i>View</a>
-                                <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                                <a asp-action="ViewAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-eye me-1"></i>@L["View"]</a>
+                                <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">@L["Download"]</a>
                                 @if (!Model.IsLocked)
                                 {
                                     <form asp-action="DeleteAttachment" method="post" class="d-inline ms-1" data-delete-reason="attachment">
                                         <input type="hidden" name="id" value="@att.Id" />
                                         <input type="hidden" name="aeId" value="@Model.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">@L["Delete"]</button>
                                     </form>
                                 }
                             </td>

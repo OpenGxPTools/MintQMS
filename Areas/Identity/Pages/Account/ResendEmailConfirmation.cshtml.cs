@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using OpenQMS.Localization;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -48,6 +49,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             [EmailAddress]
+            [Display(Name = "Email")]
             public string Email { get; set; }
         }
 
@@ -65,13 +67,13 @@ namespace OpenQMS.Areas.Identity.Pages.Account
             var user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                ModelState.AddModelError(string.Empty, this.T("Verification email sent. Please check your email."));
                 return Page();
             }
 
             if (await _userManager.IsEmailConfirmedAsync(user))
             {
-                ModelState.AddModelError(string.Empty, "This email address is already confirmed. Please log in normally.");
+                ModelState.AddModelError(string.Empty, this.T("This email address is already confirmed. Please log in normally."));
                 return Page();
             }
 
@@ -92,7 +94,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account
                 $"If you did not create this account, you can ignore this email.<br><br>" +
                 $"<hr>This is an automated message from MintQMS.");
 
-            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            ModelState.AddModelError(string.Empty, this.T("Verification email sent. Please check your email."));
             return Page();
         }
     }

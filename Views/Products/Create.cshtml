@@ -46,7 +46,7 @@
     <input type="hidden" asp-for="ProductId" value="X" />
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Product Identification</div>
+        <div class="card-header fw-semibold">@L["Product Identification"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -58,7 +58,7 @@
                     <label asp-for="ProductType" class="form-label fw-semibold"></label>
                     <select id="ProductType" name="ProductType" class="form-select" required>
                         <option value="">-- Select Product Type --</option>
-                        <option value="Pharmaceutical">Pharmaceutical</option>
+                        <option value="Pharmaceutical">@L["Pharmaceutical"]</option>
                         <option value="Biological">Biological</option>
                         <option value="MedicalDevice">Medical Device</option>
                         <option value="ConsumerHealth">Consumer Health</option>
@@ -161,11 +161,11 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Related Documents</div>
+        <div class="card-header fw-semibold">@L["Related Documents"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
-                    <label class="form-label">Linked Approved Documents</label>
+                    <label class="form-label">@L["Linked Approved Documents"]</label>
                     <select id="relatedDocDropdown" class="form-select">
                         <option value="">-- Add Document --</option>
                         @foreach (var d in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
@@ -182,12 +182,12 @@
 
     <div class="alert alert-info small mb-4">
         <i class="bi bi-info-circle me-1"></i>
-        <strong>Strength / Presentation</strong> entries can be added after saving. Create the product first, then use the Edit page.
+        <strong>@L["Strength / Presentation"]</strong> entries can be added after saving. Create the product first, then use the Edit page.
     </div>
 
     <div class="d-flex gap-2">
         <input type="submit" value="Create Product" class="btn btn-primary" />
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </form>
 

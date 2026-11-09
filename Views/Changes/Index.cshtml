@@ -53,36 +53,36 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Changes</h4>
+    <h4 class="mb-0">@L["Changes"]</h4>
     @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.QualityUserRole))
     {
-        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Change</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Change"]</a>
     }
 </div>
 <hr />
 
 <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
-    <span class="text-muted small me-1">Filter by status:</span>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Proposal">Proposal</button>
-    <button class="btn btn-outline-info btn-sm status-filter" data-status="Assessment">Assessment</button>
-    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending Acceptance">Pending Acceptance</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Implementation">Implementation</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Pending Approval">Pending Approval</button>
-    <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">Approved</button>
+    <span class="text-muted small me-1">@L["Filter by status:"]</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Proposal"]">@L["Proposal"]</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Assessment"]">@L["Assessment"]</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["Pending Acceptance"]">@L["Pending Acceptance"]</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Implementation"]">@L["Implementation"]</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Pending Approval"]">@L["Pending Approval"]</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Approved"]">@L["Approved"]</button>
 </div>
 
 <table id="changesTable" class="table" style="width:100%;">
     <thead>
         <tr>
-            <th>Change ID</th>
-            <th>Title</th>
-            <th>Linked To</th>
+            <th>@L["Change ID"]</th>
+            <th>@L["Title"]</th>
+            <th>@L["Linked To"]</th>
             <th>Proposed By</th>
             <th>Proposed On</th>
-            <th>Target Date</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th>@L["Target Date"]</th>
+            <th>@L["Status"]</th>
+            <th>@L["Action"]</th>
         </tr>
     </thead>
     <tbody>
@@ -123,16 +123,16 @@
                 <td>@(item.TargetImplementationDate.HasValue ? item.TargetImplementationDate.Value.ToShortDateString() : "")</td>
                 <td>@statusLabel</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if (canEdit)
                     {
                         <text> | </text>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">@L["Edit"]</a>
                     }
                     @if (canDelete)
                     {
                         <text> | </text>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">@L["Delete"]</a>
                     }
                 </td>
             </tr>

@@ -24,7 +24,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">New CAPA</h4>
+        <h4 class="mb-0">@L["New CAPA"]</h4>
         <small class="text-muted">Corrective and Preventive Action — define the actions required to address the root cause and prevent recurrence.</small>
     </div>
 </div>
@@ -36,7 +36,7 @@
 
             <!-- ── Determination ─────────────────────────────────────────────── -->
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Determination</div>
+                <div class="card-header fw-semibold">@L["Determination"]</div>
                 <div class="card-body">
                     <p class="text-muted small mb-3">Define the corrective and preventive actions, link to source quality records, and set a target completion date.</p>
                     <div class="row g-3">
@@ -47,7 +47,7 @@
                         </div>
                         <div class="col-md-4">
                             <label asp-for="Type" class="form-label">
-                                CAPA Type
+                                @L["CAPA Type"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="capatype" aria-label="CAPA Type guidance">?</button>
                             </label>
                             <select asp-for="Type" asp-items="Html.GetEnumSelectList<OpenQMS.Models.Capa.CapaType>()" class="form-select"></select>
@@ -61,7 +61,7 @@
 
                         <!-- Products -->
                         <div class="col-md-6">
-                            <label class="form-label">Products</label>
+                            <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Product --</option>
                                 @foreach (var item in products)
@@ -75,7 +75,7 @@
 
                         <!-- Processes -->
                         <div class="col-md-6">
-                            <label class="form-label">Processes</label>
+                            <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Process --</option>
                                 @foreach (var item in processes)
@@ -89,7 +89,7 @@
 
                         <!-- Assets -->
                         <div class="col-md-6">
-                            <label class="form-label">Assets</label>
+                            <label class="form-label">@L["Assets"]</label>
                             <select id="assetDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Asset --</option>
                                 @foreach (var item in assets)
@@ -103,7 +103,7 @@
 
                         <!-- Materials -->
                         <div class="col-md-6">
-                            <label class="form-label">Materials</label>
+                            <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Material --</option>
                                 @foreach (var item in materials)
@@ -117,7 +117,7 @@
 
                         <!-- Suppliers -->
                         <div class="col-md-6">
-                            <label class="form-label">Suppliers</label>
+                            <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Supplier --</option>
                                 @foreach (var item in suppliers)
@@ -132,7 +132,7 @@
                         <!-- Deviations -->
                         <div class="col-md-6">
                             <label class="form-label">
-                                Linked Deviations
+                                @L["Linked Deviations"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="qualityrecord" aria-label="Quality Record guidance">?</button>
                             </label>
                             <select id="deviationDropdown" class="form-select form-select-sm">
@@ -148,7 +148,7 @@
 
                         <!-- Complaints -->
                         <div class="col-md-6">
-                            <label class="form-label">Linked Complaints</label>
+                            <label class="form-label">@L["Linked Complaints"]</label>
                             <select id="complaintDropdown" class="form-select form-select-sm">
                                 <option value="">-- Add Complaint --</option>
                                 @foreach (var item in complaints)
@@ -194,7 +194,7 @@
 
                         <div class="col-12">
                             <label asp-for="CorrectiveAction" class="form-label">
-                                Corrective Action <span class="text-danger">*</span>
+                                @L["Corrective Action"] <span class="text-danger">*</span>
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="corrective" aria-label="Corrective action guidance">?</button>
                             </label>
                             <textarea asp-for="CorrectiveAction" class="form-control" rows="4"></textarea>
@@ -202,7 +202,7 @@
                         </div>
                         <div class="col-12">
                             <label asp-for="PreventiveAction" class="form-label">
-                                Preventive Action <span class="text-danger">*</span>
+                                @L["Preventive Action"] <span class="text-danger">*</span>
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="preventive" aria-label="Preventive action guidance">?</button>
                             </label>
                             <textarea asp-for="PreventiveAction" class="form-control" rows="4"></textarea>
@@ -213,8 +213,8 @@
             </div>
 
             <div class="d-flex gap-2">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+                <input type="submit" value="@L["Create"]" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
             </div>
         </form>
 
@@ -231,8 +231,8 @@
         <ul class="mb-0 ps-3">
             <li>A description of each action to eliminate the identified root cause</li>
             <li>The person responsible for each action</li>
-            <li>Target completion date for each action</li>
-            <li>How effectiveness will be verified</li>
+            <li>@L["Target completion date for each action"]</li>
+            <li>@L["How effectiveness will be verified"]</li>
         </ul>
     </div>
     <div id="help-preventive">

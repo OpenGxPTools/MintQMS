@@ -9,16 +9,16 @@
 </div>
 
 <dl class="row">
-    <dt class="col-sm-3">AE Number</dt>
+    <dt class="col-sm-3">@L["AE Number"]</dt>
     <dd class="col-sm-9">@Model.AENumber</dd>
-    <dt class="col-sm-3">Status</dt>
+    <dt class="col-sm-3">@L["Status"]</dt>
     <dd class="col-sm-9">@L.Enum(Model.Status)</dd>
-    <dt class="col-sm-3">Report Date</dt>
+    <dt class="col-sm-3">@L["Report Date"]</dt>
     <dd class="col-sm-9">@Model.ReportDate.ToSite().ToString("dd MMM yyyy")</dd>
 </dl>
 
 <form asp-action="Delete" method="post">
     <input type="hidden" asp-for="Id" />
     <button type="submit" class="btn btn-danger">Confirm Void</button>
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">Cancel</a>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">@L["Cancel"]</a>
 </form>

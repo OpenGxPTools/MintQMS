@@ -101,7 +101,7 @@
 @if (Model.Status == ReleaseStatus.OnHold && !string.IsNullOrEmpty(Model.HoldReason))
 {
     <div class="alert alert-warning">
-        <strong>On Hold</strong> since @(Model.HoldDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "unknown")
+        <strong>@L["On Hold"]</strong> since @(Model.HoldDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "unknown")
         @if (!string.IsNullOrEmpty(Model.HoldBy)) { <text> by @Model.HoldBy</text> }
         <br /><em>@Model.HoldReason</em>
     </div>
@@ -111,7 +111,7 @@
 @if (Model.Status == ReleaseStatus.Rejected && !string.IsNullOrEmpty(Model.RejectionReason))
 {
     <div class="alert alert-danger">
-        <strong>Rejected</strong> on @(Model.RejectionDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "unknown")
+        <strong>@L["Rejected"]</strong> on @(Model.RejectionDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "unknown")
         @if (!string.IsNullOrEmpty(Model.RejectedBy)) { <text> by @Model.RejectedBy</text> }
         <br /><em>@Model.RejectionReason</em>
     </div>
@@ -130,11 +130,11 @@
 {
     <div class="card mb-3 border-danger">
         <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+            <strong><i class="fas fa-lock-open me-2"></i>@L["Administrative Controls"]</strong>
         </div>
         <div class="card-body py-2">
             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
-                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+                <i class="fas fa-lock-open me-1"></i>@L["Administratively Reopen"]
             </button>
         </div>
     </div>
@@ -142,13 +142,13 @@
 
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-3" id="detailTabs">
-    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">Overview</button></li>
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">@L["Overview"]</button></li>
     <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabChecklist">Checklist <span class="badge bg-secondary">@checklistCount</span></button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabTests">Analytical Results <span class="badge bg-secondary">@testCount</span></button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabDocs">Attachments <span class="badge bg-secondary">@docCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabTests">@L["Analytical Results"] <span class="badge bg-secondary">@testCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabDocs">@L["Attachments"] <span class="badge bg-secondary">@docCount</span></button></li>
     <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabCerts">Certificates <span class="badge bg-secondary">@certCount</span></button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabLinked">Linked Records <span class="badge bg-secondary">@xrefCount</span></button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAudit">Audit Log <span class="badge bg-secondary">@auditCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabLinked">@L["Linked Records"] <span class="badge bg-secondary">@xrefCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAudit">@L["Audit Log"] <span class="badge bg-secondary">@auditCount</span></button></li>
 </ul>
 
 <div class="tab-content">
@@ -156,12 +156,12 @@
     <div class="tab-pane fade show active" id="tabOverview">
         <div class="row">
             <div class="col-md-6">
-                <h6 class="text-uppercase text-muted small border-bottom pb-1">Product Identification</h6>
+                <h6 class="text-uppercase text-muted small border-bottom pb-1">@L["Product Identification"]</h6>
                 @{
                     var rpt = Model.ProductType;
                 }
                 <dl class="row">
-                    <dt class="col-sm-5">Product Name</dt><dd class="col-sm-7">@Model.ProductName</dd>
+                    <dt class="col-sm-5">@L["Product Name"]</dt><dd class="col-sm-7">@Model.ProductName</dd>
                     @if (rpt.HasValue)
                     {
                         var rptLabel = rpt switch {
@@ -175,26 +175,26 @@
                     @if (!rpt.HasValue || rpt == ProductType.Pharmaceutical || rpt == ProductType.Biological || rpt == ProductType.ConsumerHealth)
                     {
                         <dt class="col-sm-5">INN / Generic</dt><dd class="col-sm-7">@(Model.InnName ?? "-")</dd>
-                        <dt class="col-sm-5">Dosage Form</dt><dd class="col-sm-7">@(Model.DosageForm ?? "-")</dd>
-                        <dt class="col-sm-5">Strength / Presentation</dt><dd class="col-sm-7">@(Model.Strength ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Dosage Form"]</dt><dd class="col-sm-7">@(Model.DosageForm ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Strength / Presentation"]</dt><dd class="col-sm-7">@(Model.Strength ?? "-")</dd>
                     }
                     @if (rpt == ProductType.Cosmetic)
                     {
                         <dt class="col-sm-5">INCI Name / Ingredient Ref.</dt><dd class="col-sm-7">@(Model.InciName ?? "-")</dd>
-                        <dt class="col-sm-5">Presentation / Form</dt><dd class="col-sm-7">@(Model.PresentationForm ?? "-")</dd>
-                        <dt class="col-sm-5">Strength / Presentation</dt><dd class="col-sm-7">@(Model.Strength ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Presentation / Form"]</dt><dd class="col-sm-7">@(Model.PresentationForm ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Strength / Presentation"]</dt><dd class="col-sm-7">@(Model.Strength ?? "-")</dd>
                     }
                     @if (rpt == ProductType.MedicalDevice)
                     {
-                        <dt class="col-sm-5">Device Type / Category</dt><dd class="col-sm-7">@(Model.DeviceTypeCategory ?? "-")</dd>
-                        <dt class="col-sm-5">Model / Version</dt><dd class="col-sm-7">@(Model.ModelVersion ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Device Type / Category"]</dt><dd class="col-sm-7">@(Model.DeviceTypeCategory ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Model / Version"]</dt><dd class="col-sm-7">@(Model.ModelVersion ?? "-")</dd>
                     }
                     @if (rpt == ProductType.RawMaterial)
                     {
-                        <dt class="col-sm-5">Standard / Scientific Name</dt><dd class="col-sm-7">@(Model.StandardScientificName ?? "-")</dd>
-                        <dt class="col-sm-5">Material Type / Category</dt><dd class="col-sm-7">@(Model.RawMaterialTypeCategory ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Standard / Scientific Name"]</dt><dd class="col-sm-7">@(Model.StandardScientificName ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Material Type / Category"]</dt><dd class="col-sm-7">@(Model.RawMaterialTypeCategory ?? "-")</dd>
                         <dt class="col-sm-5">Grade</dt><dd class="col-sm-7">@(Model.Grade ?? "-")</dd>
-                        <dt class="col-sm-5">Presentation / Form</dt><dd class="col-sm-7">@(Model.PresentationForm ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Presentation / Form"]</dt><dd class="col-sm-7">@(Model.PresentationForm ?? "-")</dd>
                     }
                     <dt class="col-sm-5">Brand Name</dt><dd class="col-sm-7">@(Model.BrandName ?? "-")</dd>
                     <dt class="col-sm-5">ARTG Reference</dt><dd class="col-sm-7">@(Model.ArtgReference ?? "-")</dd>
@@ -202,13 +202,13 @@
                 </dl>
             </div>
             <div class="col-md-6">
-                <h6 class="text-uppercase text-muted small border-bottom pb-1">Batch Details</h6>
+                <h6 class="text-uppercase text-muted small border-bottom pb-1">@L["Batch Details"]</h6>
                 <dl class="row">
                     <dt class="col-sm-5">Batch Number</dt><dd class="col-sm-7">@Model.BatchNumber</dd>
                     <dt class="col-sm-5">Batch Size</dt><dd class="col-sm-7">@(Model.BatchSize ?? "-")</dd>
                     <dt class="col-sm-5">Pack Size</dt><dd class="col-sm-7">@(Model.PackSize ?? "-")</dd>
                     <dt class="col-sm-5">Mfg Date</dt><dd class="col-sm-7">@(Model.ManufacturingDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
-                    <dt class="col-sm-5">Expiry Date</dt><dd class="col-sm-7">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Expiry Date"]</dt><dd class="col-sm-7">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
                     <dt class="col-sm-5">Retest Date</dt><dd class="col-sm-7">@(Model.RetestDate?.ToString("dd-MMM-yyyy") ?? "-")</dd>
                 </dl>
             </div>
@@ -219,7 +219,7 @@
                 <dl class="row">
                     <dt class="col-sm-5">Mfg Site</dt><dd class="col-sm-7">@Model.ManufacturingSite</dd>
                     <dt class="col-sm-5">Mfg GMP Ref.</dt><dd class="col-sm-7">@(Model.ManufacturingSiteGmpRef ?? "-")</dd>
-                    <dt class="col-sm-5">Packaging Site</dt><dd class="col-sm-7">@(Model.PackagingSite ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Packaging Site"]</dt><dd class="col-sm-7">@(Model.PackagingSite ?? "-")</dd>
                     <dt class="col-sm-5">Pkg GMP Ref.</dt><dd class="col-sm-7">@(Model.PackagingSiteGmpRef ?? "-")</dd>
                     <dt class="col-sm-5">Testing Lab(s)</dt>
                     <dd class="col-sm-7">
@@ -229,15 +229,15 @@
                             }
                         } else { <span>-</span> }
                     </dd>
-                    <dt class="col-sm-5">Releasing Company</dt><dd class="col-sm-7">@(Model.ReleasingCompany ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Releasing Company"]</dt><dd class="col-sm-7">@(Model.ReleasingCompany ?? "-")</dd>
                     <dt class="col-sm-5">TGA Licence / Clearance</dt><dd class="col-sm-7">@(Model.ReleasingCompanyLicenceRef ?? "-")</dd>
                 </dl>
             </div>
             <div class="col-md-6">
                 <h6 class="text-uppercase text-muted small border-bottom pb-1">Release Decision</h6>
                 <dl class="row">
-                    <dt class="col-sm-5">Release Type</dt><dd class="col-sm-7">@ReleaseTypeDisplayName(Model.ReleaseType)</dd>
-                    <dt class="col-sm-5">AP</dt><dd class="col-sm-7">@(Model.APFullNameQualification ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Release Type"]</dt><dd class="col-sm-7">@ReleaseTypeDisplayName(Model.ReleaseType)</dd>
+                    <dt class="col-sm-5">@L["AP"]</dt><dd class="col-sm-7">@(Model.APFullNameQualification ?? "-")</dd>
                     <dt class="col-sm-5">Certification Date</dt><dd class="col-sm-7">@(Model.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</dd>
                     <dt class="col-sm-5">Register Ref.</dt><dd class="col-sm-7">@(Model.ReleaseRegisterRef ?? "-")</dd>
                     <dt class="col-sm-5">Storage Conditions</dt><dd class="col-sm-7">@(Model.StorageConditions ?? "-")</dd>
@@ -263,10 +263,10 @@
         <div class="mt-3">
             <h6 class="text-uppercase text-muted small border-bottom pb-1">Record Metadata</h6>
             <dl class="row">
-                <dt class="col-sm-3">Created By</dt><dd class="col-sm-9">@Model.CreatedBy — @Model.CreatedDate.ToSite().ToString("dd-MMM-yyyy HH:mm")</dd>
+                <dt class="col-sm-3">@L["Created By"]</dt><dd class="col-sm-9">@Model.CreatedBy — @Model.CreatedDate.ToSite().ToString("dd-MMM-yyyy HH:mm")</dd>
                 @if (Model.LastModifiedDate.HasValue)
                 {
-                    <dt class="col-sm-3">Last Modified</dt><dd class="col-sm-9">@(Model.LastModifiedBy ?? "Unknown") — @Model.LastModifiedDate.Value.ToSite().ToString("dd-MMM-yyyy HH:mm")</dd>
+                    <dt class="col-sm-3">@L["Last Modified"]</dt><dd class="col-sm-9">@(Model.LastModifiedBy ?? "Unknown") — @Model.LastModifiedDate.Value.ToSite().ToString("dd-MMM-yyyy HH:mm")</dd>
                 }
             </dl>
         </div>
@@ -301,22 +301,22 @@
                 <h6 class="mb-2">Add Cross-Reference</h6>
                 <div class="row g-2 align-items-end">
                     <div class="col-md-3">
-                        <label class="form-label small mb-1">Module</label>
+                        <label class="form-label small mb-1">@L["Module"]</label>
                         <select id="xrefModule" name="moduleType" class="form-select form-select-sm" required>
                             <option value="">-- Select Module --</option>
-                            <option value="Deviation">Deviation</option>
-                            <option value="Complaint">Complaint</option>
-                            <option value="CAPA">CAPA</option>
-                            <option value="Change">Change</option>
-                            <option value="Audit">Audit</option>
-                            <option value="Risk">Risk</option>
-                            <option value="Supplier">Supplier</option>
-                            <option value="LicCert">Licences &amp; Certifications</option>
-                            <option value="Document">Document</option>
+                            <option value="Deviation">@L["Deviation"]</option>
+                            <option value="Complaint">@L["Complaint"]</option>
+                            <option value="CAPA">@L["CAPA"]</option>
+                            <option value="Change">@L["Change"]</option>
+                            <option value="Audit">@L["Audit"]</option>
+                            <option value="Risk">@L["Risk"]</option>
+                            <option value="Supplier">@L["Supplier"]</option>
+                            <option value="LicCert">@L["Licences & Certifications"]</option>
+                            <option value="Document">@L["Document"]</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label small mb-1">Record</label>
+                        <label class="form-label small mb-1">@L["Record"]</label>
                         <select id="xrefRecord" class="form-select form-select-sm" disabled required>
                             <option value="">-- Select Module first --</option>
                         </select>
@@ -325,11 +325,11 @@
                         <input type="hidden" name="linkedRecordTitle"  id="xrefRecordTitle" />
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label small mb-1">Notes (optional)</label>
+                        <label class="form-label small mb-1">@L["Notes (optional)"]</label>
                         <input name="notes" class="form-control form-control-sm" placeholder="e.g. Related deviation" />
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" id="xrefAddBtn" class="btn btn-sm btn-primary w-100" disabled>Add</button>
+                        <button type="submit" id="xrefAddBtn" class="btn btn-sm btn-primary w-100" disabled>@L["Add"]</button>
                     </div>
                 </div>
             </form>
@@ -342,7 +342,7 @@
         else
         {
             <table class="table table-sm">
-                <thead class="table-light"><tr><th>Module</th><th>Record</th><th>Notes</th><th></th></tr></thead>
+                <thead class="table-light"><tr><th>@L["Module"]</th><th>@L["Record"]</th><th>@L["Notes"]</th><th></th></tr></thead>
                 <tbody>
                     @foreach (var x in Model.CrossReferences)
                     {
@@ -372,7 +372,7 @@
                                 {
                                     <form asp-action="DeleteCrossReference" asp-route-id="@x.Id" method="post" style="display:inline" onsubmit="return confirm('Remove this link?')">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">@L["Remove"]</button>
                                     </form>
                                 }
                             </td>
@@ -395,10 +395,10 @@
     {
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil me-1"></i>Edit Record</a>
     }
-    <a asp-action="ExportDetailCsv" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
-    <a asp-action="ExportDetailPdf" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
-    <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
+    <a asp-action="ExportDetailCsv" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>@L["Export CSV"]</a>
+    <a asp-action="ExportDetailPdf" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>@L["Export PDF"]</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
+    <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm"><i class="bi bi-speedometer2 me-1"></i>@L["Dashboard"]</a>
 </div>
 
 @if (isAdminReopenable && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
@@ -412,12 +412,12 @@
             <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>@L["Administrative Reopen"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>Warning:</strong> This action reverts the record to <strong>@reopenTarget</strong> stage. It is logged in the audit trail and requires your credentials. Use only when a correction is necessary after formal completion.
+                        <strong>@L["Warning:"]</strong> This action reverts the record to <strong>@reopenTarget</strong> stage. It is logged in the audit trail and requires your credentials. Use only when a correction is necessary after formal completion.
                     </div>
                     @if (certWarning)
                     {
@@ -426,8 +426,8 @@
                         </div>
                     }
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                        <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="@L["Provide a detailed justification for reopening this record..."]"></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -439,19 +439,19 @@
                         <div class="form-text">Enter the Deviation record number documenting why this release record is being reopened.</div>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to authorise this action."]</p>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Password"] <span class="text-danger">*</span></label>
                         <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-danger">@L["Reopen Record"]</button>
                 </div>
             </form>
         </div></div>

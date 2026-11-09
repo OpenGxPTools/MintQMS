@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using OpenQMS.Localization;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -76,6 +77,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             [EmailAddress]
+            [Display(Name = "Email")]
             public string Email { get; set; }
 
             /// <summary>
@@ -84,6 +86,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             [DataType(DataType.Password)]
+            [Display(Name = "Password")]
             public string Password { get; set; }
 
             /// <summary>
@@ -136,7 +139,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account
                 if (user == null)
                 {
                     await WriteAuditAsync(Input.Email, "Failed Login");
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, this.T("Invalid login attempt."));
                     return Page();
                 }
 
@@ -164,8 +167,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account
                         });
                         await _context.SaveChangesAsync();
                         ModelState.AddModelError(string.Empty,
-                            "You are already logged in from another location. " +
-                            "Please log out there first, or wait for that session to expire.");
+                            this.T("You are already logged in from another location. Please log out there first, or wait for that session to expire."));
                         return Page();
                     }
 
@@ -185,13 +187,13 @@ namespace OpenQMS.Areas.Identity.Pages.Account
                 if (result.IsNotAllowed)
                 {
                     await WriteAuditAsync(Input.Email, "Failed Login - Email Not Confirmed");
-                    ModelState.AddModelError(string.Empty, "Your email address has not been confirmed. Please check your inbox for the confirmation link, or use 'Resend email confirmation' below.");
+                    ModelState.AddModelError(string.Empty, this.T("Your email address has not been confirmed. Please check your inbox for the confirmation link, or use 'Resend email confirmation' below."));
                     return Page();
                 }
                 else
                 {
                     await WriteAuditAsync(Input.Email, "Failed Login");
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, this.T("Invalid login attempt."));
                     return Page();
                 }
             }

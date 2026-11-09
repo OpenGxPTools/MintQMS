@@ -68,7 +68,7 @@
 {
     <div class="card mb-4">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-tasks me-2"></i>Workflow Actions</strong>
+            <strong><i class="fas fa-tasks me-2"></i>@L["Workflow Actions"]</strong>
             <span class="small">Current: @statusLabel</span>
         </div>
         <div class="card-body d-flex gap-2 flex-wrap align-items-center">
@@ -135,11 +135,11 @@
 {
     <div class="card mb-3 border-danger">
         <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+            <strong><i class="fas fa-lock-open me-2"></i>@L["Administrative Controls"]</strong>
         </div>
         <div class="card-body py-2">
             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
-                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+                <i class="fas fa-lock-open me-1"></i>@L["Administratively Reopen"]
             </button>
         </div>
     </div>
@@ -147,9 +147,9 @@
 
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-3" id="detailTabs">
-    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">Overview</button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAttachments">Attachments <span class="badge bg-secondary">@attachCount</span></button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAuditLog">Audit Log <span class="badge bg-secondary">@auditCount</span></button></li>
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">@L["Overview"]</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAttachments">@L["Attachments"] <span class="badge bg-secondary">@attachCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAuditLog">@L["Audit Log"] <span class="badge bg-secondary">@auditCount</span></button></li>
 </ul>
 
 <div class="tab-content">
@@ -157,24 +157,24 @@
 <!-- OVERVIEW TAB -->
 <div class="tab-pane fade show active" id="tabOverview">
 
-    <h6 class="text-muted text-uppercase small mb-2">Details</h6>
+    <h6 class="text-muted text-uppercase small mb-2">@L["Details"]</h6>
     <dl class="row mb-4">
         <dt class="col-sm-3">Maintenance ID</dt>
         <dd class="col-sm-9"><strong>@Model.MaintenanceId</strong></dd>
-        <dt class="col-sm-3">Title</dt>
+        <dt class="col-sm-3">@L["Title"]</dt>
         <dd class="col-sm-9">@Model.Title</dd>
-        <dt class="col-sm-3">Description</dt>
+        <dt class="col-sm-3">@L["Description"]</dt>
         <dd class="col-sm-9">@Model.Description</dd>
-        <dt class="col-sm-3">Asset</dt>
+        <dt class="col-sm-3">@L["Asset"]</dt>
         <dd class="col-sm-9"><strong>@(Model.Asset?.Name ?? "-")</strong></dd>
         @if (Model.Process != null)
         {
             <dt class="col-sm-3">Process</dt>
             <dd class="col-sm-9">@Model.Process.Name</dd>
         }
-        <dt class="col-sm-3">Type</dt>
+        <dt class="col-sm-3">@L["Type"]</dt>
         <dd class="col-sm-9">@Model.Type</dd>
-        <dt class="col-sm-3">Frequency</dt>
+        <dt class="col-sm-3">@L["Frequency"]</dt>
         <dd class="col-sm-9">@Model.Frequency</dd>
         <dt class="col-sm-3">Scheduled Date</dt>
         <dd class="col-sm-9">@Model.ScheduledDate.ToShortDateString()</dd>
@@ -189,9 +189,9 @@
 
     <hr />
 
-    <h6 class="text-muted text-uppercase small mb-2">Linked Records</h6>
+    <h6 class="text-muted text-uppercase small mb-2">@L["Linked Records"]</h6>
     <dl class="row mb-4">
-        <dt class="col-sm-3">Deviations</dt>
+        <dt class="col-sm-3">@L["Deviations"]</dt>
         <dd class="col-sm-9">
             @{ var lDevs = Model.LinkedDeviations?.Where(x => x.Deviation != null).ToList(); }
             @if (lDevs?.Any() == true)
@@ -199,7 +199,7 @@
             else if (Model.Deviation != null) { <a href="/Deviations/Details/@Model.DeviationId">@Model.Deviation.DeviationId — @Model.Deviation.Title</a> }
             else { <span class="text-muted">-</span> }
         </dd>
-        <dt class="col-sm-3">CAPAs</dt>
+        <dt class="col-sm-3">@L["CAPAs"]</dt>
         <dd class="col-sm-9">
             @{ var lCapas = Model.LinkedCapas?.Where(x => x.Capa != null).ToList(); }
             @if (lCapas?.Any() == true)
@@ -213,7 +213,7 @@
 
     <h6 class="text-muted text-uppercase small mb-2">Execution</h6>
     <dl class="row mb-4">
-        <dt class="col-sm-3">Performed By</dt>
+        <dt class="col-sm-3">@L["Performed By"]</dt>
         <dd class="col-sm-9">@(Model.PerformedBy ?? "-")</dd>
         <dt class="col-sm-3">Performed On</dt>
         <dd class="col-sm-9">@(Model.PerformedOn.ToSite()?.ToShortDateString() ?? "-")</dd>
@@ -266,15 +266,15 @@
     <hr />
 
     <div class="mt-3 d-flex gap-2">
-        <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
-        <a asp-action="ExportMaintenanceDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+        <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>@L["Export CSV"]</a>
+        <a asp-action="ExportMaintenanceDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>@L["Export PDF"]</a>
     </div>
 
-    <h6 class="text-muted text-uppercase small mb-2 mt-4">Review</h6>
+    <h6 class="text-muted text-uppercase small mb-2 mt-4">@L["Review"]</h6>
     <dl class="row mb-4">
         <dt class="col-sm-3">Review Comments</dt>
         <dd class="col-sm-9">@(Model.ReviewComments ?? "-")</dd>
-        <dt class="col-sm-3">Reviewed By</dt>
+        <dt class="col-sm-3">@L["Reviewed By"]</dt>
         <dd class="col-sm-9">@(Model.ReviewedBy ?? "-") @(Model.ReviewedOn.HasValue ? $"on {Model.ReviewedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
     </dl>
 
@@ -320,22 +320,22 @@
     @if (!isApproved)
     {
         <div class="card mb-3">
-            <div class="card-header">Upload Attachment</div>
+            <div class="card-header">@L["Upload Attachment"]</div>
             <div class="card-body">
                 <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="maintenanceId" value="@Model.Id" />
                     <div class="row g-2 align-items-end">
                         <div class="col-md-5">
-                            <label class="form-label">File</label>
+                            <label class="form-label">@L["File"]</label>
                             <input type="file" name="file" class="form-control" required />
                         </div>
                         <div class="col-md-5">
-                            <label class="form-label">Description</label>
-                            <input type="text" name="description" class="form-control" placeholder="Optional description" />
+                            <label class="form-label">@L["Description"]</label>
+                            <input type="text" name="description" class="form-control" placeholder="@L["Optional description"]" />
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                            <button type="submit" class="btn btn-primary w-100">@L["Upload"]</button>
                         </div>
                     </div>
                 </form>
@@ -346,7 +346,7 @@
     @if (Model.Attachments != null && Model.Attachments.Any())
     {
         <table class="table table-sm">
-            <thead><tr><th>File</th><th>Description</th><th>Uploaded By</th><th>Date</th><th>Size</th><th></th></tr></thead>
+            <thead><tr><th>@L["File"]</th><th>@L["Description"]</th><th>@L["Uploaded By"]</th><th>@L["Date"]</th><th>@L["Size"]</th><th></th></tr></thead>
             <tbody>
                 @foreach (var att in Model.Attachments.OrderByDescending(a => a.UploadedDate))
                 {
@@ -357,14 +357,14 @@
                         <td>@att.UploadedDate.ToSite().ToShortDateString()</td>
                         <td>@(att.FileSize / 1024) KB</td>
                         <td class="text-end">
-                            <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                            <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">@L["Download"]</a>
                             @if (!isApproved)
                             {
                                 <form asp-action="DeleteAttachment" method="post" class="d-inline" data-delete-reason="attachment">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@att.Id" />
                                     <input type="hidden" name="maintenanceId" value="@Model.Id" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">@L["Delete"]</button>
                                 </form>
                             }
                         </td>
@@ -373,7 +373,7 @@
             </tbody>
         </table>
     }
-    else { <p class="text-muted">No attachments.</p> }
+    else { <p class="text-muted">@L["No attachments."]</p> }
     <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
 </div>
 
@@ -388,9 +388,9 @@
 <div class="mt-3 d-flex gap-3">
     @if (!isApproved && !isSuspended && Model.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Overdue)
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>@L["Edit"]</a>
     }
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>@L["Back to List"]</a>
 </div>
 
 <!-- Workflow Modals -->
@@ -403,12 +403,12 @@
             <form asp-action="StartWork" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-info">Start Work</button>
                 </div>
             </form>
@@ -424,12 +424,12 @@
             <form asp-action="CompleteWork" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-warning">Complete Work</button>
                 </div>
             </form>
@@ -445,12 +445,12 @@
             <form asp-action="ReviewWork" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-success">Review &amp; Close</button>
                 </div>
             </form>
@@ -464,12 +464,12 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <p class="text-muted small">This will revert the record to In Progress so work details can be corrected. The action will be logged in the audit trail.</p>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label><textarea name="notes" class="form-control" rows="3" required placeholder="Describe why this record is being sent back..."></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">@L["Reason"] <span class="text-danger">*</span></label><textarea name="notes" class="form-control" rows="3" required placeholder="Describe why this record is being sent back..."></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-danger">Confirm Send Back</button>
                 </div>
             </form>
@@ -486,12 +486,12 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <p class="text-muted small">This will revert the record to Scheduled so the basic fields can be corrected. The action will be logged in the audit trail.</p>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label><textarea name="notes" class="form-control" rows="3" required placeholder="Describe why this record is being sent back..."></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">@L["Reason"] <span class="text-danger">*</span></label><textarea name="notes" class="form-control" rows="3" required placeholder="Describe why this record is being sent back..."></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-danger">Confirm Send Back</button>
                 </div>
             </form>
@@ -508,12 +508,12 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <p class="text-muted small">This will reopen the record for re-review. Review comments, reviewer, and retention date will be cleared. The action will be logged in the audit trail.</p>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label><textarea name="notes" class="form-control" rows="3" required placeholder="Describe why this record is being sent back..."></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">@L["Reason"] <span class="text-danger">*</span></label><textarea name="notes" class="form-control" rows="3" required placeholder="Describe why this record is being sent back..."></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-danger">Confirm Send Back</button>
                 </div>
             </form>
@@ -530,13 +530,13 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <p class="text-muted small">Suspending halts this recurring schedule. No next occurrence will be auto-generated until the schedule is reactivated.</p>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label><textarea name="reason" class="form-control" rows="3" required placeholder="Describe why this schedule is being suspended..."></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">@L["Reason"] <span class="text-danger">*</span></label><textarea name="reason" class="form-control" rows="3" required placeholder="Describe why this schedule is being suspended..."></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-dark">Confirm Suspension</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-dark">@L["Confirm Suspension"]</button>
                 </div>
             </form>
         </div></div>
@@ -552,12 +552,12 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <p class="text-muted small">Reactivating will return this record to Scheduled status. The recurring chain will resume when this occurrence is reviewed and closed.</p>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-success">Reactivate</button>
                 </div>
             </form>
@@ -572,31 +572,31 @@
             <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>@L["Administrative Reopen"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>Warning:</strong> Administratively reopening a completed record reverts it to the Reviewed stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
+                        <strong>@L["Warning:"]</strong> Administratively reopening a completed record reverts it to the Reviewed stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                        <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="@L["Provide a detailed justification for reopening this record..."]"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to authorise this action."]</p>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Password"] <span class="text-danger">*</span></label>
                         <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-danger">@L["Reopen Record"]</button>
                 </div>
             </form>
         </div></div>

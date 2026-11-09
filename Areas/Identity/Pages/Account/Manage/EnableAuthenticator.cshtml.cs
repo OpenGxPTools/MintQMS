@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using OpenQMS.Localization;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
@@ -123,7 +124,7 @@ namespace OpenQMS.Areas.Identity.Pages.Account.Manage
 
             if (!is2faTokenValid)
             {
-                ModelState.AddModelError("Input.Code", "Verification code is invalid.");
+                ModelState.AddModelError("Input.Code", this.T("Verification code is invalid."));
                 await LoadSharedKeyAndQrCodeUriAsync(user);
                 return Page();
             }

@@ -17,6 +17,7 @@ Always follow with: dotnet build, tools/i18n.py check, and the English page comp
 """
 import argparse, html, re, sys
 
+NEVER = {"MintQMS", "OpenQMS", "SHA-256", "AGPLv3"}   # names and identifiers, never translated
 SAFE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 .,:;!?'’\"()/&%#+\-–—…]*$")
 PROTECT = re.compile(r"(@\*.*?\*@|<script\b.*?</script>|<style\b.*?</style>)", re.S | re.I)
 TEXT_NODE = re.compile(r">([^<>]*?)<")
@@ -42,7 +43,7 @@ def candidate(raw):
         return None
     if text.startswith(("L[", "@")) or "=" in text or "{" in text or "}" in text:
         return None
-    if re.fullmatch(r"[\d\s.,:;%#+\-()/]+", text):
+    if re.fullmatch(r"[\d\s.,:;%#+\-()/]+", text) or text in NEVER:
         return None
     return lead, text, trail
 
@@ -99,6 +100,12 @@ def _wrap_markup(src, only=None, attrs=False, skipped=None):
         def node(m, part=part):
             if m.start() > 0 and part[m.start() - 1] in "=-":
                 return m.group(0)               # "=>" or "->": C#, not a tag
+            ls = part.rfind("\n", 0, m.start()) + 1
+            le = part.find("\n", m.end()); le = len(part) if le < 0 else le
+            if re.search(r'Html\.Raw\(|\$"[^"\n]*<|"<[a-zA-Z/]|\\"', part[ls:le]):
+                if skipped is not None and m.group(1).strip():
+                    skipped.append("[HTML inside a C# string] " + m.group(1).strip()[:60])
+                return m.group(0)               # markup built inside a C# string: by hand
             if INLINE_AFTER.match(part[m.end() - 1:m.end() + 12]) or INLINE_BEFORE.search(part[max(0, m.start() - 10):m.start() + 1]):
                 if skipped is not None and m.group(1).strip():
                     skipped.append("[sentence with markup] " + m.group(1).strip()[:70])

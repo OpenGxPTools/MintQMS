@@ -70,7 +70,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <span asp-validation-for="Description" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Products</label>
+                    <label class="form-label">@L["Products"]</label>
                     <select id="productDropdown" class="form-select">
                         <option value="">-- Add Product --</option>
                         @foreach (var p in products)
@@ -82,7 +82,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <div id="productHidden" class="d-none"></div>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Processes</label>
+                    <label class="form-label">@L["Processes"]</label>
                     <select id="processDropdown" class="form-select">
                         <option value="">-- Add Process --</option>
                         @foreach (var p in processes)
@@ -98,11 +98,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Related Documents</div>
+        <div class="card-header fw-semibold">@L["Related Documents"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
-                    <label class="form-label">Linked Approved Documents</label>
+                    <label class="form-label">@L["Linked Approved Documents"]</label>
                     <select id="relatedDocDropdown" class="form-select">
                         <option value="">-- Add Document --</option>
                         @foreach (var d in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
@@ -118,8 +118,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 
     <div class="d-flex gap-2">
-        <input type="submit" value="Create" class="btn btn-primary" />
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        <input type="submit" value="@L["Create"]" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </form>
 

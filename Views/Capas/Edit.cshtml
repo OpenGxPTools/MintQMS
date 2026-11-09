@@ -85,11 +85,11 @@
                     Determination
                     @if (!planEditable)
                     {
-                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
                     }
                     else
                     {
-                        <span class="badge bg-info text-dark">In Progress</span>
+                        <span class="badge bg-info text-dark">@L["In Progress"]</span>
                     }
                 </div>
                 <div class="card-body">
@@ -97,47 +97,47 @@
                     @if (!planEditable)
                     {
                         <dl class="row mb-0">
-                            <dt class="col-sm-3">CAPA Type</dt>
+                            <dt class="col-sm-3">@L["CAPA Type"]</dt>
                             <dd class="col-sm-9">@Html.DisplayFor(m => m.Type)</dd>
                             <input type="hidden" asp-for="Type" />
 
-                            <dt class="col-sm-3">Title</dt>
+                            <dt class="col-sm-3">@L["Title"]</dt>
                             <dd class="col-sm-9">@Model.Title</dd>
                             <input type="hidden" asp-for="Title" />
 
-                            <dt class="col-sm-3">Products</dt>
+                            <dt class="col-sm-3">@L["Products"]</dt>
                             <dd class="col-sm-9">@LinkedName(Model.LinkedProducts, Model.Product)</dd>
 
-                            <dt class="col-sm-3">Processes</dt>
+                            <dt class="col-sm-3">@L["Processes"]</dt>
                             <dd class="col-sm-9">@LinkedProcessName(Model.LinkedProcesses, Model.Process)</dd>
 
-                            <dt class="col-sm-3">Assets</dt>
+                            <dt class="col-sm-3">@L["Assets"]</dt>
                             <dd class="col-sm-9">@LinkedAssetName(Model.LinkedAssets, Model.Asset)</dd>
 
-                            <dt class="col-sm-3">Materials</dt>
+                            <dt class="col-sm-3">@L["Materials"]</dt>
                             <dd class="col-sm-9">@LinkedMaterialName(Model.LinkedMaterials, Model.Material)</dd>
 
-                            <dt class="col-sm-3">Suppliers</dt>
+                            <dt class="col-sm-3">@L["Suppliers"]</dt>
                             <dd class="col-sm-9">@LinkedSupplierName(Model.LinkedSuppliers, Model.Supplier)</dd>
 
-                            <dt class="col-sm-3">Deviations</dt>
+                            <dt class="col-sm-3">@L["Deviations"]</dt>
                             <dd class="col-sm-9">@LinkedDeviationName(Model.LinkedDeviations, Model.Deviation)</dd>
 
-                            <dt class="col-sm-3">Complaints</dt>
+                            <dt class="col-sm-3">@L["Complaints"]</dt>
                             <dd class="col-sm-9">@LinkedComplaintName(Model.LinkedComplaints, Model.Complaint)</dd>
 
-                            <dt class="col-sm-3">Audits</dt>
+                            <dt class="col-sm-3">@L["Audits"]</dt>
                             <dd class="col-sm-9">@LinkedAuditName(Model.LinkedAudits, Model.Audit)</dd>
 
-                            <dt class="col-sm-3">Corrective Action</dt>
+                            <dt class="col-sm-3">@L["Corrective Action"]</dt>
                             <dd class="col-sm-9">@(Model.CorrectiveAction ?? "-")</dd>
                             <input type="hidden" asp-for="CorrectiveAction" />
 
-                            <dt class="col-sm-3">Preventive Action</dt>
+                            <dt class="col-sm-3">@L["Preventive Action"]</dt>
                             <dd class="col-sm-9">@(Model.PreventiveAction ?? "-")</dd>
                             <input type="hidden" asp-for="PreventiveAction" />
 
-                            <dt class="col-sm-3">Target Completion</dt>
+                            <dt class="col-sm-3">@L["Target Completion"]</dt>
                             <dd class="col-sm-9">@(Model.TargetCompletionDate.HasValue ? Model.TargetCompletionDate.Value.ToString("dd MMM yyyy") : "-")</dd>
                             <input type="hidden" asp-for="TargetCompletionDate" />
                         </dl>
@@ -152,7 +152,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label asp-for="Type" class="form-label">
-                                    CAPA Type
+                                    @L["CAPA Type"]
                                     <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="capatype" aria-label="CAPA Type guidance">?</button>
                                 </label>
                                 <select asp-for="Type" asp-items="Html.GetEnumSelectList<OpenQMS.Models.Capa.CapaType>()" class="form-select"></select>
@@ -166,7 +166,7 @@
 
                             <!-- Products -->
                             <div class="col-md-6">
-                                <label class="form-label">Products</label>
+                                <label class="form-label">@L["Products"]</label>
                                 <select id="productDropdown" class="form-select form-select-sm">
                                     <option value="">-- Add Product --</option>
                                     @foreach (var item in products)
@@ -180,7 +180,7 @@
 
                             <!-- Processes -->
                             <div class="col-md-6">
-                                <label class="form-label">Processes</label>
+                                <label class="form-label">@L["Processes"]</label>
                                 <select id="processDropdown" class="form-select form-select-sm">
                                     <option value="">-- Add Process --</option>
                                     @foreach (var item in processes)
@@ -194,7 +194,7 @@
 
                             <!-- Assets -->
                             <div class="col-md-6">
-                                <label class="form-label">Assets</label>
+                                <label class="form-label">@L["Assets"]</label>
                                 <select id="assetDropdown" class="form-select form-select-sm">
                                     <option value="">-- Add Asset --</option>
                                     @foreach (var item in assets)
@@ -208,7 +208,7 @@
 
                             <!-- Materials -->
                             <div class="col-md-6">
-                                <label class="form-label">Materials</label>
+                                <label class="form-label">@L["Materials"]</label>
                                 <select id="materialDropdown" class="form-select form-select-sm">
                                     <option value="">-- Add Material --</option>
                                     @foreach (var item in materials)
@@ -222,7 +222,7 @@
 
                             <!-- Suppliers -->
                             <div class="col-md-6">
-                                <label class="form-label">Suppliers</label>
+                                <label class="form-label">@L["Suppliers"]</label>
                                 <select id="supplierDropdown" class="form-select form-select-sm">
                                     <option value="">-- Add Supplier --</option>
                                     @foreach (var item in suppliers)
@@ -236,7 +236,7 @@
 
                             <!-- Deviations -->
                             <div class="col-md-6">
-                                <label class="form-label">Linked Deviations</label>
+                                <label class="form-label">@L["Linked Deviations"]</label>
                                 <select id="deviationDropdown" class="form-select form-select-sm">
                                     <option value="">-- Add Deviation --</option>
                                     @foreach (var item in deviations)
@@ -250,7 +250,7 @@
 
                             <!-- Complaints -->
                             <div class="col-md-6">
-                                <label class="form-label">Linked Complaints</label>
+                                <label class="form-label">@L["Linked Complaints"]</label>
                                 <select id="complaintDropdown" class="form-select form-select-sm">
                                     <option value="">-- Add Complaint --</option>
                                     @foreach (var item in complaints)
@@ -278,7 +278,7 @@
 
                             <div class="col-12">
                                 <label asp-for="CorrectiveAction" class="form-label">
-                                    Corrective Action <span class="text-danger">*</span>
+                                    @L["Corrective Action"] <span class="text-danger">*</span>
                                     <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="corrective" aria-label="Corrective action guidance">?</button>
                                 </label>
                                 <textarea asp-for="CorrectiveAction" class="form-control" rows="4"></textarea>
@@ -286,7 +286,7 @@
                             </div>
                             <div class="col-12">
                                 <label asp-for="PreventiveAction" class="form-label">
-                                    Preventive Action <span class="text-danger">*</span>
+                                    @L["Preventive Action"] <span class="text-danger">*</span>
                                     <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="preventive" aria-label="Preventive action guidance">?</button>
                                 </label>
                                 <textarea asp-for="PreventiveAction" class="form-control" rows="4"></textarea>
@@ -303,11 +303,11 @@
                     Assessment
                     @if (!planEditable)
                     {
-                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
                     }
                     else
                     {
-                        <span class="badge bg-info text-dark">In Progress</span>
+                        <span class="badge bg-info text-dark">@L["In Progress"]</span>
                     }
                 </div>
                 <div class="card-body">
@@ -315,7 +315,7 @@
                     @if (!planEditable)
                     {
                         <dl class="row mb-0">
-                            <dt class="col-sm-3">Assessment</dt>
+                            <dt class="col-sm-3">@L["Assessment"]</dt>
                             <dd class="col-sm-9">@(Model.Assessment ?? "-")</dd>
                         </dl>
                         <input type="hidden" asp-for="Assessment" />
@@ -324,7 +324,7 @@
                     {
                         <div class="col-12">
                             <label asp-for="Assessment" class="form-label">
-                                Assessment <span class="text-danger">*</span>
+                                @L["Assessment"] <span class="text-danger">*</span>
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="assessment" aria-label="Assessment guidance">?</button>
                             </label>
                             <textarea asp-for="Assessment" class="form-control" rows="5"></textarea>
@@ -338,14 +338,14 @@
             {
                 <div class="card mb-4">
                     <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-                        Implementation
-                        <span class="badge bg-warning text-dark">Action Required</span>
+                        @L["Implementation"]
+                        <span class="badge bg-warning text-dark">@L["Action Required"]</span>
                     </div>
                     <div class="card-body">
                         <p class="text-muted small mb-3">Document all completed CAPA actions with evidence, confirm root cause elimination, and record the effectiveness check.</p>
                         <div class="col-12">
                             <label asp-for="Implementation" class="form-label">
-                                Implementation <span class="text-danger">*</span>
+                                @L["Implementation"] <span class="text-danger">*</span>
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="implementation" aria-label="Implementation guidance">?</button>
                             </label>
                             <textarea asp-for="Implementation" class="form-control" rows="5"></textarea>
@@ -355,9 +355,9 @@
             }
 
             <div class="d-flex gap-2 mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">View Details</a>
-                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+                <input type="submit" value="@L["Save"]" class="btn btn-primary" />
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">@L["View Details"]</a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
             </div>
         </form>
 
@@ -371,8 +371,8 @@
         <ul class="mb-0 ps-3">
             <li>A description of each action to eliminate the identified root cause</li>
             <li>The person responsible for each action</li>
-            <li>Target completion date for each action</li>
-            <li>How effectiveness will be verified</li>
+            <li>@L["Target completion date for each action"]</li>
+            <li>@L["How effectiveness will be verified"]</li>
         </ul>
     </div>
     <div id="help-preventive">
@@ -387,7 +387,7 @@
     <div id="help-assessment">
         <p class="mb-1"><strong>Assessment must address:</strong></p>
         <ul class="mb-0 ps-3">
-            <li>Impact on product quality and patient safety</li>
+            <li>@L["Impact on product quality and patient safety"]</li>
             <li>Risk level if actions are not completed on time</li>
             <li>Adequacy and feasibility of the proposed corrective and preventive actions</li>
             <li>Whether the target completion date is realistic</li>

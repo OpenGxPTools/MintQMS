@@ -10,10 +10,10 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">RI Register</h4>
+    <h4 class="mb-0">@L["RI Register"]</h4>
     <div class="d-flex gap-2">
-        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">Dashboard</a>
-        <a asp-action="ExportApplications" class="btn btn-outline-success btn-sm">Export Register</a>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">@L["Dashboard"]</a>
+        <a asp-action="ExportApplications" class="btn btn-outline-success btn-sm">@L["Export Register"]</a>
         <a asp-action="ExportAccessPathways" class="btn btn-outline-success btn-sm">Export Pathways</a>
         @if (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser"))
         {
@@ -36,7 +36,7 @@
     <div class="card-body py-2">
         <form method="get" class="row g-2 align-items-end">
             <div class="col-md-3">
-                <label class="form-label small fw-bold mb-1">Jurisdiction</label>
+                <label class="form-label small fw-bold mb-1">@L["Jurisdiction"]</label>
                 <select name="jurisdiction" class="form-select form-select-sm">
                     <option value="">All Jurisdictions</option>
                     @foreach (var j in jurisdictions)
@@ -46,7 +46,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label class="form-label small fw-bold mb-1">Status</label>
+                <label class="form-label small fw-bold mb-1">@L["Status"]</label>
                 <select name="status" class="form-select form-select-sm">
                     <option value="">All Statuses</option>
                     @foreach (var st in allStatuses)
@@ -61,10 +61,10 @@
                        placeholder="e.g. 2026" min="2020" max="2040" />
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-sm btn-outline-primary w-100">Filter</button>
+                <button type="submit" class="btn btn-sm btn-outline-primary w-100">@L["Filter"]</button>
             </div>
             <div class="col-md-2">
-                <a asp-action="Index" class="btn btn-sm btn-outline-secondary w-100">Clear</a>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary w-100">@L["Clear"]</a>
             </div>
         </form>
     </div>
@@ -74,14 +74,14 @@
 <table id="riTable" class="table table-sm table-hover align-middle" style="width:100%">
     <thead class="table-light">
         <tr>
-            <th>RI Number</th>
-            <th>Product</th>
-            <th>Jurisdiction</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Submission Date</th>
+            <th>@L["RI Number"]</th>
+            <th>@L["Product"]</th>
+            <th>@L["Jurisdiction"]</th>
+            <th>@L["Type"]</th>
+            <th>@L["Status"]</th>
+            <th>@L["Submission Date"]</th>
             <th>Target Decision</th>
-            <th>Expiry</th>
+            <th>@L["Expiry"]</th>
             <th></th>
         </tr>
     </thead>
@@ -126,11 +126,11 @@
                 <td class="@targetClass">@app.TargetDecisionDate?.ToString("dd MMM yyyy")</td>
                 <td class="@expiryClass">@app.ExpiryDate?.ToString("dd MMM yyyy")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@app.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@app.Id">@L["Details"]</a>
                     @if (!app.IsLocked && (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser")))
                     {
                         <text> | </text>
-                        <a asp-action="Edit" asp-route-id="@app.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@app.Id">@L["Edit"]</a>
                     }
                 </td>
             </tr>

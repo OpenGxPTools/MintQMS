@@ -13,9 +13,9 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0"><i class="fas fa-id-card me-2 text-success"></i>Licences &amp; Certifications Dashboard</h4>
         <div class="btn-group">
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>Register</a>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>@L["Register"]</a>
             <a asp-action="Calendar" class="btn btn-outline-secondary btn-sm"><i class="fas fa-calendar me-1"></i>Calendar</a>
-            <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel me-1"></i>Export Register</a>
+            <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel me-1"></i>@L["Export Register"]</a>
             <a asp-action="ExpiryReport" asp-route-days="@(ViewBag.LcExpiryWarningDays ?? 90)" class="btn btn-outline-warning btn-sm"><i class="fas fa-file-excel me-1"></i>Expiry Report (90d)</a>
         </div>
     </div>
@@ -42,7 +42,7 @@
             <div class="card text-center border-0 shadow-sm h-100 bg-warning bg-opacity-10">
                 <div class="card-body py-3">
                     <div class="fs-1 fw-bold text-warning">@ViewBag.RenewalDueCount</div>
-                    <div class="small text-muted">Renewal Due</div>
+                    <div class="small text-muted">@L["Renewal Due"]</div>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
             <div class="card text-center border-0 shadow-sm h-100 bg-danger bg-opacity-10">
                 <div class="card-body py-3">
                     <div class="fs-1 fw-bold text-danger">@ViewBag.ExpiredCount</div>
-                    <div class="small text-muted">Expired</div>
+                    <div class="small text-muted">@L["Expired"]</div>
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@
         @* Status distribution *@
         <div class="col-md-6">
             <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-transparent fw-semibold">Status Distribution</div>
+                <div class="card-header bg-transparent fw-semibold">@L["Status Distribution"]</div>
                 <div class="card-body">
                     <canvas id="statusChart" height="200"></canvas>
                 </div>
@@ -109,7 +109,7 @@
                     else
                     {
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th>LC Number</th><th>Expiry</th><th>Days</th><th>Status</th></tr></thead>
+                            <thead class="table-light"><tr><th>@L["LC Number"]</th><th>@L["Expiry"]</th><th>@L["Days"]</th><th>@L["Status"]</th></tr></thead>
                             <tbody>
                             @foreach (var r in expiring90)
                             {
@@ -133,7 +133,7 @@
         <div class="col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-warning bg-opacity-10 fw-semibold">
-                    <i class="fas fa-redo me-1 text-warning"></i>Renewal Due
+                    <i class="fas fa-redo me-1 text-warning"></i>@L["Renewal Due"]
                     <span class="badge bg-warning text-dark ms-2">@renewalDue.Count</span>
                 </div>
                 <div class="card-body p-0">
@@ -144,7 +144,7 @@
                     else
                     {
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th>LC Number</th><th>Expiry</th><th>Category</th></tr></thead>
+                            <thead class="table-light"><tr><th>@L["LC Number"]</th><th>@L["Expiry"]</th><th>@L["Category"]</th></tr></thead>
                             <tbody>
                             @foreach (var r in renewalDue)
                             {
@@ -184,7 +184,7 @@
                     else
                     {
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th>LC Number</th><th>Condition</th><th>Due</th></tr></thead>
+                            <thead class="table-light"><tr><th>@L["LC Number"]</th><th>@L["Condition"]</th><th>Due</th></tr></thead>
                             <tbody>
                             @foreach (var (rec, cond) in openConditions)
                             {
@@ -220,7 +220,7 @@
                     else
                     {
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th>LC Number</th><th>Audit Date</th><th>Days</th></tr></thead>
+                            <thead class="table-light"><tr><th>@L["LC Number"]</th><th>Audit Date</th><th>@L["Days"]</th></tr></thead>
                             <tbody>
                             @foreach (var r in surveillanceDue)
                             {
@@ -252,7 +252,7 @@
                     <div class="card-body p-0">
                         <table class="table table-sm table-hover mb-0">
                             <thead class="table-light">
-                                <tr><th>LC Number</th><th>RFI Due Date</th><th>Days Overdue</th><th>Status</th></tr>
+                                <tr><th>@L["LC Number"]</th><th>RFI Due Date</th><th>@L["Days Overdue"]</th><th>@L["Status"]</th></tr>
                             </thead>
                             <tbody>
                             @foreach (var r in overdueRFIs)

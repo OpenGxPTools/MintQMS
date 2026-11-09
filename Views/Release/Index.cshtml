@@ -54,33 +54,33 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">Release Records</h4>
-    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Release Record</a>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Release Record"]</a>
 </div>
 <hr />
 
 <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
-    <span class="text-muted small me-1">Filter by status:</span>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Draft">Draft</button>
-    <button class="btn btn-outline-info btn-sm status-filter" data-status="Under Review">Under Review</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="On Hold">On Hold</button>
+    <span class="text-muted small me-1">@L["Filter by status:"]</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Draft">@L["Draft"]</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="Under Review">@L["Under Review"]</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="On Hold">@L["On Hold"]</button>
     <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending AP Decision">Pending AP</button>
     <button class="btn btn-outline-success btn-sm status-filter" data-status="Certified">Certified</button>
     <button class="btn btn-outline-success btn-sm status-filter" data-status="Released">Released</button>
-    <button class="btn btn-outline-danger btn-sm status-filter" data-status="Rejected">Rejected</button>
+    <button class="btn btn-outline-danger btn-sm status-filter" data-status="Rejected">@L["Rejected"]</button>
 </div>
 
 <table id="releaseTable" class="table" style="width:100%">
     <thead>
         <tr>
-            <th>Record No.</th>
-            <th>Product</th>
+            <th>@L["Record No."]</th>
+            <th>@L["Product"]</th>
             <th>Batch No.</th>
-            <th>Status</th>
-            <th>Release Type</th>
-            <th>AP</th>
-            <th>Cert. Date</th>
-            <th>Actions</th>
+            <th>@L["Status"]</th>
+            <th>@L["Release Type"]</th>
+            <th>@L["AP"]</th>
+            <th>@L["Cert. Date"]</th>
+            <th>@L["Actions"]</th>
         </tr>
     </thead>
     <tbody>
@@ -108,11 +108,11 @@
                 <td>@(r.APFullNameQualification ?? "-")</td>
                 <td>@(r.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy") ?? "-")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@r.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@r.Id">@L["Details"]</a>
                     @if (!r.IsLocked)
                     {
                         <text> | </text>
-                        <a asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@r.Id">@L["Edit"]</a>
                     }
                 </td>
             </tr>

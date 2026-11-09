@@ -52,33 +52,33 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Suppliers</h4>
-    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Supplier</a>
+    <h4 class="mb-0">@L["Suppliers"]</h4>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Supplier"]</a>
 </div>
 <hr />
 
 <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
-    <span class="text-muted small me-1">Filter by status:</span>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
+    <span class="text-muted small me-1">@L["Filter by status:"]</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Pending">Pending</button>
     <button class="btn btn-outline-info btn-sm status-filter" data-status="UnderAssessment">Under Assessment</button>
-    <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">Approved</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">@L["Approved"]</button>
     <button class="btn btn-outline-primary btn-sm status-filter" data-status="Qualified">Qualified</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Suspended">Suspended</button>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Cancelled">Cancelled</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Suspended">@L["Suspended"]</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Cancelled">@L["Cancelled"]</button>
 </div>
 
 <table id="suppliersTable" class="table" style="width:100%;">
     <thead>
         <tr>
-            <th>Supplier ID</th>
-            <th>Legal Name</th>
-            <th>Type</th>
-            <th>Risk Level</th>
+            <th>@L["Supplier ID"]</th>
+            <th>@L["Legal Name"]</th>
+            <th>@L["Type"]</th>
+            <th>@L["Risk Level"]</th>
             <th>Approval Status</th>
             <th>Workflow</th>
-            <th>Next Review</th>
-            <th>Action</th>
+            <th>@L["Next Review"]</th>
+            <th>@L["Action"]</th>
         </tr>
     </thead>
     <tbody>
@@ -116,18 +116,18 @@
                 <td>@workflowLabel</td>
                 <td>@(item.NextReviewDate.HasValue ? item.NextReviewDate.Value.ToString("dd/MM/yyyy") : "-")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if (item.Status == OpenQMS.Models.SupplierStatus.Pending)
                     {
                         <text> | </text>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">@L["Edit"]</a>
                     }
                     @if (User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole)
                          && (item.Status == OpenQMS.Models.SupplierStatus.Pending
                              || item.Status == OpenQMS.Models.SupplierStatus.UnderAssessment))
                     {
                         <text> | </text>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">@L["Delete"]</a>
                     }
                 </td>
             </tr>

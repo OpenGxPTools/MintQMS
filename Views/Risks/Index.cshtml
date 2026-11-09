@@ -54,34 +54,34 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">Risks</h4>
-    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Risk</a>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Risk"]</a>
 </div>
 <hr />
 
 <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
-    <span class="text-muted small me-1">Filter by status:</span>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">All</button>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Identification">Identification</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Assessment">Assessment</button>
-    <button class="btn btn-outline-info btn-sm status-filter" data-status="Pending Assessment">Pending Assessment</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="Mitigation">Mitigation</button>
-    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending Review">Pending Review</button>
-    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Review">Review</button>
-    <button class="btn btn-outline-success btn-sm status-filter" data-status="Closed">Closed</button>
+    <span class="text-muted small me-1">@L["Filter by status:"]</span>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Identification"]">@L["Identification"]</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Assessment"]">@L["Assessment"]</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Pending Assessment"]">@L["Pending Assessment"]</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Mitigation"]">@L["Mitigation"]</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["Pending Review"]">Pending Review</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["Review"]">@L["Review"]</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Closed"]">@L["Closed"]</button>
 </div>
 
 <table id="risksTable" class="table" style="width:100%;">
     <thead>
         <tr>
-            <th>Risk ID</th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Linked To</th>
-            <th>Initial RPN</th>
-            <th>Identified On</th>
-            <th>Target Date</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th>@L["Risk ID"]</th>
+            <th>@L["Title"]</th>
+            <th>@L["Category"]</th>
+            <th>@L["Linked To"]</th>
+            <th>@L["Initial RPN"]</th>
+            <th>@L["Identified On"]</th>
+            <th>@L["Target Date"]</th>
+            <th>@L["Status"]</th>
+            <th>@L["Action"]</th>
         </tr>
     </thead>
     <tbody>
@@ -126,16 +126,16 @@
                 <td>@(item.TargetCompletionDate?.ToShortDateString() ?? "-")</td>
                 <td><span class="badge @statusBadge">@statusLabel</span></td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if (canEdit)
                     {
                         <text> | </text>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">@L["Edit"]</a>
                     }
                     @if (User.IsInRole("Administrator") && item.Status == OpenQMS.Models.Risk.RiskStatus.Identification)
                     {
                         <text> | </text>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">@L["Delete"]</a>
                     }
                 </td>
             </tr>

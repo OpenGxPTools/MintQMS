@@ -119,7 +119,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
 {
     <div class="card mb-3">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-tasks me-2"></i>Workflow Actions</strong>
+            <strong><i class="fas fa-tasks me-2"></i>@L["Workflow Actions"]</strong>
             <span class="small">Current: @statusLabel</span>
         </div>
         <div class="card-body py-2 d-flex flex-wrap gap-2">
@@ -132,7 +132,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Evaluation && isQU)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#pendingAcceptanceModal">
-                    <i class="fas fa-paper-plane me-1"></i>Submit for Acceptance
+                    <i class="fas fa-paper-plane me-1"></i>@L["Submit for Acceptance"]
                 </button>
             }
             @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance && isQM)
@@ -156,7 +156,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             @if (canReturn)
             {
                 <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#returnModal">
-                    <i class="fas fa-undo me-1"></i>Return for Rework
+                    <i class="fas fa-undo me-1"></i>@L["Return for Rework"]
                 </button>
             }
         </div>
@@ -167,11 +167,11 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
 {
     <div class="card mb-3 border-danger">
         <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+            <strong><i class="fas fa-lock-open me-2"></i>@L["Administrative Controls"]</strong>
         </div>
         <div class="card-body py-2">
             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
-                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+                <i class="fas fa-lock-open me-1"></i>@L["Administratively Reopen"]
             </button>
         </div>
     </div>
@@ -179,7 +179,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
 
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-3" id="cmpTabs">
-    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#overview">Overview</button></li>
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#overview">@L["Overview"]</button></li>
     <li class="nav-item">
         <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#pv">
             Pharmacovigilance <span class="badge bg-secondary">@linkedAEs.Count</span>
@@ -187,12 +187,12 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
     </li>
     <li class="nav-item">
         <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#attachments">
-            Attachments <span class="badge bg-secondary">@attachCount</span>
+            @L["Attachments"] <span class="badge bg-secondary">@attachCount</span>
         </button>
     </li>
     <li class="nav-item">
         <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#auditlog">
-            Audit Log <span class="badge bg-secondary">@auditCount</span>
+            @L["Audit Log"] <span class="badge bg-secondary">@auditCount</span>
         </button>
     </li>
 </ul>
@@ -206,22 +206,22 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             <div class="col-md-6">
                 <h6 class="text-muted text-uppercase small mb-2">Complaint Details</h6>
                 <dl class="row">
-                    <dt class="col-sm-4">Complaint ID</dt><dd class="col-sm-8">@Model.ComplaintId</dd>
-                    <dt class="col-sm-4">Title</dt><dd class="col-sm-8">@Model.Title</dd>
-                    <dt class="col-sm-4">Severity</dt>
+                    <dt class="col-sm-4">@L["Complaint ID"]</dt><dd class="col-sm-8">@Model.ComplaintId</dd>
+                    <dt class="col-sm-4">@L["Title"]</dt><dd class="col-sm-8">@Model.Title</dd>
+                    <dt class="col-sm-4">@L["Severity"]</dt>
                     <dd class="col-sm-8"><span class="badge @severityBadge">@Model.Severity</span></dd>
-                    <dt class="col-sm-4">Status</dt>
+                    <dt class="col-sm-4">@L["Status"]</dt>
                     <dd class="col-sm-8"><span class="badge @statusBadge">@statusLabel</span></dd>
-                    <dt class="col-sm-4">Received On</dt>
+                    <dt class="col-sm-4">@L["Received On"]</dt>
                     <dd class="col-sm-8">@Model.ReceivedOn.ToSite().ToShortDateString() <span class="text-muted small">(@ageDays days ago)</span></dd>
                     @if (Model.TargetResolutionDate.HasValue)
                     {
-                        <dt class="col-sm-4">Target Resolution</dt>
+                        <dt class="col-sm-4">@L["Target Resolution"]</dt>
                         <dd class="col-sm-8">
                             @Model.TargetResolutionDate.Value.ToShortDateString()
                             @if (isOverdue)
                             {
-                                <span class="badge bg-danger ms-1">Overdue</span>
+                                <span class="badge bg-danger ms-1">@L["Overdue"]</span>
                             }
                             else if (!isLocked && daysUntilDeadline <= 5)
                             {
@@ -231,9 +231,9 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                     }
                 </dl>
 
-                <h6 class="text-muted text-uppercase small mb-2 mt-3">Customer</h6>
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">@L["Customer"]</h6>
                 <dl class="row">
-                    <dt class="col-sm-4">Customer</dt>
+                    <dt class="col-sm-4">@L["Customer"]</dt>
                     <dd class="col-sm-8">
                         @if (Model.Customer != null)
                         { <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.CustomerId">@Model.Customer.LegalName</a> }
@@ -242,12 +242,12 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                         else { <span class="text-muted">-</span> }
                     </dd>
                     <dt class="col-sm-4">Contact</dt><dd class="col-sm-8">@(Model.CustomerContact ?? "-")</dd>
-                    <dt class="col-sm-4">Reference</dt><dd class="col-sm-8">@(Model.CustomerReference ?? "-")</dd>
+                    <dt class="col-sm-4">@L["Reference"]</dt><dd class="col-sm-8">@(Model.CustomerReference ?? "-")</dd>
                 </dl>
 
-                <h6 class="text-muted text-uppercase small mb-2 mt-3">Linked Records</h6>
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">@L["Linked Records"]</h6>
                 <dl class="row">
-                    <dt class="col-sm-4">Products</dt>
+                    <dt class="col-sm-4">@L["Products"]</dt>
                     <dd class="col-sm-8">
                         @{
                             var detProducts = Model.LinkedProducts?.Any() == true
@@ -258,7 +258,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                         { @foreach (var p in detProducts) { <a class="d-block" asp-controller="Products" asp-action="Details" asp-route-id="@p!.Id">@p.Name</a> } }
                         else { <span class="text-muted">-</span> }
                     </dd>
-                    <dt class="col-sm-4">Processes</dt>
+                    <dt class="col-sm-4">@L["Processes"]</dt>
                     <dd class="col-sm-8">
                         @{
                             var detProcesses = Model.LinkedProcesses?.Any() == true
@@ -269,7 +269,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                         { @foreach (var p in detProcesses) { <a class="d-block" asp-controller="Processes" asp-action="Details" asp-route-id="@p!.Id">@p.Name</a> } }
                         else { <span class="text-muted">-</span> }
                     </dd>
-                    <dt class="col-sm-4">Materials</dt>
+                    <dt class="col-sm-4">@L["Materials"]</dt>
                     <dd class="col-sm-8">
                         @{
                             var detMaterials = Model.LinkedMaterials?.Any() == true
@@ -280,7 +280,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                         { @foreach (var m in detMaterials) { <a class="d-block" asp-controller="Materials" asp-action="Details" asp-route-id="@m!.Id">@m.Name</a> } }
                         else { <span class="text-muted">-</span> }
                     </dd>
-                    <dt class="col-sm-4">Suppliers</dt>
+                    <dt class="col-sm-4">@L["Suppliers"]</dt>
                     <dd class="col-sm-8">
                         @{
                             var detSuppliers = Model.LinkedSuppliers?.Any() == true
@@ -296,7 +296,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                     }
                     @if (linkedCapas?.Any() == true)
                     {
-                        <dt class="col-sm-4">CAPAs</dt>
+                        <dt class="col-sm-4">@L["CAPAs"]</dt>
                         <dd class="col-sm-8">
                             @foreach (var lc in linkedCapas)
                             {
@@ -307,53 +307,53 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                     else if (ViewBag.LinkedCapa != null)
                     {
                         var lc = (OpenQMS.Models.Capa)ViewBag.LinkedCapa;
-                        <dt class="col-sm-4">CAPA</dt>
+                        <dt class="col-sm-4">@L["CAPA"]</dt>
                         <dd class="col-sm-8"><a href="/Capas/Details/@lc.Id">@lc.CapaId — @lc.Title</a></dd>
                     }
                 </dl>
 
                 <div class="mt-3 d-flex gap-2">
-                    <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
-                    <a asp-action="ExportComplaintDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+                    <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>@L["Export CSV"]</a>
+                    <a asp-action="ExportComplaintDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>@L["Export PDF"]</a>
                 </div>
             </div>
 
             <!-- Right column: content + workflow trail -->
             <div class="col-md-6">
-                <h6 class="text-muted text-uppercase small mb-2">Description</h6>
+                <h6 class="text-muted text-uppercase small mb-2">@L["Description"]</h6>
                 <div class="p-3 bg-light rounded mb-3">@(Model.Description ?? "-")</div>
 
                 @if (!string.IsNullOrEmpty(Model.Evaluation) || Model.Status > OpenQMS.Models.Complaint.ComplaintStatus.Received)
                 {
-                    <h6 class="text-muted text-uppercase small mb-2">Evaluation</h6>
+                    <h6 class="text-muted text-uppercase small mb-2">@L["Evaluation"]</h6>
                     <div class="p-3 bg-light rounded mb-3">@(Model.Evaluation ?? "-")</div>
                 }
 
                 @if (!string.IsNullOrEmpty(Model.Investigation) || Model.Status > OpenQMS.Models.Complaint.ComplaintStatus.Evaluation)
                 {
-                    <h6 class="text-muted text-uppercase small mb-2">Investigation</h6>
+                    <h6 class="text-muted text-uppercase small mb-2">@L["Investigation"]</h6>
                     <div class="p-3 bg-light rounded mb-3">@(Model.Investigation ?? "-")</div>
                 }
 
                 @if (Model.RootCauseCategory.HasValue || Model.Status > OpenQMS.Models.Complaint.ComplaintStatus.Evaluation)
                 {
-                    <h6 class="text-muted text-uppercase small mb-2">Root Cause Category</h6>
+                    <h6 class="text-muted text-uppercase small mb-2">@L["Root Cause Category"]</h6>
                     <div class="p-3 bg-light rounded mb-3">@(Model.RootCauseCategory?.ToString() ?? "-")</div>
                 }
 
                 @if (!string.IsNullOrEmpty(Model.CorrectiveAction) || Model.Status > OpenQMS.Models.Complaint.ComplaintStatus.Evaluation)
                 {
-                    <h6 class="text-muted text-uppercase small mb-2">Corrective and Preventive Action</h6>
+                    <h6 class="text-muted text-uppercase small mb-2">@L["Corrective and Preventive Action"]</h6>
                     <div class="p-3 bg-light rounded mb-3">@(Model.CorrectiveAction ?? "-")</div>
                 }
 
                 @if (!string.IsNullOrEmpty(Model.Resolution) || Model.Status >= OpenQMS.Models.Complaint.ComplaintStatus.Resolution)
                 {
-                    <h6 class="text-muted text-uppercase small mb-2">Resolution</h6>
+                    <h6 class="text-muted text-uppercase small mb-2">@L["Resolution"]</h6>
                     <div class="p-3 bg-light rounded mb-3">@(Model.Resolution ?? "-")</div>
                 }
 
-                <h6 class="text-muted text-uppercase small mb-2 mt-3">Workflow Trail</h6>
+                <h6 class="text-muted text-uppercase small mb-2 mt-3">@L["Workflow Trail"]</h6>
                 <dl class="row">
                     <dt class="col-sm-5">Received By</dt>
                     <dd class="col-sm-7">
@@ -369,14 +369,14 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Submitted for Acceptance By</dt>
+                    <dt class="col-sm-5">@L["Submitted for Acceptance By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ActionBy))
                         { <span>@Model.ActionBy <span class="text-muted small">@Model.ActionOn.ToSite()?.ToShortDateString()</span></span> }
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Accepted By</dt>
+                    <dt class="col-sm-5">@L["Accepted By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.AcceptedBy))
                         { <span>@Model.AcceptedBy <span class="text-muted small">@Model.AcceptedOn.ToSite()?.ToShortDateString()</span></span> }
@@ -390,7 +390,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Closed By</dt>
+                    <dt class="col-sm-5">@L["Closed By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ClosedBy))
                         { <span>@Model.ClosedBy <span class="text-muted small">@Model.ClosedOn.ToSite()?.ToShortDateString()</span></span> }
@@ -424,7 +424,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
         {
             <table class="table table-sm table-hover">
                 <thead>
-                    <tr><th>AE Number</th><th>Status</th><th>Serious</th><th>Report Date</th><th>Linked CAPA</th><th class="text-end"></th></tr>
+                    <tr><th>@L["AE Number"]</th><th>@L["Status"]</th><th>@L["Serious"]</th><th>@L["Report Date"]</th><th>@L["Linked CAPA"]</th><th class="text-end"></th></tr>
                 </thead>
                 <tbody>
                     @foreach (var ae in linkedAEs)
@@ -451,7 +451,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                                         <input type="hidden" name="complaintId" value="@Model.Id" />
                                         <input type="hidden" name="adverseEventId" value="@ae.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">
-                                            <i class="fas fa-unlink me-1"></i>Unlink
+                                            <i class="fas fa-unlink me-1"></i>@L["Unlink"]
                                         </button>
                                     </form>
                                 }
@@ -472,7 +472,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
         @if (!isLocked)
         {
             <div class="card mb-3">
-                <div class="card-header">Upload Attachment</div>
+                <div class="card-header">@L["Upload Attachment"]</div>
                 <div class="card-body">
                     <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data" class="row g-3">
                         @Html.AntiForgeryToken()
@@ -481,10 +481,10 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                             <input type="file" class="form-control" name="file" required accept="@UploadRules.Accept" />
                         </div>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" name="description" placeholder="Description (optional)" />
+                            <input type="text" class="form-control" name="description" placeholder="@L["Description (optional)"]" />
                         </div>
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                            <button type="submit" class="btn btn-primary w-100">@L["Upload"]</button>
                         </div>
                     </form>
                 </div>
@@ -495,7 +495,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
         @if (Model.Attachments != null && Model.Attachments.Any())
         {
             <table class="table table-hover">
-                <thead><tr><th>File Name</th><th>Description</th><th>Size</th><th>Uploaded By</th><th>Date</th><th>Actions</th></tr></thead>
+                <thead><tr><th>@L["File Name"]</th><th>@L["Description"]</th><th>@L["Size"]</th><th>@L["Uploaded By"]</th><th>@L["Date"]</th><th>@L["Actions"]</th></tr></thead>
                 <tbody>
                     @foreach (var att in Model.Attachments.OrderByDescending(a => a.UploadedDate))
                     {
@@ -506,14 +506,14 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                             <td>@att.UploadedBy</td>
                             <td>@att.UploadedDate.ToSite().ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
-                                <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                                <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">@L["Download"]</a>
                                 @if (!isLocked)
                                 {
                                     <form asp-action="DeleteAttachment" method="post" class="d-inline" data-delete-reason="attachment">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@att.Id" />
                                         <input type="hidden" name="complaintId" value="@Model.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">@L["Delete"]</button>
                                     </form>
                                 }
                             </td>
@@ -522,7 +522,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                 </tbody>
             </table>
         }
-        else { <p class="text-muted">No attachments yet.</p> }
+        else { <p class="text-muted">@L["No attachments yet."]</p> }
         <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
     </div>
 
@@ -537,7 +537,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
 <div class="mt-3 d-flex gap-3">
     @if (!isEditLocked && isQU && !User.IsInRole(OpenQMS.Authorization.Constants.ReadOnlyRole))
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>@L["Edit"]</a>
     }
     @if (User.IsInRole("Administrator")
          && Model.Status != OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance
@@ -545,9 +545,9 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
          && Model.Status != OpenQMS.Models.Complaint.ComplaintStatus.Resolution
          && Model.Status != OpenQMS.Models.Complaint.ComplaintStatus.Closed)
     {
-        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Delete</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>@L["Delete"]</a>
     }
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>@L["Back to List"]</a>
 </div>
 
 <!-- ── Workflow Modals ──────────────────────────────────────────────────── -->
@@ -564,16 +564,16 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-body">
                 <p class="text-muted small">
-                    Moves the complaint to <strong>Evaluation</strong> status. The Evaluation, Investigation,
+                    Moves the complaint to <strong>@L["Evaluation"]</strong> status. The Evaluation, Investigation,
                     Root Cause Category, and Corrective and Preventive Action fields will become available for editing.
                     Enter your credentials to confirm.
                 </p>
-                <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
-                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                 <button type="submit" class="btn btn-info text-dark">Confirm</button>
             </div>
         </form>
@@ -592,17 +592,17 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-body">
                 <p class="text-muted small">
-                    Submits the complaint to <strong>Pending Acceptance</strong> for QA Manager review. The record will be
+                    Submits the complaint to <strong>@L["Pending Acceptance"]</strong> for QA Manager review. The record will be
                     locked for editing until accepted or returned. Before confirming, ensure the following fields are completed:
                     <strong>Evaluation, Root Cause Category, Corrective and Preventive Action.</strong>
                 </p>
-                <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
-                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-warning text-dark">Confirm Submit</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                <button type="submit" class="btn btn-warning text-dark">@L["Confirm Submit"]</button>
             </div>
         </form>
     </div></div>
@@ -622,16 +622,16 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-body">
                 <p class="text-muted small">
-                    Confirms the evaluation package is complete and acceptable. Moves the complaint to <strong>Accepted</strong> status.
+                    Confirms the evaluation package is complete and acceptable. Moves the complaint to <strong>@L["Accepted"]</strong> status.
                     The quality user will then document the resolution summary. Enter your credentials to confirm.
                 </p>
-                <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
-                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-success">Confirm Accept</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                <button type="submit" class="btn btn-success">@L["Confirm Accept"]</button>
             </div>
         </form>
     </div></div>
@@ -652,16 +652,16 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-body">
                 <p class="text-muted small">
-                    Moves the complaint to <strong>Resolution</strong> status for final QA Manager review and closure.
+                    Moves the complaint to <strong>@L["Resolution"]</strong> status for final QA Manager review and closure.
                     The <strong>Resolution summary</strong> field must be completed before confirming.
                 </p>
-                <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
-                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-success">Confirm Submit</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                <button type="submit" class="btn btn-success">@L["Confirm Submit"]</button>
             </div>
         </form>
     </div></div>
@@ -684,12 +684,12 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                     will be calculated from today. Before confirming, ensure the
                     <strong>Resolution summary</strong> field is completed. Enter your credentials to confirm.
                 </p>
-                <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
-                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                 <button type="submit" class="btn btn-success">Confirm Close</button>
             </div>
         </form>
@@ -711,24 +711,24 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             <div class="modal-body">
                 <p class="text-muted small">
                     @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Evaluation)
-                    { <text>Returns to <strong>Received</strong> status — the complaint will need to be re-sent for evaluation.</text> }
+                    { <text>Returns to <strong>@L["Received"]</strong> status — the complaint will need to be re-sent for evaluation.</text> }
                     else if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance)
-                    { <text>Returns to <strong>Evaluation</strong> status — evaluation fields will be unlocked for rework.</text> }
+                    { <text>Returns to <strong>@L["Evaluation"]</strong> status — evaluation fields will be unlocked for rework.</text> }
                     else if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Accepted)
-                    { <text>Returns to <strong>Evaluation</strong> status — evaluation fields will be unlocked for full rework.</text> }
+                    { <text>Returns to <strong>@L["Evaluation"]</strong> status — evaluation fields will be unlocked for full rework.</text> }
                     else
-                    { <text>Returns to <strong>Accepted</strong> status — the resolution field will be unlocked for rework.</text> }
+                    { <text>Returns to <strong>@L["Accepted"]</strong> status — the resolution field will be unlocked for rework.</text> }
                 </p>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Reason for Return <span class="text-danger">*</span></label>
+                    <label class="form-label fw-semibold">@L["Reason for Return"] <span class="text-danger">*</span></label>
                     <textarea name="reason" class="form-control" rows="3" required placeholder="Describe why this complaint is being returned and what needs to be addressed..."></textarea>
                 </div>
-                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-warning text-dark">Confirm Return</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                <button type="submit" class="btn btn-warning text-dark">@L["Confirm Return"]</button>
             </div>
         </form>
     </div></div>
@@ -742,31 +742,31 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>@L["Administrative Reopen"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>Warning:</strong> Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.
+                        <strong>@L["Warning:"]</strong> Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                        <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="@L["Provide a detailed justification for reopening this record..."]"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to authorise this action."]</p>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Password"] <span class="text-danger">*</span></label>
                         <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-danger">@L["Reopen Record"]</button>
                 </div>
             </form>
         </div></div>
@@ -810,7 +810,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                     }
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     @if (anyAE)
                     {
                         <button type="submit" class="btn btn-primary"><i class="fas fa-link me-1"></i>Link</button>

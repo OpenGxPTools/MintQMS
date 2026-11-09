@@ -42,7 +42,7 @@ RESX_HEAD = """<?xml version="1.0" encoding="utf-8"?>
 """
 
 # --- keys used in code -------------------------------------------------------------------------
-L_LITERAL = re.compile(r'\b[LH]\[\s*"((?:[^"\\]|\\.)*)"\s*[\],]')
+L_LITERAL = re.compile(r'(?:\b[LHl]\[|\b_l\[|\bStatusMessage\s*=\s*\$?(?=")|\bthis\.T\(|\bT\(base\.\w+\([^)]*\),)\s*"((?:[^"\\]|\\.)*)"\s*[\]),;]')
 
 
 def unescape_cs(s):
@@ -59,6 +59,8 @@ def literal_keys():
     used = {}
     for f in code_files():
         text = open(f, encoding="utf-8-sig", errors="replace").read()
+        text = re.sub(r"@\*.*?\*@|/\*.*?\*/", "", text, flags=re.S)       # Razor and block comments
+        text = re.sub(r"(?m)^\s*//.*$", "", text)                             # whole-line // and /// comments
         for m in L_LITERAL.finditer(text):
             used.setdefault(unescape_cs(m.group(1)), set()).add(os.path.relpath(f, ROOT))
     return used
@@ -88,9 +90,32 @@ def role_keys():
     return used
 
 
-def used_keys():
+def display_keys():
+    """[Display(Name = "…")] on model and page-model properties (labels, translated automatically)."""
     used = {}
-    for src in (literal_keys(), enum_keys(), role_keys()):
+    for pat in ("Models/**/*.cs", "ViewModels/**/*.cs", "Areas/**/*.cs"):
+        for f in glob.glob(os.path.join(ROOT, pat), recursive=True):
+            text = open(f, encoding="utf-8-sig", errors="replace").read()
+            for m in re.finditer(r'\[Display\([^)]*Name\s*=\s*"((?:[^"\\]|\\.)*)"[^\]]*\]\s*(?:\[[^\]]*\]\s*)*public\s', text):
+                used.setdefault(unescape_cs(m.group(1)), set()).add("label " + os.path.relpath(f, ROOT))
+    return used
+
+
+# Framework validation templates, read at runtime by Localization/ValidationMessages.cs (System.SR).
+FRAMEWORK_KEYS = [
+    "The {0} field is required.",
+    "The field {0} must be between {1} and {2}.",
+    "The {0} field is not a valid e-mail address.",
+    "The field {0} must be a string or array type with a maximum length of '{1}'.",
+    "The {0} field is not a valid phone number.",
+    "The field {0} must be a string with a maximum length of {1}.",
+    "The field {0} must be a string with a minimum length of {2} and a maximum length of {1}.",
+]
+
+
+def used_keys():
+    used = {k: {"framework validation template"} for k in FRAMEWORK_KEYS}
+    for src in (literal_keys(), enum_keys(), role_keys(), display_keys()):
         for k, where in src.items():
             used.setdefault(k, set()).update(where)
     return used
@@ -110,7 +135,11 @@ def save(data):
 
 def render_resx(data, lang):
     out = [RESX_HEAD]
-    for key in sorted(data, key=str.lower):
+    seen = set()                     # the resource compiler is case-insensitive: one entry per case-variant
+    for key in sorted(data, key=lambda k: (k.lower(), k)):
+        if key.lower() in seen:
+            continue
+        seen.add(key.lower())
         val = (data[key] or {}).get(lang)
         if not val:
             continue
@@ -129,12 +158,22 @@ def problems(data, used):
         have = open(RESX[lang], encoding="utf-8").read() if os.path.exists(RESX[lang]) else ""
         if want != have:
             errs.append(f"{os.path.relpath(RESX[lang], ROOT)} is out of date — run tools/i18n.py build")
+    groups = {}
+    for key in data:
+        groups.setdefault(key.lower(), []).append(key)
+    for variants in groups.values():
+        for lang in LANGS:
+            vals = {(data[v] or {}).get(lang) for v in variants}
+            if len(vals) > 1:
+                errs.append(f"keys differing only in capitals must translate the same ({lang}): {variants}")
     for key, tr in data.items():
         for lang in LANGS:
             v = (tr or {}).get(lang)
             if not v:
                 errs.append(f"untranslated ({lang}): {key!r}")
                 continue
+            if sorted(re.findall(r"_[A-Z]+_", key)) != sorted(re.findall(r"_[A-Z]+_", v)):
+                errs.append(f"DataTables tokens differ ({lang}): {key!r} → {v!r}")
             if sorted(PLACEHOLDER.findall(key)) != sorted(PLACEHOLDER.findall(v)):
                 errs.append(f"placeholders differ ({lang}): {key!r} → {v!r}")
             if re.search(r"<[a-zA-Z/]", v) and not re.search(r"<[a-zA-Z/]", key):
@@ -169,7 +208,7 @@ def main():
             print("✗ " + e)
         if errs:
             return 1
-        print(f"✓ translations consistent — {len(data)} keys; enum/role names not yet translated: "
+        print(f"✓ translations consistent — {len(data)} keys; labels, enum and role names not yet translated: "
               f"{len([k for k in missing if k not in lits])} (shown in English)")
         return 0
     if cmd == "report":

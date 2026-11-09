@@ -34,13 +34,13 @@
     </div>
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-edit me-1"></i>Edit
+            <i class="fas fa-edit me-1"></i>@L["Edit"]
         </a>
         <a asp-action="ExportPSURData" asp-route-id="@Model.Id" class="btn btn-success btn-sm ms-2">
             <i class="fas fa-file-excel me-1"></i>Export PSUR Data (Excel)
         </a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm ms-2">
-            <i class="fas fa-arrow-left me-1"></i>Back
+            <i class="fas fa-arrow-left me-1"></i>@L["Back"]
         </a>
     </div>
 </div>
@@ -49,7 +49,7 @@
 <div class="card mb-3 border-primary">
     <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center py-2">
         <i class="fas fa-exchange-alt me-2 text-primary"></i>
-        <strong class="text-primary">Workflow Actions</strong>
+        <strong class="text-primary">@L["Workflow Actions"]</strong>
         <span class="ms-2 text-muted small">Current status: <strong>@L.Enum(Model.Status)</strong></span>
     </div>
     <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
@@ -106,17 +106,17 @@
             <div class="card-header bg-dark text-white">PSUR Details</div>
             <div class="card-body">
                 <dl class="row mb-0">
-                    <dt class="col-sm-4">Product</dt>
+                    <dt class="col-sm-4">@L["Product"]</dt>
                     <dd class="col-sm-8">@(Model.Product?.Name ?? "All Products")</dd>
-                    <dt class="col-sm-4">Period</dt>
+                    <dt class="col-sm-4">@L["Period"]</dt>
                     <dd class="col-sm-8">
                         @(Model.PeriodStart?.ToString("dd MMM yyyy") ?? "—")
                         @if (Model.PeriodStart.HasValue && Model.PeriodEnd.HasValue) { <span>→</span> }
                         @(Model.PeriodEnd?.ToString("dd MMM yyyy") ?? "")
                     </dd>
-                    <dt class="col-sm-4">Due Date</dt>
+                    <dt class="col-sm-4">@L["Due Date"]</dt>
                     <dd class="col-sm-8">@(Model.DueDate?.ToString("dd MMM yyyy") ?? "—")</dd>
-                    <dt class="col-sm-4">Submission Date</dt>
+                    <dt class="col-sm-4">@L["Submission Date"]</dt>
                     <dd class="col-sm-8">
                         @if (Model.SubmissionDate.HasValue) {
                             <span class="badge bg-success">@Model.SubmissionDate.Value.ToString("dd MMM yyyy")</span>
@@ -156,9 +156,9 @@
             <table class="table table-sm table-hover mb-0" id="linkedTable">
                 <thead class="table-light">
                     <tr>
-                        <th>#</th><th>AE Number</th><th>Report Date</th>
+                        <th>#</th><th>@L["AE Number"]</th><th>@L["Report Date"]</th>
                         <th>Patient</th><th>Suspect Drug</th><th>MedDRA PT</th>
-                        <th>Serious</th><th>Outcome</th><th>Causality</th><th>TGA Submitted</th>
+                        <th>@L["Serious"]</th><th>@L["Outcome"]</th><th>@L["Causality"]</th><th>TGA Submitted</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -202,7 +202,7 @@
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
                 <thead class="table-light">
-                    <tr><th>AE Number</th><th>MedDRA PT</th><th>Serious</th><th>Status</th><th></th></tr>
+                    <tr><th>@L["AE Number"]</th><th>MedDRA PT</th><th>@L["Serious"]</th><th>@L["Status"]</th><th></th></tr>
                 </thead>
                 <tbody>
                     @foreach (var ae in unlinkedCases)
@@ -240,7 +240,7 @@
         @if (Model.Status != PVPeriodicReport.PSURStatus.Accepted)
         {
             <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#uploadCollapse">
-                <i class="fas fa-upload me-1"></i>Upload
+                <i class="fas fa-upload me-1"></i>@L["Upload"]
             </button>
         }
     </div>
@@ -251,16 +251,16 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="psurId" value="@Model.Id" />
                 <div class="col-md-5">
-                    <label class="form-label small">File <span class="text-danger">*</span></label>
+                    <label class="form-label small">@L["File"] <span class="text-danger">*</span></label>
                     <input type="file" name="file" class="form-control form-control-sm" required />
                 </div>
                 <div class="col-md-5">
-                    <label class="form-label small">Description</label>
+                    <label class="form-label small">@L["Description"]</label>
                     <input type="text" name="description" class="form-control form-control-sm" maxlength="500"
                            placeholder="e.g. Final PSUR document, Benefit-risk appendix…" />
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary btn-sm w-100">Upload</button>
+                    <button type="submit" class="btn btn-primary btn-sm w-100">@L["Upload"]</button>
                 </div>
             </form>
             <small class="text-muted mt-1 d-block">Accepted: @UploadRules.AcceptedLabel. Max 25 MB.</small>
@@ -276,7 +276,7 @@
         {
             <table class="table table-sm table-hover mb-0">
                 <thead class="table-light">
-                    <tr><th>File Name</th><th>Description</th><th>Uploaded By</th><th>Date</th><th>Size</th><th>SHA-256</th><th></th></tr>
+                    <tr><th>@L["File Name"]</th><th>@L["Description"]</th><th>@L["Uploaded By"]</th><th>@L["Date"]</th><th>@L["Size"]</th><th>@L["SHA-256"]</th><th></th></tr>
                 </thead>
                 <tbody>
                     @foreach (var att in Model.Attachments!.OrderByDescending(a => a.UploadedAt))
@@ -290,7 +290,7 @@
                             <td><code class="small text-muted">@(att.FileHash != null ? att.FileHash[..Math.Min(12, att.FileHash.Length)] + "…" : "—")</code></td>
                             <td class="text-nowrap">
                                 <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-download me-1"></i>Download
+                                    <i class="fas fa-download me-1"></i>@L["Download"]
                                 </a>
                                 @if (Model.Status != PVPeriodicReport.PSURStatus.Accepted)
                                 {
@@ -298,7 +298,7 @@
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@att.Id" />
                                         <input type="hidden" name="psurId" value="@Model.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash me-1"></i>Delete</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash me-1"></i>@L["Delete"]</button>
                                     </form>
                                 }
                             </td>
@@ -317,7 +317,7 @@
 <!-- Audit Log -->
 <div class="card shadow-sm">
     <div class="card-header fw-bold">
-        <i class="fas fa-history me-1"></i>Audit Trail
+        <i class="fas fa-history me-1"></i>@L["Audit Trail"]
         <span class="badge bg-secondary ms-2">@(Model.AuditLogs?.Count ?? 0)</span>
     </div>
     <div class="card-body p-0">
@@ -325,7 +325,7 @@
         {
             <table class="table table-sm table-bordered mb-0">
                 <thead class="table-light">
-                    <tr><th>Date/Time <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>Action</th><th>From</th><th>To</th><th>Performed By</th><th>Notes</th></tr>
+                    <tr><th>@L["Date/Time"] <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>@L["Action"]</th><th>@L["From"]</th><th>@L["To"]</th><th>@L["Performed By"]</th><th>@L["Notes"]</th></tr>
                 </thead>
                 <tbody>
                     @foreach (var log in Model.AuditLogs.OrderByDescending(l => l.PerformedOn))
@@ -342,7 +342,7 @@
                 </tbody>
             </table>
         }
-        else { <p class="text-muted p-3 mb-0">No audit log entries yet.</p> }
+        else { <p class="text-muted p-3 mb-0">@L["No audit log entries yet."]</p> }
     </div>
 </div>
 </div><!-- end tab-audit -->
@@ -360,18 +360,18 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This records <strong>@Model.Title</strong> as <strong class="text-primary">Submitted</strong>. Confirm with your credentials.</p>
+                    <p>This records <strong>@Model.Title</strong> as <strong class="text-primary">@L["Submitted"]</strong>. Confirm with your credentials.</p>
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label">@L["Password"]</label>
                         <input type="password" name="pwd" class="form-control" required />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-1"></i>Confirm Submission</button>
                 </div>
             </form>
@@ -391,18 +391,18 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This marks <strong>@Model.Title</strong> as <strong class="text-success">Accepted</strong> and locks the report. Confirm with your credentials.</p>
+                    <p>This marks <strong>@Model.Title</strong> as <strong class="text-success">@L["Accepted"]</strong> and locks the report. Confirm with your credentials.</p>
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label">@L["Password"]</label>
                         <input type="password" name="pwd" class="form-control" required />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-success"><i class="fas fa-check-circle me-1"></i>Confirm Acceptance</button>
                 </div>
             </form>

@@ -33,7 +33,7 @@
 
             <!-- ── Identification Details ───────────────────────────────────── -->
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Identification</div>
+                <div class="card-header fw-semibold">@L["Identification"]</div>
                 <div class="card-body">
                     <p class="text-muted small mb-3">Record what happened, when, where, and the immediate actions taken.</p>
                     <div class="row g-3">
@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-md-4">
                             <label asp-for="EventType" class="form-label">
-                                Event Type
+                                @L["Event Type"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="eventtype"
                                         aria-label="Event Type guidance">?</button>
                             </label>
@@ -56,9 +56,9 @@
                         </div>
                         <div class="col-md-4">
                             <label asp-for="Severity" class="form-label">
-                                Severity
+                                @L["Severity"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="severity"
-                                        aria-label="Severity guidance">?</button>
+                                        aria-label="@L["Severity guidance"]">?</button>
                             </label>
                             <select asp-for="Severity" class="form-select"
                                     asp-items="Html.GetEnumSelectList<OpenQMS.Models.DeviationSeverity>()">
@@ -68,7 +68,7 @@
 
                         <!-- Products picker -->
                         <div class="col-md-6">
-                            <label class="form-label">Products</label>
+                            <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select">
                                 <option value="">-- Add Product --</option>
                                 @foreach (var p in products)
@@ -80,7 +80,7 @@
 
                         <!-- Processes picker -->
                         <div class="col-md-6">
-                            <label class="form-label">Processes</label>
+                            <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select">
                                 <option value="">-- Add Process --</option>
                                 @foreach (var p in processes)
@@ -92,7 +92,7 @@
 
                         <!-- Assets picker -->
                         <div class="col-md-6">
-                            <label class="form-label">Assets</label>
+                            <label class="form-label">@L["Assets"]</label>
                             <select id="assetDropdown" class="form-select">
                                 <option value="">-- Add Asset --</option>
                                 @foreach (var p in assets)
@@ -104,7 +104,7 @@
 
                         <!-- Materials picker -->
                         <div class="col-md-6">
-                            <label class="form-label">Materials</label>
+                            <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select">
                                 <option value="">-- Add Material --</option>
                                 @foreach (var p in materials)
@@ -116,7 +116,7 @@
 
                         <!-- Suppliers picker -->
                         <div class="col-md-6">
-                            <label class="form-label">Suppliers</label>
+                            <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select">
                                 <option value="">-- Add Supplier --</option>
                                 @foreach (var p in suppliers)
@@ -128,7 +128,7 @@
 
                         <div class="col-12">
                             <label asp-for="Identification" class="form-label">
-                                Identification
+                                @L["Identification"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="identification"
                                         aria-label="Identification guidance">?</button>
                             </label>
@@ -140,8 +140,8 @@
             </div>
 
             <div class="d-flex gap-2">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+                <input type="submit" value="@L["Create"]" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary">@L["Back to List"]</a>
             </div>
         </form>
     </div>
@@ -162,11 +162,11 @@
         </ul>
     </div>
     <div id="help-severity">
-        <p class="mb-1"><strong>Severity Definitions</strong></p>
+        <p class="mb-1"><strong>@L["Severity Definitions"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li><strong>Critical</strong> — Directly impacts patient safety, product sterility or efficacy. May require immediate batch quarantine, recall or regulatory reporting.</li>
-            <li><strong>Major</strong> — Significant departure from GMP or SOPs. Indirect potential impact on product quality. Requires full investigation and CAPA.</li>
-            <li><strong>Minor</strong> — Low-risk departure with no direct impact on product quality or patient safety. Administrative or documentation in nature.</li>
+            <li><strong>@L["Critical"]</strong> — Directly impacts patient safety, product sterility or efficacy. May require immediate batch quarantine, recall or regulatory reporting.</li>
+            <li><strong>@L["Major"]</strong> — Significant departure from GMP or SOPs. Indirect potential impact on product quality. Requires full investigation and CAPA.</li>
+            <li><strong>@L["Minor"]</strong> — Low-risk departure with no direct impact on product quality or patient safety. Administrative or documentation in nature.</li>
         </ul>
     </div>
     <div id="help-identification">

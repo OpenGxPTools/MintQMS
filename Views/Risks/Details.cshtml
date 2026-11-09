@@ -108,11 +108,11 @@ else if (isApproaching)
 {
     <div class="card mb-3 border-danger">
         <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+            <strong><i class="fas fa-lock-open me-2"></i>@L["Administrative Controls"]</strong>
         </div>
         <div class="card-body py-2">
             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
-                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+                <i class="fas fa-lock-open me-1"></i>@L["Administratively Reopen"]
             </button>
         </div>
     </div>
@@ -123,7 +123,7 @@ else if (isApproaching)
 {
     <div class="card mb-4">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-tasks me-2"></i>Workflow Actions</strong>
+            <strong><i class="fas fa-tasks me-2"></i>@L["Workflow Actions"]</strong>
             <span class="small">Current: @statusLabel</span>
         </div>
         <div class="card-body">
@@ -160,7 +160,7 @@ else if (isApproaching)
                     Then submit for Quality Manager review and closure.
                 </p>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submitForReviewModal">
-                    <i class="fas fa-paper-plane me-1"></i>Submit for Review
+                    <i class="fas fa-paper-plane me-1"></i>@L["Submit for Review"]
                 </button>
             }
             else if (awaitingQMClose)
@@ -188,9 +188,9 @@ else if (isApproaching)
 
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-3" id="detailTabs">
-    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">Overview</button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAttachments">Attachments <span class="badge bg-secondary">@attachCount</span></button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAuditLog">Audit Log <span class="badge bg-secondary">@auditCount</span></button></li>
+    <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">@L["Overview"]</button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAttachments">@L["Attachments"] <span class="badge bg-secondary">@attachCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAuditLog">@L["Audit Log"] <span class="badge bg-secondary">@auditCount</span></button></li>
 </ul>
 
 <div class="tab-content">
@@ -201,36 +201,36 @@ else if (isApproaching)
     <!-- Context -->
     <h6 class="text-muted text-uppercase small mb-2">Context</h6>
     <dl class="row mb-4">
-        <dt class="col-sm-3">Risk ID</dt>
+        <dt class="col-sm-3">@L["Risk ID"]</dt>
         <dd class="col-sm-9"><strong>@Model.RiskId</strong></dd>
-        <dt class="col-sm-3">Title</dt>
+        <dt class="col-sm-3">@L["Title"]</dt>
         <dd class="col-sm-9">@Model.Title</dd>
-        <dt class="col-sm-3">Description</dt>
+        <dt class="col-sm-3">@L["Description"]</dt>
         <dd class="col-sm-9">@Model.Description</dd>
-        <dt class="col-sm-3">Category</dt>
+        <dt class="col-sm-3">@L["Category"]</dt>
         <dd class="col-sm-9">@Html.DisplayFor(m => m.Category)</dd>
         <dt class="col-sm-3">Risk Owner</dt>
         <dd class="col-sm-9">@(Model.RiskOwner ?? "-")</dd>
-        <dt class="col-sm-3">Linked To</dt>
+        <dt class="col-sm-3">@L["Linked To"]</dt>
         <dd class="col-sm-9">@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</dd>
-        <dt class="col-sm-3">Identified By</dt>
+        <dt class="col-sm-3">@L["Identified By"]</dt>
         <dd class="col-sm-9">@Model.IdentifiedBy on @Model.IdentifiedOn.ToSite().ToShortDateString()</dd>
     </dl>
 
     <hr />
 
     <!-- Initial Risk Assessment -->
-    <h6 class="text-muted text-uppercase small mb-2">Initial Risk Assessment</h6>
+    <h6 class="text-muted text-uppercase small mb-2">@L["Initial Risk Assessment"]</h6>
     <div class="row mb-4">
         <div class="col-md-5">
             <dl class="row">
-                <dt class="col-sm-6">Severity</dt>
+                <dt class="col-sm-6">@L["Severity"]</dt>
                 <dd class="col-sm-6">@Model.Severity</dd>
                 <dt class="col-sm-6">Probability</dt>
                 <dd class="col-sm-6">@Model.Probability</dd>
                 <dt class="col-sm-6">Detectability</dt>
                 <dd class="col-sm-6">@Model.Detectability</dd>
-                <dt class="col-sm-6">Initial RPN</dt>
+                <dt class="col-sm-6">@L["Initial RPN"]</dt>
                 <dd class="col-sm-6">
                     <span class="badge @rpnBadge fs-6">@Model.InitialRPN</span>
                     <span class="ms-2 small">@GetRPNLevel(Model.InitialRPN)</span>
@@ -251,7 +251,7 @@ else if (isApproaching)
     {
         <hr />
         <!-- Assessment -->
-        <h6 class="text-muted text-uppercase small mb-2">Assessment</h6>
+        <h6 class="text-muted text-uppercase small mb-2">@L["Assessment"]</h6>
         <dl class="row mb-4">
             <dt class="col-sm-3">Submitted By</dt>
             <dd class="col-sm-9">@(Model.AssessedBy ?? "-")@(Model.AssessedOn.HasValue ? $" on {Model.AssessedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
@@ -259,7 +259,7 @@ else if (isApproaching)
             <dd class="col-sm-9">@(Model.AcceptedBy ?? "-")@(Model.AcceptedOn.HasValue ? $" on {Model.AcceptedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
             @if (!string.IsNullOrWhiteSpace(Model.AssessmentNotes))
             {
-                <dt class="col-sm-3">Assessment Notes</dt>
+                <dt class="col-sm-3">@L["Assessment Notes"]</dt>
                 <dd class="col-sm-9">@Model.AssessmentNotes</dd>
             }
         </dl>
@@ -269,11 +269,11 @@ else if (isApproaching)
     {
         <hr />
         <!-- Mitigation -->
-        <h6 class="text-muted text-uppercase small mb-2">Mitigation</h6>
+        <h6 class="text-muted text-uppercase small mb-2">@L["Mitigation"]</h6>
         <dl class="row mb-4">
             <dt class="col-sm-3">Mitigation Strategy</dt>
             <dd class="col-sm-9">@(Model.MitigationStrategy ?? "-")</dd>
-            <dt class="col-sm-3">Target Completion</dt>
+            <dt class="col-sm-3">@L["Target Completion"]</dt>
             <dd class="col-sm-9">@(Model.TargetCompletionDate?.ToShortDateString() ?? "-")</dd>
             <dt class="col-sm-3">Actual Completion</dt>
             <dd class="col-sm-9">@(Model.ActualCompletionDate?.ToShortDateString() ?? "-")</dd>
@@ -363,14 +363,14 @@ else if (isApproaching)
         <dl class="row mb-4">
             <dt class="col-sm-3">Monitoring Plan</dt>
             <dd class="col-sm-9">@(Model.MonitoringPlan ?? "-")</dd>
-            <dt class="col-sm-3">Next Review Date</dt>
+            <dt class="col-sm-3">@L["Next Review Date"]</dt>
             <dd class="col-sm-9">@(Model.NextReviewDate?.ToShortDateString() ?? "-")</dd>
         </dl>
     }
 
     <div class="mt-3 d-flex gap-2">
-        <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
-        <a asp-action="ExportRiskDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>Export PDF</a>
+        <a asp-action="ExportDetailInCSV" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>@L["Export CSV"]</a>
+        <a asp-action="ExportRiskDetail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>@L["Export PDF"]</a>
     </div>
 
     @if (atOrPastPendingReview || !string.IsNullOrEmpty(Model.ReviewConclusion) || !string.IsNullOrEmpty(Model.ClosedBy))
@@ -384,7 +384,7 @@ else if (isApproaching)
                 <dt class="col-sm-3">Review Conclusion</dt>
                 <dd class="col-sm-9">@Model.ReviewConclusion</dd>
             }
-            <dt class="col-sm-3">Closed By</dt>
+            <dt class="col-sm-3">@L["Closed By"]</dt>
             <dd class="col-sm-9">@(Model.ClosedBy ?? "-")@(Model.ClosedOn.HasValue ? $" on {Model.ClosedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
         </dl>
     }
@@ -396,22 +396,22 @@ else if (isApproaching)
     @if (!isClosed && !awaitingQMAssess && !awaitingQMClose)
     {
         <div class="card mb-3">
-            <div class="card-header">Upload Attachment</div>
+            <div class="card-header">@L["Upload Attachment"]</div>
             <div class="card-body">
                 <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="riskId" value="@Model.Id" />
                     <div class="row g-2 align-items-end">
                         <div class="col-md-5">
-                            <label class="form-label">File</label>
+                            <label class="form-label">@L["File"]</label>
                             <input type="file" name="file" class="form-control" required />
                         </div>
                         <div class="col-md-5">
-                            <label class="form-label">Description</label>
-                            <input type="text" name="description" class="form-control" placeholder="Optional description" />
+                            <label class="form-label">@L["Description"]</label>
+                            <input type="text" name="description" class="form-control" placeholder="@L["Optional description"]" />
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Upload</button>
+                            <button type="submit" class="btn btn-primary w-100">@L["Upload"]</button>
                         </div>
                     </div>
                 </form>
@@ -423,7 +423,7 @@ else if (isApproaching)
     {
         <table class="table table-sm">
             <thead>
-                <tr><th>File</th><th>Description</th><th>Uploaded By</th><th>Date</th><th>Size</th><th></th></tr>
+                <tr><th>@L["File"]</th><th>@L["Description"]</th><th>@L["Uploaded By"]</th><th>@L["Date"]</th><th>@L["Size"]</th><th></th></tr>
             </thead>
             <tbody>
                 @foreach (var att in Model.Attachments.OrderByDescending(a => a.UploadedDate))
@@ -435,14 +435,14 @@ else if (isApproaching)
                         <td>@att.UploadedDate.ToSite().ToShortDateString()</td>
                         <td>@(att.FileSize / 1024) KB</td>
                         <td class="text-end">
-                            <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">Download</a>
+                            <a asp-action="DownloadAttachment" asp-route-id="@att.Id" class="btn btn-sm btn-outline-primary">@L["Download"]</a>
                             @if (!isClosed && !awaitingQMAssess && !awaitingQMClose)
                             {
                                 <form asp-action="DeleteAttachment" method="post" class="d-inline" data-delete-reason="attachment">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@att.Id" />
                                     <input type="hidden" name="riskId" value="@Model.Id" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">@L["Delete"]</button>
                                 </form>
                             }
                         </td>
@@ -453,7 +453,7 @@ else if (isApproaching)
     }
     else
     {
-        <p class="text-muted">No attachments.</p>
+        <p class="text-muted">@L["No attachments."]</p>
     }
     <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadAttachment", Noun: "attachments")' />
 </div>
@@ -469,13 +469,13 @@ else if (isApproaching)
 <div class="mt-3 d-flex gap-3">
     @if (canEdit)
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>@L["Edit"]</a>
     }
     @if (User.IsInRole("Administrator") && isIdentification)
     {
-        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Delete</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>@L["Delete"]</a>
     }
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>@L["Back to List"]</a>
 </div>
 
 <!-- ── Workflow Modals ────────────────────────────────────────────────── -->
@@ -489,12 +489,12 @@ else if (isApproaching)
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <p class="text-muted small">This will lock the record and send it to the Quality Manager for formal assessment. Enter your credentials to confirm.</p>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-info">Submit for Assessment</button>
                 </div>
             </form>
@@ -511,13 +511,13 @@ else if (isApproaching)
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <p class="text-muted small">Accepting will move this risk to Mitigation. The risk scoring is locked from this point.</p>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Assessment Notes</label><textarea name="assessmentNotes" class="form-control" rows="3" placeholder="Document the basis for accepting this risk assessment..."></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Assessment Notes"]</label><textarea name="assessmentNotes" class="form-control" rows="3" placeholder="Document the basis for accepting this risk assessment..."></textarea></div>
                     <div class="mb-3"><label class="form-label">Additional Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-success">Accept Assessment</button>
                 </div>
             </form>
@@ -531,12 +531,12 @@ else if (isApproaching)
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <p class="text-muted small">This will return the risk to Identification for the submitter to revise. The submission signature will be cleared.</p>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                     <div class="mb-3"><label class="form-label">Reason for Return (required)</label><textarea name="notes" class="form-control" rows="3" required placeholder="Explain what needs to be revised..."></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-danger">Return for Revision</button>
                 </div>
             </form>
@@ -548,7 +548,7 @@ else if (isApproaching)
 {
     <div class="modal fade" id="submitForReviewModal" tabindex="-1">
         <div class="modal-dialog"><div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Submit for Review</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="modal-title">@L["Submit for Review"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <form asp-action="SubmitForReview" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
@@ -558,13 +558,13 @@ else if (isApproaching)
                         <li>Residual risk scores (S/P/D) have been assessed</li>
                         <li>Risk acceptance decision and justification are recorded</li>
                     </ul>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Submit for Review</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-primary">@L["Submit for Review"]</button>
                 </div>
             </form>
         </div></div>
@@ -580,8 +580,8 @@ else if (isApproaching)
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <p class="text-muted small">Closing this risk is a final action. A Review Conclusion is required and will be permanently recorded.</p>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                     <div class="mb-3">
                         <label class="form-label">Review Conclusion <span class="text-danger">*</span></label>
                         <textarea name="reviewConclusion" class="form-control" rows="4" required placeholder="Document the outcome of the review and basis for closure..."></textarea>
@@ -589,7 +589,7 @@ else if (isApproaching)
                     <div class="mb-3"><label class="form-label">Additional Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-success">Close Risk</button>
                 </div>
             </form>
@@ -603,12 +603,12 @@ else if (isApproaching)
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <p class="text-muted small">This will return the risk to Mitigation for further work. The review submission signature will be cleared.</p>
-                    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="pwd" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
+                    <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                     <div class="mb-3"><label class="form-label">Reason for Return (required)</label><textarea name="notes" class="form-control" rows="3" required placeholder="Explain what needs to be revised in the mitigation..."></textarea></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     <button type="submit" class="btn btn-danger">Return to Mitigation</button>
                 </div>
             </form>
@@ -623,31 +623,31 @@ else if (isApproaching)
             <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>@L["Administrative Reopen"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>Warning:</strong> Administratively reopening a completed record reverts it to the Mitigation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.
+                        <strong>@L["Warning:"]</strong> Administratively reopening a completed record reverts it to the Mitigation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this record..."></textarea>
+                        <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" required placeholder="@L["Provide a detailed justification for reopening this record..."]"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to authorise this action."]</p>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Password"] <span class="text-danger">*</span></label>
                         <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-danger">@L["Reopen Record"]</button>
                 </div>
             </form>
         </div></div>

@@ -53,7 +53,7 @@
 @if (isManagerOrAdmin && Model.Status == Training.TrainingStatus.Scheduled)
 {
     <div class="card border-primary mb-3">
-        <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> Workflow Actions</div>
+        <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> @L["Workflow Actions"]</div>
         <div class="card-body d-flex gap-2 flex-wrap">
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#completeModal">
                 <i class="fas fa-check-circle me-1"></i>Mark as Completed
@@ -69,11 +69,11 @@
 {
     <div class="card border-danger mb-3">
         <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-lock-open me-2"></i>Administrative Controls</strong>
+            <strong><i class="fas fa-lock-open me-2"></i>@L["Administrative Controls"]</strong>
         </div>
         <div class="card-body py-2">
             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminReopenModal">
-                <i class="fas fa-lock-open me-1"></i>Administratively Reopen
+                <i class="fas fa-lock-open me-1"></i>@L["Administratively Reopen"]
             </button>
         </div>
     </div>
@@ -81,16 +81,16 @@
 
 <ul class="nav nav-tabs mb-3" id="detailTabs" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="tab-overview" data-bs-toggle="tab" data-bs-target="#pane-overview" type="button" role="tab">Overview</button>
+        <button class="nav-link active" id="tab-overview" data-bs-toggle="tab" data-bs-target="#pane-overview" type="button" role="tab">@L["Overview"]</button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="tab-trainees" data-bs-toggle="tab" data-bs-target="#pane-trainees" type="button" role="tab">
-            Trainees <span class="badge bg-secondary ms-1">@traineeCount</span>
+            @L["Trainees"] <span class="badge bg-secondary ms-1">@traineeCount</span>
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="tab-auditlog" data-bs-toggle="tab" data-bs-target="#pane-auditlog" type="button" role="tab">
-            Audit Log <span class="badge bg-secondary ms-1">@((ViewBag.AuditLogs as IEnumerable<OpenQMS.Models.MasterDataAuditLog>)?.Count() ?? 0)</span>
+            @L["Audit Log"] <span class="badge bg-secondary ms-1">@((ViewBag.AuditLogs as IEnumerable<OpenQMS.Models.MasterDataAuditLog>)?.Count() ?? 0)</span>
         </button>
     </li>
 </ul>
@@ -99,22 +99,22 @@
     <!-- Overview Tab -->
     <div class="tab-pane fade show active" id="pane-overview" role="tabpanel">
         <div class="card mb-3">
-            <div class="card-header">Training Details</div>
+            <div class="card-header">@L["Training Details"]</div>
             <div class="card-body">
                 <dl class="row mb-0">
-                    <dt class="col-sm-3">Training ID</dt>
+                    <dt class="col-sm-3">@L["Training ID"]</dt>
                     <dd class="col-sm-9">@Model.TrainingId</dd>
 
-                    <dt class="col-sm-3">Name</dt>
+                    <dt class="col-sm-3">@L["Name"]</dt>
                     <dd class="col-sm-9">@Model.Name</dd>
 
-                    <dt class="col-sm-3">Description</dt>
+                    <dt class="col-sm-3">@L["Description"]</dt>
                     <dd class="col-sm-9">@(Model.Description ?? "-")</dd>
 
-                    <dt class="col-sm-3">Date Created</dt>
+                    <dt class="col-sm-3">@L["Date Created"]</dt>
                     <dd class="col-sm-9">@Model.CreatedOn.ToSite().ToString("dd/MM/yyyy HH:mm")</dd>
 
-                    <dt class="col-sm-3">Document</dt>
+                    <dt class="col-sm-3">@L["Document"]</dt>
                     <dd class="col-sm-9">
                         @{
                             var policyDoc = ViewBag.PolicyDocument as OpenQMS.Models.AppDocument;
@@ -137,10 +137,10 @@
                         }
                     </dd>
 
-                    <dt class="col-sm-3">Trainer</dt>
+                    <dt class="col-sm-3">@L["Trainer"]</dt>
                     <dd class="col-sm-9">@(Model.TrainerEmail ?? "-")</dd>
 
-                    <dt class="col-sm-3">Due Date</dt>
+                    <dt class="col-sm-3">@L["Due Date"]</dt>
                     <dd class="col-sm-9">
                         @if (Model.DueDate.HasValue)
                         {
@@ -149,13 +149,13 @@
                                          && Model.Status != Training.TrainingStatus.Cancelled;
                             <span class="@(isOverdue ? "text-danger fw-semibold" : "")">
                                 @Model.DueDate.Value.ToString("dd/MM/yyyy")
-                                @if (isOverdue) { <span class="badge bg-danger ms-1">Overdue</span> }
+                                @if (isOverdue) { <span class="badge bg-danger ms-1">@L["Overdue"]</span> }
                             </span>
                         }
                         else { <span class="text-muted">—</span> }
                     </dd>
 
-                    <dt class="col-sm-3">Status</dt>
+                    <dt class="col-sm-3">@L["Status"]</dt>
                     <dd class="col-sm-9"><span class="badge @statusBadge">@L.Enum(Model.Status)</span></dd>
                 </dl>
             </div>
@@ -178,13 +178,13 @@
                         else { <span>-</span> }
                     </dd>
 
-                    <dt class="col-sm-3">Completed On</dt>
+                    <dt class="col-sm-3">@L["Completed On"]</dt>
                     <dd class="col-sm-9">@(Model.CompletedOn.HasValue ? Model.CompletedOn.Value.ToSite().ToString("dd/MM/yyyy HH:mm") : "-")</dd>
 
-                    <dt class="col-sm-3">Completion Notes</dt>
+                    <dt class="col-sm-3">@L["Completion Notes"]</dt>
                     <dd class="col-sm-9">@(Model.CompletionNotes ?? "-")</dd>
 
-                    <dt class="col-sm-3">Retain Until</dt>
+                    <dt class="col-sm-3">@L["Retain Until"]</dt>
                     <dd class="col-sm-9">@(Model.RetainUntil.HasValue ? Model.RetainUntil.Value.ToString("dd/MM/yyyy") : "-")</dd>
                 </dl>
             </div>
@@ -226,13 +226,13 @@
             <table class="table table-sm align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>Trainee</th>
+                        <th>@L["Trainee"]</th>
                         <th>Training Status</th>
                         @if (isCA) { <th>Doc Read</th> }
                         <th>@(isCA ? "Verified On" : "Acknowledged On")</th>
-                        @if (isCA) { <th>Notes</th> }
-                        <th>Attachments</th>
-                        @if (isManagerOrAdmin && isCA) { <th>Actions</th> }
+                        @if (isCA) { <th>@L["Notes"]</th> }
+                        <th>@L["Attachments"]</th>
+                        @if (isManagerOrAdmin && isCA) { <th>@L["Actions"]</th> }
                     </tr>
                 </thead>
                 <tbody>
@@ -294,7 +294,7 @@
                                     <button class="btn btn-outline-secondary btn-sm upload-btn"
                                             data-bs-toggle="modal" data-bs-target="#uploadModal"
                                             data-ut-id="@ut.Id">
-                                        <i class="bi bi-upload me-1"></i>Upload
+                                        <i class="bi bi-upload me-1"></i>@L["Upload"]
                                     </button>
                                 }
                                 @if (isTrainingLocked && (ut.Attachments == null || !ut.Attachments.Any()))
@@ -349,9 +349,9 @@
 <div class="mt-3 d-flex gap-3">
     @if (isManagerOrAdmin && Model.Status != Training.TrainingStatus.Completed)
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>@L["Edit"]</a>
     }
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>@L["Back to List"]</a>
 </div>
 
 <!-- Complete Modal -->
@@ -369,7 +369,7 @@
                     <div class="modal-body">
                         <p>You are marking <strong>@Model.TrainingId — @Model.Name</strong> as Completed.</p>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Completion Notes <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">@L["Completion Notes"] <span class="text-danger">*</span></label>
                             <textarea name="CompletionNotes" class="form-control" rows="4" required
                                       placeholder="Describe the training conducted, outcomes, and any relevant observations…"></textarea>
                             <div class="invalid-feedback">Completion Notes are required.</div>
@@ -377,16 +377,16 @@
                         <hr />
                         <p class="text-muted small mb-2">Enter your credentials to sign this action.</p>
                         <div class="mb-3">
-                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Email"] <span class="text-danger">*</span></label>
                             <input type="email" name="InputEmail" class="form-control" required autocomplete="email" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Password"] <span class="text-danger">*</span></label>
                             <input type="password" name="InputPassword" class="form-control" required autocomplete="current-password" />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                         <button type="submit" class="btn btn-success" id="completeSubmitBtn">
                             <i class="fas fa-check-circle me-1"></i>Confirm Completion
                         </button>
@@ -404,12 +404,12 @@
             <form asp-action="AdminReopen" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>Administrative Reopen</h5>
+                    <h5 class="modal-title"><i class="fas fa-lock-open me-2"></i>@L["Administrative Reopen"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>Warning:</strong> Administratively reopening a completed training reverts it to Scheduled, clears the completion record, and removes the retention date. This action is logged in the audit trail and requires your credentials.
+                        <strong>@L["Warning:"]</strong> Administratively reopening a completed training reverts it to Scheduled, clears the completion record, and removes the retention date. This action is logged in the audit trail and requires your credentials.
                     </div>
                     @if (Model.RetentionExtended == true)
                     {
@@ -418,23 +418,23 @@
                         </div>
                     }
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Reason / Justification <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>
                         <textarea name="reason" class="form-control" rows="4" required placeholder="Provide a detailed justification for reopening this training record..."></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to authorise this action."]</p>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Password"] <span class="text-danger">*</span></label>
                         <input type="password" name="pwd" class="form-control" required autocomplete="current-password" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Reopen Record</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-danger">@L["Reopen Record"]</button>
                 </div>
             </form>
         </div></div>
@@ -458,23 +458,23 @@
                     <div class="modal-body">
                         <p id="vcModalBody"></p>
                         <div class="mb-3">
-                            <label class="form-label">Notes</label>
+                            <label class="form-label">@L["Notes"]</label>
                             <textarea name="Notes" class="form-control" rows="3"
                                       placeholder="Optional notes on competency assessment outcome…"></textarea>
                         </div>
                         <hr />
                         <p class="text-muted small mb-2">Enter your credentials to confirm.</p>
                         <div class="mb-3">
-                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Email"] <span class="text-danger">*</span></label>
                             <input type="email" name="InputEmail" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Password"] <span class="text-danger">*</span></label>
                             <input type="password" name="InputPassword" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                         <button type="submit" id="vcSubmitBtn" class="btn btn-success">Confirm</button>
                     </div>
                 </form>
@@ -498,22 +498,22 @@
                     <div class="modal-body">
                         <p>You are cancelling <strong>@Model.TrainingId — @Model.Name</strong>. This action cannot be undone.</p>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">@L["Reason"] <span class="text-danger">*</span></label>
                             <textarea name="reason" class="form-control" rows="3" required placeholder="Provide a reason for cancellation..."></textarea>
                         </div>
                         <hr />
-                        <p class="text-muted small mb-2">Enter your credentials to authorise this action.</p>
+                        <p class="text-muted small mb-2">@L["Enter your credentials to authorise this action."]</p>
                         <div class="mb-3">
-                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Email"] <span class="text-danger">*</span></label>
                             <input type="email" name="email" class="form-control" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Password"] <span class="text-danger">*</span></label>
                             <input type="password" name="pwd" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Close"]</button>
                         <button type="submit" class="btn btn-danger"><i class="fas fa-ban me-1"></i>Confirm Cancellation</button>
                     </div>
                 </form>
@@ -530,19 +530,19 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="uploadUserTrainingId" name="userTrainingId" />
                 <div class="modal-header bg-secondary text-white">
-                    <h5 class="modal-title"><i class="bi bi-upload me-1"></i>Upload Attachment</h5>
+                    <h5 class="modal-title"><i class="bi bi-upload me-1"></i>@L["Upload Attachment"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">File <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["File"] <span class="text-danger">*</span></label>
                         <input type="file" name="file" class="form-control" accept="@UploadRules.Accept" required />
                         <div class="form-text">Max 10 MB. Accepted: @UploadRules.AcceptedLabel.</div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-cloud-upload me-1"></i>Upload</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-cloud-upload me-1"></i>@L["Upload"]</button>
                 </div>
             </form>
         </div>

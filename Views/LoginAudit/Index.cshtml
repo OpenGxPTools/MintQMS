@@ -49,9 +49,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <input type="text" name="userName" value="@ViewBag.UserName" class="form-control form-control-sm" placeholder="Filter by username" />
             </div>
             <div class="col-sm-4 col-lg-2">
-                <label class="form-label small fw-semibold text-uppercase text-muted">Action</label>
+                <label class="form-label small fw-semibold text-uppercase text-muted">@L["Action"]</label>
                 <select name="actionFilter" class="form-select form-select-sm">
-                    <option value="">All</option>
+                    <option value="">@L["All"]</option>
                     <option value="Login"        selected="@(ViewBag.ActionFilter == "Login"        ? "selected" : null)">Login</option>
                     <option value="Logout"       selected="@(ViewBag.ActionFilter == "Logout"       ? "selected" : null)">Logout</option>
                     <option value="Failed Login" selected="@(ViewBag.ActionFilter == "Failed Login" ? "selected" : null)">Failed Login</option>
@@ -59,16 +59,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </select>
             </div>
             <div class="col-sm-4 col-lg-2">
-                <label class="form-label small fw-semibold text-uppercase text-muted">From</label>
+                <label class="form-label small fw-semibold text-uppercase text-muted">@L["From"]</label>
                 <input type="date" name="from" value="@ViewBag.From" class="form-control form-control-sm" />
             </div>
             <div class="col-sm-4 col-lg-2">
-                <label class="form-label small fw-semibold text-uppercase text-muted">To</label>
+                <label class="form-label small fw-semibold text-uppercase text-muted">@L["To"]</label>
                 <input type="date" name="to" value="@ViewBag.To" class="form-control form-control-sm" />
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-                <a asp-action="Index" class="btn btn-sm btn-outline-secondary ms-1">Clear</a>
+                <button type="submit" class="btn btn-sm btn-primary">@L["Filter"]</button>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary ms-1">@L["Clear"]</a>
             </div>
         </form>
     </div>
@@ -82,7 +82,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <tr>
                     <th class="ps-3">Timestamp (UTC)</th>
                     <th>Username</th>
-                    <th>Action</th>
+                    <th>@L["Action"]</th>
                     <th>IP Address</th>
                     <th class="pe-3">Browser / User Agent</th>
                 </tr>

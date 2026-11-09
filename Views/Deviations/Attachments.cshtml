@@ -11,7 +11,7 @@
 {
     <div class="row">
         <div class="col-md-8">
-            <h4>Upload New Attachment</h4>
+            <h4>@L["Upload New Attachment"]</h4>
             <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="deviationId" value="@Model.Id" />
                 
@@ -25,7 +25,7 @@
                     <input type="text" class="form-control" name="description" placeholder="e.g., Investigation Report" />
                 </div>
                 
-                <button type="submit" class="btn btn-primary">Upload</button>
+                <button type="submit" class="btn btn-primary">@L["Upload"]</button>
                 <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Back to Deviation</a>
             </form>
         </div>
@@ -34,7 +34,7 @@
 else
 {
     <div class="alert alert-warning">
-        <strong>Record Approved:</strong> This deviation is approved. No new attachments can be uploaded.
+        <strong>@L["Record Approved:"]</strong> This deviation is approved. No new attachments can be uploaded.
         <br />
         <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary mt-2">Back to Deviation</a>
     </div>
@@ -49,12 +49,12 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>File Name</th>
-                <th>Description</th>
-                <th>Size</th>
-                <th>Uploaded By</th>
-                <th>Uploaded Date</th>
-                <th>Actions</th>
+                <th>@L["File Name"]</th>
+                <th>@L["Description"]</th>
+                <th>@L["Size"]</th>
+                <th>@L["Uploaded By"]</th>
+                <th>@L["Uploaded Date"]</th>
+                <th>@L["Actions"]</th>
             </tr>
         </thead>
         <tbody>
@@ -67,14 +67,14 @@ else
                     <td>@attachment.UploadedBy</td>
                     <td>@attachment.UploadedDate.ToSite().ToString("yyyy-MM-dd HH:mm")</td>
                     <td>
-                        <a asp-action="ViewAttachment" asp-route-id="@attachment.Id" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-eye me-1"></i>View</a>
-                        <a asp-action="DownloadAttachment" asp-route-id="@attachment.Id" class="btn btn-sm btn-primary">Download</a>
+                        <a asp-action="ViewAttachment" asp-route-id="@attachment.Id" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-eye me-1"></i>@L["View"]</a>
+                        <a asp-action="DownloadAttachment" asp-route-id="@attachment.Id" class="btn btn-sm btn-primary">@L["Download"]</a>
                         @if (Model.Status != OpenQMS.Models.Deviation.DeviationStatus.Approved)
                         {
                             <form asp-action="DeleteAttachment" method="post" style="display:inline;" data-delete-reason="attachment">
                                 <input type="hidden" name="id" value="@attachment.Id" />
                                 <input type="hidden" name="deviationId" value="@Model.Id" />
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-danger">@L["Delete"]</button>
                             </form>
                         }
                     </td>
@@ -85,5 +85,5 @@ else
 }
 else
 {
-    <p class="text-muted">No attachments yet.</p>
+    <p class="text-muted">@L["No attachments yet."]</p>
 }

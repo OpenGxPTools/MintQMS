@@ -12,7 +12,7 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">Document Review Register</h4>
     <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-arrow-left me-1"></i>Dashboard
+        <i class="bi bi-arrow-left me-1"></i>@L["Dashboard"]
     </a>
 </div>
 
@@ -26,7 +26,7 @@
     <div class="col-sm-6 col-md-3">
         <div class="card border-0 shadow-sm text-center" style="border-left: 4px solid @(overdueCount > 0 ? "#dc3545" : "#6c757d") !important;">
             <div class="card-body py-3">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Overdue</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Overdue"]</p>
                 <h2 class="fw-bold mb-0 @(overdueCount > 0 ? "text-danger" : "")">@overdueCount</h2>
                 <p class="text-muted small mb-0">past review date</p>
             </div>
@@ -64,9 +64,9 @@
 @if (Model.Any())
 {
     <div class="alert alert-light border small mb-4">
-        <strong>Colour coding:</strong>
-        <span class="badge bg-danger me-1">Red</span> Overdue (past review date) &nbsp;
-        <span class="badge bg-warning text-dark me-1">Amber</span> Due within 30 days &nbsp;
+        <strong>@L["Colour coding:"]</strong>
+        <span class="badge bg-danger me-1">@L["Red"]</span> Overdue (past review date) &nbsp;
+        <span class="badge bg-warning text-dark me-1">@L["Amber"]</span> Due within 30 days &nbsp;
         <span class="badge bg-success me-1">Green</span> Current (more than 30 days remaining)
     </div>
 
@@ -76,15 +76,15 @@
                 <table class="table table-sm table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>Document ID</th>
-                            <th>Title</th>
-                            <th>Category</th>
+                            <th>@L["Document ID"]</th>
+                            <th>@L["Title"]</th>
+                            <th>@L["Category"]</th>
                             <th>Doc Type</th>
-                            <th>Version</th>
-                            <th class="text-nowrap">Approved On</th>
-                            <th class="text-nowrap">Review Due</th>
-                            <th class="text-nowrap">Days</th>
-                            <th>Status</th>
+                            <th>@L["Version"]</th>
+                            <th class="text-nowrap">@L["Approved On"]</th>
+                            <th class="text-nowrap">@L["Review Due"]</th>
+                            <th class="text-nowrap">@L["Days"]</th>
+                            <th>@L["Status"]</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -113,7 +113,7 @@
                                 <td><span class="badge @badgeClass">@statusText</span></td>
                                 <td>
                                     <a asp-action="Details" asp-route-id="@d.Id"
-                                       class="btn btn-outline-secondary btn-sm">View</a>
+                                       class="btn btn-outline-secondary btn-sm">@L["View"]</a>
                                 </td>
                             </tr>
                         }

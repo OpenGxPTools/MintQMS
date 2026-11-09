@@ -25,20 +25,20 @@
     </div>
 </div>
 <hr />
-<h5 class="text-danger">Are you sure you want to delete this?</h5>
+<h5 class="text-danger">@L["Are you sure you want to delete this?"]</h5>
 
 <div class="card mb-4">
     <div class="card-body">
         <dl class="row">
-            <dt class="col-sm-4">Audit ID</dt>
+            <dt class="col-sm-4">@L["Audit ID"]</dt>
             <dd class="col-sm-8">@Model.AuditId</dd>
-            <dt class="col-sm-4">Title</dt>
+            <dt class="col-sm-4">@L["Title"]</dt>
             <dd class="col-sm-8">@Model.Title</dd>
-            <dt class="col-sm-4">Type</dt>
+            <dt class="col-sm-4">@L["Type"]</dt>
             <dd class="col-sm-8">@Model.Type</dd>
-            <dt class="col-sm-4">Linked Records</dt>
+            <dt class="col-sm-4">@L["Linked Records"]</dt>
             <dd class="col-sm-8">@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</dd>
-            <dt class="col-sm-4">Status</dt>
+            <dt class="col-sm-4">@L["Status"]</dt>
             <dd class="col-sm-8">@L.Enum(Model.Status)</dd>
         </dl>
     </div>
@@ -48,7 +48,7 @@
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
     <div class="d-flex gap-2">
-        <input type="submit" value="Delete" class="btn btn-danger" />
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        <input type="submit" value="@L["Delete"]" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </form>

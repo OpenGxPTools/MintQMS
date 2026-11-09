@@ -16,7 +16,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">New Complaint</h4>
+        <h4 class="mb-0">@L["New Complaint"]</h4>
         <small class="text-muted">Complete the intake details and submit to open the complaint record.</small>
     </div>
 </div>
@@ -39,9 +39,9 @@
                         </div>
                         <div class="col-md-4">
                             <label asp-for="Severity" class="form-label">
-                                Severity
+                                @L["Severity"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="severity"
-                                        aria-label="Severity guidance">?</button>
+                                        aria-label="@L["Severity guidance"]">?</button>
                             </label>
                             <select asp-for="Severity" class="form-select"
                                     asp-items="Html.GetEnumSelectList<OpenQMS.Models.Complaint.ComplaintSeverity>()">
@@ -78,7 +78,7 @@
 
                         <!-- Product picker -->
                         <div class="col-md-6">
-                            <label class="form-label">Products</label>
+                            <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select">
                                 <option value="">-- Add Product --</option>
                                 @foreach (var p in products)
@@ -92,7 +92,7 @@
 
                         <!-- Process picker -->
                         <div class="col-md-6">
-                            <label class="form-label">Processes</label>
+                            <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select">
                                 <option value="">-- Add Process --</option>
                                 @foreach (var p in processes)
@@ -106,7 +106,7 @@
 
                         <!-- Material picker -->
                         <div class="col-md-6">
-                            <label class="form-label">Materials</label>
+                            <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select">
                                 <option value="">-- Add Material --</option>
                                 @foreach (var p in materials)
@@ -120,7 +120,7 @@
 
                         <!-- Supplier picker -->
                         <div class="col-md-6">
-                            <label class="form-label">Suppliers</label>
+                            <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select">
                                 <option value="">-- Add Supplier --</option>
                                 @foreach (var p in suppliers)
@@ -134,7 +134,7 @@
 
                         <div class="col-12">
                             <label asp-for="Description" class="form-label">
-                                Description
+                                @L["Description"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="description"
                                         aria-label="Description guidance">?</button>
                             </label>
@@ -146,19 +146,19 @@
             </div>
 
             <div class="d-flex gap-2">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+                <input type="submit" value="@L["Create"]" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
             </div>
         </form>
 
 <!-- Popover help content (hidden, read by JS) -->
 <div class="d-none">
     <div id="help-severity">
-        <p class="mb-1"><strong>Severity Definitions</strong></p>
+        <p class="mb-1"><strong>@L["Severity Definitions"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li><strong>Critical</strong> — Poses an immediate or potential risk to patient safety, product sterility or efficacy. Requires priority handling and may trigger regulatory reporting or recall assessment.</li>
-            <li><strong>Major</strong> — Significant quality failure or departure from specifications. No immediate safety risk but requires full investigation and CAPA. Typical SLA: 30 days.</li>
-            <li><strong>Minor</strong> — Low-risk issue with no direct impact on product quality or patient safety. Administrative or cosmetic in nature. Typical SLA: 60 days.</li>
+            <li><strong>@L["Critical"]</strong> — Poses an immediate or potential risk to patient safety, product sterility or efficacy. Requires priority handling and may trigger regulatory reporting or recall assessment.</li>
+            <li><strong>@L["Major"]</strong> — Significant quality failure or departure from specifications. No immediate safety risk but requires full investigation and CAPA. Typical SLA: 30 days.</li>
+            <li><strong>@L["Minor"]</strong> — Low-risk issue with no direct impact on product quality or patient safety. Administrative or cosmetic in nature. Typical SLA: 60 days.</li>
         </ul>
     </div>
     <div id="help-customername">

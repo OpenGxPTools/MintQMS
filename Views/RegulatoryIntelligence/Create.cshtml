@@ -32,7 +32,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button">
-                <i class="fas fa-pills me-1"></i>Product
+                <i class="fas fa-pills me-1"></i>@L["Product"]
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -42,22 +42,22 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button">
-                <i class="fas fa-dollar-sign me-1"></i>Fees
+                <i class="fas fa-dollar-sign me-1"></i>@L["Fees"]
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button">
-                <i class="fas fa-users me-1"></i>Contacts
+                <i class="fas fa-users me-1"></i>@L["Contacts"]
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button">
-                <i class="fas fa-clipboard-check me-1"></i>Notes
+                <i class="fas fa-clipboard-check me-1"></i>@L["Notes"]
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab7-tab" data-bs-toggle="tab" data-bs-target="#tab7" type="button">
-                <i class="fas fa-paperclip me-1"></i>Documents
+                <i class="fas fa-paperclip me-1"></i>@L["Documents"]
             </button>
         </li>
     </ul>
@@ -68,12 +68,12 @@
         <div class="tab-pane fade show active" id="tab1" role="tabpanel">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">RI Number</label>
+                    <label class="form-label fw-bold">@L["RI Number"]</label>
                     <input type="text" class="form-control" value="Auto-generated on save" disabled />
                     <input type="hidden" asp-for="RINumber" value="PENDING" />
                 </div>
                 <div class="col-md-4">
-                    <label asp-for="SubmissionMethod" class="form-label fw-bold">Submission Method
+                    <label asp-for="SubmissionMethod" class="form-label fw-bold">@L["Submission Method"]
                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="submissionmethod" aria-label="Submission Method guidance">?</button>
                     </label>
                     <select asp-for="SubmissionMethod" class="form-select">
@@ -82,17 +82,17 @@
                         <option>PRISM Portal</option>
                         <option>Online Portal</option>
                         <option>Paper / Email</option>
-                        <option>Other</option>
+                        <option>@L["Other"]</option>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label asp-for="AuthorityReferenceNumber" class="form-label fw-bold">Authority Reference No.
+                    <label asp-for="AuthorityReferenceNumber" class="form-label fw-bold">@L["Authority Reference No."]
                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="authorityref" aria-label="Authority Reference guidance">?</button>
                     </label>
                     <input asp-for="AuthorityReferenceNumber" class="form-control" placeholder="e.g. ARTG#, NDA#, EMA/H/..." />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-bold">Jurisdiction <span class="text-danger">*</span></label>
+                    <label class="form-label fw-bold">@L["Jurisdiction"] <span class="text-danger">*</span></label>
                     <select id="JurisdictionId" asp-for="JurisdictionId" class="form-select">
                         <option value="">— Select Jurisdiction —</option>
                         @foreach (var item in ViewData["Jurisdictions"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList ?? new Microsoft.AspNetCore.Mvc.Rendering.SelectList(new List<object>()))
@@ -103,7 +103,7 @@
                     <div class="invalid-feedback" id="JurisdictionId-error">Please select a jurisdiction.</div>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-bold">Application Type <span class="text-danger">*</span></label>
+                    <label class="form-label fw-bold">@L["Application Type"] <span class="text-danger">*</span></label>
                     <select id="ApplicationTypeId" asp-for="ApplicationTypeId" class="form-select">
                         <option value="">— Select Jurisdiction first —</option>
                     </select>
@@ -120,19 +120,19 @@
                         </div>
                         <div class="form-check">
                             <input asp-for="IsPriorityReview" class="form-check-input" type="checkbox" />
-                            <label asp-for="IsPriorityReview" class="form-check-label">Priority Review</label>
+                            <label asp-for="IsPriorityReview" class="form-check-label">@L["Priority Review"]</label>
                         </div>
                         <div class="form-check">
                             <input asp-for="IsBreakthroughTherapy" class="form-check-input" type="checkbox" />
-                            <label asp-for="IsBreakthroughTherapy" class="form-check-label">Breakthrough Therapy</label>
+                            <label asp-for="IsBreakthroughTherapy" class="form-check-label">@L["Breakthrough Therapy"]</label>
                         </div>
                         <div class="form-check">
                             <input asp-for="IsPRIME" class="form-check-input" type="checkbox" />
-                            <label asp-for="IsPRIME" class="form-check-label">PRIME</label>
+                            <label asp-for="IsPRIME" class="form-check-label">@L["PRIME"]</label>
                         </div>
                         <div class="form-check">
                             <input asp-for="IsConditionalApproval" class="form-check-input" type="checkbox" />
-                            <label asp-for="IsConditionalApproval" class="form-check-label">Conditional Approval</label>
+                            <label asp-for="IsConditionalApproval" class="form-check-label">@L["Conditional Approval"]</label>
                         </div>
                     </div>
                 </div>
@@ -143,14 +143,14 @@
         <div class="tab-pane fade" id="tab2" role="tabpanel">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label fw-bold">Product <span class="text-danger">*</span></label>
+                    <label class="form-label fw-bold">@L["Product"] <span class="text-danger">*</span></label>
                     <select id="ProductId" asp-for="ProductId" asp-items='@(ViewData["Products"] as SelectList)' class="form-select">
                         <option value="">— Select Product —</option>
                     </select>
                     <div class="invalid-feedback" id="ProductId-error">Please select a product.</div>
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="ProductName" class="form-label fw-bold">Product Name (snapshot) <span class="text-danger">*</span>
+                    <label asp-for="ProductName" class="form-label fw-bold">@L["Product Name (snapshot)"] <span class="text-danger">*</span>
                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="productsnapshot" aria-label="Product Name snapshot guidance">?</button>
                     </label>
                     <input asp-for="ProductName" id="ProductName" class="form-control"
@@ -158,19 +158,19 @@
                     <div class="form-text">Denormalised name stored at time of creation.</div>
                 </div>
                 <div class="col-md-4">
-                    <label asp-for="ActiveSubstance" class="form-label fw-bold">Active Substance / INN</label>
+                    <label asp-for="ActiveSubstance" class="form-label fw-bold">@L["Active Substance / INN"]</label>
                     <input asp-for="ActiveSubstance" class="form-control" placeholder="e.g. Imatinib" />
                 </div>
                 <div class="col-md-8">
-                    <label asp-for="Indication" class="form-label fw-bold">Indication</label>
+                    <label asp-for="Indication" class="form-label fw-bold">@L["Indication"]</label>
                     <input asp-for="Indication" class="form-control" placeholder="e.g. Chronic Myeloid Leukaemia (CML)" />
                 </div>
                 <div class="col-md-4">
-                    <label asp-for="DosageForm" class="form-label fw-bold">Dosage Form</label>
+                    <label asp-for="DosageForm" class="form-label fw-bold">@L["Dosage Form"]</label>
                     <input asp-for="DosageForm" class="form-control" placeholder="e.g. Film-coated tablets" />
                 </div>
                 <div class="col-md-4">
-                    <label asp-for="Strength" class="form-label fw-bold">Strength</label>
+                    <label asp-for="Strength" class="form-label fw-bold">@L["Strength"]</label>
                     <input asp-for="Strength" class="form-control" placeholder="e.g. 100 mg, 400 mg" />
                 </div>
             </div>
@@ -192,7 +192,7 @@
                     <input asp-for="DossierLockDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="SubmissionDate" class="form-label fw-bold">Submission Date</label>
+                    <label asp-for="SubmissionDate" class="form-label fw-bold">@L["Submission Date"]</label>
                     <input asp-for="SubmissionDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
@@ -215,7 +215,7 @@
                     <input asp-for="ActualDecisionDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="ApprovalDate" class="form-label fw-bold">Approval Date</label>
+                    <label asp-for="ApprovalDate" class="form-label fw-bold">@L["Approval Date"]</label>
                     <input asp-for="ApprovalDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
@@ -223,7 +223,7 @@
                     <input asp-for="ExpiryDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="NextRenewalDue" class="form-label fw-bold">Next Renewal Due</label>
+                    <label asp-for="NextRenewalDue" class="form-label fw-bold">@L["Next Renewal Due"]</label>
                     <input asp-for="NextRenewalDue" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
@@ -237,7 +237,7 @@
         <div class="tab-pane fade" id="tab4" role="tabpanel">
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label asp-for="ApplicationFee" class="form-label fw-bold">Application Fee</label>
+                    <label asp-for="ApplicationFee" class="form-label fw-bold">@L["Application Fee"]</label>
                     <input asp-for="ApplicationFee" type="number" step="0.01" class="form-control" placeholder="0.00" />
                 </div>
                 <div class="col-md-2">
@@ -251,7 +251,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="FeePaidDate" class="form-label fw-bold">Fee Paid Date</label>
+                    <label asp-for="FeePaidDate" class="form-label fw-bold">@L["Fee Paid Date"]</label>
                     <input asp-for="FeePaidDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-4">
@@ -272,13 +272,13 @@
         <div class="tab-pane fade" id="tab5" role="tabpanel">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label asp-for="InternalRALead" class="form-label fw-bold">Internal RA Lead</label>
+                    <label asp-for="InternalRALead" class="form-label fw-bold">@L["Internal RA Lead"]</label>
                     <select id="InternalRALead" asp-for="InternalRALead" asp-items='@(ViewBag.UsersList as SelectList)' class="form-select">
                         <option value=""></option>
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="ExternalConsultant" class="form-label fw-bold">External RA Consultant</label>
+                    <label asp-for="ExternalConsultant" class="form-label fw-bold">@L["External RA Consultant"]</label>
                     <input asp-for="ExternalConsultant" class="form-control" placeholder="Consulting firm or individual" />
                 </div>
                 <div class="col-md-6">
@@ -286,7 +286,7 @@
                     <input asp-for="AuthorityRapporteur" class="form-control" placeholder="Name of authority contact" />
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="AuthorityContactEmail" class="form-label fw-bold">Authority Contact Email</label>
+                    <label asp-for="AuthorityContactEmail" class="form-label fw-bold">@L["Authority Contact Email"]</label>
                     <input asp-for="AuthorityContactEmail" type="email" class="form-control" />
                 </div>
                 <div class="col-md-6">
@@ -298,7 +298,7 @@
                     </select>
                 </div>
                 <div class="col-12">
-                    <label asp-for="StrategyNotes" class="form-label fw-bold">Strategy Notes</label>
+                    <label asp-for="StrategyNotes" class="form-label fw-bold">@L["Strategy Notes"]</label>
                     <textarea asp-for="StrategyNotes" class="form-control" rows="5"
                               placeholder="Regulatory strategy rationale, pre-submission meeting outcomes, key decisions..."></textarea>
                 </div>
@@ -327,7 +327,7 @@
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-save me-1"></i>Create Application
         </button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">@L["Cancel"]</a>
     </div>
 </form>
 
@@ -349,14 +349,14 @@
         <p class="mb-1"><strong>Expedited / priority pathways</strong> — tick any the authority has granted. They shorten timelines or relax requirements:</p>
         <ul class="mb-0 ps-3">
             <li><strong>Orphan Designation</strong> — for rare-disease products; brings fee relief and market exclusivity.</li>
-            <li><strong>Priority Review</strong> — shorter assessment clock for products of major therapeutic value.</li>
-            <li><strong>Breakthrough Therapy</strong> — FDA designation for therapies showing substantial improvement over existing options.</li>
-            <li><strong>PRIME</strong> — EMA's PRIority MEdicines scheme: enhanced support for unmet medical need.</li>
-            <li><strong>Conditional Approval</strong> — early authorisation on less complete data, subject to post-approval conditions.</li>
+            <li><strong>@L["Priority Review"]</strong> — shorter assessment clock for products of major therapeutic value.</li>
+            <li><strong>@L["Breakthrough Therapy"]</strong> — FDA designation for therapies showing substantial improvement over existing options.</li>
+            <li><strong>@L["PRIME"]</strong> — EMA's PRIority MEdicines scheme: enhanced support for unmet medical need.</li>
+            <li><strong>@L["Conditional Approval"]</strong> — early authorisation on less complete data, subject to post-approval conditions.</li>
         </ul>
     </div>
     <div id="help-productsnapshot">
-        <p class="mb-0">A frozen copy of the product name <em>as filed in this application</em>. The linked <strong>Product</strong> above stays live and may change over time; this snapshot preserves exactly what was submitted to the authority, so the regulatory record stays accurate even if the product is later renamed or superseded.</p>
+        <p class="mb-0">A frozen copy of the product name <em>as filed in this application</em>. The linked <strong>@L["Product"]</strong> above stays live and may change over time; this snapshot preserves exactly what was submitted to the authority, so the regulatory record stays accurate even if the product is later renamed or superseded.</p>
     </div>
     <div id="help-day0">
         <p class="mb-0"><strong>Day 0</strong> is the official start of the authority's review clock — the date validation completes and assessment formally begins (not the date you submitted). The <strong>Target Decision Date</strong> is calculated from Day 0 plus the jurisdiction's statutory review period. Clock-stops (e.g. responding to questions) pause this clock.</p>
