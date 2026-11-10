@@ -1,6 +1,6 @@
 @model OpenQMS.Models.Risk
 @{
-    ViewData["Title"] = "New Risk";
+    ViewData["Title"] = L["New Risk"].Value;
     var products  = ViewData["Products"]  as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
     var processes = ViewData["Processes"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
     var assets    = ViewData["Assets"]    as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
@@ -53,13 +53,13 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Links to Reference Data</div>
+                <div class="card-header fw-semibold">@L["Links to Reference Data"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select">
-                                <option value="">-- Add Product --</option>
+                                <option value="">@L["-- Add Product --"]</option>
                                 @foreach (var p in products)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -69,7 +69,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select">
-                                <option value="">-- Add Process --</option>
+                                <option value="">@L["-- Add Process --"]</option>
                                 @foreach (var p in processes)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -79,7 +79,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Assets"]</label>
                             <select id="assetDropdown" class="form-select">
-                                <option value="">-- Add Asset --</option>
+                                <option value="">@L["-- Add Asset --"]</option>
                                 @foreach (var p in assets)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -89,7 +89,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select">
-                                <option value="">-- Add Material --</option>
+                                <option value="">@L["-- Add Material --"]</option>
                                 @foreach (var p in materials)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -99,7 +99,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select">
-                                <option value="">-- Add Supplier --</option>
+                                <option value="">@L["-- Add Supplier --"]</option>
                                 @foreach (var p in suppliers)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -117,36 +117,36 @@
                         <div class="col-md-4">
                             <label asp-for="Severity" class="form-label"></label>
                             <select asp-for="Severity" class="form-select">
-                                <option value="1">1 - Negligible</option>
-                                <option value="2">2 - Minor</option>
-                                <option value="3">3 - Moderate</option>
-                                <option value="4">4 - Major</option>
-                                <option value="5">5 - Critical</option>
+                                <option value="1">@L["1 - Negligible"]</option>
+                                <option value="2">@L["2 - Minor"]</option>
+                                <option value="3">@L["3 - Moderate"]</option>
+                                <option value="4">@L["4 - Major"]</option>
+                                <option value="5">@L["5 - Critical"]</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label asp-for="Probability" class="form-label"></label>
                             <select asp-for="Probability" class="form-select">
-                                <option value="1">1 - Rare</option>
-                                <option value="2">2 - Unlikely</option>
-                                <option value="3">3 - Possible</option>
-                                <option value="4">4 - Likely</option>
-                                <option value="5">5 - Almost Certain</option>
+                                <option value="1">@L["1 - Rare"]</option>
+                                <option value="2">@L["2 - Unlikely"]</option>
+                                <option value="3">@L["3 - Possible"]</option>
+                                <option value="4">@L["4 - Likely"]</option>
+                                <option value="5">@L["5 - Almost Certain"]</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label asp-for="Detectability" class="form-label"></label>
                             <select asp-for="Detectability" class="form-select">
-                                <option value="1">1 - High (Easily Detected)</option>
-                                <option value="2">2 - Medium-High</option>
-                                <option value="3">3 - Medium</option>
-                                <option value="4">4 - Medium-Low</option>
-                                <option value="5">5 - Low (Hard to Detect)</option>
+                                <option value="1">@L["1 - High (Easily Detected)"]</option>
+                                <option value="2">@L["2 - Medium-High"]</option>
+                                <option value="3">@L["3 - Medium"]</option>
+                                <option value="4">@L["4 - Medium-Low"]</option>
+                                <option value="5">@L["5 - Low (Hard to Detect)"]</option>
                             </select>
                         </div>
                         <div class="col-12">
                             <div class="alert alert-info small py-2 mb-0">
-                                Initial RPN is calculated automatically as Severity × Probability × Detectability (range: 1–125).
+                                @L["Initial RPN is calculated automatically as Severity × Probability × Detectability (range: 1–125)."]
                             </div>
                         </div>
                     </div>
@@ -154,7 +154,7 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Mitigation &amp; Monitoring</div>
+                <div class="card-header fw-semibold">@L["Mitigation & Monitoring"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-12">

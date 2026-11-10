@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Changes Dashboard";
+    ViewData["Title"] = L["Changes Dashboard"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var statusCounts = (Dictionary<string, int>)ViewBag.StatusCounts;
@@ -10,7 +10,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">Changes Dashboard</h4>
+    <h4 class="mb-0">@L["Changes Dashboard"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Excel"]</a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">@L["Register"]</a>
@@ -24,7 +24,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-primary">@ViewBag.Total</div>
-                <div class="text-muted">Total Changes</div>
+                <div class="text-muted">@L["Total Changes"]</div>
             </div>
         </div>
     </div>
@@ -91,7 +91,7 @@
                                 _                    => "bg-secondary"
                             };
                             <tr>
-                                <td>@kv.Key</td>
+                                <td>@L[kv.Key]</td>
                                 <td>@kv.Value</td>
                                 <td>
                                     <div class="progress" style="height:8px">
@@ -170,7 +170,7 @@
 {
     <div class="card mb-4 border-danger">
         <div class="card-header bg-danger text-white d-flex justify-content-between">
-            <span>Overdue Changes</span>
+            <span>@L["Overdue Changes"]</span>
             <span class="badge bg-white text-danger">@overdue.Count</span>
         </div>
         <div class="card-body p-0">
@@ -186,9 +186,9 @@
                         <tr class="table-danger">
                             <td><a asp-action="Details" asp-route-id="@c.Id">@c.ChangeId</a></td>
                             <td>@c.Title</td>
-                            <td>@sLabel</td>
+                            <td>@L[sLabel]</td>
                             <td>@c.TargetImplementationDate.Value.ToShortDateString()</td>
-                            <td><strong>@daysOver days</strong></td>
+                            <td><strong>@L["{0} days", daysOver]</strong></td>
                         </tr>
                     }
                 </tbody>
@@ -201,12 +201,12 @@
 {
     <div class="card mb-4 border-warning">
         <div class="card-header bg-warning d-flex justify-content-between">
-            <span>Due Within 14 Days</span>
+            <span>@L["Due Within 14 Days"]</span>
             <span class="badge bg-dark">@approaching.Count</span>
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
-                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Target Date"]</th><th>Days Remaining</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Target Date"]</th><th>@L["Days Remaining"]</th></tr></thead>
                 <tbody>
                     @foreach (var c in approaching)
                     {
@@ -217,9 +217,9 @@
                         <tr class="table-warning">
                             <td><a asp-action="Details" asp-route-id="@c.Id">@c.ChangeId</a></td>
                             <td>@c.Title</td>
-                            <td>@sLabel</td>
+                            <td>@L[sLabel]</td>
                             <td>@c.TargetImplementationDate.Value.ToShortDateString()</td>
-                            <td>@daysLeft days</td>
+                            <td>@L["{0} days", daysLeft]</td>
                         </tr>
                     }
                 </tbody>

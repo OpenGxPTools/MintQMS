@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Risk
 
 @{
-    ViewData["Title"] = "Delete Risk";
+    ViewData["Title"] = L["Delete Risk"].Value;
 
     var iLinked = new List<string>();
     if (Model.LinkedProducts?.Any()  == true) iLinked.AddRange(Model.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
@@ -21,7 +21,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Delete Risk</h4>
+        <h4 class="mb-0">@L["Delete Risk"]</h4>
     </div>
 </div>
 <hr />
@@ -34,7 +34,7 @@
             <dt class="col-sm-4">@L["Title"]</dt>
             <dd class="col-sm-8">@Model.Title</dd>
             <dt class="col-sm-4">@L["Category"]</dt>
-            <dd class="col-sm-8">@Model.Category</dd>
+            <dd class="col-sm-8">@L.Enum(Model.Category)</dd>
             <dt class="col-sm-4">@L["Linked To"]</dt>
             <dd class="col-sm-8">@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</dd>
             <dt class="col-sm-4">@L["Status"]</dt>

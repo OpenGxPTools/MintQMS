@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Change
 
 @{
-    ViewData["Title"] = "New Change";
+    ViewData["Title"] = L["New Change"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     var products  = (List<SelectListItem>)ViewData["Products"];
     var processes = (List<SelectListItem>)ViewData["Processes"];
@@ -21,7 +21,7 @@
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
         <h4 class="mb-0">@L["New Change"]</h4>
-        <small class="text-muted">Propose a change, describe the rationale, and link to affected processes or products.</small>
+        <small class="text-muted">@L["Propose a change, describe the rationale, and link to affected processes or products."]</small>
     </div>
 </div>
 <hr />
@@ -32,9 +32,9 @@
 
             <!-- ── Change Details ─────────────────────────────────────────── -->
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Change Details</div>
+                <div class="card-header fw-semibold">@L["Change Details"]</div>
                 <div class="card-body">
-                    <p class="text-muted small mb-3">Provide a clear title, set a target implementation date, and link to all affected products, processes or other records (multiple selections allowed).</p>
+                    <p class="text-muted small mb-3">@L["Provide a clear title, set a target implementation date, and link to all affected products, processes or other records (multiple selections allowed)."]</p>
                     <div class="row g-3">
                         <div class="col-md-8">
                             <label asp-for="Title" class="form-label"></label>
@@ -50,7 +50,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select form-select-sm">
-                                <option value="">-- Add Product --</option>
+                                <option value="">@L["-- Add Product --"]</option>
                                 @foreach (var item in products)
                                 {
                                     <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -64,7 +64,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select form-select-sm">
-                                <option value="">-- Add Process --</option>
+                                <option value="">@L["-- Add Process --"]</option>
                                 @foreach (var item in processes)
                                 {
                                     <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -78,7 +78,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Assets"]</label>
                             <select id="assetDropdown" class="form-select form-select-sm">
-                                <option value="">-- Add Asset --</option>
+                                <option value="">@L["-- Add Asset --"]</option>
                                 @foreach (var item in assets)
                                 {
                                     <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -92,7 +92,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select form-select-sm">
-                                <option value="">-- Add Material --</option>
+                                <option value="">@L["-- Add Material --"]</option>
                                 @foreach (var item in materials)
                                 {
                                     <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -106,7 +106,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select form-select-sm">
-                                <option value="">-- Add Supplier --</option>
+                                <option value="">@L["-- Add Supplier --"]</option>
                                 @foreach (var item in suppliers)
                                 {
                                     <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -120,7 +120,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Linked CAPAs"]</label>
                             <select id="capaDropdown" class="form-select form-select-sm">
-                                <option value="">-- Add CAPA --</option>
+                                <option value="">@L["-- Add CAPA --"]</option>
                                 @foreach (var item in capas)
                                 {
                                     <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -137,13 +137,13 @@
             <div class="card mb-4">
                 <div class="card-header fw-semibold">@L["Proposal"]</div>
                 <div class="card-body">
-                    <p class="text-muted small mb-3">Describe the proposed change, its rationale, expected benefits, and potential risks or impacts on product quality, GMP compliance, or regulatory status.</p>
+                    <p class="text-muted small mb-3">@L["Describe the proposed change, its rationale, expected benefits, and potential risks or impacts on product quality, GMP compliance, or regulatory status."]</p>
                     <div class="row g-3">
                         <div class="col-12">
                             <label asp-for="Proposal" class="form-label">
                                 @L["Proposal"]
                                 <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="proposal"
-                                        aria-label="Proposal guidance">?</button>
+                                        aria-label="@L["Proposal guidance"]">?</button>
                             </label>
                             <textarea asp-for="Proposal" class="form-control" rows="5"></textarea>
                             <span asp-validation-for="Proposal" class="text-danger small"></span>
@@ -161,12 +161,12 @@
 <!-- Popover help content (hidden, read by JS) -->
 <div class="d-none">
     <div id="help-proposal">
-        <p class="mb-1"><strong>Proposal must include:</strong></p>
+        <p class="mb-1"><strong>@L["Proposal must include:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>A clear description of what is changing and why</li>
-            <li>The expected benefit (quality, regulatory, efficiency)</li>
-            <li>Potential risks or impacts on product quality, validated processes, or GMP compliance</li>
-            <li>Whether regulatory notification or approval is required</li>
+            <li>@L["A clear description of what is changing and why"]</li>
+            <li>@L["The expected benefit (quality, regulatory, efficiency)"]</li>
+            <li>@L["Potential risks or impacts on product quality, validated processes, or GMP compliance"]</li>
+            <li>@L["Whether regulatory notification or approval is required"]</li>
         </ul>
     </div>
 </div>
@@ -188,7 +188,7 @@
                 var chip = document.createElement('span');
                 chip.style.cssText = 'display:inline-block;background:#0d6efd;color:white;padding:2px 8px;border-radius:12px;margin:2px;font-size:12px;cursor:pointer;';
                 chip.innerHTML = text + ' &times;';
-                chip.title = 'Click to remove';
+                chip.title = @Json.Serialize(L["Click to remove"].Value);
                 chip.addEventListener('click', function() {
                     delete selected[id];
                     var opt = document.querySelector('#' + dropdownId + ' option[value="' + id + '"]');

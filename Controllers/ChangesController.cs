@@ -20,6 +20,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
+using OpenQMS.Localization;
 using System.Text;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
@@ -349,13 +350,13 @@ namespace OpenQMS.Controllers
                         $"ID: {change.ChangeId}; Title: {change.Title}; Proposed by: {change.ProposedBy}");
                     await _context.SaveChangesAsync();
 
-                    TempData["Success"] = $"Change {change.ChangeId} created successfully.";
+                    TempData["Success"] = this.T("Change {0} created successfully.", change.ChangeId);
                     return RedirectToAction(nameof(Details), new { id = change.Id });
                 }
             }
             catch (Exception)
             {
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                ModelState.AddModelError("", this.T("Unable to save changes. Try again, and if the problem persists see your system administrator."));
             }
 
             PopulateViewData();
@@ -460,9 +461,9 @@ namespace OpenQMS.Controllers
             if (isProposalStage || isAssessmentStage)
             {
                 if (string.IsNullOrWhiteSpace(title))
-                    ModelState.AddModelError("Title", "Title is required.");
+                    ModelState.AddModelError("Title", this.T("Title is required."));
                 if (string.IsNullOrWhiteSpace(proposal))
-                    ModelState.AddModelError("Proposal", "Proposal is required.");
+                    ModelState.AddModelError("Proposal", this.T("Proposal is required."));
             }
 
             if (!ModelState.IsValid)
@@ -553,7 +554,7 @@ namespace OpenQMS.Controllers
                 AddAuditLog(change.Id, "Edited", null, null, AuditDiffHelper.Build(diff));
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Change updated successfully.";
+            TempData["Success"] = this.T("Change updated successfully.");
             return RedirectToAction(nameof(Details), new { id = change.Id });
         }
 
@@ -570,26 +571,26 @@ namespace OpenQMS.Controllers
 
             if (change.Status != ChangeStatus.Proposal)
             {
-                TempData["WorkflowError"] = "Change must be in Proposal status to submit for assessment.";
+                TempData["WorkflowError"] = this.T("Change must be in Proposal status to submit for assessment.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(change.Proposal))
             {
-                TempData["WorkflowError"] = "Proposal text must be completed before submitting for assessment.";
+                TempData["WorkflowError"] = this.T("Proposal text must be completed before submitting for assessment.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -601,7 +602,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(change.Id, "Submitted for Assessment", fromStatus, ChangeStatus.Assessment.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Change {change.ChangeId} submitted for assessment.";
+            TempData["Success"] = this.T("Change {0} submitted for assessment.", change.ChangeId);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -618,13 +619,13 @@ namespace OpenQMS.Controllers
 
             if (change.Status != ChangeStatus.Assessment)
             {
-                TempData["WorkflowError"] = "Change must be in Assessment status to submit for acceptance.";
+                TempData["WorkflowError"] = this.T("Change must be in Assessment status to submit for acceptance.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(change.Assessment))
             {
-                TempData["WorkflowError"] = "Assessment must be completed before submitting for acceptance.";
+                TempData["WorkflowError"] = this.T("Assessment must be completed before submitting for acceptance.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -635,7 +636,7 @@ namespace OpenQMS.Controllers
                 .ToList();
             if (missingOwnerTarget.Count > 0)
             {
-                TempData["WorkflowError"] = $"Each action needs an owner and a target date before submitting for acceptance — {missingOwnerTarget.Count} still incomplete: {string.Join("; ", missingOwnerTarget.Take(5))}{(missingOwnerTarget.Count > 5 ? "…" : "")}";
+                TempData["WorkflowError"] = this.T("Each action needs an owner and a target date before submitting for acceptance — {0} still incomplete: {1}", missingOwnerTarget.Count, string.Join("; ", missingOwnerTarget.Take(5)) + (missingOwnerTarget.Count > 5 ? "…" : ""));
                 TempData["ActiveTab"] = "actionplan";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -643,13 +644,13 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -663,7 +664,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(change.Id, "Submitted for Acceptance", fromStatus, ChangeStatus.PendingAssessment.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Change {change.ChangeId} submitted for acceptance by {change.AssessedBy}.";
+            TempData["Success"] = this.T("Change {0} submitted for acceptance by {1}.", change.ChangeId, change.AssessedBy);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -681,20 +682,20 @@ namespace OpenQMS.Controllers
 
             if (change.Status != ChangeStatus.PendingAssessment)
             {
-                TempData["WorkflowError"] = "Change must be in Pending Acceptance status to accept.";
+                TempData["WorkflowError"] = this.T("Change must be in Pending Acceptance status to accept.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -708,7 +709,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(change.Id, "Accepted — Implementation Started", fromStatus, ChangeStatus.Implementation.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Change {change.ChangeId} accepted by {change.AcceptedBy}. Implementation can now begin.";
+            TempData["Success"] = this.T("Change {0} accepted by {1}. Implementation can now begin.", change.ChangeId, change.AcceptedBy);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -725,13 +726,13 @@ namespace OpenQMS.Controllers
 
             if (change.Status != ChangeStatus.Implementation)
             {
-                TempData["WorkflowError"] = "Change must be in Implementation status to submit for approval.";
+                TempData["WorkflowError"] = this.T("Change must be in Implementation status to submit for approval.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(change.Implementation))
             {
-                TempData["WorkflowError"] = "Implementation details must be completed before submitting for approval.";
+                TempData["WorkflowError"] = this.T("Implementation details must be completed before submitting for approval.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -740,7 +741,7 @@ namespace OpenQMS.Controllers
             var outstanding = await OutstandingActionItemsAsync(change);
             if (outstanding.Count > 0)
             {
-                TempData["WorkflowError"] = $"The action plan has {outstanding.Count} outstanding item(s) — complete or mark them Not applicable before submitting for approval: {string.Join("; ", outstanding.Take(5))}{(outstanding.Count > 5 ? "…" : "")}";
+                TempData["WorkflowError"] = this.T("The action plan has {0} outstanding item(s) — complete or mark them Not applicable before submitting for approval: {1}", outstanding.Count, string.Join("; ", outstanding.Take(5)) + (outstanding.Count > 5 ? "…" : ""));
                 TempData["ActiveTab"] = "actionplan";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -752,7 +753,7 @@ namespace OpenQMS.Controllers
                 .ToList();
             if (missingEvidence.Count > 0)
             {
-                TempData["WorkflowError"] = $"Each action needs an evidence / reference before submitting for approval — {missingEvidence.Count} still missing: {string.Join("; ", missingEvidence.Take(5))}{(missingEvidence.Count > 5 ? "…" : "")}";
+                TempData["WorkflowError"] = this.T("Each action needs an evidence / reference before submitting for approval — {0} still missing: {1}", missingEvidence.Count, string.Join("; ", missingEvidence.Take(5)) + (missingEvidence.Count > 5 ? "…" : ""));
                 TempData["ActiveTab"] = "actionplan";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -760,13 +761,13 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -780,7 +781,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(change.Id, "Submitted for Approval", fromStatus, ChangeStatus.PendingApproval.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Change {change.ChangeId} submitted for approval by {change.ImplementedBy}.";
+            TempData["Success"] = this.T("Change {0} submitted for approval by {1}.", change.ChangeId, change.ImplementedBy);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -798,7 +799,7 @@ namespace OpenQMS.Controllers
 
             if (change.Status != ChangeStatus.PendingApproval)
             {
-                TempData["WorkflowError"] = "Change must be in Pending Approval status to approve.";
+                TempData["WorkflowError"] = this.T("Change must be in Pending Approval status to approve.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -806,7 +807,7 @@ namespace OpenQMS.Controllers
             var outstandingAtApproval = await OutstandingActionItemsAsync(change);
             if (outstandingAtApproval.Count > 0)
             {
-                TempData["WorkflowError"] = $"The action plan still has {outstandingAtApproval.Count} outstanding item(s); the change cannot be approved until all applicable actions are completed.";
+                TempData["WorkflowError"] = this.T("The action plan still has {0} outstanding item(s); the change cannot be approved until all applicable actions are completed.", outstandingAtApproval.Count);
                 TempData["ActiveTab"] = "actionplan";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -814,13 +815,13 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -836,7 +837,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(change.Id, "Approved", fromStatus, ChangeStatus.Approved.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Change {change.ChangeId} approved by {change.ApprovedBy}.";
+            TempData["Success"] = this.T("Change {0} approved by {1}.", change.ChangeId, change.ApprovedBy);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -855,20 +856,20 @@ namespace OpenQMS.Controllers
                 change.Status != ChangeStatus.PendingApproval   &&
                 change.Status != ChangeStatus.Implementation)
             {
-                TempData["WorkflowError"] = "Change cannot be returned from its current status.";
+                TempData["WorkflowError"] = this.T("Change cannot be returned from its current status.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -909,7 +910,7 @@ namespace OpenQMS.Controllers
                     break;
 
                 default:
-                    TempData["WorkflowError"] = "Change cannot be returned from its current status.";
+                    TempData["WorkflowError"] = this.T("Change cannot be returned from its current status.");
                     return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -919,7 +920,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(change.Id, action, fromStatus.ToString(), toStatus.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Change {change.ChangeId} {action.ToLower()}.";
+            TempData["Success"] = this.T("Change {0} returned to {1}.", change.ChangeId, this.T(EnumHelper.Display(toStatus)));
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -941,7 +942,7 @@ namespace OpenQMS.Controllers
             // Editable only while the change is open at Assessment or Implementation.
             if (change.Status != ChangeStatus.Assessment && change.Status != ChangeStatus.Implementation)
             {
-                TempData["WorkflowError"] = "The action plan can only be edited while the change is in Assessment or Implementation.";
+                TempData["WorkflowError"] = this.T("The action plan can only be edited while the change is in Assessment or Implementation.");
                 TempData["ActiveTab"] = "actionplan";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -963,9 +964,9 @@ namespace OpenQMS.Controllers
             string? CrossFieldError(string label, ActionItemStatus status, DateTime? comp)
             {
                 if (comp.HasValue && status != ActionItemStatus.Complete)
-                    return $"Action \"{Truncate(label)}\" has a completed date but its status is not \"Complete\". Set the status to Complete, or clear the completed date.";
+                    return this.T("Action \"{0}\" has a completed date but its status is not \"Complete\". Set the status to Complete, or clear the completed date.", Truncate(label));
                 if (status == ActionItemStatus.Complete && !comp.HasValue)
-                    return $"Action \"{Truncate(label)}\" is marked \"Complete\" but has no completed date. Add the completed date, or change the status.";
+                    return this.T("Action \"{0}\" is marked \"Complete\" but has no completed date. Add the completed date, or change the status.", Truncate(label));
                 return null;
             }
 
@@ -1035,7 +1036,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(change.Id, "Action Plan updated", null, null, diff);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Action plan saved.";
+            TempData["Success"] = this.T("Action plan saved.");
             TempData["ActiveTab"] = "actionplan";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -1425,7 +1426,7 @@ namespace OpenQMS.Controllers
             if (User.IsInRole(Constants.ReadOnlyRole)) return Forbid();
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = changeId });
             }
@@ -1436,7 +1437,7 @@ namespace OpenQMS.Controllers
 
             if (change.Status == Change.ChangeStatus.Approved)
             {
-                TempData["Error"] = "Attachments cannot be added to an approved change record.";
+                TempData["Error"] = this.T("Attachments cannot be added to an approved change record.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = changeId });
             }
@@ -1445,14 +1446,14 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = "File type not allowed. Accepted: PDF, Word, ZIP, JPG, PNG.";
+                TempData["Error"] = this.T("File type not allowed. Accepted: PDF, Word, ZIP, JPG, PNG.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = changeId });
             }
 
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File exceeds 25 MB limit.";
+                TempData["Error"] = this.T("File exceeds 25 MB limit.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = changeId });
             }
@@ -1489,7 +1490,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(changeId, "Attachment uploaded", null, null, file.FileName);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"File '{file.FileName}' uploaded successfully.";
+            TempData["Success"] = this.T("File '{0}' uploaded successfully.", file.FileName);
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = changeId });
         }
@@ -1507,7 +1508,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.ChangeId });
             }
@@ -1546,7 +1547,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.ChangeId });
             }
@@ -1592,14 +1593,14 @@ namespace OpenQMS.Controllers
                 var change = await _context.Change.FindAsync(changeId);
                 if (change != null && change.Status == Change.ChangeStatus.Approved)
                 {
-                    TempData["Error"] = "Attachments cannot be removed from an approved change record.";
+                    TempData["Error"] = this.T("Attachments cannot be removed from an approved change record.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = changeId });
                 }
 
                 if (string.IsNullOrWhiteSpace(deletionReason))
                 {
-                    TempData["Error"] = "A reason is required to delete an attachment.";
+                    TempData["Error"] = this.T("A reason is required to delete an attachment.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = changeId });
                 }
@@ -1612,7 +1613,7 @@ namespace OpenQMS.Controllers
                 AddAuditLog(changeId, "Attachment deleted", null, null, $"{attachment.FileName} — Reason: {attachment.DeletionReason}");
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = "Attachment deleted successfully.";
+                TempData["Success"] = this.T("Attachment deleted successfully.");
             }
 
             TempData["ActiveTab"] = "attachments";
@@ -1627,26 +1628,26 @@ namespace OpenQMS.Controllers
 
             if (change.Status != ChangeStatus.Approved)
             {
-                TempData["WorkflowError"] = "This record is not in a state that can be administratively reopened.";
+                TempData["WorkflowError"] = this.T("This record is not in a state that can be administratively reopened.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A justification reason is required.";
+                TempData["WorkflowError"] = this.T("A justification reason is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1655,7 +1656,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(change.Id, "Administrative Reopen", fromStatus, ChangeStatus.Implementation.ToString(), reason);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Record has been administratively reopened to Implementation stage.";
+            TempData["Success"] = this.T("Record has been administratively reopened to Implementation stage.");
             return RedirectToAction(nameof(Details), new { id });
         }
     }

@@ -2,7 +2,7 @@
 @using OpenQMS.Authorization
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = L["Change Register"].Value;
 }
 
 @section Scripts {
@@ -78,8 +78,8 @@
             <th>@L["Change ID"]</th>
             <th>@L["Title"]</th>
             <th>@L["Linked To"]</th>
-            <th>Proposed By</th>
-            <th>Proposed On</th>
+            <th>@L["Proposed By"]</th>
+            <th>@L["Proposed On"]</th>
             <th>@L["Target Date"]</th>
             <th>@L["Status"]</th>
             <th>@L["Action"]</th>

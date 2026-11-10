@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Audit
 
 @{
-    ViewData["Title"] = "Delete Audit";
+    ViewData["Title"] = L["Delete Audit"].Value;
 
     var iLinked = new List<string>();
     if (Model.LinkedProducts?.Any()  == true) iLinked.AddRange(Model.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
@@ -21,7 +21,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Delete Audit</h4>
+        <h4 class="mb-0">@L["Delete Audit"]</h4>
     </div>
 </div>
 <hr />
@@ -35,7 +35,7 @@
             <dt class="col-sm-4">@L["Title"]</dt>
             <dd class="col-sm-8">@Model.Title</dd>
             <dt class="col-sm-4">@L["Type"]</dt>
-            <dd class="col-sm-8">@Model.Type</dd>
+            <dd class="col-sm-8">@L.Enum(Model.Type)</dd>
             <dt class="col-sm-4">@L["Linked Records"]</dt>
             <dd class="col-sm-8">@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</dd>
             <dt class="col-sm-4">@L["Status"]</dt>

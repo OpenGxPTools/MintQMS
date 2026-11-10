@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Change
 
 @{
-    ViewData["Title"] = "Delete Change";
+    ViewData["Title"] = L["Delete Change"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var delLinked = new List<string>();
@@ -16,7 +16,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Delete Change</h4>
+        <h4 class="mb-0">@L["Delete Change"]</h4>
     </div>
 </div>
 <hr />
@@ -34,7 +34,7 @@
             <dt class="col-sm-4">@Html.DisplayNameFor(model => model.ProposedBy)</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.ProposedBy)</dd>
             <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Status)</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.Status)</dd>
+            <dd class="col-sm-8">@L.Enum(Model.Status)</dd>
         </dl>
     </div>
 </div>

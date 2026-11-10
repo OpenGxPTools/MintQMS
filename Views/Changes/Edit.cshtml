@@ -2,7 +2,7 @@
 @using OpenQMS.Authorization
 
 @{
-    ViewData["Title"] = $"Edit — {Model.ChangeId}";
+    ViewData["Title"] = L["Edit — {0}", Model.ChangeId].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     var products  = (List<SelectListItem>)ViewData["Products"];
     var processes = (List<SelectListItem>)ViewData["Processes"];
@@ -61,10 +61,10 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Edit Change — <span class="fw-bold">@Model.ChangeId</span></h4>
+        <h4 class="mb-0">@L["Edit Change —"] <span class="fw-bold">@Model.ChangeId</span></h4>
         <small class="text-muted">@Model.Title</small>
     </div>
-    <span class="badge @badgeClass fs-6">@statusLabel</span>
+    <span class="badge @badgeClass fs-6">@L[statusLabel]</span>
 </div>
 <hr />
 
@@ -75,7 +75,7 @@
             <!-- ── Section 1: Proposal Details ───────────────────────────── -->
             <div class="card mb-4">
                 <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-                    Proposal Details
+                    @L["Proposal Details"]
                     @if (!proposalEditable)
                     {
                         <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
@@ -122,7 +122,7 @@
                                     <input name="Title" value="@Model.Title" class="form-control" required />
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Target Implementation Date</label>
+                                    <label class="form-label">@L["Target Implementation Date"]</label>
                                     <input name="TargetImplementationDate" type="date"
                                            value="@(Model.TargetImplementationDate.HasValue ? Model.TargetImplementationDate.Value.ToString("yyyy-MM-dd") : "")"
                                            class="form-control" />
@@ -132,7 +132,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Products"]</label>
                                     <select id="productDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add Product --</option>
+                                        <option value="">@L["-- Add Product --"]</option>
                                         @foreach (var item in products)
                                         {
                                             <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -146,7 +146,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Processes"]</label>
                                     <select id="processDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add Process --</option>
+                                        <option value="">@L["-- Add Process --"]</option>
                                         @foreach (var item in processes)
                                         {
                                             <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -160,7 +160,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Assets"]</label>
                                     <select id="assetDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add Asset --</option>
+                                        <option value="">@L["-- Add Asset --"]</option>
                                         @foreach (var item in assets)
                                         {
                                             <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -174,7 +174,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Materials"]</label>
                                     <select id="materialDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add Material --</option>
+                                        <option value="">@L["-- Add Material --"]</option>
                                         @foreach (var item in materials)
                                         {
                                             <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -188,7 +188,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Suppliers"]</label>
                                     <select id="supplierDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add Supplier --</option>
+                                        <option value="">@L["-- Add Supplier --"]</option>
                                         @foreach (var item in suppliers)
                                         {
                                             <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -202,7 +202,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">@L["Linked CAPAs"]</label>
                                     <select id="capaDropdown" class="form-select form-select-sm">
-                                        <option value="">-- Add CAPA --</option>
+                                        <option value="">@L["-- Add CAPA --"]</option>
                                         @foreach (var item in capas)
                                         {
                                             <option value="@item.Value" data-text="@item.Text">@item.Text</option>
@@ -216,7 +216,7 @@
                                     <label class="form-label">
                                         @L["Proposal"] <span class="text-danger">*</span>
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="proposal"
-                                                aria-label="Proposal guidance">?</button>
+                                                aria-label="@L["Proposal guidance"]">?</button>
                                     </label>
                                     <textarea name="Proposal" class="form-control" rows="5" required>@Model.Proposal</textarea>
                                 </div>
@@ -231,7 +231,7 @@
             {
                 <div class="card mb-4">
                     <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-                        Assessment
+                        @L["Assessment"]
                         @if (isAssessment)
                         {
                             <span class="badge bg-info text-dark">@L["In Progress"]</span>
@@ -247,35 +247,35 @@
                             <div class="row g-3">
                                 <div class="col-md-4">
                                     <label class="form-label">
-                                        Risk Classification
+                                        @L["Risk Classification"]
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="classification"
-                                                aria-label="Risk classification guidance">?</button>
+                                                aria-label="@L["Risk classification guidance"]">?</button>
                                     </label>
                                     <select asp-for="RiskClassification" class="form-select"
                                             asp-items="Html.GetEnumSelectList<OpenQMS.Models.ChangeRiskClassification>()">
-                                        <option value="">-- Select --</option>
+                                        <option value="">@L["-- Select --"]</option>
                                     </select>
                                 </div>
                                 <div class="col-md-5">
                                     <label class="form-label">
-                                        Change Type
+                                        @L["Change Type"]
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="changetype"
-                                                aria-label="Change type guidance">?</button>
+                                                aria-label="@L["Change type guidance"]">?</button>
                                     </label>
                                     <select asp-for="ChangeType" class="form-select"
                                             asp-items="Html.GetEnumSelectList<OpenQMS.Models.ChangeTypeCategory>()">
-                                        <option value="">-- Select --</option>
+                                        <option value="">@L["-- Select --"]</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">
-                                        Nature
+                                        @L["Nature"]
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="nature"
-                                                aria-label="Change nature guidance">?</button>
+                                                aria-label="@L["Change nature guidance"]">?</button>
                                     </label>
                                     <select asp-for="Nature" class="form-select"
                                             asp-items="Html.GetEnumSelectList<OpenQMS.Models.ChangeNature>()">
-                                        <option value="">-- Select --</option>
+                                        <option value="">@L["-- Select --"]</option>
                                     </select>
                                 </div>
 
@@ -283,7 +283,7 @@
                                     <label class="form-label">
                                         @L["Assessment"]
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="assessment"
-                                                aria-label="Assessment guidance">?</button>
+                                                aria-label="@L["Assessment guidance"]">?</button>
                                     </label>
                                     <textarea name="Assessment" class="form-control" rows="5">@Model.Assessment</textarea>
                                 </div>
@@ -294,14 +294,13 @@
                                                value="true" id="detailedActionPlanRequired"
                                                @(Model.DetailedActionPlanRequired ? "checked" : "") />
                                         <label class="form-check-label" for="detailedActionPlanRequired">
-                                            Detailed Action Plan Required
+                                            @L["Detailed Action Plan Required"]
                                             <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="actionplan"
-                                                    aria-label="Action plan guidance">?</button>
+                                                    aria-label="@L["Action plan guidance"]">?</button>
                                         </label>
                                     </div>
                                     <div class="form-text">
-                                        Tick to track structured pre-implementation tasks on a dedicated <strong>Action Plan</strong> tab.
-                                        Leave unticked to document the plan in the Assessment field above (for a simple change).
+                                        @H["Tick to track structured pre-implementation tasks on a dedicated <strong>{0}</strong> tab. Leave unticked to document the plan in the Assessment field above (for a simple change).", L["Action Plan"].Value]
                                     </div>
                                 </div>
                             </div>
@@ -309,16 +308,16 @@
                         else
                         {
                             <dl class="row mb-0">
-                                <dt class="col-sm-3">Risk Classification</dt>
+                                <dt class="col-sm-3">@L["Risk Classification"]</dt>
                                 <dd class="col-sm-9">@(Model.RiskClassification.HasValue ? L.Enum(Model.RiskClassification.Value) : "-")</dd>
-                                <dt class="col-sm-3">Change Type</dt>
+                                <dt class="col-sm-3">@L["Change Type"]</dt>
                                 <dd class="col-sm-9">@(Model.ChangeType.HasValue ? L.Enum(Model.ChangeType.Value) : "-")</dd>
-                                <dt class="col-sm-3">Nature</dt>
+                                <dt class="col-sm-3">@L["Nature"]</dt>
                                 <dd class="col-sm-9">@(Model.Nature.HasValue ? L.Enum(Model.Nature.Value) : "-")</dd>
                                 <dt class="col-sm-3">@L["Assessment"]</dt>
                                 <dd class="col-sm-9">@(Model.Assessment ?? "-")</dd>
-                                <dt class="col-sm-3">Detailed Action Plan</dt>
-                                <dd class="col-sm-9">@(Model.DetailedActionPlanRequired ? "Required" : "Not required")</dd>
+                                <dt class="col-sm-3">@L["Detailed Action Plan"]</dt>
+                                <dd class="col-sm-9">@(Model.DetailedActionPlanRequired ? L["Required"] : L["Not required"])</dd>
                             </dl>
                         }
                     </div>
@@ -339,7 +338,7 @@
                                 <label class="form-label">
                                     @L["Implementation"]
                                     <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="implementation"
-                                            aria-label="Implementation guidance">?</button>
+                                            aria-label="@L["Implementation guidance"]">?</button>
                                 </label>
                                 <textarea name="Implementation" class="form-control" rows="5">@Model.Implementation</textarea>
                             </div>
@@ -358,55 +357,55 @@
 <!-- Popover help content (hidden, read by JS) -->
 <div class="d-none">
     <div id="help-proposal">
-        <p class="mb-1"><strong>Proposal must include:</strong></p>
+        <p class="mb-1"><strong>@L["Proposal must include:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>A clear description of what is changing and why</li>
-            <li>The expected benefit (quality, regulatory, efficiency)</li>
-            <li>Potential risks or impacts on product quality, validated processes, or GMP compliance</li>
-            <li>Whether regulatory notification or approval is required</li>
+            <li>@L["A clear description of what is changing and why"]</li>
+            <li>@L["The expected benefit (quality, regulatory, efficiency)"]</li>
+            <li>@L["Potential risks or impacts on product quality, validated processes, or GMP compliance"]</li>
+            <li>@L["Whether regulatory notification or approval is required"]</li>
         </ul>
     </div>
     <div id="help-classification">
-        <p class="mb-1"><strong>Risk classification</strong> sets the depth of assessment and the action plan:</p>
+        <p class="mb-1">@H["<strong>{0}</strong> sets the depth of assessment and the action plan:", L["Risk classification"].Value]</p>
         <ul class="mb-0 ps-3">
-            <li><strong>@L["Minor"]</strong> — no impact on approved requirements, product quality or validated state (e.g. like-for-like, editorial)</li>
-            <li><strong>@L["Major"]</strong> — affects a specification, process, validated state, supplier or requirement, within the existing registration</li>
-            <li><strong>@L["Critical"]</strong> — may affect safety/efficacy, a registration or condition, or GMP compliance (e.g. new API source, site change)</li>
+            <li><strong>@L["Minor"]</strong> @L["— no impact on approved requirements, product quality or validated state (e.g. like-for-like, editorial)"]</li>
+            <li><strong>@L["Major"]</strong> @L["— affects a specification, process, validated state, supplier or requirement, within the existing registration"]</li>
+            <li><strong>@L["Critical"]</strong> @L["— may affect safety/efficacy, a registration or condition, or GMP compliance (e.g. new API source, site change)"]</li>
         </ul>
     </div>
     <div id="help-changetype">
-        <p class="mb-1"><strong>Change type</strong> identifies the primary area affected.</p>
-        <p class="mb-0">It drives the <em>suggested actions</em> you can load onto the Action Plan tab (the SOP's per-type candidate actions). Pick the closest fit; add any further actions manually.</p>
+        <p class="mb-1">@H["<strong>{0}</strong> identifies the primary area affected.", L["Change type"].Value]</p>
+        <p class="mb-0">@H["It drives the <em>suggested actions</em> you can load onto the Action Plan tab (the SOP's per-type candidate actions). Pick the closest fit; add any further actions manually."]</p>
     </div>
     <div id="help-nature">
-        <p class="mb-1"><strong>Nature</strong> of the change:</p>
+        <p class="mb-1">@H["<strong>{0}</strong> of the change:", L["Nature"].Value]</p>
         <ul class="mb-0 ps-3">
-            <li><strong>Permanent</strong> — a lasting change</li>
-            <li><strong>Temporary</strong> — in force for a defined period or number of batches, with a defined expiry/reversion</li>
-            <li><strong>Emergency</strong> — implemented urgently to prevent a greater risk; formalised here without delay</li>
+            <li><strong>@L["Permanent"]</strong> @L["— a lasting change"]</li>
+            <li><strong>@L["Temporary"]</strong> @L["— in force for a defined period or number of batches, with a defined expiry/reversion"]</li>
+            <li><strong>@L["Emergency"]</strong> @L["— implemented urgently to prevent a greater risk; formalised here without delay"]</li>
         </ul>
     </div>
     <div id="help-assessment">
-        <p class="mb-1"><strong>Assessment must address:</strong></p>
+        <p class="mb-1"><strong>@L["Assessment must address:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>Impact on product quality, safety, and efficacy</li>
-            <li>Impact on validated processes, equipment, or analytical methods</li>
-            <li>Regulatory impact — whether a variation, notification or condition applies</li>
-            <li>Impact on materials, suppliers, agreements, documents and training</li>
-            <li>The required pre-implementation actions (capture them in the Action Plan tab if a detailed plan is needed)</li>
+            <li>@L["Impact on product quality, safety, and efficacy"]</li>
+            <li>@L["Impact on validated processes, equipment, or analytical methods"]</li>
+            <li>@L["Regulatory impact — whether a variation, notification or condition applies"]</li>
+            <li>@L["Impact on materials, suppliers, agreements, documents and training"]</li>
+            <li>@L["The required pre-implementation actions (capture them in the Action Plan tab if a detailed plan is needed)"]</li>
         </ul>
     </div>
     <div id="help-actionplan">
-        <p class="mb-1"><strong>Detailed Action Plan Required</strong></p>
-        <p class="mb-0">Tick this when a change needs several tracked pre-implementation tasks. An <strong>Action Plan</strong> tab appears where you list each task (owner, target/completed dates, status, evidence) and can load the suggested actions for the selected change type. Every applicable action must be completed before the change can be submitted for approval. Leave unticked for a simple change and describe the plan in the Assessment field.</p>
+        <p class="mb-1"><strong>@L["Detailed Action Plan Required"]</strong></p>
+        <p class="mb-0">@H["Tick this when a change needs several tracked pre-implementation tasks. An <strong>{0}</strong> tab appears where you list each task (owner, target/completed dates, status, evidence) and can load the suggested actions for the selected change type. Every applicable action must be completed before the change can be submitted for approval. Leave unticked for a simple change and describe the plan in the Assessment field.", L["Action Plan"].Value]</p>
     </div>
     <div id="help-implementation">
-        <p class="mb-1"><strong>Implementation must document:</strong></p>
+        <p class="mb-1"><strong>@L["Implementation must document:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>All actions completed, with reference to evidence (e.g. SOP revised on [date], training completed by [names] on [date])</li>
-            <li>Any deviations from the approved implementation plan</li>
-            <li>Confirmation that all pre-implementation requirements were met</li>
-            <li>Effectiveness check — confirm the change achieved the intended outcome</li>
+            <li>@L["All actions completed, with reference to evidence (e.g. SOP revised on [date], training completed by [names] on [date])"]</li>
+            <li>@L["Any deviations from the approved implementation plan"]</li>
+            <li>@L["Confirmation that all pre-implementation requirements were met"]</li>
+            <li>@L["Effectiveness check — confirm the change achieved the intended outcome"]</li>
         </ul>
     </div>
 </div>
@@ -429,7 +428,7 @@
                 var chip = document.createElement('span');
                 chip.style.cssText = 'display:inline-block;background:#0d6efd;color:white;padding:2px 8px;border-radius:12px;margin:2px;font-size:12px;cursor:pointer;';
                 chip.innerHTML = text + ' &times;';
-                chip.title = 'Click to remove';
+                chip.title = @Json.Serialize(L["Click to remove"].Value);
                 chip.addEventListener('click', function() {
                     delete selected[id];
                     var opt = document.querySelector('#' + dropdownId + ' option[value="' + id + '"]');

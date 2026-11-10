@@ -1,6 +1,6 @@
 @model OpenQMS.Models.Risk
 @{
-    ViewData["Title"] = $"Edit Risk — {Model.RiskId}";
+    ViewData["Title"] = L["Edit Risk — {0}", Model.RiskId].Value;
 
     var isIdentificationStage = Model.Status == OpenQMS.Models.Risk.RiskStatus.Identification
                              || Model.Status == OpenQMS.Models.Risk.RiskStatus.Assessment;
@@ -23,8 +23,8 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Edit Risk &mdash; <span class="fw-bold">@Model.RiskId</span></h4>
-        <span class="text-muted small">Stage: @stageLabel</span>
+        <h4 class="mb-0">@L["Edit Risk —"] <span class="fw-bold">@Model.RiskId</span></h4>
+        <span class="text-muted small">@L["Stage: {0}", L[stageLabel].Value]</span>
     </div>
     <div class="d-flex gap-2">
         <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">@L["Details"]</a>
@@ -67,13 +67,13 @@
         </div>
 
         <div class="card mb-4">
-            <div class="card-header fw-semibold">Links to Reference Data</div>
+            <div class="card-header fw-semibold">@L["Links to Reference Data"]</div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">@L["Products"]</label>
                         <select id="productDropdown" class="form-select">
-                            <option value="">-- Add Product --</option>
+                            <option value="">@L["-- Add Product --"]</option>
                             @foreach (var p in products)
                             { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                         </select>
@@ -83,7 +83,7 @@
                     <div class="col-md-6">
                         <label class="form-label">@L["Processes"]</label>
                         <select id="processDropdown" class="form-select">
-                            <option value="">-- Add Process --</option>
+                            <option value="">@L["-- Add Process --"]</option>
                             @foreach (var p in processes)
                             { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                         </select>
@@ -93,7 +93,7 @@
                     <div class="col-md-6">
                         <label class="form-label">@L["Assets"]</label>
                         <select id="assetDropdown" class="form-select">
-                            <option value="">-- Add Asset --</option>
+                            <option value="">@L["-- Add Asset --"]</option>
                             @foreach (var p in assets)
                             { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                         </select>
@@ -103,7 +103,7 @@
                     <div class="col-md-6">
                         <label class="form-label">@L["Materials"]</label>
                         <select id="materialDropdown" class="form-select">
-                            <option value="">-- Add Material --</option>
+                            <option value="">@L["-- Add Material --"]</option>
                             @foreach (var p in materials)
                             { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                         </select>
@@ -113,7 +113,7 @@
                     <div class="col-md-6">
                         <label class="form-label">@L["Suppliers"]</label>
                         <select id="supplierDropdown" class="form-select">
-                            <option value="">-- Add Supplier --</option>
+                            <option value="">@L["-- Add Supplier --"]</option>
                             @foreach (var p in suppliers)
                             { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                         </select>
@@ -131,36 +131,36 @@
                     <div class="col-md-4">
                         <label asp-for="Severity" class="form-label"></label>
                         <select asp-for="Severity" class="form-select">
-                            <option value="1">1 - Negligible</option>
-                            <option value="2">2 - Minor</option>
-                            <option value="3">3 - Moderate</option>
-                            <option value="4">4 - Major</option>
-                            <option value="5">5 - Critical</option>
+                            <option value="1">@L["1 - Negligible"]</option>
+                            <option value="2">@L["2 - Minor"]</option>
+                            <option value="3">@L["3 - Moderate"]</option>
+                            <option value="4">@L["4 - Major"]</option>
+                            <option value="5">@L["5 - Critical"]</option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label asp-for="Probability" class="form-label"></label>
                         <select asp-for="Probability" class="form-select">
-                            <option value="1">1 - Rare</option>
-                            <option value="2">2 - Unlikely</option>
-                            <option value="3">3 - Possible</option>
-                            <option value="4">4 - Likely</option>
-                            <option value="5">5 - Almost Certain</option>
+                            <option value="1">@L["1 - Rare"]</option>
+                            <option value="2">@L["2 - Unlikely"]</option>
+                            <option value="3">@L["3 - Possible"]</option>
+                            <option value="4">@L["4 - Likely"]</option>
+                            <option value="5">@L["5 - Almost Certain"]</option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label asp-for="Detectability" class="form-label"></label>
                         <select asp-for="Detectability" class="form-select">
-                            <option value="1">1 - High (Easily Detected)</option>
-                            <option value="2">2 - Medium-High</option>
-                            <option value="3">3 - Medium</option>
-                            <option value="4">4 - Medium-Low</option>
-                            <option value="5">5 - Low (Hard to Detect)</option>
+                            <option value="1">@L["1 - High (Easily Detected)"]</option>
+                            <option value="2">@L["2 - Medium-High"]</option>
+                            <option value="3">@L["3 - Medium"]</option>
+                            <option value="4">@L["4 - Medium-Low"]</option>
+                            <option value="5">@L["5 - Low (Hard to Detect)"]</option>
                         </select>
                     </div>
                     <div class="col-12">
                         <div class="alert alert-info small py-2 mb-0">
-                            Initial RPN is calculated automatically as Severity &times; Probability &times; Detectability (range: 1&ndash;125).
+                            @L["Initial RPN is calculated automatically as Severity × Probability × Detectability (range: 1–125)."]
                         </div>
                     </div>
                 </div>
@@ -168,7 +168,7 @@
         </div>
 
         <div class="card mb-4">
-            <div class="card-header fw-semibold">Mitigation &amp; Monitoring</div>
+            <div class="card-header fw-semibold">@L["Mitigation & Monitoring"]</div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-12">
@@ -195,14 +195,14 @@
     @if (isMitigationStage)
     {
         <div class="card mb-4 border-secondary">
-            <div class="card-header fw-semibold bg-light">Risk Summary</div>
+            <div class="card-header fw-semibold bg-light">@L["Risk Summary"]</div>
             <div class="card-body">
                 <dl class="row mb-0">
                     <dt class="col-sm-3">@L["Title"]</dt>
                     <dd class="col-sm-9">@Model.Title</dd>
                     <dt class="col-sm-3">@L["Category"]</dt>
-                    <dd class="col-sm-9">@Html.DisplayFor(m => m.Category)</dd>
-                    <dt class="col-sm-3">Risk Owner</dt>
+                    <dd class="col-sm-9">@L.Enum(Model.Category)</dd>
+                    <dt class="col-sm-3">@L["Risk Owner"]</dt>
                     <dd class="col-sm-9">@(Model.RiskOwner ?? "—")</dd>
                     <dt class="col-sm-3">@L["Initial RPN"]</dt>
                     <dd class="col-sm-9">
@@ -224,7 +224,7 @@
                             @Html.DisplayNameFor(m => m.MitigationStrategy) <span class="text-danger">*</span>
                         </label>
                         <textarea asp-for="MitigationStrategy" class="form-control" rows="4"></textarea>
-                        <span class="form-text text-muted small">Required before submitting for review.</span>
+                        <span class="form-text text-muted small">@L["Required before submitting for review."]</span>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="TargetCompletionDate" class="form-label"></label>
@@ -239,7 +239,7 @@
         </div>
 
         <div class="card mb-4">
-            <div class="card-header fw-semibold">Residual Risk Assessment (After Mitigation)</div>
+            <div class="card-header fw-semibold">@L["Residual Risk Assessment (After Mitigation)"]</div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-4">
@@ -247,12 +247,12 @@
                             @Html.DisplayNameFor(m => m.ResidualSeverity) <span class="text-danger">*</span>
                         </label>
                         <select asp-for="ResidualSeverity" class="form-select">
-                            <option value="">-- Not Assessed --</option>
-                            <option value="1">1 - Negligible</option>
-                            <option value="2">2 - Minor</option>
-                            <option value="3">3 - Moderate</option>
-                            <option value="4">4 - Major</option>
-                            <option value="5">5 - Critical</option>
+                            <option value="">@L["-- Not Assessed --"]</option>
+                            <option value="1">@L["1 - Negligible"]</option>
+                            <option value="2">@L["2 - Minor"]</option>
+                            <option value="3">@L["3 - Moderate"]</option>
+                            <option value="4">@L["4 - Major"]</option>
+                            <option value="5">@L["5 - Critical"]</option>
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -260,12 +260,12 @@
                             @Html.DisplayNameFor(m => m.ResidualProbability) <span class="text-danger">*</span>
                         </label>
                         <select asp-for="ResidualProbability" class="form-select">
-                            <option value="">-- Not Assessed --</option>
-                            <option value="1">1 - Rare</option>
-                            <option value="2">2 - Unlikely</option>
-                            <option value="3">3 - Possible</option>
-                            <option value="4">4 - Likely</option>
-                            <option value="5">5 - Almost Certain</option>
+                            <option value="">@L["-- Not Assessed --"]</option>
+                            <option value="1">@L["1 - Rare"]</option>
+                            <option value="2">@L["2 - Unlikely"]</option>
+                            <option value="3">@L["3 - Possible"]</option>
+                            <option value="4">@L["4 - Likely"]</option>
+                            <option value="5">@L["5 - Almost Certain"]</option>
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -273,17 +273,17 @@
                             @Html.DisplayNameFor(m => m.ResidualDetectability) <span class="text-danger">*</span>
                         </label>
                         <select asp-for="ResidualDetectability" class="form-select">
-                            <option value="">-- Not Assessed --</option>
-                            <option value="1">1 - High (Easily Detected)</option>
-                            <option value="2">2 - Medium-High</option>
-                            <option value="3">3 - Medium</option>
-                            <option value="4">4 - Medium-Low</option>
-                            <option value="5">5 - Low (Hard to Detect)</option>
+                            <option value="">@L["-- Not Assessed --"]</option>
+                            <option value="1">@L["1 - High (Easily Detected)"]</option>
+                            <option value="2">@L["2 - Medium-High"]</option>
+                            <option value="3">@L["3 - Medium"]</option>
+                            <option value="4">@L["4 - Medium-Low"]</option>
+                            <option value="5">@L["5 - Low (Hard to Detect)"]</option>
                         </select>
                     </div>
                     <div class="col-12">
                         <div class="alert alert-info small py-2 mb-0">
-                            All three residual scores are required before submitting for review.
+                            @L["All three residual scores are required before submitting for review."]
                         </div>
                     </div>
                 </div>
@@ -291,7 +291,7 @@
         </div>
 
         <div class="card mb-4">
-            <div class="card-header fw-semibold">Risk Acceptance</div>
+            <div class="card-header fw-semibold">@L["Risk Acceptance"]</div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
@@ -299,9 +299,9 @@
                             @Html.DisplayNameFor(m => m.RiskAcceptable) <span class="text-danger">*</span>
                         </label>
                         <select asp-for="RiskAcceptable" class="form-select">
-                            <option value="">-- Not Decided --</option>
-                            <option value="true">Yes — Risk is Acceptable</option>
-                            <option value="false">No — Further Action Required</option>
+                            <option value="">@L["-- Not Decided --"]</option>
+                            <option value="true">@L["Yes — Risk is Acceptable"]</option>
+                            <option value="false">@L["No — Further Action Required"]</option>
                         </select>
                     </div>
                     <div class="col-12">
@@ -309,14 +309,14 @@
                             @Html.DisplayNameFor(m => m.Justification) <span class="text-danger">*</span>
                         </label>
                         <textarea asp-for="Justification" class="form-control" rows="3"></textarea>
-                        <span class="form-text text-muted small">Required before submitting for review.</span>
+                        <span class="form-text text-muted small">@L["Required before submitting for review."]</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="card mb-4">
-            <div class="card-header fw-semibold">Monitoring</div>
+            <div class="card-header fw-semibold">@L["Monitoring"]</div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-12">

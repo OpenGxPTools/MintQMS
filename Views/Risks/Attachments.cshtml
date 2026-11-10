@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Risk
 
 @{
-    ViewData["Title"] = "Attachments";
+    ViewData["Title"] = L["Attachments"].Value;
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -26,12 +26,12 @@
                     </div>
                     <div class="col-md-8">
                         <label class="form-label">@L["Description (optional)"]</label>
-                        <input type="text" class="form-control" name="description" placeholder="e.g., Risk Assessment Report" />
+                        <input type="text" class="form-control" name="description" placeholder="@L["e.g., Risk Assessment Report"]" />
                     </div>
                 </div>
                 <div class="mt-3 d-flex gap-2">
                     <button type="submit" class="btn btn-primary">@L["Upload"]</button>
-                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Risk</a>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to Risk"]</a>
                 </div>
             </form>
         </div>
@@ -40,9 +40,9 @@
 else
 {
     <div class="alert alert-warning">
-        <strong>@L["Record Closed:"]</strong> This risk is closed. No new attachments can be uploaded.
+        <strong>@L["Record Closed:"]</strong> @L["This risk is closed. No new attachments can be uploaded."]
     </div>
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm mb-3"><i class="bi bi-arrow-left me-1"></i>Back to Risk</a>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm mb-3"><i class="bi bi-arrow-left me-1"></i>@L["Back to Risk"]</a>
 }
 
 <hr />

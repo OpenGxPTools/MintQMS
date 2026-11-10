@@ -48,7 +48,9 @@ namespace OpenQMS.Models
         public int? CapaId { get; set; }
         [ForeignKey("CapaId")]
         public virtual Capa? Capa { get; set; }
+        [Display(Name = "Title")]
         public string Title { get; set; }
+        [Display(Name = "Proposal")]
         public string Proposal { get; set; }
         [Display(Name = "Target Implementation Date")]
         public DateTime? TargetImplementationDate { get; set; }
@@ -85,6 +87,7 @@ namespace OpenQMS.Models
         [Display(Name = "Approved On")]
         public DateTime? ApprovedOn { get; set; }
         public string? ExportFilePath { get; set; }
+        [Display(Name = "Status")]
         public ChangeStatus Status { get; set; }
         public enum ChangeStatus
         {

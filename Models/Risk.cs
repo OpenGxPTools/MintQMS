@@ -36,8 +36,10 @@ namespace OpenQMS.Models
         [ForeignKey("SupplierId")]
         public virtual Supplier? Supplier { get; set; }
         
+        [Display(Name = "Title")]
         public string Title { get; set; } = string.Empty;
         
+        [Display(Name = "Description")]
         public string Description { get; set; } = string.Empty;
         
         [Display(Name = "Risk Category")]
@@ -106,6 +108,7 @@ namespace OpenQMS.Models
         [Display(Name = "Risk Acceptable")]
         public bool? RiskAcceptable { get; set; }
         
+        [Display(Name = "Justification")]
         public string? Justification { get; set; }
         
         [Display(Name = "Reviewed By")]

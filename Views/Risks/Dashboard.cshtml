@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Risk Dashboard";
+    ViewData["Title"] = L["Risk Dashboard"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var statusCounts   = (Dictionary<string, int>)ViewBag.StatusCounts;
@@ -11,7 +11,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">Risk Dashboard</h4>
+    <h4 class="mb-0">@L["Risk Dashboard"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Excel"]</a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">@L["Register"]</a>
@@ -23,7 +23,7 @@
 {
     <div class="alert alert-danger d-flex align-items-center mb-4">
         <strong class="me-2">&#9888;</strong>
-        <span><strong>@ViewBag.HighRPN high-RPN open risk(s)</strong> (RPN ≥ 80) require immediate attention.</span>
+        <span>@H["<strong>{0} high-RPN open risk(s)</strong> (RPN ≥ 80) require immediate attention.", (int)ViewBag.HighRPN]</span>
     </div>
 }
 
@@ -33,7 +33,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-primary">@ViewBag.Total</div>
-                <div class="text-muted">Total Risks</div>
+                <div class="text-muted">@L["Total Risks"]</div>
             </div>
         </div>
     </div>
@@ -57,7 +57,7 @@
         <div class="card text-center h-100 @((int)ViewBag.HighRPN > 0 ? "border-danger" : "")">
             <div class="card-body">
                 <div class="display-5 fw-bold @((int)ViewBag.HighRPN > 0 ? "text-danger" : "text-secondary")">@ViewBag.HighRPN</div>
-                <div class="text-muted">High RPN Open</div>
+                <div class="text-muted">@L["High RPN Open"]</div>
             </div>
         </div>
     </div>
@@ -68,36 +68,36 @@
     <div class="col-md-4">
         <div class="card h-100 border-danger">
             <div class="card-header bg-danger text-white d-flex justify-content-between">
-                <span>High Risk (RPN ≥ 80)</span>
+                <span>@L["High Risk (RPN ≥ 80)"]</span>
                 <span class="badge bg-white text-danger">@ViewBag.HighRPN</span>
             </div>
             <div class="card-body text-center">
                 <div class="display-6 fw-bold text-danger">@ViewBag.HighRPN</div>
-                <small class="text-muted">Immediate action required</small>
+                <small class="text-muted">@L["Immediate action required"]</small>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card h-100 border-warning">
             <div class="card-header bg-warning d-flex justify-content-between">
-                <span>Medium Risk (RPN 40–79)</span>
+                <span>@L["Medium Risk (RPN 40–79)"]</span>
                 <span class="badge bg-dark">@ViewBag.MediumRPN</span>
             </div>
             <div class="card-body text-center">
                 <div class="display-6 fw-bold text-warning">@ViewBag.MediumRPN</div>
-                <small class="text-muted">Action plan required</small>
+                <small class="text-muted">@L["Action plan required"]</small>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card h-100 border-success">
             <div class="card-header bg-success text-white d-flex justify-content-between">
-                <span>Low Risk (RPN &lt; 40)</span>
+                <span>@L["Low Risk (RPN < 40)"]</span>
                 <span class="badge bg-white text-success">@ViewBag.LowRPN</span>
             </div>
             <div class="card-body text-center">
                 <div class="display-6 fw-bold text-success">@ViewBag.LowRPN</div>
-                <small class="text-muted">Monitor</small>
+                <small class="text-muted">@L["Monitor"]</small>
             </div>
         </div>
     </div>
@@ -133,7 +133,7 @@
                                 _                => "bg-secondary"
                             };
                             <tr>
-                                <td>@kv.Key</td>
+                                <td>@L.Enum(Enum.Parse<OpenQMS.Models.Risk.RiskStatus>(kv.Key))</td>
                                 <td>@kv.Value</td>
                                 <td><div class="progress" style="height:8px"><div class="progress-bar @barClass" style="width:@pct%"></div></div></td>
                             </tr>
@@ -150,14 +150,14 @@
     <div class="col-md-6">
         <div class="card h-100 @(highRPNList.Any() ? "border-danger" : "")">
             <div class="card-header d-flex justify-content-between @(highRPNList.Any() ? "bg-danger text-white" : "")">
-                <span>Open High-RPN Risks</span>
+                <span>@L["Open High-RPN Risks"]</span>
                 <span class="badge @(highRPNList.Any() ? "bg-white text-danger" : "bg-secondary")">@highRPNList.Count</span>
             </div>
             <div class="card-body p-0">
                 @if (highRPNList.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>RPN</th><th>@L["Status"]</th></tr></thead>
+                        <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["RPN"]</th><th>@L["Status"]</th></tr></thead>
                         <tbody>
                             @foreach (var r in highRPNList)
                             {
@@ -171,21 +171,21 @@
                         </tbody>
                     </table>
                 }
-                else { <p class="text-muted p-3 mb-0">No high-RPN open risks.</p> }
+                else { <p class="text-muted p-3 mb-0">@L["No high-RPN open risks."]</p> }
             </div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between">
-                <span>Pending Assessment (Identification)</span>
+                <span>@L["Pending Assessment (Identification)"]</span>
                 <span class="badge bg-warning text-dark">@pendingAssess.Count</span>
             </div>
             <div class="card-body p-0">
                 @if (pendingAssess.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>RPN</th><th>@L["Identified"]</th></tr></thead>
+                        <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["RPN"]</th><th>@L["Identified"]</th></tr></thead>
                         <tbody>
                             @foreach (var r in pendingAssess)
                             {
@@ -210,12 +210,12 @@
 {
     <div class="card mb-4 border-danger">
         <div class="card-header bg-danger text-white d-flex justify-content-between">
-            <span>Overdue Risks</span>
+            <span>@L["Overdue Risks"]</span>
             <span class="badge bg-white text-danger">@overdue.Count</span>
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
-                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>RPN</th><th>@L["Target Date"]</th><th>@L["Days Overdue"]</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["RPN"]</th><th>@L["Target Date"]</th><th>@L["Days Overdue"]</th></tr></thead>
                 <tbody>
                     @foreach (var r in overdue)
                     {
@@ -226,7 +226,7 @@
                             <td>@L.Enum(r.Status)</td>
                             <td>@r.InitialRPN</td>
                             <td>@r.TargetCompletionDate.Value.ToShortDateString()</td>
-                            <td><strong>@daysOver days</strong></td>
+                            <td><strong>@L["{0} days", daysOver]</strong></td>
                         </tr>
                     }
                 </tbody>
@@ -239,12 +239,12 @@
 {
     <div class="card mb-4 border-warning">
         <div class="card-header bg-warning d-flex justify-content-between">
-            <span>Due Within 14 Days</span>
+            <span>@L["Due Within 14 Days"]</span>
             <span class="badge bg-dark">@approaching.Count</span>
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
-                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Target Date"]</th><th>Days Remaining</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Target Date"]</th><th>@L["Days Remaining"]</th></tr></thead>
                 <tbody>
                     @foreach (var r in approaching)
                     {
@@ -254,7 +254,7 @@
                             <td>@r.Title</td>
                             <td>@L.Enum(r.Status)</td>
                             <td>@r.TargetCompletionDate.Value.ToShortDateString()</td>
-                            <td>@daysLeft days</td>
+                            <td>@L["{0} days", daysLeft]</td>
                         </tr>
                     }
                 </tbody>

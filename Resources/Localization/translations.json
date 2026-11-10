@@ -12,6 +12,10 @@
   "es": "-- Agregar auditoría --",
   "pt-BR": "-- Adicionar auditoria --"
  },
+ "-- Add CAPA --": {
+  "es": "-- Agregar CAPA --",
+  "pt-BR": "-- Adicionar CAPA --"
+ },
  "-- Add Complaint --": {
   "es": "-- Agregar reclamación --",
   "pt-BR": "-- Adicionar reclamação --"
@@ -35,6 +39,22 @@
  "-- Add Supplier --": {
   "es": "-- Agregar proveedor --",
   "pt-BR": "-- Adicionar fornecedor --"
+ },
+ "-- Not Assessed --": {
+  "es": "-- No evaluado --",
+  "pt-BR": "-- Não avaliado --"
+ },
+ "-- Not Decided --": {
+  "es": "-- Sin decidir --",
+  "pt-BR": "-- Não decidido --"
+ },
+ "-- Not Rated Yet --": {
+  "es": "-- Sin calificar aún --",
+  "pt-BR": "-- Ainda não classificado --"
+ },
+ "-- Select --": {
+  "es": "-- Seleccionar --",
+  "pt-BR": "-- Selecionar --"
  },
  "-- Select category --": {
   "es": "-- Seleccione una categoría --",
@@ -60,14 +80,106 @@
   "es": "-- Seleccione un tipo --",
   "pt-BR": "-- Selecione um tipo --"
  },
+ "1 - High (Easily Detected)": {
+  "es": "1 - Alta (fácil de detectar)",
+  "pt-BR": "1 - Alta (facilmente detectável)"
+ },
+ "1 - Negligible": {
+  "es": "1 - Insignificante",
+  "pt-BR": "1 - Insignificante"
+ },
+ "1 - Rare": {
+  "es": "1 - Rara",
+  "pt-BR": "1 - Rara"
+ },
+ "2 - Medium-High": {
+  "es": "2 - Media-alta",
+  "pt-BR": "2 - Média-alta"
+ },
+ "2 - Minor": {
+  "es": "2 - Menor",
+  "pt-BR": "2 - Menor"
+ },
+ "2 - Unlikely": {
+  "es": "2 - Improbable",
+  "pt-BR": "2 - Improvável"
+ },
  "2fa has been disabled. You can reenable 2fa when you setup an authenticator app": {
   "es": "Se desactivó la 2FA. Puede volver a activarla cuando configure una aplicación de autenticación.",
   "pt-BR": "A 2FA foi desativada. Você pode reativá-la ao configurar um aplicativo autenticador.",
   "note": "status message"
  },
+ "3 - Medium": {
+  "es": "3 - Media",
+  "pt-BR": "3 - Média"
+ },
+ "3 - Moderate": {
+  "es": "3 - Moderada",
+  "pt-BR": "3 - Moderada"
+ },
+ "3 - Possible": {
+  "es": "3 - Posible",
+  "pt-BR": "3 - Possível"
+ },
+ "4 - Likely": {
+  "es": "4 - Probable",
+  "pt-BR": "4 - Provável"
+ },
+ "4 - Major": {
+  "es": "4 - Mayor",
+  "pt-BR": "4 - Maior"
+ },
+ "4 - Medium-Low": {
+  "es": "4 - Media-baja",
+  "pt-BR": "4 - Média-baixa"
+ },
+ "5 - Almost Certain": {
+  "es": "5 - Casi segura",
+  "pt-BR": "5 - Quase certa"
+ },
+ "5 - Critical": {
+  "es": "5 - Crítica",
+  "pt-BR": "5 - Crítica"
+ },
+ "5 - Low (Hard to Detect)": {
+  "es": "5 - Baja (difícil de detectar)",
+  "pt-BR": "5 - Baixa (difícil de detectar)"
+ },
+ "<strong>{0} critical finding(s)</strong> across all audits require attention.": {
+  "es": "<strong>{0} hallazgo(s) crítico(s)</strong> en el conjunto de auditorías requieren atención.",
+  "pt-BR": "<strong>{0} constatação(ões) crítica(s)</strong> no conjunto das auditorias exigem atenção."
+ },
  "<strong>{0} critical open complaint(s)</strong> require immediate attention.": {
   "es": "<strong>{0} reclamación(es) crítica(s) abierta(s)</strong> requieren atención inmediata.",
   "pt-BR": "<strong>{0} reclamação(ões) crítica(s) aberta(s)</strong> exigem atenção imediata."
+ },
+ "<strong>{0} high-RPN open risk(s)</strong> (RPN ≥ 80) require immediate attention.": {
+  "es": "<strong>{0} riesgo(s) abierto(s) con NPR alto</strong> (NPR ≥ 80) requieren atención inmediata.",
+  "pt-BR": "<strong>{0} risco(s) aberto(s) com NPR alto</strong> (NPR ≥ 80) exigem atenção imediata."
+ },
+ "<strong>{0}</strong> identifies the primary area affected.": {
+  "es": "<strong>{0}</strong> identifica el área principal afectada.",
+  "pt-BR": "<strong>{0}</strong> identifica a principal área afetada."
+ },
+ "<strong>{0}</strong> of the change:": {
+  "es": "<strong>{0}</strong> del cambio:",
+  "pt-BR": "<strong>{0}</strong> da mudança:"
+ },
+ "<strong>{0}</strong> sets the depth of assessment and the action plan:": {
+  "es": "<strong>{0}</strong> determina la profundidad de la evaluación y el plan de acción:",
+  "pt-BR": "<strong>{0}</strong> define a profundidade da avaliação e o plano de ação:"
+ },
+ "A CAPA is already linked to this audit.": {
+  "es": "Ya hay una CAPA vinculada a esta auditoría.",
+  "pt-BR": "Já existe uma CAPA vinculada a esta auditoria."
+ },
+ "A CAPA is required.": {
+  "es": "Se requiere una CAPA.",
+  "pt-BR": "Uma CAPA é necessária."
+ },
+ "A clear description of what is changing and why": {
+  "es": "Una descripción clara de qué cambia y por qué",
+  "pt-BR": "Uma descrição clara do que está mudando e por quê"
  },
  "A clear, factual description of a deviation, outlining what occurred, when and where it happened, how it was detected, and the immediate actions taken. Attach supporting documentation and photos, where relevant.": {
   "es": "Una descripción clara y objetiva de la desviación: qué ocurrió, cuándo y dónde, cómo se detectó y las acciones inmediatas tomadas. Adjunte documentación de respaldo y fotos cuando corresponda.",
@@ -85,6 +197,18 @@
  "A description of each action to eliminate the identified root cause": {
   "es": "Una descripción de cada acción para eliminar la causa raíz identificada",
   "pt-BR": "Uma descrição de cada ação para eliminar a causa-raiz identificada"
+ },
+ "A justification reason is required.": {
+  "es": "Se requiere un motivo de justificación.",
+  "pt-BR": "É necessário um motivo de justificativa."
+ },
+ "A reason for return is required.": {
+  "es": "Se requiere un motivo de devolución.",
+  "pt-BR": "É necessário um motivo de devolução."
+ },
+ "A reason is required to delete an attachment.": {
+  "es": "Se requiere un motivo para eliminar un adjunto.",
+  "pt-BR": "É necessário um motivo para excluir um anexo."
  },
  "A reason is required.": {
   "es": "Se requiere un motivo.",
@@ -114,10 +238,18 @@
   "es": "Acerca de y aviso legal",
   "pt-BR": "Sobre e aviso legal"
  },
+ "Accept Assessment": {
+  "es": "Aceptar evaluación",
+  "pt-BR": "Aceitar avaliação"
+ },
  "Accept CAPA": {
   "es": "Aceptar CAPA",
   "pt-BR": "Aceitar CAPA",
   "note": "WORKFLOW — review"
+ },
+ "Accept Change": {
+  "es": "Aceptar cambio",
+  "pt-BR": "Aceitar mudança"
  },
  "Accept Complaint": {
   "es": "Aceptar reclamación",
@@ -155,6 +287,10 @@
   "es": "Aceptado por",
   "pt-BR": "Aceito por"
  },
+ "Accepted By (QM)": {
+  "es": "Aceptado por (GC)",
+  "pt-BR": "Aceito por (GQ)"
+ },
  "Accepted into QMS By": {
   "es": "Aceptado en el SGC por",
   "pt-BR": "Aceito no SGQ por",
@@ -172,6 +308,10 @@
  "Accepted: {0} · Max 25 MB": {
   "es": "Aceptados: {0} · Máx. 25 MB",
   "pt-BR": "Aceitos: {0} · Máx. 25 MB"
+ },
+ "Accepting will move this risk to Mitigation. The risk scoring is locked from this point.": {
+  "es": "Al aceptar, este riesgo pasará a Mitigación. La puntuación del riesgo queda bloqueada a partir de este momento.",
+  "pt-BR": "Ao aceitar, este risco passará para Mitigação. A pontuação do risco fica bloqueada a partir deste ponto."
  },
  "Access denied": {
   "es": "Acceso denegado",
@@ -203,6 +343,18 @@
   "es": "Acción",
   "pt-BR": "Ação"
  },
+ "Action \"{0}\" has a completed date but its status is not \"Complete\". Set the status to Complete, or clear the completed date.": {
+  "es": "La acción \"{0}\" tiene fecha de finalización, pero su estado no es \"Completo\". Cambie el estado a Completo o borre la fecha de finalización.",
+  "pt-BR": "A ação \"{0}\" tem data de conclusão, mas seu status não é \"Concluído\". Altere o status para Concluído ou apague a data de conclusão."
+ },
+ "Action \"{0}\" is marked \"Complete\" but has no completed date. Add the completed date, or change the status.": {
+  "es": "La acción \"{0}\" está marcada como \"Completo\", pero no tiene fecha de finalización. Agregue la fecha de finalización o cambie el estado.",
+  "pt-BR": "A ação \"{0}\" está marcada como \"Concluído\", mas não tem data de conclusão. Adicione a data de conclusão ou altere o status."
+ },
+ "Action / task": {
+  "es": "Acción / tarea",
+  "pt-BR": "Ação / tarefa"
+ },
  "Action By": {
   "es": "Acción realizada por",
   "pt-BR": "Ação realizada por"
@@ -210,6 +362,22 @@
  "Action On": {
   "es": "Acción realizada el",
   "pt-BR": "Ação realizada em"
+ },
+ "Action Plan": {
+  "es": "Plan de acción",
+  "pt-BR": "Plano de ação"
+ },
+ "Action plan guidance": {
+  "es": "Guía del plan de acción",
+  "pt-BR": "Orientação do plano de ação"
+ },
+ "Action plan required": {
+  "es": "Plan de acción requerido",
+  "pt-BR": "Plano de ação exigido"
+ },
+ "Action plan saved.": {
+  "es": "Plan de acción guardado.",
+  "pt-BR": "Plano de ação salvo."
  },
  "Action Required": {
   "es": "Acción requerida",
@@ -235,9 +403,37 @@
   "es": "Principio activo / DCI",
   "pt-BR": "Insumo farmacêutico ativo / DCI"
  },
+ "Actual Completion": {
+  "es": "Finalización real",
+  "pt-BR": "Conclusão real"
+ },
+ "Actual Completion Date": {
+  "es": "Fecha real de finalización",
+  "pt-BR": "Data real de conclusão"
+ },
+ "Actual End": {
+  "es": "Fin real",
+  "pt-BR": "Término real"
+ },
+ "Actual End Date": {
+  "es": "Fecha real de fin",
+  "pt-BR": "Data real de término"
+ },
+ "Actual Start": {
+  "es": "Inicio real",
+  "pt-BR": "Início real"
+ },
+ "Actual Start Date": {
+  "es": "Fecha real de inicio",
+  "pt-BR": "Data real de início"
+ },
  "Add": {
   "es": "Agregar",
   "pt-BR": "Adicionar"
+ },
+ "Add action": {
+  "es": "Agregar acción",
+  "pt-BR": "Adicionar ação"
  },
  "Add another service to log in.": {
   "es": "Agregue otro servicio para iniciar sesión.",
@@ -246,6 +442,10 @@
  "Add Group": {
   "es": "Agregar grupo",
   "pt-BR": "Adicionar grupo"
+ },
+ "Additional Notes (optional)": {
+  "es": "Notas adicionales (opcional)",
+  "pt-BR": "Observações adicionais (opcional)"
  },
  "Address": {
   "es": "Dirección",
@@ -272,6 +472,18 @@
   "es": "Reabrir administrativamente",
   "pt-BR": "Reabrir administrativamente",
   "note": "WORKFLOW — review"
+ },
+ "Administratively reopening a completed record reverts it to the Approved stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.": {
+  "es": "La reapertura administrativa de un registro completado lo devuelve a la etapa Aprobado. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después del cierre formal.",
+  "pt-BR": "A reabertura administrativa de um registro concluído o devolve à etapa Aprovado. Esta ação é registrada na trilha de auditoria e exige suas credenciais. Use somente quando forem necessárias correções após o encerramento formal."
+ },
+ "Administratively reopening a completed record reverts it to the Implementation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.": {
+  "es": "La reapertura administrativa de un registro completado lo devuelve a la etapa Implementación. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después de la aprobación formal.",
+  "pt-BR": "A reabertura administrativa de um registro concluído o devolve à etapa Implementação. Esta ação é registrada na trilha de auditoria e exige suas credenciais. Use somente quando forem necessárias correções após a aprovação formal."
+ },
+ "Administratively reopening a completed record reverts it to the Mitigation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.": {
+  "es": "La reapertura administrativa de un registro completado lo devuelve a la etapa Mitigación. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después del cierre formal.",
+  "pt-BR": "A reabertura administrativa de um registro concluído o devolve à etapa Mitigação. Esta ação é registrada na trilha de auditoria e exige suas credenciais. Use somente quando forem necessárias correções após o encerramento formal."
  },
  "Administrator": {
   "es": "Administrador",
@@ -330,6 +542,14 @@
   "es": "Todos",
   "pt-BR": "Todos"
  },
+ "All actions completed, with reference to evidence (e.g. SOP revised on [date], training completed by [names] on [date])": {
+  "es": "Todas las acciones completadas, con referencia a la evidencia (p. ej., PNT revisado el [fecha], formación completada por [nombres] el [fecha])",
+  "pt-BR": "Todas as ações concluídas, com referência à evidência (p. ex., POP revisado em [data], treinamento concluído por [nomes] em [data])"
+ },
+ "All applicable actions complete": {
+  "es": "Todas las acciones aplicables completadas",
+  "pt-BR": "Todas as ações aplicáveis concluídas"
+ },
  "All CAPA actions completed with evidence": {
   "es": "Todas las acciones de la CAPA completadas con evidencia",
   "pt-BR": "Todas as ações da CAPA concluídas com evidência"
@@ -338,9 +558,17 @@
   "es": "Todas las categorías",
   "pt-BR": "Todas as categorias"
  },
+ "All Findings (excl. obs.)": {
+  "es": "Todos los hallazgos (excl. obs.)",
+  "pt-BR": "Todas as constatações (excl. obs.)"
+ },
  "All required training has been completed. This document is Effective.": {
   "es": "Se completó toda la capacitación requerida. Este documento está vigente.",
   "pt-BR": "Todo o treinamento exigido foi concluído. Este documento está vigente."
+ },
+ "All three residual scores are required before submitting for review.": {
+  "es": "Las tres puntuaciones residuales son obligatorias antes de enviar a revisión.",
+  "pt-BR": "As três pontuações residuais são obrigatórias antes de enviar para revisão."
  },
  "All Types": {
   "es": "Todos los tipos",
@@ -377,6 +605,10 @@
  "Annual": {
   "es": "Anual",
   "pt-BR": "Anual"
+ },
+ "Any deviations from the approved implementation plan": {
+  "es": "Cualquier desviación respecto del plan de implementación aprobado",
+  "pt-BR": "Quaisquer desvios do plano de implementação aprovado"
  },
  "Any immediate actions already taken": {
   "es": "Cualquier acción inmediata ya tomada",
@@ -437,10 +669,18 @@
   "pt-BR": "Aprovar e assinar",
   "note": "SIGNATURE — review"
  },
+ "Approve Audit Report": {
+  "es": "Aprobar informe de auditoría",
+  "pt-BR": "Aprovar relatório de auditoria"
+ },
  "Approve CAPA": {
   "es": "Aprobar CAPA",
   "pt-BR": "Aprovar CAPA",
   "note": "SIGNATURE — review"
+ },
+ "Approve Change": {
+  "es": "Aprobar cambio",
+  "pt-BR": "Aprovar mudança"
  },
  "Approve Deviation": {
   "es": "Aprobar desviación",
@@ -466,6 +706,10 @@
   "es": "Aprobado el",
   "pt-BR": "Aprovado em",
   "note": "SIGNATURE — review"
+ },
+ "Approved — Pending Closure": {
+  "es": "Aprobado — pendiente de cierre",
+  "pt-BR": "Aprovado — pendente de encerramento"
  },
  "Are you sure you want to delete this document? This action cannot be undone.": {
   "es": "¿Está seguro de que desea eliminar este documento? Esta acción no se puede deshacer.",
@@ -510,6 +754,10 @@
   "es": "Evaluación",
   "pt-BR": "Avaliação"
  },
+ "Assessment accepted. Risk moved to Mitigation.": {
+  "es": "Evaluación aceptada. El riesgo pasó a Mitigación.",
+  "pt-BR": "Avaliação aceita. O risco passou para Mitigação."
+ },
  "Assessment guidance": {
   "es": "Guía de evaluación",
   "pt-BR": "Orientação de avaliação"
@@ -518,6 +766,10 @@
   "es": "La evaluación debe abordar:",
   "pt-BR": "A avaliação deve abordar:",
   "note": "GUIDANCE — review"
+ },
+ "Assessment must be completed before submitting for acceptance.": {
+  "es": "La evaluación debe completarse antes de enviar a aceptación.",
+  "pt-BR": "A avaliação deve ser concluída antes de enviar para aceitação."
  },
  "Assessment Notes": {
   "es": "Notas de la evaluación",
@@ -543,6 +795,14 @@
   "es": "Asignado a",
   "pt-BR": "Atribuído a"
  },
+ "Attachment deleted successfully.": {
+  "es": "Adjunto eliminado correctamente.",
+  "pt-BR": "Anexo excluído com sucesso."
+ },
+ "Attachment deleted.": {
+  "es": "Adjunto eliminado.",
+  "pt-BR": "Anexo excluído."
+ },
  "Attachments": {
   "es": "Adjuntos",
   "pt-BR": "Anexos"
@@ -551,21 +811,81 @@
   "es": "Solo se pueden agregar o quitar adjuntos mientras el registro está en Borrador o En revisión.",
   "pt-BR": "Só é possível adicionar ou remover anexos enquanto o registro está em Rascunho ou Em revisão."
  },
+ "Attachments cannot be added to a closed audit.": {
+  "es": "No se pueden agregar adjuntos a una auditoría cerrada.",
+  "pt-BR": "Não é possível adicionar anexos a uma auditoria encerrada."
+ },
+ "Attachments cannot be added to an approved change record.": {
+  "es": "No se pueden agregar adjuntos a un registro de cambio aprobado.",
+  "pt-BR": "Não é possível adicionar anexos a um registro de mudança aprovado."
+ },
+ "Attachments cannot be removed from an approved change record.": {
+  "es": "No se pueden quitar adjuntos de un registro de cambio aprobado.",
+  "pt-BR": "Não é possível remover anexos de um registro de mudança aprovado."
+ },
  "Audit": {
   "es": "Auditoría",
   "pt-BR": "Auditoria"
+ },
+ "Audit approved.": {
+  "es": "Auditoría aprobada.",
+  "pt-BR": "Auditoria aprovada."
+ },
+ "Audit closed.": {
+  "es": "Auditoría cerrada.",
+  "pt-BR": "Auditoria encerrada."
  },
  "Audit Dashboard": {
   "es": "Panel de auditorías",
   "pt-BR": "Painel de auditorias"
  },
+ "Audit Details": {
+  "es": "Detalles de la auditoría",
+  "pt-BR": "Detalhes da auditoria"
+ },
  "Audit ID": {
   "es": "ID de auditoría",
   "pt-BR": "ID da auditoria"
  },
+ "Audit Location": {
+  "es": "Lugar de la auditoría",
+  "pt-BR": "Local da auditoria"
+ },
  "Audit Log": {
   "es": "Pista de auditoría",
   "pt-BR": "Trilha de auditoria"
+ },
+ "Audit must be Approved before it can be closed.": {
+  "es": "La auditoría debe estar Aprobada antes de poder cerrarse.",
+  "pt-BR": "A auditoria deve estar Aprovada antes de poder ser encerrada."
+ },
+ "Audit must be Approved to return to review.": {
+  "es": "La auditoría debe estar Aprobada para devolverla a revisión.",
+  "pt-BR": "A auditoria deve estar Aprovada para voltar à revisão."
+ },
+ "Audit must be In Progress to submit a report draft.": {
+  "es": "La auditoría debe estar En curso para enviar un borrador del informe.",
+  "pt-BR": "A auditoria deve estar Em andamento para enviar um rascunho do relatório."
+ },
+ "Audit must be in Report Draft status to submit for review.": {
+  "es": "La auditoría debe estar en estado Borrador del informe para enviarla a revisión.",
+  "pt-BR": "A auditoria deve estar no status Rascunho do relatório para ser enviada para revisão."
+ },
+ "Audit must be in Scheduled status to start.": {
+  "es": "La auditoría debe estar en estado Programado para iniciarla.",
+  "pt-BR": "A auditoria deve estar no status Programado para ser iniciada."
+ },
+ "Audit must be Under Review to be approved.": {
+  "es": "La auditoría debe estar En revisión para poder aprobarse.",
+  "pt-BR": "A auditoria deve estar Em revisão para ser aprovada."
+ },
+ "Audit must be Under Review to return for revision.": {
+  "es": "La auditoría debe estar En revisión para devolverla para revisión.",
+  "pt-BR": "A auditoria deve estar Em revisão para ser devolvida para revisão."
+ },
+ "Audit Plan": {
+  "es": "Plan de auditoría",
+  "pt-BR": "Plano de auditoria"
  },
  "Audit Register": {
   "es": "Registro de auditorías",
@@ -579,6 +899,26 @@
   "es": "Resultado de auditoría",
   "pt-BR": "Resultado de auditoria"
  },
+ "Audit returned to Report Draft for revision.": {
+  "es": "Auditoría devuelta a Borrador del informe para revisión.",
+  "pt-BR": "Auditoria devolvida para Rascunho do relatório para revisão."
+ },
+ "Audit returned to Under Review.": {
+  "es": "Auditoría devuelta a En revisión.",
+  "pt-BR": "Auditoria devolvida para Em revisão."
+ },
+ "Audit Scope": {
+  "es": "Alcance de la auditoría",
+  "pt-BR": "Escopo da auditoria"
+ },
+ "Audit started.": {
+  "es": "Auditoría iniciada.",
+  "pt-BR": "Auditoria iniciada."
+ },
+ "Audit submitted for review.": {
+  "es": "Auditoría enviada a revisión.",
+  "pt-BR": "Auditoria enviada para revisão."
+ },
  "Audit Team": {
   "es": "Equipo auditor",
   "pt-BR": "Equipe auditora"
@@ -586,6 +926,42 @@
  "Audit Trail": {
   "es": "Pista de auditoría",
   "pt-BR": "Trilha de auditoria"
+ },
+ "Audit Type": {
+  "es": "Tipo de auditoría",
+  "pt-BR": "Tipo de auditoria"
+ },
+ "Audit updated.": {
+  "es": "Auditoría actualizada.",
+  "pt-BR": "Auditoria atualizada."
+ },
+ "Audit was planned to start <strong>{0}</strong> — overdue by <strong>{1} day(s)</strong>.": {
+  "es": "La auditoría debía comenzar el <strong>{0}</strong>; tiene un retraso de <strong>{1} día(s)</strong>.",
+  "pt-BR": "A auditoria estava prevista para começar em <strong>{0}</strong>; está atrasada <strong>{1} dia(s)</strong>."
+ },
+ "Audit {0} created.": {
+  "es": "Auditoría {0} creada.",
+  "pt-BR": "Auditoria {0} criada."
+ },
+ "Audit —": {
+  "es": "Auditoría —",
+  "pt-BR": "Auditoria —"
+ },
+ "Audit — {0}": {
+  "es": "Auditoría — {0}",
+  "pt-BR": "Auditoria — {0}"
+ },
+ "Auditee": {
+  "es": "Auditado",
+  "pt-BR": "Auditado"
+ },
+ "Auditee (Department/Supplier)": {
+  "es": "Auditado (departamento/proveedor)",
+  "pt-BR": "Auditado (departamento/fornecedor)"
+ },
+ "Auditee Contact": {
+  "es": "Contacto del auditado",
+  "pt-BR": "Contato do auditado"
  },
  "Auditor": {
   "es": "Auditor",
@@ -648,6 +1024,14 @@
   "es": "En espera de aprobación (en revisión)",
   "pt-BR": "Aguardando aprovação (em revisão)"
  },
+ "Awaiting Quality Manager acceptance. No actions available at this stage.": {
+  "es": "En espera de la aceptación del Gerente de calidad. No hay acciones disponibles en esta etapa.",
+  "pt-BR": "Aguardando a aceitação do Gerente da qualidade. Nenhuma ação disponível nesta etapa."
+ },
+ "Awaiting Quality Manager review and closure. No actions available at this stage.": {
+  "es": "En espera de la revisión y el cierre por el Gerente de calidad. No hay acciones disponibles en esta etapa.",
+  "pt-BR": "Aguardando a revisão e o encerramento pelo Gerente da qualidade. Nenhuma ação disponível nesta etapa."
+ },
  "Awaiting trainer": {
   "es": "En espera del capacitador",
   "pt-BR": "Aguardando instrutor"
@@ -656,9 +1040,17 @@
   "es": "Volver",
   "pt-BR": "Voltar"
  },
+ "Back to Audit": {
+  "es": "Volver a la auditoría",
+  "pt-BR": "Voltar à auditoria"
+ },
  "Back to CAPA": {
   "es": "Volver a la CAPA",
   "pt-BR": "Voltar à CAPA"
+ },
+ "Back to Change": {
+  "es": "Volver al cambio",
+  "pt-BR": "Voltar à mudança"
  },
  "Back to Complaint": {
   "es": "Volver a la reclamación",
@@ -676,6 +1068,10 @@
   "es": "Volver a la lista",
   "pt-BR": "Voltar à lista"
  },
+ "Back to Risk": {
+  "es": "Volver al riesgo",
+  "pt-BR": "Voltar ao risco"
+ },
  "Basic Information": {
   "es": "Información básica",
   "pt-BR": "Informações básicas"
@@ -683,6 +1079,10 @@
  "Batch Details": {
   "es": "Detalles del lote",
   "pt-BR": "Detalhes do lote"
+ },
+ "Before submitting, confirm:": {
+  "es": "Antes de enviar, confirme:",
+  "pt-BR": "Antes de enviar, confirme:"
  },
  "Biannual": {
   "es": "Semestral",
@@ -718,6 +1118,10 @@
   "pt-BR": "Ao assinar abaixo, você confirma que este documento atende a todos os requisitos de qualidade e regulatórios aplicáveis e autoriza sua emissão na versão <strong>{0}</strong>.",
   "note": "SIGNATURE MEANING — review line by line"
  },
+ "Calculation:": {
+  "es": "Cálculo:",
+  "pt-BR": "Cálculo:"
+ },
  "Calibration": {
   "es": "Calibración",
   "pt-BR": "Calibração"
@@ -748,6 +1152,10 @@
   "es": "CAPA",
   "pt-BR": "CAPA"
  },
+ "CAPA can only be created once the audit is underway and not yet closed.": {
+  "es": "Solo se puede crear una CAPA cuando la auditoría está en marcha y aún no está cerrada.",
+  "pt-BR": "Só é possível criar uma CAPA quando a auditoria está em andamento e ainda não foi encerrada."
+ },
  "CAPA Dashboard": {
   "es": "Panel de CAPA",
   "pt-BR": "Painel de CAPA"
@@ -767,6 +1175,14 @@
  "CAPA Register": {
   "es": "Registro de CAPA",
   "pt-BR": "Registro de CAPA"
+ },
+ "CAPA Required": {
+  "es": "CAPA requerida",
+  "pt-BR": "CAPA necessária"
+ },
+ "CAPA Required (open)": {
+  "es": "CAPA requerida (abierta)",
+  "pt-BR": "CAPA necessária (aberta)"
  },
  "CAPA returned for rework ({0}).": {
   "es": "CAPA devuelta para corrección ({0}).",
@@ -838,9 +1254,17 @@
   "es": "Cambio",
   "pt-BR": "Mudança"
  },
+ "Change cannot be returned from its current status.": {
+  "es": "El cambio no se puede devolver desde su estado actual.",
+  "pt-BR": "A mudança não pode ser devolvida a partir do status atual."
+ },
  "Change Dashboard": {
   "es": "Panel de cambios",
   "pt-BR": "Painel de mudanças"
+ },
+ "Change Details": {
+  "es": "Detalles del cambio",
+  "pt-BR": "Detalhes da mudança"
  },
  "Change email": {
   "es": "Cambiar correo electrónico",
@@ -854,6 +1278,30 @@
   "es": "Información del cambio",
   "pt-BR": "Informações da alteração"
  },
+ "Change must be in Assessment status to submit for acceptance.": {
+  "es": "El cambio debe estar en estado Evaluación para enviarlo a aceptación.",
+  "pt-BR": "A mudança deve estar no status Avaliação para ser enviada para aceitação."
+ },
+ "Change must be in Implementation status to submit for approval.": {
+  "es": "El cambio debe estar en estado Implementación para enviarlo a aprobación.",
+  "pt-BR": "A mudança deve estar no status Implementação para ser enviada para aprovação."
+ },
+ "Change must be in Pending Acceptance status to accept.": {
+  "es": "El cambio debe estar en estado Pendiente de aceptación para aceptarlo.",
+  "pt-BR": "A mudança deve estar no status Pendente de aceitação para ser aceita."
+ },
+ "Change must be in Pending Approval status to approve.": {
+  "es": "El cambio debe estar en estado Pendiente de aprobación para aprobarlo.",
+  "pt-BR": "A mudança deve estar no status Pendente de aprovação para ser aprovada."
+ },
+ "Change must be in Proposal status to submit for assessment.": {
+  "es": "El cambio debe estar en estado Propuesta para enviarlo a evaluación.",
+  "pt-BR": "A mudança deve estar no status Proposta para ser enviada para avaliação."
+ },
+ "Change nature guidance": {
+  "es": "Guía sobre la naturaleza del cambio",
+  "pt-BR": "Orientação sobre a natureza da mudança"
+ },
  "Change password": {
   "es": "Cambiar contraseña",
   "pt-BR": "Alterar senha"
@@ -862,13 +1310,69 @@
   "es": "Registro de cambios",
   "pt-BR": "Registro de mudanças"
  },
+ "Change Type": {
+  "es": "Tipo de cambio",
+  "pt-BR": "Tipo de mudança"
+ },
+ "Change type": {
+  "es": "Tipo de cambio",
+  "pt-BR": "Tipo de mudança"
+ },
+ "Change type guidance": {
+  "es": "Guía del tipo de cambio",
+  "pt-BR": "Orientação do tipo de mudança"
+ },
+ "Change updated successfully.": {
+  "es": "Cambio actualizado correctamente.",
+  "pt-BR": "Mudança atualizada com sucesso."
+ },
  "Change your account settings": {
   "es": "Cambie la configuración de su cuenta",
   "pt-BR": "Altere as configurações da sua conta"
  },
+ "Change {0} accepted by {1}. Implementation can now begin.": {
+  "es": "Cambio {0} aceptado por {1}. Ya puede comenzar la implementación.",
+  "pt-BR": "Mudança {0} aceita por {1}. A implementação já pode começar."
+ },
+ "Change {0} approved by {1}.": {
+  "es": "Cambio {0} aprobado por {1}.",
+  "pt-BR": "Mudança {0} aprovada por {1}."
+ },
+ "Change {0} created successfully.": {
+  "es": "Cambio {0} creado correctamente.",
+  "pt-BR": "Mudança {0} criada com sucesso."
+ },
+ "Change {0} returned to {1}.": {
+  "es": "Cambio {0} devuelto a {1}.",
+  "pt-BR": "Mudança {0} devolvida para {1}."
+ },
+ "Change {0} submitted for acceptance by {1}.": {
+  "es": "Cambio {0} enviado a aceptación por {1}.",
+  "pt-BR": "Mudança {0} enviada para aceitação por {1}."
+ },
+ "Change {0} submitted for approval by {1}.": {
+  "es": "Cambio {0} enviado a aprobación por {1}.",
+  "pt-BR": "Mudança {0} enviada para aprovação por {1}."
+ },
+ "Change {0} submitted for assessment.": {
+  "es": "Cambio {0} enviado a evaluación.",
+  "pt-BR": "Mudança {0} enviada para avaliação."
+ },
+ "Change —": {
+  "es": "Cambio —",
+  "pt-BR": "Mudança —"
+ },
+ "Change — {0}": {
+  "es": "Cambio — {0}",
+  "pt-BR": "Mudança — {0}"
+ },
  "Changes": {
   "es": "Cambios",
   "pt-BR": "Mudanças"
+ },
+ "Changes Dashboard": {
+  "es": "Panel de cambios",
+  "pt-BR": "Painel de mudanças"
  },
  "Check if this document was authored and approved outside this system (e.g. supplier document, regulatory guidance, legacy record).": {
   "es": "Marque si este documento se redactó y aprobó fuera de este sistema (p. ej., documento de proveedor, guía regulatoria, registro histórico).",
@@ -918,6 +1422,10 @@
   "es": "Haga clic para ampliar",
   "pt-BR": "Clique para expandir"
  },
+ "Click to remove": {
+  "es": "Haga clic para quitar",
+  "pt-BR": "Clique para remover"
+ },
  "Clinical Justification": {
   "es": "Justificación clínica",
   "pt-BR": "Justificativa clínica"
@@ -938,10 +1446,18 @@
   "es": "Cerrar",
   "pt-BR": "Fechar"
  },
+ "Close Audit": {
+  "es": "Cerrar auditoría",
+  "pt-BR": "Encerrar auditoria"
+ },
  "Close Complaint": {
   "es": "Cerrar reclamación",
   "pt-BR": "Fechar reclamação",
   "note": "SIGNATURE — review"
+ },
+ "Close Risk": {
+  "es": "Cerrar riesgo",
+  "pt-BR": "Encerrar risco"
  },
  "Closed": {
   "es": "Cerrado",
@@ -950,6 +1466,14 @@
  "Closed By": {
   "es": "Cerrado por",
   "pt-BR": "Fechado por"
+ },
+ "Closed On": {
+  "es": "Cerrado el",
+  "pt-BR": "Encerrado em"
+ },
+ "Closing this risk is a final action. A Review Conclusion is required and will be permanently recorded.": {
+  "es": "Cerrar este riesgo es una acción definitiva. Se requiere una conclusión de la revisión, que quedará registrada de forma permanente.",
+  "pt-BR": "Encerrar este risco é uma ação definitiva. É necessária uma conclusão da revisão, que ficará registrada permanentemente."
  },
  "CMA": {
   "es": "CMA",
@@ -1087,9 +1611,17 @@
   "es": "Completo",
   "pt-BR": "Concluído"
  },
+ "Complete all mitigation details: strategy, residual risk scores (S/P/D), and the risk acceptance decision with justification. Then submit for Quality Manager review and closure.": {
+  "es": "Complete todos los datos de mitigación: estrategia, puntuaciones del riesgo residual (G/P/D) y la decisión de aceptación del riesgo con su justificación. Después, envíelo al Gerente de calidad para su revisión y cierre.",
+  "pt-BR": "Preencha todos os dados de mitigação: estratégia, pontuações do risco residual (G/P/D) e a decisão de aceitação do risco com a justificativa. Depois, envie ao Gerente da qualidade para revisão e encerramento."
+ },
  "Complete the intake details and submit to open the complaint record.": {
   "es": "Complete los datos de recepción y envíelos para abrir el registro de la reclamación.",
   "pt-BR": "Preencha os dados de recebimento e envie para abrir o registro da reclamação."
+ },
+ "Complete the risk identification and initial assessment, then submit for formal Quality Manager assessment.": {
+  "es": "Complete la identificación del riesgo y la evaluación inicial y, después, envíelo al Gerente de calidad para su evaluación formal.",
+  "pt-BR": "Conclua a identificação do risco e a avaliação inicial e, depois, envie ao Gerente da qualidade para avaliação formal."
  },
  "Completed": {
   "es": "Completado",
@@ -1102,6 +1634,10 @@
  "Completed By": {
   "es": "Completado por",
   "pt-BR": "Concluído por"
+ },
+ "Completed date": {
+  "es": "Fecha de finalización",
+  "pt-BR": "Data de conclusão"
  },
  "Completed On": {
   "es": "Completado el",
@@ -1162,6 +1698,14 @@
  "Conditions Applied": {
   "es": "Con condiciones",
   "pt-BR": "Com condições"
+ },
+ "Conducted By": {
+  "es": "Realizada por",
+  "pt-BR": "Realizada por"
+ },
+ "Conducted On": {
+  "es": "Realizada el",
+  "pt-BR": "Realizada em"
  },
  "Confidentiality Agreement": {
   "es": "Acuerdo de confidencialidad",
@@ -1227,6 +1771,10 @@
   "pt-BR": "Confirmar devolução",
   "note": "WORKFLOW — review"
  },
+ "Confirm Start": {
+  "es": "Confirmar inicio",
+  "pt-BR": "Confirmar início"
+ },
  "Confirm Submit": {
   "es": "Confirmar envío",
   "pt-BR": "Confirmar envio",
@@ -1241,6 +1789,10 @@
   "es": "Se envió el enlace de confirmación para cambiar el correo. Revise su correo electrónico.",
   "pt-BR": "Link de confirmação para alterar o e-mail enviado. Verifique seu e-mail.",
   "note": "status message"
+ },
+ "Confirmation that all pre-implementation requirements were met": {
+  "es": "Confirmación de que se cumplieron todos los requisitos previos a la implementación",
+  "pt-BR": "Confirmação de que todos os requisitos pré-implementação foram atendidos"
  },
  "Confirmation that the root cause has been addressed": {
   "es": "Confirmación de que se atendió la causa raíz",
@@ -1257,6 +1809,10 @@
  "Confirmed": {
   "es": "Confirmado",
   "pt-BR": "Confirmado"
+ },
+ "Confirms the assessment package is complete and acceptable. Moves from <strong>{0}</strong> to <strong>{1}</strong>. Enter your credentials to confirm.": {
+  "es": "Confirma que el paquete de evaluación está completo y es aceptable. Pasa de <strong>{0}</strong> a <strong>{1}</strong>. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Confirma que o pacote de avaliação está completo e é aceitável. Passa de <strong>{0}</strong> para <strong>{1}</strong>. Informe suas credenciais para confirmar."
  },
  "Congenital Anomaly / Birth Defect": {
   "es": "Anomalía congénita / defecto de nacimiento",
@@ -1298,6 +1854,10 @@
   "es": "Contactos",
   "pt-BR": "Contatos"
  },
+ "Context": {
+  "es": "Contexto",
+  "pt-BR": "Contexto"
+ },
  "Copy": {
   "es": "Copiar",
   "pt-BR": "Copiar"
@@ -1309,6 +1869,10 @@
  "Corrective Action": {
   "es": "Acción correctiva",
   "pt-BR": "Ação corretiva"
+ },
+ "Corrective Action & Follow-Up": {
+  "es": "Acción correctiva y seguimiento",
+  "pt-BR": "Ação corretiva e acompanhamento"
  },
  "Corrective action guidance": {
   "es": "Guía de acción correctiva",
@@ -1369,6 +1933,10 @@
   "es": "Crear un nuevo documento controlado",
   "pt-BR": "Criar um novo documento controlado"
  },
+ "Create Linked CAPA": {
+  "es": "Crear CAPA vinculada",
+  "pt-BR": "Criar CAPA vinculada"
+ },
  "Create New Version": {
   "es": "Crear nueva versión",
   "pt-BR": "Criar nova versão"
@@ -1392,6 +1960,10 @@
  "Critical Complaint": {
   "es": "Reclamación crítica",
   "pt-BR": "Reclamação crítica"
+ },
+ "Critical Findings": {
+  "es": "Hallazgos críticos",
+  "pt-BR": "Constatações críticas"
  },
  "Critical Open": {
   "es": "Críticas abiertas",
@@ -1429,6 +2001,10 @@
  "Current password": {
   "es": "Contraseña actual",
   "pt-BR": "Senha atual"
+ },
+ "Current: {0}": {
+  "es": "Actual: {0}",
+  "pt-BR": "Atual: {0}"
  },
  "Customer": {
   "es": "Cliente",
@@ -1543,6 +2119,10 @@
   "es": "Días de atraso",
   "pt-BR": "Dias de atraso"
  },
+ "Days Remaining": {
+  "es": "Días restantes",
+  "pt-BR": "Dias restantes"
+ },
  "Deadline approaching:": {
   "es": "Plazo próximo:",
   "pt-BR": "Prazo próximo:"
@@ -1565,9 +2145,17 @@
   "es": "Eliminar",
   "pt-BR": "Excluir"
  },
+ "Delete Audit": {
+  "es": "Eliminar auditoría",
+  "pt-BR": "Excluir auditoria"
+ },
  "Delete CAPA": {
   "es": "Eliminar CAPA",
   "pt-BR": "Excluir CAPA"
+ },
+ "Delete Change": {
+  "es": "Eliminar cambio",
+  "pt-BR": "Excluir mudança"
  },
  "Delete Complaint": {
   "es": "Eliminar reclamación",
@@ -1588,6 +2176,10 @@
  "Delete Personal Data": {
   "es": "Eliminar datos personales",
   "pt-BR": "Excluir dados pessoais"
+ },
+ "Delete Risk": {
+  "es": "Eliminar riesgo",
+  "pt-BR": "Excluir risco"
  },
  "Delete Training": {
   "es": "Eliminar capacitación",
@@ -1613,6 +2205,10 @@
   "es": "Eliminar estos datos borrará su cuenta de forma permanente y no se podrá recuperar.",
   "pt-BR": "Excluir estes dados removerá sua conta permanentemente, sem possibilidade de recuperação."
  },
+ "Describe the proposed change, its rationale, expected benefits, and potential risks or impacts on product quality, GMP compliance, or regulatory status.": {
+  "es": "Describa el cambio propuesto, su justificación, los beneficios esperados y los posibles riesgos o impactos sobre la calidad del producto, el cumplimiento de las BPM o la situación regulatoria.",
+  "pt-BR": "Descreva a mudança proposta, sua justificativa, os benefícios esperados e os possíveis riscos ou impactos na qualidade do produto, no cumprimento das BPF ou na situação regulatória."
+ },
  "Describe the training conducted, outcomes, and any relevant observations…": {
   "es": "Describa la capacitación realizada, los resultados y cualquier observación relevante…",
   "pt-BR": "Descreva o treinamento realizado, os resultados e quaisquer observações relevantes…"
@@ -1620,6 +2216,14 @@
  "Describe what changes are needed before resubmission...": {
   "es": "Describa qué cambios se necesitan antes de volver a enviarlo...",
   "pt-BR": "Descreva quais alterações são necessárias antes de reenviar..."
+ },
+ "Describe what needs to be corrected or completed": {
+  "es": "Describa qué debe corregirse o completarse",
+  "pt-BR": "Descreva o que precisa ser corrigido ou concluído"
+ },
+ "Describe why the approval is being revoked": {
+  "es": "Describa por qué se revoca la aprobación",
+  "pt-BR": "Descreva por que a aprovação está sendo revogada"
  },
  "Describe why this complaint is being returned and what needs to be addressed...": {
   "es": "Describa por qué se devuelve esta reclamación y qué se debe corregir...",
@@ -1666,9 +2270,25 @@
   "es": "Designación",
   "pt-BR": "Designação"
  },
+ "Detailed Action Plan": {
+  "es": "Plan de acción detallado",
+  "pt-BR": "Plano de ação detalhado"
+ },
+ "Detailed Action Plan Required": {
+  "es": "Se requiere un plan de acción detallado",
+  "pt-BR": "Plano de ação detalhado exigido"
+ },
  "Details": {
   "es": "Detalles",
   "pt-BR": "Detalhes"
+ },
+ "Detectability": {
+  "es": "Detectabilidad",
+  "pt-BR": "Detectabilidade"
+ },
+ "Detectability (1-5)": {
+  "es": "Detectabilidad (1-5)",
+  "pt-BR": "Detectabilidade (1-5)"
  },
  "Detected": {
   "es": "Detectado",
@@ -1857,6 +2477,14 @@
   "es": "Registro de revisión de documentos",
   "pt-BR": "Registro de revisão de documentos"
  },
+ "Document the basis for accepting this risk assessment...": {
+  "es": "Documente el fundamento para aceptar esta evaluación de riesgos...",
+  "pt-BR": "Documente a base para aceitar esta avaliação de risco..."
+ },
+ "Document the outcome of the review and basis for closure...": {
+  "es": "Documente el resultado de la revisión y el fundamento del cierre...",
+  "pt-BR": "Documente o resultado da revisão e a base para o encerramento..."
+ },
  "Document Type": {
   "es": "Tipo de documento",
   "pt-BR": "Tipo de documento"
@@ -1950,6 +2578,10 @@
   "es": "Vence pronto",
   "pt-BR": "Vence em breve"
  },
+ "Due Within 14 Days": {
+  "es": "Vencen en 14 días",
+  "pt-BR": "Vencem em 14 dias"
+ },
  "Due Within 30 Days": {
   "es": "Vence en 30 días o menos",
   "pt-BR": "Vence em até 30 dias"
@@ -1990,6 +2622,10 @@
   "es": "p. ej., reemplazado por una regulación externa, proceso discontinuado...",
   "pt-BR": "ex.: substituído por regulamentação externa, processo descontinuado..."
  },
+ "e.g., Audit Checklist, Photo of Finding, Corrective Action Evidence": {
+  "es": "p. ej., lista de verificación de la auditoría, foto del hallazgo, evidencia de la acción correctiva",
+  "pt-BR": "p. ex., lista de verificação da auditoria, foto da constatação, evidência da ação corretiva"
+ },
  "e.g., Customer Photo, Lab Report": {
   "es": "p. ej., foto del cliente, informe de laboratorio",
   "pt-BR": "ex.: foto do cliente, laudo de laboratório"
@@ -1998,13 +2634,29 @@
   "es": "p. ej., informe de investigación",
   "pt-BR": "ex.: relatório de investigação"
  },
+ "e.g., Risk Assessment Report": {
+  "es": "p. ej., informe de evaluación de riesgos",
+  "pt-BR": "p. ex., relatório de avaliação de risco"
+ },
  "e.g., Root Cause Analysis Report": {
   "es": "p. ej., informe de análisis de causa raíz",
   "pt-BR": "ex.: relatório de análise de causa-raiz"
  },
+ "e.g., Validation Protocol": {
+  "es": "p. ej., protocolo de validación",
+  "pt-BR": "p. ex., protocolo de validação"
+ },
  "E2B(R3) EDI": {
   "es": "E2B(R3) EDI",
   "pt-BR": "E2B(R3) EDI"
+ },
+ "Each action needs an evidence / reference before submitting for approval — {0} still missing: {1}": {
+  "es": "Cada acción necesita una evidencia / referencia antes de enviar a aprobación; aún faltan {0}: {1}",
+  "pt-BR": "Cada ação precisa de uma evidência / referência antes de enviar para aprovação; ainda faltam {0}: {1}"
+ },
+ "Each action needs an owner and a target date before submitting for acceptance — {0} still incomplete: {1}": {
+  "es": "Cada acción necesita un responsable y una fecha objetivo antes de enviar a aceptación; aún hay {0} incompleta(s): {1}",
+  "pt-BR": "Cada ação precisa de um responsável e de uma data-alvo antes de enviar para aceitação; ainda há {0} incompleta(s): {1}"
  },
  "Each group creates one Training record. The document becomes <strong>{0}</strong> once all groups are completed.": {
   "es": "Cada grupo crea un registro de capacitación. El documento pasa a <strong>{0}</strong> cuando se completan todos los grupos.",
@@ -2014,9 +2666,17 @@
   "es": "Editar",
   "pt-BR": "Editar"
  },
+ "Edit Audit —": {
+  "es": "Editar auditoría —",
+  "pt-BR": "Editar auditoria —"
+ },
  "Edit CAPA —": {
   "es": "Editar CAPA —",
   "pt-BR": "Editar CAPA —"
+ },
+ "Edit Change —": {
+  "es": "Editar cambio —",
+  "pt-BR": "Editar mudança —"
  },
  "Edit Complaint —": {
   "es": "Editar reclamación —",
@@ -2025,6 +2685,14 @@
  "Edit Deviation —": {
   "es": "Editar desviación —",
   "pt-BR": "Editar desvio —"
+ },
+ "Edit Risk —": {
+  "es": "Editar riesgo —",
+  "pt-BR": "Editar risco —"
+ },
+ "Edit Risk — {0}": {
+  "es": "Editar riesgo — {0}",
+  "pt-BR": "Editar risco — {0}"
  },
  "Edit — {0}": {
   "es": "Editar — {0}",
@@ -2054,10 +2722,18 @@
   "es": "Resultado de la verificación de eficacia: confirme que el problema no se repitió",
   "pt-BR": "Resultado da verificação de eficácia — confirme que o problema não se repetiu"
  },
+ "Effectiveness check — confirm the change achieved the intended outcome": {
+  "es": "Verificación de eficacia: confirme que el cambio logró el resultado previsto",
+  "pt-BR": "Verificação de eficácia: confirme que a mudança alcançou o resultado pretendido"
+ },
  "Electronic Signature": {
   "es": "Firma electrónica",
   "pt-BR": "Assinatura eletrônica",
   "note": "SIGNATURE — review"
+ },
+ "Electronic signature must use your own credentials.": {
+  "es": "La firma electrónica debe hacerse con sus propias credenciales.",
+  "pt-BR": "A assinatura eletrônica deve usar suas próprias credenciais."
  },
  "Eligibility Assessment": {
   "es": "Evaluación de elegibilidad",
@@ -2237,6 +2913,10 @@
   "es": "Guía de tipos de evento",
   "pt-BR": "Orientação sobre tipos de evento"
  },
+ "Evidence / reference": {
+  "es": "Evidencia / referencia",
+  "pt-BR": "Evidência / referência"
+ },
  "Evidence reviewed (batch records, complaints history, samples, distribution data)": {
   "es": "Evidencia revisada (registros de lote, historial de reclamaciones, muestras, datos de distribución)",
   "pt-BR": "Evidências analisadas (registros de lote, histórico de reclamações, amostras, dados de distribuição)"
@@ -2272,6 +2952,14 @@
  "Expiry Date": {
   "es": "Fecha de vencimiento",
   "pt-BR": "Data de vencimento"
+ },
+ "Explain what needs to be revised in the mitigation...": {
+  "es": "Explique qué debe revisarse en la mitigación...",
+  "pt-BR": "Explique o que precisa ser revisado na mitigação..."
+ },
+ "Explain what needs to be revised...": {
+  "es": "Explique qué debe revisarse...",
+  "pt-BR": "Explique o que precisa ser revisado..."
  },
  "Export CSV": {
   "es": "Exportar CSV",
@@ -2353,6 +3041,14 @@
   "es": "El archivo «{0}» se cargó correctamente.",
   "pt-BR": "O arquivo \"{0}\" foi enviado com sucesso."
  },
+ "File '{0}' uploaded.": {
+  "es": "Archivo '{0}' cargado.",
+  "pt-BR": "Arquivo '{0}' enviado."
+ },
+ "File exceeds 25 MB limit.": {
+  "es": "El archivo supera el límite de 25 MB.",
+  "pt-BR": "O arquivo excede o limite de 25 MB."
+ },
  "File exceeds the 25 MB maximum size limit.": {
   "es": "El archivo supera el tamaño máximo de 25 MB.",
   "pt-BR": "O arquivo excede o tamanho máximo de 25 MB."
@@ -2365,6 +3061,14 @@
   "es": "Nombre del archivo",
   "pt-BR": "Nome do arquivo"
  },
+ "File not found on server.": {
+  "es": "No se encontró el archivo en el servidor.",
+  "pt-BR": "Arquivo não encontrado no servidor."
+ },
+ "File size exceeds the 25 MB limit.": {
+  "es": "El tamaño del archivo supera el límite de 25 MB.",
+  "pt-BR": "O tamanho do arquivo excede o limite de 25 MB."
+ },
  "File Type": {
   "es": "Tipo de archivo",
   "pt-BR": "Tipo de arquivo"
@@ -2372,6 +3076,14 @@
  "File type '{0}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.": {
   "es": "El tipo de archivo «{0}» no está permitido. Aceptados: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.",
   "pt-BR": "O tipo de arquivo \"{0}\" não é permitido. Aceitos: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG."
+ },
+ "File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.": {
+  "es": "Tipo de archivo no permitido. Se aceptan: PDF, Word, Excel, ZIP, JPG, PNG.",
+  "pt-BR": "Tipo de arquivo não permitido. Aceitos: PDF, Word, Excel, ZIP, JPG, PNG."
+ },
+ "File type not allowed. Accepted: PDF, Word, ZIP, JPG, PNG.": {
+  "es": "Tipo de archivo no permitido. Se aceptan: PDF, Word, ZIP, JPG, PNG.",
+  "pt-BR": "Tipo de arquivo não permitido. Aceitos: PDF, Word, ZIP, JPG, PNG."
  },
  "File type not allowed. Accepted: {0}.": {
   "es": "Tipo de archivo no permitido. Aceptados: {0}.",
@@ -2389,6 +3101,14 @@
   "es": "Filtros",
   "pt-BR": "Filtros"
  },
+ "Findings": {
+  "es": "Hallazgos",
+  "pt-BR": "Constatações"
+ },
+ "Findings Summary": {
+  "es": "Resumen de hallazgos",
+  "pt-BR": "Resumo das constatações"
+ },
  "Findings that led to the root cause determination": {
   "es": "Hallazgos que llevaron a determinar la causa raíz",
   "pt-BR": "Constatações que levaram à determinação da causa-raiz"
@@ -2404,6 +3124,18 @@
  "Follow-Up": {
   "es": "Seguimiento",
   "pt-BR": "Acompanhamento"
+ },
+ "Follow-Up Completed": {
+  "es": "Seguimiento completado",
+  "pt-BR": "Acompanhamento concluído"
+ },
+ "Follow-Up Date": {
+  "es": "Fecha de seguimiento",
+  "pt-BR": "Data de acompanhamento"
+ },
+ "Follow-Up Due Within 14 Days": {
+  "es": "Seguimiento con vencimiento en 14 días",
+  "pt-BR": "Acompanhamento com vencimento em 14 dias"
  },
  "Follow-up Submitted": {
   "es": "Seguimiento enviado",
@@ -2502,6 +3234,18 @@
   "pt-BR": "Alta",
   "note": "priority"
  },
+ "High Risk": {
+  "es": "Riesgo alto",
+  "pt-BR": "Risco alto"
+ },
+ "High Risk (RPN ≥ 80)": {
+  "es": "Riesgo alto (NPR ≥ 80)",
+  "pt-BR": "Risco alto (NPR ≥ 80)"
+ },
+ "High RPN Open": {
+  "es": "Abiertos con NPR alto",
+  "pt-BR": "Abertos com NPR alto"
+ },
  "Hold Removed": {
   "es": "Retención levantada",
   "pt-BR": "Retenção removida"
@@ -2591,17 +3335,37 @@
   "es": "Si restablece la clave de autenticación, su aplicación de autenticación no funcionará hasta que la vuelva a configurar.",
   "pt-BR": "Se você redefinir a chave do autenticador, seu aplicativo autenticador não funcionará até ser reconfigurado."
  },
+ "Immediate action required": {
+  "es": "Se requiere acción inmediata",
+  "pt-BR": "Ação imediata necessária"
+ },
  "Impact on data integrity": {
   "es": "Impacto en la integridad de datos",
   "pt-BR": "Impacto na integridade de dados"
+ },
+ "Impact on materials, suppliers, agreements, documents and training": {
+  "es": "Impacto en materiales, proveedores, acuerdos, documentos y formación",
+  "pt-BR": "Impacto em materiais, fornecedores, acordos, documentos e treinamento"
  },
  "Impact on product quality and patient safety": {
   "es": "Impacto en la calidad del producto y la seguridad del paciente",
   "pt-BR": "Impacto na qualidade do produto e na segurança do paciente"
  },
+ "Impact on product quality, safety, and efficacy": {
+  "es": "Impacto en la calidad, la seguridad y la eficacia del producto",
+  "pt-BR": "Impacto na qualidade, segurança e eficácia do produto"
+ },
+ "Impact on validated processes, equipment, or analytical methods": {
+  "es": "Impacto en procesos validados, equipos o métodos analíticos",
+  "pt-BR": "Impacto em processos validados, equipamentos ou métodos analíticos"
+ },
  "Implementation": {
   "es": "Implementación",
   "pt-BR": "Implementação"
+ },
+ "Implementation details must be completed before submitting for approval.": {
+  "es": "Los detalles de la implementación deben completarse antes de enviar a aprobación.",
+  "pt-BR": "Os detalhes da implementação devem ser preenchidos antes de enviar para aprovação."
  },
  "Implementation guidance": {
   "es": "Guía de implementación",
@@ -2662,10 +3426,18 @@
   "pt-BR": "NPR inicial",
   "note": "RPN = número de prioridad del riesgo"
  },
+ "Initial RPN is calculated automatically as Severity × Probability × Detectability (range: 1–125).": {
+  "es": "El NPR inicial se calcula automáticamente como Gravedad × Probabilidad × Detectabilidad (rango: 1–125).",
+  "pt-BR": "O NPR inicial é calculado automaticamente como Gravidade × Probabilidade × Detectabilidade (faixa: 1–125)."
+ },
  "Initiate Periodic Review": {
   "es": "Iniciar revisión periódica",
   "pt-BR": "Iniciar revisão periódica",
   "note": "WORKFLOW — review"
+ },
+ "Insert the suggested actions for {0}": {
+  "es": "Insertar las acciones sugeridas para {0}",
+  "pt-BR": "Inserir as ações sugeridas para {0}"
  },
  "Inspection": {
   "es": "Inspección",
@@ -2695,6 +3467,30 @@
  "Invalid authenticator code.": {
   "es": "Código de autenticación no válido.",
   "pt-BR": "Código do autenticador inválido."
+ },
+ "Invalid credentials. Assessment acceptance was not applied.": {
+  "es": "Credenciales no válidas. No se aplicó la aceptación de la evaluación.",
+  "pt-BR": "Credenciais inválidas. A aceitação da avaliação não foi aplicada."
+ },
+ "Invalid credentials. Return was not applied.": {
+  "es": "Credenciales no válidas. No se aplicó la devolución.",
+  "pt-BR": "Credenciais inválidas. A devolução não foi aplicada."
+ },
+ "Invalid credentials. Risk was not closed.": {
+  "es": "Credenciales no válidas. El riesgo no se cerró.",
+  "pt-BR": "Credenciais inválidas. O risco não foi encerrado."
+ },
+ "Invalid credentials. Submission was not applied.": {
+  "es": "Credenciales no válidas. No se aplicó el envío.",
+  "pt-BR": "Credenciais inválidas. O envio não foi aplicado."
+ },
+ "Invalid credentials. Transition was not applied.": {
+  "es": "Credenciales no válidas. No se aplicó la transición.",
+  "pt-BR": "Credenciais inválidas. A transição não foi aplicada."
+ },
+ "Invalid email or password.": {
+  "es": "Correo electrónico o contraseña no válidos.",
+  "pt-BR": "E-mail ou senha inválidos."
  },
  "Invalid login attempt.": {
   "es": "Intento de inicio de sesión no válido.",
@@ -2776,6 +3572,10 @@
   "es": "TI / sistemas informáticos",
   "pt-BR": "TI / sistemas computadorizados"
  },
+ "It drives the <em>suggested actions</em> you can load onto the Action Plan tab (the SOP's per-type candidate actions). Pick the closest fit; add any further actions manually.": {
+  "es": "Determina las <em>acciones sugeridas</em> que puede cargar en la pestaña Plan de acción (las acciones candidatas por tipo del PNT). Elija el más adecuado; agregue manualmente cualquier otra acción.",
+  "pt-BR": "Determina as <em>ações sugeridas</em> que você pode carregar na aba Plano de ação (as ações candidatas por tipo do POP). Escolha o mais adequado; adicione manualmente quaisquer outras ações."
+ },
  "IT Hardware": {
   "es": "Hardware de TI",
   "pt-BR": "Hardware de TI"
@@ -2787,6 +3587,18 @@
  "Jurisdiction": {
   "es": "Jurisdicción",
   "pt-BR": "Jurisdição"
+ },
+ "Justification": {
+  "es": "Justificación",
+  "pt-BR": "Justificativa"
+ },
+ "Justification for the risk acceptance decision must be completed before submitting for review.": {
+  "es": "La justificación de la decisión de aceptación del riesgo debe completarse antes de enviar a revisión.",
+  "pt-BR": "A justificativa da decisão de aceitação do risco deve ser preenchida antes de enviar para revisão."
+ },
+ "Justification is required when recording a risk acceptance decision.": {
+  "es": "La justificación es obligatoria al registrar una decisión de aceptación del riesgo.",
+  "pt-BR": "A justificativa é obrigatória ao registrar uma decisão de aceitação do risco."
  },
  "Label / artwork / product information": {
   "es": "Etiqueta / arte / información del producto",
@@ -2928,6 +3740,14 @@
   "es": "CAPA vinculada",
   "pt-BR": "CAPA vinculada"
  },
+ "Linked CAPA ID": {
+  "es": "ID de CAPA vinculada",
+  "pt-BR": "ID da CAPA vinculada"
+ },
+ "Linked CAPA ID: {0}": {
+  "es": "ID de CAPA vinculada: {0}",
+  "pt-BR": "ID da CAPA vinculada: {0}"
+ },
  "Linked CAPA:": {
   "es": "CAPA vinculada:",
   "pt-BR": "CAPA vinculada:"
@@ -2968,6 +3788,14 @@
   "es": "Capacitaciones vinculadas",
   "pt-BR": "Treinamentos vinculados"
  },
+ "Links to Master Data": {
+  "es": "Vínculos con datos maestros",
+  "pt-BR": "Vínculos com dados mestres"
+ },
+ "Links to Reference Data": {
+  "es": "Vínculos con datos de referencia",
+  "pt-BR": "Vínculos com dados de referência"
+ },
  "Literature": {
   "es": "Literatura",
   "pt-BR": "Literatura"
@@ -2975,6 +3803,10 @@
  "Literature Monitoring": {
   "es": "Monitoreo de literatura",
   "pt-BR": "Monitoramento da literatura"
+ },
+ "Load suggested actions": {
+  "es": "Cargar acciones sugeridas",
+  "pt-BR": "Carregar ações sugeridas"
  },
  "Loading...": {
   "es": "Cargando...",
@@ -3025,6 +3857,14 @@
   "pt-BR": "Baixa",
   "note": "priority"
  },
+ "Low Risk": {
+  "es": "Riesgo bajo",
+  "pt-BR": "Risco baixo"
+ },
+ "Low Risk (RPN < 40)": {
+  "es": "Riesgo bajo (NPR < 40)",
+  "pt-BR": "Risco baixo (NPR < 40)"
+ },
  "Maintenance": {
   "es": "Mantenimiento",
   "pt-BR": "Manutenção"
@@ -3040,6 +3880,10 @@
  "Major": {
   "es": "Mayor",
   "pt-BR": "Maior"
+ },
+ "Major Findings": {
+  "es": "Hallazgos mayores",
+  "pt-BR": "Constatações maiores"
  },
  "Major Variation": {
   "es": "Variación mayor",
@@ -3068,6 +3912,10 @@
  "Manage your external logins": {
   "es": "Administre sus inicios de sesión externos",
   "pt-BR": "Gerencie seus logins externos"
+ },
+ "Management Response": {
+  "es": "Respuesta de la dirección",
+  "pt-BR": "Resposta da direção"
  },
  "Management Review": {
   "es": "Revisión por la dirección",
@@ -3178,6 +4026,14 @@
   "pt-BR": "Média",
   "note": "priority"
  },
+ "Medium Risk": {
+  "es": "Riesgo medio",
+  "pt-BR": "Risco médio"
+ },
+ "Medium Risk (RPN 40–79)": {
+  "es": "Riesgo medio (NPR 40–79)",
+  "pt-BR": "Risco médio (NPR 40–79)"
+ },
  "Meeting Minutes": {
   "es": "Acta de reunión",
   "pt-BR": "Ata de reunião"
@@ -3194,13 +4050,45 @@
   "es": "Menor",
   "pt-BR": "Menor"
  },
+ "Minor Findings": {
+  "es": "Hallazgos menores",
+  "pt-BR": "Constatações menores"
+ },
  "Minor Variation": {
   "es": "Variación menor",
   "pt-BR": "Alteração menor"
  },
+ "Mitigated By": {
+  "es": "Mitigado por",
+  "pt-BR": "Mitigado por"
+ },
+ "Mitigated On": {
+  "es": "Mitigado el",
+  "pt-BR": "Mitigado em"
+ },
  "Mitigation": {
   "es": "Mitigación",
   "pt-BR": "Mitigação"
+ },
+ "Mitigation & Monitoring": {
+  "es": "Mitigación y seguimiento",
+  "pt-BR": "Mitigação e monitoramento"
+ },
+ "Mitigation has been completed and submitted for review. A Quality Manager must review and formally close this risk.": {
+  "es": "La mitigación se ha completado y enviado a revisión. Un Gerente de calidad debe revisar y cerrar formalmente este riesgo.",
+  "pt-BR": "A mitigação foi concluída e enviada para revisão. Um Gerente da qualidade deve revisar e encerrar formalmente este risco."
+ },
+ "Mitigation Strategy": {
+  "es": "Estrategia de mitigación",
+  "pt-BR": "Estratégia de mitigação"
+ },
+ "Mitigation strategy is fully documented": {
+  "es": "La estrategia de mitigación está totalmente documentada",
+  "pt-BR": "A estratégia de mitigação está totalmente documentada"
+ },
+ "Mitigation Strategy must be completed before submitting for review.": {
+  "es": "La estrategia de mitigación debe completarse antes de enviar a revisión.",
+  "pt-BR": "A estratégia de mitigação deve ser preenchida antes de enviar para revisão."
  },
  "Model / Version": {
   "es": "Modelo / versión",
@@ -3214,6 +4102,18 @@
   "es": "Módulo",
   "pt-BR": "Módulo"
  },
+ "Monitor": {
+  "es": "Vigilar",
+  "pt-BR": "Monitorar"
+ },
+ "Monitoring": {
+  "es": "Seguimiento",
+  "pt-BR": "Monitoramento"
+ },
+ "Monitoring Plan": {
+  "es": "Plan de seguimiento",
+  "pt-BR": "Plano de monitoramento"
+ },
  "Monthly": {
   "es": "Mensual",
   "pt-BR": "Mensal"
@@ -3221,6 +4121,22 @@
  "Months": {
   "es": "Meses",
   "pt-BR": "Meses"
+ },
+ "Moves the change from <strong>{0}</strong> to <strong>{1}</strong> and locks the record. Enter your credentials to confirm.": {
+  "es": "Pasa el cambio de <strong>{0}</strong> a <strong>{1}</strong> y bloquea el registro. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Passa a mudança de <strong>{0}</strong> para <strong>{1}</strong> e bloqueia o registro. Informe suas credenciais para confirmar."
+ },
+ "Moves the change from <strong>{0}</strong> to <strong>{1}</strong> for Quality Manager review. Assessment must be completed. Enter your credentials to confirm.": {
+  "es": "Pasa el cambio de <strong>{0}</strong> a <strong>{1}</strong> para su revisión por el Gerente de calidad. La evaluación debe estar completa. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Passa a mudança de <strong>{0}</strong> para <strong>{1}</strong> para revisão do Gerente da qualidade. A avaliação deve estar concluída. Informe suas credenciais para confirmar."
+ },
+ "Moves the change from <strong>{0}</strong> to <strong>{1}</strong> for Quality Manager review. Implementation details must be completed. Enter your credentials to confirm.": {
+  "es": "Pasa el cambio de <strong>{0}</strong> a <strong>{1}</strong> para su revisión por el Gerente de calidad. Los detalles de la implementación deben estar completos. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Passa a mudança de <strong>{0}</strong> para <strong>{1}</strong> para revisão do Gerente da qualidade. Os detalhes da implementação devem estar preenchidos. Informe suas credenciais para confirmar."
+ },
+ "Moves the change from <strong>{0}</strong> to <strong>{1}</strong>. Enter your credentials to confirm.": {
+  "es": "Pasa el cambio de <strong>{0}</strong> a <strong>{1}</strong>. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Passa a mudança de <strong>{0}</strong> para <strong>{1}</strong>. Informe suas credenciais para confirmar."
  },
  "MRA": {
   "es": "ARM (MRA)",
@@ -3242,6 +4158,10 @@
  "Named Patient": {
   "es": "Paciente nominal",
   "pt-BR": "Paciente nominal"
+ },
+ "Nature": {
+  "es": "Naturaleza",
+  "pt-BR": "Natureza"
  },
  "Near Miss": {
   "es": "Cuasi incidente",
@@ -3335,6 +4255,10 @@
   "es": "No",
   "pt-BR": "Não"
  },
+ "No action items recorded.": {
+  "es": "No hay acciones registradas.",
+  "pt-BR": "Nenhuma ação registrada."
+ },
  "No activity recorded yet.": {
   "es": "Aún no se ha registrado actividad.",
   "pt-BR": "Nenhuma atividade registrada ainda."
@@ -3407,6 +4331,10 @@
   "es": "No hay usuarios elegibles para reasignar.",
   "pt-BR": "Não há usuários elegíveis para reatribuir."
  },
+ "No high-RPN open risks.": {
+  "es": "No hay riesgos abiertos con NPR alto.",
+  "pt-BR": "Nenhum risco aberto com NPR alto."
+ },
  "No linked CAPAs.": {
   "es": "No hay CAPA vinculadas.",
   "pt-BR": "Nenhuma CAPA vinculada."
@@ -3447,6 +4375,10 @@
   "es": "No se generaron capacitaciones automáticamente a partir de esta versión del documento.",
   "pt-BR": "Nenhum treinamento foi gerado automaticamente a partir desta versão do documento."
  },
+ "No upcoming audits.": {
+  "es": "No hay auditorías próximas.",
+  "pt-BR": "Nenhuma auditoria próxima."
+ },
  "No version history available.": {
   "es": "No hay historial de versiones.",
   "pt-BR": "Não há histórico de versões."
@@ -3454,6 +4386,10 @@
  "No — document becomes Effective immediately": {
   "es": "No: el documento pasa a Vigente de inmediato",
   "pt-BR": "Não — o documento passa a Vigente imediatamente"
+ },
+ "No — Further Action Required": {
+  "es": "No: se requieren más acciones",
+  "pt-BR": "Não: são necessárias mais ações"
  },
  "None": {
   "es": "Ninguno",
@@ -3487,6 +4423,10 @@
   "es": "No está en el sistema",
   "pt-BR": "Não está no sistema"
  },
+ "Not rated yet": {
+  "es": "Sin calificar aún",
+  "pt-BR": "Ainda não classificado"
+ },
  "Not Read": {
   "es": "No leído",
   "pt-BR": "Não lido"
@@ -3511,6 +4451,10 @@
   "es": "No iniciado",
   "pt-BR": "Não iniciado"
  },
+ "Not yet assessed.": {
+  "es": "Aún no evaluado.",
+  "pt-BR": "Ainda não avaliado."
+ },
  "Note:": {
   "es": "Nota:",
   "pt-BR": "Observação:"
@@ -3526,6 +4470,10 @@
  "Notification": {
   "es": "Notificación",
   "pt-BR": "Notificação"
+ },
+ "Observations": {
+  "es": "Observaciones",
+  "pt-BR": "Observações"
  },
  "Obsolete": {
   "es": "Obsoleto",
@@ -3586,6 +4534,10 @@
  "Open Document": {
   "es": "Abrir documento",
   "pt-BR": "Abrir documento"
+ },
+ "Open High-RPN Risks": {
+  "es": "Riesgos abiertos con NPR alto",
+  "pt-BR": "Riscos abertos com NPR alto"
  },
  "Operations User": {
   "es": "Usuario de operaciones",
@@ -3675,6 +4627,10 @@
   "es": "Pendiente",
   "pt-BR": "Pendente"
  },
+ "Overall Rating": {
+  "es": "Calificación global",
+  "pt-BR": "Classificação geral"
+ },
  "Overdue": {
   "es": "Vencido",
   "pt-BR": "Atrasado"
@@ -3690,6 +4646,10 @@
  "Overdue (Scheduled past date)": {
   "es": "Vencido (programado con fecha pasada)",
   "pt-BR": "Atrasado (programado com data passada)"
+ },
+ "Overdue Changes": {
+  "es": "Cambios vencidos",
+  "pt-BR": "Mudanças vencidas"
  },
  "Overdue Items": {
   "es": "Elementos vencidos",
@@ -3708,6 +4668,14 @@
   "es": "Desviaciones abiertas vencidas (pasada la fecha objetivo de resolución)",
   "pt-BR": "Desvios abertos atrasados (após a data-alvo de resolução)"
  },
+ "Overdue Risks": {
+  "es": "Riesgos vencidos",
+  "pt-BR": "Riscos vencidos"
+ },
+ "Overdue Scheduled Audits (planned start date passed)": {
+  "es": "Auditorías programadas vencidas (fecha de inicio prevista superada)",
+  "pt-BR": "Auditorias programadas vencidas (data de início prevista ultrapassada)"
+ },
  "Overdue — Scheduled Past Date": {
   "es": "Vencido: programado con fecha pasada",
   "pt-BR": "Atrasado — programado com data passada"
@@ -3723,6 +4691,10 @@
  "Own Company": {
   "es": "Empresa propia",
   "pt-BR": "Empresa própria"
+ },
+ "Owner": {
+  "es": "Responsable",
+  "pt-BR": "Responsável"
  },
  "Packaging": {
   "es": "Envasado y empaque",
@@ -3800,6 +4772,10 @@
   "es": "Pendiente de aceptación",
   "pt-BR": "Pendente de aceitação"
  },
+ "Pending Action (Draft / Review / Approved)": {
+  "es": "Acción pendiente (borrador / revisión / aprobado)",
+  "pt-BR": "Ação pendente (rascunho / revisão / aprovado)"
+ },
  "Pending AP Decision": {
   "es": "Pendiente de decisión de la PA",
   "pt-BR": "Pendente de decisão da PA"
@@ -3811,6 +4787,10 @@
  "Pending Assessment": {
   "es": "Pendiente de evaluación",
   "pt-BR": "Pendente de avaliação"
+ },
+ "Pending Assessment (Identification)": {
+  "es": "Pendiente de evaluación (identificación)",
+  "pt-BR": "Pendente de avaliação (identificação)"
  },
  "Pending Cancellation": {
   "es": "Pendiente de cancelación",
@@ -3872,6 +4852,10 @@
   "es": "Permanente",
   "pt-BR": "Permanente"
  },
+ "Permanent / Temporary / Emergency": {
+  "es": "Permanente / temporal / de emergencia",
+  "pt-BR": "Permanente / temporária / emergencial"
+ },
  "permanently locks the record": {
   "es": "bloquea el registro de forma permanente",
   "pt-BR": "bloqueia o registro permanentemente",
@@ -3917,13 +4901,29 @@
   "es": "Médico",
   "pt-BR": "Médico"
  },
+ "Planned End": {
+  "es": "Fin previsto",
+  "pt-BR": "Término previsto"
+ },
+ "Planned End Date": {
+  "es": "Fecha de fin prevista",
+  "pt-BR": "Data de término prevista"
+ },
  "Planned Start": {
   "es": "Inicio planificado",
   "pt-BR": "Início planejado"
  },
+ "Planned Start Date": {
+  "es": "Fecha de inicio prevista",
+  "pt-BR": "Data de início prevista"
+ },
  "Please check your email to reset your password.": {
   "es": "Revise su correo electrónico para restablecer su contraseña.",
   "pt-BR": "Verifique seu e-mail para redefinir sua senha."
+ },
+ "Please select a file to upload.": {
+  "es": "Seleccione un archivo para cargar.",
+  "pt-BR": "Selecione um arquivo para enviar."
  },
  "Policy": {
   "es": "Política",
@@ -3941,9 +4941,17 @@
   "es": "Estudio poscomercialización",
   "pt-BR": "Estudo pós-comercialização"
  },
+ "Potential risks or impacts on product quality, validated processes, or GMP compliance": {
+  "es": "Posibles riesgos o impactos sobre la calidad del producto, los procesos validados o el cumplimiento de las BPM",
+  "pt-BR": "Possíveis riscos ou impactos na qualidade do produto, nos processos validados ou no cumprimento das BPF"
+ },
  "Pre Screen Questionnaire": {
   "es": "Cuestionario de preselección",
   "pt-BR": "Questionário de pré-seleção"
+ },
+ "Pre-implementation tasks for this change. Each applicable action needs an <strong>owner</strong> and <strong>target date</strong> before the change is submitted for acceptance, and an <strong>evidence / reference</strong> plus a <strong>completed date</strong> (status <strong>{0}</strong>) before it is submitted for approval. Mark tasks that don't apply as <strong>{1}</strong>.": {
+  "es": "Tareas previas a la implementación de este cambio. Cada acción aplicable necesita un <strong>responsable</strong> y una <strong>fecha objetivo</strong> antes de enviar el cambio a aceptación, y una <strong>evidencia / referencia</strong> más una <strong>fecha de finalización</strong> (estado <strong>{0}</strong>) antes de enviarlo a aprobación. Marque las tareas que no correspondan como <strong>{1}</strong>.",
+  "pt-BR": "Tarefas pré-implementação desta mudança. Cada ação aplicável precisa de um <strong>responsável</strong> e de uma <strong>data-alvo</strong> antes de a mudança ser enviada para aceitação, e de uma <strong>evidência / referência</strong> mais uma <strong>data de conclusão</strong> (status <strong>{0}</strong>) antes de ser enviada para aprovação. Marque as tarefas que não se aplicam como <strong>{1}</strong>."
  },
  "Preparation": {
   "es": "Preparación",
@@ -4001,6 +5009,14 @@
  "Priority Review": {
   "es": "Revisión prioritaria",
   "pt-BR": "Análise prioritária"
+ },
+ "Probability": {
+  "es": "Probabilidad",
+  "pt-BR": "Probabilidade"
+ },
+ "Probability (1-5)": {
+  "es": "Probabilidad (1-5)",
+  "pt-BR": "Probabilidade (1-5)"
  },
  "Probable / Likely": {
   "es": "Probable",
@@ -4082,9 +5098,45 @@
   "es": "Propuesta",
   "pt-BR": "Proposta"
  },
+ "Proposal Details": {
+  "es": "Detalles de la propuesta",
+  "pt-BR": "Detalhes da proposta"
+ },
+ "Proposal guidance": {
+  "es": "Guía de la propuesta",
+  "pt-BR": "Orientação da proposta"
+ },
+ "Proposal is required.": {
+  "es": "La propuesta es obligatoria.",
+  "pt-BR": "A proposta é obrigatória."
+ },
+ "Proposal must include:": {
+  "es": "La propuesta debe incluir:",
+  "pt-BR": "A proposta deve incluir:"
+ },
+ "Proposal text must be completed before submitting for assessment.": {
+  "es": "El texto de la propuesta debe completarse antes de enviar a evaluación.",
+  "pt-BR": "O texto da proposta deve ser preenchido antes de enviar para avaliação."
+ },
+ "Propose a change, describe the rationale, and link to affected processes or products.": {
+  "es": "Proponga un cambio, describa su justificación y vincúlelo a los procesos o productos afectados.",
+  "pt-BR": "Proponha uma mudança, descreva a justificativa e vincule-a aos processos ou produtos afetados."
+ },
+ "Proposed By": {
+  "es": "Propuesto por",
+  "pt-BR": "Proposto por"
+ },
+ "Proposed On": {
+  "es": "Propuesto el",
+  "pt-BR": "Proposto em"
+ },
  "Protocol": {
   "es": "Protocolo",
   "pt-BR": "Protocolo"
+ },
+ "Provide a clear title, set a target implementation date, and link to all affected products, processes or other records (multiple selections allowed).": {
+  "es": "Indique un título claro, fije una fecha objetivo de implementación y vincule todos los productos, procesos u otros registros afectados (se permite selección múltiple).",
+  "pt-BR": "Informe um título claro, defina uma data-alvo de implementação e vincule todos os produtos, processos ou outros registros afetados (seleção múltipla permitida)."
  },
  "Provide a detailed justification for reopening this record...": {
   "es": "Proporcione una justificación detallada para reabrir este registro...",
@@ -4186,6 +5238,10 @@
   "es": "Registrar evento adverso",
   "pt-BR": "Registrar evento adverso"
  },
+ "Rating": {
+  "es": "Calificación",
+  "pt-BR": "Classificação"
+ },
  "Raw Material": {
   "es": "Materia prima",
   "pt-BR": "Matéria-prima"
@@ -4242,6 +5298,10 @@
   "es": "Motivo de la devolución",
   "pt-BR": "Motivo da devolução"
  },
+ "Reason for Return (required)": {
+  "es": "Motivo de la devolución (obligatorio)",
+  "pt-BR": "Motivo da devolução (obrigatório)"
+ },
  "Reassign Author": {
   "es": "Reasignar autor",
   "pt-BR": "Reatribuir autor"
@@ -4282,6 +5342,10 @@
   "es": "Recertificación pendiente",
   "pt-BR": "Recertificação pendente"
  },
+ "Recommendations": {
+  "es": "Recomendaciones",
+  "pt-BR": "Recomendações"
+ },
  "Record": {
   "es": "Registro",
   "pt-BR": "Registro"
@@ -4297,6 +5361,18 @@
  "Record Closed:": {
   "es": "Registro cerrado:",
   "pt-BR": "Registro fechado:"
+ },
+ "Record has been administratively reopened to Approved stage.": {
+  "es": "El registro se ha reabierto administrativamente en la etapa Aprobado.",
+  "pt-BR": "O registro foi reaberto administrativamente na etapa Aprovado."
+ },
+ "Record has been administratively reopened to Implementation stage.": {
+  "es": "El registro se ha reabierto administrativamente en la etapa Implementación.",
+  "pt-BR": "O registro foi reaberto administrativamente na etapa Implementação."
+ },
+ "Record has been administratively reopened to Mitigation stage.": {
+  "es": "El registro se ha reabierto administrativamente en la etapa Mitigación.",
+  "pt-BR": "O registro foi reaberto administrativamente na etapa Mitigação."
  },
  "Record is approved — no new attachments can be added.": {
   "es": "El registro está aprobado: no se pueden agregar adjuntos.",
@@ -4424,6 +5500,10 @@
   "es": "Correspondencia regulatoria",
   "pt-BR": "Correspondência regulatória"
  },
+ "Regulatory impact — whether a variation, notification or condition applies": {
+  "es": "Impacto regulatorio: si corresponde una variación, una notificación o una condición",
+  "pt-BR": "Impacto regulatório: se se aplica uma alteração, uma notificação ou uma condição"
+ },
  "Regulatory Intelligence": {
   "es": "Inteligencia regulatoria",
   "pt-BR": "Inteligência regulatória"
@@ -4530,6 +5610,10 @@
   "es": "Quitar",
   "pt-BR": "Remover"
  },
+ "Remove action": {
+  "es": "Quitar acción",
+  "pt-BR": "Remover ação"
+ },
  "REMS": {
   "es": "REMS",
   "pt-BR": "REMS"
@@ -4559,6 +5643,10 @@
   "es": "Borrador del informe",
   "pt-BR": "Rascunho do relatório"
  },
+ "Report draft submitted.": {
+  "es": "Borrador del informe enviado.",
+  "pt-BR": "Rascunho do relatório enviado."
+ },
  "Report Source": {
   "es": "Fuente del reporte",
   "pt-BR": "Fonte do relato"
@@ -4582,6 +5670,14 @@
  "Requested": {
   "es": "Solicitado",
   "pt-BR": "Solicitado"
+ },
+ "Required": {
+  "es": "Requerido",
+  "pt-BR": "Exigido"
+ },
+ "Required before submitting for review.": {
+  "es": "Obligatorio antes de enviar a revisión.",
+  "pt-BR": "Obrigatório antes de enviar para revisão."
  },
  "Required — set review date below": {
   "es": "Requerida: fije la fecha de revisión abajo",
@@ -4626,6 +5722,54 @@
  "Reset your password.": {
   "es": "Restablezca su contraseña.",
   "pt-BR": "Redefina sua senha."
+ },
+ "Residual Detectability": {
+  "es": "Detectabilidad residual",
+  "pt-BR": "Detectabilidade residual"
+ },
+ "Residual Detectability (1-5)": {
+  "es": "Detectabilidad residual (1-5)",
+  "pt-BR": "Detectabilidade residual (1-5)"
+ },
+ "Residual Probability": {
+  "es": "Probabilidad residual",
+  "pt-BR": "Probabilidade residual"
+ },
+ "Residual Probability (1-5)": {
+  "es": "Probabilidad residual (1-5)",
+  "pt-BR": "Probabilidade residual (1-5)"
+ },
+ "Residual Risk (After Mitigation)": {
+  "es": "Riesgo residual (tras la mitigación)",
+  "pt-BR": "Risco residual (após a mitigação)"
+ },
+ "Residual Risk Assessment (After Mitigation)": {
+  "es": "Evaluación del riesgo residual (tras la mitigación)",
+  "pt-BR": "Avaliação do risco residual (após a mitigação)"
+ },
+ "Residual Risk Assessment (Severity, Probability, Detectability) must be completed before submitting for review.": {
+  "es": "La evaluación del riesgo residual (gravedad, probabilidad, detectabilidad) debe completarse antes de enviar a revisión.",
+  "pt-BR": "A avaliação do risco residual (gravidade, probabilidade, detectabilidade) deve ser preenchida antes de enviar para revisão."
+ },
+ "Residual Risk Matrix": {
+  "es": "Matriz de riesgo residual",
+  "pt-BR": "Matriz de risco residual"
+ },
+ "Residual risk scores (S/P/D) have been assessed": {
+  "es": "Se han evaluado las puntuaciones del riesgo residual (G/P/D)",
+  "pt-BR": "As pontuações do risco residual (G/P/D) foram avaliadas"
+ },
+ "Residual RPN": {
+  "es": "NPR residual",
+  "pt-BR": "NPR residual"
+ },
+ "Residual Severity": {
+  "es": "Gravedad residual",
+  "pt-BR": "Gravidade residual"
+ },
+ "Residual Severity (1-5)": {
+  "es": "Gravedad residual (1-5)",
+  "pt-BR": "Gravidade residual (1-5)"
  },
  "Resolution": {
   "es": "Resolución",
@@ -4680,14 +5824,50 @@
   "es": "Retención vencida",
   "pt-BR": "Retenção vencida"
  },
+ "Return for Revision": {
+  "es": "Devolver para revisión",
+  "pt-BR": "Devolver para revisão"
+ },
  "Return for Rework": {
   "es": "Devolver para corrección",
   "pt-BR": "Devolver para retrabalho",
   "note": "WORKFLOW — review"
  },
+ "Return to Mitigation": {
+  "es": "Devolver a Mitigación",
+  "pt-BR": "Devolver para Mitigação"
+ },
+ "Return to Review": {
+  "es": "Devolver a revisión",
+  "pt-BR": "Devolver para revisão"
+ },
+ "Returns to <strong>{0}</strong> — all intermediate stamps will be cleared. All fields will be editable.": {
+  "es": "Vuelve a <strong>{0}</strong>: se borrarán todos los sellos intermedios. Todos los campos serán editables.",
+  "pt-BR": "Volta para <strong>{0}</strong>: todos os carimbos intermediários serão apagados. Todos os campos poderão ser editados."
+ },
+ "Returns to <strong>{0}</strong> — assessment stamp will be cleared. All fields will be editable.": {
+  "es": "Vuelve a <strong>{0}</strong>: se borrará el sello de evaluación. Todos los campos serán editables.",
+  "pt-BR": "Volta para <strong>{0}</strong>: o carimbo de avaliação será apagado. Todos os campos poderão ser editados."
+ },
+ "Returns to <strong>{0}</strong> — implementation stamp will be cleared.": {
+  "es": "Vuelve a <strong>{0}</strong>: se borrará el sello de implementación.",
+  "pt-BR": "Volta para <strong>{0}</strong>: o carimbo de implementação será apagado."
+ },
  "Review": {
   "es": "Revisión",
   "pt-BR": "Revisão"
+ },
+ "Review & Closure": {
+  "es": "Revisión y cierre",
+  "pt-BR": "Revisão e encerramento"
+ },
+ "Review Conclusion": {
+  "es": "Conclusión de la revisión",
+  "pt-BR": "Conclusão da revisão"
+ },
+ "Review Conclusion is required to close the risk.": {
+  "es": "La conclusión de la revisión es obligatoria para cerrar el riesgo.",
+  "pt-BR": "A conclusão da revisão é obrigatória para encerrar o risco."
  },
  "Review date is automatically set when the document becomes effective.": {
   "es": "La fecha de revisión se fija automáticamente cuando el documento entra en vigor.",
@@ -4733,6 +5913,10 @@
   "es": "Revisado por",
   "pt-BR": "Revisado por"
  },
+ "Reviewed On": {
+  "es": "Revisado el",
+  "pt-BR": "Revisado em"
+ },
  "RFI Response Submitted": {
   "es": "Respuesta a la solicitud de información enviada",
   "pt-BR": "Resposta à exigência enviada"
@@ -4753,9 +5937,45 @@
   "es": "Riesgo",
   "pt-BR": "Risco"
  },
+ "Risk Acceptable": {
+  "es": "Riesgo aceptable",
+  "pt-BR": "Risco aceitável"
+ },
+ "Risk Acceptance": {
+  "es": "Aceptación del riesgo",
+  "pt-BR": "Aceitação do risco"
+ },
+ "Risk acceptance decision and justification are recorded": {
+  "es": "La decisión de aceptación del riesgo y su justificación están registradas",
+  "pt-BR": "A decisão de aceitação do risco e a justificativa estão registradas"
+ },
+ "Risk Acceptance decision must be recorded before submitting for review.": {
+  "es": "La decisión de aceptación del riesgo debe registrarse antes de enviar a revisión.",
+  "pt-BR": "A decisão de aceitação do risco deve ser registrada antes de enviar para revisão."
+ },
  "Risk Assessment": {
   "es": "Evaluación de riesgos",
   "pt-BR": "Avaliação de riscos"
+ },
+ "Risk Category": {
+  "es": "Categoría del riesgo",
+  "pt-BR": "Categoria do risco"
+ },
+ "Risk Classification": {
+  "es": "Clasificación del riesgo",
+  "pt-BR": "Classificação do risco"
+ },
+ "Risk classification": {
+  "es": "Clasificación del riesgo",
+  "pt-BR": "Classificação do risco"
+ },
+ "Risk classification guidance": {
+  "es": "Guía de clasificación del riesgo",
+  "pt-BR": "Orientação de classificação do risco"
+ },
+ "Risk closed.": {
+  "es": "Riesgo cerrado.",
+  "pt-BR": "Risco encerrado."
  },
  "Risk Dashboard": {
   "es": "Panel de riesgos",
@@ -4777,9 +5997,81 @@
   "es": "Gestión de riesgos",
   "pt-BR": "Gestão de riscos"
  },
+ "Risk Matrix (Severity × Probability)": {
+  "es": "Matriz de riesgo (gravedad × probabilidad)",
+  "pt-BR": "Matriz de risco (gravidade × probabilidade)"
+ },
+ "Risk must be in Identification status to submit for assessment.": {
+  "es": "El riesgo debe estar en estado Identificación para enviarlo a evaluación.",
+  "pt-BR": "O risco deve estar no status Identificação para ser enviado para avaliação."
+ },
+ "Risk must be in Mitigation status to submit for review.": {
+  "es": "El riesgo debe estar en estado Mitigación para enviarlo a revisión.",
+  "pt-BR": "O risco deve estar no status Mitigação para ser enviado para revisão."
+ },
+ "Risk must be in Pending Assessment status to accept.": {
+  "es": "El riesgo debe estar en estado Pendiente de evaluación para aceptarlo.",
+  "pt-BR": "O risco deve estar no status Pendente de avaliação para ser aceito."
+ },
+ "Risk must be in Pending Assessment status to return for revision.": {
+  "es": "El riesgo debe estar en estado Pendiente de evaluación para devolverlo para revisión.",
+  "pt-BR": "O risco deve estar no status Pendente de avaliação para ser devolvido para revisão."
+ },
+ "Risk must be in Pending Review status to be closed.": {
+  "es": "El riesgo debe estar en estado Pendiente de revisión para cerrarlo.",
+  "pt-BR": "O risco deve estar no status Pendente de revisão para ser encerrado."
+ },
+ "Risk must be in Pending Review status to return to Mitigation.": {
+  "es": "El riesgo debe estar en estado Pendiente de revisión para devolverlo a Mitigación.",
+  "pt-BR": "O risco deve estar no status Pendente de revisão para voltar para Mitigação."
+ },
+ "Risk Owner": {
+  "es": "Responsable del riesgo",
+  "pt-BR": "Responsável pelo risco"
+ },
  "Risk Register": {
   "es": "Registro de riesgos",
   "pt-BR": "Registro de riscos"
+ },
+ "Risk returned to Identification for revision.": {
+  "es": "Riesgo devuelto a Identificación para revisión.",
+  "pt-BR": "Risco devolvido para Identificação para revisão."
+ },
+ "Risk returned to Mitigation for further work.": {
+  "es": "Riesgo devuelto a Mitigación para continuar el trabajo.",
+  "pt-BR": "Risco devolvido para Mitigação para trabalho adicional."
+ },
+ "Risk submitted for Quality Manager assessment.": {
+  "es": "Riesgo enviado al Gerente de calidad para su evaluación.",
+  "pt-BR": "Risco enviado ao Gerente da qualidade para avaliação."
+ },
+ "Risk submitted for Quality Manager review and closure.": {
+  "es": "Riesgo enviado al Gerente de calidad para su revisión y cierre.",
+  "pt-BR": "Risco enviado ao Gerente da qualidade para revisão e encerramento."
+ },
+ "Risk Summary": {
+  "es": "Resumen de riesgos",
+  "pt-BR": "Resumo dos riscos"
+ },
+ "Risk updated.": {
+  "es": "Riesgo actualizado.",
+  "pt-BR": "Risco atualizado."
+ },
+ "Risk {0} created.": {
+  "es": "Riesgo {0} creado.",
+  "pt-BR": "Risco {0} criado."
+ },
+ "Risk —": {
+  "es": "Riesgo —",
+  "pt-BR": "Risco —"
+ },
+ "Risk — {0}": {
+  "es": "Riesgo — {0}",
+  "pt-BR": "Risco — {0}"
+ },
+ "Risks": {
+  "es": "Riesgos",
+  "pt-BR": "Riscos"
  },
  "RMP": {
   "es": "PGR (RMP)",
@@ -4817,6 +6109,34 @@
  "Root Cause On": {
   "es": "Causa raíz determinada el",
   "pt-BR": "Causa-raiz determinada em"
+ },
+ "RPN": {
+  "es": "NPR",
+  "pt-BR": "NPR"
+ },
+ "RPN increased from {0} → {1}": {
+  "es": "El NPR aumentó de {0} → {1}",
+  "pt-BR": "O NPR aumentou de {0} → {1}"
+ },
+ "RPN reduced from {0} → {1} (−{2})": {
+  "es": "NPR reducido de {0} → {1} (−{2})",
+  "pt-BR": "NPR reduzido de {0} → {1} (−{2})"
+ },
+ "RPN scale: <40 = Low | 40–79 = Medium | ≥80 = High": {
+  "es": "Escala de NPR: <40 = Bajo | 40–79 = Medio | ≥80 = Alto",
+  "pt-BR": "Escala de NPR: <40 = Baixo | 40–79 = Médio | ≥80 = Alto"
+ },
+ "RPN unchanged at {0}": {
+  "es": "NPR sin cambios en {0}",
+  "pt-BR": "NPR inalterado em {0}"
+ },
+ "RPN {0}": {
+  "es": "NPR {0}",
+  "pt-BR": "NPR {0}"
+ },
+ "S = Severity (rows), P = Probability (cols), ★ = current position": {
+  "es": "G = Gravedad (filas), P = Probabilidad (columnas), ★ = posición actual",
+  "pt-BR": "G = Gravidade (linhas), P = Probabilidade (colunas), ★ = posição atual"
  },
  "Safety Equipment": {
   "es": "Equipos de seguridad",
@@ -4861,17 +6181,45 @@
   "es": "Guardar",
   "pt-BR": "Salvar"
  },
+ "Save action plan": {
+  "es": "Guardar plan de acción",
+  "pt-BR": "Salvar plano de ação"
+ },
  "Save Changes": {
   "es": "Guardar cambios",
   "pt-BR": "Salvar alterações"
+ },
+ "Save progress": {
+  "es": "Guardar avance",
+  "pt-BR": "Salvar progresso"
  },
  "Saving will create a new draft and lock the current approved version.": {
   "es": "Al guardar se creará un nuevo borrador y se bloqueará la versión aprobada actual.",
   "pt-BR": "Ao salvar, será criado um novo rascunho e a versão aprovada atual será bloqueada."
  },
+ "Schedule": {
+  "es": "Programación",
+  "pt-BR": "Programação"
+ },
  "Scheduled": {
   "es": "Programado",
   "pt-BR": "Programado"
+ },
+ "Scheduled By": {
+  "es": "Programado por",
+  "pt-BR": "Programado por"
+ },
+ "Scheduled On": {
+  "es": "Programado el",
+  "pt-BR": "Programado em"
+ },
+ "Scheduling": {
+  "es": "Programación",
+  "pt-BR": "Programação"
+ },
+ "Scope": {
+  "es": "Alcance",
+  "pt-BR": "Escopo"
  },
  "SDS": {
   "es": "FDS (SDS)",
@@ -4954,6 +6302,10 @@
  "Severity": {
   "es": "Gravedad",
   "pt-BR": "Gravidade"
+ },
+ "Severity (1-5)": {
+  "es": "Gravedad (1-5)",
+  "pt-BR": "Gravidade (1-5)"
  },
  "Severity Breakdown": {
   "es": "Desglose por gravedad",
@@ -5053,6 +6405,10 @@
   "es": "Auditoría de etapa 2",
   "pt-BR": "Auditoria de estágio 2"
  },
+ "Stage: {0}": {
+  "es": "Etapa: {0}",
+  "pt-BR": "Etapa: {0}"
+ },
  "Standard / Scientific Name": {
   "es": "Nombre estándar / científico",
   "pt-BR": "Nome padrão / científico"
@@ -5068,6 +6424,10 @@
  "Standard Version": {
   "es": "Versión de la norma",
   "pt-BR": "Versão da norma"
+ },
+ "Start Audit": {
+  "es": "Iniciar auditoría",
+  "pt-BR": "Iniciar auditoria"
  },
  "State": {
   "es": "Estado / provincia",
@@ -5145,6 +6505,10 @@
   "es": "Método de envío",
   "pt-BR": "Método de envio"
  },
+ "Submit Draft": {
+  "es": "Enviar borrador",
+  "pt-BR": "Enviar rascunho"
+ },
  "Submit for Acceptance": {
   "es": "Enviar para aceptación",
   "pt-BR": "Enviar para aceitação",
@@ -5154,6 +6518,10 @@
   "es": "Enviar a aprobación",
   "pt-BR": "Enviar para aprovação",
   "note": "WORKFLOW — review"
+ },
+ "Submit for Assessment": {
+  "es": "Enviar a evaluación",
+  "pt-BR": "Enviar para avaliação"
  },
  "Submit for Closure": {
   "es": "Enviar para cierre",
@@ -5169,6 +6537,10 @@
   "es": "Enviar a revisión",
   "pt-BR": "Enviar para revisão",
   "note": "WORKFLOW — review"
+ },
+ "Submit Report Draft": {
+  "es": "Enviar borrador del informe",
+  "pt-BR": "Enviar rascunho do relatório"
  },
  "Submitted": {
   "es": "Enviado",
@@ -5189,6 +6561,10 @@
  "Submitted for Closure By": {
   "es": "Enviado para cierre por",
   "pt-BR": "Enviado para fechamento por"
+ },
+ "Submitted for Review By": {
+  "es": "Enviado a revisión por",
+  "pt-BR": "Enviado para revisão por"
  },
  "Submitted On": {
   "es": "Enviado el",
@@ -5299,13 +6675,37 @@
   "es": "Fecha objetivo de cumplimiento de cada acción",
   "pt-BR": "Data-alvo de conclusão de cada ação"
  },
+ "Target completion date is <strong>{0}</strong> — <strong>{1} day(s)</strong> remaining.": {
+  "es": "La fecha objetivo de finalización es el <strong>{0}</strong>; quedan <strong>{1} día(s)</strong>.",
+  "pt-BR": "A data-alvo de conclusão é <strong>{0}</strong>; restam <strong>{1} dia(s)</strong>."
+ },
  "Target completion date must be today or in the future.": {
   "es": "La fecha objetivo de cumplimiento debe ser hoy o una fecha futura.",
   "pt-BR": "A data-alvo de conclusão deve ser hoje ou uma data futura."
  },
+ "Target completion date was <strong>{0}</strong> — overdue by <strong>{1} day(s)</strong>.": {
+  "es": "La fecha objetivo de finalización era el <strong>{0}</strong>; tiene un retraso de <strong>{1} día(s)</strong>.",
+  "pt-BR": "A data-alvo de conclusão era <strong>{0}</strong>; está atrasada <strong>{1} dia(s)</strong>."
+ },
  "Target Date": {
   "es": "Fecha objetivo",
   "pt-BR": "Data-alvo"
+ },
+ "Target date": {
+  "es": "Fecha objetivo",
+  "pt-BR": "Data-alvo"
+ },
+ "Target Implementation Date": {
+  "es": "Fecha objetivo de implementación",
+  "pt-BR": "Data-alvo de implementação"
+ },
+ "Target implementation date <strong>{0}</strong> is approaching (within 14 days).": {
+  "es": "La fecha objetivo de implementación <strong>{0}</strong> se acerca (en los próximos 14 días).",
+  "pt-BR": "A data-alvo de implementação <strong>{0}</strong> está se aproximando (nos próximos 14 dias)."
+ },
+ "Target implementation date <strong>{0}</strong> is overdue.": {
+  "es": "La fecha objetivo de implementación <strong>{0}</strong> está vencida.",
+  "pt-BR": "A data-alvo de implementação <strong>{0}</strong> está vencida."
  },
  "Target Resolution": {
   "es": "Resolución objetivo",
@@ -5376,6 +6776,30 @@
   "pt-BR": "Obrigado por confirmar a alteração de e-mail.",
   "note": "status message"
  },
+ "The action plan can only be edited while the change is in Assessment or Implementation.": {
+  "es": "El plan de acción solo se puede editar mientras el cambio está en Evaluación o Implementación.",
+  "pt-BR": "O plano de ação só pode ser editado enquanto a mudança está em Avaliação ou Implementação."
+ },
+ "The action plan has {0} outstanding item(s) — complete or mark them Not applicable before submitting for approval: {1}": {
+  "es": "El plan de acción tiene {0} elemento(s) pendiente(s); complételos o márquelos como No aplica antes de enviar a aprobación: {1}",
+  "pt-BR": "O plano de ação tem {0} item(ns) pendente(s); conclua-os ou marque-os como Não se aplica antes de enviar para aprovação: {1}"
+ },
+ "The action plan still has {0} outstanding item(s); the change cannot be approved until all applicable actions are completed.": {
+  "es": "El plan de acción aún tiene {0} elemento(s) pendiente(s); el cambio no se puede aprobar hasta completar todas las acciones aplicables.",
+  "pt-BR": "O plano de ação ainda tem {0} item(ns) pendente(s); a mudança não pode ser aprovada até que todas as ações aplicáveis sejam concluídas."
+ },
+ "The action plan was <strong>accepted</strong> and is now locked for execution. You can update each action's <strong>{0}</strong>, <strong>{1}</strong> and <strong>{2}</strong>. To add, remove or change an action (or its owner or target date), <strong>return the change for rework</strong> so the revised plan is re-accepted.": {
+  "es": "El plan de acción fue <strong>aceptado</strong> y ahora está bloqueado para su ejecución. Puede actualizar en cada acción: <strong>{0}</strong>, <strong>{1}</strong> y <strong>{2}</strong>. Para agregar, quitar o modificar una acción (o su responsable o fecha objetivo), <strong>devuelva el cambio para corrección</strong> para que el plan revisado se vuelva a aceptar.",
+  "pt-BR": "O plano de ação foi <strong>aceito</strong> e agora está bloqueado para execução. Você pode atualizar em cada ação: <strong>{0}</strong>, <strong>{1}</strong> e <strong>{2}</strong>. Para adicionar, remover ou alterar uma ação (ou seu responsável ou data-alvo), <strong>devolva a mudança para retrabalho</strong> para que o plano revisado seja aceito novamente."
+ },
+ "The approval will be revoked. The audit will return to <strong>{0}</strong> status.": {
+  "es": "Se revocará la aprobación. La auditoría volverá al estado <strong>{0}</strong>.",
+  "pt-BR": "A aprovação será revogada. A auditoria voltará ao status <strong>{0}</strong>."
+ },
+ "The audit will be returned to <strong>{0}</strong> so the auditor can revise and resubmit.": {
+  "es": "La auditoría se devolverá a <strong>{0}</strong> para que el auditor la revise y la vuelva a enviar.",
+  "pt-BR": "A auditoria será devolvida para <strong>{0}</strong> para que o auditor a revise e reenvie."
+ },
  "The current browser has been forgotten. When you login again from this browser you will be prompted for your 2fa code.": {
   "es": "Se olvidó este navegador. Cuando vuelva a iniciar sesión desde él, se le pedirá el código de 2FA.",
   "pt-BR": "Este navegador foi esquecido. Ao entrar novamente por ele, será solicitado o código da 2FA.",
@@ -5384,6 +6808,10 @@
  "The Development environment shouldn't be enabled for deployed applications.": {
   "es": "El entorno Development no debe habilitarse en aplicaciones desplegadas.",
   "pt-BR": "O ambiente Development não deve ser habilitado em aplicações implantadas."
+ },
+ "The expected benefit (quality, regulatory, efficiency)": {
+  "es": "El beneficio esperado (calidad, regulatorio, eficiencia)",
+  "pt-BR": "O benefício esperado (qualidade, regulatório, eficiência)"
  },
  "The external login was added.": {
   "es": "Se agregó el inicio de sesión externo.",
@@ -5449,6 +6877,10 @@
   "es": "La persona responsable de cada acción",
   "pt-BR": "A pessoa responsável por cada ação"
  },
+ "The required pre-implementation actions (capture them in the Action Plan tab if a detailed plan is needed)": {
+  "es": "Las acciones previas a la implementación necesarias (regístrelas en la pestaña Plan de acción si se necesita un plan detallado)",
+  "pt-BR": "As ações pré-implementação necessárias (registre-as na aba Plano de ação se for necessário um plano detalhado)"
+ },
  "The responsible person for each action": {
   "es": "La persona responsable de cada acción",
   "pt-BR": "A pessoa responsável por cada ação"
@@ -5513,9 +6945,21 @@
   "es": "Esta acción solo desactiva la 2FA.",
   "pt-BR": "Esta ação apenas desativa a 2FA."
  },
+ "This audit has <strong>{0} critical finding(s)</strong>.": {
+  "es": "Esta auditoría tiene <strong>{0} hallazgo(s) crítico(s)</strong>.",
+  "pt-BR": "Esta auditoria tem <strong>{0} constatação(ões) crítica(s)</strong>."
+ },
+ "This audit is closed. No new attachments can be uploaded.": {
+  "es": "Esta auditoría está cerrada. No se pueden cargar nuevos adjuntos.",
+  "pt-BR": "Esta auditoria está encerrada. Não é possível enviar novos anexos."
+ },
  "This CAPA is approved. No new attachments can be uploaded.": {
   "es": "Esta CAPA está aprobada. No se pueden cargar nuevos adjuntos.",
   "pt-BR": "Esta CAPA está aprovada. Não é possível enviar novos anexos."
+ },
+ "This change is approved. No new attachments can be uploaded.": {
+  "es": "Este cambio está aprobado. No se pueden cargar nuevos adjuntos.",
+  "pt-BR": "Esta mudança está aprovada. Não é possível enviar novos anexos."
  },
  "This complaint has multiple linked adverse events from before one-to-one linking was enforced. Unlink extras to keep a single association.": {
   "es": "Esta reclamación tiene varios eventos adversos vinculados de antes de que se exigiera la vinculación uno a uno. Desvincule los adicionales para mantener una sola asociación.",
@@ -5561,14 +7005,46 @@
   "es": "Este proceso desactiva la 2FA hasta que verifique su aplicación de autenticación. Si no completa la configuración de la aplicación, podría perder el acceso a su cuenta.",
   "pt-BR": "Este processo desativa a 2FA até que você verifique seu aplicativo autenticador. Se você não concluir a configuração do aplicativo, poderá perder o acesso à sua conta."
  },
+ "This record is not in a state that can be administratively reopened.": {
+  "es": "Este registro no está en un estado que permita reabrirlo administrativamente.",
+  "pt-BR": "Este registro não está em um estado que permita reabri-lo administrativamente."
+ },
+ "This risk has been submitted for formal assessment. A Quality Manager must review the scoring and either accept or return it for revision.": {
+  "es": "Este riesgo se ha enviado para su evaluación formal. Un Gerente de calidad debe revisar la puntuación y aceptarla o devolverla para revisión.",
+  "pt-BR": "Este risco foi enviado para avaliação formal. Um Gerente da qualidade deve revisar a pontuação e aceitá-la ou devolvê-la para revisão."
+ },
+ "This risk is closed. No new attachments can be uploaded.": {
+  "es": "Este riesgo está cerrado. No se pueden cargar nuevos adjuntos.",
+  "pt-BR": "Este risco está encerrado. Não é possível enviar novos anexos."
+ },
  "This will lock the CAPA for Quality Manager review. Corrective Action, Preventive Action and Assessment must all be completed.": {
   "es": "Esto bloqueará la CAPA para la revisión del gerente de calidad. La acción correctiva, la acción preventiva y la evaluación deben estar completas.",
   "pt-BR": "Isso bloqueará a CAPA para revisão do gerente da qualidade. A ação corretiva, a ação preventiva e a avaliação devem estar concluídas.",
   "note": "WORKFLOW — review"
  },
+ "This will lock the record and send it to the Quality Manager for formal assessment. Enter your credentials to confirm.": {
+  "es": "Esto bloqueará el registro y lo enviará al Gerente de calidad para su evaluación formal. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Isso bloqueará o registro e o enviará ao Gerente da qualidade para avaliação formal. Informe suas credenciais para confirmar."
+ },
+ "This will return the risk to Identification for the submitter to revise. The submission signature will be cleared.": {
+  "es": "Esto devolverá el riesgo a Identificación para que quien lo envió lo revise. Se borrará la firma del envío.",
+  "pt-BR": "Isso devolverá o risco para Identificação para que quem o enviou o revise. A assinatura do envio será apagada."
+ },
+ "This will return the risk to Mitigation for further work. The review submission signature will be cleared.": {
+  "es": "Esto devolverá el riesgo a Mitigación para continuar el trabajo. Se borrará la firma del envío a revisión.",
+  "pt-BR": "Isso devolverá o risco para Mitigação para trabalho adicional. A assinatura do envio para revisão será apagada."
+ },
  "Three Yearly": {
   "es": "Trienal",
   "pt-BR": "Trienal"
+ },
+ "Tick this when a change needs several tracked pre-implementation tasks. An <strong>{0}</strong> tab appears where you list each task (owner, target/completed dates, status, evidence) and can load the suggested actions for the selected change type. Every applicable action must be completed before the change can be submitted for approval. Leave unticked for a simple change and describe the plan in the Assessment field.": {
+  "es": "Márquelo cuando un cambio necesite varias tareas previas a la implementación con seguimiento. Aparece una pestaña <strong>{0}</strong> donde se enumera cada tarea (responsable, fechas objetivo y de finalización, estado, evidencia) y se pueden cargar las acciones sugeridas para el tipo de cambio seleccionado. Todas las acciones aplicables deben completarse antes de poder enviar el cambio a aprobación. Déjelo sin marcar para un cambio sencillo y describa el plan en el campo Evaluación.",
+  "pt-BR": "Marque quando uma mudança precisar de várias tarefas pré-implementação acompanhadas. Aparece uma aba <strong>{0}</strong> onde você lista cada tarefa (responsável, datas-alvo e de conclusão, status, evidência) e pode carregar as ações sugeridas para o tipo de mudança selecionado. Todas as ações aplicáveis devem ser concluídas antes que a mudança possa ser enviada para aprovação. Deixe desmarcado para uma mudança simples e descreva o plano no campo Avaliação."
+ },
+ "Tick to track structured pre-implementation tasks on a dedicated <strong>{0}</strong> tab. Leave unticked to document the plan in the Assessment field above (for a simple change).": {
+  "es": "Márquelo para hacer seguimiento de tareas previas a la implementación en una pestaña <strong>{0}</strong> propia. Déjelo sin marcar para documentar el plan en el campo Evaluación de arriba (para un cambio sencillo).",
+  "pt-BR": "Marque para acompanhar tarefas pré-implementação estruturadas em uma aba <strong>{0}</strong> própria. Deixe desmarcado para documentar o plano no campo Avaliação acima (para uma mudança simples)."
  },
  "Time": {
   "es": "Hora",
@@ -5614,13 +7090,37 @@
   "es": "Total",
   "pt-BR": "Total"
  },
+ "Total Audits": {
+  "es": "Total de auditorías",
+  "pt-BR": "Total de auditorias"
+ },
  "Total CAPAs": {
   "es": "Total de CAPA",
   "pt-BR": "Total de CAPAs"
  },
+ "Total Changes": {
+  "es": "Total de cambios",
+  "pt-BR": "Total de mudanças"
+ },
+ "Total Critical Findings": {
+  "es": "Total de hallazgos críticos",
+  "pt-BR": "Total de constatações críticas"
+ },
  "Total Deviations": {
   "es": "Total de desviaciones",
   "pt-BR": "Total de desvios"
+ },
+ "Total Major Findings": {
+  "es": "Total de hallazgos mayores",
+  "pt-BR": "Total de constatações maiores"
+ },
+ "Total Minor Findings": {
+  "es": "Total de hallazgos menores",
+  "pt-BR": "Total de constatações menores"
+ },
+ "Total Risks": {
+  "es": "Total de riesgos",
+  "pt-BR": "Total de riscos"
  },
  "Total Tracked": {
   "es": "Total en seguimiento",
@@ -5838,6 +7338,10 @@
  "Unsatisfactory": {
   "es": "Insatisfactorio",
   "pt-BR": "Insatisfatório"
+ },
+ "Upcoming Scheduled Audits": {
+  "es": "Próximas auditorías programadas",
+  "pt-BR": "Próximas auditorias programadas"
  },
  "Update password": {
   "es": "Actualizar contraseña",
@@ -6080,6 +7584,10 @@
   "es": "Si los lotes o materiales afectados requieren cuarentena, reanálisis o retiro",
   "pt-BR": "Se lotes ou materiais afetados exigem quarentena, reanálise ou recolhimento"
  },
+ "Whether regulatory notification or approval is required": {
+  "es": "Si se requiere notificación o aprobación regulatoria",
+  "pt-BR": "Se é necessária notificação ou aprovação regulatória"
+ },
  "Whether the complaint is an isolated event or part of a trend": {
   "es": "Si la reclamación es un hecho aislado o parte de una tendencia",
   "pt-BR": "Se a reclamação é um evento isolado ou parte de uma tendência"
@@ -6127,6 +7635,10 @@
  "Yes — configure training groups below": {
   "es": "Sí: configure los grupos de capacitación abajo",
   "pt-BR": "Sim — configure os grupos de treinamento abaixo"
+ },
+ "Yes — Risk is Acceptable": {
+  "es": "Sí: el riesgo es aceptable",
+  "pt-BR": "Sim: o risco é aceitável"
  },
  "You are accepting this externally-sourced document into the QMS. The original authorship details below are recorded for audit purposes and are separate from the system acceptance record.": {
   "es": "Está aceptando este documento de origen externo en el SGC. Los datos originales de autoría que figuran abajo se registran para fines de auditoría y son independientes del registro de aceptación del sistema.",
@@ -6217,6 +7729,38 @@
   "pt-BR": "Seu perfil foi atualizado",
   "note": "status message"
  },
+ "{0} action(s) need evidence": {
+  "es": "{0} acción(es) necesitan evidencia",
+  "pt-BR": "{0} ação(ões) precisam de evidência"
+ },
+ "{0} action(s) need owner + target date": {
+  "es": "{0} acción(es) necesitan responsable + fecha objetivo",
+  "pt-BR": "{0} ação(ões) precisam de responsável + data-alvo"
+ },
+ "{0} action(s) outstanding": {
+  "es": "{0} acción(es) pendiente(s)",
+  "pt-BR": "{0} ação(ões) pendente(s)"
+ },
+ "{0} action(s) still need an evidence / reference": {
+  "es": "{0} acción(es) aún necesitan una evidencia / referencia",
+  "pt-BR": "{0} ação(ões) ainda precisam de uma evidência / referência"
+ },
+ "{0} action(s) still need an owner and target date": {
+  "es": "{0} acción(es) aún necesitan un responsable y una fecha objetivo",
+  "pt-BR": "{0} ação(ões) ainda precisam de um responsável e de uma data-alvo"
+ },
+ "{0} action-plan item(s) outstanding — complete or mark them Not applicable first": {
+  "es": "{0} elemento(s) del plan de acción pendiente(s); complételos o márquelos antes como No aplica",
+  "pt-BR": "{0} item(ns) do plano de ação pendente(s); conclua-os ou marque-os antes como Não se aplica"
+ },
+ "{0} days": {
+  "es": "{0} días",
+  "pt-BR": "{0} dias"
+ },
+ "{0} on {1}": {
+  "es": "{0} el {1}",
+  "pt-BR": "{0} em {1}"
+ },
  "— A confirmed trend with negative quality impact": {
   "es": "— Una tendencia confirmada con impacto negativo en la calidad",
   "pt-BR": "— Uma tendência confirmada com impacto negativo na qualidade",
@@ -6226,6 +7770,14 @@
   "es": "— Una tendencia confirmada con impacto o riesgo negativo para la calidad, resultados fuera de tendencia o eventos de calidad repetidos (normalmente 3 eventos similares en los últimos 12 meses)",
   "pt-BR": "— Uma tendência confirmada com impacto ou risco negativo à qualidade, resultados fora de tendência ou eventos de qualidade repetidos (normalmente 3 eventos semelhantes nos últimos 12 meses)",
   "note": "GUIDANCE — review"
+ },
+ "— a lasting change": {
+  "es": "— un cambio duradero",
+  "pt-BR": "— uma mudança duradoura"
+ },
+ "— affects a specification, process, validated state, supplier or requirement, within the existing registration": {
+  "es": "— afecta a una especificación, un proceso, el estado validado, un proveedor o un requisito, dentro del registro existente",
+  "pt-BR": "— afeta uma especificação, um processo, o estado validado, um fornecedor ou um requisito, dentro do registro existente"
  },
  "— All Documents —": {
   "es": "— Todos los documentos —",
@@ -6259,6 +7811,14 @@
   "pt-BR": "— Falha de instalações, equipamentos, hardware ou utilidades que afeta a qualidade",
   "note": "GUIDANCE — review"
  },
+ "— implemented urgently to prevent a greater risk; formalised here without delay": {
+  "es": "— implementado con urgencia para evitar un riesgo mayor; se formaliza aquí sin demora",
+  "pt-BR": "— implementada com urgência para evitar um risco maior; formalizada aqui sem demora"
+ },
+ "— in force for a defined period or number of batches, with a defined expiry/reversion": {
+  "es": "— vigente durante un período o número de lotes definido, con un vencimiento o reversión definidos",
+  "pt-BR": "— em vigor por um período ou número de lotes definido, com vencimento ou reversão definidos"
+ },
  "— Laboratory testing result (analytical, measurement or observation) that fails acceptance criteria": {
   "es": "— Resultado de ensayo de laboratorio (analítico, de medición u observación) que no cumple los criterios de aceptación",
   "pt-BR": "— Resultado de ensaio laboratorial (analítico, de medição ou observação) que não atende aos critérios de aceitação",
@@ -6283,6 +7843,14 @@
   "es": "— Problema de bajo riesgo sin impacto directo en la calidad del producto ni en la seguridad del paciente. De naturaleza administrativa o estética. Plazo típico: 60 días.",
   "pt-BR": "— Problema de baixo risco sem impacto direto na qualidade do produto ou na segurança do paciente. De natureza administrativa ou estética. Prazo típico: 60 dias.",
   "note": "GUIDANCE — review"
+ },
+ "— may affect safety/efficacy, a registration or condition, or GMP compliance (e.g. new API source, site change)": {
+  "es": "— puede afectar a la seguridad o eficacia, a un registro o condición, o al cumplimiento de las BPM (p. ej., nuevo origen del API, cambio de planta)",
+  "pt-BR": "— pode afetar a segurança ou eficácia, um registro ou condição, ou o cumprimento das BPF (p. ex., nova origem do IFA, mudança de local)"
+ },
+ "— no impact on approved requirements, product quality or validated state (e.g. like-for-like, editorial)": {
+  "es": "— sin impacto en los requisitos aprobados, la calidad del producto o el estado validado (p. ej., equivalente, editorial)",
+  "pt-BR": "— sem impacto nos requisitos aprovados, na qualidade do produto ou no estado validado (p. ex., equivalente, editorial)"
  },
  "— None —": {
   "es": "— Ninguno —",

@@ -2,7 +2,7 @@
 @using OpenQMS.Authorization
 
 @{
-    ViewData["Title"] = $"Change — {Model.ChangeId}";
+    ViewData["Title"] = L["Change — {0}", Model.ChangeId].Value;
 
     var s      = Model.Status;
     var isLocked = s == OpenQMS.Models.Change.ChangeStatus.Approved;
@@ -84,7 +84,7 @@
 <!-- Header -->
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Change &mdash; <span class="fw-bold">@Model.ChangeId</span></h4>
+        <h4 class="mb-0">@L["Change —"] <span class="fw-bold">@Model.ChangeId</span></h4>
         <small class="text-muted">@Model.Title</small>
     </div>
     <span class="badge @badgeClass fs-6">@statusLabel</span>
@@ -118,14 +118,14 @@
 {
     <div class="alert alert-danger d-flex align-items-center gap-2 mb-3">
         <i class="fas fa-exclamation-circle"></i>
-        <span>Target implementation date <strong>@Model.TargetImplementationDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</strong> is overdue.</span>
+        <span>@H["Target implementation date <strong>{0}</strong> is overdue.", Model.TargetImplementationDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]</span>
     </div>
 }
 else if (isApproaching)
 {
     <div class="alert alert-warning d-flex align-items-center gap-2 mb-3">
         <i class="fas fa-clock"></i>
-        <span>Target implementation date <strong>@Model.TargetImplementationDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</strong> is approaching (within 14 days).</span>
+        <span>@H["Target implementation date <strong>{0}</strong> is approaching (within 14 days).", Model.TargetImplementationDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]</span>
     </div>
 }
 
@@ -135,13 +135,13 @@ else if (isApproaching)
     <div class="card mb-3">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <strong><i class="fas fa-tasks me-2"></i>@L["Workflow Actions"]</strong>
-            <span class="small">Current: @statusLabel</span>
+            <span class="small">@L["Current: {0}", statusLabel]</span>
         </div>
         <div class="card-body py-2 d-flex flex-wrap gap-2">
             @if (canSubmitForAssessment)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitForAssessmentModal">
-                    <i class="fas fa-paper-plane me-1"></i>Submit for Assessment
+                    <i class="fas fa-paper-plane me-1"></i>@L["Submit for Assessment"]
                 </button>
             }
             @if (canSubmitForAcceptance)
@@ -149,10 +149,10 @@ else if (isApproaching)
                 @if (showActionPlan && apMissingOwnerTarget > 0)
                 {
                     <button class="btn btn-success btn-sm" disabled
-                            title="@apMissingOwnerTarget action(s) still need an owner and target date">
+                            title="@L["{0} action(s) still need an owner and target date", apMissingOwnerTarget]">
                         <i class="fas fa-paper-plane me-1"></i>@L["Submit for Acceptance"]
                     </button>
-                    <span class="text-warning small align-self-center"><i class="bi bi-exclamation-triangle me-1"></i>@apMissingOwnerTarget action(s) need owner + target date</span>
+                    <span class="text-warning small align-self-center"><i class="bi bi-exclamation-triangle me-1"></i>@L["{0} action(s) need owner + target date", apMissingOwnerTarget]</span>
                 }
                 else
                 {
@@ -164,7 +164,7 @@ else if (isApproaching)
             @if (canAccept)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#acceptModal">
-                    <i class="fas fa-check-circle me-1"></i>Accept Change
+                    <i class="fas fa-check-circle me-1"></i>@L["Accept Change"]
                 </button>
             }
             @if (canSubmitForApproval)
@@ -172,12 +172,12 @@ else if (isApproaching)
                 @if (showActionPlan && (apOutstanding > 0 || apMissingEvidence > 0))
                 {
                     var _apMsg = apOutstanding > 0
-                        ? $"{apOutstanding} action-plan item(s) outstanding — complete or mark them Not applicable first"
-                        : $"{apMissingEvidence} action(s) still need an evidence / reference";
+                        ? L["{0} action-plan item(s) outstanding — complete or mark them Not applicable first", apOutstanding].Value
+                        : L["{0} action(s) still need an evidence / reference", apMissingEvidence].Value;
                     <button class="btn btn-success btn-sm" disabled title="@_apMsg">
                         <i class="fas fa-paper-plane me-1"></i>@L["Submit for Approval"]
                     </button>
-                    <span class="text-warning small align-self-center"><i class="bi bi-exclamation-triangle me-1"></i>@(apOutstanding > 0 ? $"{apOutstanding} action(s) outstanding" : $"{apMissingEvidence} action(s) need evidence")</span>
+                    <span class="text-warning small align-self-center"><i class="bi bi-exclamation-triangle me-1"></i>@(apOutstanding > 0 ? L["{0} action(s) outstanding", apOutstanding] : L["{0} action(s) need evidence", apMissingEvidence])</span>
                 }
                 else
                 {
@@ -189,7 +189,7 @@ else if (isApproaching)
             @if (canApprove)
             {
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveModal">
-                    <i class="fas fa-thumbs-up me-1"></i>Approve Change
+                    <i class="fas fa-thumbs-up me-1"></i>@L["Approve Change"]
                 </button>
             }
             @if (canReturn)
@@ -223,7 +223,7 @@ else if (isApproaching)
     {
         <li class="nav-item">
             <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#actionplan">
-                Action Plan <span class="badge bg-secondary">@apCount</span>
+                @L["Action Plan"] <span class="badge bg-secondary">@apCount</span>
                 @if (apOutstanding > 0)
                 {
                     <span class="badge bg-warning text-dark" title="@apOutstanding outstanding action(s)">@apOutstanding</span>
@@ -250,7 +250,7 @@ else if (isApproaching)
         <div class="row">
             <!-- Left column: record details + linked records -->
             <div class="col-md-6">
-                <h6 class="text-muted text-uppercase small mb-2">Change Details</h6>
+                <h6 class="text-muted text-uppercase small mb-2">@L["Change Details"]</h6>
                 <dl class="row">
                     <dt class="col-sm-4">@L["Change ID"]</dt>
                     <dd class="col-sm-8">@Model.ChangeId</dd>
@@ -267,11 +267,11 @@ else if (isApproaching)
                     </dd>
                     @if (showAssessment)
                     {
-                        <dt class="col-sm-4">Risk Classification</dt>
+                        <dt class="col-sm-4">@L["Risk Classification"]</dt>
                         <dd class="col-sm-8">@(Model.RiskClassification.HasValue ? L.Enum(Model.RiskClassification.Value) : "-")</dd>
-                        <dt class="col-sm-4">Change Type</dt>
+                        <dt class="col-sm-4">@L["Change Type"]</dt>
                         <dd class="col-sm-8">@(Model.ChangeType.HasValue ? L.Enum(Model.ChangeType.Value) : "-")</dd>
-                        <dt class="col-sm-4">Nature</dt>
+                        <dt class="col-sm-4">@L["Nature"]</dt>
                         <dd class="col-sm-8">@(Model.Nature.HasValue ? L.Enum(Model.Nature.Value) : "-")</dd>
                     }
                 </dl>
@@ -371,7 +371,7 @@ else if (isApproaching)
 
                 <h6 class="text-muted text-uppercase small mb-2 mt-3">@L["Workflow Trail"]</h6>
                 <dl class="row">
-                    <dt class="col-sm-5">Proposed By</dt>
+                    <dt class="col-sm-5">@L["Proposed By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ProposedBy))
                         { <span>@Model.ProposedBy <span class="text-muted small">@Model.ProposedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</span></span> }
@@ -392,7 +392,7 @@ else if (isApproaching)
                         else { <span class="text-muted">-</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Implemented By</dt>
+                    <dt class="col-sm-5">@L["Implemented By"]</dt>
                     <dd class="col-sm-7">
                         @if (!string.IsNullOrEmpty(Model.ImplementedBy))
                         { <span>@Model.ImplementedBy <span class="text-muted small">@Model.ImplementedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture)</span></span> }
@@ -415,10 +415,10 @@ else if (isApproaching)
     {
         <div class="tab-pane fade" id="actionplan">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5 class="mb-0">Action Plan</h5>
+                <h5 class="mb-0">@L["Action Plan"]</h5>
                 @if (apCount > 0 && apOutstanding == 0)
                 {
-                    <span class="badge bg-success"><i class="bi bi-check-lg me-1"></i>All applicable actions complete</span>
+                    <span class="badge bg-success"><i class="bi bi-check-lg me-1"></i>@L["All applicable actions complete"]</span>
                 }
                 else if (apOutstanding > 0)
                 {
@@ -426,11 +426,7 @@ else if (isApproaching)
                 }
             </div>
             <p class="text-muted small">
-                Pre-implementation tasks for this change. Each applicable action needs an <strong>owner</strong>
-                and <strong>target date</strong> before the change is submitted for acceptance, and an
-                <strong>evidence / reference</strong> plus a <strong>completed date</strong> (status
-                <strong>Complete</strong>) before it is submitted for approval. Mark tasks that don't apply as
-                <strong>Not applicable</strong>.
+                @H["Pre-implementation tasks for this change. Each applicable action needs an <strong>owner</strong> and <strong>target date</strong> before the change is submitted for acceptance, and an <strong>evidence / reference</strong> plus a <strong>completed date</strong> (status <strong>{0}</strong>) before it is submitted for approval. Mark tasks that don't apply as <strong>{1}</strong>.", L["Complete"].Value, L["Not applicable"].Value]
             </p>
 
             @if (apPlanEditable)
@@ -443,12 +439,12 @@ else if (isApproaching)
                         <table class="table table-sm table-bordered align-middle" id="apTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width:26%">Action / task</th>
-                                    <th style="width:13%">Owner</th>
-                                    <th style="width:12%">Target date</th>
+                                    <th style="width:26%">@L["Action / task"]</th>
+                                    <th style="width:13%">@L["Owner"]</th>
+                                    <th style="width:12%">@L["Target date"]</th>
                                     <th style="width:13%">@L["Status"]</th>
-                                    <th style="width:18%">Evidence / reference</th>
-                                    <th style="width:12%">Completed date</th>
+                                    <th style="width:18%">@L["Evidence / reference"]</th>
+                                    <th style="width:12%">@L["Completed date"]</th>
                                     <th style="width:6%"></th>
                                 </tr>
                             </thead>
@@ -469,22 +465,22 @@ else if (isApproaching)
                                         </td>
                                         <td><input name="evidence" class="form-control form-control-sm" value="@it.EvidenceReference" /></td>
                                         <td><input name="completedDate" type="date" class="form-control form-control-sm ap-completed" value="@(it.CompletedDate?.ToString("yyyy-MM-dd"))" /></td>
-                                        <td class="text-center"><button type="button" class="btn btn-outline-danger btn-sm ap-del" title="Remove action"><i class="bi bi-trash"></i></button></td>
+                                        <td class="text-center"><button type="button" class="btn btn-outline-danger btn-sm ap-del" title="@L["Remove action"]"><i class="bi bi-trash"></i></button></td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
                     <div class="d-flex gap-2 mb-3 flex-wrap">
-                        <button type="button" class="btn btn-outline-secondary btn-sm" id="apAddRow"><i class="bi bi-plus-lg me-1"></i>Add action</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="apAddRow"><i class="bi bi-plus-lg me-1"></i>@L["Add action"]</button>
                         @if (suggestedActions.Any())
                         {
                             <button type="button" class="btn btn-outline-primary btn-sm" id="apLoadSuggested"
-                                    title="Insert the suggested actions for @L.Enum(Model.ChangeType!.Value)">
-                                <i class="bi bi-lightbulb me-1"></i>Load suggested actions
+                                    title="@L["Insert the suggested actions for {0}", L.Enum(Model.ChangeType!.Value)]">
+                                <i class="bi bi-lightbulb me-1"></i>@L["Load suggested actions"]
                             </button>
                         }
-                        <button type="submit" class="btn btn-primary btn-sm ms-auto"><i class="bi bi-save me-1"></i>Save action plan</button>
+                        <button type="submit" class="btn btn-primary btn-sm ms-auto"><i class="bi bi-save me-1"></i>@L["Save action plan"]</button>
                     </div>
                 </form>
                 <div class="d-none" id="apStatusOptions">
@@ -497,23 +493,19 @@ else if (isApproaching)
             else if (apExecuteMode)
             {
                 <div class="alert alert-info py-2 small mb-2">
-                    <i class="bi bi-lock-fill me-1"></i>The action plan was <strong>accepted</strong> and is now
-                    locked for execution. You can update each action's <strong>@L["Status"]</strong>,
-                    <strong>Evidence / reference</strong> and <strong>Completed date</strong>. To add, remove or
-                    change an action (or its owner or target date), <strong>return the change for rework</strong>
-                    so the revised plan is re-accepted.
+                    <i class="bi bi-lock-fill me-1"></i>@H["The action plan was <strong>accepted</strong> and is now locked for execution. You can update each action's <strong>{0}</strong>, <strong>{1}</strong> and <strong>{2}</strong>. To add, remove or change an action (or its owner or target date), <strong>return the change for rework</strong> so the revised plan is re-accepted.", L["Status"].Value, L["Evidence / reference"].Value, L["Completed date"].Value]
                 </div>
                 <form asp-action="SaveActionPlan" asp-route-id="@Model.Id" method="post" id="actionPlanForm">
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered align-middle" id="apTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width:28%">Action / task</th>
-                                    <th style="width:13%">Owner</th>
-                                    <th style="width:12%">Target date</th>
+                                    <th style="width:28%">@L["Action / task"]</th>
+                                    <th style="width:13%">@L["Owner"]</th>
+                                    <th style="width:12%">@L["Target date"]</th>
                                     <th style="width:14%">@L["Status"]</th>
-                                    <th style="width:20%">Evidence / reference</th>
-                                    <th style="width:13%">Completed date</th>
+                                    <th style="width:20%">@L["Evidence / reference"]</th>
+                                    <th style="width:13%">@L["Completed date"]</th>
                                 </tr>
                             </thead>
                             <tbody id="apRows">
@@ -542,7 +534,7 @@ else if (isApproaching)
                         </table>
                     </div>
                     <div class="d-flex gap-2 mb-3">
-                        <button type="submit" class="btn btn-primary btn-sm ms-auto"><i class="bi bi-save me-1"></i>Save progress</button>
+                        <button type="submit" class="btn btn-primary btn-sm ms-auto"><i class="bi bi-save me-1"></i>@L["Save progress"]</button>
                     </div>
                 </form>
                 <div class="d-none" id="apStatusOptions">
@@ -556,7 +548,7 @@ else if (isApproaching)
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered align-middle">
                             <thead class="table-light">
-                                <tr><th>Action / task</th><th>Owner</th><th>Target date</th><th>@L["Status"]</th><th>Evidence / reference</th><th>Completed date</th></tr>
+                                <tr><th>@L["Action / task"]</th><th>@L["Owner"]</th><th>@L["Target date"]</th><th>@L["Status"]</th><th>@L["Evidence / reference"]</th><th>@L["Completed date"]</th></tr>
                             </thead>
                             <tbody>
                                 @foreach (var it in apItems)
@@ -576,7 +568,7 @@ else if (isApproaching)
                 }
                 else
                 {
-                    <p class="text-muted fst-italic">No action items recorded.</p>
+                    <p class="text-muted fst-italic">@L["No action items recorded."]</p>
                 }
             }
         </div>
@@ -676,11 +668,11 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>Submit for Assessment — @Model.ChangeId</h5>
+                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>@L["Submit for Assessment"] — @Model.ChangeId</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the change from <strong>@L["Proposal"]</strong> to <strong>@L["Assessment"]</strong>. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">@H["Moves the change from <strong>{0}</strong> to <strong>{1}</strong>. Enter your credentials to confirm.", L["Proposal"].Value, L["Assessment"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -714,11 +706,11 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>Submit for Acceptance — @Model.ChangeId</h5>
+                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>@L["Submit for Acceptance"] — @Model.ChangeId</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the change from <strong>@L["Assessment"]</strong> to <strong>@L["Pending Acceptance"]</strong> for Quality Manager review. Assessment must be completed. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">@H["Moves the change from <strong>{0}</strong> to <strong>{1}</strong> for Quality Manager review. Assessment must be completed. Enter your credentials to confirm.", L["Assessment"].Value, L["Pending Acceptance"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -752,11 +744,11 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-check-circle me-1"></i>Accept Change — @Model.ChangeId</h5>
+                        <h5 class="modal-title"><i class="fas fa-check-circle me-1"></i>@L["Accept Change"] — @Model.ChangeId</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Confirms the assessment package is complete and acceptable. Moves from <strong>@L["Pending Acceptance"]</strong> to <strong>@L["Implementation"]</strong>. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">@H["Confirms the assessment package is complete and acceptable. Moves from <strong>{0}</strong> to <strong>{1}</strong>. Enter your credentials to confirm.", L["Pending Acceptance"].Value, L["Implementation"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -790,11 +782,11 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>Submit for Approval — @Model.ChangeId</h5>
+                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>@L["Submit for Approval"] — @Model.ChangeId</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the change from <strong>@L["Implementation"]</strong> to <strong>@L["Pending Approval"]</strong> for Quality Manager review. Implementation details must be completed. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">@H["Moves the change from <strong>{0}</strong> to <strong>{1}</strong> for Quality Manager review. Implementation details must be completed. Enter your credentials to confirm.", L["Implementation"].Value, L["Pending Approval"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -828,11 +820,11 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-thumbs-up me-1"></i>Approve Change — @Model.ChangeId</h5>
+                        <h5 class="modal-title"><i class="fas fa-thumbs-up me-1"></i>@L["Approve Change"] — @Model.ChangeId</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the change from <strong>@L["Pending Approval"]</strong> to <strong>@L["Approved"]</strong> and locks the record. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">@H["Moves the change from <strong>{0}</strong> to <strong>{1}</strong> and locks the record. Enter your credentials to confirm.", L["Pending Approval"].Value, L["Approved"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -848,7 +840,7 @@ else if (isApproaching)
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                        <button type="submit" class="btn btn-success">Confirm Approve</button>
+                        <button type="submit" class="btn btn-success">@L["Confirm Approve"]</button>
                     </div>
                 </form>
             </div>
@@ -866,22 +858,22 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-warning">
-                        <h5 class="modal-title"><i class="fas fa-undo me-1"></i>Return for Rework — @Model.ChangeId</h5>
+                        <h5 class="modal-title"><i class="fas fa-undo me-1"></i>@L["Return for Rework"] — @Model.ChangeId</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <p class="text-muted small">
                             @if (s == OpenQMS.Models.Change.ChangeStatus.PendingAssessment)
-                            { <text>Returns to <strong>@L["Proposal"]</strong> — assessment stamp will be cleared. All fields will be editable.</text> }
+                            { <text>@H["Returns to <strong>{0}</strong> — assessment stamp will be cleared. All fields will be editable.", L["Proposal"].Value]</text> }
                             else if (s == OpenQMS.Models.Change.ChangeStatus.PendingApproval)
-                            { <text>Returns to <strong>@L["Implementation"]</strong> — implementation stamp will be cleared.</text> }
+                            { <text>@H["Returns to <strong>{0}</strong> — implementation stamp will be cleared.", L["Implementation"].Value]</text> }
                             else if (s == OpenQMS.Models.Change.ChangeStatus.Implementation)
-                            { <text>Returns to <strong>@L["Proposal"]</strong> — all intermediate stamps will be cleared. All fields will be editable.</text> }
+                            { <text>@H["Returns to <strong>{0}</strong> — all intermediate stamps will be cleared. All fields will be editable.", L["Proposal"].Value]</text> }
                         </p>
                         <div class="mb-3">
                             <label class="form-label">@L["Reason for Return"] <span class="text-danger">*</span></label>
                             <textarea name="notes" class="form-control" rows="3" required
-                                      placeholder="Describe why this record is being returned and what needs to be addressed."></textarea>
+                                      placeholder="@L["Describe why this record is being returned and what needs to be addressed."]"></textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">@L["Email"]</label>
@@ -914,7 +906,7 @@ else if (isApproaching)
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>@L["Warning:"]</strong> Administratively reopening a completed record reverts it to the Implementation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
+                        <strong>@L["Warning:"]</strong> @L["Administratively reopening a completed record reverts it to the Implementation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval."]
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>
@@ -971,7 +963,8 @@ $(document).ready(function () {
             '<td><select name="rowStatus" class="form-select form-select-sm ap-status">' + statusOptions() + '</select></td>' +
             '<td><input name="evidence" class="form-control form-control-sm" /></td>' +
             '<td><input name="completedDate" type="date" class="form-control form-control-sm ap-completed" /></td>' +
-            '<td class="text-center"><button type="button" class="btn btn-outline-danger btn-sm ap-del" title="Remove action"><i class="bi bi-trash"></i></button></td>';
+            '<td class="text-center"><button type="button" class="btn btn-outline-danger btn-sm ap-del"><i class="bi bi-trash"></i></button></td>';
+        tr.querySelector('.ap-del').title = @Json.Serialize(L["Remove action"].Value);
         rowsBody.appendChild(tr);
         if (actionText) tr.querySelector('textarea[name="action"]').value = actionText;
         return tr;

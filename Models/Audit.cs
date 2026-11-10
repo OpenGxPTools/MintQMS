@@ -16,6 +16,7 @@ namespace OpenQMS.Models
         [Display(Name = "Audit ID")]
         public string AuditId { get; set; } = string.Empty;
         
+        [Display(Name = "Title")]
         public string Title { get; set; } = string.Empty;
         
         [Display(Name = "Audit Type")]
@@ -24,6 +25,7 @@ namespace OpenQMS.Models
         [Display(Name = "Audit Scope")]
         public AuditScope Scope { get; set; }
         
+        [Display(Name = "Description")]
         public string Description { get; set; } = string.Empty;
         
         public int? ProductId { get; set; }
@@ -113,6 +115,7 @@ namespace OpenQMS.Models
         [Display(Name = "Audit Report")]
         public string? AuditReport { get; set; }
         
+        [Display(Name = "Recommendations")]
         public string? Recommendations { get; set; }
         
         [Display(Name = "Management Response")]

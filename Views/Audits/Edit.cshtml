@@ -1,6 +1,6 @@
 @model OpenQMS.Models.Audit
 @{
-    ViewData["Title"] = $"Edit — {Model.AuditId}";
+    ViewData["Title"] = L["Edit — {0}", Model.AuditId].Value;
 
     var isScheduledStage = (bool)(ViewBag.IsScheduledStage ?? (Model.Status == OpenQMS.Models.Audit.AuditStatus.Scheduled));
     var stageLabel = Model.Status switch
@@ -26,8 +26,8 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Edit Audit — <span class="fw-bold">@Model.AuditId</span></h4>
-        <span class="text-muted small">Stage: @stageLabel</span>
+        <h4 class="mb-0">@L["Edit Audit —"] <span class="fw-bold">@Model.AuditId</span></h4>
+        <span class="text-muted small">@L["Stage: {0}", L[stageLabel].Value]</span>
     </div>
     <div class="d-flex gap-2">
         <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">@L["Details"]</a>
@@ -70,7 +70,7 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Scheduling</div>
+                <div class="card-header fw-semibold">@L["Scheduling"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -127,7 +127,7 @@
             @if (!isScheduledStage)
             {
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Findings</div>
+                <div class="card-header fw-semibold">@L["Findings"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-12">
@@ -154,7 +154,7 @@
                             <label asp-for="OverallRating" class="form-label"></label>
                             <select asp-for="OverallRating" class="form-select"
                                     asp-items="Html.GetEnumSelectList<OpenQMS.Models.Audit.AuditRating>()">
-                                <option value="">-- Not Rated Yet --</option>
+                                <option value="">@L["-- Not Rated Yet --"]</option>
                             </select>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
             } @* end @if (!isScheduledStage) — Findings *@
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Documentation</div>
+                <div class="card-header fw-semibold">@L["Documentation"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-12">
@@ -192,7 +192,7 @@
             @if (!isScheduledStage)
             {
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Follow-Up</div>
+                <div class="card-header fw-semibold">@L["Follow-Up"]</div>
                 <div class="card-body">
                     <div class="form-check mb-2">
                         <input asp-for="CAPARequired" class="form-check-input" id="capaRequiredCheckbox" />
@@ -223,13 +223,13 @@
             @if (isScheduledStage)
             {
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Links to Master Data</div>
+                <div class="card-header fw-semibold">@L["Links to Master Data"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select">
-                                <option value="">-- Add Product --</option>
+                                <option value="">@L["-- Add Product --"]</option>
                                 @foreach (var p in products)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -239,7 +239,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select">
-                                <option value="">-- Add Process --</option>
+                                <option value="">@L["-- Add Process --"]</option>
                                 @foreach (var p in processes)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -249,7 +249,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Assets"]</label>
                             <select id="assetDropdown" class="form-select">
-                                <option value="">-- Add Asset --</option>
+                                <option value="">@L["-- Add Asset --"]</option>
                                 @foreach (var p in assets)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -259,7 +259,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select">
-                                <option value="">-- Add Material --</option>
+                                <option value="">@L["-- Add Material --"]</option>
                                 @foreach (var p in materials)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -269,7 +269,7 @@
                         <div class="col-md-6" id="supplierPickerRow">
                             <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select">
-                                <option value="">-- Add Supplier --</option>
+                                <option value="">@L["-- Add Supplier --"]</option>
                                 @foreach (var p in suppliers)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -291,7 +291,7 @@
         {
             <form asp-action="CreateCapa" asp-route-id="@Model.Id" method="post" class="mt-3">
                 @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-outline-primary btn-sm">+ Create Linked CAPA</button>
+                <button type="submit" class="btn btn-outline-primary btn-sm">+ @L["Create Linked CAPA"]</button>
             </form>
         }
         else

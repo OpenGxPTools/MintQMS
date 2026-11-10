@@ -86,6 +86,8 @@ builder.Services.AddSingleton<Microsoft.Extensions.Localization.IStringLocalizer
 builder.Services.AddSingleton<Languages>();
 // Built-in validation and model-binding messages in the user's language (English unchanged).
 builder.Services.AddSingleton<Microsoft.Extensions.Options.IConfigureOptions<Microsoft.AspNetCore.Mvc.MvcOptions>, LocalizedValidationSetup>();
+// Enum drop-down options under their display names, in the user's language (Localization/EnumOptions.cs).
+builder.Services.AddSingleton<Microsoft.Extensions.Options.IPostConfigureOptions<Microsoft.AspNetCore.Mvc.MvcOptions>, EnumOptionNamesSetup>();
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<OpenQMS.Authorization.ReadOnlyActionFilter>();

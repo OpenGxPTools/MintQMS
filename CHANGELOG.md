@@ -11,6 +11,11 @@
 - Deviations, Complaints and CAPA in Spanish and Portuguese: pages, guidance texts (what each section must
   document), severity and event-type definitions, alerts, messages and validation errors. Dashboard chart labels
   follow with the reports batch.
+- Change Control, Audits and Risk in Spanish and Portuguese: pages, guidance texts, the action plan, the
+  signature dialogs (what each step does and where the record goes), alerts, messages and validation errors.
+  The suggested actions loaded into an action plan stay in English, because they become part of the record.
+- Drop-down lists of types, categories, ratings and similar options now show their translated names in every
+  module (before, only some lists were translated).
 - Messages after an action are translated where they are shown (all modules), so the code that sets them —
   and anything recorded — is unchanged.
 
@@ -18,6 +23,8 @@
 
 - CAPA Dashboard: the Status Distribution chart drew oversized; it is now the same size as on the other
   dashboards.
+- Option and type names that showed as code (e.g. "NeedsImprovement", "QualitySystem", "ProductQuality") in
+  audit and risk drop-downs and details now read properly.
 - Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the
   Approval Status column, but "Under Assessment" is a workflow stage shown in the Workflow column. It now
   filters the Workflow column and finds both first assessments and re-reviews.

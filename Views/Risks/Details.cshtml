@@ -2,7 +2,7 @@
 @model OpenQMS.Models.Risk
 
 @{
-    ViewData["Title"] = $"Risk — {Model.RiskId}";
+    ViewData["Title"] = L["Risk — {0}", Model.RiskId].Value;
 
     var iLinked = new List<string>();
     if (Model.LinkedProducts?.Any()  == true) iLinked.AddRange(Model.LinkedProducts.Select(x => x.Product?.Name ?? "").Where(n => n != ""));
@@ -68,11 +68,11 @@
 <!-- Header -->
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Risk &mdash; <span class="fw-bold">@Model.RiskId</span></h4>
+        <h4 class="mb-0">@L["Risk —"] <span class="fw-bold">@Model.RiskId</span></h4>
         <small class="text-muted">@Model.Title</small>
     </div>
     <div class="d-flex gap-2 align-items-center">
-        <span class="badge @rpnBadge fs-6">RPN @Model.InitialRPN</span>
+        <span class="badge @rpnBadge fs-6">@L["RPN {0}", Model.InitialRPN]</span>
         <span class="badge @statusBadge fs-6">@statusLabel</span>
     </div>
 </div>
@@ -96,12 +96,12 @@
 @if (isOverdue)
 {
     var daysOver = (SiteTime.Today - Model.TargetCompletionDate!.Value.Date).Days;
-    <div class="alert alert-danger">&#9888; Target completion date was <strong>@Model.TargetCompletionDate.Value.ToShortDateString()</strong> — overdue by <strong>@daysOver day(s)</strong>.</div>
+    <div class="alert alert-danger">&#9888; @H["Target completion date was <strong>{0}</strong> — overdue by <strong>{1} day(s)</strong>.", Model.TargetCompletionDate.Value.ToShortDateString(), daysOver]</div>
 }
 else if (isApproaching)
 {
     var daysLeft = (Model.TargetCompletionDate!.Value.Date - SiteTime.Today).Days;
-    <div class="alert alert-warning">&#9888; Target completion date is <strong>@Model.TargetCompletionDate.Value.ToShortDateString()</strong> — <strong>@daysLeft day(s)</strong> remaining.</div>
+    <div class="alert alert-warning">&#9888; @H["Target completion date is <strong>{0}</strong> — <strong>{1} day(s)</strong> remaining.", Model.TargetCompletionDate.Value.ToShortDateString(), daysLeft]</div>
 }
 
 @if (isClosed && User.IsInRole(OpenQMS.Authorization.Constants.AdministratorsRole))
@@ -124,40 +124,39 @@ else if (isApproaching)
     <div class="card mb-4">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <strong><i class="fas fa-tasks me-2"></i>@L["Workflow Actions"]</strong>
-            <span class="small">Current: @statusLabel</span>
+            <span class="small">@L["Current: {0}", statusLabel]</span>
         </div>
         <div class="card-body">
             @if (canSubmitAssess)
             {
-                <p class="text-muted small mb-2">Complete the risk identification and initial assessment, then submit for formal Quality Manager assessment.</p>
+                <p class="text-muted small mb-2">@L["Complete the risk identification and initial assessment, then submit for formal Quality Manager assessment."]</p>
                 <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#submitForAssessmentModal">
-                    <i class="fas fa-paper-plane me-1"></i>Submit for Assessment
+                    <i class="fas fa-paper-plane me-1"></i>@L["Submit for Assessment"]
                 </button>
             }
             else if (awaitingQMAssess)
             {
-                <p class="text-muted small mb-2">This risk has been submitted for formal assessment. A Quality Manager must review the scoring and either accept or return it for revision.</p>
+                <p class="text-muted small mb-2">@L["This risk has been submitted for formal assessment. A Quality Manager must review the scoring and either accept or return it for revision."]</p>
                 @if (isQM)
                 {
                     <div class="d-flex gap-2">
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#acceptAssessmentModal">
-                            <i class="fas fa-check me-1"></i>Accept Assessment
+                            <i class="fas fa-check me-1"></i>@L["Accept Assessment"]
                         </button>
                         <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#returnFromAssessmentModal">
-                            <i class="fas fa-undo me-1"></i>Return for Revision
+                            <i class="fas fa-undo me-1"></i>@L["Return for Revision"]
                         </button>
                     </div>
                 }
                 else
                 {
-                    <div class="alert alert-info mb-0 py-2 small">Awaiting Quality Manager acceptance. No actions available at this stage.</div>
+                    <div class="alert alert-info mb-0 py-2 small">@L["Awaiting Quality Manager acceptance. No actions available at this stage."]</div>
                 }
             }
             else if (canSubmitReview)
             {
                 <p class="text-muted small mb-2">
-                    Complete all mitigation details: strategy, residual risk scores (S/P/D), and the risk acceptance decision with justification.
-                    Then submit for Quality Manager review and closure.
+                    @L["Complete all mitigation details: strategy, residual risk scores (S/P/D), and the risk acceptance decision with justification. Then submit for Quality Manager review and closure."]
                 </p>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submitForReviewModal">
                     <i class="fas fa-paper-plane me-1"></i>@L["Submit for Review"]
@@ -165,21 +164,21 @@ else if (isApproaching)
             }
             else if (awaitingQMClose)
             {
-                <p class="text-muted small mb-2">Mitigation has been completed and submitted for review. A Quality Manager must review and formally close this risk.</p>
+                <p class="text-muted small mb-2">@L["Mitigation has been completed and submitted for review. A Quality Manager must review and formally close this risk."]</p>
                 @if (isQM)
                 {
                     <div class="d-flex gap-2">
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#closeRiskModal">
-                            <i class="fas fa-lock me-1"></i>Close Risk
+                            <i class="fas fa-lock me-1"></i>@L["Close Risk"]
                         </button>
                         <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#returnFromReviewModal">
-                            <i class="fas fa-undo me-1"></i>Return to Mitigation
+                            <i class="fas fa-undo me-1"></i>@L["Return to Mitigation"]
                         </button>
                     </div>
                 }
                 else
                 {
-                    <div class="alert alert-info mb-0 py-2 small">Awaiting Quality Manager review and closure. No actions available at this stage.</div>
+                    <div class="alert alert-info mb-0 py-2 small">@L["Awaiting Quality Manager review and closure. No actions available at this stage."]</div>
                 }
             }
         </div>
@@ -199,7 +198,7 @@ else if (isApproaching)
 <div class="tab-pane fade show active" id="tabOverview">
 
     <!-- Context -->
-    <h6 class="text-muted text-uppercase small mb-2">Context</h6>
+    <h6 class="text-muted text-uppercase small mb-2">@L["Context"]</h6>
     <dl class="row mb-4">
         <dt class="col-sm-3">@L["Risk ID"]</dt>
         <dd class="col-sm-9"><strong>@Model.RiskId</strong></dd>
@@ -208,13 +207,13 @@ else if (isApproaching)
         <dt class="col-sm-3">@L["Description"]</dt>
         <dd class="col-sm-9">@Model.Description</dd>
         <dt class="col-sm-3">@L["Category"]</dt>
-        <dd class="col-sm-9">@Html.DisplayFor(m => m.Category)</dd>
-        <dt class="col-sm-3">Risk Owner</dt>
+        <dd class="col-sm-9">@L.Enum(Model.Category)</dd>
+        <dt class="col-sm-3">@L["Risk Owner"]</dt>
         <dd class="col-sm-9">@(Model.RiskOwner ?? "-")</dd>
         <dt class="col-sm-3">@L["Linked To"]</dt>
         <dd class="col-sm-9">@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</dd>
         <dt class="col-sm-3">@L["Identified By"]</dt>
-        <dd class="col-sm-9">@Model.IdentifiedBy on @Model.IdentifiedOn.ToSite().ToShortDateString()</dd>
+        <dd class="col-sm-9">@L["{0} on {1}", Model.IdentifiedBy, Model.IdentifiedOn.ToSite().ToShortDateString()]</dd>
     </dl>
 
     <hr />
@@ -226,9 +225,9 @@ else if (isApproaching)
             <dl class="row">
                 <dt class="col-sm-6">@L["Severity"]</dt>
                 <dd class="col-sm-6">@Model.Severity</dd>
-                <dt class="col-sm-6">Probability</dt>
+                <dt class="col-sm-6">@L["Probability"]</dt>
                 <dd class="col-sm-6">@Model.Probability</dd>
-                <dt class="col-sm-6">Detectability</dt>
+                <dt class="col-sm-6">@L["Detectability"]</dt>
                 <dd class="col-sm-6">@Model.Detectability</dd>
                 <dt class="col-sm-6">@L["Initial RPN"]</dt>
                 <dd class="col-sm-6">
@@ -237,12 +236,12 @@ else if (isApproaching)
                 </dd>
             </dl>
             <div class="alert alert-secondary small py-2">
-                <strong>Calculation:</strong> @Model.Severity × @Model.Probability × @Model.Detectability = @Model.InitialRPN<br />
-                <small>RPN scale: &lt;40 = Low | 40–79 = Medium | ≥80 = High</small>
+                <strong>@L["Calculation:"]</strong> @Model.Severity × @Model.Probability × @Model.Detectability = @Model.InitialRPN<br />
+                <small>@L["RPN scale: <40 = Low | 40–79 = Medium | ≥80 = High"]</small>
             </div>
         </div>
         <div class="col-md-7">
-            <strong class="small">Risk Matrix (Severity × Probability)</strong>
+            <strong class="small">@L["Risk Matrix (Severity × Probability)"]</strong>
             <div class="mt-2">@RenderRiskMatrix(Model.Severity, Model.Probability)</div>
         </div>
     </div>
@@ -253,9 +252,9 @@ else if (isApproaching)
         <!-- Assessment -->
         <h6 class="text-muted text-uppercase small mb-2">@L["Assessment"]</h6>
         <dl class="row mb-4">
-            <dt class="col-sm-3">Submitted By</dt>
+            <dt class="col-sm-3">@L["Submitted By"]</dt>
             <dd class="col-sm-9">@(Model.AssessedBy ?? "-")@(Model.AssessedOn.HasValue ? $" on {Model.AssessedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
-            <dt class="col-sm-3">Accepted By (QM)</dt>
+            <dt class="col-sm-3">@L["Accepted By (QM)"]</dt>
             <dd class="col-sm-9">@(Model.AcceptedBy ?? "-")@(Model.AcceptedOn.HasValue ? $" on {Model.AcceptedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
             @if (!string.IsNullOrWhiteSpace(Model.AssessmentNotes))
             {
@@ -271,15 +270,15 @@ else if (isApproaching)
         <!-- Mitigation -->
         <h6 class="text-muted text-uppercase small mb-2">@L["Mitigation"]</h6>
         <dl class="row mb-4">
-            <dt class="col-sm-3">Mitigation Strategy</dt>
+            <dt class="col-sm-3">@L["Mitigation Strategy"]</dt>
             <dd class="col-sm-9">@(Model.MitigationStrategy ?? "-")</dd>
             <dt class="col-sm-3">@L["Target Completion"]</dt>
             <dd class="col-sm-9">@(Model.TargetCompletionDate?.ToShortDateString() ?? "-")</dd>
-            <dt class="col-sm-3">Actual Completion</dt>
+            <dt class="col-sm-3">@L["Actual Completion"]</dt>
             <dd class="col-sm-9">@(Model.ActualCompletionDate?.ToShortDateString() ?? "-")</dd>
             @if (atOrPastPendingReview || !string.IsNullOrEmpty(Model.ReviewedBy))
             {
-                <dt class="col-sm-3">Submitted for Review By</dt>
+                <dt class="col-sm-3">@L["Submitted for Review By"]</dt>
                 <dd class="col-sm-9">@(Model.ReviewedBy ?? "-")@(Model.ReviewedOn.HasValue ? $" on {Model.ReviewedOn.Value.ToSite().ToShortDateString()}" : "")</dd>
             }
         </dl>
@@ -288,7 +287,7 @@ else if (isApproaching)
     @if (atOrPastMitigation || Model.ResidualRPN.HasValue)
     {
         <hr />
-        <h6 class="text-muted text-uppercase small mb-2">Residual Risk (After Mitigation)</h6>
+        <h6 class="text-muted text-uppercase small mb-2">@L["Residual Risk (After Mitigation)"]</h6>
         @if (Model.ResidualRPN.HasValue)
         {
             var resBadge = Model.ResidualRPN.Value >= 80 ? "bg-danger"
@@ -297,13 +296,13 @@ else if (isApproaching)
             <div class="row mb-4">
                 <div class="col-md-5">
                     <dl class="row">
-                        <dt class="col-sm-6">Residual Severity</dt>
+                        <dt class="col-sm-6">@L["Residual Severity"]</dt>
                         <dd class="col-sm-6">@Model.ResidualSeverity</dd>
-                        <dt class="col-sm-6">Residual Probability</dt>
+                        <dt class="col-sm-6">@L["Residual Probability"]</dt>
                         <dd class="col-sm-6">@Model.ResidualProbability</dd>
-                        <dt class="col-sm-6">Residual Detectability</dt>
+                        <dt class="col-sm-6">@L["Residual Detectability"]</dt>
                         <dd class="col-sm-6">@Model.ResidualDetectability</dd>
-                        <dt class="col-sm-6">Residual RPN</dt>
+                        <dt class="col-sm-6">@L["Residual RPN"]</dt>
                         <dd class="col-sm-6">
                             <span class="badge @resBadge fs-6">@Model.ResidualRPN.Value</span>
                             <span class="ms-2 small">@GetRPNLevel(Model.ResidualRPN.Value)</span>
@@ -311,26 +310,26 @@ else if (isApproaching)
                     </dl>
                     @if (Model.ResidualRPN.Value < Model.InitialRPN)
                     {
-                        <div class="alert alert-success small py-2">&#10003; RPN reduced from @Model.InitialRPN &rarr; @Model.ResidualRPN.Value (&#8722;@(Model.InitialRPN - Model.ResidualRPN.Value))</div>
+                        <div class="alert alert-success small py-2">&#10003; @L["RPN reduced from {0} → {1} (−{2})", Model.InitialRPN, Model.ResidualRPN.Value, Model.InitialRPN - Model.ResidualRPN.Value]</div>
                     }
                     else if (Model.ResidualRPN.Value == Model.InitialRPN)
                     {
-                        <div class="alert alert-warning small py-2">RPN unchanged at @Model.InitialRPN</div>
+                        <div class="alert alert-warning small py-2">@L["RPN unchanged at {0}", Model.InitialRPN]</div>
                     }
                     else
                     {
-                        <div class="alert alert-danger small py-2">&#9888; RPN increased from @Model.InitialRPN &rarr; @Model.ResidualRPN.Value</div>
+                        <div class="alert alert-danger small py-2">&#9888; @L["RPN increased from {0} → {1}", Model.InitialRPN, Model.ResidualRPN.Value]</div>
                     }
                 </div>
                 <div class="col-md-7">
-                    <strong class="small">Residual Risk Matrix</strong>
+                    <strong class="small">@L["Residual Risk Matrix"]</strong>
                     <div class="mt-2">@RenderRiskMatrix(Model.ResidualSeverity!.Value, Model.ResidualProbability!.Value)</div>
                 </div>
             </div>
         }
         else
         {
-            <p class="text-muted small mb-4">Not yet assessed.</p>
+            <p class="text-muted small mb-4">@L["Not yet assessed."]</p>
         }
     }
 
@@ -338,9 +337,9 @@ else if (isApproaching)
     {
         <hr />
         <!-- Risk Acceptance -->
-        <h6 class="text-muted text-uppercase small mb-2">Risk Acceptance</h6>
+        <h6 class="text-muted text-uppercase small mb-2">@L["Risk Acceptance"]</h6>
         <dl class="row mb-4">
-            <dt class="col-sm-3">Risk Acceptable</dt>
+            <dt class="col-sm-3">@L["Risk Acceptable"]</dt>
             <dd class="col-sm-9">
                 @if (Model.RiskAcceptable.HasValue)
                 {
@@ -350,7 +349,7 @@ else if (isApproaching)
                 }
                 else { <span class="text-muted">-</span> }
             </dd>
-            <dt class="col-sm-3">Justification</dt>
+            <dt class="col-sm-3">@L["Justification"]</dt>
             <dd class="col-sm-9">@(Model.Justification ?? "-")</dd>
         </dl>
     }
@@ -359,9 +358,9 @@ else if (isApproaching)
     {
         <hr />
         <!-- Monitoring -->
-        <h6 class="text-muted text-uppercase small mb-2">Monitoring</h6>
+        <h6 class="text-muted text-uppercase small mb-2">@L["Monitoring"]</h6>
         <dl class="row mb-4">
-            <dt class="col-sm-3">Monitoring Plan</dt>
+            <dt class="col-sm-3">@L["Monitoring Plan"]</dt>
             <dd class="col-sm-9">@(Model.MonitoringPlan ?? "-")</dd>
             <dt class="col-sm-3">@L["Next Review Date"]</dt>
             <dd class="col-sm-9">@(Model.NextReviewDate?.ToShortDateString() ?? "-")</dd>
@@ -377,11 +376,11 @@ else if (isApproaching)
     {
         <hr />
         <!-- Review & Closure -->
-        <h6 class="text-muted text-uppercase small mb-2">Review &amp; Closure</h6>
+        <h6 class="text-muted text-uppercase small mb-2">@L["Review & Closure"]</h6>
         <dl class="row mb-4">
             @if (!string.IsNullOrWhiteSpace(Model.ReviewConclusion))
             {
-                <dt class="col-sm-3">Review Conclusion</dt>
+                <dt class="col-sm-3">@L["Review Conclusion"]</dt>
                 <dd class="col-sm-9">@Model.ReviewConclusion</dd>
             }
             <dt class="col-sm-3">@L["Closed By"]</dt>
@@ -484,18 +483,18 @@ else if (isApproaching)
 {
     <div class="modal fade" id="submitForAssessmentModal" tabindex="-1">
         <div class="modal-dialog"><div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Submit for Assessment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="modal-title">@L["Submit for Assessment"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <form asp-action="SubmitForAssessment" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
-                    <p class="text-muted small">This will lock the record and send it to the Quality Manager for formal assessment. Enter your credentials to confirm.</p>
+                    <p class="text-muted small">@L["This will lock the record and send it to the Quality Manager for formal assessment. Enter your credentials to confirm."]</p>
                     <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                     <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-info">Submit for Assessment</button>
+                    <button type="submit" class="btn btn-info">@L["Submit for Assessment"]</button>
                 </div>
             </form>
         </div></div>
@@ -506,19 +505,19 @@ else if (isApproaching)
 {
     <div class="modal fade" id="acceptAssessmentModal" tabindex="-1">
         <div class="modal-dialog"><div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Accept Assessment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="modal-title">@L["Accept Assessment"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <form asp-action="AcceptAssessment" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
-                    <p class="text-muted small">Accepting will move this risk to Mitigation. The risk scoring is locked from this point.</p>
+                    <p class="text-muted small">@L["Accepting will move this risk to Mitigation. The risk scoring is locked from this point."]</p>
                     <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">@L["Assessment Notes"]</label><textarea name="assessmentNotes" class="form-control" rows="3" placeholder="Document the basis for accepting this risk assessment..."></textarea></div>
-                    <div class="mb-3"><label class="form-label">Additional Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Assessment Notes"]</label><textarea name="assessmentNotes" class="form-control" rows="3" placeholder="@L["Document the basis for accepting this risk assessment..."]"></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Additional Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success">Accept Assessment</button>
+                    <button type="submit" class="btn btn-success">@L["Accept Assessment"]</button>
                 </div>
             </form>
         </div></div>
@@ -526,18 +525,18 @@ else if (isApproaching)
 
     <div class="modal fade" id="returnFromAssessmentModal" tabindex="-1">
         <div class="modal-dialog"><div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Return for Revision</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="modal-title">@L["Return for Revision"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <form asp-action="ReturnFromAssessment" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
-                    <p class="text-muted small">This will return the risk to Identification for the submitter to revise. The submission signature will be cleared.</p>
+                    <p class="text-muted small">@L["This will return the risk to Identification for the submitter to revise. The submission signature will be cleared."]</p>
                     <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Reason for Return (required)</label><textarea name="notes" class="form-control" rows="3" required placeholder="Explain what needs to be revised..."></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Reason for Return (required)"]</label><textarea name="notes" class="form-control" rows="3" required placeholder="@L["Explain what needs to be revised..."]"></textarea></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-danger">Return for Revision</button>
+                    <button type="submit" class="btn btn-danger">@L["Return for Revision"]</button>
                 </div>
             </form>
         </div></div>
@@ -552,11 +551,11 @@ else if (isApproaching)
             <form asp-action="SubmitForReview" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
-                    <p class="text-muted small">Before submitting, confirm:</p>
+                    <p class="text-muted small">@L["Before submitting, confirm:"]</p>
                     <ul class="small text-muted">
-                        <li>Mitigation strategy is fully documented</li>
-                        <li>Residual risk scores (S/P/D) have been assessed</li>
-                        <li>Risk acceptance decision and justification are recorded</li>
+                        <li>@L["Mitigation strategy is fully documented"]</li>
+                        <li>@L["Residual risk scores (S/P/D) have been assessed"]</li>
+                        <li>@L["Risk acceptance decision and justification are recorded"]</li>
                     </ul>
                     <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
@@ -575,22 +574,22 @@ else if (isApproaching)
 {
     <div class="modal fade" id="closeRiskModal" tabindex="-1">
         <div class="modal-dialog"><div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Close Risk</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="modal-title">@L["Close Risk"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <form asp-action="CloseRisk" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
-                    <p class="text-muted small">Closing this risk is a final action. A Review Conclusion is required and will be permanently recorded.</p>
+                    <p class="text-muted small">@L["Closing this risk is a final action. A Review Conclusion is required and will be permanently recorded."]</p>
                     <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                     <div class="mb-3">
-                        <label class="form-label">Review Conclusion <span class="text-danger">*</span></label>
-                        <textarea name="reviewConclusion" class="form-control" rows="4" required placeholder="Document the outcome of the review and basis for closure..."></textarea>
+                        <label class="form-label">@L["Review Conclusion"] <span class="text-danger">*</span></label>
+                        <textarea name="reviewConclusion" class="form-control" rows="4" required placeholder="@L["Document the outcome of the review and basis for closure..."]"></textarea>
                     </div>
-                    <div class="mb-3"><label class="form-label">Additional Notes (optional)</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Additional Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success">Close Risk</button>
+                    <button type="submit" class="btn btn-success">@L["Close Risk"]</button>
                 </div>
             </form>
         </div></div>
@@ -598,18 +597,18 @@ else if (isApproaching)
 
     <div class="modal fade" id="returnFromReviewModal" tabindex="-1">
         <div class="modal-dialog"><div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Return to Mitigation</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="modal-title">@L["Return to Mitigation"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <form asp-action="ReturnFromReview" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
-                    <p class="text-muted small">This will return the risk to Mitigation for further work. The review submission signature will be cleared.</p>
+                    <p class="text-muted small">@L["This will return the risk to Mitigation for further work. The review submission signature will be cleared."]</p>
                     <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-3"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
-                    <div class="mb-3"><label class="form-label">Reason for Return (required)</label><textarea name="notes" class="form-control" rows="3" required placeholder="Explain what needs to be revised in the mitigation..."></textarea></div>
+                    <div class="mb-3"><label class="form-label">@L["Reason for Return (required)"]</label><textarea name="notes" class="form-control" rows="3" required placeholder="@L["Explain what needs to be revised in the mitigation..."]"></textarea></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-danger">Return to Mitigation</button>
+                    <button type="submit" class="btn btn-danger">@L["Return to Mitigation"]</button>
                 </div>
             </form>
         </div></div>
@@ -628,7 +627,7 @@ else if (isApproaching)
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>@L["Warning:"]</strong> Administratively reopening a completed record reverts it to the Mitigation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.
+                        <strong>@L["Warning:"]</strong> @L["Administratively reopening a completed record reverts it to the Mitigation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure."]
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>
@@ -674,7 +673,7 @@ $(document).ready(function () {
 
 @functions {
     string GetRPNLevel(int rpn) =>
-        rpn >= 80 ? "High Risk" : rpn >= 40 ? "Medium Risk" : "Low Risk";
+        L[rpn >= 80 ? "High Risk" : rpn >= 40 ? "Medium Risk" : "Low Risk"].Value;
 
     IHtmlContent RenderRiskMatrix(int currentSeverity, int currentProbability)
     {
@@ -698,7 +697,7 @@ $(document).ready(function () {
             sb.Append("</tr>");
         }
         sb.Append("</tbody></table>");
-        sb.Append("<small class='text-muted'>S = Severity (rows), P = Probability (cols), ★ = current position</small>");
+        sb.Append("<small class='text-muted'>" + System.Net.WebUtility.HtmlEncode(L["S = Severity (rows), P = Probability (cols), ★ = current position"].Value) + "</small>");
         return new HtmlString(sb.ToString());
     }
 }

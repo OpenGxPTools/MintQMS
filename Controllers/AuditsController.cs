@@ -4,6 +4,7 @@ Copyright (C) 2022-2025  C-realize IT Services SRL (https://www.c-realize.com)
 This program is offered under a commercial and under the AGPL license.
 */
 using ClosedXML.Excel;
+using OpenQMS.Localization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -283,7 +284,7 @@ namespace OpenQMS.Controllers
                     $"ID: {audit.AuditId}; Title: {audit.Title}; Type: {audit.Type}; Scheduled by: {audit.ScheduledBy}");
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = $"Audit {audit.AuditId} created.";
+                TempData["Success"] = this.T("Audit {0} created.", audit.AuditId);
                 return RedirectToAction(nameof(Details), new { id = audit.Id });
             }
 
@@ -460,7 +461,7 @@ namespace OpenQMS.Controllers
                     else throw;
                 }
 
-                TempData["Success"] = "Audit updated.";
+                TempData["Success"] = this.T("Audit updated.");
                 return RedirectToAction(nameof(Details), new { id = audit.Id });
             }
 
@@ -540,7 +541,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -548,7 +549,7 @@ namespace OpenQMS.Controllers
             if (audit == null) return NotFound();
             if (audit.Status != Audit.AuditStatus.Scheduled)
             {
-                TempData["WorkflowError"] = "Audit must be in Scheduled status to start.";
+                TempData["WorkflowError"] = this.T("Audit must be in Scheduled status to start.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -561,7 +562,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(audit.Id, "Started (In Progress)", from, audit.Status.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Audit started.";
+            TempData["Success"] = this.T("Audit started.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -573,7 +574,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -581,7 +582,7 @@ namespace OpenQMS.Controllers
             if (audit == null) return NotFound();
             if (audit.Status != Audit.AuditStatus.InProgress)
             {
-                TempData["WorkflowError"] = "Audit must be In Progress to submit a report draft.";
+                TempData["WorkflowError"] = this.T("Audit must be In Progress to submit a report draft.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -592,7 +593,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(audit.Id, "Report Draft submitted", from, audit.Status.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Report draft submitted.";
+            TempData["Success"] = this.T("Report draft submitted.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -604,7 +605,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -612,7 +613,7 @@ namespace OpenQMS.Controllers
             if (audit == null) return NotFound();
             if (audit.Status != Audit.AuditStatus.ReportDraft)
             {
-                TempData["WorkflowError"] = "Audit must be in Report Draft status to submit for review.";
+                TempData["WorkflowError"] = this.T("Audit must be in Report Draft status to submit for review.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -624,7 +625,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(audit.Id, "Submitted for Review", from, audit.Status.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Audit submitted for review.";
+            TempData["Success"] = this.T("Audit submitted for review.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -636,7 +637,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -644,7 +645,7 @@ namespace OpenQMS.Controllers
             if (audit == null) return NotFound();
             if (audit.Status != Audit.AuditStatus.UnderReview)
             {
-                TempData["WorkflowError"] = "Audit must be Under Review to be approved.";
+                TempData["WorkflowError"] = this.T("Audit must be Under Review to be approved.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -656,7 +657,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(audit.Id, "Approved", from, audit.Status.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Audit approved.";
+            TempData["Success"] = this.T("Audit approved.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -668,7 +669,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -676,7 +677,7 @@ namespace OpenQMS.Controllers
             if (audit == null) return NotFound();
             if (audit.Status != Audit.AuditStatus.Approved)
             {
-                TempData["WorkflowError"] = "Audit must be Approved before it can be closed.";
+                TempData["WorkflowError"] = this.T("Audit must be Approved before it can be closed.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -690,7 +691,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(audit.Id, "Closed", from, audit.Status.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Audit closed.";
+            TempData["Success"] = this.T("Audit closed.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -703,13 +704,13 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Return was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Return was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(returnReason))
             {
-                TempData["WorkflowError"] = "A reason for return is required.";
+                TempData["WorkflowError"] = this.T("A reason for return is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -717,7 +718,7 @@ namespace OpenQMS.Controllers
             if (audit == null) return NotFound();
             if (audit.Status != Audit.AuditStatus.UnderReview)
             {
-                TempData["WorkflowError"] = "Audit must be Under Review to return for revision.";
+                TempData["WorkflowError"] = this.T("Audit must be Under Review to return for revision.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -730,7 +731,7 @@ namespace OpenQMS.Controllers
                 string.IsNullOrWhiteSpace(notes) ? returnReason : $"{returnReason} | {notes}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Audit returned to Report Draft for revision.";
+            TempData["Success"] = this.T("Audit returned to Report Draft for revision.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -743,13 +744,13 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Return was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Return was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(returnReason))
             {
-                TempData["WorkflowError"] = "A reason for return is required.";
+                TempData["WorkflowError"] = this.T("A reason for return is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -757,7 +758,7 @@ namespace OpenQMS.Controllers
             if (audit == null) return NotFound();
             if (audit.Status != Audit.AuditStatus.Approved)
             {
-                TempData["WorkflowError"] = "Audit must be Approved to return to review.";
+                TempData["WorkflowError"] = this.T("Audit must be Approved to return to review.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -770,7 +771,7 @@ namespace OpenQMS.Controllers
                 string.IsNullOrWhiteSpace(notes) ? returnReason : $"{returnReason} | {notes}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Audit returned to Under Review.";
+            TempData["Success"] = this.T("Audit returned to Under Review.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -784,7 +785,7 @@ namespace OpenQMS.Controllers
             if (User.IsInRole(Constants.ReadOnlyRole)) return Forbid();
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = auditId });
             }
@@ -793,13 +794,13 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = "File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.";
+                TempData["Error"] = this.T("File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = auditId });
             }
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File size exceeds the 25 MB limit.";
+                TempData["Error"] = this.T("File size exceeds the 25 MB limit.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = auditId });
             }
@@ -808,7 +809,7 @@ namespace OpenQMS.Controllers
             if (audit == null) return NotFound();
             if (audit.Status == Audit.AuditStatus.Closed)
             {
-                TempData["Error"] = "Attachments cannot be added to a closed audit.";
+                TempData["Error"] = this.T("Attachments cannot be added to a closed audit.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = auditId });
             }
@@ -842,7 +843,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(auditId, "Attachment uploaded", null, null, file.FileName);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"File '{file.FileName}' uploaded.";
+            TempData["Success"] = this.T("File '{0}' uploaded.", file.FileName);
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = auditId });
         }
@@ -856,7 +857,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.AuditId });
             }
@@ -892,7 +893,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.AuditId });
             }
@@ -935,7 +936,7 @@ namespace OpenQMS.Controllers
 
                 if (string.IsNullOrWhiteSpace(deletionReason))
                 {
-                    TempData["Error"] = "A reason is required to delete an attachment.";
+                    TempData["Error"] = this.T("A reason is required to delete an attachment.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = auditId });
                 }
@@ -947,7 +948,7 @@ namespace OpenQMS.Controllers
                 attachment.DeletionReason = deletionReason.Trim();
                 AddAuditLog(auditId, "Attachment deleted", null, null, $"{attachment.FileName} — Reason: {attachment.DeletionReason}");
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Attachment deleted.";
+                TempData["Success"] = this.T("Attachment deleted.");
             }
 
             TempData["ActiveTab"] = "attachments";
@@ -965,13 +966,13 @@ namespace OpenQMS.Controllers
 
             if (audit.Status == Audit.AuditStatus.Scheduled || audit.Status == Audit.AuditStatus.Closed)
             {
-                TempData["Error"] = "CAPA can only be created once the audit is underway and not yet closed.";
+                TempData["Error"] = this.T("CAPA can only be created once the audit is underway and not yet closed.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (audit.LinkedCapaId.HasValue)
             {
-                TempData["Error"] = "A CAPA is already linked to this audit.";
+                TempData["Error"] = this.T("A CAPA is already linked to this audit.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1162,26 +1163,26 @@ namespace OpenQMS.Controllers
 
             if (audit.Status != Audit.AuditStatus.Closed)
             {
-                TempData["WorkflowError"] = "This record is not in a state that can be administratively reopened.";
+                TempData["WorkflowError"] = this.T("This record is not in a state that can be administratively reopened.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A justification reason is required.";
+                TempData["WorkflowError"] = this.T("A justification reason is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1190,7 +1191,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(audit.Id, "Administrative Reopen", fromStatus, Audit.AuditStatus.Approved.ToString(), reason);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Record has been administratively reopened to Approved stage.";
+            TempData["Success"] = this.T("Record has been administratively reopened to Approved stage.");
             return RedirectToAction(nameof(Details), new { id });
         }
     }

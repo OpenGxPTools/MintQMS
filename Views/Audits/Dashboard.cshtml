@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Audit Dashboard";
+    ViewData["Title"] = L["Audit Dashboard"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var statusCounts = (Dictionary<string, int>)ViewBag.StatusCounts;
@@ -11,7 +11,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">Audit Dashboard</h4>
+    <h4 class="mb-0">@L["Audit Dashboard"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Excel"]</a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">@L["Register"]</a>
@@ -23,7 +23,7 @@
 {
     <div class="alert alert-danger d-flex align-items-center mb-4">
         <strong class="me-2">&#9888;</strong>
-        <span><strong>@ViewBag.TotalCriticalFindings critical finding(s)</strong> across all audits require attention.</span>
+        <span>@H["<strong>{0} critical finding(s)</strong> across all audits require attention.", (int)ViewBag.TotalCriticalFindings]</span>
     </div>
 }
 
@@ -33,7 +33,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-primary">@ViewBag.Total</div>
-                <div class="text-muted">Total Audits</div>
+                <div class="text-muted">@L["Total Audits"]</div>
             </div>
         </div>
     </div>
@@ -57,7 +57,7 @@
         <div class="card text-center h-100 @((int)ViewBag.CAPARequiredCount > 0 ? "border-warning" : "")">
             <div class="card-body">
                 <div class="display-5 fw-bold @((int)ViewBag.CAPARequiredCount > 0 ? "text-warning" : "text-secondary")">@ViewBag.CAPARequiredCount</div>
-                <div class="text-muted">CAPA Required (open)</div>
+                <div class="text-muted">@L["CAPA Required (open)"]</div>
             </div>
         </div>
     </div>
@@ -69,7 +69,7 @@
         <div class="card text-center h-100 @((int)ViewBag.TotalCriticalFindings > 0 ? "border-danger" : "")">
             <div class="card-body">
                 <div class="display-6 fw-bold @((int)ViewBag.TotalCriticalFindings > 0 ? "text-danger" : "text-secondary")">@ViewBag.TotalCriticalFindings</div>
-                <div class="text-muted small">Total Critical Findings</div>
+                <div class="text-muted small">@L["Total Critical Findings"]</div>
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-6 fw-bold text-warning">@ViewBag.TotalMajorFindings</div>
-                <div class="text-muted small">Total Major Findings</div>
+                <div class="text-muted small">@L["Total Major Findings"]</div>
             </div>
         </div>
     </div>
@@ -85,7 +85,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-6 fw-bold text-info">@ViewBag.TotalMinorFindings</div>
-                <div class="text-muted small">Total Minor Findings</div>
+                <div class="text-muted small">@L["Total Minor Findings"]</div>
             </div>
         </div>
     </div>
@@ -93,7 +93,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-6 fw-bold text-secondary">@(((int)ViewBag.TotalCriticalFindings + (int)ViewBag.TotalMajorFindings + (int)ViewBag.TotalMinorFindings))</div>
-                <div class="text-muted small">All Findings (excl. obs.)</div>
+                <div class="text-muted small">@L["All Findings (excl. obs.)"]</div>
             </div>
         </div>
     </div>
@@ -137,7 +137,7 @@
                                 _             => kv.Key
                             };
                             <tr>
-                                <td>@statusLabel</td>
+                                <td>@L[statusLabel]</td>
                                 <td>@kv.Value</td>
                                 <td><div class="progress" style="height:8px"><div class="progress-bar @barClass" style="width:@pct%"></div></div></td>
                             </tr>
@@ -154,7 +154,7 @@
     <div class="col-md-6">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between">
-                <span>Upcoming Scheduled Audits</span>
+                <span>@L["Upcoming Scheduled Audits"]</span>
                 <span class="badge bg-secondary">@upcoming.Count</span>
             </div>
             <div class="card-body p-0">
@@ -170,21 +170,21 @@
                                 <tr class="@rowCls">
                                     <td><a asp-action="Details" asp-route-id="@a.Id">@a.AuditId</a></td>
                                     <td>@a.Title</td>
-                                    <td>@a.Type</td>
+                                    <td>@L.Enum(a.Type)</td>
                                     <td>@a.PlannedStartDate.Value.ToShortDateString()</td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 }
-                else { <p class="text-muted p-3 mb-0">No upcoming audits.</p> }
+                else { <p class="text-muted p-3 mb-0">@L["No upcoming audits."]</p> }
             </div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between">
-                <span>Pending Action (Draft / Review / Approved)</span>
+                <span>@L["Pending Action (Draft / Review / Approved)"]</span>
                 <span class="badge bg-warning text-dark">@pendingReview.Count</span>
             </div>
             <div class="card-body p-0">
@@ -205,7 +205,7 @@
                                 <tr>
                                     <td><a asp-action="Details" asp-route-id="@a.Id">@a.AuditId</a></td>
                                     <td>@a.Title</td>
-                                    <td>@prLabel</td>
+                                    <td>@L[prLabel]</td>
                                     <td>@(a.LeadAuditor ?? "-")</td>
                                 </tr>
                             }
@@ -223,7 +223,7 @@
 {
     <div class="card mb-4 border-warning">
         <div class="card-header bg-warning d-flex justify-content-between">
-            <span>Overdue Scheduled Audits (planned start date passed)</span>
+            <span>@L["Overdue Scheduled Audits (planned start date passed)"]</span>
             <span class="badge bg-dark">@overdue.Count</span>
         </div>
         <div class="card-body p-0">
@@ -236,9 +236,9 @@
                         <tr class="table-warning">
                             <td><a asp-action="Details" asp-route-id="@a.Id">@a.AuditId</a></td>
                             <td>@a.Title</td>
-                            <td>@a.Type</td>
+                            <td>@L.Enum(a.Type)</td>
                             <td>@a.PlannedStartDate.Value.ToShortDateString()</td>
-                            <td><strong>@daysOver days</strong></td>
+                            <td><strong>@L["{0} days", daysOver]</strong></td>
                         </tr>
                     }
                 </tbody>
@@ -252,12 +252,12 @@
 {
     <div class="card mb-4 border-info">
         <div class="card-header bg-info text-dark d-flex justify-content-between">
-            <span>Follow-Up Due Within 14 Days</span>
+            <span>@L["Follow-Up Due Within 14 Days"]</span>
             <span class="badge bg-dark">@followUpDue.Count</span>
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
-                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>Follow-Up Date</th><th>@L["Critical"]</th><th>@L["Major"]</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Title"]</th><th>@L["Follow-Up Date"]</th><th>@L["Critical"]</th><th>@L["Major"]</th></tr></thead>
                 <tbody>
                     @foreach (var a in followUpDue)
                     {

@@ -1,6 +1,6 @@
 @model OpenQMS.Models.Audit
 @{
-    ViewData["Title"] = "New Audit";
+    ViewData["Title"] = L["New Audit"].Value;
     var products  = ViewData["Products"]  as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
     var processes = ViewData["Processes"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
     var assets    = ViewData["Assets"]    as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
@@ -54,7 +54,7 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Scheduling</div>
+                <div class="card-header fw-semibold">@L["Scheduling"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -98,13 +98,13 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Links to Master Data</div>
+                <div class="card-header fw-semibold">@L["Links to Master Data"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">@L["Products"]</label>
                             <select id="productDropdown" class="form-select">
-                                <option value="">-- Add Product --</option>
+                                <option value="">@L["-- Add Product --"]</option>
                                 @foreach (var p in products)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -114,7 +114,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Processes"]</label>
                             <select id="processDropdown" class="form-select">
-                                <option value="">-- Add Process --</option>
+                                <option value="">@L["-- Add Process --"]</option>
                                 @foreach (var p in processes)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -124,7 +124,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Assets"]</label>
                             <select id="assetDropdown" class="form-select">
-                                <option value="">-- Add Asset --</option>
+                                <option value="">@L["-- Add Asset --"]</option>
                                 @foreach (var p in assets)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -134,7 +134,7 @@
                         <div class="col-md-6">
                             <label class="form-label">@L["Materials"]</label>
                             <select id="materialDropdown" class="form-select">
-                                <option value="">-- Add Material --</option>
+                                <option value="">@L["-- Add Material --"]</option>
                                 @foreach (var p in materials)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -144,7 +144,7 @@
                         <div class="col-md-6" id="supplierPickerRow" style="display:none;">
                             <label class="form-label">@L["Suppliers"]</label>
                             <select id="supplierDropdown" class="form-select">
-                                <option value="">-- Add Supplier --</option>
+                                <option value="">@L["-- Add Supplier --"]</option>
                                 @foreach (var p in suppliers)
                                 { <option value="@p.Value" data-text="@p.Text">@p.Text</option> }
                             </select>
@@ -156,7 +156,7 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Audit Plan</div>
+                <div class="card-header fw-semibold">@L["Audit Plan"]</div>
                 <div class="card-body">
                     <label asp-for="AuditPlan" class="form-label"></label>
                     <textarea asp-for="AuditPlan" class="form-control" rows="4"></textarea>

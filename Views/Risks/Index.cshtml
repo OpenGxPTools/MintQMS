@@ -1,7 +1,7 @@
 @model IEnumerable<OpenQMS.Models.Risk>
 
 @{
-    ViewData["Title"] = "Risks";
+    ViewData["Title"] = L["Risks"].Value;
 }
 
 @section Scripts {
@@ -53,7 +53,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Risks</h4>
+    <h4 class="mb-0">@L["Risks"]</h4>
     <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Risk"]</a>
 </div>
 <hr />
@@ -65,7 +65,7 @@
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Assessment"]">@L["Assessment"]</button>
     <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Pending Assessment"]">@L["Pending Assessment"]</button>
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Mitigation"]">@L["Mitigation"]</button>
-    <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["Pending Review"]">Pending Review</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["Pending Review"]">@L["Pending Review"]</button>
     <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["Review"]">@L["Review"]</button>
     <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Closed"]">@L["Closed"]</button>
 </div>
@@ -119,7 +119,7 @@
             <tr>
                 <td>@item.RiskId</td>
                 <td>@item.Title</td>
-                <td>@Html.DisplayFor(_ => item.Category)</td>
+                <td>@L.Enum(item.Category)</td>
                 <td>@(iLinked.Any() ? string.Join(", ", iLinked) : "-")</td>
                 <td>@item.InitialRPN</td>
                 <td>@item.IdentifiedOn.ToSite().ToShortDateString()</td>

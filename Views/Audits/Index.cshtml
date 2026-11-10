@@ -1,7 +1,7 @@
 @model IEnumerable<OpenQMS.Models.Audit>
 
 @{
-    ViewData["Title"] = "Audits";
+    ViewData["Title"] = L["Audits"].Value;
 }
 
 @section Scripts {
@@ -63,7 +63,7 @@
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Scheduled"]">@L["Scheduled"]</button>
     <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["In Progress"]">@L["In Progress"]</button>
-    <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Report Draft"]">Report Draft</button>
+    <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Report Draft"]">@L["Report Draft"]</button>
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Under Review"]">@L["Under Review"]</button>
     <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["Approved"]">@L["Approved"]</button>
     <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Closed"]">@L["Closed"]</button>
@@ -78,7 +78,7 @@
             <th>@L["Lead Auditor"]</th>
             <th>@L["Linked To"]</th>
             <th>@L["Planned Start"]</th>
-            <th>Rating</th>
+            <th>@L["Rating"]</th>
             <th>@L["Status"]</th>
             <th>@L["Action"]</th>
         </tr>
@@ -111,19 +111,14 @@
                 _                                             => "bg-secondary"
             };
             var statusLabel = L.Enum(item.Status);
-            var ratingLabel = item.OverallRating switch
-            {
-                OpenQMS.Models.Audit.AuditRating.NeedsImprovement => "Needs Improvement",
-                null                                               => "-",
-                _                                                  => item.OverallRating.ToString()!
-            };
+            var ratingLabel = item.OverallRating.HasValue ? L.Enum(item.OverallRating.Value) : "-";
             var canEdit = item.Status == OpenQMS.Models.Audit.AuditStatus.Scheduled
                        || item.Status == OpenQMS.Models.Audit.AuditStatus.InProgress
                        || item.Status == OpenQMS.Models.Audit.AuditStatus.ReportDraft;
             <tr>
                 <td>@item.AuditId</td>
                 <td>@item.Title</td>
-                <td>@item.Type</td>
+                <td>@L.Enum(item.Type)</td>
                 <td>@(item.LeadAuditor ?? "-")</td>
                 <td>@string.Join(", ", iLinked)</td>
                 <td>@(item.PlannedStartDate?.ToShortDateString() ?? "-")</td>
