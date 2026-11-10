@@ -16,6 +16,8 @@
 
 **Fixes (also in English)**
 
+- CAPA Dashboard: the Status Distribution chart drew oversized; it is now the same size as on the other
+  dashboards.
 - Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the
   Approval Status column, but "Under Assessment" is a workflow stage shown in the Workflow column. It now
   filters the Workflow column and finds both first assessments and re-reviews.
