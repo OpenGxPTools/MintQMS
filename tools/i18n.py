@@ -45,6 +45,9 @@ RESX_HEAD = """<?xml version="1.0" encoding="utf-8"?>
 L_LITERAL = re.compile(r'(?:\b[LHl]\[|\b_l\[|\bStatusMessage\s*=\s*\$?(?=")|\bthis\.T\(|\b(?:Workflow|Transition)Result\.Fail\(|\bT\(base\.\w+\([^)]*\),)\s*"((?:[^"\\]|\\.)*)"\s*[\]),;]')
 
 
+OPTION_LIST = re.compile(r"new\[\]\s*\{\s*/\* i18n \*/(.*?)\}", re.S)
+
+
 def unescape_cs(s):
     return s.replace('\\"', '"').replace("\\\\", "\\")
 
@@ -59,6 +62,10 @@ def literal_keys():
     used = {}
     for f in code_files():
         text = open(f, encoding="utf-8-sig", errors="replace").read()
+        # option lists shown with L[item]: new[] { /* i18n */ "Tablet", "Capsule", ... }
+        for block in OPTION_LIST.findall(text):
+            for item in re.findall(r'"((?:[^"\\]|\\.)*)"', block):
+                used.setdefault(unescape_cs(item), set()).add(os.path.relpath(f, ROOT))
         text = re.sub(r"@\*.*?\*@|/\*.*?\*/", "", text, flags=re.S)       # Razor and block comments
         text = re.sub(r"(?m)^\s*//.*$", "", text)                             # whole-line // and /// comments
         for m in L_LITERAL.finditer(text):

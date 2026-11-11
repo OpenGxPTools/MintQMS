@@ -1,13 +1,13 @@
 @model OpenQMS.Models.Customer
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = L["Edit Customer"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Edit Customer — @Model.CustomerId</h4>
+        <h4 class="mb-0">@L["Edit Customer"] — @Model.CustomerId</h4>
     </div>
 </div>
 <hr />
@@ -46,38 +46,38 @@
                 <div class="col-md-6">
                     <label asp-for="Industry" class="form-label"></label>
                     <select asp-for="Industry" class="form-select">
-                        <option value="">-- Select --</option>
-                        <optgroup label="Healthcare &amp; Clinical">
-                            <option>Hospital / Health Service</option>
-                            <option>Specialist Medical Practice</option>
-                            <option>General Practice / Primary Care</option>
-                            <option>Oncology Centre</option>
-                            <option>Aged Care Facility</option>
-                            <option>Community Pharmacy</option>
-                            <option>Hospital Pharmacy</option>
-                            <option>Compounding Pharmacy</option>
-                            <option>Pathology / Diagnostics</option>
+                        <option value="">@L["-- Select --"]</option>
+                        <optgroup label="@L["Healthcare & Clinical"]">
+                            <option value="Hospital / Health Service">@L["Hospital / Health Service"]</option>
+                            <option value="Specialist Medical Practice">@L["Specialist Medical Practice"]</option>
+                            <option value="General Practice / Primary Care">@L["General Practice / Primary Care"]</option>
+                            <option value="Oncology Centre">@L["Oncology Centre"]</option>
+                            <option value="Aged Care Facility">@L["Aged Care Facility"]</option>
+                            <option value="Community Pharmacy">@L["Community Pharmacy"]</option>
+                            <option value="Hospital Pharmacy">@L["Hospital Pharmacy"]</option>
+                            <option value="Compounding Pharmacy">@L["Compounding Pharmacy"]</option>
+                            <option value="Pathology / Diagnostics">@L["Pathology / Diagnostics"]</option>
                         </optgroup>
-                        <optgroup label="Research &amp; Trials">
-                            <option>Contract Research Organisation (CRO)</option>
-                            <option>Academic / Research Institution</option>
-                            <option>Clinical Trial Site</option>
+                        <optgroup label="@L["Research & Trials"]">
+                            <option value="Contract Research Organisation (CRO)">@L["Contract Research Organisation (CRO)"]</option>
+                            <option value="Academic / Research Institution">@L["Academic / Research Institution"]</option>
+                            <option value="Clinical Trial Site">@L["Clinical Trial Site"]</option>
                         </optgroup>
-                        <optgroup label="Life Sciences Industry">
+                        <optgroup label="@L["Life Sciences Industry"]">
                             <option value="Pharmaceutical">@L["Pharmaceutical"]</option>
-                            <option>Biotechnology</option>
-                            <option>Medical Devices</option>
+                            <option value="Biotechnology">@L["Biotechnology"]</option>
+                            <option value="Medical Devices">@L["Medical Devices"]</option>
                         </optgroup>
-                        <optgroup label="Distribution &amp; Supply">
-                            <option>Pharmaceutical Wholesale / Distribution</option>
-                            <option>Medical Supply / Distribution</option>
+                        <optgroup label="@L["Distribution & Supply"]">
+                            <option value="Pharmaceutical Wholesale / Distribution">@L["Pharmaceutical Wholesale / Distribution"]</option>
+                            <option value="Medical Supply / Distribution">@L["Medical Supply / Distribution"]</option>
                         </optgroup>
-                        <optgroup label="Government &amp; Regulatory">
-                            <option>Government / Public Health</option>
-                            <option>Defence / Military Health</option>
+                        <optgroup label="@L["Government & Regulatory"]">
+                            <option value="Government / Public Health">@L["Government / Public Health"]</option>
+                            <option value="Defence / Military Health">@L["Defence / Military Health"]</option>
                         </optgroup>
-                        <optgroup label="Other">
-                            <option>Veterinary</option>
+                        <optgroup label="@L["Other"]">
+                            <option value="Veterinary">@L["Veterinary"]</option>
                             <option value="Other">@L["Other"]</option>
                         </optgroup>
                     </select>
@@ -181,7 +181,7 @@
                 <div class="col-12">
                     <label class="form-label">@L["Linked Approved Documents"]</label>
                     <select id="relatedDocDropdown" class="form-select">
-                        <option value="">-- Add Document --</option>
+                        <option value="">@L["-- Add Document --"]</option>
                         @foreach (var d in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
                         {
                             <option value="@d.Value" data-text="@d.Text">@d.Text</option>

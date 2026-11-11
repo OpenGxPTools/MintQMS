@@ -1,13 +1,13 @@
 @model OpenQMS.Models.Customer
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = L["Delete Customer"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Delete Customer</h4>
+        <h4 class="mb-0">@L["Delete Customer"]</h4>
     </div>
 </div>
 <hr />
@@ -21,7 +21,7 @@
             <dt class="col-sm-4">@Html.DisplayNameFor(m => m.LegalName)</dt>
             <dd class="col-sm-8">@Model.LegalName</dd>
             <dt class="col-sm-4">@Html.DisplayNameFor(m => m.CustomerType)</dt>
-            <dd class="col-sm-8">@Model.CustomerType</dd>
+            <dd class="col-sm-8">@L.Enum(Model.CustomerType)</dd>
             <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Status)</dt>
             <dd class="col-sm-8">@L.Enum(Model.Status)</dd>
             <dt class="col-sm-4">@Html.DisplayNameFor(m => m.EditedBy)</dt>
@@ -64,7 +64,7 @@
 }
 @if ((bool)ViewData["HasLinkedRecords"] == true)
 {
-    <div class="alert alert-danger">This customer has uploaded Documents. Remove them before deleting.</div>
+    <div class="alert alert-danger">@L["This customer has uploaded Documents. Remove them before deleting."]</div>
 }
 
 <form asp-action="Delete">

@@ -36,6 +36,7 @@ namespace OpenQMS.Models
         [Display(Name = "ID")]
         public string ProductId { get; set; }
         public string? GeneratedFrom { get; set; }
+        [Display(Name = "Name")]
         public string Name { get; set; }
 
         [Display(Name = "Product Type")]
@@ -72,7 +73,9 @@ namespace OpenQMS.Models
         public string? RawMaterialTypeCategory { get; set; }
         [Display(Name = "Grade (if applicable)")]
         public string? Grade { get; set; }
+        [Display(Name = "Description")]
         public string Description { get; set; }
+        [Display(Name = "Version")]
         public decimal Version { get; set; }
         [Display(Name = "Edited By")]
         public string? EditedBy { get; set; }
@@ -96,6 +99,7 @@ namespace OpenQMS.Models
         public virtual ICollection<ProductLinkedDocument>? RelatedDocuments { get; set; }
         public virtual ICollection<ProductStrength>? Strengths { get; set; }
         public virtual ICollection<ProductSpecLine>? Specifications { get; set; }
+        [Display(Name = "Status")]
         public ProductStatus Status { get; set; }
         public enum ProductStatus
         {

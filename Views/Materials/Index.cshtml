@@ -1,7 +1,7 @@
 @model IEnumerable<OpenQMS.Models.Material>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = L["Materials"].Value;
 }
 
 @section Scripts {
@@ -31,7 +31,7 @@
             paging: true,
             orderCellsTop: true,
             dom: 'lBfrtip',
-            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, @Json.Serialize(L["All"].Value)]],
             "order": [[0, 'asc']],
             displayLength: 10,
             buttons: [
@@ -54,7 +54,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">@L["Materials"]</h4>
-    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Material</a>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Material"]</a>
 </div>
 <hr />
 
@@ -70,7 +70,7 @@
 <table id="materialsTable" class="table" style="width:100%;">
     <thead>
         <tr>
-            <th>Material ID</th>
+            <th>@L["Material ID"]</th>
             <th>@L["Name"]</th>
             <th>@L["Version"]</th>
             <th>@L["Status"]</th>

@@ -71,6 +71,7 @@ namespace OpenQMS.Models
         public string? SpecialRequirements { get; set; }
 
         // Versioning / workflow
+        [Display(Name = "Version")]
         public decimal Version { get; set; }
 
         [Display(Name = "Edited By")]
@@ -96,6 +97,7 @@ namespace OpenQMS.Models
         public virtual ICollection<CustomerLinkedDocument>? RelatedDocuments { get; set; }
         public virtual ICollection<Complaint>? Complaints { get; set; }
 
+        [Display(Name = "Status")]
         public CustomerStatus Status { get; set; }
 
         public enum CustomerStatus

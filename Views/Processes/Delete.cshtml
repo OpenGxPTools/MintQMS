@@ -23,13 +23,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @model OpenQMS.Models.Process
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = L["Delete Process"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Delete Process</h4>
+        <h4 class="mb-0">@L["Delete Process"]</h4>
     </div>
 </div>
 <hr />
@@ -210,7 +210,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     }
     @if ((bool)ViewData["HasLinkedRecords"] == true)
     {
-        <div class="alert alert-danger">This process has linked Changes, Deviations, CAPAs, or uploaded Documents. Remove them before deleting.</div>
+        <div class="alert alert-danger">@L["This process has linked Changes, Deviations, CAPAs, or uploaded Documents. Remove them before deleting."]</div>
     }
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />

@@ -23,6 +23,10 @@
   calendar, dashboard) in Spanish and Portuguese: pages, guidance texts (seriousness, MedDRA, causality, Day 0,
   RFI, ISO cycle…), signature dialogs, alerts, workflow refusals, messages and validation errors. The CIOMS-I
   form and exports stay in English, as records.
+- Master data — Products, Materials, Processes, Assets, Customers (with its dashboard) and Services — in
+  Spanish and Portuguese: pages, approval dialogs, field labels, messages and the option lists (dosage and
+  presentation forms, device and material categories, customer industries). Options are stored in English
+  whatever the language, and a stored value is shown translated.
 - Deviations, Complaints, CAPA, Documents and Training: the signature dialog titles, the status shown on
   edit and detail pages, the "Click to remove" hint and the remaining messages after an action are now
   translated too.
@@ -51,6 +55,9 @@
   outcomes, causality, the status filters on the three registers, PSUR and signal statuses, document types
   and condition/variation/pathway types. A refused workflow step names the states properly too ("Cannot
   transition from 'Conditions Active' …" instead of 'ConditionsActive').
+- Master data: browser tabs on the registers and on the create, edit and delete pages read e.g. "Assets",
+  "New Asset", "Edit Asset" instead of "Index", "Create", "Edit"; material and service details showed the
+  status "UnderReview", now "Under Review".
 - Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the
   Approval Status column, but "Under Assessment" is a workflow stage shown in the Workflow column. It now
   filters the Workflow column and finds both first assessments and re-reviews.

@@ -2,7 +2,7 @@
 @using OpenQMS.Models
 
 @{
-    ViewData["Title"] = "Product Details";
+    ViewData["Title"] = L["Product Details"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool isLocked = Model.IsLocked == true;
     var pt = Model.ProductType;
@@ -23,7 +23,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Product &mdash; <span class="fw-bold">@Model.ProductId</span></h4>
+        <h4 class="mb-0">@L["Product —"] <span class="fw-bold">@Model.ProductId</span></h4>
         <small class="text-muted">@Model.Name</small>
     </div>
     <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
@@ -56,8 +56,8 @@
 {
     <div class="alert alert-warning d-flex align-items-center mb-3">
         <strong class="me-2">&#9888;</strong>
-        <span>This product is linked to <strong>@aeCount adverse event@(aeCount != 1 ? "s" : "")</strong>.
-            <a asp-controller="Pharmacovigilance" asp-action="Index" class="alert-link ms-1">View Adverse Events</a>
+        <span>@(aeCount == 1 ? H["This product is linked to <strong>1 adverse event</strong>."] : H["This product is linked to <strong>{0} adverse events</strong>.", aeCount])
+            <a asp-controller="Pharmacovigilance" asp-action="Index" class="alert-link ms-1">@L["View Adverse Events"]</a>
         </span>
     </div>
 }
@@ -83,12 +83,12 @@
         <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> @L["Workflow Actions"]</div>
         <div class="card-body d-flex gap-2 flex-wrap">
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveModal">
-                <i class="fas fa-check-circle me-1"></i>Approve Product
+                <i class="fas fa-check-circle me-1"></i>@L["Approve Product"]
             </button>
             <form asp-action="SendBackToDraft" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-outline-warning btn-sm"
-                        onclick="return confirm('Send this product back to Draft for rework?')">
+                        data-confirm="@L["Send this product back to Draft for rework?"]" onclick="return confirm(this.dataset.confirm);">
                     <i class="fas fa-undo me-1"></i>@L["Send Back to Draft"]
                 </button>
             </form>
@@ -102,7 +102,7 @@
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="tab-specs" data-bs-toggle="tab" data-bs-target="#pane-specs" type="button" role="tab">
-            Specification <span class="badge bg-secondary ms-1">@specCount</span>
+            @L["Specification"] <span class="badge bg-secondary ms-1">@specCount</span>
         </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -126,35 +126,29 @@
         <div class="card">
             <div class="card-body">
                 <dl class="row mb-0">
-                    <dt class="col-sm-3">Product ID</dt>
+                    <dt class="col-sm-3">@L["Product ID"]</dt>
                     <dd class="col-sm-9">@Model.ProductId</dd>
 
                     <dt class="col-sm-3">@L["Name"]</dt>
                     <dd class="col-sm-9">@Model.Name</dd>
 
-                    <dt class="col-sm-3">Product Type</dt>
+                    <dt class="col-sm-3">@L["Product Type"]</dt>
                     <dd class="col-sm-9">
                         @if (pt.HasValue)
                         {
-                            var label = pt switch {
-                                ProductType.MedicalDevice  => "Medical Device",
-                                ProductType.ConsumerHealth => "Consumer Health",
-                                ProductType.RawMaterial    => "Raw Material",
-                                _                          => pt.ToString()
-                            };
-                            <span class="badge bg-info text-dark">@label</span>
+                            <span class="badge bg-info text-dark">@L.Enum(pt.Value)</span>
                         }
                         else { <text>-</text> }
                     </dd>
 
                     @if (pt == null || pt == ProductType.Pharmaceutical || pt == ProductType.Biological || pt == ProductType.ConsumerHealth)
                     {
-                        <dt class="col-sm-3">INN / Generic Name</dt>
+                        <dt class="col-sm-3">@L["INN / Generic Name"]</dt>
                         <dd class="col-sm-9">@(Model.InnName ?? "-")</dd>
                     }
                     @if (pt == ProductType.Cosmetic)
                     {
-                        <dt class="col-sm-3">INCI Name / Ingredient Decl. Ref.</dt>
+                        <dt class="col-sm-3">@L["INCI Name / Ingredient Decl. Ref."]</dt>
                         <dd class="col-sm-9">@(Model.InciName ?? "-")</dd>
                     }
                     @if (pt == ProductType.RawMaterial)
@@ -162,36 +156,36 @@
                         <dt class="col-sm-3">@L["Standard / Scientific Name"]</dt>
                         <dd class="col-sm-9">@(Model.StandardScientificName ?? "-")</dd>
                         <dt class="col-sm-3">@L["Material Type / Category"]</dt>
-                        <dd class="col-sm-9">@(Model.RawMaterialTypeCategory ?? "-")</dd>
+                        <dd class="col-sm-9">@(Model.RawMaterialTypeCategory != null ? L.Message(Model.RawMaterialTypeCategory) : "-")</dd>
                     }
                     @if (pt == ProductType.MedicalDevice)
                     {
                         <dt class="col-sm-3">@L["Device Type / Category"]</dt>
-                        <dd class="col-sm-9">@(Model.DeviceTypeCategory ?? "-")</dd>
+                        <dd class="col-sm-9">@(Model.DeviceTypeCategory != null ? L.Message(Model.DeviceTypeCategory) : "-")</dd>
                         <dt class="col-sm-3">@L["Model / Version"]</dt>
                         <dd class="col-sm-9">@(Model.ModelVersion ?? "-")</dd>
                     }
 
-                    <dt class="col-sm-3">Brand / Trade Name</dt>
+                    <dt class="col-sm-3">@L["Brand / Trade Name"]</dt>
                     <dd class="col-sm-9">@(Model.BrandName ?? "-")</dd>
 
                     @if (pt == null || pt == ProductType.Pharmaceutical || pt == ProductType.Biological || pt == ProductType.ConsumerHealth)
                     {
                         <dt class="col-sm-3">@L["Dosage Form"]</dt>
-                        <dd class="col-sm-9">@(Model.DosageForm ?? "-")</dd>
+                        <dd class="col-sm-9">@(Model.DosageForm != null ? L.Message(Model.DosageForm) : "-")</dd>
                     }
                     @if (pt == ProductType.Cosmetic || pt == ProductType.RawMaterial)
                     {
                         <dt class="col-sm-3">@L["Presentation / Form"]</dt>
-                        <dd class="col-sm-9">@(Model.PresentationForm ?? "-")</dd>
+                        <dd class="col-sm-9">@(Model.PresentationForm != null ? L.Message(Model.PresentationForm) : "-")</dd>
                     }
                     @if (pt == ProductType.RawMaterial)
                     {
-                        <dt class="col-sm-3">Grade (if applicable)</dt>
+                        <dt class="col-sm-3">@L["Grade (if applicable)"]</dt>
                         <dd class="col-sm-9">@(Model.Grade ?? "-")</dd>
                     }
 
-                    <dt class="col-sm-3">ARTG / Regulatory Ref.</dt>
+                    <dt class="col-sm-3">@L["ARTG / Regulatory Ref."]</dt>
                     <dd class="col-sm-9">@(Model.ArtgReference ?? "-")</dd>
 
                     @if (pt == null || pt == ProductType.Pharmaceutical || pt == ProductType.Biological || pt == ProductType.ConsumerHealth || pt == ProductType.Cosmetic)
@@ -227,12 +221,12 @@
                     <dt class="col-sm-3">@L["Approved On"]</dt>
                     <dd class="col-sm-9">@(Model.ApprovedOn.HasValue ? Model.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy HH:mm") : "-")</dd>
 
-                    <dt class="col-sm-3">Linked Adverse Events</dt>
+                    <dt class="col-sm-3">@L["Linked Adverse Events"]</dt>
                     <dd class="col-sm-9">
                         @if (aeCount > 0)
                         {
                             <span class="badge bg-danger">@aeCount</span>
-                            <a asp-controller="Pharmacovigilance" asp-action="Index" class="ms-2 small">View AEs</a>
+                            <a asp-controller="Pharmacovigilance" asp-action="Index" class="ms-2 small">@L["View AEs"]</a>
                         }
                         else { <text>0</text> }
                     </dd>
@@ -265,30 +259,30 @@
         {
             <form asp-action="AddSpecLine" asp-route-productId="@Model.Id" method="post" class="card mb-4 p-3 bg-light">
                 @Html.AntiForgeryToken()
-                <h6 class="mb-3">Add Specification Line</h6>
+                <h6 class="mb-3">@L["Add Specification Line"]</h6>
                 <div class="row g-2">
                     <div class="col-md-3">
-                        <input name="testParameter" class="form-control form-control-sm" placeholder="Test Parameter *" required />
+                        <input name="testParameter" class="form-control form-control-sm" placeholder="@L["Test Parameter *"]" required />
                     </div>
                     <div class="col-md-2">
-                        <input name="method" class="form-control form-control-sm" placeholder="Method" />
+                        <input name="method" class="form-control form-control-sm" placeholder="@L["Method"]" />
                     </div>
                     <div class="col-md-4">
-                        <input name="acceptanceCriterion" class="form-control form-control-sm" placeholder="Acceptance Criterion *" required />
+                        <input name="acceptanceCriterion" class="form-control form-control-sm" placeholder="@L["Acceptance Criterion *"]" required />
                     </div>
                     <div class="col-md-3">
-                        <input name="comments" class="form-control form-control-sm" placeholder="Comments" />
+                        <input name="comments" class="form-control form-control-sm" placeholder="@L["Comments"]" />
                     </div>
                 </div>
                 <div class="mt-2">
-                    <button type="submit" class="btn btn-sm btn-primary">Add Line</button>
+                    <button type="submit" class="btn btn-sm btn-primary">@L["Add Line"]</button>
                 </div>
             </form>
         }
 
         @if (Model.Specifications == null || !Model.Specifications.Any())
         {
-            <p class="text-muted">No specification lines defined yet.</p>
+            <p class="text-muted">@L["No specification lines defined yet."]</p>
         }
         else
         {
@@ -299,7 +293,7 @@
                         <th>@L["Test Parameter"]</th>
                         <th>@L["Test Method"]</th>
                         <th>@L["Acceptance Criterion"]</th>
-                        <th>Comments</th>
+                        <th>@L["Comments"]</th>
                         @if (canEditSpecs) { <th>@L["Actions"]</th> }
                     </tr>
                 </thead>
@@ -339,13 +333,13 @@
                             @if (canEditSpecs)
                             {
                                 <td class="text-nowrap">
-                                    <button type="button" class="btn btn-xs btn-outline-secondary btn-sm me-1 edit-spec" data-id="@s.Id" title="Edit line">
+                                    <button type="button" class="btn btn-xs btn-outline-secondary btn-sm me-1 edit-spec" data-id="@s.Id" title="@L["Edit line"]">
                                         <i class="bi bi-pencil"></i>
                                     </button>
                                     <button type="button" class="btn btn-xs btn-outline-primary btn-sm me-1 save-spec" data-id="@s.Id">@L["Save"]</button>
                                     <form asp-action="DeleteSpecLine" asp-route-specLineId="@s.Id" method="post" style="display:inline" onsubmit="return confirm('Delete this specification line?')">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-xs btn-outline-danger btn-sm">Del</button>
+                                        <button type="submit" class="btn btn-xs btn-outline-danger btn-sm">@L["Del"]</button>
                                     </form>
                                 </td>
                             }
@@ -496,7 +490,7 @@
                         </tbody>
                     </table>
                 }
-                else { <p class="text-muted p-3 mb-0">No linked complaints.</p> }
+                else { <p class="text-muted p-3 mb-0">@L["No linked complaints."]</p> }
             </div>
         </div>
     </div>
@@ -525,7 +519,7 @@
                                     <td>@(doc.Description ?? "-")</td>
                                     <td>@(doc.IssueDate.HasValue ? doc.IssueDate.Value.ToString("dd/MM/yyyy") : "-")</td>
                                     <td>@(doc.ExpiryDate.HasValue ? doc.ExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</td>
-                                    <td>@doc.DocumentStatus</td>
+                                    <td>@L.Enum(doc.DocumentStatus)</td>
                                     <td>@doc.UploadedBy</td>
                                     <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary">@L["Download"]</a></td>
                                 </tr>
@@ -565,11 +559,11 @@
             <form method="post" asp-action="Details" asp-route-id="@Model.Id">
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="approveModalLabel">Approve Product</h5>
+                    <h5 class="modal-title" id="approveModalLabel">@L["Approve Product"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>You are approving <strong>@Model.ProductId — @Model.Name</strong>.</p>
+                    <p>@H["You are approving <strong>{0} — {1}</strong>.", Model.ProductId, Model.Name]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email"]</label>
                         <input type="email" name="InputEmail" class="form-control" required />

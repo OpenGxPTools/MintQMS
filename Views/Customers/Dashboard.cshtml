@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Customer Dashboard";
+    ViewData["Title"] = L["Customer Dashboard"].Value;
     var today       = SiteTime.Today;
     var expiring90  = ViewBag.Expiring90 as List<OpenQMS.Models.Customer> ?? new();
     var expired     = ViewBag.Expired    as List<OpenQMS.Models.Customer> ?? new();
@@ -8,11 +8,11 @@
 
 <div class="container-fluid py-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="mb-0"><i class="fas fa-users me-2 text-primary"></i>Customer Dashboard</h4>
+        <h4 class="mb-0"><i class="fas fa-users me-2 text-primary"></i>@L["Customer Dashboard"]</h4>
         <div class="btn-group">
             <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list me-1"></i>@L["Register"]</a>
-            <a asp-action="ContractExpiryReport" asp-route-days="90" class="btn btn-outline-warning btn-sm"><i class="fas fa-file-excel me-1"></i>Expiry Report (90d)</a>
-            <a asp-action="ContractExpiryReport" asp-route-days="30" class="btn btn-outline-danger btn-sm"><i class="fas fa-file-excel me-1"></i>Expiry Report (30d)</a>
+            <a asp-action="ContractExpiryReport" asp-route-days="90" class="btn btn-outline-warning btn-sm"><i class="fas fa-file-excel me-1"></i>@L["Expiry Report (90d)"]</a>
+            <a asp-action="ContractExpiryReport" asp-route-days="30" class="btn btn-outline-danger btn-sm"><i class="fas fa-file-excel me-1"></i>@L["Expiry Report (30d)"]</a>
         </div>
     </div>
 
@@ -22,7 +22,7 @@
             <div class="card text-center border-0 shadow-sm h-100">
                 <div class="card-body py-3">
                     <div class="fs-1 fw-bold text-secondary">@ViewBag.TotalCustomers</div>
-                    <div class="small text-muted">Total Customers</div>
+                    <div class="small text-muted">@L["Total Customers"]</div>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
             <div class="card text-center border-0 shadow-sm h-100 bg-primary bg-opacity-10">
                 <div class="card-body py-3">
                     <div class="fs-1 fw-bold text-primary">@ViewBag.ActiveCount</div>
-                    <div class="small text-muted">Active Contracts</div>
+                    <div class="small text-muted">@L["Active Contracts"]</div>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
             <div class="card text-center border-0 shadow-sm h-100 bg-warning bg-opacity-10">
                 <div class="card-body py-3">
                     <div class="fs-1 fw-bold text-warning">@ViewBag.ExpiringCount</div>
-                    <div class="small text-muted">Expiring (90d)</div>
+                    <div class="small text-muted">@L["Expiring (90d)"]</div>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
             <div class="card text-center border-0 shadow-sm h-100 bg-secondary bg-opacity-10">
                 <div class="card-body py-3">
                     <div class="fs-1 fw-bold text-secondary">@ViewBag.NoExpiryCount</div>
-                    <div class="small text-muted">No Expiry Set</div>
+                    <div class="small text-muted">@L["No Expiry Set"]</div>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
         @* Type distribution chart *@
         <div class="col-md-5">
             <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-transparent fw-semibold">Customer Type Distribution</div>
+                <div class="card-header bg-transparent fw-semibold">@L["Customer Type Distribution"]</div>
                 <div class="card-body">
                     <canvas id="typeChart" height="220"></canvas>
                 </div>
@@ -83,13 +83,13 @@
         <div class="col-md-7">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-warning bg-opacity-10 fw-semibold">
-                    <i class="fas fa-clock me-1 text-warning"></i>Contracts Expiring Within 90 Days
+                    <i class="fas fa-clock me-1 text-warning"></i>@L["Contracts Expiring Within 90 Days"]
                     <span class="badge bg-warning text-dark ms-2">@expiring90.Count</span>
                 </div>
                 <div class="card-body p-0">
                     @if (!expiring90.Any())
                     {
-                        <p class="text-muted small p-3 mb-0">No contracts expiring within 90 days.</p>
+                        <p class="text-muted small p-3 mb-0">@L["No contracts expiring within 90 days."]</p>
                     }
                     else
                     {
@@ -107,7 +107,7 @@
                                     <td>@c.LegalName</td>
                                     <td>@c.ContractExpiryDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                     <td>@(d <= 0 ? $"Expires today" : $"{d}d")</td>
-                                    <td><span class="badge bg-secondary">@c.CustomerType</span></td>
+                                    <td><span class="badge bg-secondary">@L.Enum(c.CustomerType)</span></td>
                                 </tr>
                             }
                             </tbody>
@@ -124,7 +124,7 @@
             <div class="col-12">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-danger text-white fw-semibold">
-                        <i class="fas fa-exclamation-triangle me-1"></i>Expired Contracts
+                        <i class="fas fa-exclamation-triangle me-1"></i>@L["Expired Contracts"]
                         <span class="badge bg-white text-danger ms-2">@expired.Count</span>
                     </div>
                     <div class="card-body p-0">
@@ -140,8 +140,8 @@
                                     <td><a asp-action="Details" asp-route-id="@c.Id">@c.CustomerId</a></td>
                                     <td>@c.LegalName</td>
                                     <td>@c.ContractExpiryDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
-                                    <td>@d days overdue</td>
-                                    <td><span class="badge bg-secondary">@c.CustomerType</span></td>
+                                    <td>@L["{0} days overdue", d]</td>
+                                    <td><span class="badge bg-secondary">@L.Enum(c.CustomerType)</span></td>
                                     <td>@(c.ContactEmail ?? "-")</td>
                                 </tr>
                             }

@@ -4,7 +4,7 @@
 @using System.Reflection
 
 @{
-    ViewData["Title"] = $"Service — {Model.ServiceId}";
+    ViewData["Title"] = $"{L["Service"]} — {Model.ServiceId}";
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool isLocked = Model.IsLocked;
     var statusBadge = Model.Status switch {
@@ -15,17 +15,16 @@
     };
     int docCount = Model.Documents?.Count ?? 0;
     string CategoryDisplayName(OpenQMS.Models.Service.ServiceCategory cat) {
-        var member = cat.GetType().GetField(cat.ToString());
-        return member?.GetCustomAttribute<DisplayAttribute>()?.Name ?? cat.ToString();
+        return L.Enum(cat);
     }
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Service &mdash; <span class="fw-bold">@Model.ServiceId</span></h4>
+        <h4 class="mb-0">@L["Service —"] <span class="fw-bold">@Model.ServiceId</span></h4>
         <small class="text-muted">@Model.Name</small>
     </div>
-    <span class="badge @statusBadge fs-6">@Model.Status</span>
+    <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
 </div>
 <hr />
 
@@ -72,12 +71,12 @@
         <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> @L["Workflow Actions"]</div>
         <div class="card-body d-flex gap-2 flex-wrap">
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveModal">
-                <i class="fas fa-check-circle me-1"></i>Approve Service
+                <i class="fas fa-check-circle me-1"></i>@L["Approve Service"]
             </button>
             <form asp-action="SendBackToDraft" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-outline-warning btn-sm"
-                        onclick="return confirm('Send this service back to Draft for rework?')">
+                        data-confirm="@L["Send this service back to Draft for rework?"]" onclick="return confirm(this.dataset.confirm);">
                     <i class="fas fa-undo me-1"></i>@L["Send Back to Draft"]
                 </button>
             </form>
@@ -107,7 +106,7 @@
         <div class="card mb-3">
             <div class="card-body">
                 <dl class="row mb-0">
-                    <dt class="col-sm-3">Service ID</dt>
+                    <dt class="col-sm-3">@L["Service ID"]</dt>
                     <dd class="col-sm-9">@Model.ServiceId</dd>
 
                     <dt class="col-sm-3">@L["Name"]</dt>
@@ -123,7 +122,7 @@
                     <dd class="col-sm-9">@Model.Version</dd>
 
                     <dt class="col-sm-3">@L["Status"]</dt>
-                    <dd class="col-sm-9"><span class="badge @statusBadge">@Model.Status</span></dd>
+                    <dd class="col-sm-9"><span class="badge @statusBadge">@L.Enum(Model.Status)</span></dd>
 
                     <dt class="col-sm-3">@L["Edited By"]</dt>
                     <dd class="col-sm-9">@(Model.EditedBy ?? "-")</dd>
@@ -183,7 +182,7 @@
                                     <td>@(doc.Description ?? "-")</td>
                                     <td>@(doc.IssueDate.HasValue ? doc.IssueDate.Value.ToString("dd/MM/yyyy") : "-")</td>
                                     <td>@(doc.ExpiryDate.HasValue ? doc.ExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</td>
-                                    <td>@doc.DocumentStatus</td>
+                                    <td>@L.Enum(doc.DocumentStatus)</td>
                                     <td>@doc.UploadedBy</td>
                                     <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary">@L["Download"]</a></td>
                                 </tr>
@@ -223,11 +222,11 @@
             <form method="post" asp-action="Details" asp-route-id="@Model.Id">
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="approveModalLabel">Approve Service</h5>
+                    <h5 class="modal-title" id="approveModalLabel">@L["Approve Service"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>You are approving <strong>@Model.ServiceId — @Model.Name</strong>.</p>
+                    <p>@H["You are approving <strong>{0} — {1}</strong>.", Model.ServiceId, Model.Name]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email"]</label>
                         <input type="email" name="InputEmail" class="form-control" required />

@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Process
 
 @{
-    ViewData["Title"] = "Process Attachments";
+    ViewData["Title"] = L["Process Attachments"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool isLocked = Model.Status != OpenQMS.Models.Process.ProcessStatus.Draft
                  && Model.Status != OpenQMS.Models.Process.ProcessStatus.UnderReview;
@@ -14,10 +14,10 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Process &mdash; <span class="fw-bold">@Model.ProcessId</span></h4>
-        <small class="text-muted">Attachments &mdash; @Model.Name</small>
+        <h4 class="mb-0">@L["Process —"] <span class="fw-bold">@Model.ProcessId</span></h4>
+        <small class="text-muted">@L["Attachments — {0}", Model.Name]</small>
     </div>
-    <span class="badge @statusBadge fs-6">@Model.Status</span>
+    <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
 </div>
 <hr />
 
@@ -41,7 +41,7 @@
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span>@L["Upload Document"]</span>
-            <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Accepted: @UploadRules.AcceptedLabel &middot; Max 25 MB</small>
+            <small class="text-muted"><i class="fas fa-info-circle me-1"></i>@L["Accepted: {0} · Max 25 MB", UploadRules.AcceptedLabel]</small>
         </div>
         <div class="card-body">
             <form asp-action="UploadDocument" method="post" enctype="multipart/form-data">
@@ -111,7 +111,7 @@ else
                     <td>@(doc.Description ?? "-")</td>
                     <td>@(doc.IssueDate.HasValue ? doc.IssueDate.Value.ToString("dd/MM/yyyy") : "-")</td>
                     <td>@(doc.ExpiryDate.HasValue ? doc.ExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</td>
-                    <td>@doc.DocumentStatus</td>
+                    <td>@L.Enum(doc.DocumentStatus)</td>
                     <td>@doc.UploadedBy</td>
                     <td>@doc.UploadedDate.ToSite().ToString("dd/MM/yyyy")</td>
                     <td class="text-end">

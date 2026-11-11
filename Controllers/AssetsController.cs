@@ -20,6 +20,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
+using OpenQMS.Localization;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -137,7 +138,7 @@ namespace OpenQMS.Controllers
                 var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
                 if (!isAuthorized)
                 {
-                    TempData["WorkflowError"] = "You do not have permission to approve.";
+                    TempData["WorkflowError"] = this.T("You do not have permission to approve.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -145,20 +146,20 @@ namespace OpenQMS.Controllers
                 var loggedUser = _userManager.GetUserName(User);
                 if ((userSigning == null) || (userSigning.UserName != loggedUser))
                 {
-                    TempData["WorkflowError"] = "Invalid credentials. Please enter your own email and password.";
+                    TempData["WorkflowError"] = this.T("Invalid credentials. Please enter your own email and password.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
                 var result = await _signInManager.PasswordSignInAsync(userSigning.UserName, InputPassword, isPersistent: false, lockoutOnFailure: false);
                 if (!(result.Succeeded || result.RequiresTwoFactor))
                 {
-                    TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                    TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
                 if (asset.Status != AssetStatus.UnderReview)
                 {
-                    TempData["WorkflowError"] = "Only assets under review can be approved.";
+                    TempData["WorkflowError"] = this.T("Only assets under review can be approved.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -183,7 +184,7 @@ namespace OpenQMS.Controllers
                 _context.Asset.Update(asset);
                 AddAuditLog(asset.Id, "Approved", "UnderReview", "Approved");
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Asset approved successfully.";
+                TempData["Success"] = this.T("Asset approved successfully.");
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -211,7 +212,7 @@ namespace OpenQMS.Controllers
 
             if (asset.Status != AssetStatus.Draft)
             {
-                TempData["WorkflowError"] = "Only Draft assets can be submitted for review.";
+                TempData["WorkflowError"] = this.T("Only Draft assets can be submitted for review.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -219,7 +220,7 @@ namespace OpenQMS.Controllers
             _context.Asset.Update(asset);
             AddAuditLog(asset.Id, "Submitted for review", "Draft", "UnderReview");
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Asset submitted for review.";
+            TempData["Success"] = this.T("Asset submitted for review.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -234,13 +235,13 @@ namespace OpenQMS.Controllers
             var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
             if (!isAuthorized)
             {
-                TempData["WorkflowError"] = "You do not have permission to send back for rework.";
+                TempData["WorkflowError"] = this.T("You do not have permission to send back for rework.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (asset.Status != AssetStatus.UnderReview)
             {
-                TempData["WorkflowError"] = "Only assets under review can be sent back to draft.";
+                TempData["WorkflowError"] = this.T("Only assets under review can be sent back to draft.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -248,7 +249,7 @@ namespace OpenQMS.Controllers
             _context.Asset.Update(asset);
             AddAuditLog(asset.Id, "Sent back to draft", "UnderReview", "Draft");
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Asset sent back to Draft for rework.";
+            TempData["Success"] = this.T("Asset sent back to Draft for rework.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -342,7 +343,7 @@ namespace OpenQMS.Controllers
 
             if (asset.Status == AssetStatus.UnderReview)
             {
-                TempData["Error"] = "This asset is currently under review and cannot be edited.";
+                TempData["Error"] = this.T("This asset is currently under review and cannot be edited.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -383,7 +384,7 @@ namespace OpenQMS.Controllers
                     if (current.IsLocked || current.Status == AssetStatus.Obsolete) return Forbid();
                     if (current.Status == AssetStatus.UnderReview)
                     {
-                        TempData["Error"] = "This asset is currently under review and cannot be edited.";
+                        TempData["Error"] = this.T("This asset is currently under review and cannot be edited.");
                         return RedirectToAction(nameof(Details), new { id });
                     }
                     asset.IsLocked      = current.IsLocked;
@@ -494,7 +495,7 @@ namespace OpenQMS.Controllers
 
             if (asset.Status != AssetStatus.Draft)
             {
-                TempData["Error"] = "Only Draft assets can be deleted.";
+                TempData["Error"] = this.T("Only Draft assets can be deleted.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -526,7 +527,7 @@ namespace OpenQMS.Controllers
 
             if (asset.Status != AssetStatus.Draft)
             {
-                TempData["Error"] = "Only Draft assets can be deleted.";
+                TempData["Error"] = this.T("Only Draft assets can be deleted.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -607,7 +608,7 @@ namespace OpenQMS.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 return RedirectToAction(nameof(Documents), new { id = assetId });
             }
 
@@ -615,13 +616,13 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = $"File type '{ext}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.";
+                TempData["Error"] = this.T("File type '{0}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.", ext);
                 return RedirectToAction(nameof(Documents), new { id = assetId });
             }
 
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File exceeds the 25 MB maximum size limit.";
+                TempData["Error"] = this.T("File exceeds the 25 MB maximum size limit.");
                 return RedirectToAction(nameof(Documents), new { id = assetId });
             }
 
@@ -633,7 +634,7 @@ namespace OpenQMS.Controllers
 
             if (asset.Status != AssetStatus.Draft && asset.Status != AssetStatus.UnderReview)
             {
-                TempData["Error"] = "Documents can only be uploaded to Draft or Under Review assets.";
+                TempData["Error"] = this.T("Documents can only be uploaded to Draft or Under Review assets.");
                 return RedirectToAction(nameof(Documents), new { id = assetId });
             }
 
@@ -669,7 +670,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(assetId, "Document uploaded", null, null, file.FileName);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Document uploaded successfully.";
+            TempData["Success"] = this.T("Document uploaded successfully.");
             return RedirectToAction(nameof(Documents), new { id = assetId });
         }
 
@@ -730,13 +731,13 @@ namespace OpenQMS.Controllers
 
             if (asset.Status != AssetStatus.Draft && asset.Status != AssetStatus.UnderReview)
             {
-                TempData["Error"] = "Documents can only be deleted from Draft or Under Review assets.";
+                TempData["Error"] = this.T("Documents can only be deleted from Draft or Under Review assets.");
                 return RedirectToAction(nameof(Documents), new { id = doc.AssetId });
             }
 
             if (string.IsNullOrWhiteSpace(deletionReason))
             {
-                TempData["Error"] = "A reason is required to delete a document.";
+                TempData["Error"] = this.T("A reason is required to delete a document.");
                 return RedirectToAction(nameof(Documents), new { id = doc.AssetId });
             }
 
@@ -748,7 +749,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(doc.AssetId, "Document deleted", null, null, $"{doc.FileName} — Reason: {doc.DeletionReason}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Document deleted successfully.";
+            TempData["Success"] = this.T("Document deleted successfully.");
             return RedirectToAction(nameof(Documents), new { id = doc.AssetId });
         }
 

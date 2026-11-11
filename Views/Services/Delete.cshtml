@@ -1,13 +1,13 @@
 @model OpenQMS.Models.Service
 
 @{
-    ViewData["Title"] = "Delete Service";
+    ViewData["Title"] = L["Delete Service"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Delete Service</h4>
+        <h4 class="mb-0">@L["Delete Service"]</h4>
     </div>
 </div>
 <hr />
@@ -105,7 +105,7 @@
     }
     @if ((bool)ViewData["HasLinkedRecords"] == true)
     {
-        <div class="alert alert-danger">This service has linked Documents or Suppliers. Remove those links before deleting.</div>
+        <div class="alert alert-danger">@L["This service has linked Documents or Suppliers. Remove those links before deleting."]</div>
     }
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />

@@ -20,6 +20,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
+using OpenQMS.Localization;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -134,7 +135,7 @@ namespace OpenQMS.Controllers
                 var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
                 if (!isAuthorized)
                 {
-                    TempData["WorkflowError"] = "You do not have permission to perform this action.";
+                    TempData["WorkflowError"] = this.T("You do not have permission to perform this action.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -142,20 +143,20 @@ namespace OpenQMS.Controllers
                 var loggedUser = _userManager.GetUserName(User);
                 if ((userSigning == null) || (userSigning.UserName != loggedUser))
                 {
-                    TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                    TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
                 var result = await _signInManager.PasswordSignInAsync(userSigning.UserName, InputPassword, isPersistent: false, lockoutOnFailure: false);
                 if (!(result.Succeeded || result.RequiresTwoFactor))
                 {
-                    TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                    TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
                 if (product.Status != ProductStatus.UnderReview)
                 {
-                    TempData["WorkflowError"] = "Only products under review can be approved.";
+                    TempData["WorkflowError"] = this.T("Only products under review can be approved.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -180,7 +181,7 @@ namespace OpenQMS.Controllers
                 _context.Product.Update(product);
                 AddAuditLog(product.Id, "Approved", ProductStatus.UnderReview.ToString(), ProductStatus.Approved.ToString());
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Product approved successfully.";
+                TempData["Success"] = this.T("Product approved successfully.");
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -208,7 +209,7 @@ namespace OpenQMS.Controllers
 
             if (product.Status != ProductStatus.Draft)
             {
-                TempData["WorkflowError"] = "Only Draft products can be submitted for review.";
+                TempData["WorkflowError"] = this.T("Only Draft products can be submitted for review.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -216,7 +217,7 @@ namespace OpenQMS.Controllers
             _context.Product.Update(product);
             AddAuditLog(product.Id, "Submitted for review", ProductStatus.Draft.ToString(), ProductStatus.UnderReview.ToString());
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Product submitted for review.";
+            TempData["Success"] = this.T("Product submitted for review.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -231,13 +232,13 @@ namespace OpenQMS.Controllers
             var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
             if (!isAuthorized)
             {
-                TempData["WorkflowError"] = "You do not have permission to send back for rework.";
+                TempData["WorkflowError"] = this.T("You do not have permission to send back for rework.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (product.Status != ProductStatus.UnderReview)
             {
-                TempData["WorkflowError"] = "Only products under review can be sent back to draft.";
+                TempData["WorkflowError"] = this.T("Only products under review can be sent back to draft.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -245,7 +246,7 @@ namespace OpenQMS.Controllers
             _context.Product.Update(product);
             AddAuditLog(product.Id, "Sent back to draft", ProductStatus.UnderReview.ToString(), ProductStatus.Draft.ToString());
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Product sent back to Draft for rework.";
+            TempData["Success"] = this.T("Product sent back to Draft for rework.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -325,7 +326,7 @@ namespace OpenQMS.Controllers
 
             if (product.Status == ProductStatus.UnderReview)
             {
-                TempData["Error"] = "This product is currently under review and cannot be edited.";
+                TempData["Error"] = this.T("This product is currently under review and cannot be edited.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -358,7 +359,7 @@ namespace OpenQMS.Controllers
                     if (current.IsLocked || current.Status == ProductStatus.Obsolete) return Forbid();
                     if (current.Status == ProductStatus.UnderReview)
                     {
-                        TempData["Error"] = "This product is currently under review and cannot be edited.";
+                        TempData["Error"] = this.T("This product is currently under review and cannot be edited.");
                         return RedirectToAction(nameof(Details), new { id });
                     }
                     product.IsLocked      = current.IsLocked;
@@ -471,7 +472,7 @@ namespace OpenQMS.Controllers
 
             if (product.Status != ProductStatus.Draft)
             {
-                TempData["Error"] = "Only Draft products can be deleted.";
+                TempData["Error"] = this.T("Only Draft products can be deleted.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -504,7 +505,7 @@ namespace OpenQMS.Controllers
 
             if (product.Status != ProductStatus.Draft)
             {
-                TempData["Error"] = "Only Draft products can be deleted.";
+                TempData["Error"] = this.T("Only Draft products can be deleted.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -585,7 +586,7 @@ namespace OpenQMS.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 return RedirectToAction(nameof(Documents), new { id = productId });
             }
 
@@ -593,13 +594,13 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = $"File type '{ext}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.";
+                TempData["Error"] = this.T("File type '{0}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.", ext);
                 return RedirectToAction(nameof(Documents), new { id = productId });
             }
 
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File exceeds the 25 MB maximum size limit.";
+                TempData["Error"] = this.T("File exceeds the 25 MB maximum size limit.");
                 return RedirectToAction(nameof(Documents), new { id = productId });
             }
 
@@ -611,7 +612,7 @@ namespace OpenQMS.Controllers
 
             if (product.Status != ProductStatus.Draft && product.Status != ProductStatus.UnderReview)
             {
-                TempData["Error"] = "Documents can only be uploaded to Draft or Under Review products.";
+                TempData["Error"] = this.T("Documents can only be uploaded to Draft or Under Review products.");
                 return RedirectToAction(nameof(Documents), new { id = productId });
             }
 
@@ -647,7 +648,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(productId, "Document uploaded", null, null, file.FileName);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Document uploaded successfully.";
+            TempData["Success"] = this.T("Document uploaded successfully.");
             return RedirectToAction(nameof(Documents), new { id = productId });
         }
 
@@ -706,13 +707,13 @@ namespace OpenQMS.Controllers
 
             if (product.Status != ProductStatus.Draft && product.Status != ProductStatus.UnderReview)
             {
-                TempData["Error"] = "Documents can only be deleted from Draft or Under Review products.";
+                TempData["Error"] = this.T("Documents can only be deleted from Draft or Under Review products.");
                 return RedirectToAction(nameof(Documents), new { id = doc.ProductId });
             }
 
             if (string.IsNullOrWhiteSpace(deletionReason))
             {
-                TempData["Error"] = "A reason is required to delete a document.";
+                TempData["Error"] = this.T("A reason is required to delete a document.");
                 return RedirectToAction(nameof(Documents), new { id = doc.ProductId });
             }
 
@@ -724,7 +725,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(doc.ProductId, "Document deleted", null, null, $"{doc.FileName} — Reason: {doc.DeletionReason}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Document deleted successfully.";
+            TempData["Success"] = this.T("Document deleted successfully.");
             return RedirectToAction(nameof(Documents), new { id = doc.ProductId });
         }
 
@@ -739,19 +740,19 @@ namespace OpenQMS.Controllers
             if (product.IsLocked || product.Status == ProductStatus.UnderReview
                 || product.Status == ProductStatus.Approved || product.Status == ProductStatus.Obsolete)
             {
-                TempData["Error"] = "Strengths can only be modified on a Draft product. Save the product first to create a new Draft revision, then add strengths.";
+                TempData["Error"] = this.T("Strengths can only be modified on a Draft product. Save the product first to create a new Draft revision, then add strengths.");
                 return RedirectToAction(nameof(Edit), new { id = productId });
             }
             if (string.IsNullOrWhiteSpace(value))
             {
-                TempData["Error"] = "Strength value cannot be empty.";
+                TempData["Error"] = this.T("Strength value cannot be empty.");
                 return RedirectToAction(nameof(Edit), new { id = productId });
             }
 
             _context.ProductStrengths.Add(new ProductStrength { ProductId = productId, Value = value.Trim() });
             AddAuditLog(productId, "Strength Added", null, null, value.Trim());
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"Strength '{value.Trim()}' added.";
+            TempData["Success"] = this.T("Strength '{0}' added.", value.Trim());
             return RedirectToAction(nameof(Edit), new { id = productId });
         }
 
@@ -767,7 +768,7 @@ namespace OpenQMS.Controllers
             if (strength == null) return NotFound();
             if (strength.Product?.IsLocked == true || strength.Product?.Status == ProductStatus.Approved || strength.Product?.Status == ProductStatus.Obsolete)
             {
-                TempData["Error"] = "Strengths can only be modified on a Draft product. Save the product first to create a new Draft revision, then add strengths.";
+                TempData["Error"] = this.T("Strengths can only be modified on a Draft product. Save the product first to create a new Draft revision, then add strengths.");
                 return RedirectToAction(nameof(Edit), new { id = strength.ProductId });
             }
 
@@ -775,7 +776,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(productId, "Strength Removed", null, null, strength.Value);
             _context.ProductStrengths.Remove(strength);
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"Strength '{strength.Value}' removed.";
+            TempData["Success"] = this.T("Strength '{0}' removed.", strength.Value);
             return RedirectToAction(nameof(Edit), new { id = productId });
         }
 
@@ -791,13 +792,13 @@ namespace OpenQMS.Controllers
             if (product.IsLocked || product.Status == ProductStatus.UnderReview
                 || product.Status == ProductStatus.Approved || product.Status == ProductStatus.Obsolete)
             {
-                TempData["Error"] = "Specification lines can only be modified on a Draft product. Save the product first to create a new Draft revision.";
+                TempData["Error"] = this.T("Specification lines can only be modified on a Draft product. Save the product first to create a new Draft revision.");
                 return RedirectToAction(nameof(Details), new { id = productId });
             }
 
             if (string.IsNullOrWhiteSpace(testParameter) || string.IsNullOrWhiteSpace(acceptanceCriterion))
             {
-                TempData["Error"] = "Test Parameter and Acceptance Criterion are required.";
+                TempData["Error"] = this.T("Test Parameter and Acceptance Criterion are required.");
                 TempData["ActiveTab"] = "specs";
                 return RedirectToAction(nameof(Details), new { id = productId });
             }
@@ -821,7 +822,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(productId, "Specification Line Added", null, null, testParameter.Trim());
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Specification line added.";
+            TempData["Success"] = this.T("Specification line added.");
             TempData["ActiveTab"] = "specs";
             return RedirectToAction(nameof(Details), new { id = productId });
         }
@@ -839,7 +840,7 @@ namespace OpenQMS.Controllers
             if (line.Product?.IsLocked == true || line.Product?.Status == ProductStatus.UnderReview
                 || line.Product?.Status == ProductStatus.Approved || line.Product?.Status == ProductStatus.Obsolete)
             {
-                TempData["Error"] = "Specification lines can only be modified on a Draft product.";
+                TempData["Error"] = this.T("Specification lines can only be modified on a Draft product.");
                 return RedirectToAction(nameof(Details), new { id = line.ProductId });
             }
 
@@ -866,7 +867,7 @@ namespace OpenQMS.Controllers
             if (line.Product?.IsLocked == true || line.Product?.Status == ProductStatus.UnderReview
                 || line.Product?.Status == ProductStatus.Approved || line.Product?.Status == ProductStatus.Obsolete)
             {
-                TempData["Error"] = "Specification lines can only be modified on a Draft product.";
+                TempData["Error"] = this.T("Specification lines can only be modified on a Draft product.");
                 return RedirectToAction(nameof(Details), new { id = line.ProductId });
             }
 
@@ -875,7 +876,7 @@ namespace OpenQMS.Controllers
             _context.ProductSpecLines.Remove(line);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Specification line deleted.";
+            TempData["Success"] = this.T("Specification line deleted.");
             TempData["ActiveTab"] = "specs";
             return RedirectToAction(nameof(Details), new { id = productId });
         }

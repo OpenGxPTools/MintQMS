@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Customer
 
 @{
-    ViewData["Title"] = "Customer Details";
+    ViewData["Title"] = L["Customer Details"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool isLocked = Model.IsLocked == true;
     var statusBadge = Model.Status switch {
@@ -16,7 +16,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Customer &mdash; <span class="fw-bold">@Model.CustomerId</span></h4>
+        <h4 class="mb-0">@L["Customer —"] <span class="fw-bold">@Model.CustomerId</span></h4>
         <small class="text-muted">@Model.LegalName</small>
     </div>
     <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
@@ -66,12 +66,12 @@
         <div class="card-header bg-primary text-white"><i class="fas fa-tasks me-1"></i> @L["Workflow Actions"]</div>
         <div class="card-body d-flex gap-2 flex-wrap">
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#approveModal">
-                <i class="fas fa-check-circle me-1"></i>Approve Customer
+                <i class="fas fa-check-circle me-1"></i>@L["Approve Customer"]
             </button>
             <form asp-action="SendBackToDraft" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-outline-warning btn-sm"
-                        onclick="return confirm('Send this customer back to Draft for rework?')">
+                        data-confirm="@L["Send this customer back to Draft for rework?"]" onclick="return confirm(this.dataset.confirm);">
                     <i class="fas fa-undo me-1"></i>@L["Send Back to Draft"]
                 </button>
             </form>
@@ -122,11 +122,11 @@
                     <dt class="col-sm-4">@L["Trading Name"]</dt>
                     <dd class="col-sm-8">@(Model.TradingName ?? "-")</dd>
 
-                    <dt class="col-sm-4">Customer Type</dt>
-                    <dd class="col-sm-8">@Model.CustomerType</dd>
+                    <dt class="col-sm-4">@L["Customer Type"]</dt>
+                    <dd class="col-sm-8">@L.Enum(Model.CustomerType)</dd>
 
-                    <dt class="col-sm-4">Industry / Sector</dt>
-                    <dd class="col-sm-8">@(Model.Industry ?? "-")</dd>
+                    <dt class="col-sm-4">@L["Industry / Sector"]</dt>
+                    <dd class="col-sm-8">@(Model.Industry != null ? L.Message(Model.Industry) : "-")</dd>
 
                     <dt class="col-sm-4">@L["Legal ID"]</dt>
                     <dd class="col-sm-8">@(Model.LegalId ?? "-")</dd>
@@ -179,13 +179,13 @@
             <div class="card-header">@L["Commercial"]</div>
             <div class="card-body">
                 <dl class="row mb-0">
-                    <dt class="col-sm-4">Account Number</dt>
+                    <dt class="col-sm-4">@L["Account Number"]</dt>
                     <dd class="col-sm-8">@(Model.AccountNumber ?? "-")</dd>
 
-                    <dt class="col-sm-4">Contract Reference</dt>
+                    <dt class="col-sm-4">@L["Contract Reference"]</dt>
                     <dd class="col-sm-8">@(Model.ContractReference ?? "-")</dd>
 
-                    <dt class="col-sm-4">Contract Expiry Date</dt>
+                    <dt class="col-sm-4">@L["Contract Expiry Date"]</dt>
                     <dd class="col-sm-8">@(Model.ContractExpiryDate.HasValue ? Model.ContractExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</dd>
                 </dl>
             </div>
@@ -213,7 +213,7 @@
                         }
                     </ul>
                 }
-                else { <span class="text-muted">No related documents linked.</span> }
+                else { <span class="text-muted">@L["No related documents linked."]</span> }
             </div>
         </div>
 
@@ -268,7 +268,7 @@
                         </tbody>
                     </table>
                 }
-                else { <p class="text-muted p-3 mb-0">No complaints linked to this customer.</p> }
+                else { <p class="text-muted p-3 mb-0">@L["No complaints linked to this customer."]</p> }
             </div>
         </div>
     </div>
@@ -297,7 +297,7 @@
                                     <td>@(doc.Description ?? "-")</td>
                                     <td>@(doc.IssueDate.HasValue ? doc.IssueDate.Value.ToString("dd/MM/yyyy") : "-")</td>
                                     <td>@(doc.ExpiryDate.HasValue ? doc.ExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</td>
-                                    <td>@doc.DocumentStatus</td>
+                                    <td>@L.Enum(doc.DocumentStatus)</td>
                                     <td>@doc.UploadedBy</td>
                                     <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-secondary">@L["Download"]</a></td>
                                 </tr>
@@ -337,11 +337,11 @@
             <form method="post" asp-action="Details" asp-route-id="@Model.Id">
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="approveModalLabel">Approve Customer</h5>
+                    <h5 class="modal-title" id="approveModalLabel">@L["Approve Customer"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>You are approving <strong>@Model.CustomerId — @Model.LegalName</strong>.</p>
+                    <p>@H["You are approving <strong>{0} — {1}</strong>.", Model.CustomerId, Model.LegalName]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email"]</label>
                         <input type="email" name="InputEmail" class="form-control" required />

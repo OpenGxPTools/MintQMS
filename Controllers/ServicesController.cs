@@ -1,3 +1,4 @@
+using OpenQMS.Localization;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -95,7 +96,7 @@ namespace OpenQMS.Controllers
                 var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
                 if (!isAuthorized)
                 {
-                    TempData["WorkflowError"] = "You do not have permission to perform this action.";
+                    TempData["WorkflowError"] = this.T("You do not have permission to perform this action.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -103,20 +104,20 @@ namespace OpenQMS.Controllers
                 var loggedUser = _userManager.GetUserName(User);
                 if ((userSigning == null) || (userSigning.UserName != loggedUser))
                 {
-                    TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                    TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
                 var result = await _signInManager.PasswordSignInAsync(userSigning.UserName, InputPassword, isPersistent: false, lockoutOnFailure: false);
                 if (!(result.Succeeded || result.RequiresTwoFactor))
                 {
-                    TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                    TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
                 if (service.Status != ServiceStatus.UnderReview)
                 {
-                    TempData["WorkflowError"] = "Only services under review can be approved.";
+                    TempData["WorkflowError"] = this.T("Only services under review can be approved.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -140,7 +141,7 @@ namespace OpenQMS.Controllers
                 _context.Service.Update(service);
                 AddAuditLog(service.Id, "Approved", "UnderReview", "Approved");
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Service approved successfully.";
+                TempData["Success"] = this.T("Service approved successfully.");
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -164,7 +165,7 @@ namespace OpenQMS.Controllers
 
             if (service.Status != ServiceStatus.Draft)
             {
-                TempData["WorkflowError"] = "Only Draft services can be submitted for review.";
+                TempData["WorkflowError"] = this.T("Only Draft services can be submitted for review.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -172,7 +173,7 @@ namespace OpenQMS.Controllers
             _context.Service.Update(service);
             AddAuditLog(service.Id, "Submitted for review", "Draft", "UnderReview");
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Service submitted for review.";
+            TempData["Success"] = this.T("Service submitted for review.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -187,13 +188,13 @@ namespace OpenQMS.Controllers
             var isAuthorized = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
             if (!isAuthorized)
             {
-                TempData["WorkflowError"] = "You do not have permission to send back for rework.";
+                TempData["WorkflowError"] = this.T("You do not have permission to send back for rework.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (service.Status != ServiceStatus.UnderReview)
             {
-                TempData["WorkflowError"] = "Only services under review can be sent back to draft.";
+                TempData["WorkflowError"] = this.T("Only services under review can be sent back to draft.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -201,7 +202,7 @@ namespace OpenQMS.Controllers
             _context.Service.Update(service);
             AddAuditLog(service.Id, "Sent back to draft", "UnderReview", "Draft");
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Service sent back to Draft for rework.";
+            TempData["Success"] = this.T("Service sent back to Draft for rework.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -275,7 +276,7 @@ namespace OpenQMS.Controllers
 
             if (service.Status == ServiceStatus.UnderReview)
             {
-                TempData["Error"] = "This service is currently under review and cannot be edited.";
+                TempData["Error"] = this.T("This service is currently under review and cannot be edited.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -304,7 +305,7 @@ namespace OpenQMS.Controllers
                     if (current.IsLocked || current.Status == ServiceStatus.Obsolete) return Forbid();
                     if (current.Status == ServiceStatus.UnderReview)
                     {
-                        TempData["Error"] = "This service is currently under review and cannot be edited.";
+                        TempData["Error"] = this.T("This service is currently under review and cannot be edited.");
                         return RedirectToAction(nameof(Details), new { id });
                     }
                     service.IsLocked      = current.IsLocked;
@@ -395,7 +396,7 @@ namespace OpenQMS.Controllers
 
             if (service.Status != ServiceStatus.Draft)
             {
-                TempData["Error"] = "Only Draft services can be deleted.";
+                TempData["Error"] = this.T("Only Draft services can be deleted.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -422,7 +423,7 @@ namespace OpenQMS.Controllers
 
             if (service.Status != ServiceStatus.Draft)
             {
-                TempData["Error"] = "Only Draft services can be deleted.";
+                TempData["Error"] = this.T("Only Draft services can be deleted.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -497,7 +498,7 @@ namespace OpenQMS.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 return RedirectToAction(nameof(Documents), new { id = serviceId });
             }
 
@@ -505,13 +506,13 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = $"File type '{ext}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.";
+                TempData["Error"] = this.T("File type '{0}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.", ext);
                 return RedirectToAction(nameof(Documents), new { id = serviceId });
             }
 
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File exceeds the 25 MB maximum size limit.";
+                TempData["Error"] = this.T("File exceeds the 25 MB maximum size limit.");
                 return RedirectToAction(nameof(Documents), new { id = serviceId });
             }
 
@@ -521,7 +522,7 @@ namespace OpenQMS.Controllers
 
             if (service.Status != ServiceStatus.Draft && service.Status != ServiceStatus.UnderReview)
             {
-                TempData["Error"] = "Documents can only be uploaded to Draft or Under Review services.";
+                TempData["Error"] = this.T("Documents can only be uploaded to Draft or Under Review services.");
                 return RedirectToAction(nameof(Documents), new { id = serviceId });
             }
 
@@ -557,7 +558,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(serviceId, "Document uploaded", null, null, file.FileName);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Document uploaded successfully.";
+            TempData["Success"] = this.T("Document uploaded successfully.");
             return RedirectToAction(nameof(Documents), new { id = serviceId });
         }
 
@@ -610,13 +611,13 @@ namespace OpenQMS.Controllers
 
             if (service.Status != ServiceStatus.Draft && service.Status != ServiceStatus.UnderReview)
             {
-                TempData["Error"] = "Documents can only be deleted from Draft or Under Review services.";
+                TempData["Error"] = this.T("Documents can only be deleted from Draft or Under Review services.");
                 return RedirectToAction(nameof(Documents), new { id = doc.ServiceId });
             }
 
             if (string.IsNullOrWhiteSpace(deletionReason))
             {
-                TempData["Error"] = "A reason is required to delete a document.";
+                TempData["Error"] = this.T("A reason is required to delete a document.");
                 return RedirectToAction(nameof(Documents), new { id = doc.ServiceId });
             }
 
@@ -628,7 +629,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(doc.ServiceId, "Document deleted", null, null, $"{doc.FileName} — Reason: {doc.DeletionReason}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Document deleted successfully.";
+            TempData["Success"] = this.T("Document deleted successfully.");
             return RedirectToAction(nameof(Documents), new { id = doc.ServiceId });
         }
 

@@ -3,10 +3,9 @@
 @using System.Reflection
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = L["Services"].Value;
     string CategoryDisplayName(OpenQMS.Models.Service.ServiceCategory cat) {
-        var member = cat.GetType().GetField(cat.ToString());
-        return member?.GetCustomAttribute<DisplayAttribute>()?.Name ?? cat.ToString();
+        return L.Enum(cat);
     }
 }
 
@@ -38,7 +37,7 @@
             paging: true,
             orderCellsTop: true,
             dom: 'lBfrtip',
-            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, @Json.Serialize(L["All"].Value)]],
             "order": [[0, 'asc']],
             displayLength: 10,
             buttons: [
@@ -61,7 +60,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">@L["Services"]</h4>
-    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Service</a>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Service"]</a>
 </div>
 <hr />
 
@@ -76,7 +75,7 @@
 <table id="servicesTable" class="table" style="width:100%;">
     <thead>
         <tr>
-            <th>Service ID</th>
+            <th>@L["Service ID"]</th>
             <th>@L["Name"]</th>
             <th>@L["Version"]</th>
             <th>@L["Status"]</th>

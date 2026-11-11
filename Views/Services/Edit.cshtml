@@ -2,13 +2,13 @@
 @using static OpenQMS.Models.Service
 
 @{
-    ViewData["Title"] = "Edit Service";
+    ViewData["Title"] = L["Edit Service"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Edit Service — @Model.ServiceId</h4>
+        <h4 class="mb-0">@L["Edit Service"] — @Model.ServiceId</h4>
     </div>
 </div>
 <hr />
@@ -27,7 +27,7 @@
     <input type="hidden" asp-for="Status" value="@Model.Status" />
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Service Details</div>
+        <div class="card-header fw-semibold">@L["Service Details"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -58,7 +58,7 @@
                 <div class="col-12">
                     <label class="form-label">@L["Linked Approved Documents"]</label>
                     <select id="relatedDocDropdown" class="form-select">
-                        <option value="">-- Add Document --</option>
+                        <option value="">@L["-- Add Document --"]</option>
                         @foreach (var d in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
                         {
                             <option value="@d.Value" data-text="@d.Text">@d.Text</option>

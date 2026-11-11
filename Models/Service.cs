@@ -21,6 +21,7 @@ namespace OpenQMS.Models
         [Display(Name = "Category")]
         public ServiceCategory Category { get; set; }
 
+        [Display(Name = "Version")]
         public decimal Version { get; set; }
 
         [Display(Name = "Edited By")]

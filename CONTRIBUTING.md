@@ -38,6 +38,12 @@ translation key, and anything without a translation is shown in English.
   only. Dates written into records, audit entries, exports and PDFs keep the server's format.
 - **Never translate anything that is stored** (audit-trail actions, record fields, file names) or
   compared in code or scripts (e.g. `data-status` values must match what the filtered column shows).
+- **Drop-down options** keep the English as their value: `<option value="Tablet">@L["Tablet"]</option>`
+  (without `value=` the browser would post the translated text). For a list in code, mark it so the check
+  finds its entries: `var forms = new[] { /* i18n */ "Tablet", "Capsule" };`, then
+  `<option value="@f">@L[f]</option>`; show a stored value with `@L.Message(Model.DosageForm)`.
+- **Workflow refusals** from a service: return `WorkflowResult.Fail("Cannot move from '{0}'.", status)` and
+  show it with `TempData["Error"] = this.TError(result)`.
 - Add the Spanish and Portuguese to `Resources/Localization/translations.json`, then run
   `tools/i18n.py build` and `tools/i18n.py check` (the check fails on missing translations,
   mismatched `{0}` placeholders, HTML in translations and out-of-date resource files).

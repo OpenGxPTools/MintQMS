@@ -25,19 +25,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @using System.Reflection
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = L["New Process"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     var products = (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["Products"];
     var selProductIds = (List<int>)(ViewBag.SelectedProductIds ?? new List<int>());
     string CategoryDisplayName(OpenQMS.Models.Process.ProcessCategory cat) {
-        var member = cat.GetType().GetField(cat.ToString());
-        return member?.GetCustomAttribute<DisplayAttribute>()?.Name ?? cat.ToString();
+        return L.Enum(cat);
     }
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">New Process</h4>
+        <h4 class="mb-0">@L["New Process"]</h4>
     </div>
 </div>
 <hr />
@@ -47,7 +46,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <input type="hidden" asp-for="ProcessId" value="X" />
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Process Details</div>
+        <div class="card-header fw-semibold">@L["Process Details"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -58,7 +57,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="col-md-6">
                     <label asp-for="Category" class="form-label">@L["Type / Category"]</label>
                     <select asp-for="Category" class="form-select">
-                        <option value="">-- Select Category --</option>
+                        <option value="">@L["-- Select Category --"]</option>
                         @foreach (OpenQMS.Models.Process.ProcessCategory cat in Enum.GetValues(typeof(OpenQMS.Models.Process.ProcessCategory)))
                         {
                             <option value="@cat">@CategoryDisplayName(cat)</option>
@@ -68,7 +67,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="col-md-6">
                     <label class="form-label">@L["Products"]</label>
                     <select id="productDropdown" class="form-select">
-                        <option value="">-- Add Product --</option>
+                        <option value="">@L["-- Add Product --"]</option>
                         @foreach (var p in products)
                         {
                             <option value="@p.Value" data-text="@p.Text">@p.Text</option>
@@ -93,7 +92,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="col-12">
                     <label class="form-label">@L["Linked Approved Documents"]</label>
                     <select id="relatedDocDropdown" class="form-select">
-                        <option value="">-- Add Document --</option>
+                        <option value="">@L["-- Add Document --"]</option>
                         @foreach (var d in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewData["EffectiveDocs"])
                         {
                             <option value="@d.Value" data-text="@d.Text">@d.Text</option>

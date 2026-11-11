@@ -36,8 +36,11 @@ namespace OpenQMS.Models
         [Display(Name = "ID")]
         public string AssetId { get; set; }
         public string? GeneratedFrom { get; set; }
+        [Display(Name = "Name")]
         public string Name { get; set; }
+        [Display(Name = "Description")]
         public string Description { get; set; }
+        [Display(Name = "Version")]
         public decimal Version { get; set; }
         [Display(Name = "Edited By")]
         public string? EditedBy { get; set; }
@@ -61,6 +64,7 @@ namespace OpenQMS.Models
         public virtual ICollection<Capa>? Capas { get; set; }
         public virtual ICollection<AssetDocument>? Documents { get; set; }
         public virtual ICollection<AssetLinkedDocument>? RelatedDocuments { get; set; }
+        [Display(Name = "Status")]
         public AssetStatus Status { get; set; }
         public AssetCategory? Category { get; set; }
 
