@@ -158,7 +158,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 (function () {
-    var typeLabels = @Json.Serialize(typeCounts.Keys.ToArray());
+    var typeLabels = @Json.Serialize(typeCounts.Keys.Select(k => L.Enum(Enum.Parse<OpenQMS.Models.CustomerType>(k))).ToArray());
     var typeData   = @Json.Serialize(typeCounts.Values.ToArray());
     var colors     = ['#0d6efd','#198754','#ffc107','#dc3545','#6c757d','#0dcaf0','#fd7e14','#6610f2'];
 

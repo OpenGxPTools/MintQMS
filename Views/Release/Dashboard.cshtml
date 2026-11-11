@@ -184,7 +184,7 @@
 <script>
     // By Type doughnut
     (function () {
-        var data = @Json.Serialize(Model.ByType);
+        var data = @Json.Serialize(Model.ByType.ToDictionary(kv => L.Message(kv.Key), kv => kv.Value));
         var labels = Object.keys(data);
         var values = Object.values(data);
         var colors = ['#0d6efd','#198754','#ffc107','#dc3545','#6c757d'];
@@ -197,7 +197,7 @@
 
     // By Status doughnut
     (function () {
-        var data = @Json.Serialize(Model.ByStatus);
+        var data = @Json.Serialize(Model.ByStatus.ToDictionary(kv => L.Message(kv.Key), kv => kv.Value));
         var labels = Object.keys(data);
         var values = Object.values(data);
         var colors = ['#6c757d','#0dcaf0','#ffc107','#0d6efd','#198754','#157347','#dc3545','#adb5bd','#e9ecef'];
@@ -218,10 +218,10 @@
                 labels: labels,
                 datasets: [
                     { label: 'RFS',              data: trend.map(function(d){return d.rFS;}),              backgroundColor: '#0d6efd' },
-                    { label: 'Quarantine',        data: trend.map(function(d){return d.quarantine;}),       backgroundColor: '#ffc107' },
+                    { label: @Json.Serialize(L["Quarantine"].Value),        data: trend.map(function(d){return d.quarantine;}),       backgroundColor: '#ffc107' },
                     { label: 'RFFP',              data: trend.map(function(d){return d.rFFP;}),             backgroundColor: '#198754' },
-                    { label: 'To Customer',       data: trend.map(function(d){return d.releaseToCustomer;}),backgroundColor: '#0dcaf0' },
-                    { label: 'Quality Oversight', data: trend.map(function(d){return d.qualityOversight;}), backgroundColor: '#6c757d' }
+                    { label: @Json.Serialize(L["To Customer"].Value),       data: trend.map(function(d){return d.releaseToCustomer;}),backgroundColor: '#0dcaf0' },
+                    { label: @Json.Serialize(L["Quality Oversight"].Value), data: trend.map(function(d){return d.qualityOversight;}), backgroundColor: '#6c757d' }
                 ]
             },
             options: {

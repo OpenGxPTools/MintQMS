@@ -157,7 +157,7 @@ else
 <script>
 $(document).ready(function () {
     $('#libraryTable').DataTable({ paging: true, order: [[0,'asc']], dom: 'lBfrtip',
-        lengthMenu: [[10,25,50,-1],[10,25,50,'All']], displayLength: 25,
+        lengthMenu: [[10,25,50,-1],[10,25,50,@Json.Serialize(L["All"].Value)]], displayLength: 25,
         buttons: [
             { extend: 'pdf',   footer: false },
             { extend: 'excel', footer: false }

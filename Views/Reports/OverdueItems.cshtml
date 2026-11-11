@@ -1,6 +1,6 @@
 @using OpenQMS.Models
 @{
-    ViewData["Title"] = "Overdue Items";
+    ViewData["Title"] = L["Overdue Items"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var today = (DateTime)ViewBag.Today;
@@ -23,8 +23,7 @@
 </div>
 
 <p class="text-muted mb-3">
-    All items currently past their due date or open for more than 30 days across all quality modules.
-    This is a live snapshot — refresh the page to see the current state.
+    @L["All items currently past their due date or open for more than 30 days across all quality modules. This is a live snapshot — refresh the page to see the current state."]
 </p>
 
 @* Total count *@
@@ -32,31 +31,31 @@
     <strong class="fs-5 me-2">@ViewBag.TotalOverdue</strong>
     @if (ViewBag.TotalOverdue == 0)
     {
-        <span>items overdue — everything is on track.</span>
+        <span>@L["items overdue — everything is on track."]</span>
     }
     else
     {
-        <span>item(s) overdue across all modules as at @today.ToString("dd MMM yyyy", DisplayDates.Culture).</span>
+        <span>@L["item(s) overdue across all modules as at {0}.", today.ToString("dd MMM yyyy", DisplayDates.Culture)]</span>
     }
 </div>
 
 <div class="alert alert-light border small mb-4">
     <strong>@L["Colour coding:"]</strong>
-    <span class="badge bg-danger me-1">@L["Red"]</span> &gt;60 days overdue &nbsp;
-    <span class="badge bg-warning text-dark me-1">@L["Amber"]</span> 31–60 days overdue &nbsp;
-    <span class="badge bg-light text-dark border me-1">White</span> up to 30 days overdue.<br />
-    Deviations and Complaints have no formal due date — they appear here when open for more than 30 days.
+    <span class="badge bg-danger me-1">@L["Red"]</span> @L[">60 days overdue"] &nbsp;
+    <span class="badge bg-warning text-dark me-1">@L["Amber"]</span> @L["31–60 days overdue"] &nbsp;
+    <span class="badge bg-light text-dark border me-1">@L["White"]</span> @L["up to 30 days overdue."]<br />
+    @L["Deviations and Complaints have no formal due date — they appear here when open for more than 30 days."]
 </div>
 
 @* CAPAs *@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(overdueCapas.Any() ? "bg-danger text-white" : "bg-success text-white")">
         <span class="fw-semibold">@L["CAPAs"]</span>
-        <span class="badge bg-white text-dark">@overdueCapas.Count overdue</span>
+        <span class="badge bg-white text-dark">@L["{0} overdue", overdueCapas.Count]</span>
     </div>
     @if (!overdueCapas.Any())
     {
-        <div class="card-body text-muted">No overdue CAPAs.</div>
+        <div class="card-body text-muted">@L["No overdue CAPAs."]</div>
     }
     else
     {
@@ -93,11 +92,11 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(overdueChanges.Any() ? "bg-danger text-white" : "bg-success text-white")">
         <span class="fw-semibold">@L["Changes"]</span>
-        <span class="badge bg-white text-dark">@overdueChanges.Count overdue</span>
+        <span class="badge bg-white text-dark">@L["{0} overdue", overdueChanges.Count]</span>
     </div>
     @if (!overdueChanges.Any())
     {
-        <div class="card-body text-muted">No overdue changes.</div>
+        <div class="card-body text-muted">@L["No overdue changes."]</div>
     }
     else
     {
@@ -134,11 +133,11 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(overdueAudits.Any() ? "bg-danger text-white" : "bg-success text-white")">
         <span class="fw-semibold">@L["Audits"]</span>
-        <span class="badge bg-white text-dark">@overdueAudits.Count overdue</span>
+        <span class="badge bg-white text-dark">@L["{0} overdue", overdueAudits.Count]</span>
     </div>
     @if (!overdueAudits.Any())
     {
-        <div class="card-body text-muted">No overdue audits.</div>
+        <div class="card-body text-muted">@L["No overdue audits."]</div>
     }
     else
     {
@@ -150,7 +149,7 @@
                         <th>@L["Title"]</th>
                         <th>@L["Type"]</th>
                         <th>@L["Status"]</th>
-                        <th>Planned End</th>
+                        <th>@L["Planned End"]</th>
                         <th>@L["Days Overdue"]</th>
                     </tr>
                 </thead>
@@ -161,7 +160,7 @@
                         <tr class="@RowClass(days)">
                             <td><a asp-controller="Audits" asp-action="Details" asp-route-id="@a.Id">@a.AuditId</a></td>
                             <td>@a.Title</td>
-                            <td>@a.Type</td>
+                            <td>@L.Enum(a.Type)</td>
                             <td><span class="badge bg-secondary">@L.Enum(a.Status)</span></td>
                             <td>@a.PlannedEndDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
@@ -176,12 +175,12 @@
 @* Risks *@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(overdueRisks.Any() ? "bg-danger text-white" : "bg-success text-white")">
-        <span class="fw-semibold">Risks</span>
-        <span class="badge bg-white text-dark">@overdueRisks.Count overdue</span>
+        <span class="fw-semibold">@L["Risks"]</span>
+        <span class="badge bg-white text-dark">@L["{0} overdue", overdueRisks.Count]</span>
     </div>
     @if (!overdueRisks.Any())
     {
-        <div class="card-body text-muted">No overdue risks.</div>
+        <div class="card-body text-muted">@L["No overdue risks."]</div>
     }
     else
     {
@@ -192,7 +191,7 @@
                         <th>@L["Risk ID"]</th>
                         <th>@L["Title"]</th>
                         <th>@L["Status"]</th>
-                        <th>RPN</th>
+                        <th>@L["RPN"]</th>
                         <th>@L["Target Date"]</th>
                         <th>@L["Days Overdue"]</th>
                     </tr>
@@ -222,12 +221,12 @@
 @* Deviations *@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(overdueDeviations.Any() ? "bg-warning text-dark" : "bg-success text-white")">
-        <span class="fw-semibold">Deviations <small class="fw-normal">(open &gt;30 days)</small></span>
+        <span class="fw-semibold">@L["Deviations"] <small class="fw-normal">@L["(open >30 days)"]</small></span>
         <span class="badge bg-white text-dark">@overdueDeviations.Count</span>
     </div>
     @if (!overdueDeviations.Any())
     {
-        <div class="card-body text-muted">No deviations open for more than 30 days.</div>
+        <div class="card-body text-muted">@L["No deviations open for more than 30 days."]</div>
     }
     else
     {
@@ -239,7 +238,7 @@
                         <th>@L["Title"]</th>
                         <th>@L["Status"]</th>
                         <th>@L["Identified On"]</th>
-                        <th>Days Open</th>
+                        <th>@L["Days Open"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -263,12 +262,12 @@
 @* Complaints *@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(overdueComplaints.Any() ? "bg-warning text-dark" : "bg-success text-white")">
-        <span class="fw-semibold">Complaints <small class="fw-normal">(open &gt;30 days)</small></span>
+        <span class="fw-semibold">@L["Complaints"] <small class="fw-normal">@L["(open >30 days)"]</small></span>
         <span class="badge bg-white text-dark">@overdueComplaints.Count</span>
     </div>
     @if (!overdueComplaints.Any())
     {
-        <div class="card-body text-muted">No complaints open for more than 30 days.</div>
+        <div class="card-body text-muted">@L["No complaints open for more than 30 days."]</div>
     }
     else
     {
@@ -281,7 +280,7 @@
                         <th>@L["Severity"]</th>
                         <th>@L["Status"]</th>
                         <th>@L["Received On"]</th>
-                        <th>Days Open</th>
+                        <th>@L["Days Open"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -293,7 +292,7 @@
                             <td>@c.Title</td>
                             <td>
                                 <span class="badge @(c.Severity == Complaint.ComplaintSeverity.Critical ? "bg-danger" : c.Severity == Complaint.ComplaintSeverity.Major ? "bg-warning text-dark" : "bg-secondary")">
-                                    @c.Severity
+                                    @L.Enum(c.Severity)
                                 </span>
                             </td>
                             <td><span class="badge bg-secondary">@L.Enum(c.Status)</span></td>
@@ -310,12 +309,12 @@
 @* Documents Overdue for Periodic Review *@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(overdueDocReviews.Any() ? "bg-danger text-white" : "bg-success text-white")">
-        <span class="fw-semibold">Documents — Periodic Review Overdue</span>
-        <span class="badge bg-white text-dark">@overdueDocReviews.Count overdue</span>
+        <span class="fw-semibold">@L["Documents — Periodic Review Overdue"]</span>
+        <span class="badge bg-white text-dark">@L["{0} overdue", overdueDocReviews.Count]</span>
     </div>
     @if (!overdueDocReviews.Any())
     {
-        <div class="card-body text-muted">No approved documents are overdue for periodic review.</div>
+        <div class="card-body text-muted">@L["No approved documents are overdue for periodic review."]</div>
     }
     else
     {
@@ -326,7 +325,7 @@
                         <th>@L["Document ID"]</th>
                         <th>@L["Title"]</th>
                         <th>@L["Version"]</th>
-                        <th>Review Due Date</th>
+                        <th>@L["Review Due Date"]</th>
                         <th>@L["Days Overdue"]</th>
                     </tr>
                 </thead>
@@ -351,12 +350,12 @@
 @* Documents with Review Due Within 30 Days *@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center @(dueSoonDocReviews.Any() ? "bg-warning text-dark" : "bg-success text-white")">
-        <span class="fw-semibold">Documents — Review Due Within 30 Days</span>
+        <span class="fw-semibold">@L["Documents — Review Due Within 30 Days"]</span>
         <span class="badge bg-white text-dark">@dueSoonDocReviews.Count</span>
     </div>
     @if (!dueSoonDocReviews.Any())
     {
-        <div class="card-body text-muted">No approved documents have a review due within the next 30 days.</div>
+        <div class="card-body text-muted">@L["No approved documents have a review due within the next 30 days."]</div>
     }
     else
     {
@@ -367,8 +366,8 @@
                         <th>@L["Document ID"]</th>
                         <th>@L["Title"]</th>
                         <th>@L["Version"]</th>
-                        <th>Review Due Date</th>
-                        <th>Days Until Due</th>
+                        <th>@L["Review Due Date"]</th>
+                        <th>@L["Days Until Due"]</th>
                     </tr>
                 </thead>
                 <tbody>

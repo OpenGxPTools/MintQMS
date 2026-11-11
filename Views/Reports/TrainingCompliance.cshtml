@@ -1,7 +1,7 @@
 @using OpenQMS.Models
 @using OpenQMS.Models.Navigation
 @{
-    ViewData["Title"] = "Training Compliance";
+    ViewData["Title"] = L["Training Compliance"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var from = (DateTime)ViewBag.From;
@@ -26,7 +26,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Training Compliance Report</h4>
+    <h4 class="mb-0">@L["Training Compliance Report"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="ExportTrainingCompliance"
            asp-route-from="@from.ToString("yyyy-MM-dd")"
@@ -37,7 +37,7 @@
 </div>
 
 <p class="text-muted mb-3">
-    Training session completion rates for the selected period, by session and by individual user.
+    @L["Training session completion rates for the selected period, by session and by individual user."]
 </p>
 
 @* Date range filter *@
@@ -52,13 +52,13 @@
             <input type="date" name="to" class="form-control" value="@to.ToString("yyyy-MM-dd")" />
         </div>
         <div class="col-md-4">
-            <button type="submit" class="btn btn-success w-100">Apply</button>
+            <button type="submit" class="btn btn-success w-100">@L["Apply"]</button>
         </div>
     </div>
 </form>
 
 <p class="text-muted small mb-4">
-    Showing period: <strong>@from.ToString("dd MMM yyyy", DisplayDates.Culture)</strong> to <strong>@to.ToString("dd MMM yyyy", DisplayDates.Culture)</strong>
+    @H["Showing period: <strong>{0}</strong> to <strong>{1}</strong>", from.ToString("dd MMM yyyy", DisplayDates.Culture), to.ToString("dd MMM yyyy", DisplayDates.Culture)]
 </p>
 
 @* KPI Cards *@
@@ -67,7 +67,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-primary">@ViewBag.TotalTrainings</div>
-                <div class="text-muted">Total Sessions</div>
+                <div class="text-muted">@L["Total Sessions"]</div>
             </div>
         </div>
     </div>
@@ -85,7 +85,7 @@
                 <div class="display-5 fw-bold @(ViewBag.TotalTrainings - ViewBag.CompletedTrainings > 0 ? "text-warning" : "text-success")">
                     @(ViewBag.TotalTrainings - ViewBag.CompletedTrainings)
                 </div>
-                <div class="text-muted">Not Completed</div>
+                <div class="text-muted">@L["Not Completed"]</div>
             </div>
         </div>
     </div>
@@ -95,7 +95,7 @@
                 <div class="display-5 fw-bold @(pct >= 80 ? "text-success" : pct >= 60 ? "text-warning" : "text-danger")">
                     @pct%
                 </div>
-                <div class="text-muted">Compliance Rate</div>
+                <div class="text-muted">@L["Compliance Rate"]</div>
             </div>
         </div>
     </div>
@@ -103,13 +103,13 @@
 
 @if (!trainings.Any())
 {
-    <div class="alert alert-info">No training sessions found in this period.</div>
+    <div class="alert alert-info">@L["No training sessions found in this period."]</div>
 }
 else
 {
     @* Sessions Table *@
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Sessions</div>
+        <div class="card-header fw-semibold">@L["Sessions"]</div>
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
@@ -117,7 +117,7 @@ else
                         <th>@L["Training ID"]</th>
                         <th>@L["Name"]</th>
                         <th>@L["Due Date"]</th>
-                        <th>Attendees</th>
+                        <th>@L["Attendees"]</th>
                         <th>@L["Status"]</th>
                     </tr>
                 </thead>
@@ -152,16 +152,16 @@ else
     @if (userStats.Any())
     {
         <div class="card mb-4">
-            <div class="card-header fw-semibold">Compliance by User</div>
+            <div class="card-header fw-semibold">@L["Compliance by User"]</div>
             <div class="card-body p-0">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
                             <th>@L["Name"]</th>
                             <th>@L["Email"]</th>
-                            <th>Sessions Attended</th>
-                            <th>Sessions Completed</th>
-                            <th>Compliance %</th>
+                            <th>@L["Sessions Attended"]</th>
+                            <th>@L["Sessions Completed"]</th>
+                            <th>@L["Compliance %"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -170,7 +170,7 @@ else
                             var userPct = u.Total > 0 ? (int)Math.Round(u.Completed * 100.0 / u.Total) : 0;
                             <tr>
                                 <td>@u.Name</td>
-                                <td>@u.Email</td>
+                                <td>@L.Message(u.Email)</td>
                                 <td>@u.Total</td>
                                 <td>@u.Completed</td>
                                 <td>

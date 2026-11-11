@@ -11,10 +11,22 @@
   "es": "(calculado automáticamente)",
   "pt-BR": "(calculado automaticamente)"
  },
+ "(current register snapshot)": {
+  "es": "(instantánea actual del registro)",
+  "pt-BR": "(retrato atual do registro)"
+ },
  "(filtered from _MAX_ total entries)": {
   "es": "(filtrado de _MAX_ registros en total)",
   "pt-BR": "(filtrado de _MAX_ registros no total)",
   "note": "DataTables: keep _MAX_ as is"
+ },
+ "(open >30 days)": {
+  "es": "(abiertas >30 días)",
+  "pt-BR": "(abertas >30 dias)"
+ },
+ "(planned start within selected period)": {
+  "es": "(inicio previsto dentro del período seleccionado)",
+  "pt-BR": "(início previsto dentro do período selecionado)"
  },
  "(regulatory clock start)": {
   "es": "(inicio del plazo regulatorio)",
@@ -269,6 +281,10 @@
   "es": "30 días",
   "pt-BR": "30 dias"
  },
+ "31–60 days overdue": {
+  "es": "31–60 días de retraso",
+  "pt-BR": "31–60 dias de atraso"
+ },
  "4 - Likely": {
   "es": "4 - Probable",
   "pt-BR": "4 - Provável"
@@ -425,6 +441,10 @@
   "es": "<strong>{0}</strong> determina la profundidad de la evaluación y el plan de acción:",
   "pt-BR": "<strong>{0}</strong> define a profundidade da avaliação e o plano de ação:"
  },
+ ">60 days overdue": {
+  "es": ">60 días de retraso",
+  "pt-BR": ">60 dias de atraso"
+ },
  "[show more]": {
   "es": "[ver más]",
   "pt-BR": "[ver mais]"
@@ -549,6 +569,10 @@
  "A renewal can only be initiated from an Issued / Active record.": {
   "es": "Solo se puede iniciar una renovación desde un registro emitido / activo.",
   "pt-BR": "Só é possível iniciar uma renovação a partir de um registro emitido / ativo."
+ },
+ "A single cross-module view of everything currently overdue — CAPAs, changes, audits, risks, deviations, and complaints. Refreshed in real time. Intended as a daily operational tool for QA managers.": {
+  "es": "Una vista única de todo lo que está vencido en todos los módulos: CAPA, cambios, auditorías, riesgos, desviaciones y reclamaciones. Se actualiza en tiempo real. Pensada como herramienta operativa diaria para los responsables de calidad.",
+  "pt-BR": "Uma visão única de tudo o que está em atraso em todos os módulos: CAPAs, mudanças, auditorias, riscos, desvios e reclamações. Atualizada em tempo real. Pensada como ferramenta operacional diária para os gestores da qualidade."
  },
  "A supplier with the legal name '{0}' already exists ({1}). Verify this is a different entity.": {
   "es": "Ya existe un proveedor con la razón social '{0}' ({1}). Verifique que se trata de otra entidad.",
@@ -1127,6 +1151,14 @@
   "es": "Desviación antigua:",
   "pt-BR": "Desvio antigo:"
  },
+ "Aggregated KPIs across all quality modules for a selected date range — CAPAs, deviations, changes, complaints, audits, and risks. Required input for ISO 13485 / GMP management review meetings. Exportable to Excel.": {
+  "es": "KPI agregados de todos los módulos de calidad para un rango de fechas: CAPA, desviaciones, cambios, reclamaciones, auditorías y riesgos. Información de entrada necesaria para las reuniones de revisión por la dirección ISO 13485 / GMP. Exportable a Excel.",
+  "pt-BR": "KPIs agregados de todos os módulos da qualidade para um intervalo de datas: CAPAs, desvios, mudanças, reclamações, auditorias e riscos. Entrada necessária para as reuniões de análise crítica pela direção ISO 13485 / BPF. Exportável para Excel."
+ },
+ "Aggregated quality system KPIs for ISO 13485 / GMP management review. Use the date filter to select the reporting period. Audit and risk data noted where it reflects the full register rather than just the period.": {
+  "es": "KPI agregados del sistema de calidad para la revisión por la dirección ISO 13485 / GMP. Use el filtro de fechas para elegir el período del informe. Se indica cuándo los datos de auditorías y riesgos reflejan todo el registro y no solo el período.",
+  "pt-BR": "KPIs agregados do sistema da qualidade para a análise crítica pela direção ISO 13485 / BPF. Use o filtro de datas para escolher o período do relatório. Indica-se quando os dados de auditorias e riscos refletem todo o registro e não apenas o período."
+ },
  "Agreements": {
   "es": "Acuerdos",
   "pt-BR": "Acordos"
@@ -1136,7 +1168,7 @@
   "pt-BR": "Todos"
  },
  "All actions completed, with reference to evidence (e.g. SOP revised on [date], training completed by [names] on [date])": {
-  "es": "Todas las acciones completadas, con referencia a la evidencia (p. ej., PNT revisado el [fecha], formación completada por [nombres] el [fecha])",
+  "es": "Todas las acciones completadas, con referencia a la evidencia (p. ej., PNT revisado el [fecha], capacitación completada por [nombres] el [fecha])",
   "pt-BR": "Todas as ações concluídas, com referência à evidência (p. ex., POP revisado em [data], treinamento concluído por [nomes] em [data])"
  },
  "All Adverse Events": {
@@ -1167,6 +1199,10 @@
   "es": "Se han retirado todos los certificados emitidos.",
   "pt-BR": "Todos os certificados emitidos foram retirados."
  },
+ "All items currently past their due date or open for more than 30 days across all quality modules. This is a live snapshot — refresh the page to see the current state.": {
+  "es": "Todos los elementos que han pasado su fecha límite o llevan más de 30 días abiertos, en todos los módulos de calidad. Es una instantánea en vivo: actualice la página para ver el estado actual.",
+  "pt-BR": "Todos os itens que passaram do prazo ou estão abertos há mais de 30 dias, em todos os módulos da qualidade. É um retrato ao vivo: atualize a página para ver a situação atual."
+ },
  "All Jurisdictions": {
   "es": "Todas las jurisdicciones",
   "pt-BR": "Todas as jurisdições"
@@ -1174,6 +1210,10 @@
  "All linked product applications will be flagged as Supply Credential At Risk.": {
   "es": "Todas las solicitudes de producto vinculadas se marcarán como «Credencial de suministro en riesgo».",
   "pt-BR": "Todas as solicitações de produto vinculadas serão marcadas como \"Credencial de fornecimento em risco\"."
+ },
+ "All modules are clear or no expiry dates have been assigned.": {
+  "es": "Todos los módulos están al día o no se han asignado fechas de vencimiento.",
+  "pt-BR": "Todos os módulos estão em dia ou não foram atribuídas datas de vencimento."
  },
  "All Products": {
   "es": "Todos los productos",
@@ -1343,6 +1383,10 @@
  "Applied {0} standard milestones for {1}.": {
   "es": "Se aplicaron {0} hitos estándar para {1}.",
   "pt-BR": "Foram aplicados {0} marcos padrão para {1}."
+ },
+ "Apply": {
+  "es": "Aplicar",
+  "pt-BR": "Aplicar"
  },
  "Apply Conditions": {
   "es": "Aplicar condiciones",
@@ -1528,6 +1572,10 @@
   "pt-BR": "Aprovado por",
   "note": "SIGNATURE — review"
  },
+ "Approved in Period": {
+  "es": "Aprobados en el período",
+  "pt-BR": "Aprovados no período"
+ },
  "Approved On": {
   "es": "Aprobado el",
   "pt-BR": "Aprovado em",
@@ -1552,6 +1600,10 @@
  "Approving will lock this record. A Follow-up Report must be created to add further information.": {
   "es": "Al aprobar se bloqueará este registro. Para añadir más información habrá que crear un informe de seguimiento.",
   "pt-BR": "Ao aprovar, este registro será bloqueado. Para acrescentar informações será preciso criar um relato de acompanhamento."
+ },
+ "Archive size": {
+  "es": "Tamaño del archivo comprimido",
+  "pt-BR": "Tamanho do arquivo compactado"
  },
  "Are you sure you want to delete this document? This action cannot be undone.": {
   "es": "¿Está seguro de que desea eliminar este documento? Esta acción no se puede deshacer.",
@@ -1797,6 +1849,10 @@
   "es": "Adjuntos — {0}",
   "pt-BR": "Anexos — {0}"
  },
+ "Attendees": {
+  "es": "Asistentes",
+  "pt-BR": "Participantes"
+ },
  "AUD": {
   "es": "AUD",
   "pt-BR": "AUD"
@@ -2038,6 +2094,10 @@
   "es": "Se completa al elegir el producto, o ingréselo manualmente",
   "pt-BR": "Preenchido ao escolher o produto, ou informe manualmente"
  },
+ "Automatically logs out users after this many minutes of inactivity. 0 = disabled.": {
+  "es": "Cierra automáticamente la sesión de los usuarios tras estos minutos de inactividad. 0 = desactivado.",
+  "pt-BR": "Encerra automaticamente a sessão dos usuários após estes minutos de inatividade. 0 = desativado."
+ },
  "Awaiting Acceptance": {
   "es": "En espera de aceptación",
   "pt-BR": "Aguardando aceitação"
@@ -2122,6 +2182,10 @@
   "es": "Volver al riesgo",
   "pt-BR": "Voltar ao risco"
  },
+ "Back to Settings": {
+  "es": "Volver a configuración",
+  "pt-BR": "Voltar às configurações"
+ },
  "Back to Strategy": {
   "es": "Volver a estrategia",
   "pt-BR": "Voltar para estratégia"
@@ -2133,6 +2197,14 @@
  "Back to {0}": {
   "es": "Volver a {0}",
   "pt-BR": "Voltar para {0}"
+ },
+ "Backup is managed by a server-side cron job. This panel is read-only. Contact your system administrator to investigate any issues.": {
+  "es": "La copia de seguridad la gestiona una tarea cron del servidor. Este panel es de solo lectura. Contacte con el administrador del sistema para investigar cualquier problema.",
+  "pt-BR": "O backup é gerenciado por uma tarefa cron no servidor. Este painel é somente leitura. Contate o administrador do sistema para investigar qualquer problema."
+ },
+ "Backup overdue": {
+  "es": "Copia de seguridad atrasada",
+  "pt-BR": "Backup atrasado"
  },
  "Balm": {
   "es": "Bálsamo",
@@ -2230,6 +2302,11 @@
  "Brief description of this document's purpose": {
   "es": "Breve descripción del propósito de este documento",
   "pt-BR": "Breve descrição da finalidade deste documento"
+ },
+ "Brisbane (AEST, UTC+10, no daylight saving)": {
+  "es": "Brisbane (AEST, UTC+10, sin horario de verano)",
+  "pt-BR": "Brisbane (AEST, UTC+10, sem horário de verão)",
+  "note": "Time zone name from Services/SiteTime.cs (Choices), shown with L[z.Label] — keep even though the check lists it as unused."
  },
  "BRL": {
   "es": "BRL",
@@ -2535,6 +2612,10 @@
   "es": "CAPA",
   "pt-BR": "CAPAs",
   "note": "ES keeps CAPA invariable"
+ },
+ "CAPAs (Corrective & Preventive Actions)": {
+  "es": "CAPA (acciones correctivas y preventivas)",
+  "pt-BR": "CAPAs (ações corretivas e preventivas)"
  },
  "CAPAs by Status": {
   "es": "CAPA por estado",
@@ -2853,6 +2934,10 @@
   "es": "Marque si este hito suspende el plazo regulatorio.",
   "pt-BR": "Marque se este marco suspende o prazo regulatório."
  },
+ "Check the server cron logs for details.": {
+  "es": "Revise los registros de cron del servidor para más detalles.",
+  "pt-BR": "Verifique os logs do cron no servidor para mais detalhes."
+ },
  "Checklist": {
   "es": "Lista de verificación",
   "pt-BR": "Lista de verificação"
@@ -3005,6 +3090,10 @@
  "Closed By": {
   "es": "Cerrado por",
   "pt-BR": "Fechado por"
+ },
+ "Closed in Period": {
+  "es": "Cerrados en el período",
+  "pt-BR": "Encerrados no período"
  },
  "Closed On": {
   "es": "Cerrado el",
@@ -3311,9 +3400,25 @@
   "es": "Registro de finalización",
   "pt-BR": "Registro de conclusão"
  },
+ "Compliance": {
+  "es": "Cumplimiento",
+  "pt-BR": "Conformidade"
+ },
+ "Compliance %": {
+  "es": "% de cumplimiento",
+  "pt-BR": "% de conformidade"
+ },
+ "Compliance by User": {
+  "es": "Cumplimiento por usuario",
+  "pt-BR": "Conformidade por usuário"
+ },
  "Compliance Matrix": {
   "es": "Matriz de cumplimiento",
   "pt-BR": "Matriz de conformidade"
+ },
+ "Compliance Rate": {
+  "es": "Tasa de cumplimiento",
+  "pt-BR": "Taxa de conformidade"
  },
  "Compounding Pharmacy": {
   "es": "Farmacia de fórmulas magistrales",
@@ -3703,6 +3808,10 @@
   "es": "Contratos que vencen en los próximos 90 días",
   "pt-BR": "Contratos que vencem nos próximos 90 dias"
  },
+ "Controls password expiry and reuse prevention (21 CFR 11.300 / EU Annex 11 §12). Set either value to 0 to disable that control.": {
+  "es": "Controla la caducidad de las contraseñas y evita su reutilización (21 CFR 11.300 / EU Anexo 11 §12). Ponga cualquiera de los valores a 0 para desactivar ese control.",
+  "pt-BR": "Controla a expiração das senhas e impede sua reutilização (21 CFR 11.300 / EU Anexo 11 §12). Defina qualquer um dos valores como 0 para desativar esse controle."
+ },
  "COP": {
   "es": "COP",
   "pt-BR": "COP"
@@ -3930,6 +4039,10 @@
   "es": "CRO",
   "pt-BR": "CRO"
  },
+ "Cross-module reports for management review, compliance monitoring, and operational planning. These reports aggregate data from all quality system modules and can be exported to Excel for sharing with auditors and regulators.": {
+  "es": "Informes de todos los módulos para la revisión por la dirección, el seguimiento del cumplimiento y la planificación operativa. Agregan datos de todos los módulos del sistema de calidad y se pueden exportar a Excel para compartirlos con auditores y autoridades.",
+  "pt-BR": "Relatórios de todos os módulos para a análise crítica pela direção, o acompanhamento da conformidade e o planejamento operacional. Agregam dados de todos os módulos do sistema da qualidade e podem ser exportados para Excel para compartilhar com auditores e autoridades."
+ },
  "Cross-reference added.": {
   "es": "Referencia cruzada agregada.",
   "pt-BR": "Referência cruzada adicionada."
@@ -3990,6 +4103,10 @@
  "Current: {0}": {
   "es": "Actual: {0}",
   "pt-BR": "Atual: {0}"
+ },
+ "Currently Open": {
+  "es": "Abiertos actualmente",
+  "pt-BR": "Abertos atualmente"
  },
  "Customer": {
   "es": "Cliente",
@@ -4088,6 +4205,11 @@
   "es": "Ciclo {0}",
   "pt-BR": "Ciclo {0}"
  },
+ "Darwin (ACST, no daylight saving)": {
+  "es": "Darwin (ACST, sin horario de verano)",
+  "pt-BR": "Darwin (ACST, sem horário de verão)",
+  "note": "Time zone name from Services/SiteTime.cs (Choices), shown with L[z.Label] — keep even though the check lists it as unused."
+ },
  "Dashboard": {
   "es": "Panel",
   "pt-BR": "Painel"
@@ -4103,6 +4225,18 @@
  "Data Integrity": {
   "es": "Integridad de datos",
   "pt-BR": "Integridade de dados"
+ },
+ "Data Retention Periods": {
+  "es": "Períodos de conservación de datos",
+  "pt-BR": "Períodos de retenção de dados"
+ },
+ "Database backup": {
+  "es": "Copia de la base de datos",
+  "pt-BR": "Backup do banco de dados"
+ },
+ "Database size": {
+  "es": "Tamaño de la base de datos",
+  "pt-BR": "Tamanho do banco de dados"
  },
  "Databases": {
   "es": "Bases de datos",
@@ -4192,6 +4326,10 @@
   "es": "Días",
   "pt-BR": "Dias"
  },
+ "days": {
+  "es": "Días",
+  "pt-BR": "Dias"
+ },
  "Days before expiry to trigger renewal alert (populated from type default).": {
   "es": "Días antes del vencimiento para activar el aviso de renovación (se toma del valor por defecto del tipo).",
   "pt-BR": "Dias antes do vencimento para disparar o alerta de renovação (preenchido com o padrão do tipo)."
@@ -4199,6 +4337,10 @@
  "Days Left": {
   "es": "Días restantes",
   "pt-BR": "Dias restantes"
+ },
+ "Days Open": {
+  "es": "Días abierto",
+  "pt-BR": "Dias em aberto"
  },
  "Days Overdue": {
   "es": "Días de atraso",
@@ -4209,6 +4351,14 @@
   "pt-BR": "Dias restantes"
  },
  "Days to Expiry": {
+  "es": "Días hasta el vencimiento",
+  "pt-BR": "Dias até o vencimento"
+ },
+ "Days to wait after removing a Retention Hold before disposal is allowed.": {
+  "es": "Días de espera tras retirar una retención antes de permitir la eliminación.",
+  "pt-BR": "Dias de espera após retirar uma retenção antes de permitir o descarte."
+ },
+ "Days Until Due": {
   "es": "Días hasta el vencimiento",
   "pt-BR": "Dias até o vencimento"
  },
@@ -4251,6 +4401,14 @@
  "Default Page Size": {
   "es": "Tamaño de página por defecto",
   "pt-BR": "Tamanho de página padrão"
+ },
+ "Default Resolution Deadlines": {
+  "es": "Plazos de resolución predeterminados",
+  "pt-BR": "Prazos de resolução padrão"
+ },
+ "Default rows per page in data tables.": {
+  "es": "Filas por página predeterminadas en las tablas.",
+  "pt-BR": "Linhas por página padrão nas tabelas."
  },
  "Defence / Military Health": {
   "es": "Defensa / sanidad militar",
@@ -4669,6 +4827,10 @@
   "es": "Desviaciones",
   "pt-BR": "Desvios"
  },
+ "Deviations and Complaints have no formal due date — they appear here when open for more than 30 days.": {
+  "es": "Las desviaciones y reclamaciones no tienen fecha límite formal: aparecen aquí cuando llevan más de 30 días abiertas.",
+  "pt-BR": "Desvios e reclamações não têm prazo formal: aparecem aqui quando estão abertos há mais de 30 dias."
+ },
  "Deviations Dashboard": {
   "es": "Panel de desviaciones",
   "pt-BR": "Painel de desvios"
@@ -4720,6 +4882,14 @@
  "Dispersible Tablet": {
   "es": "Comprimido dispersable",
   "pt-BR": "Comprimido dispersível"
+ },
+ "Display name shown to email recipients.": {
+  "es": "Nombre que verán los destinatarios del correo.",
+  "pt-BR": "Nome exibido aos destinatários do e-mail."
+ },
+ "Display Preferences": {
+  "es": "Preferencias de visualización",
+  "pt-BR": "Preferências de exibição"
  },
  "Disposal Attempt Blocked": {
   "es": "Intento de eliminación bloqueado",
@@ -4979,6 +5149,14 @@
   "es": "No se pueden eliminar documentos en estado «{0}». Use el flujo de obsolescencia para retirar documentos activos.",
   "pt-BR": "Documentos com status \"{0}\" não podem ser excluídos. Use o fluxo de obsolescência para retirar documentos ativos."
  },
+ "Documents — Periodic Review Overdue": {
+  "es": "Documentos — revisión periódica vencida",
+  "pt-BR": "Documentos — revisão periódica em atraso"
+ },
+ "Documents — Review Due Within 30 Days": {
+  "es": "Documentos — revisión en los próximos 30 días",
+  "pt-BR": "Documentos — revisão nos próximos 30 dias"
+ },
  "Don't have access to your authenticator device? You can {0}.": {
   "es": "¿No tiene acceso a su dispositivo de autenticación? Puede {0}.",
   "pt-BR": "Não tem acesso ao seu dispositivo autenticador? Você pode {0}."
@@ -5204,6 +5382,10 @@
   "es": "p. ej., ISO 9001:2015",
   "pt-BR": "p. ex., ISO 9001:2015"
  },
+ "e.g. OpenQMS System": {
+  "es": "p. ej., Sistema OpenQMS",
+  "pt-BR": "ex.: Sistema OpenQMS"
+ },
  "e.g. Original author has left the company; draft handed over to continue.": {
   "es": "p. ej., el autor original dejó la empresa; se entregó el borrador para continuarlo.",
   "pt-BR": "ex.: o autor original saiu da empresa; o rascunho foi repassado para continuidade."
@@ -5236,6 +5418,10 @@
   "es": "p. ej., PubMed, Embase, Cochrane, Google Académico",
   "pt-BR": "p. ex., PubMed, Embase, Cochrane, Google Acadêmico"
  },
+ "e.g. qms@yourcompany.com": {
+  "es": "p. ej., qms@suempresa.com",
+  "pt-BR": "ex.: qms@suaempresa.com"
+ },
  "e.g. Related deviation": {
   "es": "p. ej., desviación relacionada",
   "pt-BR": "p. ex., desvio relacionado"
@@ -5251,6 +5437,10 @@
  "e.g. SAI Global, BSI Group, Intertek, TÜV Rheinland": {
   "es": "p. ej., SAI Global, BSI Group, Intertek, TÜV Rheinland",
   "pt-BR": "p. ex., SAI Global, BSI Group, Intertek, TÜV Rheinland"
+ },
+ "e.g. smtp.gmail.com": {
+  "es": "p. ej., smtp.gmail.com",
+  "pt-BR": "ex.: smtp.gmail.com"
  },
  "e.g. Superseded by external regulation, process discontinued...": {
   "es": "p. ej., reemplazado por una regulación externa, proceso discontinuado...",
@@ -5537,6 +5727,10 @@
   "es": "Dirección de correo electrónico",
   "pt-BR": "Endereço de e-mail"
  },
+ "Email Configuration": {
+  "es": "Configuración de correo electrónico",
+  "pt-BR": "Configuração de e-mail"
+ },
  "Email or password is incorrect.": {
   "es": "El correo electrónico o la contraseña son incorrectos.",
   "pt-BR": "E-mail ou senha incorretos."
@@ -5717,6 +5911,10 @@
   "es": "Error:",
   "pt-BR": "Erro:"
  },
+ "Error: {0}": {
+  "es": "Error: {0}",
+  "pt-BR": "Erro: {0}"
+ },
  "EUR": {
   "es": "EUR",
   "pt-BR": "EUR"
@@ -5774,6 +5972,10 @@
  "Event Type": {
   "es": "Tipo de evento",
   "pt-BR": "Tipo de evento"
+ },
+ "Event type breakdown (all time):": {
+  "es": "Desglose por tipo de evento (todo el historial):",
+  "pt-BR": "Distribuição por tipo de evento (todo o histórico):"
  },
  "Event Type Definitions": {
   "es": "Definiciones de tipos de evento",
@@ -5839,6 +6041,10 @@
   "es": "Vencido",
   "pt-BR": "Vencido"
  },
+ "Expired (past expiry date)": {
+  "es": "Vencido (fecha de vencimiento pasada)",
+  "pt-BR": "Vencido (data de vencimento ultrapassada)"
+ },
  "EXPIRED ({0}d ago)": {
   "es": "VENCIDA (hace {0} d)",
   "pt-BR": "VENCIDA (há {0} d)"
@@ -5863,6 +6069,14 @@
   "es": "Autorizaciones que vencen (≤ 90 días)",
   "pt-BR": "Autorizações a vencer (≤ 90 dias)"
  },
+ "Expiring Soon": {
+  "es": "Vence pronto",
+  "pt-BR": "Vence em breve"
+ },
+ "Expiring soon (within per-document reminder days)": {
+  "es": "Vence pronto (dentro de los días de aviso de cada documento)",
+  "pt-BR": "Vence em breve (dentro dos dias de aviso de cada documento)"
+ },
  "Expiring Within {0} Days": {
   "es": "Vencen en {0} días",
   "pt-BR": "Vencem em {0} dias"
@@ -5870,6 +6084,10 @@
  "Expiry": {
   "es": "Vencimiento",
   "pt-BR": "Vencimento"
+ },
+ "Expiry & Due Warning Thresholds": {
+  "es": "Umbrales de aviso de vencimiento y plazos",
+  "pt-BR": "Limites de aviso de vencimento e prazos"
  },
  "Expiry (30–90d)": {
   "es": "Vencimiento (30–90 d)",
@@ -6219,6 +6437,10 @@
   "es": "Seguimiento de:",
   "pt-BR": "Acompanhamento de:"
  },
+ "For Gmail, use <strong>smtp.gmail.com</strong>, port <strong>587</strong>, and an <a href=\"https://myaccount.google.com/apppasswords\" target=\"_blank\">App Password</a> (not your regular Gmail password).": {
+  "es": "Para Gmail, use <strong>smtp.gmail.com</strong>, el puerto <strong>587</strong> y una <a href=\"https://myaccount.google.com/apppasswords\" target=\"_blank\">contraseña de aplicación</a> (no su contraseña habitual de Gmail).",
+  "pt-BR": "Para o Gmail, use <strong>smtp.gmail.com</strong>, a porta <strong>587</strong> e uma <a href=\"https://myaccount.google.com/apppasswords\" target=\"_blank\">senha de app</a> (não a sua senha normal do Gmail)."
+ },
  "Forgot password confirmation": {
   "es": "Confirmación de contraseña olvidada",
   "pt-BR": "Confirmação de senha esquecida"
@@ -6299,6 +6521,10 @@
   "es": "Generar códigos de recuperación de la autenticación de dos factores (2FA)",
   "pt-BR": "Gerar códigos de recuperação da autenticação de dois fatores (2FA)"
  },
+ "Generated: {0} {1}.": {
+  "es": "Generado: {0} {1}.",
+  "pt-BR": "Gerado em: {0} {1}."
+ },
  "Generic": {
   "es": "Genérico",
   "pt-BR": "Genérico"
@@ -6351,6 +6577,14 @@
  "GMP Evidence Package": {
   "es": "Paquete de evidencia BPM",
   "pt-BR": "Pacote de evidências de BPF"
+ },
+ "GMP note: disabling idle timeout is not recommended under 21 CFR Part 11 / EU Annex 11.": {
+  "es": "Nota GMP: no se recomienda desactivar el cierre por inactividad según 21 CFR Part 11 / EU Anexo 11.",
+  "pt-BR": "Nota BPF: não é recomendado desativar o encerramento por inatividade segundo o 21 CFR Part 11 / EU Anexo 11."
+ },
+ "GMP: Critical severity complaints require expedited resolution (typically 7 days).": {
+  "es": "GMP: las reclamaciones de gravedad crítica requieren una resolución urgente (normalmente 7 días).",
+  "pt-BR": "BPF: reclamações de gravidade crítica exigem resolução urgente (normalmente 7 dias)."
  },
  "Government": {
   "es": "Gobierno",
@@ -6428,6 +6662,10 @@
  "High Risk (RPN ≥ 80)": {
   "es": "Riesgo alto (NPR ≥ 80)",
   "pt-BR": "Risco alto (NPR ≥ 80)"
+ },
+ "High RPN (≥80)": {
+  "es": "RPN alto (≥80)",
+  "pt-BR": "RPN alto (≥80)"
  },
  "High RPN Open": {
   "es": "Abiertos con NPR alto",
@@ -6564,6 +6802,10 @@
   "es": "Identificado por",
   "pt-BR": "Identificado por"
  },
+ "Identified in Period": {
+  "es": "Identificados en el período",
+  "pt-BR": "Identificados no período"
+ },
  "Identified On": {
   "es": "Identificado el",
   "pt-BR": "Identificado em"
@@ -6613,7 +6855,7 @@
   "pt-BR": "Impacto na integridade de dados"
  },
  "Impact on materials, suppliers, agreements, documents and training": {
-  "es": "Impacto en materiales, proveedores, acuerdos, documentos y formación",
+  "es": "Impacto en materiales, proveedores, acuerdos, documentos y capacitación",
   "pt-BR": "Impacto em materiais, fornecedores, acordos, documentos e treinamento"
  },
  "Impact on product quality and patient safety": {
@@ -7052,9 +7294,17 @@
   "es": "Elemento",
   "pt-BR": "Item"
  },
+ "item(s) overdue across all modules as at {0}.": {
+  "es": "elemento(s) vencido(s) en todos los módulos a {0}.",
+  "pt-BR": "item(ns) em atraso em todos os módulos em {0}."
+ },
  "Items Needing Attention": {
   "es": "Elementos que requieren atención",
   "pt-BR": "Itens que exigem atenção"
+ },
+ "items overdue — everything is on track.": {
+  "es": "elementos vencidos: todo está al día.",
+  "pt-BR": "itens em atraso: tudo está em dia."
  },
  "JAS-ANZ accreditation number": {
   "es": "Número de acreditación JAS-ANZ",
@@ -7128,6 +7378,14 @@
   "es": "Último",
   "pt-BR": "Último"
  },
+ "Last backup": {
+  "es": "Última copia de seguridad",
+  "pt-BR": "Último backup"
+ },
+ "Last backup failed": {
+  "es": "Falló la última copia de seguridad",
+  "pt-BR": "O último backup falhou"
+ },
  "Last Inspection Date": {
   "es": "Fecha de la última inspección",
   "pt-BR": "Data da última inspeção"
@@ -7187,6 +7445,10 @@
  "Lead Auditor": {
   "es": "Auditor líder",
   "pt-BR": "Auditor líder"
+ },
+ "Leave blank to keep the current password unchanged.": {
+  "es": "Déjelo en blanco para mantener la contraseña actual.",
+  "pt-BR": "Deixe em branco para manter a senha atual."
  },
  "Legal": {
   "es": "Legal",
@@ -7564,6 +7826,18 @@
   "es": "Logística / transporte",
   "pt-BR": "Logística / transporte"
  },
+ "Logo": {
+  "es": "Logotipo",
+  "pt-BR": "Logotipo"
+ },
+ "Logo is set. Administrator can replace it.": {
+  "es": "Hay un logotipo. Un administrador puede reemplazarlo.",
+  "pt-BR": "Há um logotipo. Um administrador pode substituí-lo."
+ },
+ "Logo must be 2 MB or smaller.": {
+  "es": "El logotipo debe pesar 2 MB o menos.",
+  "pt-BR": "O logotipo deve ter 2 MB ou menos."
+ },
  "Logo Path": {
   "es": "Ruta del logotipo",
   "pt-BR": "Caminho do logotipo"
@@ -7588,6 +7862,10 @@
  "Low Risk (RPN < 40)": {
   "es": "Riesgo bajo (NPR < 40)",
   "pt-BR": "Risco baixo (NPR < 40)"
+ },
+ "Low RPN (<40)": {
+  "es": "RPN bajo (<40)",
+  "pt-BR": "RPN baixo (<40)"
  },
  "Lozenge": {
   "es": "Pastilla para chupar",
@@ -7749,6 +8027,10 @@
   "es": "Administre sus inicios de sesión externos",
   "pt-BR": "Gerencie seus logins externos"
  },
+ "Management": {
+  "es": "Dirección",
+  "pt-BR": "Direção"
+ },
  "Management Response": {
   "es": "Respuesta de la dirección",
   "pt-BR": "Resposta da direção"
@@ -7756,6 +8038,14 @@
  "Management Review": {
   "es": "Revisión por la dirección",
   "pt-BR": "Análise crítica pela direção"
+ },
+ "Management Review Input": {
+  "es": "Entrada para la revisión por la dirección",
+  "pt-BR": "Entrada para a análise crítica pela direção"
+ },
+ "Management Review Input Report": {
+  "es": "Informe de entrada para la revisión por la dirección",
+  "pt-BR": "Relatório de entrada para a análise crítica pela direção"
  },
  "Manufacturing": {
   "es": "Fabricación",
@@ -8023,6 +8313,10 @@
   "es": "Riesgo medio (NPR 40–79)",
   "pt-BR": "Risco médio (NPR 40–79)"
  },
+ "Medium RPN (40–79)": {
+  "es": "RPN medio (40–79)",
+  "pt-BR": "RPN médio (40–79)"
+ },
  "MedWatch / Authority Form": {
   "es": "MedWatch / formulario de la autoridad",
   "pt-BR": "MedWatch / formulário da autoridade"
@@ -8115,6 +8409,10 @@
   "es": "Variación menor",
   "pt-BR": "Alteração menor"
  },
+ "minutes": {
+  "es": "minutos",
+  "pt-BR": "minutos"
+ },
  "Missing required ICSR elements: {0}.": {
   "es": "Faltan elementos obligatorios del ICSR: {0}.",
   "pt-BR": "Faltam elementos obrigatórios do ICSR: {0}."
@@ -8186,6 +8484,10 @@
  "Module": {
   "es": "Módulo",
   "pt-BR": "Módulo"
+ },
+ "Modules": {
+  "es": "Módulos",
+  "pt-BR": "Módulos"
  },
  "Monitor": {
   "es": "Vigilar",
@@ -8412,6 +8714,10 @@
   "es": "Nueva capacitación",
   "pt-BR": "Novo treinamento"
  },
+ "New Value": {
+  "es": "Valor nuevo",
+  "pt-BR": "Valor novo"
+ },
  "New Version": {
   "es": "Nueva versión",
   "pt-BR": "Nova versão"
@@ -8536,6 +8842,14 @@
   "es": "Aún no hay ciclos de aprobación registrados. Se guarda una copia automáticamente cada vez que este registro pasa a <strong>Emitido / activo</strong>.",
   "pt-BR": "Ainda não há ciclos de aprovação registrados. Uma cópia é gravada automaticamente cada vez que este registro passa para <strong>Emitido / ativo</strong>."
  },
+ "No approved documents are overdue for periodic review.": {
+  "es": "Ningún documento aprobado tiene la revisión periódica vencida.",
+  "pt-BR": "Nenhum documento aprovado está com a revisão periódica em atraso."
+ },
+ "No approved documents have a review due within the next 30 days.": {
+  "es": "Ningún documento aprobado tiene revisión en los próximos 30 días.",
+  "pt-BR": "Nenhum documento aprovado tem revisão nos próximos 30 dias."
+ },
  "No approved documents with a periodic review date are currently tracked.": {
   "es": "Actualmente no hay documentos aprobados con fecha de revisión periódica.",
   "pt-BR": "No momento, não há documentos aprovados com data de revisão periódica."
@@ -8584,6 +8898,14 @@
   "es": "Aún no hay entradas en la pista de auditoría.",
   "pt-BR": "Ainda não há entradas na trilha de auditoria."
  },
+ "No backup recorded": {
+  "es": "No hay copias registradas",
+  "pt-BR": "Nenhum backup registrado"
+ },
+ "No backup status file found. Once the backup script is deployed and has run at least once, the last backup details will appear here.": {
+  "es": "No se encontró el archivo de estado de las copias. Cuando el script de copia esté instalado y se haya ejecutado al menos una vez, aquí aparecerán los datos de la última copia.",
+  "pt-BR": "Arquivo de status do backup não encontrado. Quando o script de backup estiver instalado e tiver sido executado pelo menos uma vez, os dados do último backup aparecerão aqui."
+ },
  "No CAPA Linked": {
   "es": "Sin CAPA vinculada",
   "pt-BR": "Nenhuma CAPA vinculada"
@@ -8611,6 +8933,10 @@
  "No complaints linked to this customer.": {
   "es": "No hay reclamaciones vinculadas a este cliente.",
   "pt-BR": "Não há reclamações vinculadas a este cliente."
+ },
+ "No complaints open for more than 30 days.": {
+  "es": "No hay reclamaciones abiertas desde hace más de 30 días.",
+  "pt-BR": "Não há reclamações abertas há mais de 30 dias."
  },
  "No completed review cycles recorded yet.": {
   "es": "Aún no hay ciclos de revisión completados.",
@@ -8643,6 +8969,10 @@
  "No data available in table": {
   "es": "No hay datos en la tabla",
   "pt-BR": "Não há dados na tabela"
+ },
+ "No deviations open for more than 30 days.": {
+  "es": "No hay desviaciones abiertas desde hace más de 30 días.",
+  "pt-BR": "Não há desvios abertos há mais de 30 dias."
  },
  "No documents awaiting approval.": {
   "es": "No hay documentos en espera de aprobación.",
@@ -8724,6 +9054,10 @@
   "es": "Aún no hay registros de búsquedas bibliográficas.",
   "pt-BR": "Ainda não há registros de buscas bibliográficas."
  },
+ "No logo uploaded.": {
+  "es": "No se ha subido ningún logotipo.",
+  "pt-BR": "Nenhum logotipo enviado."
+ },
  "No matching records found": {
   "es": "No se encontraron registros coincidentes",
   "pt-BR": "Nenhum registro correspondente encontrado"
@@ -8744,6 +9078,18 @@
   "es": "No tiene capacitaciones pendientes. ¡Bien hecho!",
   "pt-BR": "Nenhum treinamento pendente. Muito bem!"
  },
+ "No overdue audits.": {
+  "es": "No hay auditorías vencidas.",
+  "pt-BR": "Não há auditorias em atraso."
+ },
+ "No overdue CAPAs.": {
+  "es": "No hay CAPA vencidas.",
+  "pt-BR": "Não há CAPAs em atraso."
+ },
+ "No overdue changes.": {
+  "es": "No hay cambios vencidos.",
+  "pt-BR": "Não há mudanças em atraso."
+ },
  "No overdue milestones.": {
   "es": "No hay hitos atrasados.",
   "pt-BR": "Nenhum marco atrasado."
@@ -8751,6 +9097,10 @@
  "No overdue or approaching deadlines.": {
   "es": "No hay plazos vencidos ni próximos.",
   "pt-BR": "Nenhum prazo vencido ou próximo."
+ },
+ "No overdue risks.": {
+  "es": "No hay riesgos vencidos.",
+  "pt-BR": "Não há riscos em atraso."
  },
  "No patient data recorded.": {
   "es": "No hay datos del paciente registrados.",
@@ -8804,6 +9154,10 @@
   "es": "No hay revisiones que venzan en 30 días.",
   "pt-BR": "Nenhuma revisão vence em 30 dias."
  },
+ "No settings changes have been recorded yet.": {
+  "es": "Aún no se ha registrado ningún cambio de configuración.",
+  "pt-BR": "Ainda não foi registrada nenhuma alteração de configuração."
+ },
  "No signal reviews yet. Signals are auto-detected by the background monitor.": {
   "es": "Aún no hay revisiones de señales. El monitor en segundo plano detecta las señales automáticamente.",
   "pt-BR": "Ainda não há revisões de sinais. O monitor em segundo plano detecta os sinais automaticamente."
@@ -8820,6 +9174,10 @@
   "es": "No hay plantilla estándar disponible para {0}.",
   "pt-BR": "Não há modelo padrão disponível para {0}."
  },
+ "No successful backup in the last 25 hours. Verify the cron job is running on the server.": {
+  "es": "No hay ninguna copia correcta en las últimas 25 horas. Compruebe que la tarea cron se está ejecutando en el servidor.",
+  "pt-BR": "Nenhum backup bem-sucedido nas últimas 25 horas. Verifique se a tarefa cron está sendo executada no servidor."
+ },
  "No supplier registrations expiring within 30 days.": {
   "es": "No hay registros de proveedores que venzan en 30 días.",
   "pt-BR": "Nenhum cadastro de fornecedor vence em 30 dias."
@@ -8832,6 +9190,14 @@
   "es": "No hay informes de suministro registrados.",
   "pt-BR": "Nenhum relatório de fornecimento registrado."
  },
+ "No supporting documents with expiry dates are currently tracked.": {
+  "es": "Actualmente no se sigue ningún documento de soporte con fecha de vencimiento.",
+  "pt-BR": "No momento não há documentos de suporte com data de vencimento acompanhados."
+ },
+ "No supporting documents with expiry dates found.": {
+  "es": "No se encontraron documentos de soporte con fecha de vencimiento.",
+  "pt-BR": "Nenhum documento de suporte com data de vencimento encontrado."
+ },
  "No suspect product data recorded.": {
   "es": "No hay datos del producto sospechoso registrados.",
   "pt-BR": "Nenhum dado do produto suspeito registrado."
@@ -8843,6 +9209,10 @@
  "No trainees assigned.": {
   "es": "No hay participantes asignados.",
   "pt-BR": "Nenhum participante atribuído."
+ },
+ "No training sessions found in this period.": {
+  "es": "No se encontraron sesiones de capacitación en este período.",
+  "pt-BR": "Nenhuma sessão de treinamento encontrada neste período."
  },
  "No trainings were auto-generated from this document version.": {
   "es": "No se generaron capacitaciones automáticamente a partir de esta versión del documento.",
@@ -8924,6 +9294,10 @@
   "es": "No está autorizado para enviar esta CAPA para aprobación.",
   "pt-BR": "Você não tem autorização para enviar esta CAPA para aprovação."
  },
+ "Not Completed": {
+  "es": "No completado",
+  "pt-BR": "Não concluído"
+ },
  "Not in system": {
   "es": "No está en el sistema",
   "pt-BR": "Não está no sistema"
@@ -8991,6 +9365,10 @@
  "Notification": {
   "es": "Notificación",
   "pt-BR": "Notificação"
+ },
+ "Number of previous passwords that cannot be reused. 0 = no restriction.": {
+  "es": "Número de contraseñas anteriores que no se pueden reutilizar. 0 = sin restricción.",
+  "pt-BR": "Número de senhas anteriores que não podem ser reutilizadas. 0 = sem restrição."
  },
  "NZD": {
   "es": "NZD",
@@ -9144,6 +9522,10 @@
   "es": "Solo se pueden devolver a borrador materiales en revisión.",
   "pt-BR": "Só é possível devolver para rascunho materiais em revisão."
  },
+ "Only PNG, JPG, or GIF files are allowed.": {
+  "es": "Solo se permiten archivos PNG, JPG o GIF.",
+  "pt-BR": "Somente arquivos PNG, JPG ou GIF são permitidos."
+ },
  "Only processes under review can be approved.": {
   "es": "Solo se pueden aprobar procesos en revisión.",
   "pt-BR": "Só é possível aprovar processos em revisão."
@@ -9220,6 +9602,14 @@
   "es": "Riesgos abiertos con NPR alto",
   "pt-BR": "Riscos abertos com NPR alto"
  },
+ "Opened in Period": {
+  "es": "Abiertos en el período",
+  "pt-BR": "Abertos no período"
+ },
+ "Operational": {
+  "es": "Operativo",
+  "pt-BR": "Operacional"
+ },
  "Operations User": {
   "es": "Usuario de operaciones",
   "pt-BR": "Usuário de operações"
@@ -9284,6 +9674,10 @@
   "es": "Dirección de la organización",
   "pt-BR": "Endereço da organização"
  },
+ "Organisation Logo": {
+  "es": "Logotipo de la organización",
+  "pt-BR": "Logotipo da organização"
+ },
  "Organisation Name": {
   "es": "Nombre de la organización",
   "pt-BR": "Nome da organização"
@@ -9291,6 +9685,10 @@
  "Organisation or body that produced this document.": {
   "es": "Organización u organismo que elaboró este documento.",
   "pt-BR": "Organização ou entidade que elaborou este documento."
+ },
+ "Organisation Profile": {
+  "es": "Perfil de la organización",
+  "pt-BR": "Perfil da organização"
  },
  "Original Approver": {
   "es": "Aprobador original",
@@ -9549,6 +9947,10 @@
   "es": "Contraseñas anteriores recordadas",
   "pt-BR": "Senhas anteriores lembradas"
  },
+ "passwords": {
+  "es": "contraseñas",
+  "pt-BR": "senhas"
+ },
  "Passwords must be at least {0} characters.": {
   "es": "La contraseña debe tener al menos {0} caracteres.",
   "pt-BR": "A senha deve ter pelo menos {0} caracteres."
@@ -9786,6 +10188,11 @@
   "es": "Personal / capacitación",
   "pt-BR": "Pessoal / treinamento"
  },
+ "Perth (AWST, no daylight saving)": {
+  "es": "Perth (AWST, sin horario de verano)",
+  "pt-BR": "Perth (AWST, sem horário de verão)",
+  "note": "Time zone name from Services/SiteTime.cs (Choices), shown with L[z.Label] — keep even though the check lists it as unused."
+ },
  "Pessary": {
   "es": "Óvulo vaginal",
   "pt-BR": "Óvulo vaginal"
@@ -9918,6 +10325,10 @@
   "es": "Seleccione un tipo de solicitud.",
   "pt-BR": "Selecione um tipo de solicitação."
  },
+ "PNG, JPG or GIF, max 2 MB. Replaces the current logo.": {
+  "es": "PNG, JPG o GIF, máx. 2 MB. Reemplaza el logotipo actual.",
+  "pt-BR": "PNG, JPG ou GIF, máx. 2 MB. Substitui o logotipo atual."
+ },
  "Policy": {
   "es": "Política",
   "pt-BR": "Política"
@@ -10030,6 +10441,10 @@
  "Previous Occurrence": {
   "es": "Ocurrencia anterior",
   "pt-BR": "Ocorrência anterior"
+ },
+ "Previous Value": {
+  "es": "Valor anterior",
+  "pt-BR": "Valor anterior"
  },
  "Primary Address": {
   "es": "Dirección principal",
@@ -10291,6 +10706,10 @@
   "es": "Propuesto por",
   "pt-BR": "Proposto por"
  },
+ "Proposed in Period": {
+  "es": "Propuestos en el período",
+  "pt-BR": "Propostos no período"
+ },
  "Proposed On": {
   "es": "Propuesto el",
   "pt-BR": "Proposto em"
@@ -10524,6 +10943,10 @@
   "es": "Cantidad suministrada",
   "pt-BR": "Quantidade fornecida"
  },
+ "Quarantine": {
+  "es": "Cuarentena",
+  "pt-BR": "Quarentena"
+ },
  "Quarterly": {
   "es": "Trimestral",
   "pt-BR": "Trimestral"
@@ -10687,6 +11110,10 @@
  "Received By": {
   "es": "Recibido por",
   "pt-BR": "Recebido por"
+ },
+ "Received in Period": {
+  "es": "Recibidas en el período",
+  "pt-BR": "Recebidas no período"
  },
  "Received On": {
   "es": "Recibido el",
@@ -10921,6 +11348,10 @@
  "Records with an active retention hold will be automatically skipped.": {
   "es": "Los registros con un bloqueo de retención activo se omitirán automáticamente.",
   "pt-BR": "Registros com bloqueio de retenção ativo serão ignorados automaticamente."
+ },
+ "Records within these day thresholds will be highlighted as approaching expiry or due date.": {
+  "es": "Los registros dentro de estos umbrales de días se resaltarán como próximos a su vencimiento o fecha límite.",
+  "pt-BR": "Os registros dentro destes limites de dias serão destacados como próximos do vencimento ou do prazo."
  },
  "Recovered / Resolved": {
   "es": "Recuperado / resuelto",
@@ -11788,6 +12219,10 @@
   "es": "Revisión pendiente",
   "pt-BR": "Revisão pendente"
  },
+ "Review Due Date": {
+  "es": "Fecha de revisión",
+  "pt-BR": "Data de revisão"
+ },
  "Review Due Soon": {
   "es": "Revisión próxima",
   "pt-BR": "Revisão próxima"
@@ -12232,6 +12667,10 @@
   "es": "Guardar registro",
   "pt-BR": "Salvar registro"
  },
+ "Save Settings": {
+  "es": "Guardar configuración",
+  "pt-BR": "Salvar configurações"
+ },
  "Save Statement": {
   "es": "Guardar declaración",
   "pt-BR": "Salvar declaração"
@@ -12328,6 +12767,10 @@
  "Searched By": {
   "es": "Búsqueda realizada por",
   "pt-BR": "Busca feita por"
+ },
+ "Security Policy": {
+  "es": "Política de seguridad",
+  "pt-BR": "Política de segurança"
  },
  "Select a product registration that depends on this licence/certification being current.": {
   "es": "Seleccione un registro de producto que dependa de que esta licencia/certificación esté vigente.",
@@ -12506,6 +12949,18 @@
   "es": "La sesión está por expirar",
   "pt-BR": "Sessão prestes a expirar"
  },
+ "Sessions": {
+  "es": "Sesiones",
+  "pt-BR": "Sessões"
+ },
+ "Sessions Attended": {
+  "es": "Sesiones asistidas",
+  "pt-BR": "Sessões frequentadas"
+ },
+ "Sessions Completed": {
+  "es": "Sesiones completadas",
+  "pt-BR": "Sessões concluídas"
+ },
  "Set automatically when the record is Suspended, Withdrawn, or marked Not Applicable. Not editable here.": {
   "es": "Se establece automáticamente cuando el registro se suspende, se retira o se marca como no aplicable. No se puede editar aquí.",
   "pt-BR": "Definido automaticamente quando o registro é suspenso, retirado ou marcado como não aplicável. Não editável aqui."
@@ -12538,6 +12993,14 @@
   "es": "Configuración",
   "pt-BR": "Configurações"
  },
+ "Settings Audit Log": {
+  "es": "Registro de auditoría de la configuración",
+  "pt-BR": "Trilha de auditoria das configurações"
+ },
+ "Settings saved successfully.": {
+  "es": "Configuración guardada correctamente.",
+  "pt-BR": "Configurações salvas com sucesso."
+ },
  "Severe": {
   "es": "Grave",
   "pt-BR": "Grave"
@@ -12553,6 +13016,10 @@
  "Severity Breakdown": {
   "es": "Desglose por gravedad",
   "pt-BR": "Detalhamento por gravidade"
+ },
+ "Severity breakdown (all time):": {
+  "es": "Desglose por gravedad (todo el historial):",
+  "pt-BR": "Distribuição por gravidade (todo o histórico):"
  },
  "Severity Definitions": {
   "es": "Definiciones de gravedad",
@@ -12591,6 +13058,10 @@
   "es": "Mostrando _START_ a _END_ de _TOTAL_ registros",
   "pt-BR": "Mostrando _START_ a _END_ de _TOTAL_ registros",
   "note": "DataTables: keep _START_/_END_/_TOTAL_ as is"
+ },
+ "Showing period: <strong>{0}</strong> to <strong>{1}</strong>": {
+  "es": "Período mostrado: <strong>{0}</strong> a <strong>{1}</strong>",
+  "pt-BR": "Período exibido: <strong>{0}</strong> a <strong>{1}</strong>"
  },
  "Signal Details": {
   "es": "Detalles de la señal",
@@ -13273,6 +13744,10 @@
   "es": "Informe de suministro actualizado.",
   "pt-BR": "Relatório de fornecimento atualizado."
  },
+ "Supporting documents attached to master data records (Products, Materials, Processes, Assets, Services, Customers, and Suppliers) that have an assigned expiry date. Organised by module and parent record.": {
+  "es": "Documentos de soporte adjuntos a registros de datos maestros (productos, materiales, procesos, activos, servicios, clientes y proveedores) que tienen una fecha de vencimiento asignada. Organizados por módulo y registro principal.",
+  "pt-BR": "Documentos de suporte anexados a registros de dados mestres (produtos, materiais, processos, ativos, serviços, clientes e fornecedores) que têm data de vencimento atribuída. Organizados por módulo e registro principal."
+ },
  "Suppository": {
   "es": "Supositorio",
   "pt-BR": "Supositório"
@@ -13373,6 +13848,10 @@
  "Syrup": {
   "es": "Jarabe",
   "pt-BR": "Xarope"
+ },
+ "System & Backup Status": {
+  "es": "Estado del sistema y de las copias de seguridad",
+  "pt-BR": "Status do sistema e do backup"
  },
  "System Acceptance Trail": {
   "es": "Historial de aceptación en el sistema",
@@ -13672,6 +14151,10 @@
   "es": "El plan de acción fue <strong>aceptado</strong> y ahora está bloqueado para su ejecución. Puede actualizar en cada acción: <strong>{0}</strong>, <strong>{1}</strong> y <strong>{2}</strong>. Para agregar, quitar o modificar una acción (o su responsable o fecha objetivo), <strong>devuelva el cambio para corrección</strong> para que el plan revisado se vuelva a aceptar.",
   "pt-BR": "O plano de ação foi <strong>aceito</strong> e agora está bloqueado para execução. Você pode atualizar em cada ação: <strong>{0}</strong>, <strong>{1}</strong> e <strong>{2}</strong>. Para adicionar, remover ou alterar uma ação (ou seu responsável ou data-alvo), <strong>devolva a mudança para retrabalho</strong> para que o plano revisado seja aceito novamente."
  },
+ "The address emails are sent from.": {
+  "es": "La dirección desde la que se envían los correos.",
+  "pt-BR": "O endereço de onde os e-mails são enviados."
+ },
  "The application was not created": {
   "es": "La solicitud no se creó",
   "pt-BR": "A solicitação não foi criada"
@@ -13752,6 +14235,10 @@
  "The language every screen is shown in. Stored records never change language. Languages installed on this server are set in appsettings.json (Localization:Languages).": {
   "es": "El idioma en que se muestran todas las pantallas. Los registros guardados nunca cambian de idioma. Los idiomas instalados en este servidor se definen en appsettings.json (Localization:Languages).",
   "pt-BR": "O idioma em que todas as telas são exibidas. Os registros salvos nunca mudam de idioma. Os idiomas instalados neste servidor são definidos em appsettings.json (Localization:Languages)."
+ },
+ "The last backup run reported a failure.": {
+  "es": "La última ejecución de la copia de seguridad informó de un fallo.",
+  "pt-BR": "A última execução do backup informou uma falha."
  },
  "The new password and confirmation password do not match.": {
   "es": "La nueva contraseña y su confirmación no coinciden.",
@@ -13848,6 +14335,10 @@
  "These statements pre-populate the Certification Statement field in the AP Certification modal when approving a release record. The system selects the appropriate statement based on the release type and product type of the record being certified. The AP can edit the statement before signing.": {
   "es": "Estas declaraciones rellenan previamente el campo Declaración de certificación en la ventana de certificación de la PA al aprobar un registro de liberación. El sistema elige la declaración según el tipo de liberación y el tipo de producto del registro. La PA puede editarla antes de firmar.",
   "pt-BR": "Estas declarações preenchem previamente o campo Declaração de certificação na janela de certificação da PA ao aprovar um registro de liberação. O sistema escolhe a declaração conforme o tipo de liberação e o tipo de produto do registro. A PA pode editá-la antes de assinar."
+ },
+ "These values pre-populate target completion dates when creating new records. Existing records are not affected.": {
+  "es": "Estos valores rellenan de antemano las fechas objetivo al crear registros nuevos. Los registros existentes no se ven afectados.",
+  "pt-BR": "Estes valores preenchem previamente as datas-alvo ao criar novos registros. Os registros existentes não são afetados."
  },
  "Third Party": {
   "es": "Tercero",
@@ -14291,6 +14782,10 @@
   "es": "Cronología de los hechos",
   "pt-BR": "Cronologia dos fatos"
  },
+ "Times are stored in UTC and shown in this zone on screens, exports and certificates.": {
+  "es": "Las horas se guardan en UTC y se muestran en esta zona en pantallas, exportaciones y certificados.",
+  "pt-BR": "Os horários são armazenados em UTC e exibidos neste fuso nas telas, exportações e certificados."
+ },
  "Timestamp": {
   "es": "Fecha y hora",
   "pt-BR": "Data e hora"
@@ -14318,6 +14813,10 @@
  "To add or replace documents (for example a renewed certificate), start a new review from": {
   "es": "Para agregar o reemplazar documentos (por ejemplo, un certificado renovado), inicie una nueva revisión desde",
   "pt-BR": "Para adicionar ou substituir documentos (por exemplo, um certificado renovado), inicie uma nova revisão em"
+ },
+ "To Customer": {
+  "es": "Al cliente",
+  "pt-BR": "Ao cliente"
  },
  "To link a record, open the LC record and use the <strong>Dependencies</strong> tab.": {
   "es": "Para vincular un registro, abra el registro de LC y use la pestaña <strong>Dependencias</strong>.",
@@ -14355,6 +14854,10 @@
   "es": "Total",
   "pt-BR": "Total"
  },
+ "Total (all time)": {
+  "es": "Total (todo el historial)",
+  "pt-BR": "Total (todo o histórico)"
+ },
  "Total Applications": {
   "es": "Total de solicitudes",
   "pt-BR": "Total de solicitações"
@@ -14383,6 +14886,10 @@
   "es": "Total de desviaciones",
   "pt-BR": "Total de desvios"
  },
+ "Total Documents": {
+  "es": "Total de documentos",
+  "pt-BR": "Total de documentos"
+ },
  "Total Maintenances": {
   "es": "Total de mantenimientos",
   "pt-BR": "Total de manutenções"
@@ -14406,6 +14913,10 @@
  "Total Risks": {
   "es": "Total de riesgos",
   "pt-BR": "Total de riscos"
+ },
+ "Total Sessions": {
+  "es": "Total de sesiones",
+  "pt-BR": "Total de sessões"
  },
  "Total Suppliers": {
   "es": "Total de proveedores",
@@ -14455,6 +14966,10 @@
   "es": "Matriz de cumplimiento de capacitación",
   "pt-BR": "Matriz de conformidade de treinamento"
  },
+ "Training Compliance Report": {
+  "es": "Informe de cumplimiento de la capacitación",
+  "pt-BR": "Relatório de conformidade dos treinamentos"
+ },
  "Training Dashboard": {
   "es": "Panel de capacitación",
   "pt-BR": "Painel de treinamentos"
@@ -14464,7 +14979,7 @@
   "pt-BR": "Detalhes do treinamento"
  },
  "Training Due Warning (days)": {
-  "es": "Aviso de formación pendiente (días)",
+  "es": "Aviso de capacitación pendiente (días)",
   "pt-BR": "Alerta de treinamento pendente (dias)"
  },
  "Training Groups": {
@@ -14508,8 +15023,16 @@
   "pt-BR": "Requisitos de treinamento"
  },
  "Training Retention (years)": {
-  "es": "Conservación de formaciones (años)",
+  "es": "Conservación de capacitaciones (años)",
   "pt-BR": "Retenção de treinamentos (anos)"
+ },
+ "Training session completion rates by session and by individual user for a selected period. Demonstrates workforce competency for regulatory audits. Exportable to Excel with per-session and per-user sheets.": {
+  "es": "Tasas de finalización de las sesiones de capacitación por sesión y por usuario para un período. Demuestra la competencia del personal en auditorías regulatorias. Exportable a Excel con hojas por sesión y por usuario.",
+  "pt-BR": "Taxas de conclusão das sessões de treinamento por sessão e por usuário para um período. Demonstra a competência da equipe em auditorias regulatórias. Exportável para Excel com planilhas por sessão e por usuário."
+ },
+ "Training session completion rates for the selected period, by session and by individual user.": {
+  "es": "Tasas de finalización de las sesiones de capacitación del período seleccionado, por sesión y por usuario.",
+  "pt-BR": "Taxas de conclusão das sessões de treinamento do período selecionado, por sessão e por usuário."
  },
  "Training Status": {
   "es": "Estado de la capacitación",
@@ -14692,6 +15215,10 @@
   "es": "Error desconocido",
   "pt-BR": "Erro desconhecido"
  },
+ "Unknown time zone.": {
+  "es": "Zona horaria desconocida.",
+  "pt-BR": "Fuso horário desconhecido."
+ },
  "Unlikely": {
   "es": "Improbable",
   "pt-BR": "Improvável"
@@ -14707,6 +15234,10 @@
  "Unsatisfactory": {
   "es": "Insatisfactorio",
   "pt-BR": "Insatisfatório"
+ },
+ "up to 30 days overdue.": {
+  "es": "hasta 30 días de retraso.",
+  "pt-BR": "até 30 dias de atraso."
  },
  "Upcoming Deadlines & Alerts": {
   "es": "Próximos plazos y alertas",
@@ -14764,6 +15295,10 @@
   "es": "Cargado el",
   "pt-BR": "Enviado em"
  },
+ "Uploaded-files archive": {
+  "es": "Archivo de archivos subidos",
+  "pt-BR": "Arquivo dos arquivos enviados"
+ },
  "USD": {
   "es": "USD",
   "pt-BR": "USD"
@@ -14783,6 +15318,10 @@
  "Use Return for Rework from the Details page if changes to these fields are needed.": {
   "es": "Use Devolver para corrección en la página de detalles si se necesitan cambios en estos campos.",
   "pt-BR": "Use Devolver para retrabalho na página de detalhes se forem necessárias alterações nestes campos."
+ },
+ "Used to send password reset and account confirmation emails.": {
+  "es": "Se usa para enviar los correos de restablecimiento de contraseña y de confirmación de cuenta.",
+  "pt-BR": "Usado para enviar os e-mails de redefinição de senha e de confirmação de conta."
  },
  "User": {
   "es": "Usuario",
@@ -14816,9 +15355,17 @@
   "es": "Usuarios",
   "pt-BR": "Usuários"
  },
+ "Users will be required to change their password after this many days. 0 = no expiry.": {
+  "es": "Los usuarios deberán cambiar su contraseña tras este número de días. 0 = sin caducidad.",
+  "pt-BR": "Os usuários deverão trocar a senha após este número de dias. 0 = sem expiração."
+ },
  "USR": {
   "es": "USR",
   "pt-BR": "USR"
+ },
+ "Usually 587.": {
+  "es": "Normalmente 587.",
+  "pt-BR": "Normalmente 587."
  },
  "Utilities (HVAC, Water, etc.)": {
   "es": "Servicios auxiliares (HVAC, agua, etc.)",
@@ -14831,6 +15378,10 @@
  "Valid": {
   "es": "Válido",
   "pt-BR": "Válido"
+ },
+ "Valid (not yet in reminder period)": {
+  "es": "Válido (aún fuera del período de aviso)",
+  "pt-BR": "Válido (ainda fora do período de aviso)"
  },
  "Validation / Qualification": {
   "es": "Validación / calificación",
@@ -14957,6 +15508,10 @@
   "es": "Ver todo",
   "pt-BR": "Ver tudo"
  },
+ "View Audit Log": {
+  "es": "Ver registro de auditoría",
+  "pt-BR": "Ver trilha de auditoria"
+ },
  "View CAPA": {
   "es": "Ver CAPA",
   "pt-BR": "Ver CAPA"
@@ -14968,6 +15523,10 @@
  "View in Register": {
   "es": "Ver en el registro",
   "pt-BR": "Ver no registro"
+ },
+ "View Report": {
+  "es": "Ver informe",
+  "pt-BR": "Ver relatório"
  },
  "View Training Records": {
   "es": "Ver registros de capacitación",
@@ -15101,6 +15660,18 @@
   "es": "Si la fecha objetivo de cumplimiento es realista",
   "pt-BR": "Se a data-alvo de conclusão é realista"
  },
+ "White": {
+  "es": "Blanco",
+  "pt-BR": "Branco"
+ },
+ "with expiring docs": {
+  "es": "con documentos por vencer",
+  "pt-BR": "com documentos a vencer"
+ },
+ "with expiry date": {
+  "es": "con fecha de vencimiento",
+  "pt-BR": "com data de vencimento"
+ },
  "with review date set": {
   "es": "con fecha de revisión fijada",
   "pt-BR": "com data de revisão definida"
@@ -15128,6 +15699,10 @@
  "Withdrawn": {
   "es": "Retirado",
   "pt-BR": "Retirado"
+ },
+ "within reminder period": {
+  "es": "dentro del período de aviso",
+  "pt-BR": "dentro do período de aviso"
  },
  "Work Details": {
   "es": "Detalles del trabajo",
@@ -15259,6 +15834,10 @@
  "You have selected <strong id=\"selectedCount\">{0}</strong> record(s) for disposal.": {
   "es": "Ha seleccionado <strong id=\"selectedCount\">{0}</strong> registro(s) para eliminar.",
   "pt-BR": "Você selecionou <strong id=\"selectedCount\">{0}</strong> registro(s) para descarte."
+ },
+ "You have view-only access to system settings. Contact an Administrator to make changes.": {
+  "es": "Tiene acceso de solo lectura a la configuración del sistema. Contacte con un administrador para hacer cambios.",
+  "pt-BR": "Você tem acesso somente leitura às configurações do sistema. Contate um administrador para fazer alterações."
  },
  "You have view-only access. Contact an Administrator to make changes.": {
   "es": "Tiene acceso de solo lectura. Contacte a un administrador para hacer cambios.",
@@ -15402,6 +15981,14 @@
   "es": "{0} días de retraso",
   "pt-BR": "{0} dias de atraso"
  },
+ "{0} expired": {
+  "es": "{0} vencidos",
+  "pt-BR": "{0} vencidos"
+ },
+ "{0} expiring soon": {
+  "es": "{0} vencen pronto",
+  "pt-BR": "{0} vencem em breve"
+ },
  "{0} items": {
   "es": "{0} elementos",
   "pt-BR": "{0} itens"
@@ -15409,6 +15996,10 @@
  "{0} on {1}": {
   "es": "{0} el {1}",
   "pt-BR": "{0} em {1}"
+ },
+ "{0} overdue": {
+  "es": "{0} vencidos",
+  "pt-BR": "{0} em atraso"
  },
  "{0} record(s) disposed.": {
   "es": "{0} registro(s) eliminado(s).",
@@ -15426,6 +16017,10 @@
   "es": "{0} línea(s) de especificación importada(s) de los datos maestros del producto.",
   "pt-BR": "{0} linha(s) de especificação importada(s) dos dados mestres do produto."
  },
+ "{0} total": {
+  "es": "{0} en total",
+  "pt-BR": "{0} no total"
+ },
  "{0} under re-review": {
   "es": "{0} en revisión periódica",
   "pt-BR": "{0} em revisão periódica"
@@ -15437,6 +16032,14 @@
  "{0}d": {
   "es": "{0} d",
   "pt-BR": "{0} d"
+ },
+ "{0}d overdue": {
+  "es": "{0} d de retraso",
+  "pt-BR": "{0} d de atraso"
+ },
+ "{0}d remaining": {
+  "es": "quedan {0} d",
+  "pt-BR": "faltam {0} d"
  },
  "— a birth defect in the offspring.": {
   "es": "— un defecto congénito en la descendencia.",

@@ -279,7 +279,7 @@
 <script>
 (function () {
     // Status chart
-    var statusLabels = @Json.Serialize(statusCounts.Keys.ToArray());
+    var statusLabels = @Json.Serialize(statusCounts.Keys.Select(k => L.Message(k)).ToArray());
     var statusData   = @Json.Serialize(statusCounts.Values.ToArray());
     var statusColors = ['#198754','#6610f2','#ffc107','#dc3545','#6c757d','#0dcaf0','#fd7e14','#0d6efd','#20c997','#d63384'];
 
@@ -290,7 +290,7 @@
     });
 
     // Category chart
-    var catLabels = @Json.Serialize(categoryCounts.Keys.ToArray());
+    var catLabels = @Json.Serialize(categoryCounts.Keys.Select(k => L.Enum(Enum.Parse<OpenQMS.Models.LC.LCCategory>(k))).ToArray());
     var catData   = @Json.Serialize(categoryCounts.Values.ToArray());
     var catColors = ['#0d6efd','#198754','#ffc107'];
 

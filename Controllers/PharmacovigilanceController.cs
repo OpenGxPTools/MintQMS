@@ -68,7 +68,7 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             ViewBag.StatusLabels = System.Text.Json.JsonSerializer.Serialize(
-                statusCounts.Select(s => s.Status.ToString()).ToList());
+                statusCounts.Select(s => this.T(EnumHelper.Display(s.Status))).ToList());
             ViewBag.StatusData = System.Text.Json.JsonSerializer.Serialize(
                 statusCounts.Select(s => s.Count).ToList());
 

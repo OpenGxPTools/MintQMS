@@ -187,7 +187,7 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
     <script>
-        var labels = ['Scheduled', 'Completed'];
+        var labels = [@Json.Serialize(L["Scheduled"].Value), @Json.Serialize(L["Completed"].Value)];
         var counts = [@ViewBag.ScheduledCount, @ViewBag.CompletedCount];
         var colors = ['#ffc107', '#198754'];
 
@@ -199,7 +199,7 @@
 
         new Chart(document.getElementById('statusBar'), {
             type: 'bar',
-            data: { labels: labels, datasets: [{ label: 'Trainings', data: counts, backgroundColor: colors }] },
+            data: { labels: labels, datasets: [{ label: @Json.Serialize(L["Trainings"].Value), data: counts, backgroundColor: colors }] },
             options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, maintainAspectRatio: false }
         });
     </script>

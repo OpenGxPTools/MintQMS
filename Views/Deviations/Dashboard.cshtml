@@ -261,7 +261,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 (function () {
-    var labels = @Json.Serialize(statusCounts.Keys.ToList());
+    var labels = @Json.Serialize(statusCounts.Keys.Select(k => L.Message(k)).ToList());
     var data   = @Json.Serialize(statusCounts.Values.ToList());
     var colors = ['#6c757d','#0dcaf0','#0d6efd','#ffc107','#fd7e14','#198754'];
     new Chart(document.getElementById('statusChart'), {

@@ -27,6 +27,11 @@
   Spanish and Portuguese: pages, approval dialogs, field labels, messages and the option lists (dosage and
   presentation forms, device and material categories, customer industries). Options are stored in English
   whatever the language, and a stored value is shown translated.
+- Reports (hub, management review, overdue items, training compliance, attachment expiry register) and
+  System Settings (with its audit log) in Spanish and Portuguese; the time zone list too. Excel exports stay
+  in English, as records.
+- Dashboard charts in every module show their labels (statuses, types, categories, series names) and month
+  names in the user's language; the "All" choice in table page-size menus is translated everywhere.
 - Deviations, Complaints, CAPA, Documents and Training: the signature dialog titles, the status shown on
   edit and detail pages, the "Click to remove" hint and the remaining messages after an action are now
   translated too.
@@ -58,6 +63,12 @@
 - Master data: browser tabs on the registers and on the create, edit and delete pages read e.g. "Assets",
   "New Asset", "Edit Asset" instead of "Index", "Create", "Edit"; material and service details showed the
   status "UnderReview", now "Under Review".
+- Dashboard charts in Audits, Risks, Maintenance, Documents and Pharmacovigilance labelled some states by
+  code name ("InProgress", "UnderReview", "PendingApproval"); they now read "In Progress", "Under Review",
+  "Pending Approval".
+- Settings audit log: the time column was headed "(UTC)" but showed the site's time zone; it now names the
+  site's zone. The attachment expiry register likewise said "UTC" after a time shown in the site's zone.
+- Complaints register: the browser tab reads "Complaints" instead of "Index".
 - Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the
   Approval Status column, but "Under Assessment" is a workflow stage shown in the Workflow column. It now
   filters the Workflow column and finds both first assessments and re-reviews.

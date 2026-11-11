@@ -279,7 +279,7 @@ namespace OpenQMS.Controllers
                     r.CreatedDate.Year == now.Year && r.CreatedDate.Month == m).ToList();
                 return new MonthlyReleaseData
                 {
-                    MonthLabel        = new DateTime(now.Year, m, 1).ToString("MMM"),
+                    MonthLabel        = new DateTime(now.Year, m, 1).ToString("MMM", DisplayDates.Culture),
                     RFS               = monthRecords.Count(r => r.ReleaseType == ReleaseType.ReleaseForSupply),
                     Quarantine        = monthRecords.Count(r => r.ReleaseType == ReleaseType.ReleaseUnderQuarantine),
                     RFFP              = monthRecords.Count(r => r.ReleaseType == ReleaseType.ReleaseForFurtherProcessing),

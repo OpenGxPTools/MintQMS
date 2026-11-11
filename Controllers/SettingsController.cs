@@ -58,7 +58,7 @@ namespace OpenQMS.Controllers
             ModelState.Remove(nameof(SystemSettings.EmailFromName));
 
             if (!SiteTime.IsValid(model.TimeZoneId))
-                ModelState.AddModelError(nameof(SystemSettings.TimeZoneId), "Unknown time zone.");
+                ModelState.AddModelError(nameof(SystemSettings.TimeZoneId), this.T("Unknown time zone."));
 
             // Only an installed language (appsettings "Localization:Languages"), stored in canonical form.
             var siteLanguage = _languages.Find(model.SiteLanguage);
@@ -80,14 +80,14 @@ namespace OpenQMS.Controllers
                 var ext = Path.GetExtension(logoFile.FileName).ToLowerInvariant();
                 if (!AllowedLogoExtensions.Contains(ext))
                 {
-                    ModelState.AddModelError("logoFile", "Only PNG, JPG, or GIF files are allowed.");
+                    ModelState.AddModelError("logoFile", this.T("Only PNG, JPG, or GIF files are allowed."));
                     ViewBag.CanEdit = true;
                     model.LogoPath = settings.LogoPath;
                     return View("Index", model);
                 }
                 if (logoFile.Length > MaxLogoBytes)
                 {
-                    ModelState.AddModelError("logoFile", "Logo must be 2 MB or smaller.");
+                    ModelState.AddModelError("logoFile", this.T("Logo must be 2 MB or smaller."));
                     ViewBag.CanEdit = true;
                     model.LogoPath = settings.LogoPath;
                     return View("Index", model);
@@ -201,7 +201,7 @@ namespace OpenQMS.Controllers
             await _context.SaveChangesAsync();
             SiteTime.Configure(settings.TimeZoneId);
 
-            TempData["Success"] = "Settings saved successfully.";
+            TempData["Success"] = this.T("Settings saved successfully.");
             return RedirectToAction(nameof(Index));
         }
 

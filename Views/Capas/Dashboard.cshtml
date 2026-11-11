@@ -288,7 +288,7 @@
     <script>
         // Status doughnut chart
         (function () {
-            var labels = [@Html.Raw(string.Join(",", statusCounts.Keys.Select(k => $"'{k}'")))];
+            var labels = @Json.Serialize(statusCounts.Keys.Select(k => L.Message(k)).ToList());
             var data   = [@Html.Raw(string.Join(",", statusCounts.Values))];
             var colors = ['#9E9E9E','#29B6F6','#1565C0','#FFA726','#1565C0','#1976D2','#43A047'];
             new Chart(document.getElementById('statusChart'), {

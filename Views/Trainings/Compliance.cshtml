@@ -174,7 +174,7 @@
                 paging: true,
                 order: [[0, 'asc']],
                 dom: 'lBfrtip',
-                lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                lengthMenu: [[25, 50, 100, -1], [25, 50, 100, @Json.Serialize(L["All"].Value)]],
                 buttons: [
                     { extend: 'pdf',   footer: false },
                     { extend: 'excel', footer: false }
