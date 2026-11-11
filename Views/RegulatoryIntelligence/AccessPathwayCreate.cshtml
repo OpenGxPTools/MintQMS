@@ -1,7 +1,7 @@
 @model OpenQMS.Models.RI.RIAccessPathwayRecord
 @using OpenQMS.Models.RI
 @{
-    ViewData["Title"] = "New Access Pathway";
+    ViewData["Title"] = L["New Access Pathway"].Value;
     int applicationId = (int)ViewData["ApplicationId"]!;
     string riNumber   = (string)(ViewData["RINumber"] ?? "");
     string authority  = (string)(ViewData["Authority"] ?? "Authority");
@@ -9,9 +9,9 @@
 
 <div class="d-flex align-items-center gap-2 mb-3">
     <a asp-action="Details" asp-route-id="@applicationId" class="btn btn-outline-secondary btn-sm">
-        <i class="fas fa-arrow-left me-1"></i>Back to @riNumber
+        <i class="fas fa-arrow-left me-1"></i>@L["Back to {0}", riNumber]
     </a>
-    <h4 class="mb-0"><i class="fas fa-user-shield me-2 text-primary"></i>New Access Pathway</h4>
+    <h4 class="mb-0"><i class="fas fa-user-shield me-2 text-primary"></i>@L["New Access Pathway"]</h4>
 </div>
 
 <form asp-action="CreateAccessPathway" method="post">
@@ -19,7 +19,7 @@
     <input type="hidden" asp-for="RegulatoryApplicationId" />
 
     <div class="card mb-3">
-        <div class="card-header fw-semibold">Pathway Information</div>
+        <div class="card-header fw-semibold">@L["Pathway Information"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-3">
@@ -31,7 +31,7 @@
                     <label asp-for="PathwayType" class="form-label">@L["Pathway Type"] <span class="text-danger">*</span></label>
                     <select asp-for="PathwayType" class="form-select"
                             asp-items="Html.GetEnumSelectList<RIAccessPathwayType>()">
-                        <option value="">— Select —</option>
+                        <option value="">@L["— Select —"]</option>
                     </select>
                     <span asp-validation-for="PathwayType" class="text-danger small"></span>
                 </div>
@@ -52,19 +52,19 @@
     </div>
 
     <div class="card mb-3">
-        <div class="card-header fw-semibold">Patient &amp; Prescriber</div>
+        <div class="card-header fw-semibold">@L["Patient & Prescriber"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
                     <label asp-for="PatientIdentifier" class="form-label">@L["Patient Identifier"] <span class="text-muted small">(pseudonymised)</span></label>
-                    <input asp-for="PatientIdentifier" class="form-control" placeholder="e.g. initials or code" />
+                    <input asp-for="PatientIdentifier" class="form-control" placeholder="@L["e.g. initials or code"]" />
                 </div>
                 <div class="col-md-4">
                     <label asp-for="PrescriberName" class="form-label">@L["Prescriber Name"]</label>
                     <input asp-for="PrescriberName" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label asp-for="PrescriberId" class="form-label">@L["Prescriber ID"] <span class="text-muted small">(AHPRA# or equiv.)</span></label>
+                    <label asp-for="PrescriberId" class="form-label">@L["Prescriber ID"] <span class="text-muted small">@L["(AHPRA# or equiv.)"]</span></label>
                     <input asp-for="PrescriberId" class="form-control" />
                 </div>
             </div>
@@ -72,11 +72,11 @@
     </div>
 
     <div class="card mb-3">
-        <div class="card-header fw-semibold">@authority Approval</div>
+        <div class="card-header fw-semibold">@L["{0} Approval", authority]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label asp-for="TGAApprovalLetterNumber" class="form-label">Approval Letter / Reference Number</label>
+                    <label asp-for="TGAApprovalLetterNumber" class="form-label">@L["Approval Letter / Reference Number"]</label>
                     <input asp-for="TGAApprovalLetterNumber" class="form-control" />
                 </div>
                 <div class="col-md-3">
@@ -99,13 +99,13 @@
         <div class="card-header fw-semibold">@L["Clinical Justification"]</div>
         <div class="card-body">
             <textarea asp-for="ClinicalJustification" class="form-control" rows="4"
-                      placeholder="Clinical rationale for access pathway use..."></textarea>
+                      placeholder="@L["Clinical rationale for access pathway use..."]"></textarea>
         </div>
     </div>
 
     <div class="d-flex gap-2">
         <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save me-1"></i>Create Access Pathway
+            <i class="fas fa-save me-1"></i>@L["Create Access Pathway"]
         </button>
         <a asp-action="Details" asp-route-id="@applicationId" class="btn btn-outline-secondary">@L["Cancel"]</a>
     </div>

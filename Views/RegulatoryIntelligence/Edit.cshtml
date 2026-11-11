@@ -6,7 +6,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <h4 class="mb-0"><i class="fas fa-edit me-2 text-primary"></i>Edit Application</h4>
+        <h4 class="mb-0"><i class="fas fa-edit me-2 text-primary"></i>@L["Edit Application"]</h4>
         <span class="text-muted">@Model.RINumber</span>
     </div>
     <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
@@ -17,8 +17,8 @@
 @if (!ViewData.ModelState.IsValid)
 {
     <div class="alert alert-danger" id="saveErrorBanner">
-        <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-1"></i>Your changes were not saved</h6>
-        <p class="mb-2 small">Please correct the following and click Save again. Fields needing attention may be on other tabs.</p>
+        <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-1"></i>@L["Your changes were not saved"]</h6>
+        <p class="mb-2 small">@L["Please correct the following and click Save again. Fields needing attention may be on other tabs."]</p>
         <div asp-validation-summary="All" class="mb-0"></div>
     </div>
 }
@@ -34,7 +34,7 @@
 
     <!-- Status badge strip -->
     <div class="mb-3 d-flex align-items-center gap-2">
-        <span class="text-muted small">Status:</span>
+        <span class="text-muted small">@L["Status:"]</span>
         @{
             var statusBadge = Model.Status switch
             {
@@ -50,19 +50,19 @@
                 _                                     => "secondary"
             };
         }
-        <span class="badge bg-@statusBadge">@Model.Status</span>
-        @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">Orphan</span> }
+        <span class="badge bg-@statusBadge">@L.Enum(Model.Status)</span>
+        @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">@L["Orphan"]</span> }
         @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">@L["Priority Review"]</span> }
-        @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">Breakthrough</span> }
+        @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">@L["Breakthrough"]</span> }
         @if (Model.IsPRIME)               { <span class="badge bg-danger">@L["PRIME"]</span> }
-        @if (Model.IsConditionalApproval) { <span class="badge bg-warning text-dark">Conditional</span> }
+        @if (Model.IsConditionalApproval) { <span class="badge bg-warning text-dark">@L["Conditional"]</span> }
     </div>
 
     <!-- 7-Tab Navigation -->
     <ul class="nav nav-tabs mb-0" id="applicationTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button">
-                <i class="fas fa-file-alt me-1"></i>Application Info
+                <i class="fas fa-file-alt me-1"></i>@L["Application Info"]
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -72,7 +72,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button">
-                <i class="fas fa-calendar-alt me-1"></i>Key Dates
+                <i class="fas fa-calendar-alt me-1"></i>@L["Key Dates"]
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -92,7 +92,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab7-tab" data-bs-toggle="tab" data-bs-target="#tab7" type="button">
-                <i class="fas fa-paperclip me-1"></i>Documents
+                <i class="fas fa-paperclip me-1"></i>@L["Documents"]
                 @if (Model.Documents?.Any() == true)
                 {
                     <span class="badge bg-secondary ms-1">@Model.Documents.Count</span>
@@ -112,51 +112,51 @@
                 </div>
                 <div class="col-md-4">
                     <label asp-for="SubmissionMethod" class="form-label fw-bold">@L["Submission Method"]
-                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="submissionmethod" aria-label="Submission Method guidance">?</button>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="submissionmethod" aria-label="@L["Submission Method guidance"]">?</button>
                     </label>
                     <select asp-for="SubmissionMethod" class="form-select">
-                        <option value="">— Select —</option>
-                        <option>eCTD</option>
-                        <option>PRISM Portal</option>
-                        <option>Online Portal</option>
-                        <option>Paper / Email</option>
+                        <option value="">@L["— Select —"]</option>
+                        <option value="eCTD">@L["eCTD"]</option>
+                        <option value="PRISM Portal">@L["PRISM Portal"]</option>
+                        <option value="Online Portal">@L["Online Portal"]</option>
+                        <option value="Paper / Email">@L["Paper / Email"]</option>
                         <option value="Other">@L["Other"]</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label asp-for="AuthorityReferenceNumber" class="form-label fw-bold">@L["Authority Reference No."]
-                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="authorityref" aria-label="Authority Reference guidance">?</button>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="authorityref" aria-label="@L["Authority Reference guidance"]">?</button>
                     </label>
-                    <input asp-for="AuthorityReferenceNumber" class="form-control" placeholder="e.g. ARTG#, NDA#, EMA/H/..." />
+                    <input asp-for="AuthorityReferenceNumber" class="form-control" placeholder="@L["e.g. ARTG#, NDA#, EMA/H/..."]" />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-bold">@L["Jurisdiction"] <span class="text-danger">*</span></label>
                     <select id="JurisdictionId" asp-for="JurisdictionId" class="form-select">
-                        <option value="">— Select Jurisdiction —</option>
+                        <option value="">@L["— Select Jurisdiction —"]</option>
                         @foreach (var item in ViewData["Jurisdictions"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList ?? new Microsoft.AspNetCore.Mvc.Rendering.SelectList(new List<object>()))
                         {
                             <option value="@item.Value" selected="@(item.Selected)">@item.Text</option>
                         }
                     </select>
-                    <div class="invalid-feedback" id="JurisdictionId-error">Please select a jurisdiction.</div>
+                    <div class="invalid-feedback" id="JurisdictionId-error">@L["Please select a jurisdiction."]</div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-bold">@L["Application Type"] <span class="text-danger">*</span></label>
                     <select id="ApplicationTypeId" asp-for="ApplicationTypeId"
                             asp-items='@(ViewData["ApplicationTypes"] as SelectList)'
                             class="form-select">
-                        <option value="">— Select Application Type —</option>
+                        <option value="">@L["— Select Application Type —"]</option>
                     </select>
-                    <div class="invalid-feedback" id="ApplicationTypeId-error">Please select an application type.</div>
+                    <div class="invalid-feedback" id="ApplicationTypeId-error">@L["Please select an application type."]</div>
                 </div>
                 <div class="col-12">
-                    <label class="form-label fw-bold">Priority / Expedited Designations
-                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="designations" aria-label="Expedited Designations guidance">?</button>
+                    <label class="form-label fw-bold">@L["Priority / Expedited Designations"]
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="designations" aria-label="@L["Expedited Designations guidance"]">?</button>
                     </label>
                     <div class="d-flex flex-wrap gap-3">
                         <div class="form-check">
                             <input asp-for="IsOrphanDesignation" class="form-check-input" type="checkbox" />
-                            <label asp-for="IsOrphanDesignation" class="form-check-label">Orphan Designation</label>
+                            <label asp-for="IsOrphanDesignation" class="form-check-label">@L["Orphan Designation"]</label>
                         </div>
                         <div class="form-check">
                             <input asp-for="IsPriorityReview" class="form-check-input" type="checkbox" />
@@ -187,13 +187,13 @@
                     <select id="ProductId" asp-for="ProductId"
                             asp-items='@(ViewData["Products"] as SelectList)'
                             class="form-select">
-                        <option value="">— Select Product —</option>
+                        <option value="">@L["— Select Product —"]</option>
                     </select>
-                    <div class="invalid-feedback" id="ProductId-error">Please select a product.</div>
+                    <div class="invalid-feedback" id="ProductId-error">@L["Please select a product."]</div>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="ProductName" class="form-label fw-bold">@L["Product Name (snapshot)"] <span class="text-danger">*</span>
-                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="productsnapshot" aria-label="Product Name snapshot guidance">?</button>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="productsnapshot" aria-label="@L["Product Name snapshot guidance"]">?</button>
                     </label>
                     <input asp-for="ProductName" id="ProductName" class="form-control" />
                 </div>
@@ -220,15 +220,15 @@
         <div class="tab-pane fade" id="tab3" role="tabpanel">
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label asp-for="StrategyStartDate" class="form-label fw-bold">Strategy Start</label>
+                    <label asp-for="StrategyStartDate" class="form-label fw-bold">@L["Strategy Start"]</label>
                     <input asp-for="StrategyStartDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="PreSubMeetingDate" class="form-label fw-bold">Pre-Submission Meeting</label>
+                    <label asp-for="PreSubMeetingDate" class="form-label fw-bold">@L["Pre-Submission Meeting"]</label>
                     <input asp-for="PreSubMeetingDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="DossierLockDate" class="form-label fw-bold">Dossier Lock Date</label>
+                    <label asp-for="DossierLockDate" class="form-label fw-bold">@L["Dossier Lock Date"]</label>
                     <input asp-for="DossierLockDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
@@ -236,22 +236,22 @@
                     <input asp-for="SubmissionDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="AcknowledgementDate" class="form-label fw-bold">Acknowledgement Date</label>
+                    <label asp-for="AcknowledgementDate" class="form-label fw-bold">@L["Acknowledgement Date"]</label>
                     <input asp-for="AcknowledgementDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="Day0Date" class="form-label fw-bold">Day 0 (Clock Start)
-                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="day0" aria-label="Day 0 guidance">?</button>
+                    <label asp-for="Day0Date" class="form-label fw-bold">@L["Day 0 (Clock Start)"]
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="day0" aria-label="@L["Day 0 guidance"]">?</button>
                     </label>
                     <input asp-for="Day0Date" id="Day0Date" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="TargetDecisionDate" class="form-label fw-bold">Target Decision Date</label>
+                    <label asp-for="TargetDecisionDate" class="form-label fw-bold">@L["Target Decision Date"]</label>
                     <input asp-for="TargetDecisionDate" id="TargetDecisionDate" type="date" class="form-control" />
-                    <div class="form-text">Auto-calculated from Day 0 + clock days.</div>
+                    <div class="form-text">@L["Auto-calculated from Day 0 + clock days."]</div>
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="ActualDecisionDate" class="form-label fw-bold">Actual Decision Date</label>
+                    <label asp-for="ActualDecisionDate" class="form-label fw-bold">@L["Actual Decision Date"]</label>
                     <input asp-for="ActualDecisionDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
@@ -259,7 +259,7 @@
                     <input asp-for="ApprovalDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="ExpiryDate" class="form-label fw-bold">Expiry / Renewal Date</label>
+                    <label asp-for="ExpiryDate" class="form-label fw-bold">@L["Expiry / Renewal Date"]</label>
                     <input asp-for="ExpiryDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
@@ -267,7 +267,7 @@
                     <input asp-for="NextRenewalDue" type="date" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label asp-for="AppealDeadline" class="form-label fw-bold">Appeal Deadline</label>
+                    <label asp-for="AppealDeadline" class="form-label fw-bold">@L["Appeal Deadline"]</label>
                     <input asp-for="AppealDeadline" type="date" class="form-control" />
                 </div>
             </div>
@@ -281,13 +281,13 @@
                     <input asp-for="ApplicationFee" type="number" step="0.01" class="form-control" />
                 </div>
                 <div class="col-md-2">
-                    <label asp-for="FeeCurrency" class="form-label fw-bold">Currency</label>
+                    <label asp-for="FeeCurrency" class="form-label fw-bold">@L["Currency"]</label>
                     <select asp-for="FeeCurrency" class="form-select">
                         <option value="">—</option>
-                        <option>AUD</option><option>NZD</option><option>EUR</option>
-                        <option>USD</option><option>CAD</option><option>SGD</option>
-                        <option>MYR</option><option>BRL</option><option>MXN</option>
-                        <option>COP</option>
+                        <option value="AUD">@L["AUD"]</option><option value="NZD">@L["NZD"]</option><option value="EUR">@L["EUR"]</option>
+                        <option value="USD">@L["USD"]</option><option value="CAD">@L["CAD"]</option><option value="SGD">@L["SGD"]</option>
+                        <option value="MYR">@L["MYR"]</option><option value="BRL">@L["BRL"]</option><option value="MXN">@L["MXN"]</option>
+                        <option value="COP">@L["COP"]</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -297,11 +297,11 @@
                 <div class="col-md-4">
                     <div class="form-check mt-4 pt-2">
                         <input asp-for="FeeWaiverApplied" class="form-check-input" type="checkbox" />
-                        <label asp-for="FeeWaiverApplied" class="form-check-label fw-bold">Fee Waiver Applied</label>
+                        <label asp-for="FeeWaiverApplied" class="form-check-label fw-bold">@L["Fee Waiver Applied"]</label>
                     </div>
                 </div>
                 <div class="col-12">
-                    <label asp-for="FeeWaiverReason" class="form-label fw-bold">Fee Waiver Reason</label>
+                    <label asp-for="FeeWaiverReason" class="form-label fw-bold">@L["Fee Waiver Reason"]</label>
                     <input asp-for="FeeWaiverReason" class="form-control" />
                 </div>
             </div>
@@ -321,7 +321,7 @@
                     <input asp-for="ExternalConsultant" class="form-control" />
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="AuthorityRapporteur" class="form-label fw-bold">Authority Rapporteur / PM</label>
+                    <label asp-for="AuthorityRapporteur" class="form-label fw-bold">@L["Authority Rapporteur / PM"]</label>
                     <input asp-for="AuthorityRapporteur" class="form-control" />
                 </div>
                 <div class="col-md-6">
@@ -329,11 +329,11 @@
                     <input asp-for="AuthorityContactEmail" type="email" class="form-control" />
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="ManufacturingSupplierId" class="form-label fw-bold">Manufacturing Supplier (CMO/CDMO)</label>
+                    <label asp-for="ManufacturingSupplierId" class="form-label fw-bold">@L["Manufacturing Supplier (CMO/CDMO)"]</label>
                     <select asp-for="ManufacturingSupplierId"
                             asp-items='@(ViewData["Suppliers"] as SelectList)'
                             class="form-select">
-                        <option value="">— None / Not applicable —</option>
+                        <option value="">@L["— None / Not applicable —"]</option>
                     </select>
                 </div>
                 <div class="col-12">
@@ -363,7 +363,7 @@
                 @if (Model.Conditions?.Any() == true)
                 {
                     <div class="col-12">
-                        <h6>Conditions of Approval</h6>
+                        <h6>@L["Conditions of Approval"]</h6>
                         <table class="table table-sm table-bordered">
                             <thead class="table-light"><tr><th>@L["Condition"]</th><th>@L["Type"]</th><th>@L["Due Date"]</th><th>@L["Status"]</th></tr></thead>
                             <tbody>
@@ -371,7 +371,7 @@
                                 {
                                     <tr>
                                         <td>@c.ConditionDescription</td>
-                                        <td>@c.ConditionType</td>
+                                        <td>@L.Enum(c.ConditionType)</td>
                                         <td>@c.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                         <td>@L.Enum(c.Status)</td>
                                     </tr>
@@ -383,7 +383,7 @@
                 else
                 {
                     <div class="col-12">
-                        <div class="alert alert-light">No conditions of approval on record. Conditions are added via the Details view after approval.</div>
+                        <div class="alert alert-light">@L["No conditions of approval on record. Conditions are added via the Details view after approval."]</div>
                     </div>
                 }
             </div>
@@ -394,13 +394,13 @@
             @if (Model.Documents?.Any() == true)
             {
                 <table class="table table-sm table-hover mb-3">
-                    <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Version"]</th><th>Uploaded</th><th></th></tr></thead>
+                    <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Version"]</th><th>@L["Uploaded"]</th><th></th></tr></thead>
                     <tbody>
                         @foreach (var doc in Model.Documents.OrderByDescending(d => d.UploadedAt))
                         {
                             <tr>
                                 <td><i class="fas fa-file me-1 text-muted"></i>@doc.FileName</td>
-                                <td>@doc.DocumentType</td>
+                                <td>@L.Message(doc.DocumentType)</td>
                                 <td>v@doc.Version</td>
                                 <td>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) <span class="text-muted small">@doc.UploadedBy</span></td>
                                 <td class="text-end text-nowrap">
@@ -430,7 +430,7 @@
                             <select name="documentType"
                                     asp-items='@(ViewData["DocumentTypes"] as SelectList)'
                                     class="form-select form-select-sm">
-                                <option value="">— Select Type —</option>
+                                <option value="">@L["— Select Type —"]</option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -453,32 +453,32 @@
 <!-- Field-help popover content (hidden, read by field-help.js) -->
 <div class="d-none">
     <div id="help-submissionmethod">
-        <p class="mb-1"><strong>How the dossier is filed with the authority</strong></p>
+        <p class="mb-1"><strong>@L["How the dossier is filed with the authority"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li><strong>eCTD</strong> — electronic Common Technical Document; the standard structured electronic submission (TGA, FDA, EMA).</li>
-            <li><strong>PRISM</strong> — Singapore HSA's online submission portal.</li>
-            <li><strong>Portal</strong> — an authority web portal that isn't eCTD (e.g. country-specific upload systems).</li>
-            <li><strong>Paper</strong> — a physical/PDF submission where electronic filing isn't available.</li>
+            <li>@H["<strong>eCTD</strong> — electronic Common Technical Document; the standard structured electronic submission (TGA, FDA, EMA)."]</li>
+            <li><strong>@L["PRISM"]</strong> @L["— Singapore HSA's online submission portal."]</li>
+            <li><strong>@L["Portal"]</strong> @L["— an authority web portal that isn't eCTD (e.g. country-specific upload systems)."]</li>
+            <li><strong>@L["Paper"]</strong> @L["— a physical/PDF submission where electronic filing isn't available."]</li>
         </ul>
     </div>
     <div id="help-authorityref">
-        <p class="mb-0">The authority's own identifier for this application or product, used in all correspondence. Examples: <strong>ARTG</strong> number (TGA), <strong>NDA/BLA</strong> number (FDA), <strong>EMA/H/C/…</strong> (EMA), <strong>HSA</strong> registration number. Leave blank until the authority assigns one.</p>
+        <p class="mb-0">@H["The authority's own identifier for this application or product, used in all correspondence. Examples: <strong>ARTG</strong> number (TGA), <strong>NDA/BLA</strong> number (FDA), <strong>EMA/H/C/…</strong> (EMA), <strong>HSA</strong> registration number. Leave blank until the authority assigns one."]</p>
     </div>
     <div id="help-designations">
-        <p class="mb-1"><strong>Expedited / priority pathways</strong> — tick any the authority has granted. They shorten timelines or relax requirements:</p>
+        <p class="mb-1"><strong>@L["Expedited / priority pathways"]</strong> @L["— tick any the authority has granted. They shorten timelines or relax requirements:"]</p>
         <ul class="mb-0 ps-3">
-            <li><strong>Orphan Designation</strong> — for rare-disease products; brings fee relief and market exclusivity.</li>
-            <li><strong>@L["Priority Review"]</strong> — shorter assessment clock for products of major therapeutic value.</li>
-            <li><strong>@L["Breakthrough Therapy"]</strong> — FDA designation for therapies showing substantial improvement over existing options.</li>
-            <li><strong>@L["PRIME"]</strong> — EMA's PRIority MEdicines scheme: enhanced support for unmet medical need.</li>
-            <li><strong>@L["Conditional Approval"]</strong> — early authorisation on less complete data, subject to post-approval conditions.</li>
+            <li>@H["<strong>Orphan Designation</strong> — for rare-disease products; brings fee relief and market exclusivity."]</li>
+            <li><strong>@L["Priority Review"]</strong> @L["— shorter assessment clock for products of major therapeutic value."]</li>
+            <li><strong>@L["Breakthrough Therapy"]</strong> @L["— FDA designation for therapies showing substantial improvement over existing options."]</li>
+            <li><strong>@L["PRIME"]</strong> @L["— EMA's PRIority MEdicines scheme: enhanced support for unmet medical need."]</li>
+            <li><strong>@L["Conditional Approval"]</strong> @L["— early authorisation on less complete data, subject to post-approval conditions."]</li>
         </ul>
     </div>
     <div id="help-productsnapshot">
-        <p class="mb-0">A frozen copy of the product name <em>as filed in this application</em>. The linked <strong>@L["Product"]</strong> above stays live and may change over time; this snapshot preserves exactly what was submitted to the authority, so the regulatory record stays accurate even if the product is later renamed or superseded.</p>
+        <p class="mb-0">@H["A frozen copy of the product name <em>as filed in this application</em>. The linked <strong>Product</strong> above stays live and may change over time; this snapshot preserves exactly what was submitted to the authority, so the regulatory record stays accurate even if the product is later renamed or superseded."]</p>
     </div>
     <div id="help-day0">
-        <p class="mb-0"><strong>Day 0</strong> is the official start of the authority's review clock — the date validation completes and assessment formally begins (not the date you submitted). The <strong>Target Decision Date</strong> is calculated from Day 0 plus the jurisdiction's statutory review period. Clock-stops (e.g. responding to questions) pause this clock.</p>
+        <p class="mb-0">@H["<strong>Day 0</strong> is the official start of the authority's review clock — the date validation completes and assessment formally begins (not the date you submitted). The <strong>Target Decision Date</strong> is calculated from Day 0 plus the jurisdiction's statutory review period. Clock-stops (e.g. responding to questions) pause this clock."]</p>
     </div>
 </div>
 
@@ -490,15 +490,15 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#JurisdictionId').select2({ placeholder: '— Select Jurisdiction —', allowClear: true, width: '100%' });
-            $('#ApplicationTypeId').select2({ placeholder: '— Select Application Type —', allowClear: true, width: '100%' });
-            $('#ProductId').select2({ placeholder: '— Select Product —', allowClear: true, width: '100%' });
-            $('#InternalRALead').select2({ placeholder: '— Select RA Lead —', allowClear: true, width: '100%' });
+            $('#JurisdictionId').select2({ placeholder: @Json.Serialize(L["— Select Jurisdiction —"].Value), allowClear: true, width: '100%' });
+            $('#ApplicationTypeId').select2({ placeholder: @Json.Serialize(L["— Select Application Type —"].Value), allowClear: true, width: '100%' });
+            $('#ProductId').select2({ placeholder: @Json.Serialize(L["— Select Product —"].Value), allowClear: true, width: '100%' });
+            $('#InternalRALead').select2({ placeholder: @Json.Serialize(L["— Select RA Lead —"].Value), allowClear: true, width: '100%' });
 
             $('#JurisdictionId').on('change', function () {
                 var jId = $(this).val();
                 var $appType = $('#ApplicationTypeId');
-                if (!jId) { $appType.empty().append('<option value="">— Select Jurisdiction first —</option>').trigger('change.select2'); return; }
+                if (!jId) { $appType.empty().append('<option value="">' + @Json.Serialize(L["— Select Jurisdiction first —"].Value) + '</option>').trigger('change.select2'); return; }
                 $.getJSON('@Url.Action("GetApplicationTypes", "RegulatoryIntelligence")', { jurisdictionId: jId }, function (data) {
                     $appType.empty().append('<option value="">— Select Application Type —</option>');
                     $.each(data, function (_, item) { $appType.append(new Option(item.code + ' — ' + item.name, item.id)); });

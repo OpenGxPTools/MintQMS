@@ -1,7 +1,7 @@
 @using OpenQMS.Models
 @using OpenQMS.Services
 @{
-    ViewData["Title"] = "Pharmacovigilance Dashboard";
+    ViewData["Title"] = L["Pharmacovigilance Dashboard"].Value;
 
     var overdueCases     = ViewBag.OverdueCases     as IEnumerable<AdverseEvent> ?? Enumerable.Empty<AdverseEvent>();
     var approachingCases = ViewBag.ApproachingCases as IEnumerable<AdverseEvent> ?? Enumerable.Empty<AdverseEvent>();
@@ -20,7 +20,7 @@ $(document).ready(function () {
         data: {
             labels: @Html.Raw(ViewBag.StatusLabels ?? "[]"),
             datasets: [{
-                label: 'Cases',
+                label: @Json.Serialize(L["Cases"].Value),
                 data: @Html.Raw(ViewBag.StatusData ?? "[]"),
                 backgroundColor: [
                     '#6c757d','#17a2b8','#ffc107','#28a745','#343a40','#dc3545'
@@ -40,7 +40,7 @@ $(document).ready(function () {
     new Chart(seriousCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Serious', 'Non-Serious'],
+            labels: [@Json.Serialize(L["Serious"].Value), @Json.Serialize(L["Non-Serious"].Value)],
             datasets: [{
                 data: [@(ViewBag.SeriousTotal ?? 0), @(ViewBag.NonSeriousTotal ?? 0)],
                 backgroundColor: ['#dc3545', '#28a745']
@@ -59,7 +59,7 @@ $(document).ready(function () {
 
 <h4 class="mb-0">
     <i class="fas fa-shield-virus me-2 text-primary"></i>
-    Pharmacovigilance Dashboard
+    @L["Pharmacovigilance Dashboard"]
 </h4>
 <hr />
 
@@ -69,9 +69,9 @@ $(document).ready(function () {
         <div class="card border-0 shadow-sm text-center h-100">
             <div class="card-body py-3">
                 <div class="display-5 fw-bold text-primary">@ViewBag.TotalOpen</div>
-                <div class="text-muted small mt-1">Open Cases</div>
+                <div class="text-muted small mt-1">@L["Open Cases"]</div>
             </div>
-            <div class="card-footer bg-primary text-white small py-1">Active Adverse Events</div>
+            <div class="card-footer bg-primary text-white small py-1">@L["Active Adverse Events"]</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
@@ -80,7 +80,7 @@ $(document).ready(function () {
                 <div class="display-5 fw-bold text-danger">@ViewBag.SeriousCount</div>
                 <div class="text-muted small mt-1">@L["Serious"]</div>
             </div>
-            <div class="card-footer bg-danger text-white small py-1">Require Expedited Review</div>
+            <div class="card-footer bg-danger text-white small py-1">@L["Require Expedited Review"]</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
@@ -89,10 +89,10 @@ $(document).ready(function () {
                 <div class="display-5 fw-bold @(((int)(ViewBag.OverdueCount ?? 0)) > 0 ? "text-danger" : "text-secondary")">
                     @ViewBag.OverdueCount
                 </div>
-                <div class="text-muted small mt-1">Overdue Submissions</div>
+                <div class="text-muted small mt-1">@L["Overdue Submissions"]</div>
             </div>
             <div class="card-footer @(((int)(ViewBag.OverdueCount ?? 0)) > 0 ? "bg-danger" : "bg-secondary") text-white small py-1">
-                TGA Deadline Passed
+                @L["TGA Deadline Passed"]
             </div>
         </div>
     </div>
@@ -100,9 +100,9 @@ $(document).ready(function () {
         <div class="card border-0 shadow-sm text-center h-100">
             <div class="card-body py-3">
                 <div class="display-5 fw-bold text-success">@ViewBag.SubmittedMonth</div>
-                <div class="text-muted small mt-1">Submitted This Month</div>
+                <div class="text-muted small mt-1">@L["Submitted This Month"]</div>
             </div>
-            <div class="card-footer bg-success text-white small py-1">TGA Submissions</div>
+            <div class="card-footer bg-success text-white small py-1">@L["TGA Submissions"]</div>
         </div>
     </div>
 </div>
@@ -114,14 +114,14 @@ $(document).ready(function () {
     <div class="col-md-7">
         <div class="card shadow-sm h-100">
             <div class="card-header bg-dark text-white">
-                <i class="fas fa-clock me-1"></i> Regulatory Deadline Tracker
+                <i class="fas fa-clock me-1"></i> @L["Regulatory Deadline Tracker"]
             </div>
             <div class="card-body p-0">
                 @if (!overdueCases.Any() && !approachingCases.Any())
                 {
                     <div class="p-4 text-center text-muted">
                         <i class="fas fa-check-circle text-success fa-2x mb-2"></i><br />
-                        No overdue or approaching deadlines.
+                        @L["No overdue or approaching deadlines."]
                     </div>
                 }
                 else
@@ -177,13 +177,13 @@ $(document).ready(function () {
     <!-- Charts -->
     <div class="col-md-5">
         <div class="card shadow-sm mb-3">
-            <div class="card-header">Cases by Status</div>
+            <div class="card-header">@L["Cases by Status"]</div>
             <div class="card-body p-2">
                 <canvas id="pvStatusChart" height="160"></canvas>
             </div>
         </div>
         <div class="card shadow-sm">
-            <div class="card-header">Serious vs Non-Serious</div>
+            <div class="card-header">@L["Serious vs Non-Serious"]</div>
             <div class="card-body p-2">
                 <canvas id="pvSeriousChart" height="140"></canvas>
             </div>
@@ -199,7 +199,7 @@ $(document).ready(function () {
     <div class="col-md-5">
         <div class="card shadow-sm h-100">
             <div class="card-header bg-warning text-dark">
-                <i class="fas fa-exclamation-triangle me-1"></i> Signal Flags
+                <i class="fas fa-exclamation-triangle me-1"></i> @L["Signal Flags"]
                 @if (signalFlags.Any())
                 {
                     <span class="badge bg-danger ms-2">@signalFlags.Count()</span>
@@ -208,7 +208,7 @@ $(document).ready(function () {
             <div class="card-body p-0">
                 @if (!signalFlags.Any())
                 {
-                    <p class="text-muted p-3 mb-0">No active signal flags.</p>
+                    <p class="text-muted p-3 mb-0">@L["No active signal flags."]</p>
                 }
                 else
                 {
@@ -243,13 +243,13 @@ $(document).ready(function () {
             <div class="card-body p-0">
                 @if (!recentActivity.Any())
                 {
-                    <p class="text-muted p-3 mb-0">No activity yet.</p>
+                    <p class="text-muted p-3 mb-0">@L["No activity yet."]</p>
                 }
                 else
                 {
                     <table class="table table-sm table-hover mb-0">
                         <thead class="table-light">
-                            <tr><th>@L["Date"]</th><th>Case</th><th>@L["Action"]</th><th>@L["By"]</th></tr>
+                            <tr><th>@L["Date"]</th><th>@L["Case"]</th><th>@L["Action"]</th><th>@L["By"]</th></tr>
                         </thead>
                         <tbody>
                             @foreach (var entry in recentActivity)
@@ -287,7 +287,7 @@ $(document).ready(function () {
 
 <div class="mt-3">
     <a asp-action="Index" class="btn btn-outline-primary btn-sm">
-        <i class="fas fa-list me-1"></i> All Adverse Events
+        <i class="fas fa-list me-1"></i> @L["All Adverse Events"]
     </a>
     <a asp-action="Create" class="btn btn-primary btn-sm ms-2">
         <i class="fas fa-plus me-1"></i> @L["New Adverse Event"]

@@ -42,7 +42,7 @@ RESX_HEAD = """<?xml version="1.0" encoding="utf-8"?>
 """
 
 # --- keys used in code -------------------------------------------------------------------------
-L_LITERAL = re.compile(r'(?:\b[LHl]\[|\b_l\[|\bStatusMessage\s*=\s*\$?(?=")|\bthis\.T\(|\bWorkflowResult\.Fail\(|\bT\(base\.\w+\([^)]*\),)\s*"((?:[^"\\]|\\.)*)"\s*[\]),;]')
+L_LITERAL = re.compile(r'(?:\b[LHl]\[|\b_l\[|\bStatusMessage\s*=\s*\$?(?=")|\bthis\.T\(|\b(?:Workflow|Transition)Result\.Fail\(|\bT\(base\.\w+\([^)]*\),)\s*"((?:[^"\\]|\\.)*)"\s*[\]),;]')
 
 
 def unescape_cs(s):

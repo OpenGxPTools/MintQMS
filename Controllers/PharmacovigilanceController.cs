@@ -1,3 +1,4 @@
+using OpenQMS.Localization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -159,20 +160,20 @@ namespace OpenQMS.Controllers
 
             if (ae.IsLocked || ae.Status == AdverseEvent.AEStatus.Voided)
             {
-                TempData["Error"] = "This case is locked and cannot be modified.";
+                TempData["Error"] = this.T("This case is locked and cannot be modified.");
                 return RedirectToAction(nameof(Details), new { id = aeId });
             }
 
             if (ae.LinkedComplaintId.HasValue && ae.LinkedComplaintId != complaintId)
             {
-                TempData["Error"] = "This adverse event is already linked to another complaint. Unlink it first.";
+                TempData["Error"] = this.T("This adverse event is already linked to another complaint. Unlink it first.");
                 return RedirectToAction(nameof(Details), new { id = aeId });
             }
 
             var complaint = await _context.Complaint.FindAsync(complaintId);
             if (complaint == null || complaint.IsDeleted)
             {
-                TempData["Error"] = "Selected complaint not found.";
+                TempData["Error"] = this.T("Selected complaint not found.");
                 return RedirectToAction(nameof(Details), new { id = aeId });
             }
 
@@ -181,7 +182,7 @@ namespace OpenQMS.Controllers
                 || await _context.AdverseEvent.AnyAsync(a => a.LinkedComplaintId == complaintId && a.Id != aeId);
             if (complaintTaken)
             {
-                TempData["Error"] = "That complaint is already linked to another adverse event.";
+                TempData["Error"] = this.T("That complaint is already linked to another adverse event.");
                 return RedirectToAction(nameof(Details), new { id = aeId });
             }
 
@@ -198,7 +199,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Linked to complaint {complaint.ComplaintId}.";
+            TempData["Success"] = this.T("Linked to complaint {0}.", complaint.ComplaintId);
             return RedirectToAction(nameof(Details), new { id = aeId });
         }
 
@@ -213,7 +214,7 @@ namespace OpenQMS.Controllers
 
             if (ae.IsLocked || ae.Status == AdverseEvent.AEStatus.Voided)
             {
-                TempData["Error"] = "This case is locked and cannot be modified.";
+                TempData["Error"] = this.T("This case is locked and cannot be modified.");
                 return RedirectToAction(nameof(Details), new { id = aeId });
             }
 
@@ -248,7 +249,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Complaint link removed.";
+            TempData["Success"] = this.T("Complaint link removed.");
             return RedirectToAction(nameof(Details), new { id = aeId });
         }
 
@@ -278,7 +279,7 @@ namespace OpenQMS.Controllers
                         || _context.AdverseEvent.Any(a => a.LinkedComplaintId == complaint.Id);
                     if (complaintTaken)
                     {
-                        TempData["Error"] = "This complaint is already linked to an adverse event.";
+                        TempData["Error"] = this.T("This complaint is already linked to an adverse event.");
                         return RedirectToAction("Details", "Complaints", new { id = complaint.Id });
                     }
 
@@ -404,7 +405,7 @@ namespace OpenQMS.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                TempData["Success"] = $"Adverse Event {ae.AENumber} created successfully.";
+                TempData["Success"] = this.T("Adverse Event {0} created successfully.", ae.AENumber);
                 return RedirectToAction(nameof(Details), new { id = ae.Id });
             }
 
@@ -483,7 +484,7 @@ namespace OpenQMS.Controllers
 
                 if (existing.IsLocked)
                 {
-                    TempData["Error"] = "This record is locked and cannot be edited.";
+                    TempData["Error"] = this.T("This record is locked and cannot be edited.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -559,7 +560,7 @@ namespace OpenQMS.Controllers
 
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = "Adverse Event updated successfully.";
+                TempData["Success"] = this.T("Adverse Event updated successfully.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -632,7 +633,7 @@ namespace OpenQMS.Controllers
                     PerformedOn = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
-                TempData["Success"] = $"Adverse Event {ae.AENumber} voided.";
+                TempData["Success"] = this.T("Adverse Event {0} voided.", ae.AENumber);
             }
             return RedirectToAction(nameof(Index));
         }
@@ -681,7 +682,7 @@ namespace OpenQMS.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 return RedirectToDetailsAttachments(aeId);
             }
 
@@ -689,12 +690,12 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = "File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.";
+                TempData["Error"] = this.T("File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.");
                 return RedirectToDetailsAttachments(aeId);
             }
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File size exceeds the 25 MB limit.";
+                TempData["Error"] = this.T("File size exceeds the 25 MB limit.");
                 return RedirectToDetailsAttachments(aeId);
             }
 
@@ -703,7 +704,7 @@ namespace OpenQMS.Controllers
 
             if (ae.IsLocked)
             {
-                TempData["Error"] = "This case is locked (finalised) and cannot be modified — attachments cannot be added.";
+                TempData["Error"] = this.T("This case is locked (finalised) and cannot be modified — attachments cannot be added.");
                 return RedirectToDetailsAttachments(aeId);
             }
 
@@ -742,7 +743,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"File '{file.FileName}' uploaded successfully.";
+            TempData["Success"] = this.T("File '{0}' uploaded successfully.", file.FileName);
             return RedirectToDetailsAttachments(aeId);
         }
 
@@ -754,7 +755,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 return RedirectToDetailsAttachments(attachment.AdverseEventId);
             }
 
@@ -793,7 +794,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 return RedirectToDetailsAttachments(attachment.AdverseEventId);
             }
 
@@ -835,13 +836,13 @@ namespace OpenQMS.Controllers
                 var ae = await _context.AdverseEvent.FindAsync(aeId);
                 if (ae != null && ae.IsLocked)
                 {
-                    TempData["Error"] = "This case is locked (finalised) and cannot be modified — attachments cannot be removed.";
+                    TempData["Error"] = this.T("This case is locked (finalised) and cannot be modified — attachments cannot be removed.");
                     return RedirectToDetailsAttachments(aeId);
                 }
 
                 if (string.IsNullOrWhiteSpace(deletionReason))
                 {
-                    TempData["Error"] = "A reason is required to delete an attachment.";
+                    TempData["Error"] = this.T("A reason is required to delete an attachment.");
                     return RedirectToDetailsAttachments(aeId);
                 }
 
@@ -859,7 +860,7 @@ namespace OpenQMS.Controllers
                     PerformedOn = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Attachment deleted.";
+                TempData["Success"] = this.T("Attachment deleted.");
             }
             return RedirectToDetailsAttachments(aeId);
         }
@@ -927,7 +928,7 @@ namespace OpenQMS.Controllers
             if (user != null && !string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase)) user = null;
             if (user == null || _passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, pwd) == PasswordVerificationResult.Failed)
             {
-                TempData["Error"] = "Invalid credentials.";
+                TempData["Error"] = this.T("Invalid credentials.");
                 return RedirectToAction(nameof(Details), new { id, isUserVerified = false });
             }
 
@@ -936,12 +937,12 @@ namespace OpenQMS.Controllers
 
             if (ae.Status != AdverseEvent.AEStatus.Approved && ae.Status != AdverseEvent.AEStatus.Closed)
             {
-                TempData["Error"] = "Follow-up reports can only be created from Approved or Closed cases.";
+                TempData["Error"] = this.T("Follow-up reports can only be created from Approved or Closed cases.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var followUp = await _workflow.CreateFollowUp(ae, _userManager.GetUserName(User) ?? email);
-            TempData["Success"] = $"Follow-up report {followUp.AENumber} created.";
+            TempData["Success"] = this.T("Follow-up report {0} created.", followUp.AENumber);
             return RedirectToAction(nameof(Details), new { id = followUp.Id });
         }
 
@@ -954,14 +955,14 @@ namespace OpenQMS.Controllers
         {
             if (!DateTime.TryParse(submissionDate, out var parsedDate))
             {
-                TempData["Error"] = "Invalid submission date.";
+                TempData["Error"] = this.T("Invalid submission date.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var userId = _userManager.GetUserName(User) ?? User.Identity?.Name ?? "Unknown";
             await _regulatory.LogTGASubmission(id, parsedDate, adrsRef, method, userId);
 
-            TempData["Success"] = "TGA submission recorded successfully.";
+            TempData["Success"] = this.T("TGA submission recorded successfully.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -1004,7 +1005,7 @@ namespace OpenQMS.Controllers
             if (user != null && !string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase)) user = null;
             if (user == null || _passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, pwd) == PasswordVerificationResult.Failed)
             {
-                TempData["Error"] = "Invalid credentials.";
+                TempData["Error"] = this.T("Invalid credentials.");
                 return RedirectToAction(nameof(Details), new { id, isUserVerified = false });
             }
 
@@ -1014,13 +1015,13 @@ namespace OpenQMS.Controllers
             var validation = await _workflow.ValidateTransition(ae, newStatus);
             if (!validation.Success)
             {
-                TempData["Error"] = validation.Error;
+                TempData["Error"] = this.TError(validation);
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             await _workflow.ApplyTransition(ae, newStatus, _userManager.GetUserName(User) ?? email, comment);
 
-            TempData["Success"] = $"Status updated to: {newStatus}.";
+            TempData["Success"] = this.T("Status updated to: {0}.", newStatus);
             return RedirectToAction(nameof(Details), new { id });
         }
 

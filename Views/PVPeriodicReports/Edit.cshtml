@@ -1,10 +1,10 @@
 @model OpenQMS.Models.PVPeriodicReport
 @{
-    ViewData["Title"] = "Edit PSUR";
+    ViewData["Title"] = L["Edit PSUR"].Value;
     var productItems = ViewData["ProductId"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
 }
 
-<h4 class="mb-0"><i class="fas fa-edit me-2 text-secondary"></i>Edit PSUR — @Model.Title</h4>
+<h4 class="mb-0"><i class="fas fa-edit me-2 text-secondary"></i>@L["Edit PSUR"] — @Model.Title</h4>
 <hr />
 
 <form asp-action="Edit" method="post">
@@ -21,7 +21,7 @@
         <div class="col-md-4">
             <label asp-for="ProductId" class="form-label fw-bold">@L["Product"]</label>
             <select asp-for="ProductId" asp-items="productItems" class="form-select">
-                <option value="">— All Products —</option>
+                <option value="">@L["— All Products —"]</option>
             </select>
         </div>
         <div class="col-md-4">
@@ -43,7 +43,7 @@
         <div class="col-md-3">
             <label class="form-label fw-bold">@L["Status"]</label>
             <div><span class="badge bg-secondary fs-6">@L.Enum(Model.Status)</span></div>
-            <small class="text-muted">Changed via the workflow actions on the Details page.</small>
+            <small class="text-muted">@L["Changed via the workflow actions on the Details page."]</small>
         </div>
         <div class="col-md-3">
             <label asp-for="TGAReferenceNumber" class="form-label fw-bold"></label>

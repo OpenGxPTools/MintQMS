@@ -30,11 +30,11 @@
             }
             <span class="badge bg-@statusBadge fs-6">@L.Enum(Model.Status)</span>
             @if (Model.IsLocked) { <span class="badge bg-secondary"><i class="fas fa-lock me-1"></i>@L["Locked"]</span> }
-            @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">Orphan</span> }
-            @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">Priority</span> }
-            @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">Breakthrough</span> }
+            @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">@L["Orphan"]</span> }
+            @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">@L["Priority"]</span> }
+            @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">@L["Breakthrough"]</span> }
             @if (Model.IsPRIME)               { <span class="badge bg-danger">@L["PRIME"]</span> }
-            @if (Model.IsConditionalApproval) { <span class="badge bg-warning text-dark">Conditional</span> }
+            @if (Model.IsConditionalApproval) { <span class="badge bg-warning text-dark">@L["Conditional"]</span> }
             <span class="text-muted small">@Model.Jurisdiction?.Authority — @Model.Jurisdiction?.Name</span>
         </div>
     </div>
@@ -51,7 +51,7 @@
         @if (User.IsInRole("Administrator"))
         {
             <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline"
-                  onsubmit="return confirm('Soft-delete this application?')">
+                  data-confirm="@L["Soft-delete this application?"]" onsubmit="return confirm(this.dataset.confirm);">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-outline-danger btn-sm">
                     <i class="fas fa-trash me-1"></i>@L["Delete"]
@@ -66,8 +66,8 @@
     <div class="alert alert-info d-flex align-items-center mb-3">
         <i class="fas fa-lock me-3 fa-lg"></i>
         <div>
-            <strong>This application is approved and locked.</strong>
-            To make changes, create a <strong>Variation</strong> or initiate a <strong>Renewal</strong>.
+            <strong>@L["This application is approved and locked."]</strong>
+            @H["To make changes, create a <strong>Variation</strong> or initiate a <strong>Renewal</strong>."]
         </div>
     </div>
 }
@@ -94,7 +94,7 @@
 {
     <div class="card mb-3 border-0 bg-light">
         <div class="card-body py-2 d-flex align-items-center flex-wrap gap-2">
-            <small class="text-muted fw-bold">ACTIONS:</small>
+            <small class="text-muted fw-bold">@L["ACTIONS:"]</small>
 
             @if (Model.Status == RIApplicationStatus.Strategy)
             {
@@ -103,7 +103,7 @@
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="Preparation" />
                     <button type="submit" class="btn btn-sm btn-outline-info">
-                        <i class="fas fa-arrow-right me-1"></i>Advance to Preparation
+                        <i class="fas fa-arrow-right me-1"></i>@L["Advance to Preparation"]
                     </button>
                 </form>
             }
@@ -115,7 +115,7 @@
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="Strategy" />
                     <button type="submit" class="btn btn-sm btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-1"></i>Back to Strategy
+                        <i class="fas fa-arrow-left me-1"></i>@L["Back to Strategy"]
                     </button>
                 </form>
                 <form asp-action="Transition" method="post" class="d-inline">
@@ -123,7 +123,7 @@
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="Submitted" />
                     <button type="submit" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-paper-plane me-1"></i>Mark Submitted
+                        <i class="fas fa-paper-plane me-1"></i>@L["Mark Submitted"]
                     </button>
                 </form>
             }
@@ -135,7 +135,7 @@
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="Preparation" />
                     <button type="submit" class="btn btn-sm btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-1"></i>Back to Preparation
+                        <i class="fas fa-arrow-left me-1"></i>@L["Back to Preparation"]
                     </button>
                 </form>
                 <form asp-action="Transition" method="post" class="d-inline">
@@ -143,11 +143,11 @@
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="UnderReview" />
                     <button type="submit" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-search me-1"></i>Under Review (set Day 0)
+                        <i class="fas fa-search me-1"></i>@L["Under Review (set Day 0)"]
                     </button>
                 </form>
                 <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal">
-                    <i class="fas fa-ban me-1"></i>Withdraw
+                    <i class="fas fa-ban me-1"></i>@L["Withdraw"]
                 </button>
             }
 
@@ -158,7 +158,7 @@
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="ClockStop" />
                     <button type="submit" class="btn btn-sm btn-outline-warning">
-                        <i class="fas fa-pause me-1"></i>Clock Stop
+                        <i class="fas fa-pause me-1"></i>@L["Clock Stop"]
                     </button>
                 </form>
                 <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
@@ -168,7 +168,7 @@
                     <i class="fas fa-times-circle me-1"></i>@L["Reject"]
                 </button>
                 <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal">
-                    <i class="fas fa-ban me-1"></i>Withdraw
+                    <i class="fas fa-ban me-1"></i>@L["Withdraw"]
                 </button>
             }
 
@@ -179,7 +179,7 @@
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="UnderReview" />
                     <button type="submit" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-play me-1"></i>Restart Clock
+                        <i class="fas fa-play me-1"></i>@L["Restart Clock"]
                     </button>
                 </form>
             }
@@ -191,49 +191,49 @@
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="VariationRequired" />
                     <button type="submit" class="btn btn-sm btn-outline-warning">
-                        <i class="fas fa-edit me-1"></i>Variation Required
+                        <i class="fas fa-edit me-1"></i>@L["Variation Required"]
                     </button>
                 </form>
                 <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#initiateRenewalModal"
-                        title="Start the renewal cycle now, ahead of the expiry-driven reminders.">
-                    <i class="fas fa-sync me-1"></i>Initiate Renewal Now
+                        title="@L["Start the renewal cycle now, ahead of the expiry-driven reminders."]">
+                    <i class="fas fa-sync me-1"></i>@L["Initiate Renewal Now"]
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#suspendModal"
-                        title="Record an authority suspension of this authorisation.">
-                    <i class="fas fa-pause-circle me-1"></i>Suspend
+                        title="@L["Record an authority suspension of this authorisation."]">
+                    <i class="fas fa-pause-circle me-1"></i>@L["Suspend"]
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal"
-                        title="End this authorisation — e.g. a decision not to renew.">
-                    <i class="fas fa-ban me-1"></i>Withdraw
+                        title="@L["End this authorisation — e.g. a decision not to renew."]">
+                    <i class="fas fa-ban me-1"></i>@L["Withdraw"]
                 </button>
             }
 
             @if (Model.Status == RIApplicationStatus.ConditionsActive)
             {
                 <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
-                    <i class="fas fa-check me-1"></i>Approve (Conditions Met)
+                    <i class="fas fa-check me-1"></i>@L["Approve (Conditions Met)"]
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#suspendModal">
-                    <i class="fas fa-pause-circle me-1"></i>Suspend
+                    <i class="fas fa-pause-circle me-1"></i>@L["Suspend"]
                 </button>
                 <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal">
-                    <i class="fas fa-ban me-1"></i>Withdraw
+                    <i class="fas fa-ban me-1"></i>@L["Withdraw"]
                 </button>
             }
 
             @if (Model.Status == RIApplicationStatus.Suspended)
             {
                 <form asp-action="Transition" method="post" class="d-inline"
-                      onsubmit="return confirm('Reinstate @Model.RINumber and re-open it for review?');">
+                      data-confirm="@L["Reinstate {0} and re-open it for review?", Model.RINumber]" onsubmit="return confirm(this.dataset.confirm);">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="UnderReview" />
                     <button type="submit" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-play-circle me-1"></i>Reinstate (Re-review)
+                        <i class="fas fa-play-circle me-1"></i>@L["Reinstate (Re-review)"]
                     </button>
                 </form>
                 <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#withdrawModal">
-                    <i class="fas fa-ban me-1"></i>Withdraw
+                    <i class="fas fa-ban me-1"></i>@L["Withdraw"]
                 </button>
             }
 
@@ -244,7 +244,7 @@
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="UnderReview" />
                     <button type="submit" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-arrow-right me-1"></i>Back to Under Review
+                        <i class="fas fa-arrow-right me-1"></i>@L["Back to Under Review"]
                     </button>
                 </form>
             }
@@ -256,7 +256,7 @@
                     <input type="hidden" name="id" value="@Model.Id" />
                     <input type="hidden" name="newStatus" value="Submitted" />
                     <button type="submit" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-paper-plane me-1"></i>Submit Renewal
+                        <i class="fas fa-paper-plane me-1"></i>@L["Submit Renewal"]
                     </button>
                 </form>
             }
@@ -272,16 +272,16 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="approveModalLabel"><i class="fas fa-check-circle me-2"></i>Approve Application</h5>
+                    <h5 class="modal-title" id="approveModalLabel"><i class="fas fa-check-circle me-2"></i>@L["Approve Application"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Enter your credentials to approve <strong>@Model.RINumber</strong>.</p>
+                    <p>@H["Enter your credentials to approve <strong>{0}</strong>.", Model.RINumber]</p>
                     @if (Model.IsConditionalApproval)
                     {
                         <div class="alert alert-info small">
                             <i class="fas fa-info-circle me-1"></i>
-                            <strong>@L["Conditional Approval"]</strong> flag is set — status will be set to <strong>Conditions Active</strong>. All conditions must be closed before transitioning to full Approval.
+                            @H["<strong>Conditional Approval</strong> flag is set — status will be set to <strong>Conditions Active</strong>. All conditions must be closed before transitioning to full Approval."]
                         </div>
                     }
                     <div class="mb-3">
@@ -310,11 +310,11 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="rejectModalLabel"><i class="fas fa-times-circle me-2"></i>Reject Application</h5>
+                    <h5 class="modal-title" id="rejectModalLabel"><i class="fas fa-times-circle me-2"></i>@L["Reject Application"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Enter your credentials and rejection reason for <strong>@Model.RINumber</strong>.</p>
+                    <p>@H["Enter your credentials and rejection reason for <strong>{0}</strong>.", Model.RINumber]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
@@ -325,12 +325,12 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">@L["Rejection Reason"] <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="3" required placeholder="State the grounds for rejection..."></textarea>
+                        <textarea name="reason" class="form-control" rows="3" required placeholder="@L["State the grounds for rejection..."]"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-danger"><i class="fas fa-times-circle me-1"></i>Confirm Rejection</button>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-times-circle me-1"></i>@L["Confirm Rejection"]</button>
                 </div>
             </form>
         </div>
@@ -345,11 +345,11 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title" id="withdrawModalLabel"><i class="fas fa-ban me-2"></i>Withdraw Application</h5>
+                    <h5 class="modal-title" id="withdrawModalLabel"><i class="fas fa-ban me-2"></i>@L["Withdraw Application"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Enter your credentials and withdrawal reason for <strong>@Model.RINumber</strong>.</p>
+                    <p>@H["Enter your credentials and withdrawal reason for <strong>{0}</strong>.", Model.RINumber]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
@@ -360,12 +360,12 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">@L["Withdrawal Reason"] <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="3" required placeholder="State the reason for withdrawal..."></textarea>
+                        <textarea name="reason" class="form-control" rows="3" required placeholder="@L["State the reason for withdrawal..."]"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-dark"><i class="fas fa-ban me-1"></i>Confirm Withdrawal</button>
+                    <button type="submit" class="btn btn-dark"><i class="fas fa-ban me-1"></i>@L["Confirm Withdrawal"]</button>
                 </div>
             </form>
         </div>
@@ -380,11 +380,11 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="suspendModalLabel"><i class="fas fa-pause-circle me-2"></i>Suspend Authorisation</h5>
+                    <h5 class="modal-title" id="suspendModalLabel"><i class="fas fa-pause-circle me-2"></i>@L["Suspend Authorisation"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will mark <strong>@Model.RINumber</strong> as <strong class="text-danger">@L["Suspended"]</strong> and lock the record. Enter your credentials and the suspension reason.</p>
+                    <p>@H["This will mark <strong>{0}</strong> as <strong class=\"text-danger\">Suspended</strong> and lock the record. Enter your credentials and the suspension reason.", Model.RINumber]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
@@ -395,7 +395,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">@L["Suspension Reason"] <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="3" required placeholder="State the reason for suspension..."></textarea>
+                        <textarea name="reason" class="form-control" rows="3" required placeholder="@L["State the reason for suspension..."]"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -415,11 +415,11 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title" id="initiateRenewalModalLabel"><i class="fas fa-sync me-2"></i>Initiate Renewal Now</h5>
+                    <h5 class="modal-title" id="initiateRenewalModalLabel"><i class="fas fa-sync me-2"></i>@L["Initiate Renewal Now"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will move <strong>@Model.RINumber</strong> to <strong class="text-warning-emphasis">@L["Renewal Due"]</strong> so the renewal submission can be progressed.</p>
+                    <p>@H["This will move <strong>{0}</strong> to <strong class=\"text-warning-emphasis\">Renewal Due</strong> so the renewal submission can be progressed.", Model.RINumber]</p>
                     @if (Model.NextRenewalDue.HasValue || Model.ExpiryDate.HasValue)
                     {
                         var refDate = Model.NextRenewalDue ?? Model.ExpiryDate;
@@ -428,13 +428,13 @@
                         </div>
                     }
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Reason for early renewal <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="3" required placeholder="e.g. authority advised early resubmission, scheduling ahead of expiry, change in product details..."></textarea>
+                        <label class="form-label fw-bold">@L["Reason for early renewal"] <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" required placeholder="@L["e.g. authority advised early resubmission, scheduling ahead of expiry, change in product details..."]"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-warning"><i class="fas fa-sync me-1"></i>Initiate Renewal</button>
+                    <button type="submit" class="btn btn-warning"><i class="fas fa-sync me-1"></i>@L["Initiate Renewal"]</button>
                 </div>
             </form>
         </div>
@@ -483,7 +483,7 @@
 {
     <div class="card border-warning mb-3">
         <div class="card-header py-2 bg-warning bg-opacity-10 text-warning fw-semibold small">
-            <i class="fas fa-bell me-1"></i>Upcoming Deadlines &amp; Alerts
+            <i class="fas fa-bell me-1"></i>@L["Upcoming Deadlines & Alerts"]
         </div>
         <div class="card-body py-2 px-3">
             @foreach (var (level, icon, message) in upcomingAlerts)
@@ -499,14 +499,14 @@
 
 <!-- Tab Navigation -->
 <ul class="nav nav-tabs mb-0" id="detailTabs" role="tablist">
-    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dtab1" type="button"><i class="fas fa-file-alt me-1"></i>Application</button></li>
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dtab1" type="button"><i class="fas fa-file-alt me-1"></i>@L["Application"]</button></li>
     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab2" type="button"><i class="fas fa-pills me-1"></i>@L["Product"]</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab3" type="button"><i class="fas fa-calendar-alt me-1"></i>Dates</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab3" type="button"><i class="fas fa-calendar-alt me-1"></i>@L["Dates"]</button></li>
     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab4" type="button"><i class="fas fa-dollar-sign me-1"></i>@L["Fees"]</button></li>
     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab5" type="button"><i class="fas fa-users me-1"></i>@L["Contacts"]</button></li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab6" type="button">
-            <i class="fas fa-clipboard-check me-1"></i>Conditions
+            <i class="fas fa-clipboard-check me-1"></i>@L["Conditions"]
             @if (Model.Conditions?.Any(c => c.Status == RIConditionStatus.Outstanding) == true)
             {
                 <span class="badge bg-danger ms-1">@Model.Conditions.Count(c => c.Status == RIConditionStatus.Outstanding)</span>
@@ -515,13 +515,13 @@
     </li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab7" type="button">
-            <i class="fas fa-paperclip me-1"></i>Attachments
+            <i class="fas fa-paperclip me-1"></i>@L["Attachments"]
             @if (Model.Documents?.Any() == true) { <span class="badge bg-secondary ms-1">@Model.Documents.Count</span> }
         </button>
     </li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtabVariations" type="button">
-            <i class="fas fa-random me-1"></i>Variations
+            <i class="fas fa-random me-1"></i>@L["Variations"]
             @if (Model.Variations?.Any() == true)
             {
                 var vApproved = Model.Variations.Count(v => v.Status == RIApplicationStatus.Approved);
@@ -532,7 +532,7 @@
     </li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtabPathways" type="button">
-            <i class="fas fa-user-shield me-1"></i>Access Pathways
+            <i class="fas fa-user-shield me-1"></i>@L["Access Pathways"]
             @if (Model.AccessPathways?.Any() == true)
             {
                 var expiredCount = Model.AccessPathways.Count(ap => ap.ExpiryDate.HasValue && ap.ExpiryDate < SiteTime.Today);
@@ -543,7 +543,7 @@
     </li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtabMilestones" type="button">
-            <i class="fas fa-tasks me-1"></i>Milestones
+            <i class="fas fa-tasks me-1"></i>@L["Milestones"]
             @{
                 var mTotal     = Model.Milestones?.Count ?? 0;
                 var mDone      = Model.Milestones?.Count(m => m.Status == RIMilestoneStatus.Completed || m.Status == RIMilestoneStatus.Skipped) ?? 0;
@@ -559,7 +559,7 @@
             var lcDeps = ViewBag.LinkedLCRecords as List<OpenQMS.Models.LC.LCDependency> ?? new List<OpenQMS.Models.LC.LCDependency>();
         }
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtabLicCert" type="button">
-            <i class="fas fa-id-card me-1 text-success"></i>Licences &amp; Certs
+            <i class="fas fa-id-card me-1 text-success"></i>@L["Licences & Certs"]
             @if (lcDeps.Any()) { <span class="badge bg-success ms-1">@lcDeps.Count</span> }
         </button>
     </li>
@@ -570,7 +570,7 @@
     </li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtabHistory" type="button">
-            <i class="fas fa-layer-group me-1"></i>Approval History
+            <i class="fas fa-layer-group me-1"></i>@L["Approval History"]
             @if (Model.ApprovalSnapshots?.Any() == true) { <span class="badge bg-secondary ms-1">@Model.ApprovalSnapshots.Count</span> }
         </button>
     </li>
@@ -583,14 +583,14 @@
         <div class="row g-3">
             <div class="col-md-3"><label class="text-muted small">@L["RI Number"]</label><div class="fw-bold">@Model.RINumber</div></div>
             <div class="col-md-3"><label class="text-muted small">@L["Jurisdiction"]</label><div>@Model.Jurisdiction?.Name (@Model.Jurisdiction?.Code)</div></div>
-            <div class="col-md-3"><label class="text-muted small">Authority</label><div>@Model.Jurisdiction?.Authority</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Authority"]</label><div>@Model.Jurisdiction?.Authority</div></div>
             <div class="col-md-3"><label class="text-muted small">@L["Application Type"]</label><div>@Model.ApplicationType?.Name</div></div>
             <div class="col-md-3"><label class="text-muted small">@L["Submission Method"]</label><div>@(Model.SubmissionMethod ?? "—")</div></div>
             <div class="col-md-3"><label class="text-muted small">@L["Authority Reference No."]</label><div>@(Model.AuthorityReferenceNumber ?? "—")</div></div>
             <div class="col-md-6">
-                <label class="text-muted small">Designations</label>
+                <label class="text-muted small">@L["Designations"]</label>
                 <div class="d-flex flex-wrap gap-1">
-                    @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">Orphan</span> }
+                    @if (Model.IsOrphanDesignation)   { <span class="badge bg-info">@L["Orphan"]</span> }
                     @if (Model.IsPriorityReview)      { <span class="badge bg-warning text-dark">@L["Priority Review"]</span> }
                     @if (Model.IsBreakthroughTherapy) { <span class="badge bg-danger">@L["Breakthrough Therapy"]</span> }
                     @if (Model.IsPRIME)               { <span class="badge bg-danger">@L["PRIME"]</span> }
@@ -599,10 +599,10 @@
                 </div>
             </div>
             <div class="col-md-3"><label class="text-muted small">@L["Created By"]</label><div>@Model.CreatedBy</div></div>
-            <div class="col-md-3"><label class="text-muted small">Created At</label><div>@Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Created At"]</label><div>@Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</div></div>
             @if (Model.ModifiedBy != null)
             {
-                <div class="col-md-3"><label class="text-muted small">Last Modified By</label><div>@Model.ModifiedBy</div></div>
+                <div class="col-md-3"><label class="text-muted small">@L["Last Modified By"]</label><div>@Model.ModifiedBy</div></div>
                 <div class="col-md-3"><label class="text-muted small">@L["Last Modified"]</label><div>@Model.ModifiedAt.ToSite()?.ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</div></div>
             }
         </div>
@@ -654,7 +654,7 @@
         @if (Model.ApplicationType?.ClockDays.HasValue == true)
         {
             <div class="mt-3 alert alert-light">
-                <i class="fas fa-clock me-1"></i>Regulatory clock: <strong>@Model.ApplicationType.ClockDays working days</strong> from Day 0.
+                <i class="fas fa-clock me-1"></i>@H["Regulatory clock: <strong>{0} working days</strong> from Day 0.", Model.ApplicationType.ClockDays]
             </div>
         }
     </div>
@@ -666,7 +666,7 @@
                 <div>@(Model.ApplicationFee.HasValue ? $"{Model.FeeCurrency} {Model.ApplicationFee:N2}" : "—")</div>
             </div>
             <div class="col-md-3"><label class="text-muted small">@L["Fee Paid Date"]</label><div>@(Model.FeePaidDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</div></div>
-            <div class="col-md-3"><label class="text-muted small">Fee Waiver</label>
+            <div class="col-md-3"><label class="text-muted small">@L["Fee Waiver"]</label>
                 <div>@(Model.FeeWaiverApplied ? "Yes — " + (Model.FeeWaiverReason ?? "") : "No")</div>
             </div>
         </div>
@@ -677,11 +677,11 @@
         <div class="row g-3">
             <div class="col-md-6"><label class="text-muted small">@L["Internal RA Lead"]</label><div>@(ViewData["RALeadName"] as string ?? Model.InternalRALead ?? "—")</div></div>
             <div class="col-md-6"><label class="text-muted small">@L["External RA Consultant"]</label><div>@(Model.ExternalConsultant ?? "—")</div></div>
-            <div class="col-md-6"><label class="text-muted small">Authority Rapporteur / PM</label><div>@(Model.AuthorityRapporteur ?? "—")</div></div>
+            <div class="col-md-6"><label class="text-muted small">@L["Authority Rapporteur / PM"]</label><div>@(Model.AuthorityRapporteur ?? "—")</div></div>
             <div class="col-md-6"><label class="text-muted small">@L["Authority Contact Email"]</label>
                 <div>@(Model.AuthorityContactEmail != null ? Model.AuthorityContactEmail : "—")</div>
             </div>
-            <div class="col-md-6"><label class="text-muted small">Manufacturing Supplier</label>
+            <div class="col-md-6"><label class="text-muted small">@L["Manufacturing Supplier"]</label>
                 <div>
                     @if (Model.ManufacturingSupplierId.HasValue && supplierName != null)
                     {
@@ -705,7 +705,7 @@
         {
             <div class="d-flex justify-content-end mb-3">
                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addConditionModal">
-                    <i class="fas fa-plus me-1"></i>Add Condition
+                    <i class="fas fa-plus me-1"></i>@L["Add Condition"]
                 </button>
             </div>
         }
@@ -738,7 +738,7 @@
                                     <div class="small text-muted fst-italic mt-1">@c.CompletionNotes</div>
                                 }
                             </td>
-                            <td><span class="badge bg-secondary">@c.ConditionType</span></td>
+                            <td><span class="badge bg-secondary">@L.Enum(c.ConditionType)</span></td>
                             <td class="@(cOverdue ? "text-danger fw-bold" : cDueSoon ? "text-warning fw-bold" : "")">
                                 @(c.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
                                 @if (c.CompletedDate.HasValue) { <div class="small text-success">Closed: @c.CompletedDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</div> }
@@ -774,16 +774,16 @@
                                     @if (!c.LinkedCAPAId.HasValue)
                                     {
                                         <form asp-action="CreateCAPAFromCondition" method="post" class="d-inline ms-1"
-                                              onsubmit="return confirm('Create a CAPA from this condition?')">
+                                              data-confirm="@L["Create a CAPA from this condition?"]" onsubmit="return confirm(this.dataset.confirm);">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="conditionId" value="@c.Id" />
                                             <button type="submit" class="btn btn-sm btn-outline-info">
-                                                <i class="fas fa-tasks me-1"></i>Raise CAPA
+                                                <i class="fas fa-tasks me-1"></i>@L["Raise CAPA"]
                                             </button>
                                         </form>
                                     }
                                     <form asp-action="DeleteCondition" method="post" class="d-inline ms-1"
-                                          onsubmit="return confirm('Delete this condition?')">
+                                          data-confirm="@L["Delete this condition?"]" onsubmit="return confirm(this.dataset.confirm);">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@c.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -804,23 +804,23 @@
                     <i class="fas fa-info-circle me-1"></i>
                     @if (openRemaining == 0)
                     {
-                        <span>All conditions are satisfied. Application will auto-transition to <strong>@L["Approved"]</strong> when the final condition is closed.</span>
+                        <span>@H["All conditions are satisfied. Application will auto-transition to <strong>Approved</strong> when the final condition is closed."]</span>
                     }
                     else
                     {
-                        <span><strong>@openRemaining</strong> open condition(s) remaining before auto-transition to Approved.</span>
+                        <span>@H["<strong>{0}</strong> open condition(s) remaining before auto-transition to Approved.", openRemaining]</span>
                     }
                 </div>
             }
         }
         else
         {
-            <div class="text-muted">No conditions of approval on record.</div>
+            <div class="text-muted">@L["No conditions of approval on record."]</div>
         }
 
-        @if (Model.RejectionReason != null) { <div class="alert alert-danger mt-3"><strong>Rejection Reason:</strong> @Model.RejectionReason</div> }
-        @if (Model.WithdrawalReason != null) { <div class="alert alert-warning mt-3"><strong>Withdrawal Reason:</strong> @Model.WithdrawalReason</div> }
-        @if (Model.SuspensionReason != null) { <div class="alert alert-danger mt-3"><strong>Suspension Reason:</strong> @Model.SuspensionReason @(Model.SuspendedOn.HasValue ? $"(suspended {Model.SuspendedOn.Value:dd MMM yyyy})" : "")</div> }
+        @if (Model.RejectionReason != null) { <div class="alert alert-danger mt-3"><strong>@L["Rejection Reason:"]</strong> @Model.RejectionReason</div> }
+        @if (Model.WithdrawalReason != null) { <div class="alert alert-warning mt-3"><strong>@L["Withdrawal Reason:"]</strong> @Model.WithdrawalReason</div> }
+        @if (Model.SuspensionReason != null) { <div class="alert alert-danger mt-3"><strong>@L["Suspension Reason:"]</strong> @Model.SuspensionReason @(Model.SuspendedOn.HasValue ? $"(suspended {Model.SuspendedOn.Value:dd MMM yyyy})" : "")</div> }
     </div>
 
     <!-- Tab 7: Documents -->
@@ -835,14 +835,14 @@
 
         @if (!riPendingDocs.Any() && !riCycleGroups.Any())
         {
-            <div class="text-muted mb-3">No documents uploaded.</div>
+            <div class="text-muted mb-3">@L["No documents uploaded."]</div>
         }
 
         @if (riPendingDocs.Any())
         {
-            <h6 class="text-uppercase small text-muted mt-2 mb-1">Current (Pending Approval)</h6>
+            <h6 class="text-uppercase small text-muted mt-2 mb-1">@L["Current (Pending Approval)"]</h6>
             <table class="table table-sm table-hover mb-3">
-                <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Size"]</th><th>@L["Version"]</th><th>Uploaded</th><th></th></tr></thead>
+                <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Size"]</th><th>@L["Version"]</th><th>@L["Uploaded"]</th><th></th></tr></thead>
                 <tbody>
                     @foreach (var doc in riPendingDocs)
                     {
@@ -873,11 +873,11 @@
             var riSnap = Model.ApprovalSnapshots?.FirstOrDefault(s => s.RenewalCycle == group.Key);
             <h6 class="text-uppercase small text-muted mt-3 mb-1">
                 <i class="fas fa-check-circle text-success me-1"></i>
-                Cycle @group.Key
-                @if (riSnap != null) { <span class="fw-normal">— Approved @riSnap.TakenAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</span> }
+                @L["Cycle {0}", group.Key]
+                @if (riSnap != null) { <span class="fw-normal">— @L["Approved {0}", riSnap.TakenAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)]</span> }
             </h6>
             <table class="table table-sm table-hover mb-3">
-                <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Size"]</th><th>@L["Version"]</th><th>Uploaded</th><th></th></tr></thead>
+                <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Size"]</th><th>@L["Version"]</th><th>@L["Uploaded"]</th><th></th></tr></thead>
                 <tbody>
                     @foreach (var doc in group.OrderByDescending(d => d.UploadedAt))
                     {
@@ -911,15 +911,15 @@
                     <div class="col-md-4">
                         <label class="form-label small">@L["Document Type"]</label>
                         <select name="documentType" class="form-select form-select-sm">
-                            <option value="">— Select Type —</option>
-                            <option>eCTD Module</option>
-                            <option>Approval Letter</option>
-                            <option>PI (Product Information)</option>
-                            <option>CMI (Consumer Medicine Information)</option>
-                            <option>SmPC</option><option>REMS</option><option>RMP</option>
-                            <option>Condition Letter</option>
-                            <option>Assessment Report</option>
-                            <option>Labelling</option><option value="Other">@L["Other"]</option>
+                            <option value="">@L["— Select Type —"]</option>
+                            <option value="eCTD Module">@L["eCTD Module"]</option>
+                            <option value="Approval Letter">@L["Approval Letter"]</option>
+                            <option value="PI (Product Information)">@L["PI (Product Information)"]</option>
+                            <option value="CMI (Consumer Medicine Information)">@L["CMI (Consumer Medicine Information)"]</option>
+                            <option value="SmPC">@L["SmPC"]</option><option value="REMS">@L["REMS"]</option><option value="RMP">@L["RMP"]</option>
+                            <option value="Condition Letter">@L["Condition Letter"]</option>
+                            <option value="Assessment Report">@L["Assessment Report"]</option>
+                            <option value="Labelling">@L["Labelling"]</option><option value="Other">@L["Other"]</option>
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -939,14 +939,14 @@
         {
             <div class="d-flex justify-content-end mb-3">
                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addVariationModal">
-                    <i class="fas fa-plus me-1"></i>Add Variation
+                    <i class="fas fa-plus me-1"></i>@L["Add Variation"]
                 </button>
             </div>
         }
         else
         {
             <div class="alert alert-light border small mb-3">
-                <i class="fas fa-info-circle me-1 text-muted"></i>Variations can only be raised once the application is approved.
+                <i class="fas fa-info-circle me-1 text-muted"></i>@L["Variations can only be raised once the application is approved."]
             </div>
         }
 
@@ -956,7 +956,7 @@
                 <table class="table table-sm table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>Variation Number</th>
+                            <th>@L["Variation Number"]</th>
                             <th>@L["Type"]</th>
                             <th>@L["Description"]</th>
                             <th>@L["Status"]</th>
@@ -980,7 +980,7 @@
                             };
                             <tr>
                                 <td class="fw-semibold small">@v.VariationNumber</td>
-                                <td><span class="badge bg-info text-dark small">@v.VariationType</span></td>
+                                <td><span class="badge bg-info text-dark small">@L.Enum(v.VariationType)</span></td>
                                 <td class="small">@v.VariationDescription
                                     @if (!string.IsNullOrEmpty(v.Notes))
                                     {
@@ -1005,7 +1005,7 @@
                                             <i class="fas fa-edit me-1"></i>@L["Edit"]
                                         </button>
                                         <form asp-action="DeleteVariation" method="post" class="d-inline ms-1"
-                                              onsubmit="return confirm('Delete variation @v.VariationNumber?')">
+                                              data-confirm="@L["Delete variation {0}?", v.VariationNumber]" onsubmit="return confirm(this.dataset.confirm);">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="id" value="@v.Id" />
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -1024,7 +1024,7 @@
         {
             <div class="text-muted text-center py-4">
                 <i class="fas fa-random fa-2x mb-2 d-block text-secondary"></i>
-                No variations recorded. Click <strong>Add Variation</strong> to log a post-approval variation application.
+                @H["No variations recorded. Click <strong>Add Variation</strong> to log a post-approval variation application."]
             </div>
         }
     </div>
@@ -1033,7 +1033,7 @@
     <div class="tab-pane fade" id="dtabPathways" role="tabpanel">
         <div class="d-flex justify-content-end mb-3">
             <a asp-action="CreateAccessPathway" asp-route-applicationId="@Model.Id" class="btn btn-sm btn-primary">
-                <i class="fas fa-plus me-1"></i>New Access Pathway
+                <i class="fas fa-plus me-1"></i>@L["New Access Pathway"]
             </a>
         </div>
 
@@ -1045,12 +1045,12 @@
                         <tr>
                             <th>@L["AP Number"]</th>
                             <th>@L["Type"]</th>
-                            <th>Patient ID</th>
+                            <th>@L["Patient ID"]</th>
                             <th>@L["Status"]</th>
                             <th>@L["Approval"]</th>
                             <th>@L["Expiry"]</th>
-                            <th>Next Report Due</th>
-                            <th class="text-center">AE Rep.</th>
+                            <th>@L["Next Report Due"]</th>
+                            <th class="text-center">@L["AE Rep."]</th>
                             <th class="text-end">@L["Actions"]</th>
                         </tr>
                     </thead>
@@ -1072,9 +1072,9 @@
                                 <td>
                                     <a asp-action="AccessPathwayDetails" asp-route-id="@ap.Id" class="fw-semibold">@ap.AccessNumber</a>
                                 </td>
-                                <td><span class="badge bg-info text-dark">@ap.PathwayType</span></td>
+                                <td><span class="badge bg-info text-dark">@L.Enum(ap.PathwayType)</span></td>
                                 <td class="small">@(ap.PatientIdentifier ?? "—")</td>
-                                <td><span class="badge bg-@apStatusBadge">@ap.Status</span></td>
+                                <td><span class="badge bg-@apStatusBadge">@L.Enum(ap.Status)</span></td>
                                 <td class="small">@(ap.ApprovalDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
                                 <td class="small @(apExpired ? "text-danger fw-bold" : "")">@(ap.ExpiryDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
                                 <td class="small @(reportOverdue ? "text-warning fw-bold" : "")">@(ap.NextSixMonthlyReportDue?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
@@ -1090,7 +1090,7 @@
                                         <i class="fas fa-edit me-1"></i>@L["Edit"]
                                     </a>
                                     <form asp-action="DeleteAccessPathway" method="post" class="d-inline"
-                                          onsubmit="return confirm('Delete access pathway @ap.AccessNumber?')">
+                                          data-confirm="@L["Delete access pathway {0}?", ap.AccessNumber]" onsubmit="return confirm(this.dataset.confirm);">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@ap.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -1108,7 +1108,7 @@
         {
             <div class="text-muted text-center py-4">
                 <i class="fas fa-user-shield fa-2x mb-2 d-block text-secondary"></i>
-                No access pathway records. Click <strong>New Access Pathway</strong> to add one.
+                @H["No access pathway records. Click <strong>New Access Pathway</strong> to add one."]
             </div>
         }
     </div>
@@ -1132,7 +1132,7 @@
                             <div class="progress-bar @(pct == 100 ? "bg-success" : "bg-primary")"
                                  role="progressbar" style="width:@pct%">@pct%</div>
                         </div>
-                        <span class="text-muted small">@msDone / @msTotal milestones complete</span>
+                        <span class="text-muted small">@L["{0} / {1} milestones complete", msDone, msTotal]</span>
                     </div>
                 }
             </div>
@@ -1140,11 +1140,11 @@
                 @if (!milestones.Any())
                 {
                     <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#applyTemplateModal">
-                        <i class="fas fa-magic me-1"></i>Apply Standard Template
+                        <i class="fas fa-magic me-1"></i>@L["Apply Standard Template"]
                     </button>
                 }
                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addMilestoneModal">
-                    <i class="fas fa-plus me-1"></i>Add Milestone
+                    <i class="fas fa-plus me-1"></i>@L["Add Milestone"]
                 </button>
             </div>
         </div>
@@ -1156,11 +1156,11 @@
                     <thead class="table-light">
                         <tr>
                             <th style="width:30px">#</th>
-                            <th>Milestone</th>
-                            <th>Planned Date</th>
-                            <th>Actual Date</th>
+                            <th>@L["Milestone"]</th>
+                            <th>@L["Planned Date"]</th>
+                            <th>@L["Actual Date"]</th>
                             <th>@L["Status"]</th>
-                            <th>Clock Stop</th>
+                            <th>@L["Clock Stop"]</th>
                             <th>@L["Notes"]</th>
                             <th class="text-end">@L["Actions"]</th>
                         </tr>
@@ -1190,7 +1190,7 @@
                                 <td class="text-muted small">@msIdx</td>
                                 <td>
                                     @m.MilestoneName
-                                    @if (m.IsClockStop) { <span class="badge bg-warning text-dark ms-1" title="Clock-stop milestone"><i class="fas fa-pause"></i></span> }
+                                    @if (m.IsClockStop) { <span class="badge bg-warning text-dark ms-1" title="@L["Clock-stop milestone"]"><i class="fas fa-pause"></i></span> }
                                 </td>
                                 <td class="@(isEffectivelyOverdue ? "text-danger fw-bold" : "")">
                                     @(m.PlannedDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
@@ -1200,10 +1200,10 @@
                                 <td class="text-center">
                                     @if (m.IsClockStop)
                                     {
-                                        <i class="fas fa-pause text-warning" title="Clock-stop milestone"></i>
+                                        <i class="fas fa-pause text-warning" title="@L["Clock-stop milestone"]"></i>
                                         @if (m.ClockRestartDate.HasValue)
                                         {
-                                            <span class="small text-muted d-block">Restart: @m.ClockRestartDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
+                                            <span class="small text-muted d-block">@L["Restart: {0}", m.ClockRestartDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]</span>
                                         }
                                     }
                                 </td>
@@ -1222,7 +1222,7 @@
                                         <i class="fas fa-edit me-1"></i>@L["Edit"]
                                     </button>
                                     <form asp-action="DeleteMilestone" method="post" class="d-inline ms-1"
-                                          onsubmit="return confirm('Delete this milestone?')">
+                                          data-confirm="@L["Delete this milestone?"]" onsubmit="return confirm(this.dataset.confirm);">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@m.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -1240,19 +1240,18 @@
         {
             <div class="text-muted text-center py-4">
                 <i class="fas fa-tasks fa-2x mb-2 d-block text-secondary"></i>
-                No milestones recorded. Use <strong>Apply Standard Template</strong> for a jurisdiction-specific set,
-                or <strong>Add Milestone</strong> to add manually.
+                @H["No milestones recorded. Use <strong>Apply Standard Template</strong> for a jurisdiction-specific set, or <strong>Add Milestone</strong> to add manually."]
             </div>
         }
     </div>
 
     <!-- LC Dependencies Tab -->
     <div class="tab-pane fade" id="dtabLicCert" role="tabpanel">
-        <h6 class="mb-3"><i class="fas fa-id-card me-1 text-success"></i>Linked Licences &amp; Certifications</h6>
+        <h6 class="mb-3"><i class="fas fa-id-card me-1 text-success"></i>@L["Linked Licences & Certifications"]</h6>
         @if (!lcDeps.Any())
         {
-            <div class="text-muted">No licence/certification records linked to this application.</div>
-            <div class="mt-2 small text-muted">To link a record, open the LC record and use the <strong>Dependencies</strong> tab.</div>
+            <div class="text-muted">@L["No licence/certification records linked to this application."]</div>
+            <div class="mt-2 small text-muted">@H["To link a record, open the LC record and use the <strong>Dependencies</strong> tab."]</div>
         }
         else
         {
@@ -1265,7 +1264,7 @@
                         <th>@L["Status"]</th>
                         <th>@L["Expiry"]</th>
                         <th>@L["Notes"]</th>
-                        <th>Linked Since</th>
+                        <th>@L["Linked Since"]</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -1284,7 +1283,7 @@
                     };
                     <tr>
                         <td><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
-                        <td>@r.Category</td>
+                        <td>@L.Enum(r.Category)</td>
                         <td>@(r.LicenceType?.DisplayName ?? "—")</td>
                         <td><span class="badge @lcBadge">@L.Enum(r.Status)</span></td>
                         <td>@(r.ExpiryDate.HasValue ? r.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture) : "—")</td>
@@ -1303,7 +1302,7 @@
         @if (Model.AuditLogs?.Any() == true)
         {
             <table class="table table-sm table-hover">
-                <thead class="table-light"><tr><th>Timestamp <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>@L["Action"]</th><th>Field</th><th>@L["From"]</th><th>@L["To"]</th><th>@L["User"]</th><th>@L["Notes"]</th></tr></thead>
+                <thead class="table-light"><tr><th>@L["Timestamp"] <span class="fw-normal text-muted">(@SiteTime.Label)</span></th><th>@L["Action"]</th><th>@L["Field"]</th><th>@L["From"]</th><th>@L["To"]</th><th>@L["User"]</th><th>@L["Notes"]</th></tr></thead>
                 <tbody>
                     @foreach (var log in Model.AuditLogs)
                     {
@@ -1320,14 +1319,14 @@
                 </tbody>
             </table>
         }
-        else { <div class="text-muted">No audit log entries.</div> }
+        else { <div class="text-muted">@L["No audit log entries."]</div> }
     </div>
 
     <!-- Tab: Approval History -->
     <div class="tab-pane fade" id="dtabHistory" role="tabpanel">
         @if (Model.ApprovalSnapshots?.Any() != true)
         {
-            <p class="text-muted">No approval cycles recorded yet. A snapshot is captured automatically each time this application is transitioned to <strong>@L["Approved"]</strong>.</p>
+            <p class="text-muted">@H["No approval cycles recorded yet. A snapshot is captured automatically each time this application is transitioned to <strong>Approved</strong>."]</p>
         }
         else
         {
@@ -1355,8 +1354,8 @@
 
                 <div class="card mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span class="fw-bold"><i class="fas fa-check-circle text-success me-2"></i>Cycle @snap.RenewalCycle</span>
-                        <small class="text-muted">Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) UTC</small>
+                        <span class="fw-bold"><i class="fas fa-check-circle text-success me-2"></i>@L["Cycle {0}", snap.RenewalCycle]</span>
+                        <small class="text-muted">@L["Approved {0} UTC", snap.TakenAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)]</small>
                     </div>
                     <div class="card-body">
                         @foreach (var grp in riSections)
@@ -1379,7 +1378,7 @@
 
                         @if (data.TryGetProperty("Documents", out var docArr) && docArr.GetArrayLength() > 0)
                         {
-                            <h6 class="small text-uppercase text-muted mb-1">Documents at Approval</h6>
+                            <h6 class="small text-uppercase text-muted mb-1">@L["Documents at Approval"]</h6>
                             <table class="table table-sm table-bordered mb-2">
                                 <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["SHA-256"]</th></tr></thead>
                                 <tbody>
@@ -1397,7 +1396,7 @@
 
                         @if (data.TryGetProperty("Conditions", out var condArr) && condArr.GetArrayLength() > 0)
                         {
-                            <h6 class="small text-uppercase text-muted mb-1">Conditions at Approval</h6>
+                            <h6 class="small text-uppercase text-muted mb-1">@L["Conditions at Approval"]</h6>
                             <ul class="list-unstyled mb-0">
                                 @foreach (var cond in condArr.EnumerateArray())
                                 {
@@ -1424,18 +1423,18 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="applicationId" value="@Model.Id" />
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-clipboard-list me-2 text-primary"></i>Add Condition of Approval</h5>
+                    <h5 class="modal-title"><i class="fas fa-clipboard-list me-2 text-primary"></i>@L["Add Condition of Approval"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Condition Description <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Condition Description"] <span class="text-danger">*</span></label>
                         <textarea name="conditionDescription" class="form-control" rows="3" required maxlength="500"
-                                  placeholder="Describe the condition imposed by the authority..."></textarea>
+                                  placeholder="@L["Describe the condition imposed by the authority..."]"></textarea>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Condition Type</label>
+                            <label class="form-label">@L["Condition Type"]</label>
                             <select name="conditionType" class="form-select">
                                 @foreach (RIConditionType ct in Enum.GetValues(typeof(RIConditionType)))
                                 {
@@ -1451,7 +1450,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Add Condition</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>@L["Add Condition"]</button>
                 </div>
             </form>
         </div>
@@ -1466,17 +1465,17 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" id="editConditionId" />
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-edit me-2 text-primary"></i>Edit Condition</h5>
+                    <h5 class="modal-title"><i class="fas fa-edit me-2 text-primary"></i>@L["Edit Condition"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Condition Description <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Condition Description"] <span class="text-danger">*</span></label>
                         <textarea name="conditionDescription" id="editConditionDesc" class="form-control" rows="3" required maxlength="500"></textarea>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label class="form-label">Condition Type</label>
+                            <label class="form-label">@L["Condition Type"]</label>
                             <select name="conditionType" id="editConditionType" class="form-select">
                                 @foreach (RIConditionType ct in Enum.GetValues(typeof(RIConditionType)))
                                 {
@@ -1516,27 +1515,27 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" id="closeConditionId" />
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Close Condition</h5>
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>@L["Close Condition"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Closing: <strong id="closeConditionDesc"></strong></p>
+                    <p>@L["Closing:"] <strong id="closeConditionDesc"></strong></p>
                     @if (Model.Status == RIApplicationStatus.ConditionsActive)
                     {
                         <div class="alert alert-info small">
                             <i class="fas fa-info-circle me-1"></i>
-                            If this is the last open condition, the application will automatically transition to <strong>@L["Approved"]</strong>.
+                            @H["If this is the last open condition, the application will automatically transition to <strong>Approved</strong>."]
                         </div>
                     }
                     <div class="mb-3">
                         <label class="form-label">@L["Completion Notes"]</label>
                         <textarea name="completionNotes" class="form-control" rows="3"
-                                  placeholder="Describe how this condition was satisfied..."></textarea>
+                                  placeholder="@L["Describe how this condition was satisfied..."]"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>Close Condition</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>@L["Close Condition"]</button>
                 </div>
             </form>
         </div>
@@ -1551,13 +1550,13 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="applicationId" value="@Model.Id" />
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-random me-2 text-primary"></i>Add Variation</h5>
+                    <h5 class="modal-title"><i class="fas fa-random me-2 text-primary"></i>@L["Add Variation"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Variation Type <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Variation Type"] <span class="text-danger">*</span></label>
                             <select name="variationType" class="form-select" required>
                                 @foreach (RIVariationType vt in Enum.GetValues(typeof(RIVariationType)))
                                 {
@@ -1572,18 +1571,18 @@
                         <div class="col-12">
                             <label class="form-label">@L["Description"] <span class="text-danger">*</span></label>
                             <textarea name="variationDescription" class="form-control" rows="3" required maxlength="300"
-                                      placeholder="Describe the proposed variation..."></textarea>
+                                      placeholder="@L["Describe the proposed variation..."]"></textarea>
                         </div>
                         <div class="col-12">
                             <label class="form-label">@L["Notes"]</label>
                             <textarea name="notes" class="form-control" rows="2" maxlength="500"
-                                      placeholder="Additional context or regulatory strategy notes..."></textarea>
+                                      placeholder="@L["Additional context or regulatory strategy notes..."]"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Add Variation</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>@L["Add Variation"]</button>
                 </div>
             </form>
         </div>
@@ -1598,13 +1597,13 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" id="editVariationId" />
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-edit me-2 text-primary"></i>Edit Variation</h5>
+                    <h5 class="modal-title"><i class="fas fa-edit me-2 text-primary"></i>@L["Edit Variation"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label class="form-label">Variation Type</label>
+                            <label class="form-label">@L["Variation Type"]</label>
                             <select name="variationType" id="editVarType" class="form-select">
                                 @foreach (RIVariationType vt in Enum.GetValues(typeof(RIVariationType)))
                                 {
@@ -1656,25 +1655,25 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="applicationId" value="@Model.Id" />
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addMilestoneModalLabel"><i class="fas fa-plus-circle me-2 text-primary"></i>Add Milestone</h5>
+                    <h5 class="modal-title" id="addMilestoneModalLabel"><i class="fas fa-plus-circle me-2 text-primary"></i>@L["Add Milestone"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Milestone Name <span class="text-danger">*</span></label>
-                        <input type="text" name="milestoneName" class="form-control" required maxlength="200" placeholder="e.g. Day 45 Questions Issued" />
+                        <label class="form-label">@L["Milestone Name"] <span class="text-danger">*</span></label>
+                        <input type="text" name="milestoneName" class="form-control" required maxlength="200" placeholder="@L["e.g. Day 45 Questions Issued"]" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Planned Date</label>
+                        <label class="form-label">@L["Planned Date"]</label>
                         <input type="date" name="plannedDate" class="form-control" />
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" name="isClockStop" value="true" class="form-check-input" id="addIsClockStop" />
                         <input type="hidden" name="isClockStop" value="false" />
                         <label class="form-check-label" for="addIsClockStop">
-                            <i class="fas fa-pause text-warning me-1"></i>Clock-Stop Milestone
+                            <i class="fas fa-pause text-warning me-1"></i>@L["Clock-Stop Milestone"]
                         </label>
-                        <div class="form-text">Check if this milestone triggers a regulatory clock stop.</div>
+                        <div class="form-text">@L["Check if this milestone triggers a regulatory clock stop."]</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">@L["Notes"]</label>
@@ -1683,7 +1682,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Add Milestone</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>@L["Add Milestone"]</button>
                 </div>
             </form>
         </div>
@@ -1698,21 +1697,21 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" id="editMilestoneId" />
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editMilestoneModalLabel"><i class="fas fa-edit me-2 text-primary"></i>Edit Milestone</h5>
+                    <h5 class="modal-title" id="editMilestoneModalLabel"><i class="fas fa-edit me-2 text-primary"></i>@L["Edit Milestone"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-12">
-                            <label class="form-label">Milestone Name <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Milestone Name"] <span class="text-danger">*</span></label>
                             <input type="text" name="milestoneName" id="editMilestoneName" class="form-control" required maxlength="200" />
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Planned Date</label>
+                            <label class="form-label">@L["Planned Date"]</label>
                             <input type="date" name="plannedDate" id="editPlannedDate" class="form-control" />
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Actual Date</label>
+                            <label class="form-label">@L["Actual Date"]</label>
                             <input type="date" name="actualDate" id="editActualDate" class="form-control" />
                         </div>
                         <div class="col-md-4">
@@ -1729,12 +1728,12 @@
                                 <input type="checkbox" name="isClockStop" value="true" class="form-check-input" id="editIsClockStop" />
                                 <input type="hidden" name="isClockStop" value="false" />
                                 <label class="form-check-label" for="editIsClockStop">
-                                    <i class="fas fa-pause text-warning me-1"></i>Clock-Stop Milestone
+                                    <i class="fas fa-pause text-warning me-1"></i>@L["Clock-Stop Milestone"]
                                 </label>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Clock Restart Date</label>
+                            <label class="form-label">@L["Clock Restart Date"]</label>
                             <input type="date" name="clockRestartDate" id="editClockRestartDate" class="form-control" />
                         </div>
                         <div class="col-12">
@@ -1760,21 +1759,21 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="applicationId" value="@Model.Id" />
                 <div class="modal-header">
-                    <h5 class="modal-title" id="applyTemplateModalLabel"><i class="fas fa-magic me-2 text-secondary"></i>Apply Standard Milestone Template</h5>
+                    <h5 class="modal-title" id="applyTemplateModalLabel"><i class="fas fa-magic me-2 text-secondary"></i>@L["Apply Standard Milestone Template"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will create standard milestones for <strong>@Model.Jurisdiction?.Authority</strong> based on the review timeline for <strong>@Model.ApplicationType?.Name</strong>.</p>
+                    <p>@H["This will create standard milestones for <strong>{0}</strong> based on the review timeline for <strong>{1}</strong>.", Model.Jurisdiction?.Authority ?? "", Model.ApplicationType?.Name ?? ""]</p>
                     <div class="alert alert-info small">
                         <i class="fas fa-info-circle me-1"></i>
-                        Milestone dates are calculated from <strong>Day 0 (@(Model.Day0Date?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? Model.SubmissionDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "Submission Date"))</strong>.
-                        You can edit individual milestone dates after applying the template.
+                        @H["Milestone dates are calculated from <strong>Day 0 ({0})</strong>.", Model.Day0Date?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? Model.SubmissionDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? L["Submission Date"].Value]
+                        @L["You can edit individual milestone dates after applying the template."]
                     </div>
-                    <p class="text-muted small">This action is only available when no milestones exist.</p>
+                    <p class="text-muted small">@L["This action is only available when no milestones exist."]</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-secondary"><i class="fas fa-magic me-1"></i>Apply Template</button>
+                    <button type="submit" class="btn btn-secondary"><i class="fas fa-magic me-1"></i>@L["Apply Template"]</button>
                 </div>
             </form>
         </div>

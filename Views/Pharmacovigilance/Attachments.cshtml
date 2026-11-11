@@ -1,10 +1,10 @@
 @model OpenQMS.Models.AdverseEvent
 @{
-    ViewData["Title"] = $"Attachments — {Model.AENumber}";
+    ViewData["Title"] = $"{L["Attachments"]} — {Model.AENumber}";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Attachments — @Model.AENumber</h4>
+    <h4 class="mb-0">@L["Attachments"] — @Model.AENumber</h4>
     <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">@L["Back to Details"]</a>
 </div>
 
@@ -33,21 +33,21 @@
                     <div class="col-md-4">
                         <label class="form-label">@L["Document Type"]</label>
                         <select name="documentType" class="form-select">
-                            <option value="">— Select Type —</option>
-                            <option>CIOMS Form</option>
-                            <option>MedWatch / Authority Form</option>
+                            <option value="">@L["— Select Type —"]</option>
+                            <option value="CIOMS Form">@L["CIOMS Form"]</option>
+                            <option value="MedWatch / Authority Form">@L["MedWatch / Authority Form"]</option>
                             <option value="Source Document">@L["Source Document"]</option>
-                            <option>Medical Records</option>
-                            <option>Lab Report</option>
+                            <option value="Medical Records">@L["Medical Records"]</option>
+                            <option value="Lab Report">@L["Lab Report"]</option>
                             <option value="Medical Narrative">@L["Medical Narrative"]</option>
-                            <option>Causality Assessment</option>
-                            <option>Correspondence</option>
+                            <option value="Causality Assessment">@L["Causality Assessment"]</option>
+                            <option value="Correspondence">@L["Correspondence"]</option>
                             <option value="Other">@L["Other"]</option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">@L["Description (optional)"]</label>
-                        <input type="text" name="description" class="form-control" placeholder="optional notes..." />
+                        <input type="text" name="description" class="form-control" placeholder="@L["optional notes..."]" />
                     </div>
                     <div class="col-12">
                         <button type="submit" class="btn btn-primary">@L["Upload"]</button>
@@ -60,7 +60,7 @@
 
 <!-- File list -->
 <div class="card">
-    <div class="card-header"><strong>Uploaded Files (@(Model.Attachments?.Count ?? 0))</strong></div>
+    <div class="card-header"><strong>@L["Uploaded Files ({0})", Model.Attachments?.Count ?? 0]</strong></div>
     <div class="card-body p-0">
         @if (Model.Attachments?.Any() == true)
         {
@@ -105,7 +105,7 @@
         }
         else
         {
-            <p class="text-muted p-3 mb-0">No attachments uploaded yet.</p>
+            <p class="text-muted p-3 mb-0">@L["No attachments uploaded yet."]</p>
         }
     </div>
 </div>

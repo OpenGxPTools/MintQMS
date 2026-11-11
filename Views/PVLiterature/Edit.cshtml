@@ -1,9 +1,9 @@
 @model OpenQMS.Models.PVLiteratureSearch
 @{
-    ViewData["Title"] = "Edit Literature Search";
+    ViewData["Title"] = L["Edit Literature Search"].Value;
 }
 
-<h4 class="mb-0"><i class="fas fa-edit me-2 text-secondary"></i>Edit Literature Search</h4>
+<h4 class="mb-0"><i class="fas fa-edit me-2 text-secondary"></i>@L["Edit Literature Search"]</h4>
 <hr />
 
 <form asp-action="Edit" method="post">
@@ -48,7 +48,7 @@
             <input asp-for="AEsIdentified" type="number" min="0" class="form-control" />
         </div>
         <div class="col-md-12">
-            <label asp-for="Notes" class="form-label fw-bold">Findings / Notes</label>
+            <label asp-for="Notes" class="form-label fw-bold">@L["Findings / Notes"]</label>
             <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
         </div>
     </div>

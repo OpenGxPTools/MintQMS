@@ -18,6 +18,17 @@ namespace OpenQMS.Localization
         public static string T(this Controller controller, string english, params object[] args) =>
             Localizer(controller.HttpContext)[english, args].Value;
 
+        /// <summary>A workflow refusal in the user's language; values that are states, lists or dates are
+        /// shown in that language too.</summary>
+        public static string TError(this Controller controller, OpenQMS.Services.WorkflowResultBase result) =>
+            controller.T(result.ErrorTemplate, result.ErrorArgs.Select(a => a switch
+            {
+                Enum e      => (object)controller.T(EnumHelper.Display(e)),
+                string[] xs => string.Join(", ", xs.Select(x => controller.T(x))),
+                DateTime d  => d.ToString("dd MMM yyyy", DisplayDates.Culture),
+                _           => a,
+            }).ToArray());
+
         private static IStringLocalizer Localizer(HttpContext http) =>
             http.RequestServices.GetRequiredService<IStringLocalizer<SharedResource>>();
     }

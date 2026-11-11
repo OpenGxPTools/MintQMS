@@ -30,6 +30,7 @@ namespace OpenQMS.Models
         [Display(Name = "TGA Reference Number")]
         public string? TGAReferenceNumber { get; set; }
 
+        [Display(Name = "Status")]
         public PSURStatus Status { get; set; }
 
         [Display(Name = "Exposure Data")]

@@ -1,11 +1,11 @@
 @model OpenQMS.Models.LC.LicenceCertificationRecord
 @using OpenQMS.Models.LC
 @{
-    ViewData["Title"] = $"Edit — {Model.LCNumber}";
+    ViewData["Title"] = $"{L["Edit"]} — {Model.LCNumber}";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0"><i class="fas fa-edit me-2 text-warning"></i>Edit — @Model.LCNumber</h4>
+    <h4 class="mb-0"><i class="fas fa-edit me-2 text-warning"></i>@L["Edit"] — @Model.LCNumber</h4>
     <div class="d-flex gap-2">
         <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-eye me-1"></i>@L["Details"]</a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>@L["Register"]</a>
@@ -15,8 +15,8 @@
 @if (!ViewData.ModelState.IsValid)
 {
     <div class="alert alert-danger" id="saveErrorBanner">
-        <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-1"></i>Your changes were not saved</h6>
-        <p class="mb-2 small">Please correct the following and click <strong>@L["Save Changes"]</strong> again. Fields needing attention may be on other tabs.</p>
+        <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-1"></i>@L["Your changes were not saved"]</h6>
+        <p class="mb-2 small">@H["Please correct the following and click <strong>Save Changes</strong> again. Fields needing attention may be on other tabs."]</p>
         <div asp-validation-summary="All" class="mb-0"></div>
     </div>
 }
@@ -38,13 +38,13 @@
             <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button"><i class="fas fa-calendar-alt me-1"></i>@L["Licence Details"]</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button"><i class="fas fa-microscope me-1"></i>GMP / ISO Specifics</button>
+            <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button"><i class="fas fa-microscope me-1"></i>@L["GMP / ISO Specifics"]</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button"><i class="fas fa-user me-1"></i>@L["Contacts"]</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button"><i class="fas fa-dollar-sign me-1"></i>Fees &amp; Notes</button>
+            <button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button"><i class="fas fa-dollar-sign me-1"></i>@L["Fees & Notes"]</button>
         </li>
     </ul>
 
@@ -61,7 +61,7 @@
                     <label asp-for="HolderType" class="form-label fw-bold"></label>
                     <select asp-for="HolderType" class="form-select" id="holderTypeSelect">
                         <option value="OwnCompany">@L["Own Company"]</option>
-                        <option value="ThirdParty">Third Party / CMO / CDMO</option>
+                        <option value="ThirdParty">@L["Third Party / CMO / CDMO"]</option>
                     </select>
                 </div>
                 <div class="col-md-4">
@@ -70,9 +70,9 @@
                     <span asp-validation-for="HolderName" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6" id="supplierSection">
-                    <label asp-for="SupplierId" class="form-label fw-bold">Linked Supplier (optional)</label>
+                    <label asp-for="SupplierId" class="form-label fw-bold">@L["Linked Supplier (optional)"]</label>
                     <select asp-for="SupplierId" asp-items='@(ViewBag.SuppliersList as SelectList)' class="form-select select2-supplier">
-                        <option value="">— No linked supplier —</option>
+                        <option value="">@L["— No linked supplier —"]</option>
                     </select>
                 </div>
                 <div class="col-md-6" id="supplierSection2">
@@ -91,18 +91,18 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label asp-for="Category" class="form-label fw-bold">@L["Category"]
-                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="lccategory" aria-label="Category guidance">?</button>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="lccategory" aria-label="@L["Category guidance"]">?</button>
                     </label>
                     <select asp-for="Category" class="form-select" id="categorySelect">
-                        <option value="RegulatoryLicence">Regulatory Licence</option>
-                        <option value="ISOPrivateCertification">ISO / Private Certification</option>
-                        <option value="ThirdPartySiteApproval">Third-Party Site Approval</option>
+                        <option value="RegulatoryLicence">@L["Regulatory Licence"]</option>
+                        <option value="ISOPrivateCertification">@L["ISO / Private Certification"]</option>
+                        <option value="ThirdPartySiteApproval">@L["Third-Party Site Approval"]</option>
                     </select>
                 </div>
                 <div class="col-md-8">
                     <label asp-for="LicenceTypeId" class="form-label fw-bold">@L["Licence / Certification Type"]</label>
                     <select asp-for="LicenceTypeId" asp-items='@(ViewBag.LicenceTypesList as SelectList)' class="form-select select2-type" id="licenceTypeSelect">
-                        <option value="">— Select Type —</option>
+                        <option value="">@L["— Select Type —"]</option>
                     </select>
                     <span asp-validation-for="LicenceTypeId" class="text-danger small"></span>
                 </div>
@@ -162,17 +162,17 @@
         <!-- ── Tab 4: GMP / ISO Specifics ────────────────────────────────── -->
         <div class="tab-pane fade" id="tab4" role="tabpanel">
             <div id="gmpSection">
-                <h6 class="text-muted text-uppercase small mb-3 border-bottom pb-1"><i class="fas fa-shield-alt me-1"></i>GMP Clearance Details</h6>
+                <h6 class="text-muted text-uppercase small mb-3 border-bottom pb-1"><i class="fas fa-shield-alt me-1"></i>@L["GMP Clearance Details"]</h6>
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label asp-for="GmcPathway" class="form-label fw-bold">@L["GMP Clearance Pathway"]
-                            <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="gmcpathway" aria-label="GMP Clearance Pathway guidance">?</button>
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="gmcpathway" aria-label="@L["GMP Clearance Pathway guidance"]">?</button>
                         </label>
                         <select asp-for="GmcPathway" class="form-select">
-                            <option value="">— Select Pathway —</option>
-                            <option value="MRA">MRA (Mutual Recognition Agreement)</option>
-                            <option value="CV">CV (Compliance Verification)</option>
-                            <option value="TGAInspection">TGA On-Site Inspection</option>
+                            <option value="">@L["— Select Pathway —"]</option>
+                            <option value="MRA">@L["MRA (Mutual Recognition Agreement)"]</option>
+                            <option value="CV">@L["CV (Compliance Verification)"]</option>
+                            <option value="TGAInspection">@L["TGA On-Site Inspection"]</option>
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -188,8 +188,8 @@
                         <input asp-for="LastInspectionDate" type="date" class="form-control" />
                     </div>
                     <div class="col-md-4">
-                        <label asp-for="RFIDate" class="form-label fw-bold">RFI Issued Date
-                            <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="rfi" aria-label="RFI guidance">?</button>
+                        <label asp-for="RFIDate" class="form-label fw-bold">@L["RFI Issued Date"]
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="rfi" aria-label="@L["RFI guidance"]">?</button>
                         </label>
                         <input asp-for="RFIDate" type="date" class="form-control" />
                     </div>
@@ -214,8 +214,8 @@
                 </div>
             </div>
             <div id="isoSection" class="mt-4">
-                <h6 class="text-muted text-uppercase small mb-3 border-bottom pb-1"><i class="fas fa-certificate me-1"></i>ISO / Certification Body Details
-                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="isolifecycle" aria-label="ISO certification lifecycle guidance">?</button>
+                <h6 class="text-muted text-uppercase small mb-3 border-bottom pb-1"><i class="fas fa-certificate me-1"></i>@L["ISO / Certification Body Details"]
+                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="isolifecycle" aria-label="@L["ISO certification lifecycle guidance"]">?</button>
                 </h6>
                 <div class="row g-3">
                     <div class="col-md-6">
@@ -223,7 +223,7 @@
                         <input asp-for="CertificationBody" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="CertificationBodyAccreditation" class="form-label fw-bold">Certification Body Accreditation No.</label>
+                        <label asp-for="CertificationBodyAccreditation" class="form-label fw-bold">@L["Certification Body Accreditation No."]</label>
                         <input asp-for="CertificationBodyAccreditation" class="form-control" />
                     </div>
                     <div class="col-md-4">
@@ -260,7 +260,7 @@
                 <div class="col-md-6">
                     <label asp-for="InternalResponsiblePersonId" class="form-label fw-bold">@L["Internal Responsible Person"]</label>
                     <select asp-for="InternalResponsiblePersonId" asp-items='@(ViewBag.UsersList as SelectList)' class="form-select select2-users">
-                        <option value="">— Select user —</option>
+                        <option value="">@L["— Select user —"]</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -294,9 +294,9 @@
                     <input asp-for="FeeReference" class="form-control" />
                 </div>
                 <div class="col-12">
-                    <label asp-for="JustificationReason" class="form-label fw-bold">Justification / Reason</label>
+                    <label asp-for="JustificationReason" class="form-label fw-bold">@L["Justification / Reason"]</label>
                     <textarea asp-for="JustificationReason" class="form-control bg-light" rows="3" readonly disabled></textarea>
-                    <div class="form-text"><i class="fas fa-info-circle me-1"></i>Set automatically when the record is Suspended, Withdrawn, or marked Not Applicable. Not editable here.</div>
+                    <div class="form-text"><i class="fas fa-info-circle me-1"></i>@L["Set automatically when the record is Suspended, Withdrawn, or marked Not Applicable. Not editable here."]</div>
                 </div>
                 <div class="col-12">
                     <label asp-for="RegulatoryActionNotes" class="form-label fw-bold"></label>
@@ -312,7 +312,7 @@
         {
             <form asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Delete this record? This cannot be undone.');">
                 @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Delete Record</button>
+                <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>@L["Delete Record"]</button>
             </form>
         }
         else
@@ -329,31 +329,31 @@
 <!-- Field-help popover content (hidden, read by field-help.js) -->
 <div class="d-none">
     <div id="help-lccategory">
-        <p class="mb-1"><strong>What kind of credential this record tracks</strong> (this choice drives the GMP / ISO tab):</p>
+        <p class="mb-1">@H["<strong>What kind of credential this record tracks</strong> (this choice drives the GMP / ISO tab):"]</p>
         <ul class="mb-0 ps-3">
-            <li><strong>Regulatory Licence</strong> — a federal or state licence/permit (e.g. manufacturing licence, wholesale/import permit).</li>
-            <li><strong>ISO / Private Certification</strong> — a quality-system certification issued by a certification body (e.g. ISO 9001, ISO 13485).</li>
-            <li><strong>Third-Party Site Approval</strong> — a GMP clearance or approval for an external manufacturing/supply site.</li>
+            <li><strong>@L["Regulatory Licence"]</strong> @L["— a federal or state licence/permit (e.g. manufacturing licence, wholesale/import permit)."]</li>
+            <li><strong>@L["ISO / Private Certification"]</strong> @L["— a quality-system certification issued by a certification body (e.g. ISO 9001, ISO 13485)."]</li>
+            <li><strong>@L["Third-Party Site Approval"]</strong> @L["— a GMP clearance or approval for an external manufacturing/supply site."]</li>
         </ul>
     </div>
     <div id="help-gmcpathway">
-        <p class="mb-1"><strong>How the overseas GMP clearance is being obtained</strong> (TGA framework):</p>
+        <p class="mb-1">@H["<strong>How the overseas GMP clearance is being obtained</strong> (TGA framework):"]</p>
         <ul class="mb-0 ps-3">
-            <li><strong>MRA</strong> — Mutual Recognition Agreement: the site is in a country whose GMP inspections the TGA recognises.</li>
-            <li><strong>CV</strong> — Compliance Verification: clearance based on an inspection report from a recognised authority.</li>
-            <li><strong>TGA Inspection</strong> — an on-site TGA inspection, used where no MRA/CV pathway is available.</li>
+            <li><strong>@L["MRA"]</strong> @L["— Mutual Recognition Agreement: the site is in a country whose GMP inspections the TGA recognises."]</li>
+            <li><strong>@L["CV"]</strong> @L["— Compliance Verification: clearance based on an inspection report from a recognised authority."]</li>
+            <li><strong>@L["TGA Inspection"]</strong> @L["— an on-site TGA inspection, used where no MRA/CV pathway is available."]</li>
         </ul>
     </div>
     <div id="help-rfi">
-        <p class="mb-0"><strong>RFI = Request for Information.</strong> A formal query the authority issues during assessment asking for additional information or clarification. Record when it was <strong>issued</strong>, the <strong>response due</strong> date (the record flags it red if overdue and unanswered), and when your <strong>response was submitted</strong>.</p>
+        <p class="mb-0">@H["<strong>RFI = Request for Information.</strong> A formal query the authority issues during assessment asking for additional information or clarification. Record when it was <strong>issued</strong>, the <strong>response due</strong> date (the record flags it red if overdue and unanswered), and when your <strong>response was submitted</strong>."]</p>
     </div>
     <div id="help-isolifecycle">
-        <p class="mb-1"><strong>The ISO certification cycle</strong> (typically a 3-year certificate):</p>
+        <p class="mb-1">@H["<strong>The ISO certification cycle</strong> (typically a 3-year certificate):"]</p>
         <ul class="mb-0 ps-3">
-            <li><strong>@L["Stage 1 Audit"]</strong> — readiness/documentation review by the certification body.</li>
-            <li><strong>@L["Stage 2 Audit"]</strong> — the full on-site certification audit; passing it leads to the certificate being issued.</li>
-            <li><strong>Surveillance Audit</strong> — periodic (usually annual) checks that the system remains compliant.</li>
-            <li><strong>@L["Recertification Due"]</strong> — the full re-audit before the certificate expires (end of the cycle).</li>
+            <li><strong>@L["Stage 1 Audit"]</strong> @L["— readiness/documentation review by the certification body."]</li>
+            <li><strong>@L["Stage 2 Audit"]</strong> @L["— the full on-site certification audit; passing it leads to the certificate being issued."]</li>
+            <li><strong>@L["Surveillance Audit"]</strong> @L["— periodic (usually annual) checks that the system remains compliant."]</li>
+            <li><strong>@L["Recertification Due"]</strong> @L["— the full re-audit before the certificate expires (end of the cycle)."]</li>
         </ul>
     </div>
 </div>

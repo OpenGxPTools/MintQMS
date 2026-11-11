@@ -1,22 +1,21 @@
 @model IEnumerable<OpenQMS.Models.PVLiteratureSearch>
 @{
-    ViewData["Title"] = "Literature Monitoring Log";
+    ViewData["Title"] = L["Literature Monitoring Log"].Value;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0"><i class="fas fa-book-open me-2 text-primary"></i>Literature Monitoring Log</h4>
+    <h4 class="mb-0"><i class="fas fa-book-open me-2 text-primary"></i>@L["Literature Monitoring Log"]</h4>
     @if (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser"))
     {
         <a asp-action="Create" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus me-1"></i>Log New Search
+            <i class="fas fa-plus me-1"></i>@L["Log New Search"]
         </a>
     }
 </div>
 
 <div class="alert alert-info small mb-3">
     <i class="fas fa-info-circle me-1"></i>
-    TGA requires documented evidence of regular literature monitoring for any product under PV surveillance.
-    All searches should be logged here promptly after completion.
+    @L["TGA requires documented evidence of regular literature monitoring for any product under PV surveillance. All searches should be logged here promptly after completion."]
 </div>
 
 @if (TempData["Success"] != null)
@@ -29,13 +28,13 @@
 <table class="table table-striped table-hover" id="litTable">
     <thead class="table-dark">
         <tr>
-            <th>Search Date</th>
-            <th>Searched By</th>
-            <th>Databases</th>
-            <th>Date Range</th>
-            <th class="text-center">Results</th>
-            <th class="text-center">Relevant</th>
-            <th class="text-center">AEs Found</th>
+            <th>@L["Search Date"]</th>
+            <th>@L["Searched By"]</th>
+            <th>@L["Databases"]</th>
+            <th>@L["Date Range"]</th>
+            <th class="text-center">@L["Results"]</th>
+            <th class="text-center">@L["Relevant"]</th>
+            <th class="text-center">@L["AEs Found"]</th>
             <th></th>
         </tr>
     </thead>
@@ -71,13 +70,13 @@
 
 @if (!Model.Any())
 {
-    <p class="text-muted text-center mt-4">No literature search records yet.</p>
+    <p class="text-muted text-center mt-4">@L["No literature search records yet."]</p>
 }
 
 @section Scripts {
 <script>
     $(document).ready(function () {
-        $('#litTable').DataTable({ stateSave: true, order: [[0, 'desc']], language: { searchPlaceholder: 'Search within filtered results…', search: '' } });
+        $('#litTable').DataTable({ stateSave: true, order: [[0, 'desc']], language: { searchPlaceholder: @Json.Serialize(L["Search within filtered results…"].Value), search: '' } });
     });
 </script>
 }

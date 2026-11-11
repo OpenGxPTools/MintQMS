@@ -1,6 +1,6 @@
 @model OpenQMS.Models.AdverseEvent
 @{
-    ViewData["Title"] = $"Edit — {Model.AENumber}";
+    ViewData["Title"] = $"{L["Edit"]} — {Model.AENumber}";
     var rep = Model.Reporter;
     var pat = Model.Patient;
     var sp = Model.SuspectProduct;
@@ -8,44 +8,44 @@
 
     // Build option lists as raw HTML to avoid Razor tag helper parser issues
     string RepTypeOptions(OpenQMS.Models.AEReporter.ReporterType? selected) =>
-        "<option value=\"\">--Select--</option>" +
+        $"<option value=\"\">{System.Net.WebUtility.HtmlEncode(L["--Select--"].Value)}</option>" +
         string.Join("", Enum.GetValues<OpenQMS.Models.AEReporter.ReporterType>()
-            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{v}</option>"));
+            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L.Enum(v))}</option>"));
 
     string RepQualOptions(OpenQMS.Models.AEReporter.ReporterQualification? selected) =>
-        "<option value=\"\">--Select--</option>" +
+        $"<option value=\"\">{System.Net.WebUtility.HtmlEncode(L["--Select--"].Value)}</option>" +
         string.Join("", Enum.GetValues<OpenQMS.Models.AEReporter.ReporterQualification>()
-            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{v}</option>"));
+            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L.Enum(v))}</option>"));
 
     string PatSexOptions(OpenQMS.Models.AEPatient.PatientSex? selected) =>
-        "<option value=\"\">--Select--</option>" +
+        $"<option value=\"\">{System.Net.WebUtility.HtmlEncode(L["--Select--"].Value)}</option>" +
         string.Join("", Enum.GetValues<OpenQMS.Models.AEPatient.PatientSex>()
-            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{v}</option>"));
+            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L.Enum(v))}</option>"));
 
     string PatAgeUnitOptions(OpenQMS.Models.AEPatient.PatientAgeUnit? selected) =>
         "<option value=\"\">--</option>" +
         string.Join("", Enum.GetValues<OpenQMS.Models.AEPatient.PatientAgeUnit>()
-            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{v}</option>"));
+            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L.Enum(v))}</option>"));
 
     string ActionTakenOptions(OpenQMS.Models.AESuspectProduct.AEActionTaken? selected) =>
-        "<option value=\"\">--Select--</option>" +
+        $"<option value=\"\">{System.Net.WebUtility.HtmlEncode(L["--Select--"].Value)}</option>" +
         string.Join("", Enum.GetValues<OpenQMS.Models.AESuspectProduct.AEActionTaken>()
-            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{v}</option>"));
+            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L.Enum(v))}</option>"));
 
     string DechallengeOptions(OpenQMS.Models.AESuspectProduct.AEDechallengeResult? selected) =>
-        "<option value=\"\">--Select--</option>" +
+        $"<option value=\"\">{System.Net.WebUtility.HtmlEncode(L["--Select--"].Value)}</option>" +
         string.Join("", Enum.GetValues<OpenQMS.Models.AESuspectProduct.AEDechallengeResult>()
-            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{v}</option>"));
+            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L.Enum(v))}</option>"));
 
     string SubmissionMethodOptions(OpenQMS.Models.AERegulatoryReport.TGASubmissionMethod? selected) =>
-        "<option value=\"\">--Select--</option>" +
+        $"<option value=\"\">{System.Net.WebUtility.HtmlEncode(L["--Select--"].Value)}</option>" +
         string.Join("", Enum.GetValues<OpenQMS.Models.AERegulatoryReport.TGASubmissionMethod>()
-            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{v}</option>"));
+            .Select(v => $"<option value=\"{(int)v}\"{(selected == v ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L.Enum(v))}</option>"));
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <h4 class="mb-0">Edit Adverse Event</h4>
+        <h4 class="mb-0">@L["Edit Adverse Event"]</h4>
         <span class="badge bg-secondary fs-6">@Model.AENumber</span>
     </div>
     <div>
@@ -58,7 +58,7 @@
 {
     <div class="alert alert-info d-flex align-items-center gap-2 mb-3">
         <i class="bi bi-lock-fill"></i>
-        <span>This record is approved and locked. Create a Follow-up Report to add new information.</span>
+        <span>@L["This record is approved and locked. Create a Follow-up Report to add new information."]</span>
     </div>
 }
 
@@ -70,7 +70,7 @@
 @if (!ViewData.ModelState.IsValid)
 {
     <div class="alert alert-danger">
-        <strong>Please correct the following errors:</strong>
+        <strong>@L["Please correct the following errors:"]</strong>
         <div asp-validation-summary="All" class="mb-0"></div>
     </div>
 }
@@ -90,13 +90,13 @@
 
     <!-- Tab Navigation -->
     <ul class="nav nav-tabs mb-0" id="aeTabs" role="tablist">
-        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-report">1. Report Info</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-patient">2. Patient</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-product">3. Suspect Product</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-ae">4. AE Details</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-assessment">5. Case Assessment</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-regulatory">6. Regulatory</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-attachments">7. Attachments</a></li>
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-report">@L["1. Report Info"]</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-patient">@L["2. Patient"]</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-product">@L["3. Suspect Product"]</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-ae">@L["4. AE Details"]</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-assessment">@L["5. Case Assessment"]</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-regulatory">@L["6. Regulatory"]</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-attachments">@L["7. Attachments"]</a></li>
     </ul>
 
     <div class="tab-content border border-top-0 rounded-bottom p-4 mb-3">
@@ -139,24 +139,24 @@
                         }
                         else
                         {
-                            <span class="text-muted">Enter Day 0 date</span>
+                            <span class="text-muted">@L["Enter Day 0 date"]</span>
                         }
                     </div>
                 </div>
                 <div class="col-md-8">
-                    <label class="form-label">Reporter Name / Initials</label>
+                    <label class="form-label">@L["Reporter Name / Initials"]</label>
                     <input type="text" name="reporter.ReporterName" value="@rep?.ReporterName" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Reporter Type</label>
+                    <label class="form-label">@L["Reporter Type"]</label>
                     <select name="reporter.Type" class="form-select">@Html.Raw(RepTypeOptions(rep?.Type))</select>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Reporter Qualification</label>
+                    <label class="form-label">@L["Reporter Qualification"]</label>
                     <select name="reporter.Qualification" class="form-select">@Html.Raw(RepQualOptions(rep?.Qualification))</select>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Institution</label>
+                    <label class="form-label">@L["Institution"]</label>
                     <input type="text" name="reporter.Institution" value="@rep?.Institution" class="form-control" />
                 </div>
                 <div class="col-md-4">
@@ -168,11 +168,11 @@
                     <input type="email" name="reporter.Email" value="@rep?.Email" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Phone</label>
+                    <label class="form-label">@L["Phone"]</label>
                     <input type="text" name="reporter.Phone" value="@rep?.Phone" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Date Reported to Reporter</label>
+                    <label class="form-label">@L["Date Reported to Reporter"]</label>
                     <input type="date" name="reporter.ReportDate" value="@rep?.ReportDate?.ToString("yyyy-MM-dd")" class="form-control" />
                 </div>
             </div>
@@ -182,7 +182,7 @@
         <div class="tab-pane fade" id="tab-patient">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label">Patient Initials / ID</label>
+                    <label class="form-label">@L["Patient Initials / ID"]</label>
                     <input type="text" name="patient.PatientIdentifier" value="@pat?.PatientIdentifier" class="form-control" />
                 </div>
                 <div class="col-md-2">
@@ -190,7 +190,7 @@
                     <input type="number" name="patient.Age" value="@pat?.Age" class="form-control" />
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Age Unit</label>
+                    <label class="form-label">@L["Age Unit"]</label>
                     <select name="patient.AgeUnit" class="form-select">@Html.Raw(PatAgeUnitOptions(pat?.AgeUnit))</select>
                 </div>
                 <div class="col-md-4">
@@ -202,20 +202,20 @@
                     <select name="patient.Sex" class="form-select">@Html.Raw(PatSexOptions(pat?.Sex))</select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Weight (kg)</label>
+                    <label class="form-label">@L["Weight (kg)"]</label>
                     <input type="number" name="patient.WeightKg" value="@pat?.WeightKg" class="form-control" step="0.1" />
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Height (cm)</label>
+                    <label class="form-label">@L["Height (cm)"]</label>
                     <input type="number" name="patient.HeightCm" value="@pat?.HeightCm" class="form-control" step="0.1" />
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Pregnant?</label>
+                    <label class="form-label">@L["Pregnant?"]</label>
                     <select name="patient.IsPregnant" class="form-select">
                         @Html.Raw(
-                            $"<option value=\"\"{(pat?.IsPregnant == null ? " selected" : "")}>Unknown</option>" +
-                            $"<option value=\"true\"{(pat?.IsPregnant == true ? " selected" : "")}>Yes</option>" +
-                            $"<option value=\"false\"{(pat?.IsPregnant == false ? " selected" : "")}>No</option>")
+                            $"<option value=\"\"{(pat?.IsPregnant == null ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L["Unknown"].Value)}</option>" +
+                            $"<option value=\"true\"{(pat?.IsPregnant == true ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L["Yes"].Value)}</option>" +
+                            $"<option value=\"false\"{(pat?.IsPregnant == false ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L["No"].Value)}</option>")
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -233,9 +233,9 @@
         <div class="tab-pane fade" id="tab-product">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">Product (from register)</label>
+                    <label class="form-label">@L["Product (from register)"]</label>
                     <select name="suspectProduct.ProductId" asp-items="ViewBag.ProductId" class="form-select">
-                        <option value="">--Select--</option>
+                        <option value="">@L["--Select--"]</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -247,19 +247,19 @@
                     <input type="text" name="suspectProduct.ARTGNumber" value="@sp?.ARTGNumber" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Batch / Lot Number</label>
+                    <label class="form-label">@L["Batch / Lot Number"]</label>
                     <input type="text" name="suspectProduct.BatchNumber" value="@sp?.BatchNumber" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Route of Administration</label>
+                    <label class="form-label">@L["Route of Administration"]</label>
                     <input type="text" name="suspectProduct.RouteOfAdministration" value="@sp?.RouteOfAdministration" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Dose</label>
+                    <label class="form-label">@L["Dose"]</label>
                     <input type="text" name="suspectProduct.Dose" value="@sp?.Dose" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Dose Unit</label>
+                    <label class="form-label">@L["Dose Unit"]</label>
                     <input type="text" name="suspectProduct.DoseUnit" value="@sp?.DoseUnit" class="form-control" />
                 </div>
                 <div class="col-md-3">
@@ -271,11 +271,11 @@
                     <input type="text" name="suspectProduct.Indication" value="@sp?.Indication" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Treatment Start Date</label>
+                    <label class="form-label">@L["Treatment Start Date"]</label>
                     <input type="date" name="suspectProduct.TreatmentStartDate" value="@sp?.TreatmentStartDate?.ToString("yyyy-MM-dd")" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Treatment End Date</label>
+                    <label class="form-label">@L["Treatment End Date"]</label>
                     <input type="date" name="suspectProduct.TreatmentEndDate" value="@sp?.TreatmentEndDate?.ToString("yyyy-MM-dd")" class="form-control" />
                 </div>
                 <div class="col-md-4">
@@ -283,11 +283,11 @@
                     <select name="suspectProduct.ActionTaken" class="form-select">@Html.Raw(ActionTakenOptions(sp?.ActionTaken))</select>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Dechallenge Result</label>
+                    <label class="form-label">@L["Dechallenge Result"]</label>
                     <select name="suspectProduct.DechallengeResult" class="form-select">@Html.Raw(DechallengeOptions(sp?.DechallengeResult))</select>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Rechallenge Result</label>
+                    <label class="form-label">@L["Rechallenge Result"]</label>
                     <select name="suspectProduct.RechallengeResult" class="form-select">@Html.Raw(DechallengeOptions(sp?.RechallengeResult))</select>
                 </div>
             </div>
@@ -302,7 +302,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label" asp-for="MedDRAPT">@L["MedDRA Preferred Term"]
-                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="meddra" aria-label="MedDRA guidance">?</button>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="meddra" aria-label="@L["MedDRA guidance"]">?</button>
                     </label>
                     <input asp-for="MedDRAPT" class="form-control" />
                 </div>
@@ -311,17 +311,17 @@
                     <input asp-for="MedDRASOC" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label" asp-for="AEStartDate">AE Start Date</label>
+                    <label class="form-label" asp-for="AEStartDate">@L["AE Start Date"]</label>
                     <input asp-for="AEStartDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label" asp-for="AEEndDate">AE End Date</label>
+                    <label class="form-label" asp-for="AEEndDate">@L["AE End Date"]</label>
                     <input asp-for="AEEndDate" type="date" class="form-control" />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" asp-for="Outcome">@L["Outcome"]</label>
                     <select asp-for="Outcome" asp-items="Html.GetEnumSelectList<OpenQMS.Models.AdverseEvent.AEOutcome>()" class="form-select">
-                        <option value="">--Select--</option>
+                        <option value="">@L["--Select--"]</option>
                     </select>
                 </div>
 
@@ -330,10 +330,10 @@
                     <div class="card border-danger">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <strong>@L["Seriousness Criteria"]
-                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="seriousness" aria-label="Seriousness Criteria guidance">?</button>
+                                <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="seriousness" aria-label="@L["Seriousness Criteria guidance"]">?</button>
                             </strong>
                             <span id="seriousBadge" class="badge @(Model.IsSerious ? "bg-danger" : "bg-secondary")">
-                                @(Model.IsSerious ? "SERIOUS" : "Non-Serious")
+                                @(Model.IsSerious ? L["Serious"].Value.ToUpperInvariant() : L["Non-Serious"].Value)
                             </span>
                         </div>
                         <div class="card-body">
@@ -343,31 +343,31 @@
                                 <div class="col-md-4">
                                     <div class="form-check">
                                         <input class="form-check-input seriousness-cb" type="checkbox" data-value="1" id="cb_death" @((flags & 1) != 0 ? "checked" : "") />
-                                        <label class="form-check-label" for="cb_death">Death</label>
+                                        <label class="form-check-label" for="cb_death">@L["Death"]</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input seriousness-cb" type="checkbox" data-value="2" id="cb_lifethreat" @((flags & 2) != 0 ? "checked" : "") />
-                                        <label class="form-check-label" for="cb_lifethreat">Life-Threatening</label>
+                                        <label class="form-check-label" for="cb_lifethreat">@L["Life-Threatening"]</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-check">
                                         <input class="form-check-input seriousness-cb" type="checkbox" data-value="4" id="cb_hosp" @((flags & 4) != 0 ? "checked" : "") />
-                                        <label class="form-check-label" for="cb_hosp">Hospitalisation</label>
+                                        <label class="form-check-label" for="cb_hosp">@L["Hospitalisation"]</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input seriousness-cb" type="checkbox" data-value="8" id="cb_disability" @((flags & 8) != 0 ? "checked" : "") />
-                                        <label class="form-check-label" for="cb_disability">Disability / Incapacity</label>
+                                        <label class="form-check-label" for="cb_disability">@L["Disability / Incapacity"]</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-check">
                                         <input class="form-check-input seriousness-cb" type="checkbox" data-value="16" id="cb_congenital" @((flags & 16) != 0 ? "checked" : "") />
-                                        <label class="form-check-label" for="cb_congenital">Congenital Anomaly / Birth Defect</label>
+                                        <label class="form-check-label" for="cb_congenital">@L["Congenital Anomaly / Birth Defect"]</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input seriousness-cb" type="checkbox" data-value="32" id="cb_medimportant" @((flags & 32) != 0 ? "checked" : "") />
-                                        <label class="form-check-label" for="cb_medimportant">Medically Important</label>
+                                        <label class="form-check-label" for="cb_medimportant">@L["Medically Important"]</label>
                                     </div>
                                 </div>
                             </div>
@@ -377,24 +377,24 @@
 
                 <div class="col-md-4">
                     <label class="form-label" asp-for="Causality">@L["Causality"]
-                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="causality" aria-label="Causality guidance">?</button>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="causality" aria-label="@L["Causality guidance"]">?</button>
                     </label>
                     <select asp-for="Causality" asp-items="Html.GetEnumSelectList<OpenQMS.Models.AdverseEvent.AECausality>()" class="form-select">
-                        <option value="">--Select--</option>
+                        <option value="">@L["--Select--"]</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" asp-for="Severity">@L["Severity"]</label>
                     <select asp-for="Severity" asp-items="Html.GetEnumSelectList<OpenQMS.Models.AdverseEvent.AESeverity>()" class="form-select">
-                        <option value="">--Select--</option>
+                        <option value="">@L["--Select--"]</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" asp-for="Expectedness">@L["Expectedness"]
-                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="expectedness" aria-label="Expectedness guidance">?</button>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="expectedness" aria-label="@L["Expectedness guidance"]">?</button>
                     </label>
                     <select asp-for="Expectedness" asp-items="Html.GetEnumSelectList<OpenQMS.Models.AdverseEvent.AEExpectedness>()" class="form-select">
-                        <option value="">--Select--</option>
+                        <option value="">@L["--Select--"]</option>
                     </select>
                 </div>
             </div>
@@ -428,12 +428,12 @@
         <div class="tab-pane fade" id="tab-regulatory">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label">Reportable to TGA?</label>
+                    <label class="form-label">@L["Reportable to TGA?"]</label>
                     <select name="regulatoryReport.IsReportableToTGA" class="form-select">
                         @Html.Raw(
-                            $"<option value=\"\"{(reg?.IsReportableToTGA == null ? " selected" : "")}>Pending Assessment</option>" +
-                            $"<option value=\"true\"{(reg?.IsReportableToTGA == true ? " selected" : "")}>Yes</option>" +
-                            $"<option value=\"false\"{(reg?.IsReportableToTGA == false ? " selected" : "")}>No</option>")
+                            $"<option value=\"\"{(reg?.IsReportableToTGA == null ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L["Pending Assessment"].Value)}</option>" +
+                            $"<option value=\"true\"{(reg?.IsReportableToTGA == true ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L["Yes"].Value)}</option>" +
+                            $"<option value=\"false\"{(reg?.IsReportableToTGA == false ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L["No"].Value)}</option>")
                     </select>
                 </div>
                 <div class="col-md-4">
@@ -449,29 +449,29 @@
                     <input type="text" name="regulatoryReport.TGAADRSReferenceNumber" value="@reg?.TGAADRSReferenceNumber" class="form-control" />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">E2B Transmission Reference</label>
+                    <label class="form-label">@L["E2B Transmission Reference"]</label>
                     <input type="text" name="regulatoryReport.E2BTransmissionReference" value="@reg?.E2BTransmissionReference" class="form-control" />
                 </div>
                 <div class="col-12">
-                    <label class="form-label">Reporting Decision Rationale</label>
+                    <label class="form-label">@L["Reporting Decision Rationale"]</label>
                     <textarea name="regulatoryReport.ReportingDecisionRationale" class="form-control" rows="3">@reg?.ReportingDecisionRationale</textarea>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Overseas Authorities</label>
+                    <label class="form-label">@L["Overseas Authorities"]</label>
                     <input type="text" name="regulatoryReport.OverseasAuthorities" value="@reg?.OverseasAuthorities" class="form-control" />
                 </div>
                 <div class="col-12">
                     <div class="form-check form-switch">
                         <input type="checkbox" name="regulatoryReport.OverseasReportingRequired" value="true" class="form-check-input" @(reg?.OverseasReportingRequired == true ? "checked" : "") />
-                        <label class="form-check-label">Overseas Reporting Required</label>
+                        <label class="form-check-label">@L["Overseas Reporting Required"]</label>
                     </div>
                     <div class="form-check form-switch mt-2">
                         <input type="checkbox" name="regulatoryReport.IncludeInNextPSUR" value="true" class="form-check-input" @(reg?.IncludeInNextPSUR == true ? "checked" : "") />
-                        <label class="form-check-label">Include in Next PSUR</label>
+                        <label class="form-check-label">@L["Include in Next PSUR"]</label>
                     </div>
                     <div class="form-check form-switch mt-2">
                         <input type="checkbox" name="regulatoryReport.SignificantSafetyIssue" value="true" class="form-check-input" @(reg?.SignificantSafetyIssue == true ? "checked" : "") />
-                        <label class="form-check-label">Significant Safety Issue (SSI)</label>
+                        <label class="form-check-label">@L["Significant Safety Issue (SSI)"]</label>
                     </div>
                 </div>
             </div>
@@ -480,8 +480,8 @@
         <!-- Tab 7: Attachments -->
         <div class="tab-pane fade" id="tab-attachments">
             <p class="text-muted">
-                <a asp-action="Details" asp-route-id="@Model.Id">Manage documents on the record's Documents tab</a>
-                (@(Model.Attachments?.Count ?? 0) file(s) uploaded)
+                <a asp-action="Details" asp-route-id="@Model.Id">@L["Manage documents on the record's Documents tab"]</a>
+                @L["({0} file(s) uploaded)", Model.Attachments?.Count ?? 0]
             </p>
         </div>
 
@@ -499,24 +499,24 @@
 <!-- Field-help popover content (hidden, read by field-help.js) -->
 <div class="d-none">
     <div id="help-seriousness">
-        <p class="mb-1"><strong>ICH seriousness criteria.</strong> An event is <strong>serious</strong> if it meets one or more of these — and serious cases usually require expedited reporting:</p>
+        <p class="mb-1">@H["<strong>ICH seriousness criteria.</strong> An event is <strong>serious</strong> if it meets one or more of these — and serious cases usually require expedited reporting:"]</p>
         <ul class="mb-0 ps-3">
-            <li><strong>Death</strong> — the event resulted in death.</li>
-            <li><strong>Life-Threatening</strong> — the patient was at immediate risk of death from the event.</li>
-            <li><strong>Hospitalisation</strong> — caused or prolonged inpatient hospitalisation.</li>
-            <li><strong>Disability</strong> — resulted in persistent or significant incapacity.</li>
-            <li><strong>Congenital Anomaly</strong> — a birth defect in the offspring.</li>
-            <li><strong>Other Medically Important</strong> — a significant medical event that may jeopardise the patient or require intervention to prevent one of the above.</li>
+            <li><strong>@L["Death"]</strong> @L["— the event resulted in death."]</li>
+            <li><strong>@L["Life-Threatening"]</strong> @L["— the patient was at immediate risk of death from the event."]</li>
+            <li><strong>@L["Hospitalisation"]</strong> @L["— caused or prolonged inpatient hospitalisation."]</li>
+            <li><strong>@L["Disability"]</strong> @L["— resulted in persistent or significant incapacity."]</li>
+            <li><strong>@L["Congenital Anomaly"]</strong> @L["— a birth defect in the offspring."]</li>
+            <li><strong>@L["Other Medically Important"]</strong> @L["— a significant medical event that may jeopardise the patient or require intervention to prevent one of the above."]</li>
         </ul>
     </div>
     <div id="help-meddra">
-        <p class="mb-0"><strong>MedDRA</strong> (Medical Dictionary for Regulatory Activities) is the standard terminology for coding events. The <strong>Preferred Term (PT)</strong> is the specific medical concept (e.g. "Nausea"); the <strong>System Organ Class (SOC)</strong> is its high-level grouping (e.g. "Gastrointestinal disorders"). Coding consistently lets cases be aggregated and signals detected.</p>
+        <p class="mb-0">@H["<strong>MedDRA</strong> (Medical Dictionary for Regulatory Activities) is the standard terminology for coding events. The <strong>Preferred Term (PT)</strong> is the specific medical concept (e.g. \"Nausea\"); the <strong>System Organ Class (SOC)</strong> is its high-level grouping (e.g. \"Gastrointestinal disorders\"). Coding consistently lets cases be aggregated and signals detected."]</p>
     </div>
     <div id="help-causality">
-        <p class="mb-0"><strong>@L["Causality"]</strong> is the assessed likelihood that the suspect product caused the event — typically Certain / Probable / Possible / Unlikely / Unrelated (WHO-UMC) or Related / Not Related. Base it on temporal relationship, dechallenge/rechallenge, plausibility and alternative explanations.</p>
+        <p class="mb-0">@H["<strong>Causality</strong> is the assessed likelihood that the suspect product caused the event — typically Certain / Probable / Possible / Unlikely / Unrelated (WHO-UMC) or Related / Not Related. Base it on temporal relationship, dechallenge/rechallenge, plausibility and alternative explanations."]</p>
     </div>
     <div id="help-expectedness">
-        <p class="mb-0"><strong>@L["Expectedness"]</strong> asks whether this event is already listed in the product's reference safety information (e.g. the approved PI / SmPC / CCDS). <strong>Unexpected</strong> = not listed, or more severe/specific than listed. A serious + unexpected + related case is typically what triggers expedited regulatory reporting.</p>
+        <p class="mb-0">@H["<strong>Expectedness</strong> asks whether this event is already listed in the product's reference safety information (e.g. the approved PI / SmPC / CCDS). <strong>Unexpected</strong> = not listed, or more severe/specific than listed. A serious + unexpected + related case is typically what triggers expedited regulatory reporting."]</p>
     </div>
 </div>
 
@@ -548,7 +548,7 @@
             document.getElementById('seriousnessValue').value = combined;
             const isSerious = combined > 0;
             const badge = document.getElementById('seriousBadge');
-            badge.textContent = isSerious ? 'SERIOUS' : 'Non-Serious';
+            badge.textContent = isSerious ? @Json.Serialize(L["Serious"].Value.ToUpperInvariant()) : @Json.Serialize(L["Non-Serious"].Value);
             badge.className = isSerious ? 'badge bg-danger' : 'badge bg-secondary';
         }
 

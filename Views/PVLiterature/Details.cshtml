@@ -1,10 +1,10 @@
 @model OpenQMS.Models.PVLiteratureSearch
 @{
-    ViewData["Title"] = $"Literature Search — {Model.SearchDate:dd MMM yyyy}";
+    ViewData["Title"] = $"{L["Literature Search"]} — {Model.SearchDate:dd MMM yyyy}";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0"><i class="fas fa-book-open me-2 text-primary"></i>Literature Search — @Model.SearchDate.ToString("dd MMM yyyy", DisplayDates.Culture)</h4>
+    <h4 class="mb-0"><i class="fas fa-book-open me-2 text-primary"></i>@L["Literature Search"] — @Model.SearchDate.ToString("dd MMM yyyy", DisplayDates.Culture)</h4>
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
             <i class="fas fa-edit me-1"></i>@L["Edit"]
@@ -20,7 +20,7 @@
     <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-details">@L["Details"]</a></li>
     <li class="nav-item">
         <a class="nav-link" data-bs-toggle="tab" href="#tab-audit">
-            Audit Trail
+            @L["Audit Trail"]
             @if ((Model.AuditLogs?.Count ?? 0) > 0) { <span class="badge bg-secondary">@Model.AuditLogs!.Count</span> }
         </a>
     </li>
@@ -31,31 +31,31 @@
 <div class="card shadow-sm">
     <div class="card-body">
         <dl class="row">
-            <dt class="col-sm-3">Search Date</dt>
+            <dt class="col-sm-3">@L["Search Date"]</dt>
             <dd class="col-sm-9">@Model.SearchDate.ToString("dd MMM yyyy", DisplayDates.Culture)</dd>
-            <dt class="col-sm-3">Searched By</dt>
+            <dt class="col-sm-3">@L["Searched By"]</dt>
             <dd class="col-sm-9">@Model.SearchedBy</dd>
-            <dt class="col-sm-3">Databases Searched</dt>
+            <dt class="col-sm-3">@L["Databases Searched"]</dt>
             <dd class="col-sm-9">@(Model.DatabasesSearched ?? "—")</dd>
-            <dt class="col-sm-3">Search Terms</dt>
+            <dt class="col-sm-3">@L["Search Terms"]</dt>
             <dd class="col-sm-9" style="white-space:pre-wrap">@(Model.SearchTerms ?? "—")</dd>
-            <dt class="col-sm-3">Publication Date Range</dt>
+            <dt class="col-sm-3">@L["Publication Date Range"]</dt>
             <dd class="col-sm-9">
                 @(Model.DateRangeFrom?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
                 @if (Model.DateRangeFrom.HasValue && Model.DateRangeTo.HasValue) { <span> → </span> }
                 @(Model.DateRangeTo?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "")
             </dd>
-            <dt class="col-sm-3">Total Results</dt>
+            <dt class="col-sm-3">@L["Total Results"]</dt>
             <dd class="col-sm-9">@Model.ResultsCount</dd>
-            <dt class="col-sm-3">Relevant Results</dt>
+            <dt class="col-sm-3">@L["Relevant Results"]</dt>
             <dd class="col-sm-9">@Model.RelevantResults</dd>
-            <dt class="col-sm-3">AEs Identified</dt>
+            <dt class="col-sm-3">@L["AEs Identified"]</dt>
             <dd class="col-sm-9">
                 @if (Model.AEsIdentified > 0) {
                     <span class="badge bg-warning text-dark fs-6">@Model.AEsIdentified</span>
                 } else { <span>0</span> }
             </dd>
-            <dt class="col-sm-3">Notes / Findings</dt>
+            <dt class="col-sm-3">@L["Notes / Findings"]</dt>
             <dd class="col-sm-9" style="white-space:pre-wrap">@(Model.Notes ?? "—")</dd>
         </dl>
     </div>

@@ -1,3 +1,4 @@
+using OpenQMS.Localization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -140,7 +141,7 @@ namespace OpenQMS.Controllers
             if (diff.Count > 0) AddAuditLog(id, "Edited", existing.Status.ToString(), existing.Status.ToString(), OpenQMS.Services.AuditDiffHelper.Build(diff));
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Signal review updated.";
+            TempData["Success"] = this.T("Signal review updated.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -155,7 +156,7 @@ namespace OpenQMS.Controllers
 
             if (!IsValidSignalTransition(signal.Status, newStatus))
             {
-                TempData["Error"] = "Invalid status transition.";
+                TempData["Error"] = this.T("Invalid status transition.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -181,7 +182,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(id, "Status Changed", oldStatus, newStatus.ToString());
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Signal status updated to {newStatus}.";
+            TempData["Success"] = this.T("Signal status updated to {0}.", newStatus);
             return RedirectToAction(nameof(Details), new { id });
         }
 

@@ -21,13 +21,11 @@ namespace OpenQMS.Services
             _userManager = userManager;
         }
 
-        public class WorkflowResult
+        public class WorkflowResult : WorkflowResultBase
         {
-            public bool    Success { get; init; }
-            public string? Error   { get; init; }
-
-            public static WorkflowResult Ok()               => new() { Success = true };
-            public static WorkflowResult Fail(string error) => new() { Success = false, Error = error };
+            public static WorkflowResult Ok() => new() { Success = true };
+            public static WorkflowResult Fail(string error, params object[] args) =>
+                new() { Success = false, ErrorTemplate = error, ErrorArgs = args, Error = English(error, args) };
         }
 
         // ── FSM Transition Table ──────────────────────────────────────────────
@@ -77,7 +75,7 @@ namespace OpenQMS.Services
             string? reason = null)
         {
             if (!ValidTransitions.Contains((app.Status, newStatus)))
-                return WorkflowResult.Fail($"Cannot transition from '{app.Status}' to '{newStatus}'.");
+                return WorkflowResult.Fail("Cannot transition from '{0}' to '{1}'.", app.Status, newStatus);
 
             // Locked records can only move through approved-state lifecycle actions:
             // raise a variation, initiate renewal, suspend, withdraw, or reinstate (re-review).
@@ -108,7 +106,7 @@ namespace OpenQMS.Services
                     c.Status != RIConditionStatus.Closed &&
                     c.Status != RIConditionStatus.Waived) ?? 0;
                 if (openConditions > 0)
-                    return WorkflowResult.Fail($"There are {openConditions} open condition(s) of approval. Close or waive all conditions before approving.");
+                    return WorkflowResult.Fail("There are {0} open condition(s) of approval. Close or waive all conditions before approving.", openConditions);
             }
 
             return WorkflowResult.Ok();

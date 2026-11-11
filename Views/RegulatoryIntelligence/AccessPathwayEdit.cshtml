@@ -9,9 +9,9 @@
 
 <div class="d-flex align-items-center gap-2 mb-3">
     <a asp-action="AccessPathwayDetails" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
-        <i class="fas fa-arrow-left me-1"></i>Back to @Model.AccessNumber
+        <i class="fas fa-arrow-left me-1"></i>@L["Back to {0}", Model.AccessNumber]
     </a>
-    <h4 class="mb-0"><i class="fas fa-edit me-2 text-primary"></i>Edit Access Pathway</h4>
+    <h4 class="mb-0"><i class="fas fa-edit me-2 text-primary"></i>@L["Edit Access Pathway"]</h4>
 </div>
 
 <form asp-action="EditAccessPathway" method="post">
@@ -22,7 +22,7 @@
     <input type="hidden" asp-for="CreatedAt" />
 
     <div class="card mb-3">
-        <div class="card-header fw-semibold">Pathway Information</div>
+        <div class="card-header fw-semibold">@L["Pathway Information"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-3">
@@ -53,7 +53,7 @@
     </div>
 
     <div class="card mb-3">
-        <div class="card-header fw-semibold">Patient &amp; Prescriber</div>
+        <div class="card-header fw-semibold">@L["Patient & Prescriber"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
@@ -73,11 +73,11 @@
     </div>
 
     <div class="card mb-3">
-        <div class="card-header fw-semibold">@authority Approval</div>
+        <div class="card-header fw-semibold">@L["{0} Approval", authority]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label asp-for="TGAApprovalLetterNumber" class="form-label">Approval Letter / Reference Number</label>
+                    <label asp-for="TGAApprovalLetterNumber" class="form-label">@L["Approval Letter / Reference Number"]</label>
                     <input asp-for="TGAApprovalLetterNumber" class="form-control" />
                 </div>
                 <div class="col-md-3">

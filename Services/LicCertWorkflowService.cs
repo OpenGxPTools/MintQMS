@@ -20,13 +20,11 @@ namespace OpenQMS.Services
 
         // ── Result type ────────────────────────────────────────────────────────
 
-        public class WorkflowResult
+        public class WorkflowResult : WorkflowResultBase
         {
-            public bool    Success { get; init; }
-            public string? Error   { get; init; }
-
-            public static WorkflowResult Ok()               => new() { Success = true };
-            public static WorkflowResult Fail(string error) => new() { Success = false, Error = error };
+            public static WorkflowResult Ok() => new() { Success = true };
+            public static WorkflowResult Fail(string error, params object[] args) =>
+                new() { Success = false, ErrorTemplate = error, ErrorArgs = args, Error = English(error, args) };
         }
 
         // ── FSM Transition Table ───────────────────────────────────────────────
@@ -89,7 +87,7 @@ namespace OpenQMS.Services
             string? reason = null)
         {
             if (!ValidTransitions.Contains((record.Status, newStatus)))
-                return WorkflowResult.Fail($"Cannot transition from '{record.Status}' to '{newStatus}'.");
+                return WorkflowResult.Fail("Cannot transition from '{0}' to '{1}'.", record.Status, newStatus);
 
             // Justification/reason required for certain transitions
             if (newStatus == LCStatus.Withdrawn && string.IsNullOrWhiteSpace(reason))

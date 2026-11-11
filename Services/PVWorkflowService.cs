@@ -16,12 +16,11 @@ namespace OpenQMS.Services
             _context = context;
         }
 
-        public class TransitionResult
+        public class TransitionResult : WorkflowResultBase
         {
-            public bool Success { get; init; }
-            public string? Error { get; init; }
             public static TransitionResult Ok() => new() { Success = true };
-            public static TransitionResult Fail(string error) => new() { Success = false, Error = error };
+            public static TransitionResult Fail(string error, params object[] args) =>
+                new() { Success = false, ErrorTemplate = error, ErrorArgs = args, Error = English(error, args) };
         }
 
         /// <summary>Validates that a transition is allowed given business rules.</summary>
@@ -53,7 +52,7 @@ namespace OpenQMS.Services
                     if (string.IsNullOrWhiteSpace(ae.AEDescription))
                         missing.Add("Adverse Event Description");
                     if (missing.Any())
-                        return TransitionResult.Fail($"Missing required ICSR elements: {string.Join(", ", missing)}.");
+                        return TransitionResult.Fail("Missing required ICSR elements: {0}.", (object)missing.ToArray());
                     break;
 
                 case AdverseEvent.AEStatus.PendingApproval:
@@ -69,8 +68,9 @@ namespace OpenQMS.Services
                         && SiteTime.Today > ae.TGADeadlineDate.Value.Date)
                     {
                         return TransitionResult.Fail(
-                            $"TGA submission deadline ({ae.TGADeadlineDate.Value:dd MMM yyyy}) has passed without a recorded submission date. " +
-                            "Record the submission date on the Regulatory tab before proceeding.");
+                            "TGA submission deadline ({0}) has passed without a recorded submission date. " +
+                            "Record the submission date on the Regulatory tab before proceeding.",
+                            ae.TGADeadlineDate.Value);
                     }
                     break;
 

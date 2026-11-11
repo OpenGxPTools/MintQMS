@@ -30,14 +30,14 @@
 <div class="d-flex justify-content-between align-items-start mb-3">
     <div>
         <h4 class="mb-0"><i class="fas fa-file-medical-alt me-2 text-primary"></i>@Model.Title</h4>
-        <span class="badge bg-@statusClass fs-6">@Model.Status</span>
+        <span class="badge bg-@statusClass fs-6">@L.Enum(Model.Status)</span>
     </div>
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
             <i class="fas fa-edit me-1"></i>@L["Edit"]
         </a>
         <a asp-action="ExportPSURData" asp-route-id="@Model.Id" class="btn btn-success btn-sm ms-2">
-            <i class="fas fa-file-excel me-1"></i>Export PSUR Data (Excel)
+            <i class="fas fa-file-excel me-1"></i>@L["Export PSUR Data (Excel)"]
         </a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm ms-2">
             <i class="fas fa-arrow-left me-1"></i>@L["Back"]
@@ -50,7 +50,7 @@
     <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center py-2">
         <i class="fas fa-exchange-alt me-2 text-primary"></i>
         <strong class="text-primary">@L["Workflow Actions"]</strong>
-        <span class="ms-2 text-muted small">Current status: <strong>@L.Enum(Model.Status)</strong></span>
+        <span class="ms-2 text-muted small">@H["Current status: <strong>{0}</strong>", L.Enum(Model.Status)]</span>
     </div>
     <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
         @if (Model.Status == PVPeriodicReport.PSURStatus.InPreparation)
@@ -59,40 +59,40 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <input type="hidden" name="newStatus" value="UnderReview" />
-                <button type="submit" class="btn btn-sm btn-info"><i class="fas fa-search me-1"></i>Move to Under Review</button>
+                <button type="submit" class="btn btn-sm btn-info"><i class="fas fa-search me-1"></i>@L["Move to Under Review"]</button>
             </form>
         }
         else if (Model.Status == PVPeriodicReport.PSURStatus.UnderReview)
         {
             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#submitModal">
-                <i class="fas fa-paper-plane me-1"></i>Submit to Authority
+                <i class="fas fa-paper-plane me-1"></i>@L["Submit to Authority"]
             </button>
             <form asp-action="Transition" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <input type="hidden" name="newStatus" value="InPreparation" />
-                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Revert to In Preparation</button>
+                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>@L["Revert to In Preparation"]</button>
             </form>
         }
         else if (Model.Status == PVPeriodicReport.PSURStatus.Submitted)
         {
             <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#acceptModal">
-                <i class="fas fa-check-circle me-1"></i>Mark Accepted
+                <i class="fas fa-check-circle me-1"></i>@L["Mark Accepted"]
             </button>
         }
         else
         {
-            <span class="text-success mb-0"><i class="fas fa-lock me-1"></i>This report is Accepted and locked.</span>
+            <span class="text-success mb-0"><i class="fas fa-lock me-1"></i>@L["This report is Accepted and locked."]</span>
         }
     </div>
 </div>
 
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-0" id="psurTabs">
-    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-report">Report</a></li>
+    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-report">@L["Report"]</a></li>
     <li class="nav-item">
         <a class="nav-link" data-bs-toggle="tab" href="#tab-audit">
-            Audit Trail
+            @L["Audit Trail"]
             @if ((Model.AuditLogs?.Count ?? 0) > 0) { <span class="badge bg-secondary">@Model.AuditLogs!.Count</span> }
         </a>
     </li>
@@ -103,11 +103,11 @@
 <div class="row mb-4">
     <div class="col-md-6">
         <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">PSUR Details</div>
+            <div class="card-header bg-dark text-white">@L["PSUR Details"]</div>
             <div class="card-body">
                 <dl class="row mb-0">
                     <dt class="col-sm-4">@L["Product"]</dt>
-                    <dd class="col-sm-8">@(Model.Product?.Name ?? "All Products")</dd>
+                    <dd class="col-sm-8">@(Model.Product?.Name ?? L["All Products"].Value)</dd>
                     <dt class="col-sm-4">@L["Period"]</dt>
                     <dd class="col-sm-8">
                         @(Model.PeriodStart?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")
@@ -120,11 +120,11 @@
                     <dd class="col-sm-8">
                         @if (Model.SubmissionDate.HasValue) {
                             <span class="badge bg-success">@Model.SubmissionDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
-                        } else { <span class="text-muted">Not yet submitted</span> }
+                        } else { <span class="text-muted">@L["Not yet submitted"]</span> }
                     </dd>
-                    <dt class="col-sm-4">TGA Reference</dt>
+                    <dt class="col-sm-4">@L["TGA Reference"]</dt>
                     <dd class="col-sm-8">@(Model.TGAReferenceNumber ?? "—")</dd>
-                    <dt class="col-sm-4">Exposure Data</dt>
+                    <dt class="col-sm-4">@L["Exposure Data"]</dt>
                     <dd class="col-sm-8">@(Model.ExposureData ?? "—")</dd>
                 </dl>
             </div>
@@ -132,8 +132,8 @@
     </div>
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
-            <div class="card-header bg-dark text-white">Benefit-Risk Conclusion</div>
-            <div class="card-body" style="white-space:pre-wrap">@(Model.BenefitRiskConclusion ?? "Not yet completed.")</div>
+            <div class="card-header bg-dark text-white">@L["Benefit-Risk Conclusion"]</div>
+            <div class="card-body" style="white-space:pre-wrap">@(Model.BenefitRiskConclusion ?? L["Not yet completed."].Value)</div>
         </div>
     </div>
 </div>
@@ -141,15 +141,15 @@
 <!-- ── Linked AE Cases ───────────────────────────────────────────────── -->
 <div class="card shadow-sm mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <span><i class="fas fa-list me-1"></i>Linked AE Cases
+        <span><i class="fas fa-list me-1"></i>@L["Linked AE Cases"]
             <span class="badge bg-primary ms-2">@linkedCases.Count()</span>
         </span>
-        <small class="text-muted">@linkedCases.Count(r => r.AdverseEvent?.IsSerious == true) serious</small>
+        <small class="text-muted">@L["{0} serious", linkedCases.Count(r => r.AdverseEvent?.IsSerious == true)]</small>
     </div>
     <div class="card-body p-0">
         @if (!linkedCases.Any())
         {
-            <p class="text-muted p-3 mb-0">No AE cases linked to this PSUR yet.</p>
+            <p class="text-muted p-3 mb-0">@L["No AE cases linked to this PSUR yet."]</p>
         }
         else
         {
@@ -157,8 +157,8 @@
                 <thead class="table-light">
                     <tr>
                         <th>#</th><th>@L["AE Number"]</th><th>@L["Report Date"]</th>
-                        <th>Patient</th><th>Suspect Drug</th><th>MedDRA PT</th>
-                        <th>@L["Serious"]</th><th>@L["Outcome"]</th><th>@L["Causality"]</th><th>TGA Submitted</th>
+                        <th>@L["Patient"]</th><th>@L["Suspect Drug"]</th><th>@L["MedDRA PT"]</th>
+                        <th>@L["Serious"]</th><th>@L["Outcome"]</th><th>@L["Causality"]</th><th>@L["TGA Submitted"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -175,8 +175,8 @@
                             <td>@(ae.SuspectProduct?.ProductName ?? "—")</td>
                             <td>@(ae.MedDRAPT ?? "—")</td>
                             <td>@Html.Raw(ae.IsSerious ? "<span class=\"badge bg-danger\">Yes</span>" : "No")</td>
-                            <td>@(ae.Outcome?.ToString() ?? "—")</td>
-                            <td>@(ae.Causality?.ToString() ?? "—")</td>
+                            <td>@(ae.Outcome == null ? "—" : L.Enum(ae.Outcome))</td>
+                            <td>@(ae.Causality == null ? "—" : L.Enum(ae.Causality))</td>
                             <td>
                                 @if (reg.TGASubmissionDate.HasValue) {
                                     <span class="badge bg-success">@reg.TGASubmissionDate.Value.ToString("dd MMM yy", DisplayDates.Culture)</span>
@@ -196,13 +196,13 @@
 {
     <div class="card shadow-sm border-warning mb-4">
         <div class="card-header bg-warning text-dark">
-            <i class="fas fa-inbox me-1"></i>Cases Flagged for PSUR (Not Yet Linked)
+            <i class="fas fa-inbox me-1"></i>@L["Cases Flagged for PSUR (Not Yet Linked)"]
             <span class="badge bg-dark ms-2">@unlinkedCases.Count()</span>
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
                 <thead class="table-light">
-                    <tr><th>@L["AE Number"]</th><th>MedDRA PT</th><th>@L["Serious"]</th><th>@L["Status"]</th><th></th></tr>
+                    <tr><th>@L["AE Number"]</th><th>@L["MedDRA PT"]</th><th>@L["Serious"]</th><th>@L["Status"]</th><th></th></tr>
                 </thead>
                 <tbody>
                     @foreach (var ae in unlinkedCases)
@@ -218,7 +218,7 @@
                                     <input type="hidden" name="psurId" value="@Model.Id" />
                                     <input type="hidden" name="aeRegId" value="@ae.RegulatoryReport!.Id" />
                                     <button type="submit" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-link me-1"></i>Link to This PSUR
+                                        <i class="fas fa-link me-1"></i>@L["Link to This PSUR"]
                                     </button>
                                 </form>
                             </td>
@@ -233,7 +233,7 @@
 <!-- ── Attachments ───────────────────────────────────────────────────── -->
 <div class="card shadow-sm mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <span><i class="fas fa-paperclip me-1"></i>Attachments
+        <span><i class="fas fa-paperclip me-1"></i>@L["Attachments"]
             @{ var attCount = Model.Attachments?.Count ?? 0; }
             @if (attCount > 0) { <span class="badge bg-secondary ms-2">@attCount</span> }
         </span>
@@ -257,20 +257,20 @@
                 <div class="col-md-5">
                     <label class="form-label small">@L["Description"]</label>
                     <input type="text" name="description" class="form-control form-control-sm" maxlength="500"
-                           placeholder="e.g. Final PSUR document, Benefit-risk appendix…" />
+                           placeholder="@L["e.g. Final PSUR document, Benefit-risk appendix…"]" />
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary btn-sm w-100">@L["Upload"]</button>
                 </div>
             </form>
-            <small class="text-muted mt-1 d-block">Accepted: @UploadRules.AcceptedLabel. Max 25 MB.</small>
+            <small class="text-muted mt-1 d-block">@L["Accepted: {0}. Max 25 MB.", UploadRules.AcceptedLabel]</small>
         </div>
     </div>
 
     <div class="card-body p-0">
         @if (attCount == 0)
         {
-            <p class="text-muted p-3 mb-0">No attachments uploaded. Upload the PSUR document, appendices, or authority correspondence here.</p>
+            <p class="text-muted p-3 mb-0">@L["No attachments uploaded. Upload the PSUR document, appendices, or authority correspondence here."]</p>
         }
         else
         {
@@ -356,11 +356,11 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="fas fa-paper-plane me-2"></i>Submit PSUR to Authority</h5>
+                    <h5 class="modal-title"><i class="fas fa-paper-plane me-2"></i>@L["Submit PSUR to Authority"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This records <strong>@Model.Title</strong> as <strong class="text-primary">@L["Submitted"]</strong>. Confirm with your credentials.</p>
+                    <p>@H["This records <strong>{0}</strong> as <strong class=\"text-primary\">{1}</strong>. Confirm with your credentials.", Model.Title, L["Submitted"].Value]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
@@ -372,7 +372,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-1"></i>Confirm Submission</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-1"></i>@L["Confirm Submission"]</button>
                 </div>
             </form>
         </div>
@@ -387,11 +387,11 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Mark PSUR Accepted</h5>
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>@L["Mark PSUR Accepted"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This marks <strong>@Model.Title</strong> as <strong class="text-success">@L["Accepted"]</strong> and locks the report. Confirm with your credentials.</p>
+                    <p>@H["This marks <strong>{0}</strong> as <strong class=\"text-success\">{1}</strong> and locks the report. Confirm with your credentials.", Model.Title, L["Accepted"].Value]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email"]</label>
                         <input type="email" name="email" class="form-control" required />
@@ -403,7 +403,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle me-1"></i>Confirm Acceptance</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle me-1"></i>@L["Confirm Acceptance"]</button>
                 </div>
             </form>
         </div>

@@ -1,3 +1,4 @@
+using OpenQMS.Localization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -63,7 +64,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(search.Id, "Created", null, null);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Literature search record saved.";
+            TempData["Success"] = this.T("Literature search record saved.");
             return RedirectToAction(nameof(Details), new { id = search.Id });
         }
 
@@ -109,7 +110,7 @@ namespace OpenQMS.Controllers
 
                 if (diff.Count > 0) AddAuditLog(id, "Edited", null, null, OpenQMS.Services.AuditDiffHelper.Build(diff));
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Record updated.";
+                TempData["Success"] = this.T("Record updated.");
             }
             catch (DbUpdateConcurrencyException)
             {

@@ -1,6 +1,6 @@
 @using OpenQMS.Models.RI
 @{
-    ViewData["Title"] = "RI Dashboard";
+    ViewData["Title"] = L["RI Dashboard"].Value;
 
     var statusCounts      = ViewBag.StatusCounts as Dictionary<RIApplicationStatus, int> ?? new();
     var jurisdictionGroups = ViewBag.JurisdictionGroups as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
@@ -16,11 +16,11 @@
 
 <!-- Header -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Regulatory Intelligence Dashboard</h4>
+    <h4 class="mb-0">@L["Regulatory Intelligence Dashboard"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="ExportApplications" class="btn btn-outline-success btn-sm">@L["Export Register"]</a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">@L["RI Register"]</a>
-        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Application</a>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Application"]</a>
     </div>
 </div>
 
@@ -30,7 +30,7 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-primary">@ViewBag.TotalApplications</div>
-                <div class="text-muted small">Total Applications</div>
+                <div class="text-muted small">@L["Total Applications"]</div>
             </div>
         </div>
     </div>
@@ -38,7 +38,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-success border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-success">@ViewBag.ActiveCount</div>
-                <div class="text-muted small">Approved / Active</div>
+                <div class="text-muted small">@L["Approved / Active"]</div>
             </div>
         </div>
     </div>
@@ -46,7 +46,7 @@
         <div class="card border-0 shadow-sm h-100 border-start border-warning border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-warning">@ViewBag.UnderReviewCount</div>
-                <div class="text-muted small">Under Review / Clock Stop</div>
+                <div class="text-muted small">@L["Under Review / Clock Stop"]</div>
             </div>
         </div>
     </div>
@@ -54,9 +54,9 @@
         <div class="card border-0 shadow-sm h-100 border-start border-danger border-3">
             <div class="card-body text-center">
                 <div class="fs-1 fw-bold text-danger">@(ViewBag.OpenConditionCount + (int)ViewBag.OverdueMilestoneCount + (int)ViewBag.OverdueReportCount)</div>
-                <div class="text-muted small">Items Needing Attention</div>
+                <div class="text-muted small">@L["Items Needing Attention"]</div>
                 <div class="text-muted" style="font-size:0.7rem">
-                    @ViewBag.OpenConditionCount cond · @ViewBag.OverdueMilestoneCount milestones · @ViewBag.OverdueReportCount reports
+                    @L["{0} cond · {1} milestones · {2} reports", (int)ViewBag.OpenConditionCount, (int)ViewBag.OverdueMilestoneCount, (int)ViewBag.OverdueReportCount]
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
 <div class="row g-3 mb-4">
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
-            <div class="card-header fw-semibold"><i class="fas fa-chart-bar me-1"></i>Applications by Status</div>
+            <div class="card-header fw-semibold"><i class="fas fa-chart-bar me-1"></i>@L["Applications by Status"]</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
                     <tbody>
@@ -105,10 +105,10 @@
     </div>
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
-            <div class="card-header fw-semibold"><i class="fas fa-globe me-1"></i>Applications by Jurisdiction</div>
+            <div class="card-header fw-semibold"><i class="fas fa-globe me-1"></i>@L["Applications by Jurisdiction"]</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
-                    <thead class="table-light"><tr><th>@L["Jurisdiction"]</th><th>Authority</th><th class="text-end">@L["Count"]</th></tr></thead>
+                    <thead class="table-light"><tr><th>@L["Jurisdiction"]</th><th>@L["Authority"]</th><th class="text-end">@L["Count"]</th></tr></thead>
                     <tbody>
                         @foreach (var g in jurisdictionGroups)
                         {
@@ -130,14 +130,14 @@
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-header fw-semibold text-warning bg-warning bg-opacity-10">
-                <i class="fas fa-clock me-1"></i>Approaching Target Decision Dates
+                <i class="fas fa-clock me-1"></i>@L["Approaching Target Decision Dates"]
                 @if (approachingDec.Any()) { <span class="badge bg-warning text-dark ms-1">@approachingDec.Count</span> }
             </div>
             <div class="card-body p-0">
                 @if (approachingDec.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>Application</th><th>Authority</th><th>@L["Target Date"]</th><th>@L["Days"]</th></tr></thead>
+                        <thead class="table-light"><tr><th>@L["Application"]</th><th>@L["Authority"]</th><th>@L["Target Date"]</th><th>@L["Days"]</th></tr></thead>
                         <tbody>
                             @foreach (var a in approachingDec)
                             {
@@ -154,21 +154,21 @@
                         </tbody>
                     </table>
                 }
-                else { <div class="text-muted text-center py-3 small">No approaching decision dates.</div> }
+                else { <div class="text-muted text-center py-3 small">@L["No approaching decision dates."]</div> }
             </div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-header fw-semibold text-danger bg-danger bg-opacity-10">
-                <i class="fas fa-calendar-times me-1"></i>Expiring Authorisations (≤ 90 days)
+                <i class="fas fa-calendar-times me-1"></i>@L["Expiring Authorisations (≤ 90 days)"]
                 @if (expiringApp.Any()) { <span class="badge bg-danger ms-1">@expiringApp.Count</span> }
             </div>
             <div class="card-body p-0">
                 @if (expiringApp.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>Application</th><th>Authority</th><th>@L["Expiry"]</th><th>@L["Days"]</th></tr></thead>
+                        <thead class="table-light"><tr><th>@L["Application"]</th><th>@L["Authority"]</th><th>@L["Expiry"]</th><th>@L["Days"]</th></tr></thead>
                         <tbody>
                             @foreach (var a in expiringApp)
                             {
@@ -185,7 +185,7 @@
                         </tbody>
                     </table>
                 }
-                else { <div class="text-muted text-center py-3 small">No expiring authorisations within 90 days.</div> }
+                else { <div class="text-muted text-center py-3 small">@L["No expiring authorisations within 90 days."]</div> }
             </div>
         </div>
     </div>
@@ -196,36 +196,36 @@
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-header fw-semibold">
-                <i class="fas fa-clipboard-list me-1"></i>Open Conditions of Approval
+                <i class="fas fa-clipboard-list me-1"></i>@L["Open Conditions of Approval"]
                 @if (openConditions.Any()) { <span class="badge bg-danger ms-1">@openConditions.Count</span> }
             </div>
             <div class="card-body p-0">
                 @if (openConditions.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>Application</th><th>@L["Type"]</th><th>Due</th><th>@L["Status"]</th></tr></thead>
+                        <thead class="table-light"><tr><th>@L["Application"]</th><th>@L["Type"]</th><th>@L["Due"]</th><th>@L["Status"]</th></tr></thead>
                         <tbody>
                             @foreach (var c in openConditions)
                             {
                                 bool ov = c.DueDate.HasValue && c.DueDate < today;
                                 <tr class="@(ov ? "table-danger" : "")">
                                     <td><a asp-action="Details" asp-route-id="@c.RegulatoryApplicationId" class="small fw-semibold">@c.Application?.RINumber</a></td>
-                                    <td><span class="badge bg-secondary" style="font-size:0.65rem">@c.ConditionType</span></td>
+                                    <td><span class="badge bg-secondary" style="font-size:0.65rem">@L.Enum(c.ConditionType)</span></td>
                                     <td class="small @(ov ? "text-danger fw-bold" : "")">@(c.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
-                                    <td><span class="badge bg-@(c.Status == RIConditionStatus.Outstanding ? "danger" : "warning")" style="font-size:0.65rem">@c.Status</span></td>
+                                    <td><span class="badge bg-@(c.Status == RIConditionStatus.Outstanding ? "danger" : "warning")" style="font-size:0.65rem">@L.Enum(c.Status)</span></td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 }
-                else { <div class="text-muted text-center py-3 small">No open conditions.</div> }
+                else { <div class="text-muted text-center py-3 small">@L["No open conditions."]</div> }
             </div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-header fw-semibold">
-                <i class="fas fa-user-shield me-1"></i>Access Pathways Expiring (≤ 60 days)
+                <i class="fas fa-user-shield me-1"></i>@L["Access Pathways Expiring (≤ 60 days)"]
                 @if (expiringPathways.Any()) { <span class="badge bg-warning text-dark ms-1">@expiringPathways.Count</span> }
             </div>
             <div class="card-body p-0">
@@ -239,7 +239,7 @@
                                 int d = (ap.ExpiryDate!.Value.Date - today).Days;
                                 <tr class="@(d < 0 ? "table-danger" : "")">
                                     <td><a asp-action="AccessPathwayDetails" asp-route-id="@ap.Id" class="small fw-semibold">@ap.AccessNumber</a></td>
-                                    <td><span class="badge bg-info text-dark" style="font-size:0.65rem">@ap.PathwayType</span></td>
+                                    <td><span class="badge bg-info text-dark" style="font-size:0.65rem">@L.Enum(ap.PathwayType)</span></td>
                                     <td class="small">@ap.ExpiryDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                                     <td class="small fw-bold @(d < 0 ? "text-danger" : "text-warning")">
                                         @(d < 0 ? $"{Math.Abs(d)}d expired" : $"{d}d")
@@ -249,7 +249,7 @@
                         </tbody>
                     </table>
                 }
-                else { <div class="text-muted text-center py-3 small">No access pathways expiring within 60 days.</div> }
+                else { <div class="text-muted text-center py-3 small">@L["No access pathways expiring within 60 days."]</div> }
             </div>
         </div>
     </div>
@@ -260,14 +260,14 @@
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-header fw-semibold">
-                <i class="fas fa-tasks me-1"></i>Overdue Milestones
+                <i class="fas fa-tasks me-1"></i>@L["Overdue Milestones"]
                 @if (overdueMilestones.Any()) { <span class="badge bg-danger ms-1">@overdueMilestones.Count</span> }
             </div>
             <div class="card-body p-0">
                 @if (overdueMilestones.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>Application</th><th>Milestone</th><th>Planned</th><th>@L["Days"]</th></tr></thead>
+                        <thead class="table-light"><tr><th>@L["Application"]</th><th>@L["Milestone"]</th><th>@L["Planned"]</th><th>@L["Days"]</th></tr></thead>
                         <tbody>
                             @foreach (var m in overdueMilestones)
                             {
@@ -282,7 +282,7 @@
                         </tbody>
                     </table>
                 }
-                else { <div class="text-muted text-center py-3 small">No overdue milestones.</div> }
+                else { <div class="text-muted text-center py-3 small">@L["No overdue milestones."]</div> }
             </div>
         </div>
     </div>
@@ -293,7 +293,7 @@
                 @if (recentActivity.Any())
                 {
                     <table class="table table-sm mb-0">
-                        <thead class="table-light"><tr><th>@L["Date"]</th><th>Application</th><th>@L["Action"]</th><th>@L["User"]</th></tr></thead>
+                        <thead class="table-light"><tr><th>@L["Date"]</th><th>@L["Application"]</th><th>@L["Action"]</th><th>@L["User"]</th></tr></thead>
                         <tbody>
                             @foreach (var log in recentActivity)
                             {
@@ -308,7 +308,7 @@
                         </tbody>
                     </table>
                 }
-                else { <div class="text-muted text-center py-3 small">No recent activity.</div> }
+                else { <div class="text-muted text-center py-3 small">@L["No recent activity."]</div> }
             </div>
         </div>
     </div>

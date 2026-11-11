@@ -1,16 +1,15 @@
 @model IEnumerable<OpenQMS.Models.PVSignalReview>
 @{
-    ViewData["Title"] = "Signal Reviews";
+    ViewData["Title"] = L["Signal Reviews"].Value;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0"><i class="fas fa-broadcast-tower me-2 text-warning"></i>PV Signal Reviews</h4>
+    <h4 class="mb-0"><i class="fas fa-broadcast-tower me-2 text-warning"></i>@L["PV Signal Reviews"]</h4>
 </div>
 
 <div class="alert alert-info small mb-3">
     <i class="fas fa-info-circle me-1"></i>
-    Signal reviews are automatically created when 3 or more adverse events share the same MedDRA Preferred Term within a 90-day window.
-    Each signal must be assessed and either confirmed, refuted, or placed under ongoing monitoring.
+    @L["Signal reviews are automatically created when 3 or more adverse events share the same MedDRA Preferred Term within a 90-day window. Each signal must be assessed and either confirmed, refuted, or placed under ongoing monitoring."]
 </div>
 
 @if (TempData["Success"] != null)
@@ -29,7 +28,7 @@
             <th>@L["Assigned To"]</th>
             <th>@L["Status"]</th>
             <th>@L["Conclusion"]</th>
-            <th>Reviewed On</th>
+            <th>@L["Reviewed On"]</th>
             <th></th>
         </tr>
     </thead>
@@ -57,13 +56,13 @@
                         ? assigneeNames[s.AssignedTo]
                         : s.AssignedTo;
                 }
-                <td>@if (assigneeLabel != null) { @assigneeLabel } else { <span class="text-muted">Unassigned</span> }</td>
+                <td>@if (assigneeLabel != null) { @assigneeLabel } else { <span class="text-muted">@L["Unassigned"]</span> }</td>
                 <td><span class="badge bg-@statusClass">@L.Enum(s.Status)</span></td>
                 <td>
                     @if (s.Conclusion.HasValue)
                     {
                         <span class="badge bg-@(s.Conclusion == PVSignalReview.SignalConclusion.Confirmed ? "danger" : s.Conclusion == PVSignalReview.SignalConclusion.Refuted ? "secondary" : "info")">
-                            @s.Conclusion
+                            @L.Enum(s.Conclusion)
                         </span>
                     }
                     else { <span class="text-muted">—</span> }
@@ -73,7 +72,7 @@
                     <a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-primary">@L["View"]</a>
                     @if (s.Status != PVSignalReview.SignalStatus.Closed && s.Status != PVSignalReview.SignalStatus.Refuted)
                     {
-                        <a asp-action="Edit" asp-route-id="@s.Id" class="btn btn-sm btn-outline-secondary ms-1">Assess</a>
+                        <a asp-action="Edit" asp-route-id="@s.Id" class="btn btn-sm btn-outline-secondary ms-1">@L["Assess"]</a>
                     }
                 </td>
             </tr>
@@ -83,13 +82,13 @@
 
 @if (!Model.Any())
 {
-    <p class="text-muted text-center mt-4">No signal reviews yet. Signals are auto-detected by the background monitor.</p>
+    <p class="text-muted text-center mt-4">@L["No signal reviews yet. Signals are auto-detected by the background monitor."]</p>
 }
 
 @section Scripts {
 <script>
     $(document).ready(function () {
-        $('#signalTable').DataTable({ stateSave: true, order: [[0, 'desc']], language: { searchPlaceholder: 'Search within filtered results…', search: '' } });
+        $('#signalTable').DataTable({ stateSave: true, order: [[0, 'desc']], language: { searchPlaceholder: @Json.Serialize(L["Search within filtered results…"].Value), search: '' } });
     });
 </script>
 }

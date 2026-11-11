@@ -1,11 +1,11 @@
 @model OpenQMS.Models.AdverseEvent
 @{
-    ViewData["Title"] = "Void Adverse Event";
+    ViewData["Title"] = L["Void Adverse Event"].Value;
 }
 
-<h4 class="mb-0">Void Adverse Event</h4>
+<h4 class="mb-0">@L["Void Adverse Event"]</h4>
 <div class="alert alert-warning">
-    Are you sure you want to void <strong>@Model.AENumber</strong>? The record will be marked as Voided and will no longer appear in active lists.
+    @H["Are you sure you want to void <strong>{0}</strong>? The record will be marked as Voided and will no longer appear in active lists.", Model.AENumber]
 </div>
 
 <dl class="row">
@@ -19,6 +19,6 @@
 
 <form asp-action="Delete" method="post">
     <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Confirm Void</button>
+    <button type="submit" class="btn btn-danger">@L["Confirm Void"]</button>
     <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">@L["Cancel"]</a>
 </form>

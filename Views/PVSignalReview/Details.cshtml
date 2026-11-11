@@ -1,6 +1,6 @@
 @model OpenQMS.Models.PVSignalReview
 @{
-    ViewData["Title"] = $"Signal Review — {Model.MedDRAPT}";
+    ViewData["Title"] = $"{L["Signal Review"]} — {Model.MedDRAPT}";
     var linkedAEs  = ViewBag.LinkedAEs  as IEnumerable<OpenQMS.Models.AdverseEvent> ?? Enumerable.Empty<OpenQMS.Models.AdverseEvent>();
     var linkedCapa = ViewBag.LinkedCapa as OpenQMS.Models.Capa;
 
@@ -18,7 +18,7 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">
         <i class="fas fa-broadcast-tower me-2 text-warning"></i>
-        Signal Review — <em>@Model.MedDRAPT</em>
+        @L["Signal Review"] — <em>@Model.MedDRAPT</em>
         <span class="badge bg-@statusClass ms-2">@L.Enum(Model.Status)</span>
     </h4>
     <div>
@@ -26,13 +26,13 @@
              Model.Status != PVSignalReview.SignalStatus.Refuted)
         {
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
-                <i class="fas fa-edit me-1"></i>Assess Signal
+                <i class="fas fa-edit me-1"></i>@L["Assess Signal"]
             </a>
         }
         @if (Model.Status == PVSignalReview.SignalStatus.Confirmed && Model.LinkedCapaId == null)
         {
             <a asp-controller="Capas" asp-action="Create" asp-route-signalId="@Model.Id" class="btn btn-warning btn-sm ms-2">
-                <i class="fas fa-plus me-1"></i>Create CAPA
+                <i class="fas fa-plus me-1"></i>@L["Create CAPA"]
             </a>
         }
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm ms-2">
@@ -59,7 +59,7 @@
     <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center py-2">
         <i class="fas fa-exchange-alt me-2 text-primary"></i>
         <strong class="text-primary">@L["Workflow Actions"]</strong>
-        <span class="ms-2 text-muted small">Current status: <strong>@L.Enum(Model.Status)</strong></span>
+        <span class="ms-2 text-muted small">@H["Current status: <strong>{0}</strong>", L.Enum(Model.Status)]</span>
     </div>
     <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
         @if (Model.Status == PVSignalReview.SignalStatus.Open)
@@ -68,7 +68,7 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <input type="hidden" name="newStatus" value="UnderReview" />
-                <button type="submit" class="btn btn-sm btn-warning"><i class="fas fa-search me-1"></i>Start Review</button>
+                <button type="submit" class="btn btn-sm btn-warning"><i class="fas fa-search me-1"></i>@L["Start Review"]</button>
             </form>
         }
         else if (Model.Status == PVSignalReview.SignalStatus.UnderReview)
@@ -77,19 +77,19 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <input type="hidden" name="newStatus" value="Confirmed" />
-                <button type="submit" class="btn btn-sm btn-dark"><i class="fas fa-exclamation-triangle me-1"></i>Confirm Signal</button>
+                <button type="submit" class="btn btn-sm btn-dark"><i class="fas fa-exclamation-triangle me-1"></i>@L["Confirm Signal"]</button>
             </form>
             <form asp-action="Transition" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <input type="hidden" name="newStatus" value="Refuted" />
-                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="fas fa-times me-1"></i>Refute Signal</button>
+                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="fas fa-times me-1"></i>@L["Refute Signal"]</button>
             </form>
             <form asp-action="Transition" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <input type="hidden" name="newStatus" value="Open" />
-                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Back to Open</button>
+                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>@L["Back to Open"]</button>
             </form>
         }
         else if (Model.Status == PVSignalReview.SignalStatus.Confirmed || Model.Status == PVSignalReview.SignalStatus.Refuted)
@@ -98,12 +98,12 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <input type="hidden" name="newStatus" value="Closed" />
-                <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check-circle me-1"></i>Close Signal</button>
+                <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check-circle me-1"></i>@L["Close Signal"]</button>
             </form>
         }
         else
         {
-            <span class="text-success mb-0"><i class="fas fa-lock me-1"></i>This signal review is closed.</span>
+            <span class="text-success mb-0"><i class="fas fa-lock me-1"></i>@L["This signal review is closed."]</span>
         }
     </div>
 </div>
@@ -113,7 +113,7 @@
     <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-review">@L["Review"]</a></li>
     <li class="nav-item">
         <a class="nav-link" data-bs-toggle="tab" href="#tab-audit">
-            Audit Trail
+            @L["Audit Trail"]
             @if ((Model.AuditLogs?.Count ?? 0) > 0) { <span class="badge bg-secondary">@Model.AuditLogs!.Count</span> }
         </a>
     </li>
@@ -126,23 +126,23 @@
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-header bg-warning text-dark fw-bold">
-                <i class="fas fa-info-circle me-1"></i>Signal Details
+                <i class="fas fa-info-circle me-1"></i>@L["Signal Details"]
             </div>
             <div class="card-body">
                 <dl class="row mb-0">
-                    <dt class="col-sm-5">MedDRA PT</dt>
+                    <dt class="col-sm-5">@L["MedDRA PT"]</dt>
                     <dd class="col-sm-7"><strong>@Model.MedDRAPT</strong></dd>
 
-                    <dt class="col-sm-5">Detected On</dt>
+                    <dt class="col-sm-5">@L["Detected On"]</dt>
                     <dd class="col-sm-7">@Model.DetectedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</dd>
 
-                    <dt class="col-sm-5">Detected By</dt>
+                    <dt class="col-sm-5">@L["Detected By"]</dt>
                     <dd class="col-sm-7">@Model.DetectedBy</dd>
 
                     <dt class="col-sm-5">@L["Trigger Count"]</dt>
                     <dd class="col-sm-7">
-                        <span class="badge bg-warning text-dark fs-6">@Model.TriggerCount cases</span>
-                        <small class="text-muted ms-1">(≥3 in 90 days)</small>
+                        <span class="badge bg-warning text-dark fs-6">@L["{0} cases", Model.TriggerCount]</span>
+                        <small class="text-muted ms-1">@L["(≥3 in 90 days)"]</small>
                     </dd>
 
                     <dt class="col-sm-5">@L["Status"]</dt>
@@ -170,12 +170,12 @@
                             var cc = Model.Conclusion == PVSignalReview.SignalConclusion.Confirmed ? "danger"
                                    : Model.Conclusion == PVSignalReview.SignalConclusion.Refuted   ? "secondary"
                                    : "info";
-                            <span class="badge bg-@cc">@Model.Conclusion</span>
+                            <span class="badge bg-@cc">@L.Enum(Model.Conclusion)</span>
                         }
-                        else { <span class="text-muted">Pending</span> }
+                        else { <span class="text-muted">@L["Pending"]</span> }
                     </dd>
 
-                    <dt class="col-sm-5">Reviewed On</dt>
+                    <dt class="col-sm-5">@L["Reviewed On"]</dt>
                     <dd class="col-sm-7">@(Model.ReviewedOn.ToSite()?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</dd>
 
                     <dt class="col-sm-5">@L["Reviewed By"]</dt>
@@ -213,8 +213,8 @@
 <div class="card shadow-sm">
     <div class="card-header fw-bold">
         <i class="fas fa-virus me-1 text-danger"></i>
-        Adverse Events with MedDRA PT: <em>@Model.MedDRAPT</em>
-        <span class="badge bg-secondary ms-2">@linkedAEs.Count() cases</span>
+        @L["Adverse Events with MedDRA PT:"] <em>@Model.MedDRAPT</em>
+        <span class="badge bg-secondary ms-2">@L["{0} cases", linkedAEs.Count()]</span>
     </div>
     <div class="card-body p-0">
         @if (linkedAEs.Any())
@@ -240,7 +240,7 @@
                                 @if (ae.IsSerious) { <span class="badge bg-danger">@L["Serious"]</span> }
                                 else { <span class="text-muted">@L["No"]</span> }
                             </td>
-                            <td>@(ae.Outcome?.ToString() ?? "—")</td>
+                            <td>@(ae.Outcome == null ? "—" : L.Enum(ae.Outcome))</td>
                             <td><span class="badge bg-secondary">@L.Enum(ae.Status)</span></td>
                             <td>
                                 <a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@ae.Id"
@@ -253,7 +253,7 @@
         }
         else
         {
-            <p class="text-muted p-3 mb-0">No active AE records found for this term.</p>
+            <p class="text-muted p-3 mb-0">@L["No active AE records found for this term."]</p>
         }
     </div>
 </div>

@@ -7,23 +7,11 @@ namespace OpenQMS.Services
 {
     public class ReleaseWorkflowService
     {
-        public class WorkflowResult
+        public class WorkflowResult : WorkflowResultBase
         {
-            public bool    Success { get; init; }
-            /// <summary>The message in English (for logs and tests).</summary>
-            public string? Error   { get; init; }
-            /// <summary>The English message with {0}, {1}… placeholders, and its values — so the screen can
-            /// show it in the user's language. Values may be enums (shown by name) or string[] (a list).</summary>
-            public string   ErrorTemplate { get; init; } = "";
-            public object[] ErrorArgs     { get; init; } = Array.Empty<object>();
-
             public static WorkflowResult Ok() => new() { Success = true };
-            public static WorkflowResult Fail(string error, params object[] args) => new()
-            {
-                Success = false, ErrorTemplate = error, ErrorArgs = args,
-                Error = args.Length == 0 ? error : string.Format(System.Globalization.CultureInfo.InvariantCulture, error,
-                    args.Select(a => a switch { Enum e => EnumHelper.Display(e), string[] xs => string.Join(", ", xs), _ => a }).ToArray()),
-            };
+            public static WorkflowResult Fail(string error, params object[] args) =>
+                new() { Success = false, ErrorTemplate = error, ErrorArgs = args, Error = English(error, args) };
         }
 
         private readonly ApplicationDbContext _context;

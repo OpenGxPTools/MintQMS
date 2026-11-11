@@ -41,7 +41,7 @@
                 <span class="badge bg-@statusClass fs-6">@L.Enum(Model.Status)</span>
             }
             @if (Model.IsSerious) { <span class="badge bg-danger">@L["Serious"]</span> }
-            @if (Model.IsFatalOrLifeThreatening) { <span class="badge bg-dark">Fatal / Life-Threatening</span> }
+            @if (Model.IsFatalOrLifeThreatening) { <span class="badge bg-dark">@L["Fatal / Life-Threatening"]</span> }
             @if (Model.IsLocked) { <span class="badge bg-warning text-dark"><i class="bi bi-lock-fill"></i> @L["Locked"]</span> }
         </div>
     </div>
@@ -51,7 +51,7 @@
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">@L["Edit"]</a>
         }
         <a href="#tab-attachments" data-bs-toggle="tab" class="btn btn-outline-secondary">
-            <i class="fas fa-paperclip me-1"></i>Documents (@(Model.Attachments?.Count(a => !a.IsDeleted) ?? 0))
+            <i class="fas fa-paperclip me-1"></i>@L["Documents ({0})", Model.Attachments?.Count(a => !a.IsDeleted) ?? 0]
         </a>
         <a asp-action="Index" class="btn btn-outline-secondary">@L["Back to List"]</a>
     </div>
@@ -72,9 +72,9 @@
     var daysLeft = (Model.TGADeadlineDate.Value.Date - SiteTime.Today).Days;
     var alertClass = daysLeft < 0 ? "danger" : daysLeft <= 2 ? "danger" : daysLeft <= 5 ? "warning" : "info";
     <div class="alert alert-@alertClass mb-3">
-        <strong>TGA Reporting Deadline:</strong> @Model.TGADeadlineDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
+        <strong>@L["TGA Reporting Deadline:"]</strong> @Model.TGADeadlineDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
         @if (daysLeft < 0) { <span class="badge bg-danger ms-2">OVERDUE by @(Math.Abs(daysLeft)) days</span> }
-        else if (daysLeft == 0) { <span class="badge bg-danger ms-2">Due TODAY</span> }
+        else if (daysLeft == 0) { <span class="badge bg-danger ms-2">@L["Due TODAY"]</span> }
         else { <span class="badge bg-@alertClass ms-2">@daysLeft day(s) remaining</span> }
     </div>
 }
@@ -83,21 +83,21 @@
 @if (Model.ParentAE != null)
 {
     <div class="alert alert-secondary">
-        Follow-up to: <a asp-action="Details" asp-route-id="@Model.ParentAE.Id">@Model.ParentAE.AENumber</a>
+        @L["Follow-up to:"] <a asp-action="Details" asp-route-id="@Model.ParentAE.Id">@Model.ParentAE.AENumber</a>
     </div>
 }
 
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-0" id="detailTabs">
-    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-report">Report Info</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-patient">Patient</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-product">Suspect Product</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-ae">AE Details</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-assessment">Case Assessment</a></li>
+    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-report">@L["Report Info"]</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-patient">@L["Patient"]</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-product">@L["Suspect Product"]</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-ae">@L["AE Details"]</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-assessment">@L["Case Assessment"]</a></li>
     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-regulatory">@L["Regulatory"]</a></li>
     <li class="nav-item">
         <a class="nav-link" data-bs-toggle="tab" href="#tab-attachments">
-            Documents
+            @L["Documents"]
             @{ var attCount = Model.Attachments?.Count(a => !a.IsDeleted) ?? 0; }
             @if (attCount > 0) { <span class="badge bg-secondary">@attCount</span> }
         </a>
@@ -113,32 +113,32 @@
             <dt class="col-sm-3">@L["Report Date"]</dt>
             <dd class="col-sm-9">@Model.ReportDate.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</dd>
             <dt class="col-sm-3">@L["Report Source"]</dt>
-            <dd class="col-sm-9">@Model.ReportSource</dd>
+            <dd class="col-sm-9">@L.Enum(Model.ReportSource)</dd>
             <dt class="col-sm-3">@L["Report Type"]</dt>
-            <dd class="col-sm-9">@Model.ReportType</dd>
+            <dd class="col-sm-9">@L.Enum(Model.ReportType)</dd>
             <dt class="col-sm-3">@L["Day 0 Date"]</dt>
             <dd class="col-sm-9">@(Model.Day0Date?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
             <dt class="col-sm-3">@L["TGA Deadline"]</dt>
             <dd class="col-sm-9">@(Model.TGADeadlineDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
             <dt class="col-sm-3">@L["Created By"]</dt>
-            <dd class="col-sm-9">@Model.CreatedBy on @Model.CreatedOn.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</dd>
+            <dd class="col-sm-9">@L["{0} on {1}", Model.CreatedBy, Model.CreatedOn.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)]</dd>
             @if (Model.ModifiedBy != null)
             {
                 <dt class="col-sm-3">@L["Last Modified"]</dt>
-                <dd class="col-sm-9">@Model.ModifiedBy on @Model.ModifiedOn.ToSite()?.ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</dd>
+                <dd class="col-sm-9">@L["{0} on {1}", Model.ModifiedBy ?? "", Model.ModifiedOn.ToSite()?.ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) ?? ""]</dd>
             }
         </dl>
         @if (rep != null)
         {
-            <hr /><h6>Reporter</h6>
+            <hr /><h6>@L["Reporter"]</h6>
             <dl class="row">
-                <dt class="col-sm-3">Name / Initials</dt>
+                <dt class="col-sm-3">@L["Name / Initials"]</dt>
                 <dd class="col-sm-9">@(rep.ReporterName ?? "-")</dd>
                 <dt class="col-sm-3">@L["Type"]</dt>
-                <dd class="col-sm-9">@(rep.Type?.ToString() ?? "-")</dd>
+                <dd class="col-sm-9">@(rep.Type == null ? "-" : L.Enum(rep.Type))</dd>
                 <dt class="col-sm-3">@L["Qualification"]</dt>
-                <dd class="col-sm-9">@(rep.Qualification?.ToString() ?? "-")</dd>
-                <dt class="col-sm-3">Institution</dt>
+                <dd class="col-sm-9">@(rep.Qualification == null ? "-" : L.Enum(rep.Qualification))</dd>
+                <dt class="col-sm-3">@L["Institution"]</dt>
                 <dd class="col-sm-9">@(rep.Institution ?? "-")</dd>
                 <dt class="col-sm-3">@L["Country"]</dt>
                 <dd class="col-sm-9">@(rep.Country ?? "-")</dd>
@@ -158,18 +158,18 @@
                 <dt class="col-sm-3">@L["Date of Birth"]</dt>
                 <dd class="col-sm-9">@(pat.DateOfBirth?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
                 <dt class="col-sm-3">@L["Sex"]</dt>
-                <dd class="col-sm-9">@(pat.Sex?.ToString() ?? "-")</dd>
-                <dt class="col-sm-3">Weight / Height</dt>
+                <dd class="col-sm-9">@(pat.Sex == null ? "-" : L.Enum(pat.Sex))</dd>
+                <dt class="col-sm-3">@L["Weight / Height"]</dt>
                 <dd class="col-sm-9">@(pat.WeightKg.HasValue ? $"{pat.WeightKg} kg" : "-") / @(pat.HeightCm.HasValue ? $"{pat.HeightCm} cm" : "-")</dd>
-                <dt class="col-sm-3">Pregnant</dt>
-                <dd class="col-sm-9">@(pat.IsPregnant.HasValue ? (pat.IsPregnant.Value ? "Yes" : "No") : "Unknown")</dd>
+                <dt class="col-sm-3">@L["Pregnant"]</dt>
+                <dd class="col-sm-9">@(pat.IsPregnant.HasValue ? (pat.IsPregnant.Value ? L["Yes"] : L["No"]) : L["Unknown"])</dd>
                 <dt class="col-sm-3">@L["Medical History"]</dt>
                 <dd class="col-sm-9" style="white-space:pre-wrap">@(pat.MedicalHistory ?? "-")</dd>
                 <dt class="col-sm-3">@L["Concomitant Medications"]</dt>
                 <dd class="col-sm-9" style="white-space:pre-wrap">@(pat.ConcomitantMedications ?? "-")</dd>
             </dl>
         }
-        else { <p class="text-muted">No patient data recorded.</p> }
+        else { <p class="text-muted">@L["No patient data recorded."]</p> }
     </div>
 
     <!-- Tab 3: Suspect Product -->
@@ -180,25 +180,25 @@
                 <dt class="col-sm-3">@L["Product Name"]</dt>
                 <dd class="col-sm-9">
                     @(sp.ProductName ?? "-")
-                    @if (sp.Product != null) { <a asp-controller="Products" asp-action="Details" asp-route-id="@sp.ProductId" class="ms-2 badge bg-light text-dark">View in Register</a> }
+                    @if (sp.Product != null) { <a asp-controller="Products" asp-action="Details" asp-route-id="@sp.ProductId" class="ms-2 badge bg-light text-dark">@L["View in Register"]</a> }
                 </dd>
                 <dt class="col-sm-3">@L["ARTG Number"]</dt>
                 <dd class="col-sm-9">@(sp.ARTGNumber ?? "-")</dd>
-                <dt class="col-sm-3">Batch / Lot</dt>
+                <dt class="col-sm-3">@L["Batch / Lot"]</dt>
                 <dd class="col-sm-9">@(sp.BatchNumber ?? "-")</dd>
-                <dt class="col-sm-3">Route / Dose</dt>
+                <dt class="col-sm-3">@L["Route / Dose"]</dt>
                 <dd class="col-sm-9">@(sp.RouteOfAdministration ?? "-") — @(sp.Dose ?? "-") @(sp.DoseUnit ?? "") @(sp.DoseFrequency ?? "")</dd>
                 <dt class="col-sm-3">@L["Indication"]</dt>
                 <dd class="col-sm-9">@(sp.Indication ?? "-")</dd>
-                <dt class="col-sm-3">Treatment Dates</dt>
+                <dt class="col-sm-3">@L["Treatment Dates"]</dt>
                 <dd class="col-sm-9">@(sp.TreatmentStartDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-") → @(sp.TreatmentEndDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
                 <dt class="col-sm-3">@L["Action Taken"]</dt>
-                <dd class="col-sm-9">@(sp.ActionTaken?.ToString() ?? "-")</dd>
-                <dt class="col-sm-3">Dechallenge / Rechallenge</dt>
-                <dd class="col-sm-9">@(sp.DechallengeResult?.ToString() ?? "-") / @(sp.RechallengeResult?.ToString() ?? "-")</dd>
+                <dd class="col-sm-9">@(sp.ActionTaken == null ? "-" : L.Enum(sp.ActionTaken))</dd>
+                <dt class="col-sm-3">@L["Dechallenge / Rechallenge"]</dt>
+                <dd class="col-sm-9">@(sp.DechallengeResult == null ? "-" : L.Enum(sp.DechallengeResult)) / @(sp.RechallengeResult == null ? "-" : L.Enum(sp.RechallengeResult))</dd>
             </dl>
         }
-        else { <p class="text-muted">No suspect product data recorded.</p> }
+        else { <p class="text-muted">@L["No suspect product data recorded."]</p> }
     </div>
 
     <!-- Tab 4: AE Details -->
@@ -210,10 +210,10 @@
             <dd class="col-sm-9">@(Model.MedDRAPT ?? "-")</dd>
             <dt class="col-sm-3">@L["MedDRA System Organ Class"]</dt>
             <dd class="col-sm-9">@(Model.MedDRASOC ?? "-")</dd>
-            <dt class="col-sm-3">AE Dates</dt>
+            <dt class="col-sm-3">@L["AE Dates"]</dt>
             <dd class="col-sm-9">@(Model.AEStartDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-") → @(Model.AEEndDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
             <dt class="col-sm-3">@L["Outcome"]</dt>
-            <dd class="col-sm-9">@(Model.Outcome?.ToString() ?? "-")</dd>
+            <dd class="col-sm-9">@(Model.Outcome == null ? "-" : L.Enum(Model.Outcome))</dd>
             <dt class="col-sm-3">@L["Seriousness Criteria"]</dt>
             <dd class="col-sm-9">
                 @if (Model.SeriousnessCriteria == AdverseEvent.SeriousnessFlags.None)
@@ -226,17 +226,17 @@
                     {
                         if (flag != AdverseEvent.SeriousnessFlags.None && Model.SeriousnessCriteria.HasFlag(flag))
                         {
-                            <span class="badge bg-danger me-1">@flag</span>
+                            <span class="badge bg-danger me-1">@L.Enum(flag)</span>
                         }
                     }
                 }
             </dd>
             <dt class="col-sm-3">@L["Causality"]</dt>
-            <dd class="col-sm-9">@(Model.Causality?.ToString() ?? "-")</dd>
+            <dd class="col-sm-9">@(Model.Causality == null ? "-" : L.Enum(Model.Causality))</dd>
             <dt class="col-sm-3">@L["Severity"]</dt>
-            <dd class="col-sm-9">@(Model.Severity?.ToString() ?? "-")</dd>
+            <dd class="col-sm-9">@(Model.Severity == null ? "-" : L.Enum(Model.Severity))</dd>
             <dt class="col-sm-3">@L["Expectedness"]</dt>
-            <dd class="col-sm-9">@(Model.Expectedness?.ToString() ?? "-")</dd>
+            <dd class="col-sm-9">@(Model.Expectedness == null ? "-" : L.Enum(Model.Expectedness))</dd>
         </dl>
     </div>
 
@@ -263,12 +263,12 @@
             {
                 var bannerText = deadlineStatus switch {
                     OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Overdue =>
-                        $"OVERDUE — TGA deadline was {Model.TGADeadlineDate!.Value:dd MMM yyyy}. Submission not yet recorded.",
+                        L["OVERDUE — TGA deadline was {0}. Submission not yet recorded.", Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value,
                     OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Critical =>
-                        $"CRITICAL — TGA deadline in {(Model.TGADeadlineDate!.Value.Date - SiteTime.Today).Days} day(s) ({Model.TGADeadlineDate!.Value:dd MMM yyyy}).",
+                        L["CRITICAL — TGA deadline in {0} day(s) ({1}).", (Model.TGADeadlineDate!.Value.Date - SiteTime.Today).Days, Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value,
                     OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Warning =>
-                        $"WARNING — TGA deadline in {(Model.TGADeadlineDate!.Value.Date - SiteTime.Today).Days} day(s) ({Model.TGADeadlineDate!.Value:dd MMM yyyy}).",
-                    _ => $"TGA submission deadline: {Model.TGADeadlineDate!.Value:dd MMM yyyy}."
+                        L["WARNING — TGA deadline in {0} day(s) ({1}).", (Model.TGADeadlineDate!.Value.Date - SiteTime.Today).Days, Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value,
+                    _ => L["TGA submission deadline: {0}.", Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value
                 };
                 <div class="alert alert-@deadlineBadgeClass d-flex align-items-center mb-3" role="alert">
                     <i class="fas fa-clock me-2"></i>
@@ -277,38 +277,38 @@
             }
 
             <dl class="row">
-                <dt class="col-sm-3">Deadline Status</dt>
+                <dt class="col-sm-3">@L["Deadline Status"]</dt>
                 <dd class="col-sm-9"><span class="badge bg-@deadlineBadgeClass">@deadlineStatus</span></dd>
-                <dt class="col-sm-3">Reportable to TGA</dt>
+                <dt class="col-sm-3">@L["Reportable to TGA"]</dt>
                 <dd class="col-sm-9">
                     @if (reg.IsReportableToTGA == null) { <span class="badge bg-secondary">@L["Pending Assessment"]</span> }
-                    else if (reg.IsReportableToTGA == true) { <span class="badge bg-danger">Yes — Expedited Reporting Required</span> }
+                    else if (reg.IsReportableToTGA == true) { <span class="badge bg-danger">@L["Yes — Expedited Reporting Required"]</span> }
                     else { <span class="badge bg-success">@L["No"]</span> }
                 </dd>
                 <dt class="col-sm-3">@L["TGA Submission Date"]</dt>
                 <dd class="col-sm-9">
                     @if (reg.TGASubmissionDate.HasValue) {
                         <span class="badge bg-success">@reg.TGASubmissionDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
-                    } else { <span class="text-muted">Not yet submitted</span> }
+                    } else { <span class="text-muted">@L["Not yet submitted"]</span> }
                 </dd>
                 <dt class="col-sm-3">@L["Submission Method"]</dt>
-                <dd class="col-sm-9">@(reg.SubmissionMethod?.ToString() ?? "-")</dd>
-                <dt class="col-sm-3">TGA ADRS Reference</dt>
+                <dd class="col-sm-9">@(reg.SubmissionMethod == null ? "-" : L.Enum(reg.SubmissionMethod))</dd>
+                <dt class="col-sm-3">@L["TGA ADRS Reference"]</dt>
                 <dd class="col-sm-9">@(reg.TGAADRSReferenceNumber ?? "-")</dd>
-                <dt class="col-sm-3">E2B Reference</dt>
+                <dt class="col-sm-3">@L["E2B Reference"]</dt>
                 <dd class="col-sm-9">@(reg.E2BTransmissionReference ?? "-")</dd>
-                <dt class="col-sm-3">Decision Rationale</dt>
+                <dt class="col-sm-3">@L["Decision Rationale"]</dt>
                 <dd class="col-sm-9" style="white-space:pre-wrap">@(reg.ReportingDecisionRationale ?? "-")</dd>
-                <dt class="col-sm-3">Overseas Reporting</dt>
+                <dt class="col-sm-3">@L["Overseas Reporting"]</dt>
                 <dd class="col-sm-9">
-                    @(reg.OverseasReportingRequired ? "Yes" : "No")
+                    @(reg.OverseasReportingRequired ? L["Yes"] : L["No"])
                     @if (!string.IsNullOrWhiteSpace(reg.OverseasAuthorities)) { <span class="ms-1 text-muted">— @reg.OverseasAuthorities</span> }
                 </dd>
-                <dt class="col-sm-3">Include in PSUR</dt>
+                <dt class="col-sm-3">@L["Include in PSUR"]</dt>
                 <dd class="col-sm-9">@Html.Raw(reg.IncludeInNextPSUR ? "<span class=\"badge bg-info\">Yes</span>" : "No")</dd>
-                <dt class="col-sm-3">Significant Safety Issue</dt>
+                <dt class="col-sm-3">@L["Significant Safety Issue"]</dt>
                 <dd class="col-sm-9">@Html.Raw(reg.SignificantSafetyIssue ? "<span class=\"badge bg-danger\">SSI Flagged</span>" : "No")</dd>
-                <dt class="col-sm-3">Regulatory Status</dt>
+                <dt class="col-sm-3">@L["Regulatory Status"]</dt>
                 <dd class="col-sm-9"><span class="badge bg-secondary">@L.Enum(reg.Status)</span></dd>
             </dl>
 
@@ -319,7 +319,7 @@
             {
                 <div class="card border-warning mb-3">
                     <div class="card-header bg-warning text-dark">
-                        <strong><i class="fas fa-paper-plane me-1"></i>Log TGA Submission</strong>
+                        <strong><i class="fas fa-paper-plane me-1"></i>@L["Log TGA Submission"]</strong>
                     </div>
                     <div class="card-body">
                         <form method="post" asp-action="LogTGASubmission" asp-route-id="@Model.Id">
@@ -333,16 +333,16 @@
                                 <div class="col-md-3">
                                     <label class="form-label small fw-bold">@L["Submission Method"]</label>
                                     <select name="method" class="form-select form-select-sm">
-                                        <option value="">— select —</option>
-                                        <option value="AEMSPortal">AEMS Portal</option>
-                                        <option value="E2BEDI">E2B(R3) EDI</option>
-                                        <option value="CIOMSEmail">CIOMS-I Email</option>
+                                        <option value="">@L["— select —"]</option>
+                                        <option value="AEMSPortal">@L["AEMS Portal"]</option>
+                                        <option value="E2BEDI">@L["E2B(R3) EDI"]</option>
+                                        <option value="CIOMSEmail">@L["CIOMS-I Email"]</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label small fw-bold">@L["TGA ADRS Reference Number"]</label>
                                     <input type="text" name="adrsRef" class="form-control form-control-sm"
-                                           placeholder="e.g. AEMS-2026-XXXXX" />
+                                           placeholder="@L["e.g. AEMS-2026-XXXXX"]" />
                                 </div>
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-warning btn-sm w-100">
@@ -359,11 +359,11 @@
             <div class="mt-2">
                 <a asp-action="ExportCIOMS" asp-route-id="@Model.Id"
                    class="btn btn-outline-secondary btn-sm" target="_blank">
-                    <i class="fas fa-file-pdf me-1"></i>Export CIOMS-I Form (PDF)
+                    <i class="fas fa-file-pdf me-1"></i>@L["Export CIOMS-I Form (PDF)"]
                 </a>
             </div>
         }
-        else { <p class="text-muted">No regulatory data recorded.</p> }
+        else { <p class="text-muted">@L["No regulatory data recorded."]</p> }
     </div>
 
     <!-- Tab: Documents / Attachments -->
@@ -383,21 +383,21 @@
                             <div class="col-md-3">
                                 <label class="form-label small">@L["Document Type"]</label>
                                 <select name="documentType" class="form-select form-select-sm">
-                                    <option value="">— Select Type —</option>
-                                    <option>CIOMS Form</option>
-                                    <option>MedWatch / Authority Form</option>
+                                    <option value="">@L["— Select Type —"]</option>
+                                    <option value="CIOMS Form">@L["CIOMS Form"]</option>
+                                    <option value="MedWatch / Authority Form">@L["MedWatch / Authority Form"]</option>
                                     <option value="Source Document">@L["Source Document"]</option>
-                                    <option>Medical Records</option>
-                                    <option>Lab Report</option>
+                                    <option value="Medical Records">@L["Medical Records"]</option>
+                                    <option value="Lab Report">@L["Lab Report"]</option>
                                     <option value="Medical Narrative">@L["Medical Narrative"]</option>
-                                    <option>Causality Assessment</option>
-                                    <option>Correspondence</option>
+                                    <option value="Causality Assessment">@L["Causality Assessment"]</option>
+                                    <option value="Correspondence">@L["Correspondence"]</option>
                                     <option value="Other">@L["Other"]</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label small">@L["Description"]</label>
-                                <input type="text" name="description" class="form-control form-control-sm" placeholder="optional" />
+                                <input type="text" name="description" class="form-control form-control-sm" placeholder="@L["optional"]" />
                             </div>
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-sm btn-primary w-100"><i class="fas fa-upload me-1"></i>@L["Upload"]</button>
@@ -409,7 +409,7 @@
         }
         else
         {
-            <div class="alert alert-secondary small"><i class="fas fa-lock me-1"></i>This case is locked (finalised) — documents can be viewed but not added or removed.</div>
+            <div class="alert alert-secondary small"><i class="fas fa-lock me-1"></i>@L["This case is locked (finalised) — documents can be viewed but not added or removed."]</div>
         }
 
         @{ var atts = Model.Attachments?.Where(a => !a.IsDeleted).OrderByDescending(a => a.UploadedDate).ToList() ?? new(); }
@@ -484,7 +484,7 @@
                 </tbody>
             </table>
         }
-        else { <p class="text-muted">No audit trail entries yet.</p> }
+        else { <p class="text-muted">@L["No audit trail entries yet."]</p> }
     </div>
 
 </div><!-- end tab-content -->
@@ -500,13 +500,13 @@
 @if (Model.Status == AdverseEvent.AEStatus.Draft)
 {
     <div class="card mb-3 border-primary">
-        <div class="card-header bg-primary text-white"><strong>Submit for Medical Review</strong></div>
+        <div class="card-header bg-primary text-white"><strong>@L["Submit for Medical Review"]</strong></div>
         <div class="card-body">
-            <p class="text-muted small">Minimum ICSR requirements: identifiable reporter, patient, suspect product, and AE description.</p>
+            <p class="text-muted small">@L["Minimum ICSR requirements: identifiable reporter, patient, suspect product, and AE description."]</p>
             <form method="post" asp-action="SubmitForReview" asp-route-id="@Model.Id">
                 <div class="row g-2">
-                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
-                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="@L["Your email"]" required /></div>
+                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="@L["Your password"]" required /></div>
                     <div class="col-md-4"><button type="submit" class="btn btn-primary w-100">@L["Submit for Review"]</button></div>
                 </div>
             </form>
@@ -517,14 +517,14 @@
 @if (Model.Status == AdverseEvent.AEStatus.UnderMedicalReview)
 {
     <div class="card mb-3 border-success">
-        <div class="card-header bg-success text-white"><strong>Complete Medical Evaluation</strong></div>
+        <div class="card-header bg-success text-white"><strong>@L["Complete Medical Evaluation"]</strong></div>
         <div class="card-body">
-            <p class="text-muted small">Ensure MedDRA coding, causality, and medical narrative are complete before proceeding.</p>
+            <p class="text-muted small">@L["Ensure MedDRA coding, causality, and medical narrative are complete before proceeding."]</p>
             <form method="post" asp-action="CompleteEvaluation" asp-route-id="@Model.Id">
                 <div class="row g-2">
-                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
-                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
-                    <div class="col-md-4"><button type="submit" class="btn btn-success w-100">Complete Evaluation</button></div>
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="@L["Your email"]" required /></div>
+                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="@L["Your password"]" required /></div>
+                    <div class="col-md-4"><button type="submit" class="btn btn-success w-100">@L["Complete Evaluation"]</button></div>
                 </div>
             </form>
         </div>
@@ -534,10 +534,10 @@
         <div class="card-body">
             <form method="post" asp-action="SendBack" asp-route-id="@Model.Id">
                 <div class="row g-2">
-                    <div class="col-md-3"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
-                    <div class="col-md-3"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
-                    <div class="col-md-4"><input type="text" name="comment" class="form-control" placeholder="Reason for sending back" /></div>
-                    <div class="col-md-2"><button type="submit" class="btn btn-warning w-100">Send Back</button></div>
+                    <div class="col-md-3"><input type="email" name="email" class="form-control" placeholder="@L["Your email"]" required /></div>
+                    <div class="col-md-3"><input type="password" name="pwd" class="form-control" placeholder="@L["Your password"]" required /></div>
+                    <div class="col-md-4"><input type="text" name="comment" class="form-control" placeholder="@L["Reason for sending back"]" /></div>
+                    <div class="col-md-2"><button type="submit" class="btn btn-warning w-100">@L["Send Back"]</button></div>
                 </div>
             </form>
         </div>
@@ -547,26 +547,26 @@
 @if (Model.Status == AdverseEvent.AEStatus.PendingApproval)
 {
     <div class="card mb-3 border-success">
-        <div class="card-header bg-success text-white"><strong>Approve &amp; Lock Record</strong></div>
+        <div class="card-header bg-success text-white"><strong>@L["Approve & Lock Record"]</strong></div>
         <div class="card-body">
-            <p class="text-muted small">Approving will lock this record. A Follow-up Report must be created to add further information.</p>
+            <p class="text-muted small">@L["Approving will lock this record. A Follow-up Report must be created to add further information."]</p>
             <form method="post" asp-action="Approve" asp-route-id="@Model.Id">
                 <div class="row g-2">
-                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
-                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="@L["Your email"]" required /></div>
+                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="@L["Your password"]" required /></div>
                     <div class="col-md-4"><button type="submit" class="btn btn-success w-100">@L["Approve"]</button></div>
                 </div>
             </form>
         </div>
     </div>
     <div class="card mb-3 border-warning">
-        <div class="card-header bg-warning"><strong>Reject — Return to Medical Review</strong></div>
+        <div class="card-header bg-warning"><strong>@L["Reject — Return to Medical Review"]</strong></div>
         <div class="card-body">
             <form method="post" asp-action="Reject" asp-route-id="@Model.Id">
                 <div class="row g-2">
-                    <div class="col-md-3"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
-                    <div class="col-md-3"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
-                    <div class="col-md-4"><input type="text" name="comment" class="form-control" placeholder="Reason for rejection" /></div>
+                    <div class="col-md-3"><input type="email" name="email" class="form-control" placeholder="@L["Your email"]" required /></div>
+                    <div class="col-md-3"><input type="password" name="pwd" class="form-control" placeholder="@L["Your password"]" required /></div>
+                    <div class="col-md-4"><input type="text" name="comment" class="form-control" placeholder="@L["Reason for rejection"]" /></div>
                     <div class="col-md-2"><button type="submit" class="btn btn-warning w-100">@L["Reject"]</button></div>
                 </div>
             </form>
@@ -577,14 +577,14 @@
 @if (Model.Status == AdverseEvent.AEStatus.Approved)
 {
     <div class="card mb-3 border-dark">
-        <div class="card-header bg-dark text-white"><strong>Close Case</strong></div>
+        <div class="card-header bg-dark text-white"><strong>@L["Close Case"]</strong></div>
         <div class="card-body">
-            <p class="text-muted small">Closing flags this case for PSUR inclusion.</p>
+            <p class="text-muted small">@L["Closing flags this case for PSUR inclusion."]</p>
             <form method="post" asp-action="CloseCase" asp-route-id="@Model.Id">
                 <div class="row g-2">
-                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
-                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
-                    <div class="col-md-4"><button type="submit" class="btn btn-dark w-100">Close Case</button></div>
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="@L["Your email"]" required /></div>
+                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="@L["Your password"]" required /></div>
+                    <div class="col-md-4"><button type="submit" class="btn btn-dark w-100">@L["Close Case"]</button></div>
                 </div>
             </form>
         </div>
@@ -594,14 +594,14 @@
 @if (Model.Status == AdverseEvent.AEStatus.Approved || Model.Status == AdverseEvent.AEStatus.Closed)
 {
     <div class="card mb-3 border-info">
-        <div class="card-header bg-info text-white"><strong>Create Follow-up Report</strong></div>
+        <div class="card-header bg-info text-white"><strong>@L["Create Follow-up Report"]</strong></div>
         <div class="card-body">
-            <p class="text-muted small">Creates a new AE record linked to this case with suffix /F1, /F2, etc.</p>
+            <p class="text-muted small">@L["Creates a new AE record linked to this case with suffix /F1, /F2, etc."]</p>
             <form method="post" asp-action="CreateFollowUp" asp-route-id="@Model.Id">
                 <div class="row g-2">
-                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="Your email" required /></div>
-                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="Your password" required /></div>
-                    <div class="col-md-4"><button type="submit" class="btn btn-info w-100">Create Follow-up</button></div>
+                    <div class="col-md-4"><input type="email" name="email" class="form-control" placeholder="@L["Your email"]" required /></div>
+                    <div class="col-md-4"><input type="password" name="pwd" class="form-control" placeholder="@L["Your password"]" required /></div>
+                    <div class="col-md-4"><button type="submit" class="btn btn-info w-100">@L["Create Follow-up"]</button></div>
                 </div>
             </form>
         </div>
@@ -615,11 +615,11 @@
 }
 <div class="card mb-3 border-info">
     <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-        <strong><i class="fas fa-comment-medical me-1"></i>Linked Complaint</strong>
+        <strong><i class="fas fa-comment-medical me-1"></i>@L["Linked Complaint"]</strong>
         @if (Model.LinkedComplaint != null && canEditLinks)
         {
             <form asp-action="UnlinkComplaint" method="post" class="d-inline"
-                  onsubmit="return confirm('Remove the link to complaint @Model.LinkedComplaint.ComplaintId?');">
+                  data-confirm="@L["Remove the link to complaint {0}?", Model.LinkedComplaint.ComplaintId]" onsubmit="return confirm(this.dataset.confirm);">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="aeId" value="@Model.Id" />
                 <button type="submit" class="btn btn-sm btn-light"><i class="fas fa-unlink me-1"></i>@L["Unlink"]</button>
@@ -628,7 +628,7 @@
         else if (Model.LinkedComplaint == null && canEditLinks)
         {
             <button type="button" class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#linkComplaintModal">
-                <i class="fas fa-link me-1"></i>Link Complaint
+                <i class="fas fa-link me-1"></i>@L["Link Complaint"]
             </button>
         }
     </div>
@@ -640,7 +640,7 @@
         }
         else
         {
-            <span class="text-muted">Not linked to any complaint.</span>
+            <span class="text-muted">@L["Not linked to any complaint."]</span>
         }
     </div>
 </div>
@@ -653,7 +653,7 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="aeId" value="@Model.Id" />
                 <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title"><i class="fas fa-link me-1"></i>Link to Complaint — @Model.AENumber</h5>
+                    <h5 class="modal-title"><i class="fas fa-link me-1"></i>@L["Link to Complaint"] — @Model.AENumber</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -663,11 +663,11 @@
                     }
                     @if (anyComplaint)
                     {
-                        <p class="text-muted small">Select an open complaint to associate with this adverse event.</p>
+                        <p class="text-muted small">@L["Select an open complaint to associate with this adverse event."]</p>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">@L["Complaint"] <span class="text-danger">*</span></label>
                             <select name="complaintId" class="form-select" required>
-                                <option value="">— Select a complaint —</option>
+                                <option value="">@L["— Select a complaint —"]</option>
                                 @foreach (dynamic c in availableComplaints!)
                                 {
                                     <option value="@c.Id">@c.Label</option>
@@ -677,14 +677,14 @@
                     }
                     else
                     {
-                        <p class="text-muted mb-0">There are no open complaints available to link.</p>
+                        <p class="text-muted mb-0">@L["There are no open complaints available to link."]</p>
                     }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                     @if (anyComplaint)
                     {
-                        <button type="submit" class="btn btn-info text-white"><i class="fas fa-link me-1"></i>Link</button>
+                        <button type="submit" class="btn btn-info text-white"><i class="fas fa-link me-1"></i>@L["Link"]</button>
                     }
                 </div>
             </form>
@@ -707,11 +707,11 @@
 @if (Model.Status == AdverseEvent.AEStatus.Approved && Model.LinkedCapaId == null)
 {
     <div class="card mb-3 border-warning">
-        <div class="card-header bg-warning text-dark"><strong><i class="fas fa-exclamation-triangle me-1"></i>No CAPA Linked</strong></div>
+        <div class="card-header bg-warning text-dark"><strong><i class="fas fa-exclamation-triangle me-1"></i>@L["No CAPA Linked"]</strong></div>
         <div class="card-body d-flex align-items-center justify-content-between">
-            <span class="text-muted small">This approved AE has no linked CAPA. Consider raising a CAPA to address root causes.</span>
+            <span class="text-muted small">@L["This approved AE has no linked CAPA. Consider raising a CAPA to address root causes."]</span>
             <a asp-controller="Capas" asp-action="Create" asp-route-aeId="@Model.Id" class="btn btn-warning btn-sm ms-3">
-                <i class="fas fa-plus me-1"></i>Create CAPA
+                <i class="fas fa-plus me-1"></i>@L["Create CAPA"]
             </a>
         </div>
     </div>
@@ -721,7 +721,7 @@
 @if (Model.FollowUpReports?.Any() == true)
 {
     <div class="card mb-3">
-        <div class="card-header"><strong>Follow-up Reports</strong></div>
+        <div class="card-header"><strong>@L["Follow-up Reports"]</strong></div>
         <ul class="list-group list-group-flush">
             @foreach (var fu in Model.FollowUpReports)
             {
@@ -739,9 +739,9 @@
      && (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser")))
 {
     <details class="mt-3">
-        <summary class="text-danger" style="cursor:pointer">Void this record</summary>
+        <summary class="text-danger" style="cursor:pointer">@L["Void this record"]</summary>
         <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="mt-2">
-            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Void this adverse event? This action will mark it as Voided.')">Void Record</button>
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Void this adverse event? This action will mark it as Voided.')">@L["Void Record"]</button>
         </form>
     </details>
 }

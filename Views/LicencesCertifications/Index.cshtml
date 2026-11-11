@@ -1,15 +1,15 @@
 @model IEnumerable<OpenQMS.Models.LC.LicenceCertificationRecord>
 @using OpenQMS.Models.LC
 @{
-    ViewData["Title"] = "Licences & Certifications Register";
+    ViewData["Title"] = L["Licences & Certifications Register"].Value;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0"><i class="fas fa-id-card me-2 text-primary"></i>Licences &amp; Certifications Register</h4>
+    <h4 class="mb-0"><i class="fas fa-id-card me-2 text-primary"></i>@L["Licences & Certifications Register"]</h4>
     @if (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser"))
     {
         <a asp-action="Create" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus me-1"></i>New Record
+            <i class="fas fa-plus me-1"></i>@L["New Record"]
         </a>
     }
 </div>
@@ -34,23 +34,23 @@
     <div class="card-body py-2">
         <form method="get" class="row g-2 align-items-end">
             <div class="col-md-2">
-                <label class="form-label small mb-1">Holder Type</label>
+                <label class="form-label small mb-1">@L["Holder Type"]</label>
                 <select name="holderType" class="form-select form-select-sm">
                     <option value="">@L["All"]</option>
                     <option value="OwnCompany" selected="@(ViewBag.SelectedHolderType == "OwnCompany")">@L["Own Company"]</option>
-                    <option value="ThirdParty" selected="@(ViewBag.SelectedHolderType == "ThirdParty")">Third Party</option>
+                    <option value="ThirdParty" selected="@(ViewBag.SelectedHolderType == "ThirdParty")">@L["Third Party"]</option>
                 </select>
             </div>
             <div class="col-md-2">
                 <label class="form-label small mb-1">@L["Category"]</label>
                 <select name="category" class="form-select form-select-sm">
-                    <option value="">All Categories</option>
+                    <option value="">@L["All Categories"]</option>
                     @foreach (var c in Enum.GetValues<LCCategory>())
                     {
                         <option value="@c" selected="@(ViewBag.SelectedCategory == c.ToString())">
-                            @(c == LCCategory.RegulatoryLicence ? "Regulatory Licence" :
+                            @L[c == LCCategory.RegulatoryLicence ? "Regulatory Licence" :
                               c == LCCategory.ISOPrivateCertification ? "ISO / Private Cert" :
-                              "Third-Party Site Approval")
+                              "Third-Party Site Approval"]
                         </option>
                     }
                 </select>
@@ -58,27 +58,27 @@
             <div class="col-md-2">
                 <label class="form-label small mb-1">@L["Status"]</label>
                 <select name="status" class="form-select form-select-sm">
-                    <option value="">All Statuses</option>
+                    <option value="">@L["All Statuses"]</option>
                     @foreach (var s in Enum.GetValues<LCStatus>())
                     {
-                        <option value="@s" selected="@(ViewBag.SelectedStatus == s.ToString())">@s</option>
+                        <option value="@s" selected="@(ViewBag.SelectedStatus == s.ToString())">@L.Enum(s)</option>
                     }
                 </select>
             </div>
             <div class="col-md-2">
                 <label class="form-label small mb-1">@L["Licence Type"]</label>
                 <select name="licenceTypeId" asp-items='@(ViewBag.LicenceTypes as SelectList)' class="form-select form-select-sm">
-                    <option value="">All Types</option>
+                    <option value="">@L["All Types"]</option>
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label small mb-1">Expiry Within</label>
+                <label class="form-label small mb-1">@L["Expiry Within"]</label>
                 <select name="expiryWindow" class="form-select form-select-sm">
-                    <option value="">Any</option>
-                    <option value="30" selected="@(ViewBag.SelectedExpiry == "30")">30 days</option>
-                    <option value="90" selected="@(ViewBag.SelectedExpiry == "90")">90 days</option>
-                    <option value="180" selected="@(ViewBag.SelectedExpiry == "180")">180 days</option>
-                    <option value="365" selected="@(ViewBag.SelectedExpiry == "365")">12 months</option>
+                    <option value="">@L["Any"]</option>
+                    <option value="30" selected="@(ViewBag.SelectedExpiry == "30")">@L["30 days"]</option>
+                    <option value="90" selected="@(ViewBag.SelectedExpiry == "90")">@L["90 days"]</option>
+                    <option value="180" selected="@(ViewBag.SelectedExpiry == "180")">@L["180 days"]</option>
+                    <option value="365" selected="@(ViewBag.SelectedExpiry == "365")">@L["12 months"]</option>
                 </select>
             </div>
             <div class="col-md-2 d-flex gap-2 align-items-end">
@@ -96,12 +96,12 @@
             <thead class="table-light">
                 <tr>
                     <th>@L["LC Number"]</th>
-                    <th>Holder / Site</th>
+                    <th>@L["Holder / Site"]</th>
                     <th>@L["Category"]</th>
                     <th>@L["Licence Type"]</th>
                     <th>@L["Status"]</th>
                     <th>@L["Expiry Date"]</th>
-                    <th>Days to Expiry</th>
+                    <th>@L["Days to Expiry"]</th>
                     <th></th>
                 </tr>
             </thead>
@@ -141,16 +141,16 @@
                             }
                         </td>
                         <td>
-                            <small>@(r.Category == LCCategory.RegulatoryLicence ? "Regulatory" :
+                            <small>@L[r.Category == LCCategory.RegulatoryLicence ? "Regulatory" :
                                      r.Category == LCCategory.ISOPrivateCertification ? "ISO/Cert" :
-                                     "Third-Party")</small>
+                                     "Third-Party"]</small>
                         </td>
                         <td><small>@r.LicenceType?.DisplayName</small></td>
                         <td>
                             <span class="badge @statusBadge">@L.Enum(r.Status)</span>
                             @if (r.Conditions.Any(c => c.Status == LCConditionStatus.Active))
                             {
-                                <span class="badge bg-warning text-dark ms-1" title="Has open conditions"><i class="fas fa-exclamation-triangle"></i></span>
+                                <span class="badge bg-warning text-dark ms-1" title="@L["Has open conditions"]"><i class="fas fa-exclamation-triangle"></i></span>
                             }
                         </td>
                         <td>
@@ -166,7 +166,7 @@
                         <td class="@expiryClass">
                             @if (daysToExpiry.HasValue)
                             {
-                                @(daysToExpiry < 0 ? $"EXPIRED ({Math.Abs(daysToExpiry.Value)}d ago)" : $"{daysToExpiry}d")
+                                @(daysToExpiry < 0 ? L["EXPIRED ({0}d ago)", Math.Abs(daysToExpiry.Value)].Value : L["{0}d", daysToExpiry.Value].Value)
                             }
                             else { <span class="text-muted">—</span> }
                         </td>
@@ -194,8 +194,8 @@
                 order: [[5, 'asc']],
                 columnDefs: [{ orderable: false, targets: 7 }],
                 language: {
-                    emptyTable: 'No records found. <a href="/LicencesCertifications/Create">Create the first record.</a>',
-                    searchPlaceholder: 'Search within filtered results…',
+                    emptyTable: @Json.Serialize(L["No records found."].Value) + ' <a href="/LicencesCertifications/Create">' + @Json.Serialize(L["Create the first record."].Value) + '</a>',
+                    searchPlaceholder: @Json.Serialize(L["Search within filtered results…"].Value),
                     search: ''
                 }
             });

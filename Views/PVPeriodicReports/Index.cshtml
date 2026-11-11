@@ -1,14 +1,14 @@
 @model IEnumerable<OpenQMS.Models.PVPeriodicReport>
 @{
-    ViewData["Title"] = "PSUR Periods";
+    ViewData["Title"] = L["PSUR Periods"].Value;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0"><i class="fas fa-file-medical-alt me-2 text-primary"></i>Periodic Safety Update Reports (PSUR)</h4>
+    <h4 class="mb-0"><i class="fas fa-file-medical-alt me-2 text-primary"></i>@L["Periodic Safety Update Reports (PSUR)"]</h4>
     @if (User.IsInRole("Administrator") || User.IsInRole("RegulatoryManager") || User.IsInRole("RegulatoryUser"))
     {
         <a asp-action="Create" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus me-1"></i>New PSUR Period
+            <i class="fas fa-plus me-1"></i>@L["New PSUR Period"]
         </a>
     }
 </div>
@@ -55,7 +55,7 @@
                     @(r.PeriodEnd?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "")
                 </td>
                 <td>@(r.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
-                <td><span class="badge bg-@statusClass">@r.Status</span></td>
+                <td><span class="badge bg-@statusClass">@L.Enum(r.Status)</span></td>
                 <td>@(r.SubmissionDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">@L["Details"]</a>
@@ -68,13 +68,13 @@
 
 @if (!Model.Any())
 {
-    <p class="text-muted text-center mt-4">No PSUR periods created yet.</p>
+    <p class="text-muted text-center mt-4">@L["No PSUR periods created yet."]</p>
 }
 
 @section Scripts {
 <script>
     $(document).ready(function () {
-        $('#psurTable').DataTable({ stateSave: true, order: [[3, 'asc']], language: { searchPlaceholder: 'Search within filtered results…', search: '' } });
+        $('#psurTable').DataTable({ stateSave: true, order: [[3, 'asc']], language: { searchPlaceholder: @Json.Serialize(L["Search within filtered results…"].Value), search: '' } });
     });
 </script>
 }

@@ -1,3 +1,4 @@
+using OpenQMS.Localization;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -99,7 +100,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(report.Id, "Created", null, report.Status.ToString());
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "PSUR period created.";
+            TempData["Success"] = this.T("PSUR period created.");
             return RedirectToAction(nameof(Details), new { id = report.Id });
         }
 
@@ -135,7 +136,7 @@ namespace OpenQMS.Controllers
 
                 if (existing.Status == PVPeriodicReport.PSURStatus.Accepted)
                 {
-                    TempData["Error"] = "This report is Accepted and locked; it can no longer be edited.";
+                    TempData["Error"] = this.T("This report is Accepted and locked; it can no longer be edited.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -160,7 +161,7 @@ namespace OpenQMS.Controllers
 
                 if (diff.Count > 0) AddAuditLog(id, "Edited", existing.Status.ToString(), report.Status.ToString(), AuditDiffHelper.Build(diff));
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "PSUR updated.";
+                TempData["Success"] = this.T("PSUR updated.");
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -185,7 +186,7 @@ namespace OpenQMS.Controllers
                 AddAuditLog(psurId, "Case Linked", null, null, $"AE Regulatory Report #{aeRegId} linked");
                 await _context.SaveChangesAsync();
             }
-            TempData["Success"] = "Case linked to PSUR.";
+            TempData["Success"] = this.T("Case linked to PSUR.");
             return RedirectToAction(nameof(Details), new { id = psurId });
         }
 
@@ -376,7 +377,7 @@ namespace OpenQMS.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 return RedirectToAction(nameof(Details), new { id = psurId });
             }
 
@@ -384,12 +385,12 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = "File type not allowed.";
+                TempData["Error"] = this.T("File type not allowed.");
                 return RedirectToAction(nameof(Details), new { id = psurId });
             }
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File size exceeds the 25 MB limit.";
+                TempData["Error"] = this.T("File size exceeds the 25 MB limit.");
                 return RedirectToAction(nameof(Details), new { id = psurId });
             }
 
@@ -398,7 +399,7 @@ namespace OpenQMS.Controllers
 
             if (report.Status == PVPeriodicReport.PSURStatus.Accepted)
             {
-                TempData["Error"] = "This report has been accepted by the authority and is finalised — attachments cannot be added.";
+                TempData["Error"] = this.T("This report has been accepted by the authority and is finalised — attachments cannot be added.");
                 return RedirectToAction(nameof(Details), new { id = psurId });
             }
 
@@ -428,7 +429,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(psurId, "AttachmentUploaded", null, null, file.FileName);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"File '{file.FileName}' uploaded.";
+            TempData["Success"] = this.T("File '{0}' uploaded.", file.FileName);
             return RedirectToAction(nameof(Details), new { id = psurId });
         }
 
@@ -441,7 +442,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 return RedirectToAction(nameof(Details), new { id = attachment.PSURId });
             }
 
@@ -478,13 +479,13 @@ namespace OpenQMS.Controllers
                 var report = await _context.PVPeriodicReport.FindAsync(psurId);
                 if (report != null && report.Status == PVPeriodicReport.PSURStatus.Accepted)
                 {
-                    TempData["Error"] = "This report has been accepted by the authority and is finalised — attachments cannot be removed.";
+                    TempData["Error"] = this.T("This report has been accepted by the authority and is finalised — attachments cannot be removed.");
                     return RedirectToAction(nameof(Details), new { id = psurId });
                 }
 
                 if (string.IsNullOrWhiteSpace(deletionReason))
                 {
-                    TempData["Error"] = "A reason is required to delete an attachment.";
+                    TempData["Error"] = this.T("A reason is required to delete an attachment.");
                     return RedirectToAction(nameof(Details), new { id = psurId });
                 }
 
@@ -494,7 +495,7 @@ namespace OpenQMS.Controllers
                 attachment.DeletionReason = deletionReason.Trim();
                 AddAuditLog(psurId, "AttachmentDeleted", null, null, $"{attachment.FileName} — Reason: {attachment.DeletionReason}");
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Attachment deleted.";
+                TempData["Success"] = this.T("Attachment deleted.");
             }
             return RedirectToAction(nameof(Details), new { id = psurId });
         }
@@ -515,12 +516,12 @@ namespace OpenQMS.Controllers
                 (report.Status == PVPeriodicReport.PSURStatus.UnderReview   && newStatus == PVPeriodicReport.PSURStatus.InPreparation);
             if (!allowed)
             {
-                TempData["Error"] = "Invalid status transition.";
+                TempData["Error"] = this.T("Invalid status transition.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             await ChangeStatus(report, newStatus);
-            TempData["Success"] = $"Status updated to {newStatus}.";
+            TempData["Success"] = this.T("Status updated to {0}.", newStatus);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -549,7 +550,7 @@ namespace OpenQMS.Controllers
             if (user != null && !string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase)) user = null;
             if (user == null || !await _userManager.CheckPasswordAsync(user, pwd))
             {
-                TempData["Error"] = "Invalid credentials. Action not authorised.";
+                TempData["Error"] = this.T("Invalid credentials. Action not authorised.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -558,7 +559,7 @@ namespace OpenQMS.Controllers
 
             if (report.Status != from)
             {
-                TempData["Error"] = $"Can only move to {to} from {from}.";
+                TempData["Error"] = this.T("Can only move to {0} from {1}.", to, from);
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -567,7 +568,7 @@ namespace OpenQMS.Controllers
                 report.SubmissionDate ??= SiteTime.Today;
 
             await ChangeStatus(report, to);
-            TempData["Success"] = $"Status updated to {to}.";
+            TempData["Success"] = this.T("Status updated to {0}.", to);
             return RedirectToAction(nameof(Details), new { id });
         }
 

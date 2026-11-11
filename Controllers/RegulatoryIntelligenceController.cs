@@ -1,3 +1,4 @@
+using OpenQMS.Localization;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -472,7 +473,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Application {model.RINumber} created successfully.";
+            TempData["Success"] = this.T("Application {0} created successfully.", model.RINumber);
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
@@ -493,13 +494,13 @@ namespace OpenQMS.Controllers
 
             if (RIWorkflowService.IsTerminal(app.Status))
             {
-                TempData["Error"] = "This application is closed and cannot be edited.";
+                TempData["Error"] = this.T("This application is closed and cannot be edited.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (app.IsLocked)
             {
-                TempData["Error"] = "This record is locked and cannot be edited. Create a Variation to make changes.";
+                TempData["Error"] = this.T("This record is locked and cannot be edited. Create a Variation to make changes.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -523,13 +524,13 @@ namespace OpenQMS.Controllers
 
             if (RIWorkflowService.IsTerminal(existing.Status))
             {
-                TempData["Error"] = "This application is closed and cannot be edited.";
+                TempData["Error"] = this.T("This application is closed and cannot be edited.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (existing.IsLocked)
             {
-                TempData["Error"] = "This record is locked and cannot be edited. Create a Variation to make changes.";
+                TempData["Error"] = this.T("This record is locked and cannot be edited. Create a Variation to make changes.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -605,7 +606,7 @@ namespace OpenQMS.Controllers
                 throw;
             }
 
-            TempData["Success"] = $"Application {existing.RINumber} updated.";
+            TempData["Success"] = this.T("Application {0} updated.", existing.RINumber);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -635,7 +636,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"Application {app.RINumber} deleted.";
+            TempData["Success"] = this.T("Application {0} deleted.", app.RINumber);
             return RedirectToAction(nameof(Index));
         }
 
@@ -706,7 +707,7 @@ namespace OpenQMS.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = applicationId });
             }
@@ -715,13 +716,13 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = "File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.";
+                TempData["Error"] = this.T("File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = applicationId });
             }
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File size exceeds the 25 MB limit.";
+                TempData["Error"] = this.T("File size exceeds the 25 MB limit.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = applicationId });
             }
@@ -731,7 +732,7 @@ namespace OpenQMS.Controllers
 
             if (app.IsLocked)
             {
-                TempData["Error"] = "This record is locked (finalised) and cannot be modified — documents cannot be added.";
+                TempData["Error"] = this.T("This record is locked (finalised) and cannot be modified — documents cannot be added.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = applicationId });
             }
@@ -774,7 +775,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"Document '{file.FileName}' uploaded.";
+            TempData["Success"] = this.T("Document '{0}' uploaded.", file.FileName);
             TempData["ActiveTab"] = "dtab7";
             return RedirectToAction(nameof(Details), new { id = applicationId });
         }
@@ -793,14 +794,14 @@ namespace OpenQMS.Controllers
             var app = await _context.RegulatoryApplications.FindAsync(applicationId);
             if (app != null && app.IsLocked)
             {
-                TempData["Error"] = "This record is locked (finalised) and cannot be modified — documents cannot be removed.";
+                TempData["Error"] = this.T("This record is locked (finalised) and cannot be modified — documents cannot be removed.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = applicationId });
             }
 
             if (string.IsNullOrWhiteSpace(deletionReason))
             {
-                TempData["Error"] = "A reason is required to delete a document.";
+                TempData["Error"] = this.T("A reason is required to delete a document.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = applicationId });
             }
@@ -823,7 +824,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"Document '{doc.FileName}' deleted.";
+            TempData["Success"] = this.T("Document '{0}' deleted.", doc.FileName);
             return RedirectToAction(nameof(Details), new { id = applicationId });
         }
 
@@ -992,7 +993,7 @@ namespace OpenQMS.Controllers
             var result = _workflow.ValidateTransition(app, newStatus);
             if (!result.Success)
             {
-                TempData["Error"] = result.Error;
+                TempData["Error"] = this.TError(result);
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1000,7 +1001,7 @@ namespace OpenQMS.Controllers
             var performedById = _userManager.GetUserId(User) ?? performedBy;
             await _workflow.ApplyTransition(app, newStatus, performedBy, performedByUserId: performedById);
 
-            TempData["Success"] = $"Status updated to: {newStatus}.";
+            TempData["Success"] = this.T("Status updated to: {0}.", newStatus);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -1020,13 +1021,13 @@ namespace OpenQMS.Controllers
 
             if (app.Status != RIApplicationStatus.Approved)
             {
-                TempData["Error"] = "A renewal can only be initiated from an Approved application.";
+                TempData["Error"] = this.T("A renewal can only be initiated from an Approved application.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["Error"] = "A reason is required to initiate an early renewal.";
+                TempData["Error"] = this.T("A reason is required to initiate an early renewal.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1034,7 +1035,7 @@ namespace OpenQMS.Controllers
             var result = _workflow.ValidateTransition(app, RIApplicationStatus.RenewalDue, note);
             if (!result.Success)
             {
-                TempData["Error"] = result.Error;
+                TempData["Error"] = this.TError(result);
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1042,7 +1043,7 @@ namespace OpenQMS.Controllers
             var performedById = _userManager.GetUserId(User) ?? performedBy;
             await _workflow.ApplyTransition(app, RIApplicationStatus.RenewalDue, performedBy, note, performedByUserId: performedById);
 
-            TempData["Success"] = "Renewal initiated — application moved to Renewal Due.";
+            TempData["Success"] = this.T("Renewal initiated — application moved to Renewal Due.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -1099,7 +1100,7 @@ namespace OpenQMS.Controllers
             if (user == null ||
                 _passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, pwd) == PasswordVerificationResult.Failed)
             {
-                TempData["Error"] = "Invalid credentials. Action not authorised.";
+                TempData["Error"] = this.T("Invalid credentials. Action not authorised.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1112,14 +1113,14 @@ namespace OpenQMS.Controllers
             var result = _workflow.ValidateTransition(app, newStatus, reason);
             if (!result.Success)
             {
-                TempData["Error"] = result.Error;
+                TempData["Error"] = this.TError(result);
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var performedBy = _userManager.GetUserName(User) ?? email;
             await _workflow.ApplyTransition(app, newStatus, performedBy, reason, performedByUserId: user.Id.ToString());
 
-            TempData["Success"] = $"Status updated to: {newStatus}.";
+            TempData["Success"] = this.T("Status updated to: {0}.", newStatus);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -1148,7 +1149,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Condition of approval added.";
+            TempData["Success"] = this.T("Condition of approval added.");
             TempData["ActiveTab"] = "dtab6";
             return RedirectToAction(nameof(Details), new { id = applicationId });
         }
@@ -1172,7 +1173,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Condition updated.";
+            TempData["Success"] = this.T("Condition updated.");
             TempData["ActiveTab"] = "dtab6";
             return RedirectToAction(nameof(Details), new { id = condition.RegulatoryApplicationId });
         }
@@ -1210,13 +1211,13 @@ namespace OpenQMS.Controllers
                         "All conditions of approval closed — auto-transitioned to Approved.",
                         performedByUserId: performedById);
 
-                    TempData["Success"] = "Condition closed. All conditions satisfied — application transitioned to Approved.";
+                    TempData["Success"] = this.T("Condition closed. All conditions satisfied — application transitioned to Approved.");
                     TempData["ActiveTab"] = "dtab6";
                     return RedirectToAction(nameof(Details), new { id = condition.RegulatoryApplicationId });
                 }
             }
 
-            TempData["Success"] = "Condition closed.";
+            TempData["Success"] = this.T("Condition closed.");
             TempData["ActiveTab"] = "dtab6";
             return RedirectToAction(nameof(Details), new { id = condition.RegulatoryApplicationId });
         }
@@ -1253,13 +1254,13 @@ namespace OpenQMS.Controllers
                         "All conditions of approval resolved — auto-transitioned to Approved.",
                         performedByUserId: performedById);
 
-                    TempData["Success"] = "Condition deleted. All conditions satisfied — application transitioned to Approved.";
+                    TempData["Success"] = this.T("Condition deleted. All conditions satisfied — application transitioned to Approved.");
                     TempData["ActiveTab"] = "dtab6";
                     return RedirectToAction(nameof(Details), new { id = applicationId });
                 }
             }
 
-            TempData["Success"] = "Condition deleted.";
+            TempData["Success"] = this.T("Condition deleted.");
             TempData["ActiveTab"] = "dtab6";
             return RedirectToAction(nameof(Details), new { id = applicationId });
         }
@@ -1306,7 +1307,7 @@ namespace OpenQMS.Controllers
             condition.LinkedCAPAId = capa.Id;
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"CAPA {capaId} created and linked to this condition.";
+            TempData["Success"] = this.T("CAPA {0} created and linked to this condition.", capaId);
             return RedirectToAction(nameof(Details), new { id = condition.RegulatoryApplicationId });
         }
 
@@ -1335,7 +1336,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Milestone '{milestoneName}' added.";
+            TempData["Success"] = this.T("Milestone '{0}' added.", milestoneName);
             TempData["ActiveTab"] = "dtabMilestones";
             return RedirectToAction(nameof(Details), new { id = applicationId });
         }
@@ -1368,7 +1369,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Milestone '{milestoneName}' updated.";
+            TempData["Success"] = this.T("Milestone '{0}' updated.", milestoneName);
             TempData["ActiveTab"] = "dtabMilestones";
             return RedirectToAction(nameof(Details), new { id = milestone.RegulatoryApplicationId });
         }
@@ -1386,7 +1387,7 @@ namespace OpenQMS.Controllers
             _context.RIMilestones.Remove(milestone);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Milestone deleted.";
+            TempData["Success"] = this.T("Milestone deleted.");
             TempData["ActiveTab"] = "dtabMilestones";
             return RedirectToAction(nameof(Details), new { id = applicationId });
         }
@@ -1405,7 +1406,7 @@ namespace OpenQMS.Controllers
 
             if (app.Milestones.Any())
             {
-                TempData["Error"] = "Milestones already exist. Delete all milestones before applying a template.";
+                TempData["Error"] = this.T("Milestones already exist. Delete all milestones before applying a template.");
                 TempData["ActiveTab"] = "dtabMilestones";
                 return RedirectToAction(nameof(Details), new { id = applicationId });
             }
@@ -1413,7 +1414,9 @@ namespace OpenQMS.Controllers
             var templates = GetMilestoneTemplates(app.Jurisdiction?.Code ?? "");
             if (!templates.Any())
             {
-                TempData["Error"] = $"No standard template available for {app.Jurisdiction?.Authority ?? "this jurisdiction"}.";
+                TempData["Error"] = app.Jurisdiction?.Authority is { } authority
+                    ? this.T("No standard template available for {0}.", authority)
+                    : this.T("No standard template available for this jurisdiction.");
                 TempData["ActiveTab"] = "dtabMilestones";
                 return RedirectToAction(nameof(Details), new { id = applicationId });
             }
@@ -1435,7 +1438,7 @@ namespace OpenQMS.Controllers
             }
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Applied {templates.Count} standard milestones for {app.Jurisdiction?.Authority}.";
+            TempData["Success"] = this.T("Applied {0} standard milestones for {1}.", templates.Count, app.Jurisdiction?.Authority);
             TempData["ActiveTab"] = "dtabMilestones";
             return RedirectToAction(nameof(Details), new { id = applicationId });
         }
@@ -1485,7 +1488,7 @@ namespace OpenQMS.Controllers
             _context.RIAccessPathwayRecords.Add(model);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Access pathway {model.AccessNumber} created.";
+            TempData["Success"] = this.T("Access pathway {0} created.", model.AccessNumber);
             return RedirectToAction(nameof(AccessPathwayDetails), new { id = model.Id });
         }
 
@@ -1540,7 +1543,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Access pathway {existing.AccessNumber} updated.";
+            TempData["Success"] = this.T("Access pathway {0} updated.", existing.AccessNumber);
             return RedirectToAction(nameof(AccessPathwayDetails), new { id = existing.Id });
         }
 
@@ -1557,7 +1560,7 @@ namespace OpenQMS.Controllers
             _context.RIAccessPathwayRecords.Remove(ap);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Access pathway deleted.";
+            TempData["Success"] = this.T("Access pathway deleted.");
             return RedirectToAction(nameof(Details), new { id = applicationId });
         }
 
@@ -1613,7 +1616,7 @@ namespace OpenQMS.Controllers
             ap.NextSixMonthlyReportDue = periodEnd.AddMonths(6);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Six-monthly supply report added.";
+            TempData["Success"] = this.T("Six-monthly supply report added.");
             return RedirectToAction(nameof(AccessPathwayDetails), new { id = accessPathwayId });
         }
 
@@ -1642,7 +1645,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Supply report updated.";
+            TempData["Success"] = this.T("Supply report updated.");
             return RedirectToAction(nameof(AccessPathwayDetails), new { id = report.AccessPathwayRecordId });
         }
 
@@ -1659,7 +1662,7 @@ namespace OpenQMS.Controllers
             _context.RISixMonthlySupplyReports.Remove(report);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Supply report deleted.";
+            TempData["Success"] = this.T("Supply report deleted.");
             return RedirectToAction(nameof(AccessPathwayDetails), new { id = apId });
         }
 
@@ -1701,7 +1704,7 @@ namespace OpenQMS.Controllers
                                         or RIApplicationStatus.RenewalDue;
             if (!canVariate)
             {
-                TempData["Error"] = "Variations can only be raised once the application is approved.";
+                TempData["Error"] = this.T("Variations can only be raised once the application is approved.");
                 TempData["ActiveTab"] = "dtabVariations";
                 return RedirectToAction(nameof(Details), new { id = applicationId });
             }
@@ -1722,7 +1725,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Variation {varNumber} added.";
+            TempData["Success"] = this.T("Variation {0} added.", varNumber);
             TempData["ActiveTab"] = "dtabVariations";
             return RedirectToAction(nameof(Details), new { id = applicationId });
         }
@@ -1748,7 +1751,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Variation {variation.VariationNumber} updated.";
+            TempData["Success"] = this.T("Variation {0} updated.", variation.VariationNumber);
             TempData["ActiveTab"] = "dtabVariations";
             return RedirectToAction(nameof(Details), new { id = variation.ParentApplicationId });
         }
@@ -1766,7 +1769,7 @@ namespace OpenQMS.Controllers
             _context.RIVariations.Remove(variation);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Variation deleted.";
+            TempData["Success"] = this.T("Variation deleted.");
             TempData["ActiveTab"] = "dtabVariations";
             return RedirectToAction(nameof(Details), new { id = applicationId });
         }

@@ -52,18 +52,18 @@
 
 <!-- Details -->
 <div class="card mb-3">
-    <div class="card-header fw-semibold">Pathway Details</div>
+    <div class="card-header fw-semibold">@L["Pathway Details"]</div>
     <div class="card-body">
         <div class="row g-3">
             <div class="col-md-3"><label class="text-muted small">@L["AP Number"]</label><div class="fw-bold">@Model.AccessNumber</div></div>
             <div class="col-md-3"><label class="text-muted small">@L["Pathway Type"]</label><div>@L.Enum(Model.PathwayType)</div></div>
             <div class="col-md-3"><label class="text-muted small">@L["Status"]</label><div><span class="badge bg-@statusBadge">@L.Enum(Model.Status)</span></div></div>
-            <div class="col-md-3"><label class="text-muted small">AE Reporting</label><div>@(Model.AEReportingRequired ? "Required" : "Not required")</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["AE Reporting"]</label><div>@(Model.AEReportingRequired ? "Required" : "Not required")</div></div>
 
             <div class="col-md-3"><label class="text-muted small">@L["Patient Identifier"]</label><div>@(Model.PatientIdentifier ?? "—")</div></div>
             <div class="col-md-3"><label class="text-muted small">@L["Prescriber Name"]</label><div>@(Model.PrescriberName ?? "—")</div></div>
             <div class="col-md-3"><label class="text-muted small">@L["Prescriber ID"]</label><div>@(Model.PrescriberId ?? "—")</div></div>
-            <div class="col-md-3"><label class="text-muted small">Linked AEs</label>
+            <div class="col-md-3"><label class="text-muted small">@L["Linked AEs"]</label>
                 <div>
                     @if (linkedAECount > 0)
                     {
@@ -73,7 +73,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6"><label class="text-muted small">@authority Approval Letter / Reference</label><div>@(Model.TGAApprovalLetterNumber ?? "—")</div></div>
+            <div class="col-md-6"><label class="text-muted small">@L["{0} Approval Letter / Reference", authority]</label><div>@(Model.TGAApprovalLetterNumber ?? "—")</div></div>
             <div class="col-md-3"><label class="text-muted small">@L["Approval Date"]</label><div>@(Model.ApprovalDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</div></div>
             <div class="col-md-3">
                 <label class="text-muted small">@L["Expiry Date"]</label>
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="col-md-3"><label class="text-muted small">@L["Created By"]</label><div>@Model.CreatedBy</div></div>
-            <div class="col-md-3"><label class="text-muted small">Created At</label><div>@Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</div></div>
+            <div class="col-md-3"><label class="text-muted small">@L["Created At"]</label><div>@Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)</div></div>
 
             @if (!string.IsNullOrEmpty(Model.ClinicalJustification))
             {
@@ -104,9 +104,9 @@
 <!-- Six-Monthly Supply Reports -->
 <div class="card mb-3">
     <div class="card-header d-flex justify-content-between align-items-center fw-semibold">
-        <span><i class="fas fa-chart-bar me-1"></i>Six-Monthly Supply Reports</span>
+        <span><i class="fas fa-chart-bar me-1"></i>@L["Six-Monthly Supply Reports"]</span>
         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addReportModal">
-            <i class="fas fa-plus me-1"></i>Add Report
+            <i class="fas fa-plus me-1"></i>@L["Add Report"]
         </button>
     </div>
     <div class="card-body p-0">
@@ -120,9 +120,9 @@
                     <thead class="table-light">
                         <tr>
                             <th>@L["Period"]</th>
-                            <th>Quantity</th>
+                            <th>@L["Quantity"]</th>
                             <th>@L["Submitted"]</th>
-                            <th>Ref #</th>
+                            <th>@L["Ref #"]</th>
                             <th>@L["Status"]</th>
                             <th>@L["Notes"]</th>
                             <th class="text-end">@L["Actions"]</th>
@@ -160,7 +160,7 @@
                                         <i class="fas fa-edit me-1"></i>@L["Edit"]
                                     </button>
                                     <form asp-action="DeleteSixMonthlyReport" method="post" class="d-inline ms-1"
-                                          onsubmit="return confirm('Delete this supply report?')">
+                                          data-confirm="@L["Delete this supply report?"]" onsubmit="return confirm(this.dataset.confirm);">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@r.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash me-1"></i>@L["Delete"]</button>
@@ -174,7 +174,7 @@
         }
         else
         {
-            <div class="text-muted text-center py-3">No supply reports recorded.</div>
+            <div class="text-muted text-center py-3">@L["No supply reports recorded."]</div>
         }
     </div>
 </div>
@@ -187,17 +187,17 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="accessPathwayId" value="@Model.Id" />
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-plus-circle me-2 text-primary"></i>Add Six-Monthly Supply Report</h5>
+                    <h5 class="modal-title"><i class="fas fa-plus-circle me-2 text-primary"></i>@L["Add Six-Monthly Supply Report"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label class="form-label">Period Start <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Period Start"] <span class="text-danger">*</span></label>
                             <input type="date" name="periodStart" class="form-control" required />
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Period End <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Period End"] <span class="text-danger">*</span></label>
                             <input type="date" name="periodEnd" class="form-control" required />
                         </div>
                         <div class="col-md-4">
@@ -210,23 +210,23 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Quantity Supplied <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Quantity Supplied"] <span class="text-danger">*</span></label>
                             <input type="number" name="quantitySupplied" class="form-control" min="0" required value="0" />
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Unit</label>
+                            <label class="form-label">@L["Unit"]</label>
                             <select name="unit" class="form-select">
                                 <option value="">—</option>
-                                <option>vials</option><option>tablets</option><option>capsules</option>
-                                <option>packs</option><option>doses</option><option>mL</option><option>g</option>
+                                <option value="vials">@L["vials"]</option><option value="tablets">@L["tablets"]</option><option value="capsules">@L["capsules"]</option>
+                                <option value="packs">@L["packs"]</option><option value="doses">@L["doses"]</option><option value="mL">@L["mL"]</option><option>g</option>
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Submitted to Authority</label>
+                            <label class="form-label">@L["Submitted to Authority"]</label>
                             <input type="date" name="submittedToAuthorityDate" class="form-control" />
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Authority Reference #</label>
+                            <label class="form-label">@L["Authority Reference #"]</label>
                             <input type="text" name="authorityReferenceNumber" class="form-control" maxlength="100" />
                         </div>
                         <div class="col-12">
@@ -237,7 +237,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Add Report</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>@L["Add Report"]</button>
                 </div>
             </form>
         </div>
@@ -252,17 +252,17 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" id="editReportId" />
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-edit me-2 text-primary"></i>Edit Supply Report</h5>
+                    <h5 class="modal-title"><i class="fas fa-edit me-2 text-primary"></i>@L["Edit Supply Report"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label class="form-label">Period Start <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Period Start"] <span class="text-danger">*</span></label>
                             <input type="date" name="periodStart" id="editPeriodStart" class="form-control" required />
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Period End <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Period End"] <span class="text-danger">*</span></label>
                             <input type="date" name="periodEnd" id="editPeriodEnd" class="form-control" required />
                         </div>
                         <div class="col-md-4">
@@ -275,23 +275,23 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Quantity Supplied <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Quantity Supplied"] <span class="text-danger">*</span></label>
                             <input type="number" name="quantitySupplied" id="editQuantity" class="form-control" min="0" required />
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Unit</label>
+                            <label class="form-label">@L["Unit"]</label>
                             <select name="unit" id="editUnit" class="form-select">
                                 <option value="">—</option>
-                                <option>vials</option><option>tablets</option><option>capsules</option>
-                                <option>packs</option><option>doses</option><option>mL</option><option>g</option>
+                                <option value="vials">@L["vials"]</option><option value="tablets">@L["tablets"]</option><option value="capsules">@L["capsules"]</option>
+                                <option value="packs">@L["packs"]</option><option value="doses">@L["doses"]</option><option value="mL">@L["mL"]</option><option>g</option>
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Submitted to Authority</label>
+                            <label class="form-label">@L["Submitted to Authority"]</label>
                             <input type="date" name="submittedToAuthorityDate" id="editSubmitted" class="form-control" />
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Authority Reference #</label>
+                            <label class="form-label">@L["Authority Reference #"]</label>
                             <input type="text" name="authorityReferenceNumber" id="editRefNum" class="form-control" maxlength="100" />
                         </div>
                         <div class="col-12">

@@ -18,6 +18,11 @@
   Spanish and Portuguese: pages, dashboards, signature dialogs, checklists, test results, alerts, messages
   and validation errors. Printed release certificates stay in English, as signed records; checklist item
   names and certification statement texts are record content and also stay as entered.
+- Pharmacovigilance (adverse events, literature monitoring, signal review, PSUR), Regulatory Intelligence
+  (applications, conditions, variations, milestones, access pathways) and Licences & Certifications (register,
+  calendar, dashboard) in Spanish and Portuguese: pages, guidance texts (seriousness, MedDRA, causality, Day 0,
+  RFI, ISO cycle…), signature dialogs, alerts, workflow refusals, messages and validation errors. The CIOMS-I
+  form and exports stay in English, as records.
 - Deviations, Complaints, CAPA, Documents and Training: the signature dialog titles, the status shown on
   edit and detail pages, the "Click to remove" hint and the remaining messages after an action are now
   translated too.
@@ -41,6 +46,11 @@
   Release ("NotAssessed", "OneTime", "NotApplicable", "QualitySystemsCertificate"; maintenance types now
   read e.g. "Preventive Maintenance"). The Suppliers register's browser tab reads "Suppliers" instead of
   "Index". A supplier review snapshot showed its review trigger by code name; it now shows the proper name.
+- Pharmacovigilance, Regulatory Intelligence and Licences & Certifications: option and status names that
+  showed as code now read properly — e.g. reporter types ("Healthcare Professional"), actions taken,
+  outcomes, causality, the status filters on the three registers, PSUR and signal statuses, document types
+  and condition/variation/pathway types. A refused workflow step names the states properly too ("Cannot
+  transition from 'Conditions Active' …" instead of 'ConditionsActive').
 - Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the
   Approval Status column, but "Under Assessment" is a workflow stage shown in the Workflow column. It now
   filters the Workflow column and finds both first assessments and re-reviews.

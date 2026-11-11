@@ -33,7 +33,7 @@
             }
             @if (hasOpenConditions)
             {
-                <span class="badge bg-warning text-dark ms-1" title="This record has open conditions that require action."><i class="fas fa-exclamation-triangle me-1"></i>Conditions</span>
+                <span class="badge bg-warning text-dark ms-1" title="@L["This record has open conditions that require action."]"><i class="fas fa-exclamation-triangle me-1"></i>@L["Conditions"]</span>
             }
             @if (Model.IsLocked)
             {
@@ -67,21 +67,21 @@
     {
         <div class="alert alert-danger d-flex align-items-center mb-3">
             <i class="fas fa-exclamation-triangle me-2 fa-lg"></i>
-            <strong>EXPIRED</strong> — This licence/certification expired on @Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture) (@Math.Abs(expiryDays) days ago). Immediate action required.
+            @H["<strong>EXPIRED</strong> — This licence/certification expired on {0} ({1} days ago). Immediate action required.", Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture), Math.Abs(expiryDays)]
         </div>
     }
     else if (expiryDays <= 30)
     {
         <div class="alert alert-danger d-flex align-items-center mb-3">
             <i class="fas fa-clock me-2 fa-lg"></i>
-            <strong>CRITICAL:</strong>&nbsp;Expires in <strong>@expiryDays days</strong> (@Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)).
+            @H["<strong>CRITICAL:</strong>&nbsp;Expires in <strong>{0} days</strong> ({1}).", expiryDays, Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]
         </div>
     }
     else if (expiryDays <= 90)
     {
         <div class="alert alert-warning d-flex align-items-center mb-3">
             <i class="fas fa-exclamation-circle me-2 fa-lg"></i>
-            <strong>Renewal Due Soon:</strong>&nbsp;Expires in @expiryDays days (@Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)).
+            @H["<strong>Renewal Due Soon:</strong>&nbsp;Expires in {0} days ({1}).", expiryDays, Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]
         </div>
     }
 }
@@ -96,7 +96,7 @@
         <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center py-2">
             <i class="fas fa-exchange-alt me-2 text-primary"></i>
             <strong class="text-primary">@L["Workflow Actions"]</strong>
-            <span class="ms-2 text-muted small">Current status: <strong>@L.Enum(Model.Status)</strong></span>
+            <span class="ms-2 text-muted small">@H["Current status: <strong>{0}</strong>", L.Enum(Model.Status)]</span>
         </div>
         <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
             @foreach (var target in availableTransitions)
@@ -129,8 +129,9 @@
                     LCStatus.Withdrawn        => "Withdraw",
                     LCStatus.NotApplicable    => "Mark Not Applicable",
                     LCStatus.Draft            => "Revert to Draft",
-                    _                         => target.ToString()
+                    _                         => EnumHelper.Display(target)
                 };
+                label = L[label].Value;
 
                 if (target == LCStatus.IssuedActive)
                 {
@@ -162,14 +163,14 @@
                     // The background service only sends lead-time reminders; it never
                     // changes status (consistent with the RegIntel module).
                     <button type="button" class="btn btn-sm @btnClass" data-bs-toggle="modal" data-bs-target="#initiateRenewalModal"
-                            title="Start the renewal cycle for this record.">
-                        <i class="fas fa-sync me-1"></i>Initiate Renewal Now
+                            title="@L["Start the renewal cycle for this record."]">
+                        <i class="fas fa-sync me-1"></i>@L["Initiate Renewal Now"]
                     </button>
                 }
                 else if (target == LCStatus.Expired)
                 {
                     <form asp-action="Transition" method="post" class="d-inline"
-                          onsubmit="return confirm('Mark this record as Expired? It will be locked.');">
+                          data-confirm="@L["Mark this record as Expired? It will be locked."]" onsubmit="return confirm(this.dataset.confirm);">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@Model.Id" />
                         <input type="hidden" name="newStatus" value="@target" />
@@ -195,24 +196,24 @@
     <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dtab1" type="button"><i class="fas fa-fingerprint me-1"></i>@L["Identification"]</button></li>
     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab2" type="button"><i class="fas fa-tag me-1"></i>@L["Classification"]</button></li>
     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab3" type="button"><i class="fas fa-calendar-alt me-1"></i>@L["Licence Details"]</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab4" type="button"><i class="fas fa-microscope me-1"></i>GMP / ISO</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab4" type="button"><i class="fas fa-microscope me-1"></i>@L["GMP / ISO"]</button></li>
     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab5" type="button"><i class="fas fa-user me-1"></i>@L["Contacts"]</button></li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab6" type="button">
-            <i class="fas fa-tasks me-1"></i>Conditions
+            <i class="fas fa-tasks me-1"></i>@L["Conditions"]
             @{ var openConds = Model.Conditions.Count(c => c.Status == LCConditionStatus.Active); }
             @if (openConds > 0) { <span class="badge bg-warning text-dark ms-1">@openConds</span> }
         </button>
     </li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab7" type="button">
-            <i class="fas fa-paperclip me-1"></i>Attachments
+            <i class="fas fa-paperclip me-1"></i>@L["Attachments"]
             @if (Model.Documents.Any()) { <span class="badge bg-secondary ms-1">@Model.Documents.Count</span> }
         </button>
     </li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab8" type="button">
-            <i class="fas fa-link me-1"></i>Dependencies
+            <i class="fas fa-link me-1"></i>@L["Dependencies"]
             @{ var depCount = Model.Dependencies.Count; }
             @if (depCount > 0) { <span class="badge bg-primary ms-1">@depCount</span> }
         </button>
@@ -220,7 +221,7 @@
     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab9" type="button"><i class="fas fa-history me-1"></i>@L["Audit Log"]</button></li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dtab10" type="button">
-            <i class="fas fa-layer-group me-1"></i>Approval History
+            <i class="fas fa-layer-group me-1"></i>@L["Approval History"]
             @if (Model.ApprovalSnapshots.Any()) { <span class="badge bg-secondary ms-1">@Model.ApprovalSnapshots.Count</span> }
         </button>
     </li>
@@ -232,21 +233,21 @@
     <div class="tab-pane fade show active" id="dtab1" role="tabpanel">
         <div class="row g-3">
             <div class="col-md-4"><label class="form-label text-muted small">@L["LC Number"]</label><p class="fw-bold">@Model.LCNumber</p></div>
-            <div class="col-md-4"><label class="form-label text-muted small">Holder Type</label><p>@Model.HolderType</p></div>
-            <div class="col-md-4"><label class="form-label text-muted small">Holder Name</label><p class="fw-bold">@Model.HolderName</p></div>
+            <div class="col-md-4"><label class="form-label text-muted small">@L["Holder Type"]</label><p>@L.Enum(Model.HolderType)</p></div>
+            <div class="col-md-4"><label class="form-label text-muted small">@L["Holder Name"]</label><p class="fw-bold">@Model.HolderName</p></div>
             @if (Model.Supplier != null)
             {
-                <div class="col-md-6"><label class="form-label text-muted small">Linked Supplier</label>
+                <div class="col-md-6"><label class="form-label text-muted small">@L["Linked Supplier"]</label>
                     <p><a asp-controller="Suppliers" asp-action="Details" asp-route-id="@Model.SupplierId">@Model.Supplier.LegalName</a></p>
                 </div>
             }
             @if (!string.IsNullOrEmpty(Model.LinkedSiteCountry))
             {
-                <div class="col-md-4"><label class="form-label text-muted small">Site Country</label><p>@Model.LinkedSiteCountry</p></div>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Site Country"]</label><p>@Model.LinkedSiteCountry</p></div>
             }
             @if (!string.IsNullOrEmpty(Model.LinkedSiteAddress))
             {
-                <div class="col-12"><label class="form-label text-muted small">Site Address</label><p>@Model.LinkedSiteAddress</p></div>
+                <div class="col-12"><label class="form-label text-muted small">@L["Site Address"]</label><p>@Model.LinkedSiteAddress</p></div>
             }
             <div class="col-md-4"><label class="form-label text-muted small">@L["Created By"]</label><p>@Model.CreatedBy &bull; @Model.CreatedAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) UTC</p></div>
             @if (Model.ModifiedAt.HasValue)
@@ -260,17 +261,17 @@
     <div class="tab-pane fade" id="dtab2" role="tabpanel">
         <div class="row g-3">
             <div class="col-md-4"><label class="form-label text-muted small">@L["Category"]</label>
-                <p>@(Model.Category == LCCategory.RegulatoryLicence ? "Regulatory Licence" :
+                <p>@L[Model.Category == LCCategory.RegulatoryLicence ? "Regulatory Licence" :
                      Model.Category == LCCategory.ISOPrivateCertification ? "ISO / Private Certification" :
-                     "Third-Party Site Approval")</p></div>
+                     "Third-Party Site Approval"]</p></div>
             <div class="col-md-8"><label class="form-label text-muted small">@L["Licence / Certification Type"]</label><p class="fw-bold">@Model.LicenceType?.DisplayName</p></div>
             @if (!string.IsNullOrEmpty(Model.IssuingBody))
             {
-                <div class="col-md-6"><label class="form-label text-muted small">Issuing Body</label><p>@Model.IssuingBody</p></div>
+                <div class="col-md-6"><label class="form-label text-muted small">@L["Issuing Body"]</label><p>@Model.IssuingBody</p></div>
             }
             @if (!string.IsNullOrEmpty(Model.IssuingBodyUrl))
             {
-                <div class="col-md-6"><label class="form-label text-muted small">Issuing Body URL</label>
+                <div class="col-md-6"><label class="form-label text-muted small">@L["Issuing Body URL"]</label>
                     <p><a href="@Model.IssuingBodyUrl" target="_blank">@Model.IssuingBodyUrl</a></p></div>
             }
             @if (!string.IsNullOrEmpty(Model.IssuingBodyPortal))
@@ -280,7 +281,7 @@
             }
             @if (!string.IsNullOrEmpty(Model.AuthorityPortalUsername))
             {
-                <div class="col-md-4"><label class="form-label text-muted small">Portal Username</label>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Portal Username"]</label>
                     <p>@Model.AuthorityPortalUsername</p></div>
             }
         </div>
@@ -291,11 +292,11 @@
         <div class="row g-3">
             @if (!string.IsNullOrEmpty(Model.LicenceNumber))
             {
-                <div class="col-md-4"><label class="form-label text-muted small">Licence / Certificate Number</label><p class="fw-bold">@Model.LicenceNumber</p></div>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Licence / Certificate Number"]</label><p class="fw-bold">@Model.LicenceNumber</p></div>
             }
             @if (Model.ApplicationDate.HasValue)
             {
-                <div class="col-md-4"><label class="form-label text-muted small">Application Date</label><p>@Model.ApplicationDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div>
+                <div class="col-md-4"><label class="form-label text-muted small">@L["Application Date"]</label><p>@Model.ApplicationDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div>
             }
             @if (Model.IssueDate.HasValue)
             {
@@ -307,7 +308,7 @@
                     <label class="form-label text-muted small">@L["Expiry Date"]</label>
                     <p class="@(expiryBand == "danger" ? "text-danger fw-bold" : expiryBand == "warning" ? "text-warning fw-bold" : "")">
                         @Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
-                        @if (expiryDays >= 0) { <small class="text-muted">(@expiryDays days)</small> }
+                        @if (expiryDays >= 0) { <small class="text-muted">@L["({0} days)", expiryDays]</small> }
                     </p>
                 </div>
             }
@@ -315,10 +316,10 @@
             {
                 <div class="col-md-4"><label class="form-label text-muted small">@L["Next Renewal Due"]</label><p>@Model.NextRenewalDue.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div>
             }
-            <div class="col-md-4"><label class="form-label text-muted small">Renewal Lead Time</label><p>@Model.RenewalLeadTimeDays days</p></div>
+            <div class="col-md-4"><label class="form-label text-muted small">@L["Renewal Lead Time"]</label><p>@L["{0} days", Model.RenewalLeadTimeDays]</p></div>
             @if (!string.IsNullOrEmpty(Model.Scope))
             {
-                <div class="col-12"><label class="form-label text-muted small">Scope</label><p class="border rounded p-2 bg-light">@Model.Scope</p></div>
+                <div class="col-12"><label class="form-label text-muted small">@L["Scope"]</label><p class="border rounded p-2 bg-light">@Model.Scope</p></div>
             }
         </div>
     </div>
@@ -327,38 +328,38 @@
     <div class="tab-pane fade" id="dtab4" role="tabpanel">
         @if (Model.Category == LCCategory.ThirdPartySiteApproval)
         {
-            <h6 class="text-uppercase small text-muted border-bottom pb-1 mb-3"><i class="fas fa-shield-alt me-1"></i>GMP Clearance Details</h6>
+            <h6 class="text-uppercase small text-muted border-bottom pb-1 mb-3"><i class="fas fa-shield-alt me-1"></i>@L["GMP Clearance Details"]</h6>
             <div class="row g-3">
                 @if (Model.GmcPathway.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">@L["GMP Clearance Pathway"]</label><p>@Model.GmcPathway</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["GMP Clearance Pathway"]</label><p>@L.Enum(Model.GmcPathway)</p></div> }
                 @if (!string.IsNullOrEmpty(Model.SiteCountry))
-                { <div class="col-md-4"><label class="form-label text-muted small">Site Country</label><p>@Model.SiteCountry</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["Site Country"]</label><p>@Model.SiteCountry</p></div> }
                 @if (!string.IsNullOrEmpty(Model.InspectionAuthority))
-                { <div class="col-md-4"><label class="form-label text-muted small">Inspection Authority</label><p>@Model.InspectionAuthority</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["Inspection Authority"]</label><p>@Model.InspectionAuthority</p></div> }
                 @if (Model.LastInspectionDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">Last Inspection Date</label><p>@Model.LastInspectionDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["Last Inspection Date"]</label><p>@Model.LastInspectionDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (Model.RFIDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">RFI Issued</label><p>@Model.RFIDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["RFI Issued"]</label><p>@Model.RFIDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (Model.RFIResponseDueDate.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">RFI Response Due</label>
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["RFI Response Due"]</label>
                     <p class="@(Model.RFIResponseSubmittedDate == null && Model.RFIResponseDueDate < SiteTime.Today ? "text-danger fw-bold" : "")">
                         @Model.RFIResponseDueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (Model.RFIResponseSubmittedDate.HasValue)
                 { <div class="col-md-4"><label class="form-label text-muted small">@L["RFI Response Submitted"]</label><p class="text-success">@Model.RFIResponseSubmittedDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (!string.IsNullOrEmpty(Model.ManufacturingStepsScope))
-                { <div class="col-12"><label class="form-label text-muted small">Manufacturing Steps Scope</label><p>@Model.ManufacturingStepsScope</p></div> }
+                { <div class="col-12"><label class="form-label text-muted small">@L["Manufacturing Steps Scope"]</label><p>@Model.ManufacturingStepsScope</p></div> }
                 <div class="col-md-4"><label class="form-label text-muted small">@L["Letter of Access Available"]</label>
-                    <p>@(Model.LetterOfAccessAvailable ? "Yes" : "No")</p></div>
+                    <p>@(Model.LetterOfAccessAvailable ? L["Yes"] : L["No"])</p></div>
             </div>
         }
         else if (Model.Category == LCCategory.ISOPrivateCertification)
         {
-            <h6 class="text-uppercase small text-muted border-bottom pb-1 mb-3"><i class="fas fa-certificate me-1"></i>ISO / Certification Details</h6>
+            <h6 class="text-uppercase small text-muted border-bottom pb-1 mb-3"><i class="fas fa-certificate me-1"></i>@L["ISO / Certification Details"]</h6>
             <div class="row g-3">
                 @if (!string.IsNullOrEmpty(Model.CertificationBody))
-                { <div class="col-md-6"><label class="form-label text-muted small">Certification Body</label><p>@Model.CertificationBody</p></div> }
+                { <div class="col-md-6"><label class="form-label text-muted small">@L["Certification Body"]</label><p>@Model.CertificationBody</p></div> }
                 @if (!string.IsNullOrEmpty(Model.CertificationBodyAccreditation))
-                { <div class="col-md-6"><label class="form-label text-muted small">Accreditation No.</label><p>@Model.CertificationBodyAccreditation</p></div> }
+                { <div class="col-md-6"><label class="form-label text-muted small">@L["Accreditation No."]</label><p>@Model.CertificationBodyAccreditation</p></div> }
                 @if (!string.IsNullOrEmpty(Model.StandardVersion))
                 { <div class="col-md-4"><label class="form-label text-muted small">@L["Standard Version"]</label><p>@Model.StandardVersion</p></div> }
                 @if (Model.Stage1AuditDate.HasValue)
@@ -369,22 +370,22 @@
                 {
                     int survDays = (Model.NextSurveillanceAuditDate.Value.Date - SiteTime.Today).Days;
                     <div class="col-md-4">
-                        <label class="form-label text-muted small">Next Surveillance Audit</label>
+                        <label class="form-label text-muted small">@L["Next Surveillance Audit"]</label>
                         <p class="@(survDays < 0 ? "text-danger fw-bold" : survDays <= 60 ? "text-warning" : "")">
                             @Model.NextSurveillanceAuditDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
-                            @if (survDays >= 0) { <small class="text-muted">(@survDays days)</small> }
+                            @if (survDays >= 0) { <small class="text-muted">@L["({0} days)", survDays]</small> }
                         </p>
                     </div>
                 }
                 @if (Model.RecertificationDueDate.HasValue)
                 { <div class="col-md-4"><label class="form-label text-muted small">@L["Recertification Due"]</label><p>@Model.RecertificationDueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div> }
                 @if (!string.IsNullOrEmpty(Model.CertificateScope))
-                { <div class="col-12"><label class="form-label text-muted small">Certificate Scope</label><p class="border rounded p-2 bg-light">@Model.CertificateScope</p></div> }
+                { <div class="col-12"><label class="form-label text-muted small">@L["Certificate Scope"]</label><p class="border rounded p-2 bg-light">@Model.CertificateScope</p></div> }
             </div>
         }
         else
         {
-            <p class="text-muted">GMP / ISO specific details are shown for Third-Party Site Approvals and ISO Certifications.</p>
+            <p class="text-muted">@L["GMP / ISO specific details are shown for Third-Party Site Approvals and ISO Certifications."]</p>
         }
     </div>
 
@@ -393,7 +394,7 @@
         <div class="row g-3">
             <div class="col-md-6"><label class="form-label text-muted small">@L["Internal Responsible Person"]</label>
                 <p>@(ViewBag.ResponsiblePersonName ?? Model.InternalResponsiblePersonId ?? "—")</p></div>
-            <div class="col-md-6"><label class="form-label text-muted small">External Consultant</label>
+            <div class="col-md-6"><label class="form-label text-muted small">@L["External Consultant"]</label>
                 <p>@(string.IsNullOrEmpty(Model.ExternalConsultant) ? "—" : Model.ExternalConsultant)</p></div>
             <div class="col-md-6"><label class="form-label text-muted small">@L["Authority Contact Email"]</label>
                 <p>@if (!string.IsNullOrEmpty(Model.AuthorityContactEmail))
@@ -406,12 +407,12 @@
             }
             @if (Model.FeePaidDate.HasValue)
             {
-                <div class="col-md-3"><label class="form-label text-muted small">Fee Paid</label>
+                <div class="col-md-3"><label class="form-label text-muted small">@L["Fee Paid"]</label>
                     <p>@Model.FeePaidDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</p></div>
             }
             @if (!string.IsNullOrEmpty(Model.FeeReference))
             {
-                <div class="col-md-6"><label class="form-label text-muted small">Fee Reference</label><p>@Model.FeeReference</p></div>
+                <div class="col-md-6"><label class="form-label text-muted small">@L["Fee Reference"]</label><p>@Model.FeeReference</p></div>
             }
         </div>
     </div>
@@ -419,21 +420,21 @@
     <!-- ── Tab 6: Conditions ──────────────────────────────────────────── -->
     <div class="tab-pane fade" id="dtab6" role="tabpanel">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="text-uppercase small text-muted mb-0">Conditions of Licence / Certification
+            <h6 class="text-uppercase small text-muted mb-0">@L["Conditions of Licence / Certification"]
                 @{ var activeConds = Model.Conditions.Count(c => c.Status == LCConditionStatus.Active); }
                 @if (activeConds > 0) { <span class="badge bg-warning text-dark ms-1">@activeConds open</span> }
             </h6>
             @if (!Model.IsLocked)
             {
                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addConditionModal">
-                    <i class="fas fa-plus me-1"></i>Add Condition
+                    <i class="fas fa-plus me-1"></i>@L["Add Condition"]
                 </button>
             }
         </div>
 
         @if (!Model.Conditions.Any())
         {
-            <p class="text-muted">No conditions recorded for this licence / certification.</p>
+            <p class="text-muted">@L["No conditions recorded for this licence / certification."]</p>
         }
         else
         {
@@ -484,27 +485,27 @@
                                     <button class="btn btn-sm btn-outline-success ms-1"
                                             data-bs-toggle="modal" data-bs-target="#completeConditionModal"
                                             data-id="@cond.Id">
-                                        <i class="fas fa-check me-1"></i>Mark Complete
+                                        <i class="fas fa-check me-1"></i>@L["Mark Complete"]
                                     </button>
                                     <button class="btn btn-sm btn-outline-info ms-1"
                                             data-bs-toggle="modal" data-bs-target="#waiveConditionModal"
                                             data-id="@cond.Id">
-                                        <i class="fas fa-ban me-1"></i>Waive
+                                        <i class="fas fa-ban me-1"></i>@L["Waive"]
                                     </button>
                                     @if (!cond.LinkedCAPAId.HasValue)
                                     {
                                         <form asp-action="CreateCAPAFromCondition" method="post" class="d-inline ms-1"
-                                              onsubmit="return confirm('Create a CAPA from this condition?')">
+                                              data-confirm="@L["Create a CAPA from this condition?"]" onsubmit="return confirm(this.dataset.confirm)">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="conditionId" value="@cond.Id" />
                                             <input type="hidden" name="recordId" value="@Model.Id" />
                                             <button type="submit" class="btn btn-sm btn-outline-warning">
-                                                <i class="fas fa-exclamation-triangle me-1"></i>Raise CAPA
+                                                <i class="fas fa-exclamation-triangle me-1"></i>@L["Raise CAPA"]
                                             </button>
                                         </form>
                                     }
                                     <form asp-action="DeleteCondition" method="post" class="d-inline ms-1"
-                                          onsubmit="return confirm('Delete this condition?')">
+                                          data-confirm="@L["Delete this condition?"]" onsubmit="return confirm(this.dataset.confirm)">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="conditionId" value="@cond.Id" />
                                         <input type="hidden" name="recordId" value="@Model.Id" />
@@ -543,12 +544,12 @@
 
         @if (!pendingDocs.Any() && !cycleGroups.Any())
         {
-            <p class="text-muted">No documents uploaded. Upload certificates, inspection reports, evidence packages, and authority correspondence here.</p>
+            <p class="text-muted">@L["No documents uploaded. Upload certificates, inspection reports, evidence packages, and authority correspondence here."]</p>
         }
 
         @if (pendingDocs.Any())
         {
-            <h6 class="text-uppercase small text-muted mt-2 mb-1">Current (Pending Approval)</h6>
+            <h6 class="text-uppercase small text-muted mt-2 mb-1">@L["Current (Pending Approval)"]</h6>
             <table class="table table-sm table-hover mb-3">
                 <thead class="table-light">
                     <tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["Description"]</th><th>@L["Uploaded By"]</th><th>@L["Date"]</th><th>@L["Size"]</th><th></th></tr>
@@ -558,7 +559,7 @@
                     {
                         <tr>
                             <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id"><i class="fas fa-file me-1 text-muted"></i>@doc.FileName</a></td>
-                            <td><span class="badge bg-light text-dark border small">@doc.DocumentType</span></td>
+                            <td><span class="badge bg-light text-dark border small">@L.Enum(doc.DocumentType)</span></td>
                             <td><small class="text-muted">@doc.Description</small></td>
                             <td><small>@doc.UploadedById</small></td>
                             <td><small>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</small></td>
@@ -583,8 +584,8 @@
             var snap = Model.ApprovalSnapshots.FirstOrDefault(s => s.RenewalCycle == group.Key);
             <h6 class="text-uppercase small text-muted mt-3 mb-1">
                 <i class="fas fa-check-circle text-success me-1"></i>
-                Cycle @group.Key
-                @if (snap != null) { <span class="fw-normal">— Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</span> }
+                @L["Cycle {0}", group.Key]
+                @if (snap != null) { <span class="fw-normal">— @L["Approved {0}", snap.TakenAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)]</span> }
             </h6>
             <table class="table table-sm table-hover mb-3">
                 <thead class="table-light">
@@ -595,7 +596,7 @@
                     {
                         <tr>
                             <td><a asp-action="DownloadDocument" asp-route-id="@doc.Id"><i class="fas fa-file me-1 text-muted"></i>@doc.FileName</a></td>
-                            <td><span class="badge bg-light text-dark border small">@doc.DocumentType</span></td>
+                            <td><span class="badge bg-light text-dark border small">@L.Enum(doc.DocumentType)</span></td>
                             <td><small class="text-muted">@doc.Description</small></td>
                             <td><small>@doc.UploadedById</small></td>
                             <td><small>@doc.UploadedAt.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</small></td>
@@ -607,7 +608,7 @@
             </table>
         }
 
-        <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Accepted: @UploadRules.AcceptedLabel. Max 25 MB per file.</small>
+        <small class="text-muted"><i class="fas fa-info-circle me-1"></i>@L["Accepted: {0}. Max 25 MB per file.", UploadRules.AcceptedLabel]</small>
         <partial name="_DeletedAttachments" model='new OpenQMS.Models.DeletedFilesView(ViewBag.DeletedFiles as IEnumerable<OpenQMS.Models.ISoftDeletedFile>, "DownloadDocument", Noun: "documents")' />
     </div>
 
@@ -615,13 +616,13 @@
     <div class="tab-pane fade" id="dtab8" role="tabpanel">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
-                <h6 class="text-uppercase small text-muted mb-0">Linked RegIntel Product Applications</h6>
-                <p class="text-muted small mb-0">Product registrations that depend on this credential being current.</p>
+                <h6 class="text-uppercase small text-muted mb-0">@L["Linked RegIntel Product Applications"]</h6>
+                <p class="text-muted small mb-0">@L["Product registrations that depend on this credential being current."]</p>
             </div>
             @if (!Model.IsLocked)
             {
                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addDependencyModal">
-                    <i class="fas fa-link me-1"></i>Link Application
+                    <i class="fas fa-link me-1"></i>@L["Link Application"]
                 </button>
             }
         </div>
@@ -630,19 +631,19 @@
         {
             <div class="alert alert-danger mb-2">
                 <i class="fas fa-exclamation-triangle me-1"></i>
-                <strong>Supply Credential At Risk:</strong> This record is <strong>@L.Enum(Model.Status)</strong>. All @Model.Dependencies.Count linked product application(s) may be affected.
+                @H["<strong>Supply Credential At Risk:</strong> This record is <strong>{0}</strong>. All {1} linked product application(s) may be affected.", L.Enum(Model.Status), Model.Dependencies.Count]
             </div>
         }
 
         @if (!Model.Dependencies.Any())
         {
-            <p class="text-muted mt-2">No RegIntel applications linked. Use "Link Application" to create a dependency record.</p>
+            <p class="text-muted mt-2">@L["No RegIntel applications linked. Use \"Link Application\" to create a dependency record."]</p>
         }
         else
         {
             <table class="table table-sm table-hover mt-2">
                 <thead class="table-light">
-                    <tr><th>@L["RI Number"]</th><th>@L["Product Name"]</th><th>App Status</th><th>Linked Since</th><th>@L["Notes"]</th><th class="text-center">@L["Actions"]</th></tr>
+                    <tr><th>@L["RI Number"]</th><th>@L["Product Name"]</th><th>@L["App Status"]</th><th>@L["Linked Since"]</th><th>@L["Notes"]</th><th class="text-center">@L["Actions"]</th></tr>
                 </thead>
                 <tbody>
                     @foreach (var dep in Model.Dependencies.OrderBy(d => d.LinkedSince))
@@ -658,7 +659,7 @@
                                 @if (!Model.IsLocked)
                                 {
                                     <form asp-action="RemoveDependency" method="post" class="d-inline"
-                                          onsubmit="return confirm('Remove this dependency link?')">
+                                          data-confirm="@L["Remove this dependency link?"]" onsubmit="return confirm(this.dataset.confirm)">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="dependencyId" value="@dep.Id" />
                                         <input type="hidden" name="recordId" value="@Model.Id" />
@@ -677,12 +678,12 @@
     <div class="tab-pane fade" id="dtab9" role="tabpanel">
         @if (!Model.AuditLogs.Any())
         {
-            <p class="text-muted">No audit log entries.</p>
+            <p class="text-muted">@L["No audit log entries."]</p>
         }
         else
         {
             <table class="table table-sm">
-                <thead class="table-light"><tr><th>Timestamp (UTC)</th><th>@L["User"]</th><th>@L["Action"]</th><th>@L["Details"]</th></tr></thead>
+                <thead class="table-light"><tr><th>@L["Timestamp (UTC)"]</th><th>@L["User"]</th><th>@L["Action"]</th><th>@L["Details"]</th></tr></thead>
                 <tbody>
                     @foreach (var log in Model.AuditLogs.OrderByDescending(l => l.Timestamp))
                     {
@@ -702,7 +703,7 @@
     <div class="tab-pane fade" id="dtab10" role="tabpanel">
         @if (!Model.ApprovalSnapshots.Any())
         {
-            <p class="text-muted">No approval cycles recorded yet. A snapshot is captured automatically each time this record is transitioned to <strong>Issued / Active</strong>.</p>
+            <p class="text-muted">@H["No approval cycles recorded yet. A snapshot is captured automatically each time this record is transitioned to <strong>Issued / Active</strong>."]</p>
         }
         else
         {
@@ -731,8 +732,8 @@
 
                 <div class="card mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span class="fw-bold"><i class="fas fa-check-circle text-success me-2"></i>Cycle @snap.RenewalCycle</span>
-                        <small class="text-muted">Approved @snap.TakenAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) UTC</small>
+                        <span class="fw-bold"><i class="fas fa-check-circle text-success me-2"></i>@L["Cycle {0}", snap.RenewalCycle]</span>
+                        <small class="text-muted">@L["Approved {0} UTC", snap.TakenAt.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)]</small>
                     </div>
                     <div class="card-body">
                         @foreach (var grp in lcSections)
@@ -755,7 +756,7 @@
 
                         @if (data.TryGetProperty("Documents", out var docArr) && docArr.GetArrayLength() > 0)
                         {
-                            <h6 class="small text-uppercase text-muted mb-1">Documents at Approval</h6>
+                            <h6 class="small text-uppercase text-muted mb-1">@L["Documents at Approval"]</h6>
                             <table class="table table-sm table-bordered mb-2">
                                 <thead class="table-light"><tr><th>@L["File Name"]</th><th>@L["Type"]</th><th>@L["SHA-256"]</th></tr></thead>
                                 <tbody>
@@ -773,7 +774,7 @@
 
                         @if (data.TryGetProperty("Conditions", out var condArr) && condArr.GetArrayLength() > 0)
                         {
-                            <h6 class="small text-uppercase text-muted mb-1">Conditions at Approval</h6>
+                            <h6 class="small text-uppercase text-muted mb-1">@L["Conditions at Approval"]</h6>
                             <ul class="list-unstyled mb-0">
                                 @foreach (var cond in condArr.EnumerateArray())
                                 {
@@ -796,14 +797,14 @@
 @if (!string.IsNullOrEmpty(Model.RegulatoryActionNotes))
 {
     <div class="alert alert-warning mt-2">
-        <strong><i class="fas fa-exclamation-triangle me-1"></i>Regulatory Action Notes:</strong><br />
+        <strong><i class="fas fa-exclamation-triangle me-1"></i>@L["Regulatory Action Notes:"]</strong><br />
         @Model.RegulatoryActionNotes
     </div>
 }
 @if (!string.IsNullOrEmpty(Model.JustificationReason))
 {
     <div class="alert alert-info mt-2">
-        <strong>Justification / Reason:</strong> @Model.JustificationReason
+        <strong>@L["Justification / Reason:"]</strong> @Model.JustificationReason
     </div>
 }
 
@@ -815,24 +816,24 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="recordId" value="@Model.Id" />
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title"><i class="fas fa-tasks me-2"></i>Add Condition</h5>
+                    <h5 class="modal-title"><i class="fas fa-tasks me-2"></i>@L["Add Condition"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Condition Description <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">@L["Condition Description"] <span class="text-danger">*</span></label>
                         <textarea name="conditionDescription" class="form-control" rows="4"
-                                  placeholder="Describe the condition imposed by the authority or certification body..." required></textarea>
+                                  placeholder="@L["Describe the condition imposed by the authority or certification body..."]" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">@L["Due Date"]</label>
                         <input type="date" name="dueDate" class="form-control" />
-                        <small class="text-muted">Date by which the condition must be satisfied.</small>
+                        <small class="text-muted">@L["Date by which the condition must be satisfied."]</small>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-warning"><i class="fas fa-plus me-1"></i>Add Condition</button>
+                    <button type="submit" class="btn btn-warning"><i class="fas fa-plus me-1"></i>@L["Add Condition"]</button>
                 </div>
             </form>
         </div>
@@ -848,12 +849,12 @@
                 <input type="hidden" name="recordId" value="@Model.Id" />
                 <input type="hidden" name="conditionId" id="editConditionId" />
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Condition</h5>
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>@L["Edit Condition"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Condition Description <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">@L["Condition Description"] <span class="text-danger">*</span></label>
                         <textarea name="conditionDescription" id="editConditionDesc" class="form-control" rows="4" required></textarea>
                     </div>
                     <div class="mb-3">
@@ -879,19 +880,19 @@
                 <input type="hidden" name="recordId" value="@Model.Id" />
                 <input type="hidden" name="conditionId" id="completeConditionId" />
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Mark Condition Complete</h5>
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>@L["Mark Condition Complete"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-bold">@L["Completion Notes"]</label>
                         <textarea name="completionNotes" class="form-control" rows="3"
-                                  placeholder="Describe how the condition was satisfied, reference evidence submitted..."></textarea>
+                                  placeholder="@L["Describe how the condition was satisfied, reference evidence submitted..."]"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>Mark Complete</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check me-1"></i>@L["Mark Complete"]</button>
                 </div>
             </form>
         </div>
@@ -907,20 +908,20 @@
                 <input type="hidden" name="recordId" value="@Model.Id" />
                 <input type="hidden" name="conditionId" id="waiveConditionId" />
                 <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title"><i class="fas fa-ban me-2"></i>Waive Condition</h5>
+                    <h5 class="modal-title"><i class="fas fa-ban me-2"></i>@L["Waive Condition"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-info small"><i class="fas fa-info-circle me-1"></i>A waiver records that this condition will not be formally fulfilled. Document the authority's or management's approval below.</div>
+                    <div class="alert alert-info small"><i class="fas fa-info-circle me-1"></i>@L["A waiver records that this condition will not be formally fulfilled. Document the authority's or management's approval below."]</div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Waiver Justification <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">@L["Waiver Justification"] <span class="text-danger">*</span></label>
                         <textarea name="waiverReason" class="form-control" rows="3"
-                                  placeholder="Authority waiver reference, management approval, documented justification..." required></textarea>
+                                  placeholder="@L["Authority waiver reference, management approval, documented justification..."]" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-info text-white"><i class="fas fa-ban me-1"></i>Confirm Waiver</button>
+                    <button type="submit" class="btn btn-info text-white"><i class="fas fa-ban me-1"></i>@L["Confirm Waiver"]</button>
                 </div>
             </form>
         </div>
@@ -944,7 +945,7 @@
                         <select name="documentType" class="form-select" required>
                             @foreach (var dt in Enum.GetValues<LCDocumentType>())
                             {
-                                <option value="@dt">@dt</option>
+                                <option value="@dt">@L.Enum(dt)</option>
                             }
                         </select>
                     </div>
@@ -952,12 +953,12 @@
                         <label class="form-label fw-bold">@L["File"] <span class="text-danger">*</span></label>
                         <input type="file" name="file" class="form-control" required
                                accept="@UploadRules.Accept" />
-                        <small class="text-muted">Accepted: @UploadRules.AcceptedLabel. Max 25 MB.</small>
+                        <small class="text-muted">@L["Accepted: {0}. Max 25 MB.", UploadRules.AcceptedLabel]</small>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">@L["Description (optional)"]</label>
                         <input type="text" name="description" class="form-control"
-                               placeholder="Brief description of this document's purpose" />
+                               placeholder="@L["Brief description of this document's purpose"]" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -977,27 +978,27 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="recordId" value="@Model.Id" />
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="fas fa-link me-2"></i>Link RegIntel Application</h5>
+                    <h5 class="modal-title"><i class="fas fa-link me-2"></i>@L["Link RegIntel Application"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-muted small">Select a product registration that depends on this licence/certification being current.</p>
+                    <p class="text-muted small">@L["Select a product registration that depends on this licence/certification being current."]</p>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">RegIntel Application <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">@L["RegIntel Application"] <span class="text-danger">*</span></label>
                         <select name="regulatoryApplicationId" asp-items='@(ViewBag.RIApplicationsList as SelectList)'
                                 class="form-select select2-ri" required>
-                            <option value="">— Search for application —</option>
+                            <option value="">@L["— Search for application —"]</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">@L["Notes (optional)"]</label>
                         <input type="text" name="notes" class="form-control"
-                               placeholder="e.g. GMP Clearance required for ARTG 123456 supply" />
+                               placeholder="@L["e.g. GMP Clearance required for ARTG 123456 supply"]" />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-link me-1"></i>Link Application</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-link me-1"></i>@L["Link Application"]</button>
                 </div>
             </form>
         </div>
@@ -1013,25 +1014,25 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title"><i class="fas fa-sync me-2"></i>Initiate Renewal Now</h5>
+                    <h5 class="modal-title"><i class="fas fa-sync me-2"></i>@L["Initiate Renewal Now"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will move <strong>@Model.LCNumber</strong> to <strong class="text-warning-emphasis">@L["Renewal Due"]</strong> so the renewal application can be progressed.</p>
+                    <p>@H["This will move <strong>{0}</strong> to <strong class=\"text-warning-emphasis\">Renewal Due</strong> so the renewal application can be progressed.", Model.LCNumber]</p>
                     @if (Model.ExpiryDate.HasValue)
                     {
                         <div class="alert alert-info small mb-3">
-                            <i class="fas fa-info-circle me-1"></i>This record would otherwise be transitioned automatically within @(Model.RenewalLeadTimeDays > 0 ? Model.RenewalLeadTimeDays : 90) day(s) of its expiry (@Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)). Use this to start the renewal early.
+                            <i class="fas fa-info-circle me-1"></i>@L["This record would otherwise be transitioned automatically within {0} day(s) of its expiry ({1}). Use this to start the renewal early.", Model.RenewalLeadTimeDays > 0 ? Model.RenewalLeadTimeDays : 90, Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]
                         </div>
                     }
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Reason for early renewal <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="3" placeholder="e.g. authority advised early resubmission, scheduling ahead of lead time, change in supply arrangements..." required></textarea>
+                        <label class="form-label fw-bold">@L["Reason for early renewal"] <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="@L["e.g. authority advised early resubmission, scheduling ahead of lead time, change in supply arrangements..."]" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-warning"><i class="fas fa-sync me-1"></i>Initiate Renewal</button>
+                    <button type="submit" class="btn btn-warning"><i class="fas fa-sync me-1"></i>@L["Initiate Renewal"]</button>
                 </div>
             </form>
         </div>
@@ -1045,25 +1046,25 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Issue / Activate Licence</h5>
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>@L["Issue / Activate Licence"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will mark <strong>@Model.LCNumber</strong> as <strong class="text-success">Issued &amp; Active</strong>.</p>
-                    <p class="text-muted small">Ensure the Licence Number and Issue Date are recorded in Edit before proceeding.</p>
-                    <div class="alert alert-warning small"><i class="fas fa-lock me-1"></i>This action requires Licence Manager credentials.</div>
+                    <p>@H["This will mark <strong>{0}</strong> as <strong class=\"text-success\">Issued &amp; Active</strong>.", Model.LCNumber]</p>
+                    <p class="text-muted small">@L["Ensure the Licence Number and Issue Date are recorded in Edit before proceeding."]</p>
+                    <div class="alert alert-warning small"><i class="fas fa-lock me-1"></i>@L["This action requires Licence Manager credentials."]</div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Your Email Address</label>
+                        <label class="form-label fw-bold">@L["Your Email Address"]</label>
                         <input type="email" name="email" class="form-control" placeholder="manager@company.com" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Your Password</label>
+                        <label class="form-label fw-bold">@L["Your Password"]</label>
                         <input type="password" name="pwd" class="form-control" required />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle me-1"></i>Confirm Issue</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle me-1"></i>@L["Confirm Issue"]</button>
                 </div>
             </form>
         </div>
@@ -1078,22 +1079,22 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="fas fa-pause-circle me-2"></i>Suspend Licence / Certification</h5>
+                    <h5 class="modal-title"><i class="fas fa-pause-circle me-2"></i>@L["Suspend Licence / Certification"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will mark <strong>@Model.LCNumber</strong> as <strong class="text-danger">@L["Suspended"]</strong> and lock the record.</p>
-                    <div class="alert alert-danger small"><i class="fas fa-exclamation-triangle me-1"></i>All linked product applications will be flagged as Supply Credential At Risk.</div>
+                    <p>@H["This will mark <strong>{0}</strong> as <strong class=\"text-danger\">Suspended</strong> and lock the record.", Model.LCNumber]</p>
+                    <div class="alert alert-danger small"><i class="fas fa-exclamation-triangle me-1"></i>@L["All linked product applications will be flagged as Supply Credential At Risk."]</div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">@L["Suspension Reason"] <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="3" placeholder="Regulatory action, inspection finding, authority-directed suspension..." required></textarea>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="@L["Regulatory action, inspection finding, authority-directed suspension..."]" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Your Email Address</label>
+                        <label class="form-label fw-bold">@L["Your Email Address"]</label>
                         <input type="email" name="email" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Your Password</label>
+                        <label class="form-label fw-bold">@L["Your Password"]</label>
                         <input type="password" name="pwd" class="form-control" required />
                     </div>
                 </div>
@@ -1114,27 +1115,27 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title"><i class="fas fa-times-circle me-2"></i>Withdraw Licence / Certification</h5>
+                    <h5 class="modal-title"><i class="fas fa-times-circle me-2"></i>@L["Withdraw Licence / Certification"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will mark <strong>@Model.LCNumber</strong> as <strong>Withdrawn</strong> and lock the record.</p>
+                    <p>@H["This will mark <strong>{0}</strong> as <strong>Withdrawn</strong> and lock the record.", Model.LCNumber]</p>
                     <div class="mb-3">
                         <label class="form-label fw-bold">@L["Withdrawal Reason"] <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="3" placeholder="Voluntary surrender, business model change, superseded by new record..." required></textarea>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="@L["Voluntary surrender, business model change, superseded by new record..."]" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Your Email Address</label>
+                        <label class="form-label fw-bold">@L["Your Email Address"]</label>
                         <input type="email" name="email" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Your Password</label>
+                        <label class="form-label fw-bold">@L["Your Password"]</label>
                         <input type="password" name="pwd" class="form-control" required />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-dark"><i class="fas fa-times-circle me-1"></i>Confirm Withdrawal</button>
+                    <button type="submit" class="btn btn-dark"><i class="fas fa-times-circle me-1"></i>@L["Confirm Withdrawal"]</button>
                 </div>
             </form>
         </div>
@@ -1150,20 +1151,20 @@
                 <input type="hidden" name="id" value="@Model.Id" />
                 <input type="hidden" name="newStatus" value="NotApplicable" />
                 <div class="modal-header bg-secondary text-white">
-                    <h5 class="modal-title"><i class="fas fa-ban me-2"></i>Mark as Not Applicable</h5>
+                    <h5 class="modal-title"><i class="fas fa-ban me-2"></i>@L["Mark as Not Applicable"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>This will mark <strong>@Model.LCNumber</strong> as <strong>Not Applicable</strong> with documented justification.</p>
-                    <div class="alert alert-info small"><i class="fas fa-info-circle me-1"></i>Recording N/A with justification is compliance-positive and demonstrates considered determination during TGA inspections.</div>
+                    <p>@H["This will mark <strong>{0}</strong> as <strong>Not Applicable</strong> with documented justification.", Model.LCNumber]</p>
+                    <div class="alert alert-info small"><i class="fas fa-info-circle me-1"></i>@L["Recording N/A with justification is compliance-positive and demonstrates considered determination during TGA inspections."]</div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Justification <span class="text-danger">*</span></label>
-                        <textarea name="reason" class="form-control" rows="4" placeholder="Reason this licence type is not required for the current operating model..." required></textarea>
+                        <label class="form-label fw-bold">@L["Justification"] <span class="text-danger">*</span></label>
+                        <textarea name="reason" class="form-control" rows="4" placeholder="@L["Reason this licence type is not required for the current operating model..."]" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-secondary"><i class="fas fa-ban me-1"></i>Confirm Not Applicable</button>
+                    <button type="submit" class="btn btn-secondary"><i class="fas fa-ban me-1"></i>@L["Confirm Not Applicable"]</button>
                 </div>
             </form>
         </div>

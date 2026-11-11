@@ -191,14 +191,7 @@ namespace OpenQMS.Controllers
 
         // Finding 1: credential verification for all workflow transitions (email + password)
 
-        /// <summary>A workflow error in the user's language (values that are states or lists are translated too).</summary>
-        private string WorkflowMessage(ReleaseWorkflowService.WorkflowResult r) =>
-            this.T(r.ErrorTemplate, r.ErrorArgs.Select(a => a switch
-            {
-                Enum e        => (object)this.T(EnumHelper.Display(e)),
-                string[] xs   => string.Join(", ", xs.Select(x => this.T(x))),
-                _             => a,
-            }).ToArray());
+        private string WorkflowMessage(ReleaseWorkflowService.WorkflowResult r) => this.TError(r);
 
         private async Task<bool> VerifyCredentials(string email, string pwd)
         {

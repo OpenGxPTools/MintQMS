@@ -1,3 +1,4 @@
+using OpenQMS.Localization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -143,7 +144,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Licence/Certification record {model.LCNumber} created.";
+            TempData["Success"] = this.T("Licence/Certification record {0} created.", model.LCNumber);
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
@@ -161,8 +162,8 @@ namespace OpenQMS.Controllers
             if (record.IsLocked)
             {
                 TempData["Error"] = LicCertWorkflowService.IsClosed(record.Status)
-                    ? "This record is closed and cannot be edited."
-                    : "This record is locked and cannot be edited. Create a Variation to make changes.";
+                    ? this.T("This record is closed and cannot be edited.")
+                    : this.T("This record is locked and cannot be edited. Create a Variation to make changes.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -194,8 +195,8 @@ namespace OpenQMS.Controllers
             if (existing.IsLocked)
             {
                 TempData["Error"] = LicCertWorkflowService.IsClosed(existing.Status)
-                    ? "This record is closed and cannot be edited."
-                    : "This record is locked and cannot be edited. Create a Variation to make changes.";
+                    ? this.T("This record is closed and cannot be edited.")
+                    : this.T("This record is locked and cannot be edited. Create a Variation to make changes.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -277,7 +278,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Record updated successfully.";
+            TempData["Success"] = this.T("Record updated successfully.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -357,7 +358,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"Record {record.LCNumber} deleted.";
+            TempData["Success"] = this.T("Record {0} deleted.", record.LCNumber);
             return RedirectToAction(nameof(Index));
         }
 
@@ -377,7 +378,7 @@ namespace OpenQMS.Controllers
             var result = _workflow.ValidateTransition(record, newStatus, reason);
             if (!result.Success)
             {
-                TempData["Error"] = result.Error;
+                TempData["Error"] = this.TError(result);
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -386,7 +387,7 @@ namespace OpenQMS.Controllers
             await _workflow.ApplyTransition(record, newStatus, performedById, performedByName, reason);
             await FireTransitionNotification(record, newStatus, performedByName);
 
-            TempData["Success"] = $"Status updated to: {newStatus}.";
+            TempData["Success"] = this.T("Status updated to: {0}.", newStatus);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -407,13 +408,13 @@ namespace OpenQMS.Controllers
 
             if (record.Status != LCStatus.IssuedActive)
             {
-                TempData["Error"] = "A renewal can only be initiated from an Issued / Active record.";
+                TempData["Error"] = this.T("A renewal can only be initiated from an Issued / Active record.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["Error"] = "A reason is required to initiate an early renewal.";
+                TempData["Error"] = this.T("A reason is required to initiate an early renewal.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -421,7 +422,7 @@ namespace OpenQMS.Controllers
             var result = _workflow.ValidateTransition(record, LCStatus.RenewalDue, note);
             if (!result.Success)
             {
-                TempData["Error"] = result.Error;
+                TempData["Error"] = this.TError(result);
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -430,7 +431,7 @@ namespace OpenQMS.Controllers
             await _workflow.ApplyTransition(record, LCStatus.RenewalDue, performedById, performedByName, note);
             await FireTransitionNotification(record, LCStatus.RenewalDue, performedByName);
 
-            TempData["Success"] = "Renewal initiated — record moved to Renewal Due.";
+            TempData["Success"] = this.T("Renewal initiated — record moved to Renewal Due.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -470,7 +471,7 @@ namespace OpenQMS.Controllers
             if (user == null ||
                 _passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, pwd) == PasswordVerificationResult.Failed)
             {
-                TempData["Error"] = "Invalid credentials. Action not authorised.";
+                TempData["Error"] = this.T("Invalid credentials. Action not authorised.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -483,14 +484,14 @@ namespace OpenQMS.Controllers
             var result = _workflow.ValidateTransition(record, newStatus, reason);
             if (!result.Success)
             {
-                TempData["Error"] = result.Error;
+                TempData["Error"] = this.TError(result);
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             await _workflow.ApplyTransition(record, newStatus, user.Id.ToString(), user.UserName ?? email, reason);
             await FireTransitionNotification(record, newStatus, user.UserName ?? email);
 
-            TempData["Success"] = $"Status updated to: {newStatus}.";
+            TempData["Success"] = this.T("Status updated to: {0}.", newStatus);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -525,7 +526,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Condition added.";
+            TempData["Success"] = this.T("Condition added.");
             TempData["ActiveTab"] = "dtab6";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
@@ -554,7 +555,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Condition updated.";
+            TempData["Success"] = this.T("Condition updated.");
             TempData["ActiveTab"] = "dtab6";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
@@ -586,7 +587,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Condition marked as completed.";
+            TempData["Success"] = this.T("Condition marked as completed.");
             TempData["ActiveTab"] = "dtab6";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
@@ -612,7 +613,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Condition deleted.";
+            TempData["Success"] = this.T("Condition deleted.");
             TempData["ActiveTab"] = "dtab6";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
@@ -644,7 +645,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Condition marked as waived.";
+            TempData["Success"] = this.T("Condition marked as waived.");
             TempData["ActiveTab"] = "dtab6";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
@@ -700,7 +701,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"CAPA {capa.CapaId} created from condition.";
+            TempData["Success"] = this.T("CAPA {0} created from condition.", capa.CapaId);
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
 
@@ -717,7 +718,7 @@ namespace OpenQMS.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = recordId });
             }
@@ -725,14 +726,14 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!AllowedExtensions.Contains(ext))
             {
-                TempData["Error"] = $"File type '{ext}' is not allowed. Accepted: {string.Join(", ", AllowedExtensions)}";
+                TempData["Error"] = this.T("File type '{0}' is not allowed. Accepted: {1}", ext, string.Join(", ", AllowedExtensions));
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = recordId });
             }
 
             if (file.Length > MaxFileSizeBytes)
             {
-                TempData["Error"] = "File exceeds the 25 MB maximum size limit.";
+                TempData["Error"] = this.T("File exceeds the 25 MB maximum size limit.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = recordId });
             }
@@ -742,7 +743,7 @@ namespace OpenQMS.Controllers
 
             if (record.IsLocked)
             {
-                TempData["Error"] = "This record is locked and cannot be modified.";
+                TempData["Error"] = this.T("This record is locked and cannot be modified.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = recordId });
             }
@@ -786,7 +787,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"Document '{file.FileName}' uploaded.";
+            TempData["Success"] = this.T("Document '{0}' uploaded.", file.FileName);
             TempData["ActiveTab"] = "dtab7";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
@@ -845,14 +846,14 @@ namespace OpenQMS.Controllers
             var record = await _context.LicenceCertificationRecords.FindAsync(recordId);
             if (record != null && record.IsLocked)
             {
-                TempData["Error"] = "This record is locked and cannot be modified — documents cannot be removed.";
+                TempData["Error"] = this.T("This record is locked and cannot be modified — documents cannot be removed.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = recordId });
             }
 
             if (string.IsNullOrWhiteSpace(deletionReason))
             {
-                TempData["Error"] = "A reason is required to delete a document.";
+                TempData["Error"] = this.T("A reason is required to delete a document.");
                 TempData["ActiveTab"] = "dtab7";
                 return RedirectToAction(nameof(Details), new { id = recordId });
             }
@@ -877,7 +878,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"Document '{doc.FileName}' deleted.";
+            TempData["Success"] = this.T("Document '{0}' deleted.", doc.FileName);
             TempData["ActiveTab"] = "dtab7";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
@@ -894,7 +895,7 @@ namespace OpenQMS.Controllers
             if (lcRecord == null) return NotFound();
             if (lcRecord.IsLocked)
             {
-                TempData["Error"] = "This record is locked and cannot be modified.";
+                TempData["Error"] = this.T("This record is locked and cannot be modified.");
                 TempData["ActiveTab"] = "dtab8";
                 return RedirectToAction(nameof(Details), new { id = recordId });
             }
@@ -926,11 +927,11 @@ namespace OpenQMS.Controllers
                 });
 
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Dependency link added.";
+                TempData["Success"] = this.T("Dependency link added.");
             }
             else
             {
-                TempData["Error"] = "This RegIntel application is already linked.";
+                TempData["Error"] = this.T("This RegIntel application is already linked.");
             }
 
             TempData["ActiveTab"] = "dtab8";
@@ -945,7 +946,7 @@ namespace OpenQMS.Controllers
             var lcRecord = await _context.LicenceCertificationRecords.FindAsync(recordId);
             if (lcRecord != null && lcRecord.IsLocked)
             {
-                TempData["Error"] = "This record is locked and cannot be modified.";
+                TempData["Error"] = this.T("This record is locked and cannot be modified.");
                 TempData["ActiveTab"] = "dtab8";
                 return RedirectToAction(nameof(Details), new { id = recordId });
             }
@@ -966,7 +967,7 @@ namespace OpenQMS.Controllers
                 });
 
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Dependency link removed.";
+                TempData["Success"] = this.T("Dependency link removed.");
             }
 
             TempData["ActiveTab"] = "dtab8";
