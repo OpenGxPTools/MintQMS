@@ -1,4 +1,8 @@
 {
+ "'{0}' is not a valid frequency for {1} maintenance.": {
+  "es": "'{0}' no es una frecuencia válida para el mantenimiento {1}.",
+  "pt-BR": "'{0}' não é uma frequência válida para a manutenção {1}."
+ },
  "(filtered from _MAX_ total entries)": {
   "es": "(filtrado de _MAX_ registros en total)",
   "pt-BR": "(filtrado de _MAX_ registros no total)",
@@ -40,6 +44,14 @@
   "es": "-- Agregar proveedor --",
   "pt-BR": "-- Adicionar fornecedor --"
  },
+ "-- Module Type --": {
+  "es": "-- Tipo de módulo --",
+  "pt-BR": "-- Tipo de módulo --"
+ },
+ "-- No strengths defined in master data --": {
+  "es": "-- No hay concentraciones definidas en los datos maestros --",
+  "pt-BR": "-- Nenhuma concentração definida nos dados mestres --"
+ },
  "-- Not Assessed --": {
   "es": "-- No evaluado --",
   "pt-BR": "-- Não avaliado --"
@@ -56,6 +68,38 @@
   "es": "-- Seleccionar --",
   "pt-BR": "-- Selecionar --"
  },
+ "-- Select a Material to Add --": {
+  "es": "-- Seleccione un material para agregar --",
+  "pt-BR": "-- Selecione um material para adicionar --"
+ },
+ "-- Select a Product to Add --": {
+  "es": "-- Seleccione un producto para agregar --",
+  "pt-BR": "-- Selecione um produto para adicionar --"
+ },
+ "-- Select a record --": {
+  "es": "-- Seleccione un registro --",
+  "pt-BR": "-- Selecione um registro --"
+ },
+ "-- Select a Service to Add --": {
+  "es": "-- Seleccione un servicio para agregar --",
+  "pt-BR": "-- Selecione um serviço para adicionar --"
+ },
+ "-- Select Approved Lab --": {
+  "es": "-- Seleccione un laboratorio aprobado --",
+  "pt-BR": "-- Selecione um laboratório aprovado --"
+ },
+ "-- Select Approved Manufacturer --": {
+  "es": "-- Seleccione un fabricante aprobado --",
+  "pt-BR": "-- Selecione um fabricante aprovado --"
+ },
+ "-- Select Approved Supplier (Service) --": {
+  "es": "-- Seleccione un proveedor aprobado (servicio) --",
+  "pt-BR": "-- Selecione um fornecedor aprovado (serviço) --"
+ },
+ "-- Select Asset --": {
+  "es": "-- Seleccione un activo --",
+  "pt-BR": "-- Selecione um ativo --"
+ },
  "-- Select category --": {
   "es": "-- Seleccione una categoría --",
   "pt-BR": "-- Selecione uma categoria --"
@@ -68,6 +112,30 @@
   "es": "-- Seleccione el tipo de evento --",
   "pt-BR": "-- Selecione o tipo de evento --"
  },
+ "-- Select Module --": {
+  "es": "-- Seleccione un módulo --",
+  "pt-BR": "-- Selecione um módulo --"
+ },
+ "-- Select Module first --": {
+  "es": "-- Seleccione primero un módulo --",
+  "pt-BR": "-- Selecione primeiro um módulo --"
+ },
+ "-- Select Process --": {
+  "es": "-- Seleccione un proceso --",
+  "pt-BR": "-- Selecione um processo --"
+ },
+ "-- Select Product --": {
+  "es": "-- Seleccione un producto --",
+  "pt-BR": "-- Selecione um produto --"
+ },
+ "-- Select product first --": {
+  "es": "-- Seleccione primero un producto --",
+  "pt-BR": "-- Selecione primeiro um produto --"
+ },
+ "-- Select Record Type first --": {
+  "es": "-- Seleccione primero el tipo de registro --",
+  "pt-BR": "-- Selecione primeiro o tipo de registro --"
+ },
  "-- Select Root Cause Category --": {
   "es": "-- Seleccione la categoría de causa raíz --",
   "pt-BR": "-- Selecione a categoria da causa-raiz --"
@@ -75,6 +143,10 @@
  "-- Select Severity --": {
   "es": "-- Seleccione la gravedad --",
   "pt-BR": "-- Selecione a gravidade --"
+ },
+ "-- Select Strength --": {
+  "es": "-- Seleccione la concentración --",
+  "pt-BR": "-- Selecione a concentração --"
  },
  "-- Select type --": {
   "es": "-- Seleccione un tipo --",
@@ -145,6 +217,14 @@
   "es": "5 - Baja (difícil de detectar)",
   "pt-BR": "5 - Baixa (difícil de detectar)"
  },
+ "<strong>&#9888; {0} Outstanding item(s)</strong> — Non-blocking; AP submission is not prevented but items should be addressed.": {
+  "es": "<strong>&#9888; {0} elemento(s) pendiente(s)</strong> — No bloqueante; no impide el envío a la PA, pero los elementos deben atenderse.",
+  "pt-BR": "<strong>&#9888; {0} item(ns) pendente(s)</strong> — Não bloqueante; não impede o envio à PA, mas os itens devem ser tratados."
+ },
+ "<strong>{0} batch release record(s)</strong> are awaiting AP decision.": {
+  "es": "<strong>{0} registro(s) de liberación de lote</strong> esperan la decisión de la PA.",
+  "pt-BR": "<strong>{0} registro(s) de liberação de lote</strong> aguardam a decisão da PA."
+ },
  "<strong>{0} critical finding(s)</strong> across all audits require attention.": {
   "es": "<strong>{0} hallazgo(s) crítico(s)</strong> en el conjunto de auditorías requieren atención.",
   "pt-BR": "<strong>{0} constatação(ões) crítica(s)</strong> no conjunto das auditorias exigem atenção."
@@ -157,6 +237,10 @@
   "es": "<strong>{0} riesgo(s) abierto(s) con NPR alto</strong> (NPR ≥ 80) requieren atención inmediata.",
   "pt-BR": "<strong>{0} risco(s) aberto(s) com NPR alto</strong> (NPR ≥ 80) exigem atenção imediata."
  },
+ "<strong>{0} overdue maintenance(s)</strong> require immediate attention.": {
+  "es": "<strong>{0} mantenimiento(s) vencido(s)</strong> requieren atención inmediata.",
+  "pt-BR": "<strong>{0} manutenção(ões) atrasada(s)</strong> exigem atenção imediata."
+ },
  "<strong>{0}</strong> identifies the primary area affected.": {
   "es": "<strong>{0}</strong> identifica el área principal afectada.",
   "pt-BR": "<strong>{0}</strong> identifica a principal área afetada."
@@ -168,6 +252,14 @@
  "<strong>{0}</strong> sets the depth of assessment and the action plan:": {
   "es": "<strong>{0}</strong> determina la profundidad de la evaluación y el plan de acción:",
   "pt-BR": "<strong>{0}</strong> define a profundidade da avaliação e o plano de ação:"
+ },
+ "[show more]": {
+  "es": "[ver más]",
+  "pt-BR": "[ver mais]"
+ },
+ "A cancellation reason is required.": {
+  "es": "Se requiere un motivo de cancelación.",
+  "pt-BR": "É necessário um motivo de cancelamento."
  },
  "A CAPA is already linked to this audit.": {
   "es": "Ya hay una CAPA vinculada a esta auditoría.",
@@ -206,21 +298,45 @@
   "es": "Una descripción de cada acción para eliminar la causa raíz identificada",
   "pt-BR": "Uma descrição de cada ação para eliminar a causa-raiz identificada"
  },
+ "A hold reason is required.": {
+  "es": "Se requiere un motivo para poner en espera.",
+  "pt-BR": "É necessário um motivo para colocar em espera."
+ },
+ "A justification is required when marking a record as Not Applicable.": {
+  "es": "Se requiere una justificación al marcar un registro como No aplicable.",
+  "pt-BR": "É necessária uma justificativa ao marcar um registro como Não aplicável."
+ },
  "A justification reason is required.": {
   "es": "Se requiere un motivo de justificación.",
   "pt-BR": "É necessário um motivo de justificativa."
+ },
+ "A Licence / Certificate Number must be recorded before issuing.": {
+  "es": "Debe registrarse el número de licencia / certificado antes de emitir.",
+  "pt-BR": "O número da licença / certificado deve ser registrado antes da emissão."
  },
  "A reason for return is required.": {
   "es": "Se requiere un motivo de devolución.",
   "pt-BR": "É necessário um motivo de devolução."
  },
+ "A reason is required for a time-limited approval (e.g. the condition or why the approval is time-limited).": {
+  "es": "Se requiere un motivo para una aprobación con plazo limitado (p. ej., la condición o por qué la aprobación tiene plazo).",
+  "pt-BR": "É necessário um motivo para uma aprovação com prazo limitado (p. ex., a condição ou por que a aprovação tem prazo)."
+ },
  "A reason is required to cancel a training.": {
   "es": "Se requiere un motivo para cancelar una capacitación.",
   "pt-BR": "É necessário um motivo para cancelar um treinamento."
  },
+ "A reason is required to delete a document.": {
+  "es": "Se requiere un motivo para eliminar un documento.",
+  "pt-BR": "É necessário um motivo para excluir um documento."
+ },
  "A reason is required to delete an attachment.": {
   "es": "Se requiere un motivo para eliminar un adjunto.",
   "pt-BR": "É necessário um motivo para excluir um anexo."
+ },
+ "A reason is required to override a rejection.": {
+  "es": "Se requiere un motivo para anular un rechazo.",
+  "pt-BR": "É necessário um motivo para anular uma rejeição."
  },
  "A reason is required to return a complaint for rework.": {
   "es": "Se requiere un motivo para devolver una reclamación para retrabajo.",
@@ -230,9 +346,29 @@
   "es": "Se requiere un motivo para devolver un registro.",
   "pt-BR": "É necessário um motivo para devolver um registro."
  },
+ "A reason is required to send back.": {
+  "es": "Se requiere un motivo para devolver.",
+  "pt-BR": "É necessário um motivo para devolver."
+ },
+ "A reason is required to suspend a maintenance schedule.": {
+  "es": "Se requiere un motivo para suspender un programa de mantenimiento.",
+  "pt-BR": "É necessário um motivo para suspender uma programação de manutenção."
+ },
  "A reason is required.": {
   "es": "Se requiere un motivo.",
   "pt-BR": "É obrigatório informar um motivo."
+ },
+ "A rejection reason is required.": {
+  "es": "Se requiere un motivo de rechazo.",
+  "pt-BR": "É necessário um motivo de rejeição."
+ },
+ "A supplier with the legal name '{0}' already exists ({1}). Verify this is a different entity.": {
+  "es": "Ya existe un proveedor con la razón social '{0}' ({1}). Verifique que se trata de otra entidad.",
+  "pt-BR": "Já existe um fornecedor com a razão social '{0}' ({1}). Verifique se é outra entidade."
+ },
+ "A suspension reason is required.": {
+  "es": "Se requiere un motivo de suspensión.",
+  "pt-BR": "É necessário um motivo de suspensão."
  },
  "A trainer is required for Competency Assessment.": {
   "es": "Se requiere un capacitador para la evaluación de competencia.",
@@ -249,6 +385,10 @@
  "A value is required.": {
   "es": "Se requiere un valor.",
   "pt-BR": "É obrigatório informar um valor."
+ },
+ "A withdrawal reason is required.": {
+  "es": "Se requiere un motivo de retiro.",
+  "pt-BR": "É necessário um motivo de retirada."
  },
  "About": {
   "es": "Acerca de",
@@ -298,6 +438,10 @@
  "Acceptance Criterion": {
   "es": "Criterio de aceptación",
   "pt-BR": "Critério de aceitação"
+ },
+ "Acceptance Criterion *": {
+  "es": "Criterio de aceptación *",
+  "pt-BR": "Critério de aceitação *"
  },
  "Accepted": {
   "es": "Aceptado",
@@ -439,6 +583,10 @@
   "es": "Fecha real de fin",
   "pt-BR": "Data real de término"
  },
+ "Actual End Time": {
+  "es": "Hora real de finalización",
+  "pt-BR": "Hora real de término"
+ },
  "Actual Start": {
   "es": "Inicio real",
   "pt-BR": "Início real"
@@ -446,6 +594,10 @@
  "Actual Start Date": {
   "es": "Fecha real de inicio",
   "pt-BR": "Data real de início"
+ },
+ "Actual Start Time": {
+  "es": "Hora real de inicio",
+  "pt-BR": "Hora real de início"
  },
  "Add": {
   "es": "Agregar",
@@ -459,9 +611,29 @@
   "es": "Agregue otro servicio para iniciar sesión.",
   "pt-BR": "Adicione outro serviço para entrar."
  },
+ "Add Cross-Reference": {
+  "es": "Agregar referencia cruzada",
+  "pt-BR": "Adicionar referência cruzada"
+ },
  "Add Group": {
   "es": "Agregar grupo",
   "pt-BR": "Adicionar grupo"
+ },
+ "Add Result": {
+  "es": "Agregar resultado",
+  "pt-BR": "Adicionar resultado"
+ },
+ "Add Test Result": {
+  "es": "Agregar resultado de ensayo",
+  "pt-BR": "Adicionar resultado de ensaio"
+ },
+ "Add Testing Laboratory": {
+  "es": "Agregar laboratorio de ensayo",
+  "pt-BR": "Adicionar laboratório de ensaio"
+ },
+ "Additional Addresses": {
+  "es": "Direcciones adicionales",
+  "pt-BR": "Endereços adicionais"
  },
  "Additional Notes (optional)": {
   "es": "Notas adicionales (opcional)",
@@ -470,6 +642,22 @@
  "Address": {
   "es": "Dirección",
   "pt-BR": "Endereço"
+ },
+ "Address added.": {
+  "es": "Dirección agregada.",
+  "pt-BR": "Endereço adicionado."
+ },
+ "Address removed.": {
+  "es": "Dirección eliminada.",
+  "pt-BR": "Endereço removido."
+ },
+ "Addresses can only be added to suppliers in Pending status.": {
+  "es": "Solo se pueden agregar direcciones a proveedores en estado Pendiente.",
+  "pt-BR": "Só é possível adicionar endereços a fornecedores no status Pendente."
+ },
+ "Addresses can only be removed from suppliers in Pending status.": {
+  "es": "Solo se pueden eliminar direcciones de proveedores en estado Pendiente.",
+  "pt-BR": "Só é possível remover endereços de fornecedores no status Pendente."
  },
  "Adequacy and feasibility of the proposed corrective and preventive actions": {
   "es": "Adecuación y viabilidad de las acciones correctivas y preventivas propuestas",
@@ -586,9 +774,17 @@
   "es": "Todos los hallazgos (excl. obs.)",
   "pt-BR": "Todas as constatações (excl. obs.)"
  },
+ "All issued certificates have been withdrawn.": {
+  "es": "Se han retirado todos los certificados emitidos.",
+  "pt-BR": "Todos os certificados emitidos foram retirados."
+ },
  "All required training has been completed. This document is Effective.": {
   "es": "Se completó toda la capacitación requerida. Este documento está vigente.",
   "pt-BR": "Todo o treinamento exigido foi concluído. Este documento está vigente."
+ },
+ "All specification lines already present in Analytical Results.": {
+  "es": "Todas las líneas de especificación ya están en los resultados analíticos.",
+  "pt-BR": "Todas as linhas de especificação já estão nos resultados analíticos."
  },
  "All three residual scores are required before submitting for review.": {
   "es": "Las tres puntuaciones residuales son obligatorias antes de enviar a revisión.",
@@ -609,6 +805,10 @@
  "An error occurred while processing your request.": {
   "es": "Se produjo un error al procesar su solicitud.",
   "pt-BR": "Ocorreu um erro ao processar sua solicitação."
+ },
+ "An Issue Date must be recorded before issuing.": {
+  "es": "Debe registrarse la fecha de emisión antes de emitir.",
+  "pt-BR": "A data de emissão deve ser registrada antes da emissão."
  },
  "An unknown failure has occurred.": {
   "es": "Se produjo un error desconocido.",
@@ -643,9 +843,33 @@
   "pt-BR": "PA",
   "note": "Authorised Person — Persona Autorizada / Pessoa Autorizada"
  },
+ "AP Certification Statement Override": {
+  "es": "Declaración de certificación de la PA (sustitución)",
+  "pt-BR": "Declaração de certificação da PA (substituição)"
+ },
+ "AP Certification — Electronic Signature": {
+  "es": "Certificación de la PA — Firma electrónica",
+  "pt-BR": "Certificação da PA — Assinatura eletrônica"
+ },
+ "AP Full Name & Qualification": {
+  "es": "Nombre completo y cualificación de la PA",
+  "pt-BR": "Nome completo e qualificação da PA"
+ },
+ "AP Name": {
+  "es": "Nombre de la PA",
+  "pt-BR": "Nome da PA"
+ },
  "AP Number": {
   "es": "N.º de vía de acceso",
   "pt-BR": "Nº da via de acesso"
+ },
+ "AP Register": {
+  "es": "Registro de la PA",
+  "pt-BR": "Registro da PA"
+ },
+ "AP Release Register": {
+  "es": "Registro de liberaciones de la PA",
+  "pt-BR": "Registro de liberações da PA"
  },
  "Application Fee": {
   "es": "Tasa de solicitud",
@@ -663,6 +887,10 @@
   "es": "Solicitado",
   "pt-BR": "Solicitado"
  },
+ "Apply Hold": {
+  "es": "Poner en espera",
+  "pt-BR": "Colocar em espera"
+ },
  "Approaching": {
   "es": "Próximo",
   "pt-BR": "Próximo"
@@ -675,13 +903,45 @@
   "es": "Aprobación",
   "pt-BR": "Aprovação"
  },
+ "Approval Comments": {
+  "es": "Comentarios de aprobación",
+  "pt-BR": "Comentários de aprovação"
+ },
  "Approval Date": {
   "es": "Fecha de aprobación",
   "pt-BR": "Data de aprovação"
  },
+ "Approval Expired": {
+  "es": "Aprobación vencida",
+  "pt-BR": "Aprovação vencida"
+ },
+ "Approval expires {0}": {
+  "es": "La aprobación vence el {0}",
+  "pt-BR": "A aprovação vence em {0}"
+ },
+ "Approval Expiring Soon": {
+  "es": "Aprobación próxima a vencer",
+  "pt-BR": "Aprovação próxima do vencimento"
+ },
+ "Approval Expiring Within 30 Days": {
+  "es": "Aprobación que vence en 30 días",
+  "pt-BR": "Aprovação que vence em 30 dias"
+ },
  "Approval Expiry": {
   "es": "Vencimiento de la aprobación",
   "pt-BR": "Vencimento da aprovação"
+ },
+ "Approval expiry must be a future date (or left blank for no fixed expiry).": {
+  "es": "El vencimiento de la aprobación debe ser una fecha futura (o quedar en blanco si no tiene vencimiento fijo).",
+  "pt-BR": "O vencimento da aprovação deve ser uma data futura (ou ficar em branco se não houver vencimento fixo)."
+ },
+ "Approval Expiry Reason": {
+  "es": "Motivo del vencimiento de la aprobación",
+  "pt-BR": "Motivo do vencimento da aprovação"
+ },
+ "Approval Status": {
+  "es": "Estado de aprobación",
+  "pt-BR": "Status de aprovação"
  },
  "Approve": {
   "es": "Aprobar",
@@ -716,10 +976,18 @@
   "pt-BR": "Aprovar documento",
   "note": "SIGNATURE — review"
  },
+ "Approve Supplier": {
+  "es": "Aprobar proveedor",
+  "pt-BR": "Aprovar fornecedor"
+ },
  "Approved": {
   "es": "Aprobado",
   "pt-BR": "Aprovado",
   "note": "status badge: masculine form used for all record types"
+ },
+ "Approved / Qualified": {
+  "es": "Aprobado / Calificado",
+  "pt-BR": "Aprovado / Qualificado"
  },
  "Approved By": {
   "es": "Aprobado por",
@@ -739,13 +1007,29 @@
   "es": "¿Está seguro de que desea eliminar este documento? Esta acción no se puede deshacer.",
   "pt-BR": "Tem certeza de que deseja excluir este documento? Esta ação não pode ser desfeita."
  },
+ "Are you sure you want to delete this maintenance record?": {
+  "es": "¿Está seguro de que desea eliminar este registro de mantenimiento?",
+  "pt-BR": "Tem certeza de que deseja excluir este registro de manutenção?"
+ },
+ "Are you sure you want to delete this supplier? This cannot be undone.": {
+  "es": "¿Está seguro de que desea eliminar este proveedor? No se puede deshacer.",
+  "pt-BR": "Tem certeza de que deseja excluir este fornecedor? Isso não pode ser desfeito."
+ },
  "Are you sure you want to delete this?": {
   "es": "¿Está seguro de que desea eliminarlo?",
   "pt-BR": "Tem certeza de que deseja excluir?"
  },
+ "ARTG Entry / Regulatory Ref.": {
+  "es": "Entrada ARTG / Ref. regulatoria",
+  "pt-BR": "Entrada ARTG / Ref. regulatória"
+ },
  "ARTG Number": {
   "es": "Número ARTG",
   "pt-BR": "Número ARTG"
+ },
+ "ARTG Reference": {
+  "es": "Referencia ARTG",
+  "pt-BR": "Referência ARTG"
  },
  "As Needed": {
   "es": "Según necesidad",
@@ -799,9 +1083,21 @@
   "es": "Notas de la evaluación",
   "pt-BR": "Observações da avaliação"
  },
+ "Assessment Recommendation": {
+  "es": "Recomendación de la evaluación",
+  "pt-BR": "Recomendação da avaliação"
+ },
+ "Assessment submitted successfully.": {
+  "es": "Evaluación enviada correctamente.",
+  "pt-BR": "Avaliação enviada com sucesso."
+ },
  "Asset": {
   "es": "Activo",
   "pt-BR": "Ativo"
+ },
+ "Asset (Required)": {
+  "es": "Activo (obligatorio)",
+  "pt-BR": "Ativo (obrigatório)"
  },
  "Assets": {
   "es": "Activos",
@@ -818,6 +1114,14 @@
  "Assigned To": {
   "es": "Asignado a",
   "pt-BR": "Atribuído a"
+ },
+ "At least one address field is required.": {
+  "es": "Se requiere al menos un campo de dirección.",
+  "pt-BR": "É necessário pelo menos um campo de endereço."
+ },
+ "At least one of Expiry Date or Retest Date is required for AP submission": {
+  "es": "Para enviar a la PA se requiere al menos la fecha de vencimiento o la fecha de reanálisis",
+  "pt-BR": "Para enviar à PA é necessária pelo menos a data de vencimento ou a data de reteste"
  },
  "Attachment deleted successfully.": {
   "es": "Adjunto eliminado correctamente.",
@@ -851,6 +1155,10 @@
   "es": "No se pueden agregar adjuntos a una capacitación completada o cancelada.",
   "pt-BR": "Não é possível adicionar anexos a um treinamento concluído ou cancelado."
  },
+ "Attachments cannot be added to a reviewed or approved maintenance record.": {
+  "es": "No se pueden agregar adjuntos a un registro de mantenimiento revisado o aprobado.",
+  "pt-BR": "Não é possível adicionar anexos a um registro de manutenção revisado ou aprovado."
+ },
  "Attachments cannot be added to an approved CAPA.": {
   "es": "No se pueden agregar adjuntos a una CAPA aprobada.",
   "pt-BR": "Não é possível adicionar anexos a uma CAPA aprovada."
@@ -866,6 +1174,10 @@
  "Attachments cannot be removed from a closed complaint.": {
   "es": "No se pueden eliminar adjuntos de una reclamación cerrada.",
   "pt-BR": "Não é possível excluir anexos de uma reclamação fechada."
+ },
+ "Attachments cannot be removed from a reviewed or approved maintenance record.": {
+  "es": "No se pueden eliminar adjuntos de un registro de mantenimiento revisado o aprobado.",
+  "pt-BR": "Não é possível excluir anexos de um registro de manutenção revisado ou aprovado."
  },
  "Attachments cannot be removed from an approved CAPA.": {
   "es": "No se pueden eliminar adjuntos de una CAPA aprobada.",
@@ -1120,9 +1432,21 @@
   "es": "Volver a la desviación",
   "pt-BR": "Voltar ao desvio"
  },
+ "Back to Disposal Management": {
+  "es": "Volver a la gestión de eliminación",
+  "pt-BR": "Voltar à gestão de descarte"
+ },
  "Back to List": {
   "es": "Volver a la lista",
   "pt-BR": "Voltar à lista"
+ },
+ "Back to Maintenance": {
+  "es": "Volver a mantenimiento",
+  "pt-BR": "Voltar à manutenção"
+ },
+ "Back to Reviews": {
+  "es": "Volver a las revisiones",
+  "pt-BR": "Voltar às revisões"
  },
  "Back to Risk": {
   "es": "Volver al riesgo",
@@ -1132,9 +1456,33 @@
   "es": "Información básica",
   "pt-BR": "Informações básicas"
  },
+ "Batch": {
+  "es": "Lote",
+  "pt-BR": "Lote"
+ },
+ "Batch / Lot Number": {
+  "es": "Número de lote",
+  "pt-BR": "Número do lote"
+ },
+ "Batch certified. Record {0} is now Certified.": {
+  "es": "Lote certificado. El registro {0} ahora está Certificado.",
+  "pt-BR": "Lote certificado. O registro {0} agora está Certificado."
+ },
  "Batch Details": {
   "es": "Detalles del lote",
   "pt-BR": "Detalhes do lote"
+ },
+ "Batch No.": {
+  "es": "N.º de lote",
+  "pt-BR": "N.º do lote"
+ },
+ "Batch Number": {
+  "es": "Número de lote",
+  "pt-BR": "Número do lote"
+ },
+ "Batch Size": {
+  "es": "Tamaño del lote",
+  "pt-BR": "Tamanho do lote"
  },
  "Before submitting, confirm:": {
   "es": "Antes de enviar, confirme:",
@@ -1152,6 +1500,23 @@
   "es": "Biosimilar",
   "pt-BR": "Biossimilar"
  },
+ "Blocking": {
+  "es": "Bloqueante",
+  "pt-BR": "Bloqueante"
+ },
+ "BMR": {
+  "es": "Registro de lote (BMR)",
+  "pt-BR": "Registro de lote (BMR)",
+  "note": "used through a variable: Views/Release/_DocumentsTab.cshtml (categories)"
+ },
+ "Brand / Trade Name": {
+  "es": "Marca / Nombre comercial",
+  "pt-BR": "Marca / Nome comercial"
+ },
+ "Brand Name": {
+  "es": "Marca",
+  "pt-BR": "Marca"
+ },
  "Breakthrough Therapy": {
   "es": "Terapia innovadora",
   "pt-BR": "Terapia inovadora"
@@ -1164,6 +1529,14 @@
   "es": "Por",
   "pt-BR": "Por"
  },
+ "By certifying this batch, you are providing an electronic signature under PIC/S Annex 16. Your email and password confirm your identity.": {
+  "es": "Al certificar este lote, usted firma electrónicamente conforme al Anexo 16 de PIC/S. Su correo electrónico y contraseña confirman su identidad.",
+  "pt-BR": "Ao certificar este lote, você assina eletronicamente conforme o Anexo 16 do PIC/S. Seu e-mail e senha confirmam sua identidade."
+ },
+ "By Maintenance Type": {
+  "es": "Por tipo de mantenimiento",
+  "pt-BR": "Por tipo de manutenção"
+ },
  "By signing below you confirm this document has been reviewed and meets the requirements for inclusion in the QMS, and you accept it into the system at version <strong>{0}</strong>.": {
   "es": "Al firmar a continuación, confirma que este documento fue revisado y cumple los requisitos para su inclusión en el SGC, y lo acepta en el sistema en la versión <strong>{0}</strong>.",
   "pt-BR": "Ao assinar abaixo, você confirma que este documento foi revisado e atende aos requisitos para inclusão no SGQ, e o aceita no sistema na versão <strong>{0}</strong>.",
@@ -1173,6 +1546,22 @@
   "es": "Al firmar a continuación, confirma que este documento cumple todos los requisitos de calidad y regulatorios aplicables y autoriza su emisión en la versión <strong>{0}</strong>.",
   "pt-BR": "Ao assinar abaixo, você confirma que este documento atende a todos os requisitos de qualidade e regulatórios aplicáveis e autoriza sua emissão na versão <strong>{0}</strong>.",
   "note": "SIGNATURE MEANING — review line by line"
+ },
+ "By Supplier Type": {
+  "es": "Por tipo de proveedor",
+  "pt-BR": "Por tipo de fornecedor"
+ },
+ "by {0}": {
+  "es": "por {0}",
+  "pt-BR": "por {0}"
+ },
+ "by {0} on {1}": {
+  "es": "por {0} el {1}",
+  "pt-BR": "por {0} em {1}"
+ },
+ "by {0} on {1}.": {
+  "es": "por {0} el {1}.",
+  "pt-BR": "por {0} em {1}."
  },
  "Calculation:": {
   "es": "Cálculo:",
@@ -1186,14 +1575,46 @@
   "es": "Cancelar",
   "pt-BR": "Cancelar"
  },
+ "Cancel Record": {
+  "es": "Cancelar registro",
+  "pt-BR": "Cancelar registro"
+ },
+ "Cancel Supplier": {
+  "es": "Cancelar proveedor",
+  "pt-BR": "Cancelar fornecedor"
+ },
  "Cancel Training": {
   "es": "Cancelar capacitación",
   "pt-BR": "Cancelar treinamento",
   "note": "WORKFLOW — review"
  },
+ "Cancellation Reason": {
+  "es": "Motivo de cancelación",
+  "pt-BR": "Motivo do cancelamento"
+ },
  "Cancelled": {
   "es": "Cancelado",
   "pt-BR": "Cancelado"
+ },
+ "Cancelled By": {
+  "es": "Cancelado por",
+  "pt-BR": "Cancelado por"
+ },
+ "Cancelled On": {
+  "es": "Cancelado el",
+  "pt-BR": "Cancelado em"
+ },
+ "Cannot approve: a future next review date is required. For a Discretional review frequency, return the supplier to assessment and set the next review date in Edit.": {
+  "es": "No se puede aprobar: se requiere una fecha futura para la próxima revisión. Con una frecuencia de revisión Discrecional, devuelva el proveedor a evaluación y fije la próxima revisión en Editar.",
+  "pt-BR": "Não é possível aprovar: é necessária uma data futura para a próxima revisão. Com frequência de revisão Discricionária, devolva o fornecedor para avaliação e defina a próxima revisão em Editar."
+ },
+ "Cannot approve: the supplier is {0}.": {
+  "es": "No se puede aprobar: el proveedor está en estado {0}.",
+  "pt-BR": "Não é possível aprovar: o fornecedor está no status {0}."
+ },
+ "Cannot cancel: the supplier is {0}.": {
+  "es": "No se puede cancelar: el proveedor está en estado {0}.",
+  "pt-BR": "Não é possível cancelar: o fornecedor está no status {0}."
  },
  "Cannot change links on a closed complaint.": {
   "es": "No se pueden cambiar los vínculos de una reclamación cerrada.",
@@ -1207,6 +1628,62 @@
   "es": "No se puede completar: los siguientes participantes tienen requisitos pendientes ({0}): {1}.",
   "pt-BR": "Não é possível concluir: os seguintes participantes têm requisitos pendentes ({0}): {1}.",
   "note": "the {0} reason is still English — next pass"
+ },
+ "Cannot delete documents from a locked record.": {
+  "es": "No se pueden eliminar documentos de un registro bloqueado.",
+  "pt-BR": "Não é possível excluir documentos de um registro bloqueado."
+ },
+ "Cannot modify cross-references on a locked record.": {
+  "es": "No se pueden modificar las referencias cruzadas de un registro bloqueado.",
+  "pt-BR": "Não é possível alterar as referências cruzadas de um registro bloqueado."
+ },
+ "Cannot qualify: the supplier has no future next review date. Start a new review to re-establish the review schedule.": {
+  "es": "No se puede calificar: el proveedor no tiene una fecha futura de próxima revisión. Inicie una nueva revisión para restablecer el calendario de revisiones.",
+  "pt-BR": "Não é possível qualificar: o fornecedor não tem data futura para a próxima revisão. Inicie uma nova revisão para restabelecer o calendário de revisões."
+ },
+ "Cannot qualify: the supplier is {0}.": {
+  "es": "No se puede calificar: el proveedor está en estado {0}.",
+  "pt-BR": "Não é possível qualificar: o fornecedor está no status {0}."
+ },
+ "Cannot reactivate: the supplier is {0}.": {
+  "es": "No se puede reactivar: el proveedor está en estado {0}.",
+  "pt-BR": "Não é possível reativar: o fornecedor está no status {0}."
+ },
+ "Cannot return to assessment: the supplier is {0}.": {
+  "es": "No se puede devolver a evaluación: el proveedor está en estado {0}.",
+  "pt-BR": "Não é possível devolver para avaliação: o fornecedor está no status {0}."
+ },
+ "Cannot start a new review: the supplier is {0}.": {
+  "es": "No se puede iniciar una nueva revisión: el proveedor está en estado {0}.",
+  "pt-BR": "Não é possível iniciar uma nova revisão: o fornecedor está no status {0}."
+ },
+ "Cannot submit for review: required fields are missing — {0}.": {
+  "es": "No se puede enviar a revisión: faltan campos obligatorios — {0}.",
+  "pt-BR": "Não é possível enviar para revisão: faltam campos obrigatórios — {0}."
+ },
+ "Cannot submit the assessment: the supplier is {0}.": {
+  "es": "No se puede enviar la evaluación: el proveedor está en estado {0}.",
+  "pt-BR": "Não é possível enviar a avaliação: o fornecedor está no status {0}."
+ },
+ "Cannot submit to AP: one or more analytical test results are still pending. Enter a result (Pass, Fail, or N/A) for all listed tests before submitting.": {
+  "es": "No se puede enviar a la PA: uno o más resultados analíticos siguen pendientes. Ingrese un resultado (Conforme, No conforme o N/A) para todos los ensayos antes de enviar.",
+  "pt-BR": "Não é possível enviar à PA: um ou mais resultados analíticos ainda estão pendentes. Informe um resultado (Aprovado, Reprovado ou N/A) para todos os ensaios antes de enviar."
+ },
+ "Cannot submit to AP: one or more blocking checklist items are unresolved. Resolve all blocking items before submitting.": {
+  "es": "No se puede enviar a la PA: uno o más elementos bloqueantes de la lista de verificación no están resueltos. Resuélvalos antes de enviar.",
+  "pt-BR": "Não é possível enviar à PA: um ou mais itens bloqueantes da lista de verificação não foram resolvidos. Resolva-os antes de enviar."
+ },
+ "Cannot submit to AP: required fields are missing — {0}.": {
+  "es": "No se puede enviar a la PA: faltan campos obligatorios — {0}.",
+  "pt-BR": "Não é possível enviar à PA: faltam campos obrigatórios — {0}."
+ },
+ "Cannot suspend: the supplier is {0}.": {
+  "es": "No se puede suspender: el proveedor está en estado {0}.",
+  "pt-BR": "Não é possível suspender: o fornecedor está no status {0}."
+ },
+ "Cannot upload documents to a locked record.": {
+  "es": "No se pueden cargar documentos en un registro bloqueado.",
+  "pt-BR": "Não é possível enviar documentos para um registro bloqueado."
  },
  "CAPA": {
   "es": "CAPA",
@@ -1313,6 +1790,10 @@
   "es": "CBE30",
   "pt-BR": "CBE30"
  },
+ "Cert Type": {
+  "es": "Tipo de cert.",
+  "pt-BR": "Tipo de cert."
+ },
  "Cert. Date": {
   "es": "Fecha de cert.",
   "pt-BR": "Data de cert."
@@ -1326,17 +1807,61 @@
   "es": "Certificado",
   "pt-BR": "Certificado"
  },
+ "Certificate No.": {
+  "es": "N.º de certificado",
+  "pt-BR": "N.º do certificado"
+ },
  "Certificate of Analysis (CoA)": {
   "es": "Certificado de análisis (CoA)",
   "pt-BR": "Certificado de análise (CoA)"
+ },
+ "Certificate Statement": {
+  "es": "Declaración del certificado",
+  "pt-BR": "Declaração do certificado"
+ },
+ "Certificate Type": {
+  "es": "Tipo de certificado",
+  "pt-BR": "Tipo de certificado"
+ },
+ "Certificate Withdrawal:": {
+  "es": "Retiro de certificados:",
+  "pt-BR": "Retirada de certificados:"
+ },
+ "Certificate {0} issued.": {
+  "es": "Certificado {0} emitido.",
+  "pt-BR": "Certificado {0} emitido."
+ },
+ "Certificates": {
+  "es": "Certificados",
+  "pt-BR": "Certificados"
+ },
+ "Certificates can only be issued for Certified or Released records.": {
+  "es": "Solo se pueden emitir certificados para registros Certificados o Liberados.",
+  "pt-BR": "Só é possível emitir certificados para registros Certificados ou Liberados."
  },
  "Certification": {
   "es": "Certificación",
   "pt-BR": "Certificação"
  },
+ "Certification Date": {
+  "es": "Fecha de certificación",
+  "pt-BR": "Data de certificação"
+ },
+ "Certification Statement": {
+  "es": "Declaración de certificación",
+  "pt-BR": "Declaração de certificação"
+ },
  "Certified": {
   "es": "Certificado",
   "pt-BR": "Certificado"
+ },
+ "Certified / Released (YTD)": {
+  "es": "Certificados / Liberados (en el año)",
+  "pt-BR": "Certificados / Liberados (no ano)"
+ },
+ "Certify Batch": {
+  "es": "Certificar lote",
+  "pt-BR": "Certificar lote"
  },
  "Change": {
   "es": "Cambio",
@@ -1357,6 +1882,10 @@
  "Change email": {
   "es": "Cambiar correo electrónico",
   "pt-BR": "Alterar e-mail"
+ },
+ "Change History": {
+  "es": "Historial de cambios",
+  "pt-BR": "Histórico de alterações"
  },
  "Change ID": {
   "es": "ID del cambio",
@@ -1454,6 +1983,10 @@
   "es": "Cambio — {0}",
   "pt-BR": "Mudança — {0}"
  },
+ "Changed By": {
+  "es": "Modificado por",
+  "pt-BR": "Alterado por"
+ },
  "Changes": {
   "es": "Cambios",
   "pt-BR": "Mudanças"
@@ -1465,6 +1998,14 @@
  "Check if this document was authored and approved outside this system (e.g. supplier document, regulatory guidance, legacy record).": {
   "es": "Marque si este documento se redactó y aprobó fuera de este sistema (p. ej., documento de proveedor, guía regulatoria, registro histórico).",
   "pt-BR": "Marque se este documento foi redigido e aprovado fora deste sistema (ex.: documento de fornecedor, guia regulatório, registro legado)."
+ },
+ "Checklist": {
+  "es": "Lista de verificación",
+  "pt-BR": "Lista de verificação"
+ },
+ "Checklist item not found.": {
+  "es": "No se encontró el elemento de la lista de verificación.",
+  "pt-BR": "Item da lista de verificação não encontrado."
  },
  "CIOMS-I Email": {
   "es": "Correo electrónico CIOMS-I",
@@ -1497,6 +2038,10 @@
  "Clear": {
   "es": "Limpiar",
   "pt-BR": "Limpar"
+ },
+ "Clear Selection": {
+  "es": "Borrar selección",
+  "pt-BR": "Limpar seleção"
  },
  "Click <strong>{0}</strong> to continue your session.": {
   "es": "Haga clic en <strong>{0}</strong> para continuar con su sesión.",
@@ -1543,6 +2088,10 @@
   "pt-BR": "Fechar reclamação",
   "note": "SIGNATURE — review"
  },
+ "Close Record": {
+  "es": "Cerrar registro",
+  "pt-BR": "Fechar registro"
+ },
  "Close Risk": {
   "es": "Cerrar riesgo",
   "pt-BR": "Encerrar risco"
@@ -1575,13 +2124,26 @@
   "es": "CoA",
   "pt-BR": "CoA"
  },
+ "CoA (Manufacturer)": {
+  "es": "CoA (fabricante)",
+  "pt-BR": "CoA (fabricante)",
+  "note": "used through a variable: Views/Release/_DocumentsTab.cshtml (categories)"
+ },
  "CoA Template": {
   "es": "Plantilla de CoA",
   "pt-BR": "Modelo de CoA"
  },
+ "CoA — Certificate of Analysis": {
+  "es": "CoA — Certificado de análisis",
+  "pt-BR": "CoA — Certificado de análise"
+ },
  "CoC": {
   "es": "CoC",
   "pt-BR": "CoC"
+ },
+ "CoC — Certificate of Conformance": {
+  "es": "CoC — Certificado de conformidad",
+  "pt-BR": "CoC — Certificado de conformidade"
  },
  "Cold Chain Services": {
   "es": "Servicios de cadena de frío",
@@ -1599,9 +2161,29 @@
   "es": "Combinado",
   "pt-BR": "Combinado"
  },
+ "Combined CoA + CoC": {
+  "es": "CoA + CoC combinados",
+  "pt-BR": "CoA + CoC combinados"
+ },
+ "Comment": {
+  "es": "Comentario",
+  "pt-BR": "Comentário"
+ },
+ "Comment (optional)": {
+  "es": "Comentario (opcional)",
+  "pt-BR": "Comentário (opcional)"
+ },
  "Commentary": {
   "es": "Comentario",
   "pt-BR": "Comentário"
+ },
+ "Comments": {
+  "es": "Comentarios",
+  "pt-BR": "Comentários"
+ },
+ "Comments (optional)": {
+  "es": "Comentarios (opcional)",
+  "pt-BR": "Comentários (opcional)"
  },
  "Commercial": {
   "es": "Comercial",
@@ -1751,6 +2333,10 @@
   "es": "Complete la identificación del riesgo y la evaluación inicial y, después, envíelo al Gerente de calidad para su evaluación formal.",
   "pt-BR": "Conclua a identificação do risco e a avaliação inicial e, depois, envie ao Gerente da qualidade para avaliação formal."
  },
+ "Complete Work": {
+  "es": "Completar trabajo",
+  "pt-BR": "Concluir trabalho"
+ },
  "Completed": {
   "es": "Completado",
   "pt-BR": "Concluído"
@@ -1863,6 +2449,10 @@
   "pt-BR": "Confirmar aprovação",
   "note": "SIGNATURE — review"
  },
+ "Confirm Cancel": {
+  "es": "Confirmar cancelación",
+  "pt-BR": "Confirmar cancelamento"
+ },
  "Confirm Cancellation": {
   "es": "Confirmar cancelación",
   "pt-BR": "Confirmar cancelamento",
@@ -1877,6 +2467,10 @@
   "es": "Confirmar finalización",
   "pt-BR": "Confirmar conclusão",
   "note": "WORKFLOW — review"
+ },
+ "Confirm Disposal": {
+  "es": "Confirmar eliminación",
+  "pt-BR": "Confirmar descarte"
  },
  "Confirm email": {
   "es": "Confirmar correo electrónico",
@@ -1894,10 +2488,18 @@
   "es": "Confirmar contraseña",
   "pt-BR": "Confirmar senha"
  },
+ "Confirm Release": {
+  "es": "Confirmar liberación",
+  "pt-BR": "Confirmar liberação"
+ },
  "Confirm Return": {
   "es": "Confirmar devolución",
   "pt-BR": "Confirmar devolução",
   "note": "WORKFLOW — review"
+ },
+ "Confirm Send Back": {
+  "es": "Confirmar devolución",
+  "pt-BR": "Confirmar devolução"
  },
  "Confirm Start": {
   "es": "Confirmar inicio",
@@ -1908,10 +2510,18 @@
   "pt-BR": "Confirmar envio",
   "note": "WORKFLOW — review"
  },
+ "Confirm Suspend": {
+  "es": "Confirmar suspensión",
+  "pt-BR": "Confirmar suspensão"
+ },
  "Confirm Suspension": {
   "es": "Confirmar suspensión",
   "pt-BR": "Confirmar suspensão",
   "note": "WORKFLOW — review"
+ },
+ "Confirm Transfer to Saleable Stock": {
+  "es": "Confirmar transferencia a existencias vendibles",
+  "pt-BR": "Confirmar transferência para estoque vendável"
  },
  "Confirmation link to change email sent. Please check your email.": {
   "es": "Se envió el enlace de confirmación para cambiar el correo. Revise su correo electrónico.",
@@ -1950,6 +2560,11 @@
   "es": "Consultoría / servicios profesionales",
   "pt-BR": "Consultoria / serviços profissionais"
  },
+ "Consumable Checklist": {
+  "es": "Lista de verificación de consumibles",
+  "pt-BR": "Lista de verificação de consumíveis",
+  "note": "used through a variable: Views/Release/_ChecklistTab.cshtml (via typeLabel)"
+ },
  "Consumer": {
   "es": "Consumidor",
   "pt-BR": "Consumidor"
@@ -1981,6 +2596,14 @@
  "Contacts": {
   "es": "Contactos",
   "pt-BR": "Contatos"
+ },
+ "Container / Pack Size": {
+  "es": "Envase / Tamaño del envase",
+  "pt-BR": "Embalagem / Tamanho da embalagem"
+ },
+ "Content Type": {
+  "es": "Tipo de contenido",
+  "pt-BR": "Tipo de conteúdo"
  },
  "Context": {
   "es": "Contexto",
@@ -2049,6 +2672,14 @@
   "es": "Cosmético",
   "pt-BR": "Cosmético"
  },
+ "Cost": {
+  "es": "Costo",
+  "pt-BR": "Custo"
+ },
+ "Cost cannot be negative.": {
+  "es": "El costo no puede ser negativo.",
+  "pt-BR": "O custo não pode ser negativo."
+ },
  "Count": {
   "es": "Cantidad",
   "pt-BR": "Quantidade"
@@ -2080,6 +2711,14 @@
  "Create New Version": {
   "es": "Crear nueva versión",
   "pt-BR": "Criar nova versão"
+ },
+ "Create Release Record": {
+  "es": "Crear registro de liberación",
+  "pt-BR": "Criar registro de liberação"
+ },
+ "Create Supplier": {
+  "es": "Crear proveedor",
+  "pt-BR": "Criar fornecedor"
  },
  "Create Training Record": {
   "es": "Crear registro de capacitación",
@@ -2113,6 +2752,14 @@
   "es": "CRO",
   "pt-BR": "CRO"
  },
+ "Cross-reference added.": {
+  "es": "Referencia cruzada agregada.",
+  "pt-BR": "Referência cruzada adicionada."
+ },
+ "Cross-reference removed.": {
+  "es": "Referencia cruzada eliminada.",
+  "pt-BR": "Referência cruzada removida."
+ },
  "CTA": {
   "es": "CTA",
   "pt-BR": "CTA"
@@ -2141,6 +2788,14 @@
  "Current password": {
   "es": "Contraseña actual",
   "pt-BR": "Senha atual"
+ },
+ "Current stage: {0}": {
+  "es": "Etapa actual: {0}",
+  "pt-BR": "Etapa atual: {0}"
+ },
+ "Current Status:": {
+  "es": "Estado actual:",
+  "pt-BR": "Status atual:"
  },
  "Current: {0}": {
   "es": "Actual: {0}",
@@ -2210,6 +2865,10 @@
  "Data Disposal": {
   "es": "Eliminación de datos",
   "pt-BR": "Descarte de dados"
+ },
+ "Data Disposal Management": {
+  "es": "Gestión de eliminación de datos",
+  "pt-BR": "Gestão de descarte de dados"
  },
  "Data Integrity": {
   "es": "Integridad de datos",
@@ -2281,6 +2940,14 @@
   "pt-BR": "Defina as ações corretivas e preventivas, vincule-as aos registros de qualidade de origem e defina uma data-alvo de conclusão.",
   "note": "GUIDANCE — review"
  },
+ "Del": {
+  "es": "Elim.",
+  "pt-BR": "Excl."
+ },
+ "Delegation / Technical Agreement": {
+  "es": "Delegación / Acuerdo técnico",
+  "pt-BR": "Delegação / Acordo técnico"
+ },
  "Delete": {
   "es": "Eliminar",
   "pt-BR": "Excluir"
@@ -2313,6 +2980,10 @@
   "es": "Eliminar documento",
   "pt-BR": "Excluir documento"
  },
+ "Delete Maintenance": {
+  "es": "Eliminar mantenimiento",
+  "pt-BR": "Excluir manutenção"
+ },
  "Delete Personal Data": {
   "es": "Eliminar datos personales",
   "pt-BR": "Excluir dados pessoais"
@@ -2320,6 +2991,14 @@
  "Delete Risk": {
   "es": "Eliminar riesgo",
   "pt-BR": "Excluir risco"
+ },
+ "Delete Supplier": {
+  "es": "Eliminar proveedor",
+  "pt-BR": "Excluir fornecedor"
+ },
+ "Delete this result?": {
+  "es": "¿Eliminar este resultado?",
+  "pt-BR": "Excluir este resultado?"
  },
  "Delete Training": {
   "es": "Eliminar capacitación",
@@ -2380,6 +3059,14 @@
  "Describe why this record is being returned and what needs to be addressed.": {
   "es": "Describa por qué se devuelve este registro y qué se debe corregir.",
   "pt-BR": "Descreva por que este registro está sendo devolvido e o que precisa ser tratado."
+ },
+ "Describe why this record is being sent back...": {
+  "es": "Describa por qué se devuelve este registro...",
+  "pt-BR": "Descreva por que este registro está sendo devolvido..."
+ },
+ "Describe why this schedule is being suspended...": {
+  "es": "Describa por qué se suspende este programa...",
+  "pt-BR": "Descreva por que esta programação está sendo suspensa..."
  },
  "Description": {
   "es": "Descripción",
@@ -2495,6 +3182,11 @@
   "es": "La desviación debe estar en estado Resolución para aprobarla.",
   "pt-BR": "O desvio deve estar no status Resolução para ser aprovado."
  },
+ "Deviation Record": {
+  "es": "Registro de desviación",
+  "pt-BR": "Registro de desvio",
+  "note": "used through a variable: Views/Release/_DocumentsTab.cshtml (categories)"
+ },
  "Deviation Register": {
   "es": "Registro de desviaciones",
   "pt-BR": "Registro de desvios"
@@ -2575,9 +3267,25 @@
   "es": "Intento de eliminación bloqueado",
   "pt-BR": "Tentativa de descarte bloqueada"
  },
+ "Disposal Audit Log": {
+  "es": "Registro de auditoría de eliminación",
+  "pt-BR": "Trilha de auditoria de descarte"
+ },
+ "Dispose Selected": {
+  "es": "Eliminar seleccionados",
+  "pt-BR": "Descartar selecionados"
+ },
  "Disposed": {
   "es": "Eliminado",
   "pt-BR": "Descartado"
+ },
+ "Distribution": {
+  "es": "Distribución",
+  "pt-BR": "Distribuição"
+ },
+ "Distribution Conditions": {
+  "es": "Condiciones de distribución",
+  "pt-BR": "Condições de distribuição"
  },
  "Distributor": {
   "es": "Distribuidor",
@@ -2603,6 +3311,14 @@
   "es": "Documento",
   "pt-BR": "Documento"
  },
+ "Document '{0}' uploaded successfully.": {
+  "es": "Documento '{0}' cargado correctamente.",
+  "pt-BR": "Documento '{0}' enviado com sucesso."
+ },
+ "Document '{0}' uploaded.": {
+  "es": "Documento '{0}' cargado.",
+  "pt-BR": "Documento '{0}' enviado."
+ },
  "Document / procedural": {
   "es": "Documental / procedimental",
   "pt-BR": "Documental / procedimental"
@@ -2616,6 +3332,14 @@
   "es": "Documente todas las acciones de la CAPA completadas con evidencia, confirme que se eliminó la causa raíz y registre la verificación de eficacia.",
   "pt-BR": "Documente todas as ações da CAPA concluídas com evidência, confirme que a causa-raiz foi eliminada e registre a verificação de eficácia.",
   "note": "GUIDANCE — review"
+ },
+ "Document Category": {
+  "es": "Categoría del documento",
+  "pt-BR": "Categoria do documento"
+ },
+ "Document deleted.": {
+  "es": "Documento eliminado.",
+  "pt-BR": "Documento excluído."
  },
  "Document Details": {
   "es": "Detalles del documento",
@@ -2681,6 +3405,22 @@
   "es": "Documentos",
   "pt-BR": "Documentos"
  },
+ "Documents are locked while the supplier is <strong>{0}</strong>.": {
+  "es": "Los documentos están bloqueados mientras el proveedor está en estado <strong>{0}</strong>.",
+  "pt-BR": "Os documentos ficam bloqueados enquanto o fornecedor está no status <strong>{0}</strong>."
+ },
+ "Documents are locked while the supplier is {0} — start a new review to add documents.": {
+  "es": "Los documentos están bloqueados mientras el proveedor está en estado {0} — inicie una nueva revisión para agregar documentos.",
+  "pt-BR": "Os documentos ficam bloqueados enquanto o fornecedor está no status {0} — inicie uma nova revisão para adicionar documentos."
+ },
+ "Documents are locked while the supplier is {0} — start a new review to change documents.": {
+  "es": "Los documentos están bloqueados mientras el proveedor está en estado {0} — inicie una nueva revisión para cambiar documentos.",
+  "pt-BR": "Os documentos ficam bloqueados enquanto o fornecedor está no status {0} — inicie uma nova revisão para alterar documentos."
+ },
+ "Documents at Time of Completion": {
+  "es": "Documentos al momento de completarse",
+  "pt-BR": "Documentos no momento da conclusão"
+ },
  "Documents Dashboard": {
   "es": "Panel de documentos",
   "pt-BR": "Painel de documentos"
@@ -2726,9 +3466,21 @@
   "es": "Descargar sus datos",
   "pt-BR": "Baixar seus dados"
  },
+ "Downtime (Hours)": {
+  "es": "Tiempo de inactividad (horas)",
+  "pt-BR": "Tempo de parada (horas)"
+ },
+ "Downtime (hours)": {
+  "es": "Tiempo de inactividad (horas)",
+  "pt-BR": "Tempo de parada (horas)"
+ },
  "Draft": {
   "es": "Borrador",
   "pt-BR": "Rascunho"
+ },
+ "Draft (major rework required)": {
+  "es": "Borrador (se requiere retrabajo importante)",
+  "pt-BR": "Rascunho (retrabalho significativo necessário)"
  },
  "Drug withdrawn permanently": {
   "es": "Medicamento retirado definitivamente",
@@ -2758,6 +3510,14 @@
   "es": "Vence en 30 días o menos",
   "pt-BR": "Vence em até 30 dias"
  },
+ "Due Within {0} Days": {
+  "es": "Vencen en {0} días",
+  "pt-BR": "Vencem em {0} dias"
+ },
+ "E-Signature": {
+  "es": "Firma electrónica",
+  "pt-BR": "Assinatura eletrônica"
+ },
  "e.g. Acme Pharma Ltd, ISO, TGA": {
   "es": "p. ej., Acme Pharma Ltd, ISO, TGA",
   "pt-BR": "ex.: Acme Pharma Ltd, ISO, TGA"
@@ -2770,6 +3530,18 @@
   "es": "p. ej., Todo el personal — Conocimiento de documentos",
   "pt-BR": "ex.: Todos os colaboradores — Conhecimento de documentos"
  },
+ "e.g. Conditional approval pending on-site audit": {
+  "es": "p. ej., aprobación condicionada a una auditoría in situ",
+  "pt-BR": "p. ex., aprovação condicionada a auditoria no local"
+ },
+ "e.g. DEV-2026-0042": {
+  "es": "p. ej., DEV-2026-0042",
+  "pt-BR": "p. ex., DEV-2026-0042"
+ },
+ "e.g. GMP 12345": {
+  "es": "p. ej., BPM 12345",
+  "pt-BR": "p. ex., BPF 12345"
+ },
  "e.g. Original author has left the company; draft handed over to continue.": {
   "es": "p. ej., el autor original dejó la empresa; se entregó el borrador para continuarlo.",
   "pt-BR": "ex.: o autor original saiu da empresa; o rascunho foi repassado para continuidade."
@@ -2777,6 +3549,10 @@
  "e.g. Pharmacy name, patient reference...": {
   "es": "p. ej., nombre de la farmacia, referencia del paciente...",
   "pt-BR": "ex.: nome da farmácia, referência do paciente..."
+ },
+ "e.g. Related deviation": {
+  "es": "p. ej., desviación relacionada",
+  "pt-BR": "p. ex., desvio relacionado"
  },
  "e.g. Rev C, v2.1": {
   "es": "p. ej., Rev. C, v2.1",
@@ -2789,6 +3565,10 @@
  "e.g. Superseded by external regulation, process discontinued...": {
   "es": "p. ej., reemplazado por una regulación externa, proceso discontinuado...",
   "pt-BR": "ex.: substituído por regulamentação externa, processo descontinuado..."
+ },
+ "e.g. WMS-2026-0042 (optional)": {
+  "es": "p. ej., WMS-2026-0042 (opcional)",
+  "pt-BR": "p. ex., WMS-2026-0042 (opcional)"
  },
  "e.g., Audit Checklist, Photo of Finding, Corrective Action Evidence": {
   "es": "p. ej., lista de verificación de la auditoría, foto del hallazgo, evidencia de la acción correctiva",
@@ -2854,6 +3634,22 @@
   "es": "Editar desviación —",
   "pt-BR": "Editar desvio —"
  },
+ "Edit Maintenance —": {
+  "es": "Editar mantenimiento —",
+  "pt-BR": "Editar manutenção —"
+ },
+ "Edit parameter, method and criterion": {
+  "es": "Editar parámetro, método y criterio",
+  "pt-BR": "Editar parâmetro, método e critério"
+ },
+ "Edit Record": {
+  "es": "Editar registro",
+  "pt-BR": "Editar registro"
+ },
+ "Edit Release Record —": {
+  "es": "Editar registro de liberación —",
+  "pt-BR": "Editar registro de liberação —"
+ },
  "Edit Risk —": {
   "es": "Editar riesgo —",
   "pt-BR": "Editar risco —"
@@ -2861,6 +3657,14 @@
  "Edit Risk — {0}": {
   "es": "Editar riesgo — {0}",
   "pt-BR": "Editar risco — {0}"
+ },
+ "Edit Statement": {
+  "es": "Editar declaración",
+  "pt-BR": "Editar declaração"
+ },
+ "Edit Supplier": {
+  "es": "Editar proveedor",
+  "pt-BR": "Editar fornecedor"
  },
  "Edit — {0}": {
   "es": "Editar — {0}",
@@ -2877,6 +3681,10 @@
  "Effective": {
   "es": "Vigente",
   "pt-BR": "Vigente"
+ },
+ "Effective Date": {
+  "es": "Fecha de entrada en vigor",
+  "pt-BR": "Data de vigência"
  },
  "Effective Documents": {
   "es": "Documentos vigentes",
@@ -2899,9 +3707,17 @@
   "pt-BR": "Assinatura eletrônica",
   "note": "SIGNATURE — review"
  },
+ "Electronic signature (email and password) is required.": {
+  "es": "Se requiere la firma electrónica (correo electrónico y contraseña).",
+  "pt-BR": "A assinatura eletrônica (e-mail e senha) é obrigatória."
+ },
  "Electronic signature must use your own credentials.": {
   "es": "La firma electrónica debe hacerse con sus propias credenciales.",
   "pt-BR": "A assinatura eletrônica deve usar suas próprias credenciais."
+ },
+ "Electronic signature verification failed.": {
+  "es": "Falló la verificación de la firma electrónica.",
+  "pt-BR": "Falha na verificação da assinatura eletrônica."
  },
  "Eligibility Assessment": {
   "es": "Evaluación de elegibilidad",
@@ -2943,6 +3759,30 @@
   "es": "Ingeniería / servicios técnicos",
   "pt-BR": "Engenharia / serviços técnicos"
  },
+ "Ensure Risk Level, Review Frequency and other assessment fields are saved in the Edit view before submitting.": {
+  "es": "Asegúrese de guardar el nivel de riesgo, la frecuencia de revisión y los demás campos de evaluación en Editar antes de enviar.",
+  "pt-BR": "Certifique-se de salvar o nível de risco, a frequência de revisão e os demais campos da avaliação em Editar antes de enviar."
+ },
+ "Enter laboratory name": {
+  "es": "Ingrese el nombre del laboratorio",
+  "pt-BR": "Informe o nome do laboratório"
+ },
+ "Enter manufacturing site name": {
+  "es": "Ingrese el nombre del sitio de fabricación",
+  "pt-BR": "Informe o nome do local de fabricação"
+ },
+ "Enter packaging site name": {
+  "es": "Ingrese el nombre del sitio de envasado",
+  "pt-BR": "Informe o nome do local de embalagem"
+ },
+ "Enter releasing company name": {
+  "es": "Ingrese el nombre de la empresa que libera",
+  "pt-BR": "Informe o nome da empresa liberadora"
+ },
+ "Enter the Deviation record number documenting why this release record is being reopened.": {
+  "es": "Ingrese el número de la desviación que documenta por qué se reabre este registro de liberación.",
+  "pt-BR": "Informe o número do desvio que documenta por que este registro de liberação está sendo reaberto."
+ },
  "Enter your credentials to authorise this action.": {
   "es": "Ingrese sus credenciales para autorizar esta acción.",
   "pt-BR": "Informe suas credenciais para autorizar esta ação.",
@@ -2967,6 +3807,14 @@
   "es": "Ingrese sus credenciales para firmar esta acción.",
   "pt-BR": "Informe suas credenciais para assinar esta ação.",
   "note": "E-SIGNATURE prompt — review"
+ },
+ "Enter your credentials to sign this certificate.": {
+  "es": "Ingrese sus credenciales para firmar este certificado.",
+  "pt-BR": "Informe suas credenciais para assinar este certificado."
+ },
+ "Enter your credentials to sign this report.": {
+  "es": "Ingrese sus credenciales para firmar este informe.",
+  "pt-BR": "Informe suas credenciais para assinar este relatório."
  },
  "Enter your email.": {
   "es": "Ingrese su correo electrónico.",
@@ -3030,6 +3878,10 @@
  "Error.": {
   "es": "Error.",
   "pt-BR": "Erro."
+ },
+ "Error:": {
+  "es": "Error:",
+  "pt-BR": "Erro:"
  },
  "Evaluated By": {
   "es": "Evaluado por",
@@ -3109,6 +3961,10 @@
   "es": "Evidencia revisada (registros, muestras, bitácoras de equipos)",
   "pt-BR": "Evidências analisadas (registros, amostras, diários de equipamentos)"
  },
+ "Execution": {
+  "es": "Ejecución",
+  "pt-BR": "Execução"
+ },
  "Expanded Access": {
   "es": "Acceso ampliado",
   "pt-BR": "Acesso expandido"
@@ -3137,6 +3993,10 @@
   "es": "Fecha de vencimiento",
   "pt-BR": "Data de vencimento"
  },
+ "Expiry Reason": {
+  "es": "Motivo del vencimiento",
+  "pt-BR": "Motivo do vencimento"
+ },
  "Explain what needs to be revised in the mitigation...": {
   "es": "Explique qué debe revisarse en la mitigación...",
   "pt-BR": "Explique o que precisa ser revisado na mitigação..."
@@ -3164,6 +4024,10 @@
  "Export Register": {
   "es": "Exportar registro",
   "pt-BR": "Exportar registro"
+ },
+ "Export Report": {
+  "es": "Exportar informe",
+  "pt-BR": "Exportar relatório"
  },
  "Extension": {
   "es": "Extensión",
@@ -3253,6 +4117,14 @@
   "es": "No se encontró el archivo en el servidor.",
   "pt-BR": "Arquivo não encontrado no servidor."
  },
+ "File Path": {
+  "es": "Ruta del archivo",
+  "pt-BR": "Caminho do arquivo"
+ },
+ "File Size": {
+  "es": "Tamaño del archivo",
+  "pt-BR": "Tamanho do arquivo"
+ },
  "File size exceeds the 25 MB limit.": {
   "es": "El tamaño del archivo supera el límite de 25 MB.",
   "pt-BR": "O tamanho do arquivo excede o limite de 25 MB."
@@ -3281,6 +4153,10 @@
   "es": "Tipo de archivo no permitido. Aceptados: {0}.",
   "pt-BR": "Tipo de arquivo não permitido. Aceitos: {0}."
  },
+ "File type not permitted.": {
+  "es": "Tipo de archivo no permitido.",
+  "pt-BR": "Tipo de arquivo não permitido."
+ },
  "Filter": {
   "es": "Filtrar",
   "pt-BR": "Filtrar"
@@ -3292,6 +4168,10 @@
  "Filters": {
   "es": "Filtros",
   "pt-BR": "Filtros"
+ },
+ "Final Release Party": {
+  "es": "Responsable de la liberación final",
+  "pt-BR": "Responsável pela liberação final"
  },
  "Findings": {
   "es": "Hallazgos",
@@ -3345,6 +4225,10 @@
   "es": "Formulario",
   "pt-BR": "Formulário"
  },
+ "Formal AP register — all issued certificates. Required by PIC/S Annex 16 section 1.10.": {
+  "es": "Registro formal de la PA — todos los certificados emitidos. Exigido por el Anexo 16 de PIC/S, sección 1.10.",
+  "pt-BR": "Registro formal da PA — todos os certificados emitidos. Exigido pelo Anexo 16 do PIC/S, seção 1.10."
+ },
  "Free software (AGPLv3), provided without warranty and not validated for regulated use": {
   "es": "Software libre (AGPLv3), sin garantía y no validado para uso regulado",
   "pt-BR": "Software livre (AGPLv3), sem garantia e não validado para uso regulado"
@@ -3373,6 +4257,10 @@
   "es": "Análisis completo",
   "pt-BR": "Análise completa"
  },
+ "General Notes": {
+  "es": "Notas generales",
+  "pt-BR": "Notas gerais"
+ },
  "Generate Recovery Codes": {
   "es": "Generar códigos de recuperación",
   "pt-BR": "Gerar códigos de recuperação"
@@ -3385,6 +4273,11 @@
   "es": "Genérico",
   "pt-BR": "Genérico"
  },
+ "GMP Clearance": {
+  "es": "Autorización BPM",
+  "pt-BR": "Autorização BPF",
+  "note": "used through a variable: Views/Release/_DocumentsTab.cshtml (categories)"
+ },
  "GMP Clearance Pathway": {
   "es": "Vía de autorización BPM",
   "pt-BR": "Via de aprovação de BPF"
@@ -3396,6 +4289,14 @@
  "Government": {
   "es": "Gobierno",
   "pt-BR": "Governo"
+ },
+ "Grade": {
+  "es": "Grado",
+  "pt-BR": "Grau"
+ },
+ "Grade (if applicable)": {
+  "es": "Grado (si corresponde)",
+  "pt-BR": "Grau (se aplicável)"
  },
  "Green": {
   "es": "Verde",
@@ -3438,6 +4339,22 @@
   "es": "Abiertos con NPR alto",
   "pt-BR": "Abertos com NPR alto"
  },
+ "Hold": {
+  "es": "Espera",
+  "pt-BR": "Espera"
+ },
+ "Hold lifted. Record returned to Draft for rework.": {
+  "es": "Espera levantada. El registro volvió a Borrador para retrabajo.",
+  "pt-BR": "Espera retirada. O registro voltou a Rascunho para retrabalho."
+ },
+ "Hold lifted. Record returned to Under Review.": {
+  "es": "Espera levantada. El registro volvió a En revisión.",
+  "pt-BR": "Espera retirada. O registro voltou a Em revisão."
+ },
+ "Hold Reason": {
+  "es": "Motivo de la espera",
+  "pt-BR": "Motivo da espera"
+ },
  "Hold Removed": {
   "es": "Retención levantada",
   "pt-BR": "Retenção removida"
@@ -3479,7 +4396,19 @@
   "pt-BR": "Confirmo que li e compreendi o conteúdo deste documento.",
   "note": "SIGNATURE MEANING (read & understood) — review line by line"
  },
+ "I confirm this disposal has been formally authorised": {
+  "es": "Confirmo que esta eliminación ha sido autorizada formalmente",
+  "pt-BR": "Confirmo que este descarte foi formalmente autorizado"
+ },
+ "I confirm this retention hold removal has been formally authorised": {
+  "es": "Confirmo que el levantamiento de este bloqueo de retención ha sido autorizado formalmente",
+  "pt-BR": "Confirmo que a remoção deste bloqueio de retenção foi formalmente autorizada"
+ },
  "ID": {
+  "es": "ID",
+  "pt-BR": "ID"
+ },
+ "Id": {
   "es": "ID",
   "pt-BR": "ID"
  },
@@ -3535,6 +4464,10 @@
   "es": "Se requiere acción inmediata",
   "pt-BR": "Ação imediata necessária"
  },
+ "Immutable record of all data retention and disposal actions.": {
+  "es": "Registro inalterable de todas las acciones de retención y eliminación de datos.",
+  "pt-BR": "Registro inalterável de todas as ações de retenção e descarte de dados."
+ },
  "Impact on data integrity": {
   "es": "Impacto en la integridad de datos",
   "pt-BR": "Impacto na integridade de dados"
@@ -3580,6 +4513,14 @@
   "es": "Implementado el",
   "pt-BR": "Implementado em"
  },
+ "Import from Product Specs": {
+  "es": "Importar de las especificaciones del producto",
+  "pt-BR": "Importar das especificações do produto"
+ },
+ "Import {0} spec line(s) from product master? Lines already present will be skipped.": {
+  "es": "¿Importar {0} línea(s) de especificación de los datos maestros del producto? Se omitirán las líneas ya existentes.",
+  "pt-BR": "Importar {0} linha(s) de especificação dos dados mestres do produto? Linhas já existentes serão ignoradas."
+ },
  "Improvement Opportunity": {
   "es": "Oportunidad de mejora",
   "pt-BR": "Oportunidade de melhoria"
@@ -3595,6 +4536,14 @@
  "In progress": {
   "es": "En curso",
   "pt-BR": "Em andamento"
+ },
+ "INCI Name / Ingredient Declaration Reference": {
+  "es": "Nombre INCI / Referencia de la declaración de ingredientes",
+  "pt-BR": "Nome INCI / Referência da declaração de ingredientes"
+ },
+ "INCI Name / Ingredient Ref.": {
+  "es": "Nombre INCI / Ref. de ingredientes",
+  "pt-BR": "Nome INCI / Ref. de ingredientes"
  },
  "Incorrect password.": {
   "es": "Contraseña incorrecta.",
@@ -3631,6 +4580,14 @@
   "pt-BR": "Iniciar revisão periódica",
   "note": "WORKFLOW — review"
  },
+ "INN / Generic": {
+  "es": "DCI / Genérico",
+  "pt-BR": "DCI / Genérico"
+ },
+ "INN / Generic Name": {
+  "es": "DCI / Nombre genérico",
+  "pt-BR": "DCI / Nome genérico"
+ },
  "Insert the suggested actions for {0}": {
   "es": "Insertar las acciones sugeridas para {0}",
   "pt-BR": "Inserir as ações sugeridas para {0}"
@@ -3664,9 +4621,29 @@
   "es": "Código de autenticación no válido.",
   "pt-BR": "Código do autenticador inválido."
  },
+ "Invalid credentials. Action was not applied.": {
+  "es": "Credenciales no válidas. No se aplicó la acción.",
+  "pt-BR": "Credenciais inválidas. A ação não foi aplicada."
+ },
  "Invalid credentials. Assessment acceptance was not applied.": {
   "es": "Credenciales no válidas. No se aplicó la aceptación de la evaluación.",
   "pt-BR": "Credenciais inválidas. A aceitação da avaliação não foi aplicada."
+ },
+ "Invalid credentials. Certificate was not issued.": {
+  "es": "Credenciales no válidas. No se emitió el certificado.",
+  "pt-BR": "Credenciais inválidas. O certificado não foi emitido."
+ },
+ "Invalid credentials. Certification was not applied.": {
+  "es": "Credenciales no válidas. No se aplicó la certificación.",
+  "pt-BR": "Credenciais inválidas. A certificação não foi aplicada."
+ },
+ "Invalid credentials. Please try again.": {
+  "es": "Credenciales no válidas. Inténtelo de nuevo.",
+  "pt-BR": "Credenciais inválidas. Tente novamente."
+ },
+ "Invalid credentials. Rejection was not applied.": {
+  "es": "Credenciales no válidas. No se aplicó el rechazo.",
+  "pt-BR": "Credenciais inválidas. A rejeição não foi aplicada."
  },
  "Invalid credentials. Return was not applied.": {
   "es": "Credenciales no válidas. No se aplicó la devolución.",
@@ -3738,6 +4715,14 @@
   "es": "Certificación ISO / privada",
   "pt-BR": "Certificação ISO / privada"
  },
+ "Issue Certificate": {
+  "es": "Emitir certificado",
+  "pt-BR": "Emitir certificado"
+ },
+ "Issue Certificate — Electronic Signature": {
+  "es": "Emitir certificado — Firma electrónica",
+  "pt-BR": "Emitir certificado — Assinatura eletrônica"
+ },
  "Issue Commentary": {
   "es": "Comentario de la emisión",
   "pt-BR": "Comentário da emissão"
@@ -3750,6 +4735,14 @@
   "es": "Emitir documento",
   "pt-BR": "Emitir documento",
   "note": "WORKFLOW — review"
+ },
+ "Issue QO Report": {
+  "es": "Emitir informe de SC",
+  "pt-BR": "Emitir relatório de SQ"
+ },
+ "Issue Quality Oversight Report — Electronic Signature": {
+  "es": "Emitir informe de supervisión de calidad — Firma electrónica",
+  "pt-BR": "Emitir relatório de supervisão da qualidade — Assinatura eletrônica"
  },
  "Issued": {
   "es": "Emitido",
@@ -3764,9 +4757,21 @@
   "es": "Emitido por",
   "pt-BR": "Emitido por"
  },
+ "Issued Date": {
+  "es": "Fecha de emisión",
+  "pt-BR": "Data de emissão"
+ },
  "Issued On": {
   "es": "Emitido el",
   "pt-BR": "Emitido em"
+ },
+ "Issuing a certificate constitutes an electronic signature. Your email and password confirm your identity.": {
+  "es": "Emitir un certificado constituye una firma electrónica. Su correo electrónico y contraseña confirman su identidad.",
+  "pt-BR": "Emitir um certificado constitui uma assinatura eletrônica. Seu e-mail e senha confirmam sua identidade."
+ },
+ "Issuing this report constitutes an electronic signature. Your email and password confirm your identity.": {
+  "es": "Emitir este informe constituye una firma electrónica. Su correo electrónico y contraseña confirman su identidad.",
+  "pt-BR": "Emitir este relatório constitui uma assinatura eletrônica. Seu e-mail e senha confirmam sua identidade."
  },
  "IT / Computer Systems": {
   "es": "TI / sistemas informáticos",
@@ -3783,6 +4788,10 @@
  "IT/Data Integrity": {
   "es": "TI / integridad de datos",
   "pt-BR": "TI / integridade de dados"
+ },
+ "Item": {
+  "es": "Elemento",
+  "pt-BR": "Item"
  },
  "Jurisdiction": {
   "es": "Jurisdicción",
@@ -3820,6 +4829,10 @@
   "es": "Equipos de laboratorio",
   "pt-BR": "Equipamentos de laboratório"
  },
+ "Laboratory Name": {
+  "es": "Nombre del laboratorio",
+  "pt-BR": "Nome do laboratório"
+ },
  "Language": {
   "es": "Idioma",
   "pt-BR": "Idioma"
@@ -3832,9 +4845,21 @@
   "es": "Última modificación",
   "pt-BR": "Última modificação"
  },
+ "Last Modified By": {
+  "es": "Última modificación por",
+  "pt-BR": "Última alteração por"
+ },
  "Last Name": {
   "es": "Apellido",
   "pt-BR": "Sobrenome"
+ },
+ "Last Review": {
+  "es": "Última revisión",
+  "pt-BR": "Última revisão"
+ },
+ "Last Review Date": {
+  "es": "Fecha de la última revisión",
+  "pt-BR": "Data da última revisão"
  },
  "Lawyer": {
   "es": "Abogado",
@@ -3868,6 +4893,10 @@
   "es": "Identificación fiscal",
   "pt-BR": "CNPJ / identificação fiscal"
  },
+ "Legal ID (ABN/ACN/Other)": {
+  "es": "ID legal (ABN/ACN/otro)",
+  "pt-BR": "ID legal (ABN/ACN/outro)"
+ },
  "Legal Name": {
   "es": "Razón social",
   "pt-BR": "Razão social"
@@ -3879,6 +4908,10 @@
  "Letter of Access Available": {
   "es": "Carta de acceso disponible",
   "pt-BR": "Carta de acesso disponível"
+ },
+ "LicCert": {
+  "es": "LicCert",
+  "pt-BR": "LicCert"
  },
  "Licence / Certification Type": {
   "es": "Tipo de licencia / certificación",
@@ -3900,6 +4933,22 @@
   "es": "Potencialmente mortal",
   "pt-BR": "Risco de morte"
  },
+ "Lift Hold": {
+  "es": "Levantar espera",
+  "pt-BR": "Retirar espera"
+ },
+ "Limitations / Conditions": {
+  "es": "Limitaciones / Condiciones",
+  "pt-BR": "Limitações / Condições"
+ },
+ "Limitations / Conditions on Release": {
+  "es": "Limitaciones / Condiciones de la liberación",
+  "pt-BR": "Limitações / Condições da liberação"
+ },
+ "Limitations / Conditions on Release:": {
+  "es": "Limitaciones / Condiciones de la liberación:",
+  "pt-BR": "Limitações / Condições da liberação:"
+ },
  "Link": {
   "es": "Vincular",
   "pt-BR": "Vincular"
@@ -3911,6 +4960,14 @@
  "Link existing AE": {
   "es": "Vincular EA existente",
   "pt-BR": "Vincular EA existente"
+ },
+ "Link Quality Record": {
+  "es": "Vincular registro de calidad",
+  "pt-BR": "Vincular registro da qualidade"
+ },
+ "Link Record": {
+  "es": "Vincular registro",
+  "pt-BR": "Vincular registro"
  },
  "Link this CAPA to its source quality record — a Deviation, Complaint, or Audit finding. Multiple records can be linked.": {
   "es": "Vincule esta CAPA a su registro de calidad de origen: una desviación, una reclamación o un hallazgo de auditoría. Se pueden vincular varios registros.",
@@ -3939,6 +4996,10 @@
  "Linked Audits": {
   "es": "Auditorías vinculadas",
   "pt-BR": "Auditorias vinculadas"
+ },
+ "Linked By": {
+  "es": "Vinculado por",
+  "pt-BR": "Vinculado por"
  },
  "Linked CAPA": {
   "es": "CAPA vinculada",
@@ -3979,6 +5040,22 @@
  "Linked from Signal Review: <strong>{0}</strong>": {
   "es": "Vinculado desde la revisión de señal: <strong>{0}</strong>",
   "pt-BR": "Vinculado a partir da revisão de sinal: <strong>{0}</strong>"
+ },
+ "Linked On": {
+  "es": "Vinculado el",
+  "pt-BR": "Vinculado em"
+ },
+ "Linked Product (Master Data)": {
+  "es": "Producto vinculado (datos maestros)",
+  "pt-BR": "Produto vinculado (dados mestres)"
+ },
+ "Linked Quality Record": {
+  "es": "Registro de calidad vinculado",
+  "pt-BR": "Registro da qualidade vinculado"
+ },
+ "Linked Record:": {
+  "es": "Registro vinculado:",
+  "pt-BR": "Registro vinculado:"
  },
  "Linked Records": {
   "es": "Registros vinculados",
@@ -4073,13 +5150,105 @@
   "es": "Mantenimiento",
   "pt-BR": "Manutenção"
  },
+ "Maintenance cannot be suspended from '{0}' status.": {
+  "es": "El mantenimiento no puede suspenderse desde el estado '{0}'.",
+  "pt-BR": "A manutenção não pode ser suspensa a partir do status '{0}'."
+ },
  "Maintenance Dashboard": {
   "es": "Panel de mantenimiento",
   "pt-BR": "Painel de manutenção"
  },
+ "Maintenance ID": {
+  "es": "ID de mantenimiento",
+  "pt-BR": "ID da manutenção"
+ },
+ "Maintenance is not in Completed status.": {
+  "es": "El mantenimiento no está en estado Completado.",
+  "pt-BR": "A manutenção não está no status Concluído."
+ },
+ "Maintenance is not In Progress.": {
+  "es": "El mantenimiento no está En curso.",
+  "pt-BR": "A manutenção não está Em andamento."
+ },
+ "Maintenance is not in Reviewed status.": {
+  "es": "El mantenimiento no está en estado Revisado.",
+  "pt-BR": "A manutenção não está no status Revisado."
+ },
+ "Maintenance is not suspended.": {
+  "es": "El mantenimiento no está suspendido.",
+  "pt-BR": "A manutenção não está suspensa."
+ },
+ "Maintenance must be in Scheduled or Overdue status to start work.": {
+  "es": "El mantenimiento debe estar en estado Programado o Vencido para iniciar el trabajo.",
+  "pt-BR": "A manutenção deve estar no status Programado ou Atrasado para iniciar o trabalho."
+ },
  "Maintenance Register": {
   "es": "Registro de mantenimiento",
   "pt-BR": "Registro de manutenção"
+ },
+ "Maintenance reviewed and closed.": {
+  "es": "Mantenimiento revisado y cerrado.",
+  "pt-BR": "Manutenção revisada e fechada."
+ },
+ "Maintenance reviewed and closed. Next occurrence {0} scheduled for {1}.": {
+  "es": "Mantenimiento revisado y cerrado. Próxima ocurrencia {0} programada para el {1}.",
+  "pt-BR": "Manutenção revisada e fechada. Próxima ocorrência {0} programada para {1}."
+ },
+ "Maintenance schedule reactivated.": {
+  "es": "Programa de mantenimiento reactivado.",
+  "pt-BR": "Programação de manutenção reativada."
+ },
+ "Maintenance schedule suspended.": {
+  "es": "Programa de mantenimiento suspendido.",
+  "pt-BR": "Programação de manutenção suspensa."
+ },
+ "Maintenance sent back to Completed for re-review.": {
+  "es": "Mantenimiento devuelto a Completado para nueva revisión.",
+  "pt-BR": "Manutenção devolvida para Concluído para nova revisão."
+ },
+ "Maintenance sent back to In Progress for rework.": {
+  "es": "Mantenimiento devuelto a En curso para retrabajo.",
+  "pt-BR": "Manutenção devolvida para Em andamento para retrabalho."
+ },
+ "Maintenance sent back to Scheduled for rework.": {
+  "es": "Mantenimiento devuelto a Programado para retrabajo.",
+  "pt-BR": "Manutenção devolvida para Programado para retrabalho."
+ },
+ "Maintenance Type": {
+  "es": "Tipo de mantenimiento",
+  "pt-BR": "Tipo de manutenção"
+ },
+ "Maintenance updated.": {
+  "es": "Mantenimiento actualizado.",
+  "pt-BR": "Manutenção atualizada."
+ },
+ "Maintenance was scheduled for <strong>{0}</strong> — overdue by <strong>{1} day(s)</strong>.": {
+  "es": "El mantenimiento estaba programado para el <strong>{0}</strong> — vencido hace <strong>{1} día(s)</strong>.",
+  "pt-BR": "A manutenção estava programada para <strong>{0}</strong> — atrasada há <strong>{1} dia(s)</strong>."
+ },
+ "Maintenance work completed.": {
+  "es": "Trabajo de mantenimiento completado.",
+  "pt-BR": "Trabalho de manutenção concluído."
+ },
+ "Maintenance work started.": {
+  "es": "Trabajo de mantenimiento iniciado.",
+  "pt-BR": "Trabalho de manutenção iniciado."
+ },
+ "Maintenance {0} created.": {
+  "es": "Mantenimiento {0} creado.",
+  "pt-BR": "Manutenção {0} criada."
+ },
+ "Maintenance —": {
+  "es": "Mantenimiento —",
+  "pt-BR": "Manutenção —"
+ },
+ "Maintenance — {0}": {
+  "es": "Mantenimiento — {0}",
+  "pt-BR": "Manutenção — {0}"
+ },
+ "Maintenances": {
+  "es": "Mantenimientos",
+  "pt-BR": "Manutenções"
  },
  "Major": {
   "es": "Mayor",
@@ -4133,9 +5302,25 @@
   "es": "Sitios de fabricación y análisis",
   "pt-BR": "Locais de fabricação e análise"
  },
+ "Manufacturing Date": {
+  "es": "Fecha de fabricación",
+  "pt-BR": "Data de fabricação"
+ },
  "Manufacturing Equipment": {
   "es": "Equipos de fabricación",
   "pt-BR": "Equipamentos de fabricação"
+ },
+ "Manufacturing Site": {
+  "es": "Sitio de fabricación",
+  "pt-BR": "Local de fabricação"
+ },
+ "Manufacturing Site GMP Licence / Clearance No.": {
+  "es": "N.º de licencia / autorización BPM del sitio de fabricación",
+  "pt-BR": "N.º da licença / autorização BPF do local de fabricação"
+ },
+ "Manufacturing Site is required — please select a site or choose \"Other\" and enter a name.": {
+  "es": "El sitio de fabricación es obligatorio — seleccione un sitio o elija \"Otro\" e ingrese un nombre.",
+  "pt-BR": "O local de fabricação é obrigatório — selecione um local ou escolha \"Outro\" e informe um nome."
  },
  "Mark as Completed": {
   "es": "Marcar como completado",
@@ -4185,6 +5370,10 @@
   "es": "Materiales",
   "pt-BR": "Materiais"
  },
+ "Materials Supplied": {
+  "es": "Materiales suministrados",
+  "pt-BR": "Materiais fornecidos"
+ },
  "Materials/Raw Materials": {
   "es": "Materiales / materias primas",
   "pt-BR": "Materiais / matérias-primas"
@@ -4208,6 +5397,11 @@
  "Medical Device": {
   "es": "Dispositivo médico",
   "pt-BR": "Dispositivo médico"
+ },
+ "Medical Device Checklist": {
+  "es": "Lista de verificación de dispositivo médico",
+  "pt-BR": "Lista de verificação de dispositivo médico",
+  "note": "used through a variable: Views/Release/_ChecklistTab.cshtml (via typeLabel)"
  },
  "Medical Evaluator": {
   "es": "Evaluador médico",
@@ -4242,9 +5436,25 @@
   "es": "Acta de reunión",
   "pt-BR": "Ata de reunião"
  },
+ "Method": {
+  "es": "Método",
+  "pt-BR": "Método"
+ },
  "Methodology used (e.g. 5-Why, fishbone/Ishikawa)": {
   "es": "Metodología utilizada (p. ej., 5 porqués, espina de pescado/Ishikawa)",
   "pt-BR": "Metodologia utilizada (ex.: 5 porquês, espinha de peixe/Ishikawa)"
+ },
+ "Mfg Date": {
+  "es": "Fecha fab.",
+  "pt-BR": "Data fab."
+ },
+ "Mfg GMP Ref.": {
+  "es": "Ref. BPM fab.",
+  "pt-BR": "Ref. BPF fab."
+ },
+ "Mfg Site": {
+  "es": "Sitio fab.",
+  "pt-BR": "Local fab."
  },
  "Mild": {
   "es": "Leve",
@@ -4321,6 +5531,10 @@
  "Monthly": {
   "es": "Mensual",
   "pt-BR": "Mensal"
+ },
+ "Monthly Releases (Current Year)": {
+  "es": "Liberaciones mensuales (año en curso)",
+  "pt-BR": "Liberações mensais (ano atual)"
  },
  "Months": {
   "es": "Meses",
@@ -4411,6 +5625,10 @@
   "es": "Nuevo correo electrónico",
   "pt-BR": "Novo e-mail"
  },
+ "New Maintenance": {
+  "es": "Nuevo mantenimiento",
+  "pt-BR": "Nova manutenção"
+ },
  "New password": {
   "es": "Nueva contraseña",
   "pt-BR": "Nova senha"
@@ -4418,6 +5636,10 @@
  "New Release Record": {
   "es": "Nuevo registro de liberación",
   "pt-BR": "Novo registro de liberação"
+ },
+ "New review started successfully.": {
+  "es": "Nueva revisión iniciada correctamente.",
+  "pt-BR": "Nova revisão iniciada com sucesso."
  },
  "New Risk": {
   "es": "Nuevo riesgo",
@@ -4435,9 +5657,17 @@
   "es": "Nueva versión",
   "pt-BR": "Nova versão"
  },
+ "New:": {
+  "es": "Nuevo:",
+  "pt-BR": "Novo:"
+ },
  "Next": {
   "es": "Siguiente",
   "pt-BR": "Próximo"
+ },
+ "Next Occurrence": {
+  "es": "Próxima ocurrencia",
+  "pt-BR": "Próxima ocorrência"
  },
  "Next Renewal Due": {
   "es": "Próxima renovación",
@@ -4450,6 +5680,26 @@
  "Next Review Date": {
   "es": "Próxima fecha de revisión",
   "pt-BR": "Próxima data de revisão"
+ },
+ "Next review due {0}.": {
+  "es": "Próxima revisión: {0}.",
+  "pt-BR": "Próxima revisão: {0}."
+ },
+ "Next Review Was": {
+  "es": "La próxima revisión era",
+  "pt-BR": "A próxima revisão era"
+ },
+ "Next review was due {0}.": {
+  "es": "La próxima revisión vencía el {0}.",
+  "pt-BR": "A próxima revisão vencia em {0}."
+ },
+ "Next Scheduled": {
+  "es": "Próxima programada",
+  "pt-BR": "Próxima programada"
+ },
+ "Next Scheduled Date": {
+  "es": "Próxima fecha programada",
+  "pt-BR": "Próxima data programada"
  },
  "Next Six-Monthly Report Due": {
   "es": "Próximo informe semestral",
@@ -4467,6 +5717,10 @@
   "es": "Aún no se ha registrado actividad.",
   "pt-BR": "Nenhuma atividade registrada ainda."
  },
+ "No additional addresses recorded.": {
+  "es": "No hay direcciones adicionales registradas.",
+  "pt-BR": "Nenhum endereço adicional registrado."
+ },
  "No adverse events linked to this complaint.": {
   "es": "No hay eventos adversos vinculados a esta reclamación.",
   "pt-BR": "Nenhum evento adverso vinculado a esta reclamação."
@@ -4479,6 +5733,10 @@
   "es": "Aún no hay documentos aprobados.",
   "pt-BR": "Ainda não há documentos aprovados."
  },
+ "No approved/qualified suppliers yet.": {
+  "es": "Aún no hay proveedores aprobados/calificados.",
+  "pt-BR": "Ainda não há fornecedores aprovados/qualificados."
+ },
  "No attachments uploaded yet.": {
   "es": "Aún no se cargaron adjuntos.",
   "pt-BR": "Nenhum anexo enviado ainda."
@@ -4490,6 +5748,10 @@
  "No attachments.": {
   "es": "Sin adjuntos.",
   "pt-BR": "Sem anexos."
+ },
+ "No audit entries.": {
+  "es": "No hay entradas de auditoría.",
+  "pt-BR": "Nenhuma entrada de auditoria."
  },
  "No audit log activity yet.": {
   "es": "Aún no hay actividad en la pista de auditoría.",
@@ -4506,6 +5768,22 @@
  "No CAPAs awaiting approval.": {
   "es": "No hay CAPA en espera de aprobación.",
   "pt-BR": "Nenhuma CAPA aguardando aprovação."
+ },
+ "No certificates issued yet.": {
+  "es": "Aún no se han emitido certificados.",
+  "pt-BR": "Nenhum certificado emitido ainda."
+ },
+ "No changes to the work details.": {
+  "es": "Sin cambios en los detalles del trabajo.",
+  "pt-BR": "Nenhuma alteração nos detalhes do trabalho."
+ },
+ "No checklist items found.": {
+  "es": "No se encontraron elementos de la lista de verificación.",
+  "pt-BR": "Nenhum item da lista de verificação encontrado."
+ },
+ "No completed review cycles recorded yet.": {
+  "es": "Aún no hay ciclos de revisión completados.",
+  "pt-BR": "Nenhum ciclo de revisão concluído ainda."
  },
  "No completed training records yet.": {
   "es": "Aún no hay registros de capacitación completados.",
@@ -4527,6 +5805,10 @@
   "es": "Aún no se han cargado documentos.",
   "pt-BR": "Nenhum documento enviado ainda."
  },
+ "No documents uploaded.": {
+  "es": "No hay documentos cargados.",
+  "pt-BR": "Nenhum documento enviado."
+ },
  "No effective documents found matching your filters.": {
   "es": "No se encontraron documentos vigentes que coincidan con sus filtros.",
   "pt-BR": "Nenhum documento vigente encontrado com os filtros aplicados."
@@ -4534,6 +5816,10 @@
  "No eligible users are available to reassign to.": {
   "es": "No hay usuarios elegibles para reasignar.",
   "pt-BR": "Não há usuários elegíveis para reatribuir."
+ },
+ "No expired supplier registrations.": {
+  "es": "No hay registros de proveedores vencidos.",
+  "pt-BR": "Nenhum cadastro de fornecedor vencido."
  },
  "No high-RPN open risks.": {
   "es": "No hay riesgos abiertos con NPR alto.",
@@ -4551,6 +5837,14 @@
   "es": "No hay desviaciones vinculadas.",
   "pt-BR": "Nenhum desvio vinculado."
  },
+ "No linked product found. Link a product first before importing specifications.": {
+  "es": "No se encontró un producto vinculado. Vincule primero un producto antes de importar especificaciones.",
+  "pt-BR": "Nenhum produto vinculado encontrado. Vincule um produto antes de importar especificações."
+ },
+ "No linked records.": {
+  "es": "No hay registros vinculados.",
+  "pt-BR": "Nenhum registro vinculado."
+ },
  "No matching records found": {
   "es": "No se encontraron registros coincidentes",
   "pt-BR": "Nenhum registro correspondente encontrado"
@@ -4563,6 +5857,14 @@
   "es": "No tiene capacitaciones pendientes. ¡Bien hecho!",
   "pt-BR": "Nenhum treinamento pendente. Muito bem!"
  },
+ "No quality records linked yet.": {
+  "es": "Aún no hay registros de calidad vinculados.",
+  "pt-BR": "Nenhum registro da qualidade vinculado ainda."
+ },
+ "No re-reviews in progress.": {
+  "es": "No hay revisiones periódicas en curso.",
+  "pt-BR": "Nenhuma revisão periódica em andamento."
+ },
  "No recent activity.": {
   "es": "No hay actividad reciente.",
   "pt-BR": "Nenhuma atividade recente."
@@ -4570,6 +5872,26 @@
  "No records match the current filters.": {
   "es": "Ningún registro coincide con los filtros actuales.",
   "pt-BR": "Nenhum registro corresponde aos filtros atuais."
+ },
+ "No records selected.": {
+  "es": "No se seleccionaron registros.",
+  "pt-BR": "Nenhum registro selecionado."
+ },
+ "No reviews due within 30 days.": {
+  "es": "No hay revisiones que venzan en 30 días.",
+  "pt-BR": "Nenhuma revisão vence em 30 dias."
+ },
+ "No supplier registrations expiring within 30 days.": {
+  "es": "No hay registros de proveedores que venzan en 30 días.",
+  "pt-BR": "Nenhum cadastro de fornecedor vence em 30 dias."
+ },
+ "No suppliers overdue for review.": {
+  "es": "No hay proveedores con revisión vencida.",
+  "pt-BR": "Nenhum fornecedor com revisão atrasada."
+ },
+ "No test results recorded yet.": {
+  "es": "Aún no hay resultados de ensayo registrados.",
+  "pt-BR": "Nenhum resultado de ensaio registrado ainda."
  },
  "No trainees assigned.": {
   "es": "No hay participantes asignados.",
@@ -4606,6 +5928,10 @@
  "None awaiting acceptance.": {
   "es": "Ninguno en espera de aceptación.",
   "pt-BR": "Nenhum aguardando aceitação."
+ },
+ "None due within {0} days.": {
+  "es": "Ninguno vence en {0} días.",
+  "pt-BR": "Nenhum vence em {0} dias."
  },
  "None pending.": {
   "es": "Nada pendiente.",
@@ -4715,9 +6041,17 @@
   "es": "Aceptar",
   "pt-BR": "OK"
  },
+ "Old:": {
+  "es": "Anterior:",
+  "pt-BR": "Anterior:"
+ },
  "On Hold": {
   "es": "En espera",
   "pt-BR": "Em espera"
+ },
+ "on {0}": {
+  "es": "el {0}",
+  "pt-BR": "em {0}"
  },
  "Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code. Enter the code in the confirmation box below.": {
   "es": "Después de escanear el código QR o ingresar la clave anterior, su aplicación de autenticación de dos factores le dará un código único. Ingréselo en el cuadro de confirmación de abajo.",
@@ -4747,6 +6081,10 @@
   "es": "Solo se pueden cancelar las capacitaciones en estado Programado.",
   "pt-BR": "Somente treinamentos no status Programado podem ser cancelados."
  },
+ "Only suppliers in Pending or Under Assessment status can be deleted.": {
+  "es": "Solo se pueden eliminar proveedores en estado Pendiente o En evaluación.",
+  "pt-BR": "Só é possível excluir fornecedores no status Pendente ou Em avaliação."
+ },
  "OOS": {
   "es": "OOS",
   "pt-BR": "OOS"
@@ -4758,6 +6096,14 @@
  "Open Critical Complaints": {
   "es": "Reclamaciones críticas abiertas",
   "pt-BR": "Reclamações críticas abertas"
+ },
+ "Open Deviations / Exceptions": {
+  "es": "Desviaciones / Excepciones abiertas",
+  "pt-BR": "Desvios / Exceções abertos"
+ },
+ "Open Deviations / Exceptions:": {
+  "es": "Desviaciones / Excepciones abiertas:",
+  "pt-BR": "Desvios / Exceções abertos:"
  },
  "Open Document": {
   "es": "Abrir documento",
@@ -4794,6 +6140,14 @@
  "Optional — describe any changes made to this draft.": {
   "es": "Opcional: describa los cambios realizados en este borrador.",
   "pt-BR": "Opcional — descreva as alterações feitas neste rascunho."
+ },
+ "Optional — enter the WMS / ERP / register reference for this batch release.": {
+  "es": "Opcional — ingrese la referencia del WMS / ERP / registro para esta liberación de lote.",
+  "pt-BR": "Opcional — informe a referência do WMS / ERP / registro para esta liberação de lote."
+ },
+ "Optional. Enter the reference number or code assigned to this batch release in your Warehouse Management System (WMS), ERP, or external release register. This field is intended as a cross-reference to the operational release record outside this QMS. Leave blank if not applicable.": {
+  "es": "Opcional. Ingrese el número o código de referencia asignado a esta liberación de lote en su sistema de gestión de almacenes (WMS), ERP o registro de liberaciones externo. Este campo sirve como referencia cruzada al registro operativo de liberación fuera de este SGC. Déjelo en blanco si no corresponde.",
+  "pt-BR": "Opcional. Informe o número ou código de referência atribuído a esta liberação de lote no seu sistema de gestão de armazém (WMS), ERP ou registro externo de liberações. Este campo serve como referência cruzada ao registro operacional de liberação fora deste SGQ. Deixe em branco se não se aplicar."
  },
  "Organisation or body that produced this document.": {
   "es": "Organización u organismo que elaboró este documento.",
@@ -4835,6 +6189,10 @@
   "es": "Otro",
   "pt-BR": "Outro"
  },
+ "Other (specify below)": {
+  "es": "Otro (especifique abajo)",
+  "pt-BR": "Outro (especifique abaixo)"
+ },
  "Other - Specify in investigation notes": {
   "es": "Otro: especifique en las notas de la investigación",
   "pt-BR": "Outro: especifique nas notas da investigação"
@@ -4850,6 +6208,10 @@
  "Outcome": {
   "es": "Desenlace",
   "pt-BR": "Desfecho"
+ },
+ "Outcome / Decision Rationale": {
+  "es": "Resultado / Justificación de la decisión",
+  "pt-BR": "Resultado / Justificativa da decisão"
  },
  "Outstanding": {
   "es": "Pendiente",
@@ -4879,6 +6241,10 @@
   "es": "Cambios vencidos",
   "pt-BR": "Mudanças vencidas"
  },
+ "Overdue for Review": {
+  "es": "Revisión vencida",
+  "pt-BR": "Revisão atrasada"
+ },
  "Overdue Items": {
   "es": "Elementos vencidos",
   "pt-BR": "Itens vencidos"
@@ -4888,6 +6254,10 @@
   "pt-BR": "Itens vencidos",
   "note": "shares one translation with \"Overdue Items\""
  },
+ "Overdue Maintenances": {
+  "es": "Mantenimientos vencidos",
+  "pt-BR": "Manutenções atrasadas"
+ },
  "Overdue Only": {
   "es": "Solo vencidos",
   "pt-BR": "Somente atrasados"
@@ -4895,6 +6265,10 @@
  "Overdue Open Deviations (past target resolution date)": {
   "es": "Desviaciones abiertas vencidas (pasada la fecha objetivo de resolución)",
   "pt-BR": "Desvios abertos atrasados (após a data-alvo de resolução)"
+ },
+ "Overdue Reviews": {
+  "es": "Revisiones vencidas",
+  "pt-BR": "Revisões atrasadas"
  },
  "Overdue Risks": {
   "es": "Riesgos vencidos",
@@ -4912,6 +6286,10 @@
   "es": "Vencido:",
   "pt-BR": "Atrasado:"
  },
+ "Override Rejection": {
+  "es": "Anular rechazo",
+  "pt-BR": "Anular rejeição"
+ },
  "Overview": {
   "es": "Resumen",
   "pt-BR": "Visão geral"
@@ -4924,6 +6302,10 @@
   "es": "Responsable",
   "pt-BR": "Responsável"
  },
+ "Pack Size": {
+  "es": "Tamaño del envase",
+  "pt-BR": "Tamanho da embalagem"
+ },
  "Packaging": {
   "es": "Envasado y empaque",
   "pt-BR": "Embalagem"
@@ -4935,6 +6317,18 @@
  "Packaging Site": {
   "es": "Sitio de envasado",
   "pt-BR": "Local de embalagem"
+ },
+ "Packaging Site GMP Licence / Clearance No.": {
+  "es": "N.º de licencia / autorización BPM del sitio de envasado",
+  "pt-BR": "N.º da licença / autorização BPF do local de embalagem"
+ },
+ "Parts Used": {
+  "es": "Repuestos utilizados",
+  "pt-BR": "Peças utilizadas"
+ },
+ "Parts used": {
+  "es": "Repuestos utilizados",
+  "pt-BR": "Peças utilizadas"
  },
  "PAS": {
   "es": "PAS",
@@ -5004,6 +6398,10 @@
   "es": "Acción pendiente (borrador / revisión / aprobado)",
   "pt-BR": "Ação pendente (rascunho / revisão / aprovado)"
  },
+ "Pending AP": {
+  "es": "Pendiente de la PA",
+  "pt-BR": "Pendente da PA"
+ },
  "Pending AP Decision": {
   "es": "Pendiente de decisión de la PA",
   "pt-BR": "Pendente de decisão da PA"
@@ -5011,6 +6409,10 @@
  "Pending Approval": {
   "es": "Pendiente de aprobación",
   "pt-BR": "Pendente de aprovação"
+ },
+ "Pending Approval / Confirmation": {
+  "es": "Pendiente de aprobación / confirmación",
+  "pt-BR": "Pendente de aprovação / confirmação"
  },
  "Pending Assessment": {
   "es": "Pendiente de evaluación",
@@ -5056,9 +6458,17 @@
   "es": "Historial de desempeño",
   "pt-BR": "Histórico de desempenho"
  },
+ "Performed": {
+  "es": "Realizado",
+  "pt-BR": "Realizado"
+ },
  "Performed By": {
   "es": "Realizado por",
   "pt-BR": "Realizado por"
+ },
+ "Performed On": {
+  "es": "Realizado el",
+  "pt-BR": "Realizado em"
  },
  "Period": {
   "es": "Período",
@@ -5129,6 +6539,14 @@
   "es": "Médico",
   "pt-BR": "Médico"
  },
+ "Pkg GMP Ref.": {
+  "es": "Ref. BPM env.",
+  "pt-BR": "Ref. BPF emb."
+ },
+ "Place on Hold": {
+  "es": "Poner en espera",
+  "pt-BR": "Colocar em espera"
+ },
  "Planned End": {
   "es": "Fin previsto",
   "pt-BR": "Término previsto"
@@ -5148,6 +6566,14 @@
  "Please check your email to reset your password.": {
   "es": "Revise su correo electrónico para restablecer su contraseña.",
   "pt-BR": "Verifique seu e-mail para redefinir sua senha."
+ },
+ "Please confirm the disposal is authorised.": {
+  "es": "Confirme que la eliminación está autorizada.",
+  "pt-BR": "Confirme que o descarte está autorizado."
+ },
+ "Please fix the following before saving:": {
+  "es": "Corrija lo siguiente antes de guardar:",
+  "pt-BR": "Corrija o seguinte antes de salvar:"
  },
  "Please select a file to upload.": {
   "es": "Seleccione un archivo para cargar.",
@@ -5222,6 +6648,14 @@
   "es": "Anterior",
   "pt-BR": "Anterior"
  },
+ "Previous Occurrence": {
+  "es": "Ocurrencia anterior",
+  "pt-BR": "Ocorrência anterior"
+ },
+ "Primary Address": {
+  "es": "Dirección principal",
+  "pt-BR": "Endereço principal"
+ },
  "Primary Contact": {
   "es": "Contacto principal",
   "pt-BR": "Contato principal"
@@ -5233,6 +6667,10 @@
  "Print": {
   "es": "Imprimir",
   "pt-BR": "Imprimir"
+ },
+ "Priority": {
+  "es": "Prioridad",
+  "pt-BR": "Prioridade"
  },
  "Priority Review": {
   "es": "Revisión prioritaria",
@@ -5254,9 +6692,17 @@
   "es": "Procedimiento / documentación",
   "pt-BR": "Procedimento / documentação"
  },
+ "Process": {
+  "es": "Proceso",
+  "pt-BR": "Processo"
+ },
  "Process (manufacturing / packaging / cleaning)": {
   "es": "Proceso (fabricación / envasado / limpieza)",
   "pt-BR": "Processo (fabricação / embalagem / limpeza)"
+ },
+ "Process (Optional)": {
+  "es": "Proceso (opcional)",
+  "pt-BR": "Processo (opcional)"
  },
  "Process Deviation": {
   "es": "Desviación de proceso",
@@ -5286,6 +6732,10 @@
   "es": "Expediente del producto",
   "pt-BR": "Dossiê do produto"
  },
+ "Product Group": {
+  "es": "Grupo de productos",
+  "pt-BR": "Grupo de produtos"
+ },
  "Product Identification": {
   "es": "Identificación del producto",
   "pt-BR": "Identificação do produto"
@@ -5310,9 +6760,25 @@
   "es": "Revisión de la calidad del producto (RCP)",
   "pt-BR": "Revisão da qualidade do produto (RQP)"
  },
+ "Product Specification File Reference": {
+  "es": "Referencia del expediente de especificaciones del producto",
+  "pt-BR": "Referência do arquivo de especificações do produto"
+ },
+ "Product Type": {
+  "es": "Tipo de producto",
+  "pt-BR": "Tipo de produto"
+ },
  "Products": {
   "es": "Productos",
   "pt-BR": "Produtos"
+ },
+ "Products / Materials / Services": {
+  "es": "Productos / Materiales / Servicios",
+  "pt-BR": "Produtos / Materiais / Serviços"
+ },
+ "Products Supplied": {
+  "es": "Productos suministrados",
+  "pt-BR": "Produtos fornecidos"
  },
  "Profile": {
   "es": "Perfil",
@@ -5321,6 +6787,10 @@
  "Progress": {
   "es": "Avance",
   "pt-BR": "Progresso"
+ },
+ "Progress to Qualified": {
+  "es": "Avanzar a Calificado",
+  "pt-BR": "Avançar para Qualificado"
  },
  "Proposal": {
   "es": "Propuesta",
@@ -5378,6 +6848,14 @@
   "es": "Indique el motivo de la cancelación...",
   "pt-BR": "Informe o motivo do cancelamento..."
  },
+ "Provide context for this retention hold...": {
+  "es": "Indique el contexto de este bloqueo de retención...",
+  "pt-BR": "Informe o contexto deste bloqueio de retenção..."
+ },
+ "Provide documented justification for removing this hold...": {
+  "es": "Indique la justificación documentada para levantar este bloqueo...",
+  "pt-BR": "Informe a justificativa documentada para remover este bloqueio..."
+ },
  "PSUR / Periodic Reports": {
   "es": "PSUR / Informes periódicos",
   "pt-BR": "PSUR / Relatórios periódicos"
@@ -5394,6 +6872,23 @@
   "es": "Panel de FV",
   "pt-BR": "Painel de FV"
  },
+ "QC Report": {
+  "es": "Informe de CC",
+  "pt-BR": "Relatório de CQ",
+  "note": "used through a variable: Views/Release/_DocumentsTab.cshtml (categories)"
+ },
+ "Qual. Basis": {
+  "es": "Base de calif.",
+  "pt-BR": "Base da qualif."
+ },
+ "Qual. Comments": {
+  "es": "Coment. de calif.",
+  "pt-BR": "Coment. da qualif."
+ },
+ "Qual. Justification": {
+  "es": "Justif. de calif.",
+  "pt-BR": "Justif. da qualif."
+ },
  "Qualification": {
   "es": "Calificación",
   "pt-BR": "Qualificação"
@@ -5402,9 +6897,45 @@
   "es": "Calificación (IQ/OQ/PQ)",
   "pt-BR": "Qualificação (QI/QO/QD)"
  },
+ "Qualification Basis": {
+  "es": "Base de la calificación",
+  "pt-BR": "Base da qualificação"
+ },
+ "Qualification Comments": {
+  "es": "Comentarios de la calificación",
+  "pt-BR": "Comentários da qualificação"
+ },
+ "Qualification is not required for this supplier.": {
+  "es": "Este proveedor no requiere calificación.",
+  "pt-BR": "Este fornecedor não requer qualificação."
+ },
+ "Qualification Justification": {
+  "es": "Justificación de la calificación",
+  "pt-BR": "Justificativa da qualificação"
+ },
+ "Qualification Reference Document": {
+  "es": "Documento de referencia de la calificación",
+  "pt-BR": "Documento de referência da qualificação"
+ },
+ "Qualification Required": {
+  "es": "Requiere calificación",
+  "pt-BR": "Requer qualificação"
+ },
  "Qualified": {
   "es": "Calificado",
   "pt-BR": "Qualificado"
+ },
+ "Qualified By": {
+  "es": "Calificado por",
+  "pt-BR": "Qualificado por"
+ },
+ "Qualified On": {
+  "es": "Calificado el",
+  "pt-BR": "Qualificado em"
+ },
+ "Qualify": {
+  "es": "Calificar",
+  "pt-BR": "Qualificar"
  },
  "Quality Agreement": {
   "es": "Acuerdo de calidad",
@@ -5430,6 +6961,10 @@
   "es": "Manual de calidad",
   "pt-BR": "Manual da qualidade"
  },
+ "Quality Notes": {
+  "es": "Notas de calidad",
+  "pt-BR": "Notas da qualidade"
+ },
  "Quality Operations": {
   "es": "Operaciones de calidad",
   "pt-BR": "Operações da qualidade"
@@ -5438,9 +6973,33 @@
   "es": "Supervisión de calidad",
   "pt-BR": "Supervisão da qualidade"
  },
+ "Quality Record": {
+  "es": "Registro de calidad",
+  "pt-BR": "Registro da qualidade"
+ },
  "Quality Record guidance": {
   "es": "Guía de registros de calidad",
   "pt-BR": "Orientação sobre registros de qualidade"
+ },
+ "Quality record linked.": {
+  "es": "Registro de calidad vinculado.",
+  "pt-BR": "Registro da qualidade vinculado."
+ },
+ "Quality Records": {
+  "es": "Registros de calidad",
+  "pt-BR": "Registros da qualidade"
+ },
+ "Quality records are locked while the supplier is {0} — start a new review to change them.": {
+  "es": "Los registros de calidad están bloqueados mientras el proveedor está en estado {0} — inicie una nueva revisión para cambiarlos.",
+  "pt-BR": "Os registros da qualidade ficam bloqueados enquanto o fornecedor está no status {0} — inicie uma nova revisão para alterá-los."
+ },
+ "Quality Records at Time of Completion": {
+  "es": "Registros de calidad al momento de completarse",
+  "pt-BR": "Registros da qualidade no momento da conclusão"
+ },
+ "Quality records can only be linked while the supplier is not locked.": {
+  "es": "Solo se pueden vincular registros de calidad mientras el proveedor no está bloqueado.",
+  "pt-BR": "Só é possível vincular registros da qualidade enquanto o fornecedor não está bloqueado."
  },
  "Quality System": {
   "es": "Sistema de calidad",
@@ -5474,6 +7033,30 @@
   "es": "Materia prima",
   "pt-BR": "Matéria-prima"
  },
+ "Re-review in progress": {
+  "es": "Revisión periódica en curso",
+  "pt-BR": "Revisão periódica em andamento"
+ },
+ "Re-reviews in Progress": {
+  "es": "Revisiones periódicas en curso",
+  "pt-BR": "Revisões periódicas em andamento"
+ },
+ "Reactivate": {
+  "es": "Reactivar",
+  "pt-BR": "Reativar"
+ },
+ "Reactivate Maintenance Schedule": {
+  "es": "Reactivar programa de mantenimiento",
+  "pt-BR": "Reativar programação de manutenção"
+ },
+ "Reactivate Supplier": {
+  "es": "Reactivar proveedor",
+  "pt-BR": "Reativar fornecedor"
+ },
+ "Reactivating will return this record to Scheduled status. The recurring chain will resume when this occurrence is reviewed and closed.": {
+  "es": "Al reactivar, este registro volverá al estado Programado. La cadena recurrente se reanudará cuando esta ocurrencia se revise y cierre.",
+  "pt-BR": "Ao reativar, este registro voltará ao status Programado. A cadeia recorrente será retomada quando esta ocorrência for revisada e fechada."
+ },
  "Read": {
   "es": "Leído",
   "pt-BR": "Lido"
@@ -5494,9 +7077,17 @@
   "es": "Motivo",
   "pt-BR": "Motivo"
  },
+ "Reason / Comments": {
+  "es": "Motivo / Comentarios",
+  "pt-BR": "Motivo / Comentários"
+ },
  "Reason / Justification": {
   "es": "Motivo / justificación",
   "pt-BR": "Motivo / justificativa"
+ },
+ "Reason / Notes": {
+  "es": "Motivo / Notas",
+  "pt-BR": "Motivo / Notas"
  },
  "Reason for Change": {
   "es": "Motivo del cambio",
@@ -5514,6 +7105,10 @@
   "es": "Motivo de la obsolescencia",
   "pt-BR": "Motivo da obsolescência"
  },
+ "Reason for Override": {
+  "es": "Motivo de la anulación",
+  "pt-BR": "Motivo da anulação"
+ },
  "Reason for Reassignment": {
   "es": "Motivo de la reasignación",
   "pt-BR": "Motivo da reatribuição"
@@ -5522,6 +7117,10 @@
   "es": "Motivo del rechazo",
   "pt-BR": "Motivo da rejeição"
  },
+ "Reason for removing hold": {
+  "es": "Motivo para levantar el bloqueo",
+  "pt-BR": "Motivo para remover o bloqueio"
+ },
  "Reason for Return": {
   "es": "Motivo de la devolución",
   "pt-BR": "Motivo da devolução"
@@ -5529,6 +7128,22 @@
  "Reason for Return (required)": {
   "es": "Motivo de la devolución (obligatorio)",
   "pt-BR": "Motivo da devolução (obrigatório)"
+ },
+ "Reason for Review": {
+  "es": "Motivo de la revisión",
+  "pt-BR": "Motivo da revisão"
+ },
+ "Reason for Review:": {
+  "es": "Motivo de la revisión:",
+  "pt-BR": "Motivo da revisão:"
+ },
+ "Reason:": {
+  "es": "Motivo:",
+  "pt-BR": "Motivo:"
+ },
+ "Reason: {0}": {
+  "es": "Motivo: {0}",
+  "pt-BR": "Motivo: {0}"
  },
  "Reassign Author": {
   "es": "Reasignar autor",
@@ -5558,6 +7173,10 @@
   "es": "Actividad reciente",
   "pt-BR": "Atividade recente"
  },
+ "Recent Release Records": {
+  "es": "Registros de liberación recientes",
+  "pt-BR": "Registros de liberação recentes"
+ },
  "Recently Approved": {
   "es": "Aprobados recientemente",
   "pt-BR": "Aprovados recentemente"
@@ -5569,6 +7188,18 @@
  "Recertification Due": {
   "es": "Recertificación pendiente",
   "pt-BR": "Recertificação pendente"
+ },
+ "Recommend Approval": {
+  "es": "Recomendar aprobación",
+  "pt-BR": "Recomendar aprovação"
+ },
+ "Recommend Cancellation": {
+  "es": "Recomendar cancelación",
+  "pt-BR": "Recomendar cancelamento"
+ },
+ "Recommend Suspension": {
+  "es": "Recomendar suspensión",
+  "pt-BR": "Recomendar suspensão"
  },
  "Recommendations": {
   "es": "Recomendaciones",
@@ -5586,13 +7217,29 @@
   "es": "Adjuntos de registros — Registro de vencimientos",
   "pt-BR": "Anexos de registros — Registro de vencimentos"
  },
+ "Record cancelled.": {
+  "es": "Registro cancelado.",
+  "pt-BR": "Registro cancelado."
+ },
+ "Record cannot be modified in its current state.": {
+  "es": "El registro no puede modificarse en su estado actual.",
+  "pt-BR": "O registro não pode ser alterado no estado atual."
+ },
  "Record cannot be returned from its current status.": {
   "es": "El registro no puede devolverse desde su estado actual.",
   "pt-BR": "O registro não pode ser devolvido a partir do status atual."
  },
+ "Record closed.": {
+  "es": "Registro cerrado.",
+  "pt-BR": "Registro fechado."
+ },
  "Record Closed:": {
   "es": "Registro cerrado:",
   "pt-BR": "Registro fechado:"
+ },
+ "Record Details": {
+  "es": "Detalles del registro",
+  "pt-BR": "Detalhes do registro"
  },
  "Record has been administratively reopened to Approved stage.": {
   "es": "El registro se ha reabierto administrativamente en la etapa Aprobado.",
@@ -5610,6 +7257,14 @@
   "es": "El registro se ha reabierto administrativamente en la etapa Resolución.",
   "pt-BR": "O registro foi reaberto administrativamente na etapa Resolução."
  },
+ "Record has been administratively reopened to Reviewed stage.": {
+  "es": "El registro se ha reabierto administrativamente en la etapa Revisado.",
+  "pt-BR": "O registro foi reaberto administrativamente na etapa Revisado."
+ },
+ "Record has been administratively reopened to {0} stage.{1}": {
+  "es": "El registro se ha reabierto administrativamente en la etapa {0}.{1}",
+  "pt-BR": "O registro foi reaberto administrativamente na etapa {0}.{1}"
+ },
  "Record is approved — no new attachments can be added.": {
   "es": "El registro está aprobado: no se pueden agregar adjuntos.",
   "pt-BR": "O registro está aprovado — não é possível adicionar anexos."
@@ -5622,9 +7277,41 @@
   "es": "El registro está pendiente de aprobación final. Use <strong>{0}</strong> en la página de detalles si se necesitan cambios.",
   "pt-BR": "O registro está pendente de aprovação final. Use <strong>{0}</strong> na página de detalhes se forem necessárias alterações."
  },
+ "Record Metadata": {
+  "es": "Metadatos del registro",
+  "pt-BR": "Metadados do registro"
+ },
  "Record No.": {
   "es": "N.º de registro",
   "pt-BR": "Nº do registro"
+ },
+ "Record Number": {
+  "es": "Número de registro",
+  "pt-BR": "Número do registro"
+ },
+ "Record placed on hold.": {
+  "es": "Registro puesto en espera.",
+  "pt-BR": "Registro colocado em espera."
+ },
+ "Record rejected.": {
+  "es": "Registro rechazado.",
+  "pt-BR": "Registro rejeitado."
+ },
+ "Record returned for review.": {
+  "es": "Registro devuelto para revisión.",
+  "pt-BR": "Registro devolvido para revisão."
+ },
+ "Record returned to Draft.": {
+  "es": "Registro devuelto a Borrador.",
+  "pt-BR": "Registro devolvido para Rascunho."
+ },
+ "Record submitted for review.": {
+  "es": "Registro enviado a revisión.",
+  "pt-BR": "Registro enviado para revisão."
+ },
+ "Record submitted to Authorised Person.": {
+  "es": "Registro enviado a la Persona Autorizada.",
+  "pt-BR": "Registro enviado à Pessoa Autorizada."
  },
  "Record the complaint source, product involved, and the full description of the issue reported.": {
   "es": "Registre el origen de la reclamación, el producto involucrado y la descripción completa del problema informado.",
@@ -5635,6 +7322,14 @@
   "es": "Registre los datos originales de autoría y aprobación tal como figuran en el propio documento. Son independientes de los registros del flujo del sistema.",
   "pt-BR": "Registre os dados originais de autoria e aprovação conforme constam no próprio documento. Eles são independentes dos registros do fluxo do sistema."
  },
+ "Record Type": {
+  "es": "Tipo de registro",
+  "pt-BR": "Tipo de registro"
+ },
+ "Record updated.": {
+  "es": "Registro actualizado.",
+  "pt-BR": "Registro atualizado."
+ },
  "Record what happened, classify the event, and submit for evaluation.": {
   "es": "Registre lo ocurrido, clasifique el evento y envíelo a evaluación.",
   "pt-BR": "Registre o ocorrido, classifique o evento e envie para avaliação."
@@ -5644,9 +7339,29 @@
   "pt-BR": "Registre o que ocorreu, quando, onde e as ações imediatas tomadas.",
   "note": "GUIDANCE — review"
  },
+ "Record Work": {
+  "es": "Registrar trabajo",
+  "pt-BR": "Registrar trabalho"
+ },
  "Records": {
   "es": "Registros",
   "pt-BR": "Registros"
+ },
+ "Records by Status": {
+  "es": "Registros por estado",
+  "pt-BR": "Registros por status"
+ },
+ "Records listed below have passed their minimum retention period. Records with a Retention Hold cannot be disposed until the hold is removed and the cooldown period elapses.": {
+  "es": "Los registros a continuación han superado su período mínimo de retención. Los registros con un bloqueo de retención no pueden eliminarse hasta que se levante el bloqueo y transcurra el período de espera.",
+  "pt-BR": "Os registros abaixo ultrapassaram o período mínimo de retenção. Registros com bloqueio de retenção não podem ser descartados até que o bloqueio seja removido e o período de carência termine."
+ },
+ "Records This Year": {
+  "es": "Registros este año",
+  "pt-BR": "Registros neste ano"
+ },
+ "Records with an active retention hold will be automatically skipped.": {
+  "es": "Los registros con un bloqueo de retención activo se omitirán automáticamente.",
+  "pt-BR": "Registros com bloqueio de retenção ativo serão ignorados automaticamente."
  },
  "Recovered / Resolved": {
   "es": "Recuperado / resuelto",
@@ -5676,6 +7391,10 @@
   "es": "Códigos de recuperación",
   "pt-BR": "Códigos de recuperação"
  },
+ "Recurring Schedule Chain": {
+  "es": "Cadena de programación recurrente",
+  "pt-BR": "Cadeia de programação recorrente"
+ },
  "Red": {
   "es": "Rojo",
   "pt-BR": "Vermelho"
@@ -5684,6 +7403,10 @@
   "es": "Análisis reducido",
   "pt-BR": "Análise reduzida"
  },
+ "Reduced testing / CoA reliance will be permitted after qualification.": {
+  "es": "Tras la calificación se permitirá el ensayo reducido / la confianza en el CoA.",
+  "pt-BR": "Após a qualificação será permitido o ensaio reduzido / a confiança no CoA."
+ },
  "Reference": {
   "es": "Referencia",
   "pt-BR": "Referência"
@@ -5691,6 +7414,14 @@
  "Reference Data": {
   "es": "Datos maestros",
   "pt-BR": "Dados mestres"
+ },
+ "Reference Doc": {
+  "es": "Doc. de referencia",
+  "pt-BR": "Doc. de referência"
+ },
+ "Reference Document": {
+  "es": "Documento de referencia",
+  "pt-BR": "Documento de referência"
  },
  "Refuted": {
   "es": "Refutado",
@@ -5703,6 +7434,10 @@
  "Register confirmation": {
   "es": "Confirmación de registro",
   "pt-BR": "Confirmação de cadastro"
+ },
+ "Register Ref.": {
+  "es": "Ref. del registro",
+  "pt-BR": "Ref. do registro"
  },
  "Registered Logins": {
   "es": "Inicios de sesión registrados",
@@ -5773,6 +7508,10 @@
   "pt-BR": "Rejeitar",
   "note": "SIGNATURE — review"
  },
+ "Reject Batch": {
+  "es": "Rechazar lote",
+  "pt-BR": "Rejeitar lote"
+ },
  "Reject Document": {
   "es": "Rechazar documento",
   "pt-BR": "Rejeitar documento",
@@ -5782,13 +7521,33 @@
   "es": "Rechazado",
   "pt-BR": "Rejeitado"
  },
+ "Rejection overridden. Record returned to Under Review.": {
+  "es": "Rechazo anulado. El registro volvió a En revisión.",
+  "pt-BR": "Rejeição anulada. O registro voltou a Em revisão."
+ },
  "Rejection Reason": {
   "es": "Motivo del rechazo",
   "pt-BR": "Motivo da rejeição"
  },
+ "Related CAPAs": {
+  "es": "CAPA relacionadas",
+  "pt-BR": "CAPAs relacionadas"
+ },
+ "Related Deviations": {
+  "es": "Desviaciones relacionadas",
+  "pt-BR": "Desvios relacionados"
+ },
  "Related Documents": {
   "es": "Documentos relacionados",
   "pt-BR": "Documentos relacionados"
+ },
+ "Related QMS Records": {
+  "es": "Registros del SGC relacionados",
+  "pt-BR": "Registros do SGQ relacionados"
+ },
+ "Related QMS Records (Optional)": {
+  "es": "Registros del SGC relacionados (opcional)",
+  "pt-BR": "Registros do SGQ relacionados (opcional)"
  },
  "Release Certification Statements": {
   "es": "Declaraciones de certificación de liberación",
@@ -5798,6 +7557,10 @@
   "es": "Panel de liberación",
   "pt-BR": "Painel de liberação"
  },
+ "Release Decision": {
+  "es": "Decisión de liberación",
+  "pt-BR": "Decisão de liberação"
+ },
  "Release For Further Processing": {
   "es": "Liberación para procesamiento posterior",
   "pt-BR": "Liberação para processamento posterior"
@@ -5806,9 +7569,29 @@
   "es": "Liberación para suministro",
   "pt-BR": "Liberação para fornecimento"
  },
+ "Release record not found.": {
+  "es": "No se encontró el registro de liberación.",
+  "pt-BR": "Registro de liberação não encontrado."
+ },
+ "Release record {0} created.": {
+  "es": "Registro de liberación {0} creado.",
+  "pt-BR": "Registro de liberação {0} criado."
+ },
+ "Release Record —": {
+  "es": "Registro de liberación —",
+  "pt-BR": "Registro de liberação —"
+ },
  "Release Records": {
   "es": "Registros de liberación",
   "pt-BR": "Registros de liberação"
+ },
+ "Release Reference Number": {
+  "es": "Número de referencia de la liberación",
+  "pt-BR": "Número de referência da liberação"
+ },
+ "Release Reference Number guidance": {
+  "es": "Guía del número de referencia de la liberación",
+  "pt-BR": "Orientação sobre o número de referência da liberação"
  },
  "Release Register": {
   "es": "Registro de liberaciones",
@@ -5826,13 +7609,25 @@
   "es": "Liberación en cuarentena",
   "pt-BR": "Liberação em quarentena"
  },
+ "Release — {0}": {
+  "es": "Liberación — {0}",
+  "pt-BR": "Liberação — {0}"
+ },
  "Released": {
   "es": "Liberado",
   "pt-BR": "Liberado"
  },
+ "Releases by Type (All Records)": {
+  "es": "Liberaciones por tipo (todos los registros)",
+  "pt-BR": "Liberações por tipo (todos os registros)"
+ },
  "Releasing Company": {
   "es": "Empresa que libera",
   "pt-BR": "Empresa liberadora"
+ },
+ "Releasing Company TGA Licence / Clearance No.": {
+  "es": "N.º de licencia / autorización TGA de la empresa que libera",
+  "pt-BR": "N.º da licença / autorização TGA da empresa liberadora"
  },
  "Remember me?": {
   "es": "¿Recordarme?",
@@ -5849,6 +7644,30 @@
  "Remove action": {
   "es": "Quitar acción",
   "pt-BR": "Remover ação"
+ },
+ "Remove Hold": {
+  "es": "Levantar bloqueo",
+  "pt-BR": "Remover bloqueio"
+ },
+ "Remove Retention Hold —": {
+  "es": "Levantar bloqueo de retención —",
+  "pt-BR": "Remover bloqueio de retenção —"
+ },
+ "Remove this address?": {
+  "es": "¿Eliminar esta dirección?",
+  "pt-BR": "Remover este endereço?"
+ },
+ "Remove this link?": {
+  "es": "¿Eliminar este vínculo?",
+  "pt-BR": "Remover este vínculo?"
+ },
+ "Remove this linked record?": {
+  "es": "¿Eliminar este registro vinculado?",
+  "pt-BR": "Remover este registro vinculado?"
+ },
+ "Removing a retention hold starts a <strong>{0}-day cooldown</strong> before the record becomes eligible for disposal.": {
+  "es": "Levantar un bloqueo de retención inicia un <strong>período de espera de {0} días</strong> antes de que el registro pueda eliminarse.",
+  "pt-BR": "Remover um bloqueio de retenção inicia um <strong>período de carência de {0} dias</strong> antes que o registro possa ser descartado."
  },
  "REMS": {
   "es": "REMS",
@@ -5886,6 +7705,10 @@
  "Report Source": {
   "es": "Fuente del reporte",
   "pt-BR": "Fonte do relato"
+ },
+ "Report Statement": {
+  "es": "Declaración del informe",
+  "pt-BR": "Declaração do relatório"
  },
  "Report Type": {
   "es": "Tipo de reporte",
@@ -6056,6 +7879,14 @@
   "es": "En resolución",
   "pt-BR": "Em resolução"
  },
+ "Responsible Party for Final RFS": {
+  "es": "Responsable de la liberación final para suministro (RFS)",
+  "pt-BR": "Responsável pela liberação final para fornecimento (RFS)"
+ },
+ "Result": {
+  "es": "Resultado",
+  "pt-BR": "Resultado"
+ },
  "Results": {
   "es": "Resultados",
   "pt-BR": "Resultados"
@@ -6076,6 +7907,18 @@
   "es": "Retención vencida",
   "pt-BR": "Retenção vencida"
  },
+ "Retention hold removed. Record will be available for disposal after {0}-day cooldown.": {
+  "es": "Bloqueo de retención levantado. El registro podrá eliminarse tras un período de espera de {0} días.",
+  "pt-BR": "Bloqueio de retenção removido. O registro poderá ser descartado após um período de carência de {0} dias."
+ },
+ "Retention hold set on {0} record {1}.": {
+  "es": "Bloqueo de retención aplicado al registro {1} ({0}).",
+  "pt-BR": "Bloqueio de retenção aplicado ao registro {1} ({0})."
+ },
+ "Retest Date": {
+  "es": "Fecha de reanálisis",
+  "pt-BR": "Data de reteste"
+ },
  "Return for Revision": {
   "es": "Devolver para revisión",
   "pt-BR": "Devolver para revisão"
@@ -6085,6 +7928,14 @@
   "pt-BR": "Devolver para retrabalho",
   "note": "WORKFLOW — review"
  },
+ "Return Record To": {
+  "es": "Devolver el registro a",
+  "pt-BR": "Devolver o registro para"
+ },
+ "Return to Assessment": {
+  "es": "Devolver a evaluación",
+  "pt-BR": "Devolver para avaliação"
+ },
  "Return to Mitigation": {
   "es": "Devolver a Mitigación",
   "pt-BR": "Devolver para Mitigação"
@@ -6092,6 +7943,10 @@
  "Return to Review": {
   "es": "Devolver a revisión",
   "pt-BR": "Devolver para revisão"
+ },
+ "Returned to assessment.": {
+  "es": "Devuelto a evaluación.",
+  "pt-BR": "Devolvido para avaliação."
  },
  "Returns to <strong>{0}</strong> — all intermediate stamps will be cleared. All fields will be editable.": {
   "es": "Vuelve a <strong>{0}</strong>: se borrarán todos los sellos intermedios. Todos los campos serán editables.",
@@ -6109,9 +7964,21 @@
   "es": "Revisión",
   "pt-BR": "Revisão"
  },
+ "Review & Close": {
+  "es": "Revisar y cerrar",
+  "pt-BR": "Revisar e fechar"
+ },
+ "Review & Close Maintenance": {
+  "es": "Revisar y cerrar mantenimiento",
+  "pt-BR": "Revisar e fechar manutenção"
+ },
  "Review & Closure": {
   "es": "Revisión y cierre",
   "pt-BR": "Revisão e encerramento"
+ },
+ "Review Comments": {
+  "es": "Comentarios de la revisión",
+  "pt-BR": "Comentários da revisão"
  },
  "Review Conclusion": {
   "es": "Conclusión de la revisión",
@@ -6121,13 +7988,25 @@
   "es": "La conclusión de la revisión es obligatoria para cerrar el riesgo.",
   "pt-BR": "A conclusão da revisão é obrigatória para encerrar o risco."
  },
+ "Review Date": {
+  "es": "Fecha de revisión",
+  "pt-BR": "Data da revisão"
+ },
  "Review date is automatically set when the document becomes effective.": {
   "es": "La fecha de revisión se fija automáticamente cuando el documento entra en vigor.",
   "pt-BR": "A data de revisão é definida automaticamente quando o documento entra em vigor."
  },
+ "Review Details": {
+  "es": "Detalles de la revisión",
+  "pt-BR": "Detalhes da revisão"
+ },
  "Review Due": {
   "es": "Revisión pendiente",
   "pt-BR": "Revisão pendente"
+ },
+ "Review Due Soon": {
+  "es": "Revisión próxima",
+  "pt-BR": "Revisão próxima"
  },
  "Review Due Soon:": {
   "es": "Revisión próxima:",
@@ -6136,6 +8015,18 @@
  "Review Due Within 30 Days": {
   "es": "Revisión en 30 días o menos",
   "pt-BR": "Revisão em até 30 dias"
+ },
+ "Review Frequency": {
+  "es": "Frecuencia de revisión",
+  "pt-BR": "Frequência de revisão"
+ },
+ "Review History": {
+  "es": "Historial de revisiones",
+  "pt-BR": "Histórico de revisões"
+ },
+ "Review ID": {
+  "es": "ID de revisión",
+  "pt-BR": "ID da revisão"
  },
  "review not due yet": {
   "es": "revisión aún no vencida",
@@ -6157,9 +8048,33 @@
   "es": "Registro de revisiones",
   "pt-BR": "Registro de revisões"
  },
+ "Review Snapshot": {
+  "es": "Instantánea de la revisión",
+  "pt-BR": "Registro histórico da revisão"
+ },
+ "Review Status": {
+  "es": "Estado de la revisión",
+  "pt-BR": "Status da revisão"
+ },
+ "Review the assessment details in the Overview tab before approving. To amend any fields, return the record to Assessment first.": {
+  "es": "Revise los detalles de la evaluación en la pestaña Resumen antes de aprobar. Para modificar algún campo, devuelva primero el registro a Evaluación.",
+  "pt-BR": "Revise os detalhes da avaliação na aba Visão geral antes de aprovar. Para alterar algum campo, devolva primeiro o registro para Avaliação."
+ },
+ "Review Trigger": {
+  "es": "Motivo de inicio de la revisión",
+  "pt-BR": "Gatilho da revisão"
+ },
+ "Review Trigger:": {
+  "es": "Motivo de inicio de la revisión:",
+  "pt-BR": "Gatilho da revisão:"
+ },
  "Reviewed": {
   "es": "Revisado",
   "pt-BR": "Revisado"
+ },
+ "Reviewed (Closed)": {
+  "es": "Revisado (cerrado)",
+  "pt-BR": "Revisado (fechado)"
  },
  "Reviewed By": {
   "es": "Revisado por",
@@ -6168,6 +8083,10 @@
  "Reviewed On": {
   "es": "Revisado el",
   "pt-BR": "Revisado em"
+ },
+ "Reviews": {
+  "es": "Revisiones",
+  "pt-BR": "Revisões"
  },
  "RFI Response Submitted": {
   "es": "Respuesta a la solicitud de información enviada",
@@ -6237,9 +8156,17 @@
   "es": "ID del riesgo",
   "pt-BR": "ID do risco"
  },
+ "Risk Justification": {
+  "es": "Justificación del riesgo",
+  "pt-BR": "Justificativa do risco"
+ },
  "Risk Level": {
   "es": "Nivel de riesgo",
   "pt-BR": "Nível de risco"
+ },
+ "Risk Level Breakdown (Approved/Qualified)": {
+  "es": "Desglose por nivel de riesgo (aprobados/calificados)",
+  "pt-BR": "Distribuição por nível de risco (aprovados/qualificados)"
  },
  "Risk level if actions are not completed on time": {
   "es": "Nivel de riesgo si las acciones no se completan a tiempo",
@@ -6449,9 +8376,25 @@
   "es": "Guardar cambios",
   "pt-BR": "Salvar alterações"
  },
+ "Save failed:": {
+  "es": "Error al guardar:",
+  "pt-BR": "Falha ao salvar:"
+ },
  "Save progress": {
   "es": "Guardar avance",
   "pt-BR": "Salvar progresso"
+ },
+ "Save Statement": {
+  "es": "Guardar declaración",
+  "pt-BR": "Salvar declaração"
+ },
+ "Save work details": {
+  "es": "Guardar detalles del trabajo",
+  "pt-BR": "Salvar detalhes do trabalho"
+ },
+ "Saved to the audit trail. Then use Complete Work when finished.": {
+  "es": "Se guarda en el registro de auditoría. Luego use Completar trabajo al terminar.",
+  "pt-BR": "Fica salvo na trilha de auditoria. Depois use Concluir trabalho ao terminar."
  },
  "Saving will create a new draft and lock the current approved version.": {
   "es": "Al guardar se creará un nuevo borrador y se bloqueará la versión aprobada actual.",
@@ -6461,6 +8404,18 @@
   "es": "Programación",
   "pt-BR": "Programação"
  },
+ "Schedule Maintenance": {
+  "es": "Programar mantenimiento",
+  "pt-BR": "Programar manutenção"
+ },
+ "Schedule New Maintenance": {
+  "es": "Programar nuevo mantenimiento",
+  "pt-BR": "Programar nova manutenção"
+ },
+ "Schedule Suspended": {
+  "es": "Programa suspendido",
+  "pt-BR": "Programação suspensa"
+ },
  "Scheduled": {
   "es": "Programado",
   "pt-BR": "Programado"
@@ -6469,9 +8424,21 @@
   "es": "Programado por",
   "pt-BR": "Programado por"
  },
+ "Scheduled Date": {
+  "es": "Fecha programada",
+  "pt-BR": "Data programada"
+ },
+ "Scheduled date must be today or in the future.": {
+  "es": "La fecha programada debe ser hoy o una fecha futura.",
+  "pt-BR": "A data programada deve ser hoje ou uma data futura."
+ },
  "Scheduled On": {
   "es": "Programado el",
   "pt-BR": "Programado em"
+ },
+ "Scheduled {0}": {
+  "es": "Programado el {0}",
+  "pt-BR": "Programado para {0}"
  },
  "Scheduling": {
   "es": "Programación",
@@ -6494,6 +8461,10 @@
   "es": "Buscar:",
   "pt-BR": "Pesquisar:"
  },
+ "Select All Eligible": {
+  "es": "Seleccionar todos los elegibles",
+  "pt-BR": "Selecionar todos os elegíveis"
+ },
  "Select an existing adverse event to associate with this complaint. Only unlinked, non-voided cases are listed.": {
   "es": "Seleccione un evento adverso existente para asociarlo a esta reclamación. Solo se muestran casos no vinculados y no anulados.",
   "pt-BR": "Selecione um evento adverso existente para associar a esta reclamação. Só são listados casos não vinculados e não anulados."
@@ -6505,6 +8476,14 @@
  "Select File:": {
   "es": "Seleccionar archivo:",
   "pt-BR": "Selecionar arquivo:"
+ },
+ "Select record type above to load available records.": {
+  "es": "Seleccione arriba el tipo de registro para cargar los registros disponibles.",
+  "pt-BR": "Selecione acima o tipo de registro para carregar os registros disponíveis."
+ },
+ "Select the specific record that triggered this review.": {
+  "es": "Seleccione el registro específico que originó esta revisión.",
+  "pt-BR": "Selecione o registro específico que originou esta revisão."
  },
  "Select users…": {
   "es": "Seleccione usuarios…",
@@ -6518,10 +8497,22 @@
   "es": "Semestral",
   "pt-BR": "Semestral"
  },
+ "Send Back to Completed": {
+  "es": "Devolver a Completado",
+  "pt-BR": "Devolver para Concluído"
+ },
  "Send Back to Draft": {
   "es": "Devolver a borrador",
   "pt-BR": "Devolver para rascunho",
   "note": "WORKFLOW — review"
+ },
+ "Send Back to In Progress": {
+  "es": "Devolver a En curso",
+  "pt-BR": "Devolver para Em andamento"
+ },
+ "Send Back to Scheduled": {
+  "es": "Devolver a Programado",
+  "pt-BR": "Devolver para Programado"
  },
  "Send for Evaluation": {
   "es": "Enviar a evaluación",
@@ -6547,17 +8538,37 @@
   "es": "Servicios",
   "pt-BR": "Serviços"
  },
+ "Services Provided": {
+  "es": "Servicios prestados",
+  "pt-BR": "Serviços prestados"
+ },
  "Session Expiring": {
   "es": "La sesión está por expirar",
   "pt-BR": "Sessão prestes a expirar"
+ },
+ "Set Hold": {
+  "es": "Aplicar bloqueo",
+  "pt-BR": "Aplicar bloqueio"
+ },
+ "Set only for time-limited or conditional approvals. Leave blank if the approval is valid until the next review.": {
+  "es": "Indíquelo solo para aprobaciones con plazo o condicionales. Déjelo en blanco si la aprobación es válida hasta la próxima revisión.",
+  "pt-BR": "Informe apenas para aprovações com prazo ou condicionais. Deixe em branco se a aprovação for válida até a próxima revisão."
  },
  "Set password": {
   "es": "Establecer contraseña",
   "pt-BR": "Definir senha"
  },
+ "Set Retention Hold —": {
+  "es": "Aplicar bloqueo de retención —",
+  "pt-BR": "Aplicar bloqueio de retenção —"
+ },
  "Set your password": {
   "es": "Establezca su contraseña",
   "pt-BR": "Defina sua senha"
+ },
+ "Setting": {
+  "es": "Configuración",
+  "pt-BR": "Configuração"
  },
  "Settings": {
   "es": "Configuración",
@@ -6595,6 +8606,10 @@
   "es": "SHA-256",
   "pt-BR": "SHA-256"
  },
+ "Share": {
+  "es": "Proporción",
+  "pt-BR": "Proporção"
+ },
  "Show _MENU_ entries": {
   "es": "Mostrar _MENU_ registros",
   "pt-BR": "Mostrar _MENU_ registros",
@@ -6617,6 +8632,14 @@
   "es": "Revisiones de señales",
   "pt-BR": "Revisões de sinais"
  },
+ "Signed By": {
+  "es": "Firmado por",
+  "pt-BR": "Assinado por"
+ },
+ "since {0}": {
+  "es": "desde el {0}",
+  "pt-BR": "desde {0}"
+ },
  "Site Language": {
   "es": "Idioma del sitio",
   "pt-BR": "Idioma do site"
@@ -6625,6 +8648,10 @@
   "es": "Archivo maestro del sitio",
   "pt-BR": "Arquivo mestre da planta"
  },
+ "Sites": {
+  "es": "Sitios",
+  "pt-BR": "Locais"
+ },
  "Size": {
   "es": "Tamaño",
   "pt-BR": "Tamanho"
@@ -6632,6 +8659,10 @@
  "Skipped": {
   "es": "Omitido",
   "pt-BR": "Ignorado"
+ },
+ "Snapshot Date": {
+  "es": "Fecha de la instantánea",
+  "pt-BR": "Data do registro histórico"
  },
  "sNDA / sBLA": {
   "es": "sNDA / sBLA",
@@ -6657,13 +8688,38 @@
   "es": "Documento de origen",
   "pt-BR": "Documento de origem"
  },
+ "Special Distribution Conditions": {
+  "es": "Condiciones especiales de distribución",
+  "pt-BR": "Condições especiais de distribuição"
+ },
  "Specification": {
   "es": "Especificación",
   "pt-BR": "Especificação"
  },
+ "Specification & Storage": {
+  "es": "Especificación y almacenamiento",
+  "pt-BR": "Especificação e armazenamento"
+ },
+ "Specification Ref.": {
+  "es": "Ref. de especificación",
+  "pt-BR": "Ref. da especificação"
+ },
+ "Specifications cannot be imported in the current record state.": {
+  "es": "No se pueden importar especificaciones en el estado actual del registro.",
+  "pt-BR": "Não é possível importar especificações no estado atual do registro."
+ },
  "Spontaneous": {
   "es": "Espontáneo",
   "pt-BR": "Espontâneo"
+ },
+ "Stability Report": {
+  "es": "Informe de estabilidad",
+  "pt-BR": "Relatório de estabilidade",
+  "note": "used through a variable: Views/Release/_DocumentsTab.cshtml (categories)"
+ },
+ "Stage": {
+  "es": "Etapa",
+  "pt-BR": "Etapa"
  },
  "Stage 1 Audit": {
   "es": "Auditoría de etapa 1",
@@ -6685,6 +8741,11 @@
   "es": "CAPA estándar",
   "pt-BR": "CAPA padrão"
  },
+ "Standard GMP Release Checklist": {
+  "es": "Lista de verificación estándar de liberación BPM",
+  "pt-BR": "Lista de verificação padrão de liberação BPF",
+  "note": "used through a variable: Views/Release/_ChecklistTab.cshtml (via typeLabel)"
+ },
  "Standard Operating Procedure (SOP)": {
   "es": "Procedimiento normalizado de trabajo (PNT)",
   "pt-BR": "Procedimento operacional padrão (POP)"
@@ -6693,17 +8754,53 @@
   "es": "Versión de la norma",
   "pt-BR": "Versão da norma"
  },
+ "Standing Approval": {
+  "es": "Aprobación vigente",
+  "pt-BR": "Aprovação vigente"
+ },
  "Start Audit": {
   "es": "Iniciar auditoría",
   "pt-BR": "Iniciar auditoria"
+ },
+ "Start New Review": {
+  "es": "Iniciar nueva revisión",
+  "pt-BR": "Iniciar nova revisão"
+ },
+ "Start Work": {
+  "es": "Iniciar trabajo",
+  "pt-BR": "Iniciar trabalho"
+ },
+ "Started": {
+  "es": "Iniciado",
+  "pt-BR": "Iniciado"
+ },
+ "Started {0}": {
+  "es": "Iniciada el {0}",
+  "pt-BR": "Iniciada em {0}"
  },
  "State": {
   "es": "Estado / provincia",
   "pt-BR": "Estado"
  },
+ "Statement": {
+  "es": "Declaración",
+  "pt-BR": "Declaração"
+ },
+ "Statement for \"{0}\" under {1} updated.": {
+  "es": "Declaración para \"{0}\" en {1} actualizada.",
+  "pt-BR": "Declaração para \"{0}\" em {1} atualizada."
+ },
  "Status": {
   "es": "Estado",
   "pt-BR": "Status"
+ },
+ "Status After Review": {
+  "es": "Estado tras la revisión",
+  "pt-BR": "Status após a revisão"
+ },
+ "Status Before Review": {
+  "es": "Estado antes de la revisión",
+  "pt-BR": "Status antes da revisão"
  },
  "Status Breakdown": {
   "es": "Desglose por estado",
@@ -6716,6 +8813,10 @@
  "Status Distribution": {
   "es": "Distribución por estado",
   "pt-BR": "Distribuição por status"
+ },
+ "Status Summary": {
+  "es": "Resumen de estados",
+  "pt-BR": "Resumo de status"
  },
  "Stay Signed In": {
   "es": "Mantener la sesión",
@@ -6736,6 +8837,10 @@
  "Storage / distribution / cold-chain": {
   "es": "Almacenamiento / distribución / cadena de frío",
   "pt-BR": "Armazenamento / distribuição / cadeia fria"
+ },
+ "Storage Conditions": {
+  "es": "Condiciones de almacenamiento",
+  "pt-BR": "Condições de armazenamento"
  },
  "Storage Equipment": {
   "es": "Equipos de almacenamiento",
@@ -6773,6 +8878,10 @@
   "es": "Método de envío",
   "pt-BR": "Método de envio"
  },
+ "Submit Assessment": {
+  "es": "Enviar evaluación",
+  "pt-BR": "Enviar avaliação"
+ },
  "Submit Draft": {
   "es": "Enviar borrador",
   "pt-BR": "Enviar rascunho"
@@ -6809,6 +8918,14 @@
  "Submit Report Draft": {
   "es": "Enviar borrador del informe",
   "pt-BR": "Enviar rascunho do relatório"
+ },
+ "Submit to AP": {
+  "es": "Enviar a la PA",
+  "pt-BR": "Enviar à PA"
+ },
+ "Submit to Authorised Person": {
+  "es": "Enviar a la Persona Autorizada",
+  "pt-BR": "Enviar à Pessoa Autorizada"
  },
  "Submitted": {
   "es": "Enviado",
@@ -6859,9 +8976,25 @@
   "es": "Proveedor / fabricante / servicio contratado",
   "pt-BR": "Fornecedor / fabricante / serviço terceirizado"
  },
+ "Supplier approved successfully.": {
+  "es": "Proveedor aprobado correctamente.",
+  "pt-BR": "Fornecedor aprovado com sucesso."
+ },
+ "Supplier Attachments": {
+  "es": "Adjuntos del proveedor",
+  "pt-BR": "Anexos do fornecedor"
+ },
+ "Supplier cancelled.": {
+  "es": "Proveedor cancelado.",
+  "pt-BR": "Fornecedor cancelado."
+ },
  "Supplier Dashboard": {
   "es": "Panel de proveedores",
   "pt-BR": "Painel de fornecedores"
+ },
+ "Supplier Details": {
+  "es": "Detalles del proveedor",
+  "pt-BR": "Detalhes do fornecedor"
  },
  "Supplier ID": {
   "es": "ID del proveedor",
@@ -6875,9 +9008,33 @@
   "es": "No conformidad del proveedor",
   "pt-BR": "Não conformidade do fornecedor"
  },
+ "Supplier progressed to Qualified.": {
+  "es": "El proveedor pasó a Calificado.",
+  "pt-BR": "O fornecedor passou para Qualificado."
+ },
+ "Supplier reactivated and returned to pending assessment.": {
+  "es": "Proveedor reactivado y devuelto a evaluación pendiente.",
+  "pt-BR": "Fornecedor reativado e devolvido para avaliação pendente."
+ },
  "Supplier Register": {
   "es": "Registro de proveedores",
   "pt-BR": "Registro de fornecedores"
+ },
+ "Supplier Reviews": {
+  "es": "Revisiones del proveedor",
+  "pt-BR": "Revisões do fornecedor"
+ },
+ "Supplier Status": {
+  "es": "Estado del proveedor",
+  "pt-BR": "Status do fornecedor"
+ },
+ "Supplier suspended.": {
+  "es": "Proveedor suspendido.",
+  "pt-BR": "Fornecedor suspenso."
+ },
+ "Supplier Type": {
+  "es": "Tipo de proveedor",
+  "pt-BR": "Tipo de fornecedor"
  },
  "Suppliers": {
   "es": "Proveedores",
@@ -6899,13 +9056,49 @@
   "es": "Informe de auditoría de seguimiento",
   "pt-BR": "Relatório de auditoria de manutenção"
  },
+ "Suspend": {
+  "es": "Suspender",
+  "pt-BR": "Suspender"
+ },
+ "Suspend Maintenance Schedule": {
+  "es": "Suspender programa de mantenimiento",
+  "pt-BR": "Suspender programação de manutenção"
+ },
+ "Suspend Schedule": {
+  "es": "Suspender programa",
+  "pt-BR": "Suspender programação"
+ },
+ "Suspend Supplier": {
+  "es": "Suspender proveedor",
+  "pt-BR": "Suspender fornecedor"
+ },
  "Suspended": {
   "es": "Suspendido",
   "pt-BR": "Suspenso"
  },
+ "Suspended By": {
+  "es": "Suspendido por",
+  "pt-BR": "Suspenso por"
+ },
+ "Suspended by <strong>{0}</strong> on {1}": {
+  "es": "Suspendido por <strong>{0}</strong> el {1}",
+  "pt-BR": "Suspenso por <strong>{0}</strong> em {1}"
+ },
+ "Suspended On": {
+  "es": "Suspendido el",
+  "pt-BR": "Suspenso em"
+ },
  "Suspended Pending Renewal": {
   "es": "Suspendido hasta su renovación",
   "pt-BR": "Suspenso até a renovação"
+ },
+ "Suspending halts this recurring schedule. No next occurrence will be auto-generated until the schedule is reactivated.": {
+  "es": "Suspender detiene este programa recurrente. No se generará automáticamente la próxima ocurrencia hasta que se reactive.",
+  "pt-BR": "Suspender interrompe esta programação recorrente. Nenhuma próxima ocorrência será gerada automaticamente até a reativação."
+ },
+ "Suspension can only be recommended for a supplier that has previously been approved.": {
+  "es": "Solo se puede recomendar la suspensión de un proveedor que haya sido aprobado previamente.",
+  "pt-BR": "Só é possível recomendar a suspensão de um fornecedor que já tenha sido aprovado."
  },
  "Suspension Reason": {
   "es": "Motivo de la suspensión",
@@ -6995,6 +9188,19 @@
   "es": "Técnico",
   "pt-BR": "Técnico"
  },
+ "Technical Agreement": {
+  "es": "Acuerdo técnico",
+  "pt-BR": "Acordo técnico",
+  "note": "used through a variable: Views/Release/_DocumentsTab.cshtml (categories)"
+ },
+ "Technical Agreement Ref.": {
+  "es": "Ref. del acuerdo técnico",
+  "pt-BR": "Ref. do acordo técnico"
+ },
+ "Technical Agreement Reference": {
+  "es": "Referencia del acuerdo técnico",
+  "pt-BR": "Referência do acordo técnico"
+ },
  "Template": {
   "es": "Plantilla",
   "pt-BR": "Modelo"
@@ -7002,6 +9208,14 @@
  "Temporary": {
   "es": "Temporal",
   "pt-BR": "Temporário"
+ },
+ "Terminal Date": {
+  "es": "Fecha final",
+  "pt-BR": "Data final"
+ },
+ "Terminal Status": {
+  "es": "Estado final",
+  "pt-BR": "Status final"
  },
  "Test / Inspection Equipment": {
   "es": "Equipos de ensayo / inspección",
@@ -7015,9 +9229,53 @@
   "es": "Parámetro de ensayo",
   "pt-BR": "Parâmetro de ensaio"
  },
+ "Test Parameter *": {
+  "es": "Parámetro de ensayo *",
+  "pt-BR": "Parâmetro de ensaio *"
+ },
  "Test Report": {
   "es": "Informe de ensayo",
   "pt-BR": "Relatório de ensaio"
+ },
+ "Test result added.": {
+  "es": "Resultado de ensayo agregado.",
+  "pt-BR": "Resultado de ensaio adicionado."
+ },
+ "Test result deleted.": {
+  "es": "Resultado de ensayo eliminado.",
+  "pt-BR": "Resultado de ensaio excluído."
+ },
+ "Test results cannot be added in the current record state.": {
+  "es": "No se pueden agregar resultados de ensayo en el estado actual del registro.",
+  "pt-BR": "Não é possível adicionar resultados de ensaio no estado atual do registro."
+ },
+ "Test results cannot be deleted in the current record state.": {
+  "es": "No se pueden eliminar resultados de ensayo en el estado actual del registro.",
+  "pt-BR": "Não é possível excluir resultados de ensaio no estado atual do registro."
+ },
+ "Testing": {
+  "es": "Ensayos",
+  "pt-BR": "Ensaios"
+ },
+ "Testing Lab(s)": {
+  "es": "Laboratorio(s) de ensayo",
+  "pt-BR": "Laboratório(s) de ensaio"
+ },
+ "Testing Laboratory": {
+  "es": "Laboratorio de ensayo",
+  "pt-BR": "Laboratório de ensaio"
+ },
+ "Testing Laboratory / Laboratories": {
+  "es": "Laboratorio(s) de ensayo",
+  "pt-BR": "Laboratório(s) de ensaio"
+ },
+ "Testing Requirement": {
+  "es": "Requisito de ensayo",
+  "pt-BR": "Requisito de ensaio"
+ },
+ "Testing Site GMP Licence / Clearance No.": {
+  "es": "N.º de licencia / autorización BPM del sitio de ensayo",
+  "pt-BR": "N.º da licença / autorização BPF do local de ensaio"
  },
  "Testing/Laboratory": {
   "es": "Ensayos / laboratorio",
@@ -7030,6 +9288,10 @@
  "TGA Deadline": {
   "es": "Plazo de la TGA",
   "pt-BR": "Prazo da TGA"
+ },
+ "TGA Licence / Clearance": {
+  "es": "Licencia / autorización TGA",
+  "pt-BR": "Licença / autorização TGA"
  },
  "TGA On-Site Inspection": {
   "es": "Inspección in situ de la TGA",
@@ -7149,6 +9411,14 @@
   "es": "La persona responsable de cada acción",
   "pt-BR": "A pessoa responsável por cada ação"
  },
+ "The record will return to <strong>{0}</strong>. All fields will be available for editing.": {
+  "es": "El registro volverá a <strong>{0}</strong>. Todos los campos podrán editarse.",
+  "pt-BR": "O registro voltará para <strong>{0}</strong>. Todos os campos poderão ser editados."
+ },
+ "The record will return to <strong>{0}</strong>. Quality Notes can be updated; Product, Batch, and Site details remain locked until returned to Draft.": {
+  "es": "El registro volverá a <strong>{0}</strong>. Las notas de calidad pueden actualizarse; los datos de producto, lote y sitio siguen bloqueados hasta que vuelva a Borrador.",
+  "pt-BR": "O registro voltará para <strong>{0}</strong>. As notas da qualidade podem ser atualizadas; os dados de produto, lote e local continuam bloqueados até voltar a Rascunho."
+ },
  "The required pre-implementation actions (capture them in the Action Plan tab if a detailed plan is needed)": {
   "es": "Las acciones previas a la implementación necesarias (regístrelas en la pestaña Plan de acción si se necesita un plan detallado)",
   "pt-BR": "As ações pré-implementação necessárias (registre-as na aba Plano de ação se for necessário um plano detalhado)"
@@ -7164,6 +9434,14 @@
  "The supplied value is invalid.": {
   "es": "El valor indicado no es válido.",
   "pt-BR": "O valor informado não é válido."
+ },
+ "the supplier approval expired on {0}.": {
+  "es": "la aprobación del proveedor venció el {0}.",
+  "pt-BR": "a aprovação do fornecedor venceu em {0}."
+ },
+ "the supplier approval expires on {0}.": {
+  "es": "la aprobación del proveedor vence el {0}.",
+  "pt-BR": "a aprovação do fornecedor vence em {0}."
  },
  "The value '{0}' is invalid.": {
   "es": "El valor «{0}» no es válido.",
@@ -7197,6 +9475,10 @@
   "es": "Estos archivos se eliminaron y ya no forman parte del registro vigente. Se conservan sin cambios para fines de auditoría. Cada eliminación también queda registrada en la pista de auditoría.",
   "pt-BR": "Estes arquivos foram excluídos e não fazem mais parte do registro vigente. Eles são mantidos, sem alterações, para fins de auditoria. Cada exclusão também fica registrada na trilha de auditoria."
  },
+ "These statements pre-populate the Certification Statement field in the AP Certification modal when approving a release record. The system selects the appropriate statement based on the release type and product type of the record being certified. The AP can edit the statement before signing.": {
+  "es": "Estas declaraciones rellenan previamente el campo Declaración de certificación en la ventana de certificación de la PA al aprobar un registro de liberación. El sistema elige la declaración según el tipo de liberación y el tipo de producto del registro. La PA puede editarla antes de firmar.",
+  "pt-BR": "Estas declarações preenchem previamente o campo Declaração de certificação na janela de certificação da PA ao aprovar um registro de liberação. O sistema escolhe a declaração conforme o tipo de liberação e o tipo de produto do registro. A PA pode editá-la antes de assinar."
+ },
  "Third Party": {
   "es": "Tercero",
   "pt-BR": "Terceiro"
@@ -7216,6 +9498,18 @@
  "This action only disables 2FA.": {
   "es": "Esta acción solo desactiva la 2FA.",
   "pt-BR": "Esta ação apenas desativa a 2FA."
+ },
+ "This action overrides the AP rejection and returns the record to Under Review. An electronic signature is required. Use only when the rejection was made in error or new information has been obtained.": {
+  "es": "Esta acción anula el rechazo de la PA y devuelve el registro a En revisión. Se requiere firma electrónica. Úsela solo si el rechazo fue un error o se obtuvo información nueva.",
+  "pt-BR": "Esta ação anula a rejeição da PA e devolve o registro para Em revisão. É necessária assinatura eletrônica. Use somente se a rejeição foi um erro ou se houver informação nova."
+ },
+ "This action requires your electronic signature and is permanently logged.": {
+  "es": "Esta acción requiere su firma electrónica y queda registrada de forma permanente.",
+  "pt-BR": "Esta ação exige sua assinatura eletrônica e fica registrada permanentemente."
+ },
+ "This action will soft-delete the selected records. It cannot be undone without direct database access.": {
+  "es": "Esta acción eliminará lógicamente los registros seleccionados. No puede deshacerse sin acceso directo a la base de datos.",
+  "pt-BR": "Esta ação excluirá logicamente os registros selecionados. Não pode ser desfeita sem acesso direto ao banco de dados."
  },
  "This audit has <strong>{0} critical finding(s)</strong>.": {
   "es": "Esta auditoría tiene <strong>{0} hallazgo(s) crítico(s)</strong>.",
@@ -7285,9 +9579,45 @@
   "es": "Este proceso desactiva la 2FA hasta que verifique su aplicación de autenticación. Si no completa la configuración de la aplicación, podría perder el acceso a su cuenta.",
   "pt-BR": "Este processo desativa a 2FA até que você verifique seu aplicativo autenticador. Se você não concluir a configuração do aplicativo, poderá perder o acesso à sua conta."
  },
+ "This product has specifications — Analytical Results will be pre-populated on save.": {
+  "es": "Este producto tiene especificaciones — los resultados analíticos se rellenarán al guardar.",
+  "pt-BR": "Este produto tem especificações — os resultados analíticos serão preenchidos ao salvar."
+ },
+ "This record cannot be edited in its current state.": {
+  "es": "Este registro no puede editarse en su estado actual.",
+  "pt-BR": "Este registro não pode ser editado no estado atual."
+ },
+ "This record has been Rejected. Core fields cannot be modified — you may upload supporting documents before closing.": {
+  "es": "Este registro ha sido Rechazado. Los campos principales no pueden modificarse — puede cargar documentos de respaldo antes de cerrarlo.",
+  "pt-BR": "Este registro foi Rejeitado. Os campos principais não podem ser alterados — você pode enviar documentos de suporte antes de fechá-lo."
+ },
+ "This record is <strong>{0}</strong>. All fields are locked. Return to the Details page to track workflow progress.": {
+  "es": "Este registro está <strong>{0}</strong>. Todos los campos están bloqueados. Vuelva a la página de detalles para seguir el avance del flujo.",
+  "pt-BR": "Este registro está <strong>{0}</strong>. Todos os campos estão bloqueados. Volte à página de detalhes para acompanhar o fluxo."
+ },
+ "This record is <strong>{0}</strong>. Product, Batch, Site, and Storage details are locked. You may update Quality Notes below.": {
+  "es": "Este registro está <strong>{0}</strong>. Los datos de producto, lote, sitio y almacenamiento están bloqueados. Puede actualizar las notas de calidad abajo.",
+  "pt-BR": "Este registro está <strong>{0}</strong>. Os dados de produto, lote, local e armazenamento estão bloqueados. Você pode atualizar as notas da qualidade abaixo."
+ },
+ "This record is locked and cannot be edited.": {
+  "es": "Este registro está bloqueado y no puede editarse.",
+  "pt-BR": "Este registro está bloqueado e não pode ser editado."
+ },
+ "This record is locked and cannot be modified.": {
+  "es": "Este registro está bloqueado y no puede modificarse.",
+  "pt-BR": "Este registro está bloqueado e não pode ser alterado."
+ },
+ "This record is locked. Permitted actions: Variation, Renewal, Suspend, Withdraw, or reinstatement.": {
+  "es": "Este registro está bloqueado. Acciones permitidas: variación, renovación, suspensión, retiro o restablecimiento.",
+  "pt-BR": "Este registro está bloqueado. Ações permitidas: variação, renovação, suspensão, retirada ou restabelecimento."
+ },
  "This record is not in a state that can be administratively reopened.": {
   "es": "Este registro no está en un estado que permita reabrirlo administrativamente.",
   "pt-BR": "Este registro não está em um estado que permita reabri-lo administrativamente."
+ },
+ "This release is linked to a product with <strong>{0}</strong> specification line(s).": {
+  "es": "Esta liberación está vinculada a un producto con <strong>{0}</strong> línea(s) de especificación.",
+  "pt-BR": "Esta liberação está vinculada a um produto com <strong>{0}</strong> linha(s) de especificação."
  },
  "This risk has been submitted for formal assessment. A Quality Manager must review the scoring and either accept or return it for revision.": {
   "es": "Este riesgo se ha enviado para su evaluación formal. Un Gerente de calidad debe revisar la puntuación y aceptarla o devolverla para revisión.",
@@ -7296,6 +9626,22 @@
  "This risk is closed. No new attachments can be uploaded.": {
   "es": "Este riesgo está cerrado. No se pueden cargar nuevos adjuntos.",
   "pt-BR": "Este risco está encerrado. Não é possível enviar novos anexos."
+ },
+ "This statement will appear on the issued certificate. Edit as required before signing.": {
+  "es": "Esta declaración aparecerá en el certificado emitido. Edítela según sea necesario antes de firmar.",
+  "pt-BR": "Esta declaração aparecerá no certificado emitido. Edite conforme necessário antes de assinar."
+ },
+ "This statement will appear on the issued Quality Oversight Report. Edit as required before signing.": {
+  "es": "Esta declaración aparecerá en el informe de supervisión de calidad emitido. Edítela según sea necesario antes de firmar.",
+  "pt-BR": "Esta declaração aparecerá no relatório de supervisão da qualidade emitido. Edite conforme necessário antes de assinar."
+ },
+ "this supplier remains <strong>{0}</strong> for use until the new review is completed.": {
+  "es": "este proveedor sigue <strong>{0}</strong> para su uso hasta que se complete la nueva revisión.",
+  "pt-BR": "este fornecedor continua <strong>{0}</strong> para uso até a conclusão da nova revisão."
+ },
+ "This text will pre-populate the statement field in the AP Certification modal. The AP can still edit it before signing.": {
+  "es": "Este texto rellenará el campo de declaración en la ventana de certificación de la PA. La PA puede editarlo antes de firmar.",
+  "pt-BR": "Este texto preencherá o campo de declaração na janela de certificação da PA. A PA ainda pode editá-lo antes de assinar."
  },
  "This trainee is not pending trainer confirmation.": {
   "es": "Este participante no está pendiente de confirmación del instructor.",
@@ -7318,6 +9664,14 @@
   "es": "Esto bloqueará el registro y lo enviará al Gerente de calidad para su evaluación formal. Ingrese sus credenciales para confirmar.",
   "pt-BR": "Isso bloqueará o registro e o enviará ao Gerente da qualidade para avaliação formal. Informe suas credenciais para confirmar."
  },
+ "This will reactivate the supplier and return it to pending status for a new assessment cycle.": {
+  "es": "Esto reactivará el proveedor y lo devolverá al estado pendiente para un nuevo ciclo de evaluación.",
+  "pt-BR": "Isso reativará o fornecedor e o devolverá ao status pendente para um novo ciclo de avaliação."
+ },
+ "This will reopen the record for re-review. Review comments, reviewer, and retention date will be cleared. The action will be logged in the audit trail.": {
+  "es": "Esto reabrirá el registro para una nueva revisión. Se borrarán los comentarios de revisión, el revisor y la fecha de retención. La acción quedará en el registro de auditoría.",
+  "pt-BR": "Isso reabrirá o registro para nova revisão. Os comentários da revisão, o revisor e a data de retenção serão apagados. A ação ficará na trilha de auditoria."
+ },
  "This will return the risk to Identification for the submitter to revise. The submission signature will be cleared.": {
   "es": "Esto devolverá el riesgo a Identificación para que quien lo envió lo revise. Se borrará la firma del envío.",
   "pt-BR": "Isso devolverá o risco para Identificação para que quem o enviou o revise. A assinatura do envio será apagada."
@@ -7325,6 +9679,18 @@
  "This will return the risk to Mitigation for further work. The review submission signature will be cleared.": {
   "es": "Esto devolverá el riesgo a Mitigación para continuar el trabajo. Se borrará la firma del envío a revisión.",
   "pt-BR": "Isso devolverá o risco para Mitigação para trabalho adicional. A assinatura do envio para revisão será apagada."
+ },
+ "This will return the supplier to Assessment status for revision.": {
+  "es": "Esto devolverá el proveedor al estado Evaluación para su revisión.",
+  "pt-BR": "Isso devolverá o fornecedor ao status Avaliação para revisão."
+ },
+ "This will revert the record to In Progress so work details can be corrected. The action will be logged in the audit trail.": {
+  "es": "Esto devolverá el registro a En curso para corregir los detalles del trabajo. La acción quedará en el registro de auditoría.",
+  "pt-BR": "Isso devolverá o registro para Em andamento para corrigir os detalhes do trabalho. A ação ficará na trilha de auditoria."
+ },
+ "This will revert the record to Scheduled so the basic fields can be corrected. The action will be logged in the audit trail.": {
+  "es": "Esto devolverá el registro a Programado para corregir los campos básicos. La acción quedará en el registro de auditoría.",
+  "pt-BR": "Isso devolverá o registro para Programado para corrigir os campos básicos. A ação ficará na trilha de auditoria."
  },
  "Three Yearly": {
   "es": "Trienal",
@@ -7346,6 +9712,10 @@
   "es": "Cronología de los hechos",
   "pt-BR": "Cronologia dos fatos"
  },
+ "Timestamp": {
+  "es": "Fecha y hora",
+  "pt-BR": "Data e hora"
+ },
  "Title": {
   "es": "Título",
   "pt-BR": "Título"
@@ -7361,6 +9731,10 @@
  "To": {
   "es": "Hasta",
   "pt-BR": "Até"
+ },
+ "To add or replace documents (for example a renewed certificate), start a new review from": {
+  "es": "Para agregar o reemplazar documentos (por ejemplo, un certificado renovado), inicie una nueva revisión desde",
+  "pt-BR": "Para adicionar ou substituir documentos (por exemplo, um certificado renovado), inicie uma nova revisão em"
  },
  "To Status": {
   "es": "Estado nuevo",
@@ -7402,6 +9776,10 @@
   "es": "Total de desviaciones",
   "pt-BR": "Total de desvios"
  },
+ "Total Maintenances": {
+  "es": "Total de mantenimientos",
+  "pt-BR": "Total de manutenções"
+ },
  "Total Major Findings": {
   "es": "Total de hallazgos mayores",
   "pt-BR": "Total de constatações maiores"
@@ -7413,6 +9791,10 @@
  "Total Risks": {
   "es": "Total de riesgos",
   "pt-BR": "Total de riscos"
+ },
+ "Total Suppliers": {
+  "es": "Total de proveedores",
+  "pt-BR": "Total de fornecedores"
  },
  "Total Tracked": {
   "es": "Total en seguimiento",
@@ -7550,9 +9932,21 @@
   "es": "Transfiera la autoría de <strong>{0}</strong> v{1} a otro usuario; por ejemplo, cuando el autor actual dejó la empresa o ya no puede trabajar en el borrador.",
   "pt-BR": "Transfira a autoria de <strong>{0}</strong> v{1} para outro usuário — por exemplo, quando o autor atual saiu da empresa ou não pode mais trabalhar no rascunho."
  },
+ "Transition from {0} to {1} is not permitted.": {
+  "es": "No se permite el paso de {0} a {1}.",
+  "pt-BR": "A transição de {0} para {1} não é permitida."
+ },
+ "Trigger": {
+  "es": "Motivo de inicio",
+  "pt-BR": "Gatilho"
+ },
  "Trigger Count": {
   "es": "Número de detecciones",
   "pt-BR": "Número de ocorrências"
+ },
+ "Trigger: {0}": {
+  "es": "Motivo de inicio: {0}",
+  "pt-BR": "Gatilho: {0}"
  },
  "Two-factor authentication": {
   "es": "Autenticación de dos factores",
@@ -7618,6 +10012,10 @@
   "es": "En revisión",
   "pt-BR": "Em revisão"
  },
+ "Under Review (continue quality review)": {
+  "es": "En revisión (continuar la revisión de calidad)",
+  "pt-BR": "Em revisão (continuar a revisão da qualidade)"
+ },
  "Unexpected (not in PI)": {
   "es": "Inesperado (no descrito en la IPP)",
   "pt-BR": "Inesperado (não descrito na bula)"
@@ -7630,6 +10028,10 @@
  "Unknown": {
   "es": "Desconocido",
   "pt-BR": "Desconhecido"
+ },
+ "Unknown error": {
+  "es": "Error desconocido",
+  "pt-BR": "Erro desconhecido"
  },
  "Unlikely": {
   "es": "Improbable",
@@ -7663,6 +10065,10 @@
   "es": "Cargar adjunto",
   "pt-BR": "Enviar anexo"
  },
+ "Upload Date": {
+  "es": "Fecha de carga",
+  "pt-BR": "Data do envio"
+ },
  "Upload Document": {
   "es": "Cargar documento",
   "pt-BR": "Enviar documento"
@@ -7670,6 +10076,10 @@
  "Upload New Attachment": {
   "es": "Cargar nuevo adjunto",
   "pt-BR": "Enviar novo anexo"
+ },
+ "Uploaded Attachments": {
+  "es": "Adjuntos cargados",
+  "pt-BR": "Anexos enviados"
  },
  "Uploaded By": {
   "es": "Cargado por",
@@ -7690,6 +10100,14 @@
  "Use another service to register.": {
   "es": "Use otro servicio para registrarse.",
   "pt-BR": "Use outro serviço para se cadastrar."
+ },
+ "Use Return for Rework from the Details page if changes are needed.": {
+  "es": "Use Devolver para corrección en la página de detalles si se necesitan cambios.",
+  "pt-BR": "Use Devolver para retrabalho na página de detalhes se forem necessárias alterações."
+ },
+ "Use Return for Rework from the Details page if changes to these fields are needed.": {
+  "es": "Use Devolver para corrección en la página de detalles si se necesitan cambios en estos campos.",
+  "pt-BR": "Use Devolver para retrabalho na página de detalhes se forem necessárias alterações nestes campos."
  },
  "User": {
   "es": "Usuario",
@@ -7816,6 +10234,10 @@
   "es": "Ver",
   "pt-BR": "Ver"
  },
+ "View All": {
+  "es": "Ver todo",
+  "pt-BR": "Ver tudo"
+ },
  "View CAPA": {
   "es": "Ver CAPA",
   "pt-BR": "Ver CAPA"
@@ -7920,13 +10342,41 @@
   "es": "Retirado",
   "pt-BR": "Retirado"
  },
+ "Work Details": {
+  "es": "Detalles del trabajo",
+  "pt-BR": "Detalhes do trabalho"
+ },
+ "Work details can only be recorded while the maintenance is In Progress.": {
+  "es": "Los detalles del trabajo solo pueden registrarse mientras el mantenimiento está En curso.",
+  "pt-BR": "Os detalhes do trabalho só podem ser registrados enquanto a manutenção está Em andamento."
+ },
+ "Work details recorded.": {
+  "es": "Detalles del trabajo registrados.",
+  "pt-BR": "Detalhes do trabalho registrados."
+ },
  "Work Instruction (WI)": {
   "es": "Instrucción de trabajo (IT)",
   "pt-BR": "Instrução de trabalho (IT)"
  },
+ "Work Performed": {
+  "es": "Trabajo realizado",
+  "pt-BR": "Trabalho realizado"
+ },
+ "Work performed": {
+  "es": "Trabajo realizado",
+  "pt-BR": "Trabalho realizado"
+ },
+ "Workflow": {
+  "es": "Flujo de trabajo",
+  "pt-BR": "Fluxo de trabalho"
+ },
  "Workflow Actions": {
   "es": "Acciones del flujo de trabajo",
   "pt-BR": "Ações do fluxo de trabalho"
+ },
+ "Workflow Status": {
+  "es": "Estado del flujo",
+  "pt-BR": "Status do fluxo"
  },
  "Workflow Trail": {
   "es": "Historial del flujo de trabajo",
@@ -7991,6 +10441,14 @@
   "es": "Solicitó iniciar sesión con un código de recuperación. Este inicio de sesión no se recordará hasta que ingrese un código de la aplicación de autenticación al iniciar sesión, o desactive la 2FA y vuelva a iniciar sesión.",
   "pt-BR": "Você solicitou entrar com um código de recuperação. Este login não será lembrado até que você informe um código do aplicativo autenticador ao entrar, ou desative a 2FA e entre novamente."
  },
+ "You have selected <strong id=\"selectedCount\">{0}</strong> record(s) for disposal.": {
+  "es": "Ha seleccionado <strong id=\"selectedCount\">{0}</strong> registro(s) para eliminar.",
+  "pt-BR": "Você selecionou <strong id=\"selectedCount\">{0}</strong> registro(s) para descarte."
+ },
+ "You have view-only access. Contact an Administrator to make changes.": {
+  "es": "Tiene acceso de solo lectura. Contacte a un administrador para hacer cambios.",
+  "pt-BR": "Você tem acesso somente leitura. Contate um administrador para fazer alterações."
+ },
  "Your account contains personal data that you have given us. This page allows you to download that data.": {
   "es": "Su cuenta contiene datos personales que usted nos proporcionó. Esta página le permite descargarlos.",
   "pt-BR": "Sua conta contém dados pessoais que você nos forneceu. Esta página permite baixá-los."
@@ -8009,6 +10467,10 @@
   "es": "Su correo electrónico",
   "pt-BR": "Seu e-mail"
  },
+ "Your Email (electronic signature)": {
+  "es": "Su correo electrónico (firma electrónica)",
+  "pt-BR": "Seu e-mail (assinatura eletrônica)"
+ },
  "Your email address has not been confirmed. Please check your inbox for the confirmation link, or use 'Resend email confirmation' below.": {
   "es": "Su dirección de correo no ha sido confirmada. Busque el enlace de confirmación en su bandeja de entrada o use «Reenviar confirmación por correo electrónico» abajo.",
   "pt-BR": "Seu endereço de e-mail não foi confirmado. Procure o link de confirmação na sua caixa de entrada ou use \"Reenviar confirmação por e-mail\" abaixo."
@@ -8021,6 +10483,10 @@
  "Your login is protected with an authenticator app. Enter your authenticator code below.": {
   "es": "Su inicio de sesión está protegido con una aplicación de autenticación. Ingrese el código abajo.",
   "pt-BR": "Seu login está protegido por um aplicativo autenticador. Digite o código abaixo."
+ },
+ "Your Password": {
+  "es": "Su contraseña",
+  "pt-BR": "Sua senha"
  },
  "Your password has been changed.": {
   "es": "Se cambió su contraseña.",
@@ -8065,13 +10531,41 @@
   "es": "{0} elemento(s) del plan de acción pendiente(s); complételos o márquelos antes como No aplica",
   "pt-BR": "{0} item(ns) do plano de ação pendente(s); conclua-os ou marque-os antes como Não se aplica"
  },
+ "{0} approved, {1} qualified": {
+  "es": "{0} aprobados, {1} calificados",
+  "pt-BR": "{0} aprovados, {1} qualificados"
+ },
  "{0} days": {
   "es": "{0} días",
   "pt-BR": "{0} dias"
  },
+ "{0} items": {
+  "es": "{0} elementos",
+  "pt-BR": "{0} itens"
+ },
  "{0} on {1}": {
   "es": "{0} el {1}",
   "pt-BR": "{0} em {1}"
+ },
+ "{0} record(s) disposed.": {
+  "es": "{0} registro(s) eliminado(s).",
+  "pt-BR": "{0} registro(s) descartado(s)."
+ },
+ "{0} record(s) were skipped — active retention hold or cooldown.": {
+  "es": "Se omitieron {0} registro(s) — bloqueo de retención activo o período de espera.",
+  "pt-BR": "{0} registro(s) ignorado(s) — bloqueio de retenção ativo ou período de carência."
+ },
+ "{0} specification line(s) imported from product master.": {
+  "es": "{0} línea(s) de especificación importada(s) de los datos maestros del producto.",
+  "pt-BR": "{0} linha(s) de especificação importada(s) dos dados mestres do produto."
+ },
+ "{0} under re-review": {
+  "es": "{0} en revisión periódica",
+  "pt-BR": "{0} em revisão periódica"
+ },
+ "{0} — max 25 MB": {
+  "es": "{0} — máx. 25 MB",
+  "pt-BR": "{0} — máx. 25 MB"
  },
  "— A confirmed trend with negative quality impact": {
   "es": "— Una tendencia confirmada con impacto negativo en la calidad",
@@ -8103,6 +10597,14 @@
   "es": "— Todos los participantes —",
   "pt-BR": "— Todos os participantes —"
  },
+ "— AP submission is blocked until these are resolved.": {
+  "es": "— el envío a la PA está bloqueado hasta resolverlos.",
+  "pt-BR": "— o envio à PA fica bloqueado até que sejam resolvidos."
+ },
+ "— approval expiry date has passed.": {
+  "es": "— la fecha de vencimiento de la aprobación ya pasó.",
+  "pt-BR": "— a data de vencimento da aprovação já passou."
+ },
  "— Deviation from stipulated process, procedure or relevant quality documentation": {
   "es": "— Desviación respecto del proceso, procedimiento o documentación de calidad establecidos",
   "pt-BR": "— Desvio em relação ao processo, procedimento ou documentação de qualidade estabelecidos",
@@ -8122,6 +10624,10 @@
   "es": "— Falla de instalaciones, equipos, hardware o servicios auxiliares que afecta la calidad",
   "pt-BR": "— Falha de instalações, equipamentos, hardware ou utilidades que afeta a qualidade",
   "note": "GUIDANCE — review"
+ },
+ "— immediate action required.": {
+  "es": "— se requiere acción inmediata.",
+  "pt-BR": "— é necessária ação imediata."
  },
  "— implemented urgently to prevent a greater risk; formalised here without delay": {
   "es": "— implementado con urgencia para evitar un riesgo mayor; se formaliza aquí sin demora",
@@ -8163,6 +10669,10 @@
  "— no impact on approved requirements, product quality or validated state (e.g. like-for-like, editorial)": {
   "es": "— sin impacto en los requisitos aprobados, la calidad del producto o el estado validado (p. ej., equivalente, editorial)",
   "pt-BR": "— sem impacto nos requisitos aprovados, na qualidade do produto ou no estado validado (p. ex., equivalente, editorial)"
+ },
+ "— non-blocking, but should be addressed.": {
+  "es": "— no bloqueante, pero debe atenderse.",
+  "pt-BR": "— não bloqueante, mas deve ser tratado."
  },
  "— None —": {
   "es": "— Ninguno —",
@@ -8212,6 +10722,22 @@
   "es": "— Falla de calidad significativa o desviación de especificaciones. Sin riesgo inmediato para la seguridad, pero requiere investigación completa y CAPA. Plazo típico: 30 días.",
   "pt-BR": "— Falha de qualidade significativa ou desvio de especificações. Sem risco imediato à segurança, mas exige investigação completa e CAPA. Prazo típico: 30 dias.",
   "note": "GUIDANCE — review"
+ },
+ "— submission blocked. Enter a result (Pass, Fail, or N/A) for all listed tests.": {
+  "es": "— envío bloqueado. Ingrese un resultado (Conforme, No conforme o N/A) para todos los ensayos.",
+  "pt-BR": "— envio bloqueado. Informe um resultado (Aprovado, Reprovado ou N/A) para todos os ensaios."
+ },
+ "— submission blocked. Resolve all blocking items first.": {
+  "es": "— envío bloqueado. Resuelva primero todos los elementos bloqueantes.",
+  "pt-BR": "— envio bloqueado. Resolva primeiro todos os itens bloqueantes."
+ },
+ "— supplier remains approved for use": {
+  "es": "— el proveedor sigue aprobado para su uso",
+  "pt-BR": "— o fornecedor continua aprovado para uso"
+ },
+ "— the documents reopen while the review is in progress.": {
+  "es": "— los documentos se reabren mientras la revisión está en curso.",
+  "pt-BR": "— os documentos são reabertos enquanto a revisão está em andamento."
  },
  "— Unexpected event or accident impacting quality": {
   "es": "— Evento inesperado o accidente que afecta la calidad",

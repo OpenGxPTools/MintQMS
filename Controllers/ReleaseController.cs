@@ -9,6 +9,7 @@ using OpenQMS.Models;
 using OpenQMS.Models.Release;
 using OpenQMS.Services;
 using OpenQMS.ViewModels.Release;
+using OpenQMS.Localization;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text.Json;
@@ -189,6 +190,16 @@ namespace OpenQMS.Controllers
         }
 
         // Finding 1: credential verification for all workflow transitions (email + password)
+
+        /// <summary>A workflow error in the user's language (values that are states or lists are translated too).</summary>
+        private string WorkflowMessage(ReleaseWorkflowService.WorkflowResult r) =>
+            this.T(r.ErrorTemplate, r.ErrorArgs.Select(a => a switch
+            {
+                Enum e        => (object)this.T(EnumHelper.Display(e)),
+                string[] xs   => string.Join(", ", xs.Select(x => this.T(x))),
+                _             => a,
+            }).ToArray());
+
         private async Task<bool> VerifyCredentials(string email, string pwd)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -491,7 +502,7 @@ namespace OpenQMS.Controllers
                 AddAudit(record.Id, "Created", null, record.Status.ToString());
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = $"Release record {record.RecordNumber} created.";
+                TempData["Success"] = this.T("Release record {0} created.", record.RecordNumber);
                 return RedirectToAction(nameof(Details), new { id = record.Id });
             }
 
@@ -526,13 +537,13 @@ namespace OpenQMS.Controllers
 
             if (record.IsLocked)
             {
-                TempData["Error"] = "This record is locked and cannot be edited.";
+                TempData["Error"] = this.T("This record is locked and cannot be edited.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             // Finding 3: Rejected records allow document uploads but not core field editing
             if (record.Status == ReleaseStatus.Rejected)
-                TempData["WorkflowError"] = "This record has been Rejected. Core fields cannot be modified — you may upload supporting documents before closing.";
+                TempData["WorkflowError"] = this.T("This record has been Rejected. Core fields cannot be modified — you may upload supporting documents before closing.");
 
             var products = await _context.Product
                 .Where(p => !p.IsDeleted && p.Status == OpenQMS.Models.Product.ProductStatus.Approved)
@@ -565,7 +576,7 @@ namespace OpenQMS.Controllers
 
             if (existing.IsLocked || existing.Status == ReleaseStatus.Rejected)
             {
-                TempData["Error"] = "This record cannot be edited in its current state.";
+                TempData["Error"] = this.T("This record cannot be edited in its current state.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -667,7 +678,7 @@ namespace OpenQMS.Controllers
                     throw;
                 }
 
-                TempData["Success"] = "Record updated.";
+                TempData["Success"] = this.T("Record updated.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -695,13 +706,13 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.UnderReview, CurrentUser, comments);
             TempData[result.Success ? "Success" : "WorkflowError"] = result.Success
-                ? "Record submitted for review."
-                : result.Error;
+                ? this.T("Record submitted for review.")
+                : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -711,13 +722,13 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.PendingAPDecision, CurrentUser, comments);
             TempData[result.Success ? "Success" : "WorkflowError"] = result.Success
-                ? "Record submitted to Authorised Person."
-                : result.Error;
+                ? this.T("Record submitted to Authorised Person.")
+                : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -727,13 +738,13 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.OnHold, CurrentUser, reason);
             TempData[result.Success ? "Success" : "WorkflowError"] = result.Success
-                ? "Record placed on hold."
-                : result.Error;
+                ? this.T("Record placed on hold.")
+                : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -744,15 +755,15 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var target = targetState == "Draft" ? ReleaseStatus.Draft : ReleaseStatus.UnderReview;
             var successMsg = target == ReleaseStatus.Draft
-                ? "Hold lifted. Record returned to Draft for rework."
-                : "Hold lifted. Record returned to Under Review.";
+                ? this.T("Hold lifted. Record returned to Draft for rework.")
+                : this.T("Hold lifted. Record returned to Under Review.");
             var result = await _workflow.TransitionAsync(id, target, CurrentUser, comments);
-            TempData[result.Success ? "Success" : "WorkflowError"] = result.Success ? successMsg : result.Error;
+            TempData[result.Success ? "Success" : "WorkflowError"] = result.Success ? successMsg : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -762,7 +773,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd ?? string.Empty))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Certification was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Certification was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var record = await _context.ReleaseRecords.FindAsync(id);
@@ -773,8 +784,8 @@ namespace OpenQMS.Controllers
 
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.Certified, CurrentUser, null, apFullName);
             TempData[result.Success ? "Success" : "WorkflowError"] = result.Success
-                ? $"Batch certified. Record {record.RecordNumber} is now Certified."
-                : result.Error;
+                ? this.T("Batch certified. Record {0} is now Certified.", record.RecordNumber)
+                : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -784,13 +795,13 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd ?? string.Empty))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Rejection was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Rejection was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.Rejected, CurrentUser, reason);
             TempData[result.Success ? "Success" : "WorkflowError"] = result.Success
-                ? "Record rejected."
-                : result.Error;
+                ? this.T("Record rejected.")
+                : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -800,13 +811,13 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.Draft, CurrentUser, comments);
             TempData[result.Success ? "Success" : "WorkflowError"] = result.Success
-                ? "Record returned to Draft."
-                : result.Error;
+                ? this.T("Record returned to Draft.")
+                : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -816,13 +827,13 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.UnderReview, CurrentUser, comments);
             TempData[result.Success ? "Success" : "WorkflowError"] = result.Success
-                ? "Record returned for review."
-                : result.Error;
+                ? this.T("Record returned for review.")
+                : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -832,7 +843,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -849,7 +860,7 @@ namespace OpenQMS.Controllers
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.Released, CurrentUser, comments);
             if (!result.Success)
             {
-                TempData["WorkflowError"] = result.Error;
+                TempData["WorkflowError"] = WorkflowMessage(result);
                 return RedirectToAction(nameof(Details), new { id });
             }
             // Auto-close immediately — Released is recorded in the audit trail for future ERP integration
@@ -866,13 +877,13 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.Closed, CurrentUser, comments);
             TempData[result.Success ? "Success" : "WorkflowError"] = result.Success
-                ? "Record closed."
-                : result.Error;
+                ? this.T("Record closed.")
+                : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -882,13 +893,13 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.Cancelled, CurrentUser, reason);
             TempData[result.Success ? "Success" : "WorkflowError"] = result.Success
-                ? "Record cancelled."
-                : result.Error;
+                ? this.T("Record cancelled.")
+                : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -899,18 +910,18 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrWhiteSpace(comments))
             {
-                TempData["WorkflowError"] = "A reason is required to override a rejection.";
+                TempData["WorkflowError"] = this.T("A reason is required to override a rejection.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = await _workflow.TransitionAsync(id, ReleaseStatus.UnderReview, CurrentUser, comments);
             TempData[result.Success ? "Success" : "WorkflowError"] = result.Success
-                ? "Rejection overridden. Record returned to Under Review."
-                : result.Error;
+                ? this.T("Rejection overridden. Record returned to Under Review.")
+                : WorkflowMessage(result);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -925,16 +936,16 @@ namespace OpenQMS.Controllers
                 var item = await _context.ReleaseChecklistItems
                     .FirstOrDefaultAsync(i => i.Id == itemId);
 
-                if (item == null) return Json(new { success = false, error = "Checklist item not found." });
+                if (item == null) return Json(new { success = false, error = this.T("Checklist item not found.") });
 
                 var record = await _context.ReleaseRecords
                     .AsNoTracking()
                     .Select(r => new { r.Id, r.IsLocked, r.Status })
                     .FirstOrDefaultAsync(r => r.Id == item.ReleaseRecordId);
 
-                if (record == null) return Json(new { success = false, error = "Release record not found." });
+                if (record == null) return Json(new { success = false, error = this.T("Release record not found.") });
                 if (record.IsLocked || record.Status == ReleaseStatus.Rejected || record.Status == ReleaseStatus.PendingAPDecision)
-                    return Json(new { success = false, error = "This record is locked and cannot be modified." });
+                    return Json(new { success = false, error = this.T("This record is locked and cannot be modified.") });
 
                 item.Status = status;
                 item.Comment = comment;
@@ -968,7 +979,7 @@ namespace OpenQMS.Controllers
             if (record == null) return NotFound();
             if (record.IsLocked || record.Status == ReleaseStatus.Rejected)
             {
-                TempData["Error"] = "Test results cannot be added in the current record state.";
+                TempData["Error"] = this.T("Test results cannot be added in the current record state.");
                 TempData["ActiveTab"] = "tabTests";
                 return RedirectToAction(nameof(Details), new { id = releaseRecordId });
             }
@@ -995,7 +1006,7 @@ namespace OpenQMS.Controllers
             AddAudit(releaseRecordId, "Test Result Added", null, null, $"Parameter: {testParameter}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Test result added.";
+            TempData["Success"] = this.T("Test result added.");
             TempData["ActiveTab"] = "tabTests";
             return RedirectToAction(nameof(Details), new { id = releaseRecordId });
         }
@@ -1012,7 +1023,7 @@ namespace OpenQMS.Controllers
             var parentRecord = await _context.ReleaseRecords.AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == tr.ReleaseRecordId);
             if (tr.IsLocked || parentRecord?.IsLocked == true || parentRecord?.Status == ReleaseStatus.Rejected)
-                return Json(new { success = false, error = "Record cannot be modified in its current state." });
+                return Json(new { success = false, error = this.T("Record cannot be modified in its current state.") });
 
             if (!string.IsNullOrWhiteSpace(testParameter)) tr.TestParameter = testParameter;
             tr.TestMethod          = testMethod;
@@ -1040,7 +1051,7 @@ namespace OpenQMS.Controllers
                 .FirstOrDefaultAsync(r => r.Id == tr.ReleaseRecordId);
             if (tr.IsLocked || parentForDelete?.IsLocked == true || parentForDelete?.Status == ReleaseStatus.Rejected)
             {
-                TempData["Error"] = "Test results cannot be deleted in the current record state.";
+                TempData["Error"] = this.T("Test results cannot be deleted in the current record state.");
                 TempData["ActiveTab"] = "tabTests";
                 return RedirectToAction(nameof(Details), new { id = tr.ReleaseRecordId });
             }
@@ -1050,7 +1061,7 @@ namespace OpenQMS.Controllers
             AddAudit(recordId, "Test Result Deleted", null, null, $"Parameter: {tr.TestParameter}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Test result deleted.";
+            TempData["Success"] = this.T("Test result deleted.");
             TempData["ActiveTab"] = "tabTests";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
@@ -1066,13 +1077,13 @@ namespace OpenQMS.Controllers
             if (record == null) return NotFound();
             if (record.IsLocked || record.Status == ReleaseStatus.Rejected)
             {
-                TempData["Error"] = "Specifications cannot be imported in the current record state.";
+                TempData["Error"] = this.T("Specifications cannot be imported in the current record state.");
                 TempData["ActiveTab"] = "tabTests";
                 return RedirectToAction(nameof(Details), new { id = releaseRecordId });
             }
             if (!record.LinkedProductId.HasValue)
             {
-                TempData["Error"] = "No linked product found. Link a product first before importing specifications.";
+                TempData["Error"] = this.T("No linked product found. Link a product first before importing specifications.");
                 TempData["ActiveTab"] = "tabTests";
                 return RedirectToAction(nameof(Details), new { id = releaseRecordId });
             }
@@ -1112,11 +1123,11 @@ namespace OpenQMS.Controllers
                 AddAudit(releaseRecordId, "Specs Imported", null, null,
                     $"{added} specification line(s) imported from product master");
                 await _context.SaveChangesAsync();
-                TempData["Success"] = $"{added} specification line(s) imported from product master.";
+                TempData["Success"] = this.T("{0} specification line(s) imported from product master.", added);
             }
             else
             {
-                TempData["Success"] = "All specification lines already present in Analytical Results.";
+                TempData["Success"] = this.T("All specification lines already present in Analytical Results.");
             }
 
             TempData["ActiveTab"] = "tabTests";
@@ -1132,7 +1143,7 @@ namespace OpenQMS.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 TempData["ActiveTab"] = "tabDocs";
                 return RedirectToAction(nameof(Details), new { id = releaseRecordId });
             }
@@ -1141,7 +1152,7 @@ namespace OpenQMS.Controllers
             if (uploadRecord == null) return NotFound();
             if (uploadRecord.IsLocked)
             {
-                TempData["Error"] = "Cannot upload documents to a locked record.";
+                TempData["Error"] = this.T("Cannot upload documents to a locked record.");
                 TempData["ActiveTab"] = "tabDocs";
                 return RedirectToAction(nameof(Details), new { id = releaseRecordId });
             }
@@ -1151,7 +1162,7 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowed.Contains(ext))
             {
-                TempData["Error"] = "File type not permitted.";
+                TempData["Error"] = this.T("File type not permitted.");
                 TempData["ActiveTab"] = "tabDocs";
                 return RedirectToAction(nameof(Details), new { id = releaseRecordId });
             }
@@ -1159,7 +1170,7 @@ namespace OpenQMS.Controllers
             // Validate size (25 MB)
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File exceeds 25 MB limit.";
+                TempData["Error"] = this.T("File exceeds 25 MB limit.");
                 TempData["ActiveTab"] = "tabDocs";
                 return RedirectToAction(nameof(Details), new { id = releaseRecordId });
             }
@@ -1192,7 +1203,7 @@ namespace OpenQMS.Controllers
             AddAudit(releaseRecordId, "Document Uploaded", null, null, $"File: {file.FileName} ({category})");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Document '{file.FileName}' uploaded.";
+            TempData["Success"] = this.T("Document '{0}' uploaded.", file.FileName);
             TempData["ActiveTab"] = "tabDocs";
             return RedirectToAction(nameof(Details), new { id = releaseRecordId });
         }
@@ -1208,7 +1219,7 @@ namespace OpenQMS.Controllers
             if (doc == null) return NotFound();
             if (doc.ReleaseRecord?.IsLocked == true)
             {
-                TempData["Error"] = "Cannot delete documents from a locked record.";
+                TempData["Error"] = this.T("Cannot delete documents from a locked record.");
                 TempData["ActiveTab"] = "tabDocs";
                 return RedirectToAction(nameof(Details), new { id = doc.ReleaseRecordId });
             }
@@ -1217,7 +1228,7 @@ namespace OpenQMS.Controllers
 
             if (string.IsNullOrWhiteSpace(deletionReason))
             {
-                TempData["Error"] = "A reason is required to delete a document.";
+                TempData["Error"] = this.T("A reason is required to delete a document.");
                 TempData["ActiveTab"] = "tabDocs";
                 return RedirectToAction(nameof(Details), new { id = recordId });
             }
@@ -1230,7 +1241,7 @@ namespace OpenQMS.Controllers
             AddAudit(recordId, "Document Deleted", null, null, $"File: {doc.FileName} — Reason: {doc.DeletionReason}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Document deleted.";
+            TempData["Success"] = this.T("Document deleted.");
             TempData["ActiveTab"] = "tabDocs";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
@@ -1278,7 +1289,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email ?? string.Empty, pwd ?? string.Empty))
             {
-                TempData["Error"] = "Invalid credentials. Certificate was not issued.";
+                TempData["Error"] = this.T("Invalid credentials. Certificate was not issued.");
                 return RedirectToAction(nameof(Details), new { id = releaseRecordId });
             }
 
@@ -1293,7 +1304,7 @@ namespace OpenQMS.Controllers
 
             if (record.Status != ReleaseStatus.Certified && record.Status != ReleaseStatus.Released)
             {
-                TempData["Error"] = "Certificates can only be issued for Certified or Released records.";
+                TempData["Error"] = this.T("Certificates can only be issued for Certified or Released records.");
                 return RedirectToAction(nameof(Details), new { id = releaseRecordId });
             }
 
@@ -1336,7 +1347,7 @@ namespace OpenQMS.Controllers
                 $"Certificate {certNumber} ({type}) issued by {CurrentUser}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Certificate {certNumber} issued.";
+            TempData["Success"] = this.T("Certificate {0} issued.", certNumber);
             return RedirectToAction(nameof(ViewCertificate), new { certificateId = cert.Id });
         }
 
@@ -1672,7 +1683,7 @@ namespace OpenQMS.Controllers
             if (xrefRecord == null) return NotFound();
             if (xrefRecord.IsLocked)
             {
-                TempData["Error"] = "Cannot modify cross-references on a locked record.";
+                TempData["Error"] = this.T("Cannot modify cross-references on a locked record.");
                 TempData["ActiveTab"] = "tabLinked";
                 return RedirectToAction(nameof(Details), new { id = releaseRecordId });
             }
@@ -1690,7 +1701,7 @@ namespace OpenQMS.Controllers
                 $"{moduleType}: {linkedRecordNumber} — {linkedRecordTitle}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Cross-reference added.";
+            TempData["Success"] = this.T("Cross-reference added.");
             TempData["ActiveTab"] = "tabLinked";
             return RedirectToAction(nameof(Details), new { id = releaseRecordId });
         }
@@ -1705,7 +1716,7 @@ namespace OpenQMS.Controllers
             if (xref == null) return NotFound();
             if (xref.ReleaseRecord?.IsLocked == true)
             {
-                TempData["Error"] = "Cannot modify cross-references on a locked record.";
+                TempData["Error"] = this.T("Cannot modify cross-references on a locked record.");
                 TempData["ActiveTab"] = "tabLinked";
                 return RedirectToAction(nameof(Details), new { id = xref.ReleaseRecordId });
             }
@@ -1715,7 +1726,7 @@ namespace OpenQMS.Controllers
                 $"{xref.ModuleType}: {xref.LinkedRecordNumber}");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Cross-reference removed.";
+            TempData["Success"] = this.T("Cross-reference removed.");
             TempData["ActiveTab"] = "tabLinked";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
@@ -1803,19 +1814,19 @@ namespace OpenQMS.Controllers
             var reopenableStatuses = new[] { ReleaseStatus.Closed, ReleaseStatus.Released, ReleaseStatus.Cancelled };
             if (!reopenableStatuses.Contains(record.Status))
             {
-                TempData["WorkflowError"] = "This record is not in a state that can be administratively reopened.";
+                TempData["WorkflowError"] = this.T("This record is not in a state that can be administratively reopened.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Action was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Action was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A justification reason is required.";
+                TempData["WorkflowError"] = this.T("A justification reason is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1880,8 +1891,8 @@ namespace OpenQMS.Controllers
                 throw;
             }
 
-            var certNote = certsCancelled ? " All issued certificates have been withdrawn." : "";
-            TempData["Success"] = $"Record has been administratively reopened to {targetStatus} stage.{certNote}";
+            var certNote = certsCancelled ? " " + this.T("All issued certificates have been withdrawn.") : "";
+            TempData["Success"] = this.T("Record has been administratively reopened to {0} stage.{1}", this.T(EnumHelper.Display(targetStatus)), certNote);
             return RedirectToAction(nameof(Details), new { id });
         }
     }

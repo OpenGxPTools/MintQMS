@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenQMS.Authorization;
 using OpenQMS.Data;
+using OpenQMS.Localization;
 using OpenQMS.Models.Release;
 
 namespace OpenQMS.Controllers
@@ -63,7 +64,7 @@ namespace OpenQMS.Controllers
             setting.LastModifiedDate = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"Statement for \"{setting.ProductGroupLabel}\" under {GetReleaseTypeLabel(setting.ReleaseType)} updated.";
+            TempData["Success"] = this.T("Statement for \"{0}\" under {1} updated.", setting.ProductGroupLabel, GetReleaseTypeLabel(setting.ReleaseType));
             return RedirectToAction(nameof(Index));
         }
 

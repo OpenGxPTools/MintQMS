@@ -10,10 +10,20 @@ namespace OpenQMS.Services
         public class WorkflowResult
         {
             public bool    Success { get; init; }
+            /// <summary>The message in English (for logs and tests).</summary>
             public string? Error   { get; init; }
+            /// <summary>The English message with {0}, {1}… placeholders, and its values — so the screen can
+            /// show it in the user's language. Values may be enums (shown by name) or string[] (a list).</summary>
+            public string   ErrorTemplate { get; init; } = "";
+            public object[] ErrorArgs     { get; init; } = Array.Empty<object>();
 
-            public static WorkflowResult Ok()               => new() { Success = true };
-            public static WorkflowResult Fail(string error) => new() { Success = false, Error = error };
+            public static WorkflowResult Ok() => new() { Success = true };
+            public static WorkflowResult Fail(string error, params object[] args) => new()
+            {
+                Success = false, ErrorTemplate = error, ErrorArgs = args,
+                Error = args.Length == 0 ? error : string.Format(System.Globalization.CultureInfo.InvariantCulture, error,
+                    args.Select(a => a switch { Enum e => EnumHelper.Display(e), string[] xs => string.Join(", ", xs), _ => a }).ToArray()),
+            };
         }
 
         private readonly ApplicationDbContext _context;
@@ -53,7 +63,7 @@ namespace OpenQMS.Services
         public WorkflowResult ValidateTransition(ReleaseRecord record, ReleaseStatus targetStatus, string? reason = null)
         {
             if (!_validTransitions.Contains((record.Status, targetStatus)))
-                return WorkflowResult.Fail($"Transition from {record.Status} to {targetStatus} is not permitted.");
+                return WorkflowResult.Fail("Transition from {0} to {1} is not permitted.", record.Status, targetStatus);
 
             // Blocking rule: cannot submit to AP if any blocking checklist item is Outstanding or Not Applicable.
             // IsBlocking is set at record creation time and already accounts for release type —
@@ -77,7 +87,7 @@ namespace OpenQMS.Services
                 if (record.ManufacturingDate == null)                    missing.Add("Manufacturing Date");
                 if (string.IsNullOrWhiteSpace(record.ManufacturingSite)) missing.Add("Manufacturing Site");
                 if (missing.Any())
-                    return WorkflowResult.Fail($"Cannot submit for review: required fields are missing — {string.Join(", ", missing)}.");
+                    return WorkflowResult.Fail("Cannot submit for review: required fields are missing — {0}.", (object)missing.ToArray());
             }
 
             // Blocking rule: cannot submit to AP if any analytical result is still Pending
@@ -99,7 +109,7 @@ namespace OpenQMS.Services
                 if (string.IsNullOrWhiteSpace(record.ManufacturingSite))      missing.Add("Manufacturing Site");
                 if (string.IsNullOrWhiteSpace(record.ReleasingCompany))       missing.Add("Releasing Company");
                 if (missing.Any())
-                    return WorkflowResult.Fail($"Cannot submit to AP: required fields are missing — {string.Join(", ", missing)}.");
+                    return WorkflowResult.Fail("Cannot submit to AP: required fields are missing — {0}.", (object)missing.ToArray());
             }
 
             // Reject / Certified require a reason or password — validated separately in controller

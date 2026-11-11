@@ -16,18 +16,17 @@
     <div class="alert alert-info d-flex align-items-start mb-3" role="status">
         <i class="bi bi-arrow-repeat fs-5 me-2"></i>
         <div>
-            <strong>Re-review in progress</strong> — this supplier remains
-            <strong>@L.Enum(Model.ApprovalStatus!.Value)</strong> for use until the new review is completed.
+            <strong>@L["Re-review in progress"]</strong> — @H["this supplier remains <strong>{0}</strong> for use until the new review is completed.", L.Enum(Model.ApprovalStatus!.Value)]
             <div class="small mt-1">
-                Trigger: @L.Enum(Model.ReviewTrigger)
+                @L["Trigger: {0}", L.Enum(Model.ReviewTrigger)]
                 @if (startedOn.HasValue)
                 {
-                    <span> · Started @startedOn.Value.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</span>
+                    <span> · @L["Started {0}", startedOn.Value.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)]</span>
                 }
-                <span> · Current stage: @L.Enum(Model.Status)</span>
+                <span> · @L["Current stage: {0}", L.Enum(Model.Status)]</span>
                 @if (Model.ExpiryDate.HasValue)
                 {
-                    <span> · Approval expires @Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
+                    <span> · @L["Approval expires {0}", Model.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]</span>
                 }
             </div>
         </div>

@@ -47,7 +47,9 @@ namespace OpenQMS.Models
         public virtual Capa? Capa { get; set; }
 
         // Basic Information
+        [Display(Name = "Title")]
         public string Title { get; set; } = string.Empty;
+        [Display(Name = "Description")]
         public string Description { get; set; } = string.Empty;
 
         [Display(Name = "Maintenance Type")]
@@ -114,6 +116,7 @@ namespace OpenQMS.Models
         public DateTime? ApprovedOn { get; set; }
 
         // Status & Export
+        [Display(Name = "Status")]
         public MaintenanceStatus Status { get; set; }
 
         public string? ExportFilePath { get; set; }

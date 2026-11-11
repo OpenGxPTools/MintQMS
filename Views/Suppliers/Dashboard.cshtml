@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Supplier Dashboard";
+    ViewData["Title"] = L["Supplier Dashboard"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var statusCounts  = (Dictionary<string, int>)ViewBag.StatusCounts;
@@ -17,7 +17,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">Supplier Dashboard</h4>
+    <h4 class="mb-0">@L["Supplier Dashboard"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Excel"]</a>
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">@L["Register"]</a>
@@ -29,14 +29,14 @@
 {
     <div class="alert alert-danger d-flex align-items-center mb-2">
         <strong class="me-2">&#9888;</strong>
-        <span><strong>@ViewBag.OverdueReviewCount supplier(s) overdue for review</strong> — immediate action required.</span>
+        <span><strong>@ViewBag.OverdueReviewCount supplier(s) overdue for review</strong> @L["— immediate action required."]</span>
     </div>
 }
 @if ((int)ViewBag.ExpiredCount > 0)
 {
     <div class="alert alert-danger d-flex align-items-center mb-4">
         <strong class="me-2">&#9888;</strong>
-        <span><strong>@ViewBag.ExpiredCount supplier(s) with an expired approval</strong> — approval expiry date has passed.</span>
+        <span><strong>@ViewBag.ExpiredCount supplier(s) with an expired approval</strong> @L["— approval expiry date has passed."]</span>
     </div>
 }
 
@@ -46,7 +46,7 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-primary">@ViewBag.Total</div>
-                <div class="text-muted">Total Suppliers</div>
+                <div class="text-muted">@L["Total Suppliers"]</div>
             </div>
         </div>
     </div>
@@ -54,11 +54,11 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-5 fw-bold text-success">@((int)ViewBag.ApprovedCount + (int)ViewBag.QualifiedCount)</div>
-                <div class="text-muted">Approved / Qualified</div>
-                <small class="text-muted">@ViewBag.ApprovedCount approved, @ViewBag.QualifiedCount qualified</small>
+                <div class="text-muted">@L["Approved / Qualified"]</div>
+                <small class="text-muted">@L["{0} approved, {1} qualified", (int)ViewBag.ApprovedCount, (int)ViewBag.QualifiedCount]</small>
                 @if (reReviews.Any())
                 {
-                    <div><small class="text-info">@reReviews.Count under re-review</small></div>
+                    <div><small class="text-info">@L["{0} under re-review", reReviews.Count]</small></div>
                 }
             </div>
         </div>
@@ -75,7 +75,7 @@
         <div class="card text-center h-100 @((int)ViewBag.OverdueReviewCount > 0 ? "border-danger" : "")">
             <div class="card-body">
                 <div class="display-5 fw-bold @((int)ViewBag.OverdueReviewCount > 0 ? "text-danger" : "text-secondary")">@ViewBag.OverdueReviewCount</div>
-                <div class="text-muted">Overdue Reviews</div>
+                <div class="text-muted">@L["Overdue Reviews"]</div>
             </div>
         </div>
     </div>
@@ -93,7 +93,7 @@
     </div>
     <div class="col-md-4">
         <div class="card h-100">
-            <div class="card-header">By Supplier Type</div>
+            <div class="card-header">@L["By Supplier Type"]</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
                     <thead><tr><th>@L["Type"]</th><th>@L["Count"]</th><th style="width:35%">@L["Progress"]</th></tr></thead>
@@ -102,7 +102,7 @@
                         {
                             var pct = (int)ViewBag.Total > 0 ? (kv.Value * 100 / (int)ViewBag.Total) : 0;
                             <tr>
-                                <td>@kv.Key</td>
+                                <td>@L.Enum(Enum.Parse<OpenQMS.Models.SupplierType>(kv.Key))</td>
                                 <td>@kv.Value</td>
                                 <td><div class="progress" style="height:8px"><div class="progress-bar bg-primary" style="width:@pct%"></div></div></td>
                             </tr>
@@ -114,7 +114,7 @@
     </div>
     <div class="col-md-4">
         <div class="card h-100">
-            <div class="card-header">Risk Level Breakdown (Approved/Qualified)</div>
+            <div class="card-header">@L["Risk Level Breakdown (Approved/Qualified)"]</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
                     <thead><tr><th>@L["Risk"]</th><th>@L["Count"]</th></tr></thead>
@@ -123,13 +123,13 @@
                         @foreach (var kv in riskCounts.Where(k => k.Value > 0))
                         {
                             <tr>
-                                <td><span class="badge bg-@rlColors[kv.Key]">@kv.Key</span></td>
+                                <td><span class="badge bg-@rlColors[kv.Key]">@L.Enum(Enum.Parse<OpenQMS.Models.SupplierRiskLevel>(kv.Key))</span></td>
                                 <td>@kv.Value</td>
                             </tr>
                         }
                         @if (!riskCounts.Any(k => k.Value > 0))
                         {
-                            <tr><td colspan="2" class="text-muted p-2">No approved/qualified suppliers yet.</td></tr>
+                            <tr><td colspan="2" class="text-muted p-2">@L["No approved/qualified suppliers yet."]</td></tr>
                         }
                     </tbody>
                 </table>
@@ -145,7 +145,7 @@
         {
             <div class="card h-100 border-danger">
                 <div class="card-header bg-danger text-white d-flex justify-content-between">
-                    <span>Overdue for Review</span>
+                    <span>@L["Overdue for Review"]</span>
                     <span class="badge bg-white text-danger">@overdueReview.Count</span>
                 </div>
                 <div class="card-body p-0">
@@ -171,16 +171,16 @@
         {
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between">
-                    <span>Overdue for Review</span><span class="badge bg-success">0</span>
+                    <span>@L["Overdue for Review"]</span><span class="badge bg-success">0</span>
                 </div>
-                <div class="card-body"><p class="text-muted mb-0">No suppliers overdue for review.</p></div>
+                <div class="card-body"><p class="text-muted mb-0">@L["No suppliers overdue for review."]</p></div>
             </div>
         }
     </div>
     <div class="col-md-6">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between">
-                <span>Review Due Within 30 Days</span>
+                <span>@L["Review Due Within 30 Days"]</span>
                 <span class="badge bg-warning text-dark">@approaching.Count</span>
             </div>
             <div class="card-body p-0">
@@ -203,7 +203,7 @@
                         </tbody>
                     </table>
                 }
-                else { <p class="text-muted p-3 mb-0">No reviews due within 30 days.</p> }
+                else { <p class="text-muted p-3 mb-0">@L["No reviews due within 30 days."]</p> }
             </div>
         </div>
     </div>
@@ -212,14 +212,14 @@
 <!-- Re-reviews in progress (standing approval remains valid) -->
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between">
-        <span>Re-reviews in Progress <small class="text-muted">— supplier remains approved for use</small></span>
+        <span>@L["Re-reviews in Progress"] <small class="text-muted">@L["— supplier remains approved for use"]</small></span>
         <span class="badge bg-info text-dark">@reReviews.Count</span>
     </div>
     <div class="card-body p-0">
         @if (reReviews.Any())
         {
             <table class="table table-sm mb-0">
-                <thead><tr><th>@L["ID"]</th><th>@L["Legal Name"]</th><th>Standing Approval</th><th>Stage</th><th>Trigger</th><th>Started</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Legal Name"]</th><th>@L["Standing Approval"]</th><th>@L["Stage"]</th><th>@L["Trigger"]</th><th>@L["Started"]</th></tr></thead>
                 <tbody>
                     @foreach (var s in reReviews.OrderBy(x => reReviewStart.TryGetValue(x.Id, out var d) ? d : DateTime.MaxValue))
                     {
@@ -235,7 +235,7 @@
                 </tbody>
             </table>
         }
-        else { <p class="text-muted p-3 mb-0">No re-reviews in progress.</p> }
+        else { <p class="text-muted p-3 mb-0">@L["No re-reviews in progress."]</p> }
     </div>
 </div>
 
@@ -248,7 +248,7 @@
             {
                 <div class="card h-100 border-danger">
                     <div class="card-header bg-danger text-white d-flex justify-content-between">
-                        <span>Approval Expired</span>
+                        <span>@L["Approval Expired"]</span>
                         <span class="badge bg-white text-danger">@expiredSups.Count</span>
                     </div>
                     <div class="card-body p-0">
@@ -273,16 +273,16 @@
             {
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between">
-                        <span>Approval Expired</span><span class="badge bg-success">0</span>
+                        <span>@L["Approval Expired"]</span><span class="badge bg-success">0</span>
                     </div>
-                    <div class="card-body"><p class="text-muted mb-0">No expired supplier registrations.</p></div>
+                    <div class="card-body"><p class="text-muted mb-0">@L["No expired supplier registrations."]</p></div>
                 </div>
             }
         </div>
         <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between">
-                    <span>Approval Expiring Within 30 Days</span>
+                    <span>@L["Approval Expiring Within 30 Days"]</span>
                     <span class="badge bg-warning text-dark">@expiringSups.Count</span>
                 </div>
                 <div class="card-body p-0">
@@ -303,7 +303,7 @@
                             </tbody>
                         </table>
                     }
-                    else { <p class="text-muted p-3 mb-0">No supplier registrations expiring within 30 days.</p> }
+                    else { <p class="text-muted p-3 mb-0">@L["No supplier registrations expiring within 30 days."]</p> }
                 </div>
             </div>
         </div>
@@ -315,19 +315,19 @@
 {
     <div class="card mb-4 border-warning">
         <div class="card-header bg-warning d-flex justify-content-between">
-            <span>Pending Approval / Confirmation</span>
+            <span>@L["Pending Approval / Confirmation"]</span>
             <span class="badge bg-dark">@pendingAppr.Count</span>
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
-                <thead><tr><th>@L["ID"]</th><th>@L["Legal Name"]</th><th>@L["Type"]</th><th>Workflow Status</th><th>@L["Assessed By"]</th></tr></thead>
+                <thead><tr><th>@L["ID"]</th><th>@L["Legal Name"]</th><th>@L["Type"]</th><th>@L["Workflow Status"]</th><th>@L["Assessed By"]</th></tr></thead>
                 <tbody>
                     @foreach (var s in pendingAppr)
                     {
                         <tr class="table-warning">
                             <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
                             <td>@s.LegalName</td>
-                            <td>@s.SupplierType</td>
+                            <td>@L.Enum(s.SupplierType)</td>
                             <td>@L.Enum(s.Status)</td>
                             <td>@(s.AssessedBy ?? "-")</td>
                         </tr>

@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Supplier
 
 @{
-    ViewData["Title"] = "Supplier Attachments";
+    ViewData["Title"] = L["Supplier Attachments"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool isLocked = Model.Status == OpenQMS.Models.SupplierStatus.Approved
                     || Model.Status == OpenQMS.Models.SupplierStatus.Qualified
@@ -12,7 +12,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Attachments — @Model.SupplierCode</h4>
+        <h4 class="mb-0">@L["Attachments"] — @Model.SupplierCode</h4>
         <small class="text-muted">@Model.LegalName</small>
     </div>
 </div>
@@ -74,13 +74,13 @@
 else
 {
     <div class="alert alert-secondary">
-        <i class="bi bi-lock me-1"></i>Documents are locked while the supplier is <strong>@L.Enum(Model.Status)</strong>.
-        To add or replace documents (for example a renewed certificate), start a new review from
-        <a asp-action="Reviews" asp-route-id="@Model.Id">Review History</a> — the documents reopen while the review is in progress.
+        <i class="bi bi-lock me-1"></i>@H["Documents are locked while the supplier is <strong>{0}</strong>.", L.Enum(Model.Status)]
+        @L["To add or replace documents (for example a renewed certificate), start a new review from"]
+        <a asp-action="Reviews" asp-route-id="@Model.Id">@L["Review History"]</a> @L["— the documents reopen while the review is in progress."]
     </div>
 }
 
-<h6 class="text-muted text-uppercase small mt-3">Uploaded Attachments</h6>
+<h6 class="text-muted text-uppercase small mt-3">@L["Uploaded Attachments"]</h6>
 
 @if (Model.Documents == null || !Model.Documents.Any())
 {
@@ -109,12 +109,12 @@ else
                              : doc.DocumentStatus == OpenQMS.Models.SupplierDocumentStatus.Expiring ? "table-warning"
                              : "";
                 <tr class="@rowClass">
-                    <td>@doc.DocumentType</td>
+                    <td>@L.Enum(doc.DocumentType)</td>
                     <td>@doc.FileName</td>
                     <td>@(doc.Description ?? "-")</td>
                     <td>@(doc.IssueDate.HasValue ? doc.IssueDate.Value.ToString("dd/MM/yyyy") : "-")</td>
                     <td>@(doc.ExpiryDate.HasValue ? doc.ExpiryDate.Value.ToString("dd/MM/yyyy") : "-")</td>
-                    <td>@doc.DocumentStatus</td>
+                    <td>@L.Enum(doc.DocumentStatus)</td>
                     <td>@doc.UploadedBy</td>
                     <td>@doc.UploadedDate.ToSite().ToString("dd/MM/yyyy")</td>
                     <td>

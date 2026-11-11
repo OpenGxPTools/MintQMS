@@ -1,14 +1,13 @@
 @model IEnumerable<OpenQMS.Models.ViewModels.DisposalEligibleItem>
 @using OpenQMS.Authorization
 @{
-    ViewData["Title"] = "Data Disposal Management";
+    ViewData["Title"] = L["Data Disposal Management"].Value;
     bool isAdmin = User.IsInRole(Constants.AdministratorsRole);
 }
 
-<h4 class="mb-0">Data Disposal Management</h4>
+<h4 class="mb-0">@L["Data Disposal Management"]</h4>
 <p class="text-muted">
-    Records listed below have passed their minimum retention period.
-    Records with a Retention Hold cannot be disposed until the hold is removed and the cooldown period elapses.
+    @L["Records listed below have passed their minimum retention period. Records with a Retention Hold cannot be disposed until the hold is removed and the cooldown period elapses."]
 </p>
 
 @if (TempData["Success"] != null)
@@ -26,10 +25,10 @@
 
 <div class="mb-3 d-flex gap-2">
     <a asp-action="ExportReport" class="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-file-earmark-excel"></i> Export Report
+        <i class="bi bi-file-earmark-excel"></i> @L["Export Report"]
     </a>
     <a asp-action="AuditLog" class="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-journal-text"></i> Disposal Audit Log
+        <i class="bi bi-journal-text"></i> @L["Disposal Audit Log"]
     </a>
 </div>
 
@@ -42,10 +41,10 @@
     {
         <div class="mb-2">
             <button type="button" class="btn btn-danger btn-sm" onclick="confirmDispose()">
-                Dispose Selected
+                @L["Dispose Selected"]
             </button>
-            <button type="button" class="btn btn-outline-secondary btn-sm ms-1" onclick="selectAll(true)">Select All Eligible</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectAll(false)">Clear Selection</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm ms-1" onclick="selectAll(true)">@L["Select All Eligible"]</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectAll(false)">@L["Clear Selection"]</button>
         </div>
     }
 
@@ -56,10 +55,10 @@
                 <th>@L["Module"]</th>
                 <th>@L["Reference"]</th>
                 <th>@L["Title"]</th>
-                <th>Terminal Status</th>
-                <th>Terminal Date</th>
+                <th>@L["Terminal Status"]</th>
+                <th>@L["Terminal Date"]</th>
                 <th>@L["Retain Until"]</th>
-                <th>Hold</th>
+                <th>@L["Hold"]</th>
                 <th>@L["Actions"]</th>
             </tr>
         </thead>
@@ -115,14 +114,14 @@
                         {
                             <button type="button" class="btn btn-warning btn-sm"
                                     onclick="openSetHold('@item.Module', @item.RecordId, '@item.RecordReference')">
-                                Set Hold
+                                @L["Set Hold"]
                             </button>
                         }
                         else if (isAdmin)
                         {
                             <button type="button" class="btn btn-outline-danger btn-sm"
                                     onclick="openRemoveHold('@item.Module', @item.RecordId, '@item.RecordReference')">
-                                Remove Hold
+                                @L["Remove Hold"]
                             </button>
                         }
                     }
@@ -142,27 +141,27 @@
                 <input type="hidden" name="module" id="holdModule" />
                 <input type="hidden" name="recordId" id="holdRecordId" />
                 <div class="modal-header">
-                    <h5 class="modal-title">Set Retention Hold — <span id="holdRef"></span></h5>
+                    <h5 class="modal-title">@L["Set Retention Hold —"] <span id="holdRef"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">@L["Reason"] <span class="text-danger">*</span></label>
                         <select name="reason" class="form-select" required>
-                            <option value="1">Legal</option>
+                            <option value="1">@L["Legal"]</option>
                             <option value="2">@L["Regulatory"]</option>
-                            <option value="3">Business Requirements</option>
+                            <option value="3">@L["Business Requirements"]</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Comments</label>
+                        <label class="form-label">@L["Comments"]</label>
                         <textarea name="comments" class="form-control" rows="3"
-                                  placeholder="Provide context for this retention hold..."></textarea>
+                                  placeholder="@L["Provide context for this retention hold..."]"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-warning">Apply Hold</button>
+                    <button type="submit" class="btn btn-warning">@L["Apply Hold"]</button>
                 </div>
             </form>
         </div>
@@ -178,38 +177,37 @@
                 <input type="hidden" name="module" id="removeModule" />
                 <input type="hidden" name="recordId" id="removeRecordId" />
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Remove Retention Hold — <span id="removeRef"></span></h5>
+                    <h5 class="modal-title">@L["Remove Retention Hold —"] <span id="removeRef"></span></h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-warning">
-                        Removing a retention hold starts a <strong>@ViewBag.CooldownDays-day cooldown</strong>
-                        before the record becomes eligible for disposal.
+                        @H["Removing a retention hold starts a <strong>{0}-day cooldown</strong> before the record becomes eligible for disposal.", (int)ViewBag.CooldownDays]
                         This action requires your electronic signature and is permanently logged.
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Reason for removing hold <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Reason for removing hold"] <span class="text-danger">*</span></label>
                         <textarea name="removalReason" class="form-control" rows="3" required
-                                  placeholder="Provide documented justification for removing this hold..."></textarea>
+                                  placeholder="@L["Provide documented justification for removing this hold..."]"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Your Email (electronic signature) <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Your Email (electronic signature)"] <span class="text-danger">*</span></label>
                         <input type="email" name="InputEmail" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Your Password <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Your Password"] <span class="text-danger">*</span></label>
                         <input type="password" name="InputPassword" class="form-control" required />
                     </div>
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" id="confirmRemoval" required />
                         <label class="form-check-label" for="confirmRemoval">
-                            I confirm this retention hold removal has been formally authorised
+                            @L["I confirm this retention hold removal has been formally authorised"]
                         </label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-danger">Remove Hold</button>
+                    <button type="submit" class="btn btn-danger">@L["Remove Hold"]</button>
                 </div>
             </form>
         </div>
@@ -221,35 +219,35 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">Confirm Disposal</h5>
+                <h5 class="modal-title">@L["Confirm Disposal"]</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>You have selected <strong id="selectedCount">0</strong> record(s) for disposal.</p>
-                <p class="text-danger">This action will soft-delete the selected records. It cannot be undone without direct database access.</p>
-                <p>Records with an active retention hold will be automatically skipped.</p>
+                <p>@H["You have selected <strong id=\"selectedCount\">{0}</strong> record(s) for disposal.", 0]</p>
+                <p class="text-danger">@L["This action will soft-delete the selected records. It cannot be undone without direct database access."]</p>
+                <p>@L["Records with an active retention hold will be automatically skipped."]</p>
                 <div class="alert alert-warning mb-3">
-                    This action requires your electronic signature and is permanently logged.
+                    @L["This action requires your electronic signature and is permanently logged."]
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Your Email (electronic signature) <span class="text-danger">*</span></label>
+                    <label class="form-label">@L["Your Email (electronic signature)"] <span class="text-danger">*</span></label>
                     <input type="email" id="modalDisposeEmail" class="form-control" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Your Password <span class="text-danger">*</span></label>
+                    <label class="form-label">@L["Your Password"] <span class="text-danger">*</span></label>
                     <input type="password" id="modalDisposePassword" class="form-control" />
                 </div>
                 <div class="form-check mb-1">
                     <input class="form-check-input" type="checkbox" id="confirmDisposal" />
                     <label class="form-check-label" for="confirmDisposal">
-                        I confirm this disposal has been formally authorised
+                        @L["I confirm this disposal has been formally authorised"]
                     </label>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                 <button type="button" class="btn btn-danger" onclick="submitDispose()">
-                    Confirm Disposal
+                    @L["Confirm Disposal"]
                 </button>
             </div>
         </div>
@@ -278,7 +276,7 @@
 
     function confirmDispose() {
         const checked = document.querySelectorAll('.eligible-checkbox:checked').length;
-        if (checked === 0) { alert('No records selected.'); return; }
+        if (checked === 0) { alert(@Json.Serialize(L["No records selected."].Value)); return; }
         document.getElementById('selectedCount').textContent = checked;
         new bootstrap.Modal(document.getElementById('disposeConfirmModal')).show();
     }
@@ -286,8 +284,8 @@
     function submitDispose() {
         const email = document.getElementById('modalDisposeEmail').value.trim();
         const pwd   = document.getElementById('modalDisposePassword').value;
-        if (!email || !pwd) { alert('Electronic signature (email and password) is required.'); return; }
-        if (!document.getElementById('confirmDisposal').checked) { alert('Please confirm the disposal is authorised.'); return; }
+        if (!email || !pwd) { alert(@Json.Serialize(L["Electronic signature (email and password) is required."].Value)); return; }
+        if (!document.getElementById('confirmDisposal').checked) { alert(@Json.Serialize(L["Please confirm the disposal is authorised."].Value)); return; }
         document.getElementById('disposeEmail').value    = email;
         document.getElementById('disposePassword').value = pwd;
         document.getElementById('disposeForm').submit();

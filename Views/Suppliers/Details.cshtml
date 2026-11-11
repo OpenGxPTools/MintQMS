@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Supplier
 
 @{
-    ViewData["Title"] = "Supplier Details";
+    ViewData["Title"] = L["Supplier Details"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     bool isLocked = Model.Status == OpenQMS.Models.SupplierStatus.Approved
@@ -84,7 +84,7 @@
 }
 @if (TempData["WorkflowError"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button><strong>Error:</strong> @L.Message(TempData["WorkflowError"])</div>
+    <div class="alert alert-danger alert-dismissible fade show"><button type="button" class="btn-close" data-bs-dismiss="alert"></button><strong>@L["Error:"]</strong> @L.Message(TempData["WorkflowError"])</div>
 }
 @if (TempData["Error"] != null)
 {
@@ -98,39 +98,39 @@
 @if (overdueReview)
 {
     <div class="alert alert-danger mb-3">
-        <strong>&#9888; Overdue for Review</strong> — Next review was due @Model.NextReviewDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture).
+        <strong>&#9888; @L["Overdue for Review"]</strong> — @L["Next review was due {0}.", Model.NextReviewDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]
     </div>
 }
 @if (approachingReview && !overdueReview)
 {
     <div class="alert alert-warning mb-3">
-        <strong>&#9888; Review Due Soon</strong> — Next review due @Model.NextReviewDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture).
+        <strong>&#9888; @L["Review Due Soon"]</strong> — @L["Next review due {0}.", Model.NextReviewDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]
     </div>
 }
 @if (Model.Status == OpenQMS.Models.SupplierStatus.Suspended)
 {
     <div class="alert alert-warning mb-3">
-        <strong>@L["Suspended"]</strong> by @Model.SuspendedBy on @(Model.SuspendedOn.HasValue ? Model.SuspendedOn.Value.ToSite().ToString("dd/MM/yyyy") : "-").
-        Reason: @(Model.SuspensionReason ?? "-")
+        <strong>@L["Suspended"]</strong> @L["by {0} on {1}.", Model.SuspendedBy ?? "-", Model.SuspendedOn.HasValue ? Model.SuspendedOn.Value.ToSite().ToString("dd/MM/yyyy") : "-"]
+        @L["Reason: {0}", Model.SuspensionReason ?? "-"]
     </div>
 }
 @if (Model.Status == OpenQMS.Models.SupplierStatus.Cancelled)
 {
     <div class="alert alert-secondary mb-3">
-        <strong>@L["Cancelled"]</strong> by @Model.CancelledBy on @(Model.CancelledOn.HasValue ? Model.CancelledOn.Value.ToSite().ToString("dd/MM/yyyy") : "-").
-        Reason: @(Model.CancellationReason ?? "-")
+        <strong>@L["Cancelled"]</strong> @L["by {0} on {1}.", Model.CancelledBy ?? "-", Model.CancelledOn.HasValue ? Model.CancelledOn.Value.ToSite().ToString("dd/MM/yyyy") : "-"]
+        @L["Reason: {0}", Model.CancellationReason ?? "-"]
     </div>
 }
 @if (isExpired)
 {
     <div class="alert alert-danger mb-3">
-        <strong>&#9888; Approval Expired</strong> — the supplier approval expired on @Model.ExpiryDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture).
+        <strong>&#9888; @L["Approval Expired"]</strong> — @L["the supplier approval expired on {0}.", Model.ExpiryDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]
     </div>
 }
 @if (approachingExpiry)
 {
     <div class="alert alert-warning mb-3">
-        <strong>&#9888; Approval Expiring Soon</strong> — the supplier approval expires on @Model.ExpiryDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture).
+        <strong>&#9888; @L["Approval Expiring Soon"]</strong> — @L["the supplier approval expires on {0}.", Model.ExpiryDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]
     </div>
 }
 
@@ -151,35 +151,35 @@
         <div class="card-body d-flex flex-wrap gap-2">
             @if (isPending && canAssess)
             {
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#startAssessmentModal">Submit Assessment</button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#startAssessmentModal">@L["Submit Assessment"]</button>
             }
             @if (isSuspended && canApprove)
             {
-                <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#reactivateModal">Reactivate</button>
+                <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#reactivateModal">@L["Reactivate"]</button>
             }
             @if (isUnderAssessment && canApprove)
             {
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">@L["Approve"]</button>
-                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#returnToAssessmentModal">Return to Assessment</button>
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#returnToAssessmentModal">@L["Return to Assessment"]</button>
             }
             @if (isPendingSuspension && canApprove)
             {
                 <button class="btn btn-warning text-dark" data-bs-toggle="modal" data-bs-target="#confirmSuspendModal">@L["Confirm Suspension"]</button>
-                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#returnToAssessmentModal">Return to Assessment</button>
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#returnToAssessmentModal">@L["Return to Assessment"]</button>
             }
             @if (isPendingCancellation && canApprove)
             {
-                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCancelModal">Confirm Cancellation</button>
-                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#returnToAssessmentModal">Return to Assessment</button>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCancelModal">@L["Confirm Cancellation"]</button>
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#returnToAssessmentModal">@L["Return to Assessment"]</button>
             }
             @if ((isApproved || isQualified) && canApprove)
             {
                 @if (isApproved && Model.QualificationRequired)
                 {
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#qualifyModal">Progress to Qualified</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#qualifyModal">@L["Progress to Qualified"]</button>
                 }
-                <button class="btn btn-warning text-dark" data-bs-toggle="modal" data-bs-target="#suspendModal">Suspend</button>
-                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">Cancel Supplier</button>
+                <button class="btn btn-warning text-dark" data-bs-toggle="modal" data-bs-target="#suspendModal">@L["Suspend"]</button>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">@L["Cancel Supplier"]</button>
             }
         </div>
     </div>
@@ -205,12 +205,12 @@
     </li>
     <li class="nav-item">
         <a asp-action="QualityRecords" asp-route-id="@Model.Id" class="nav-link">
-            Quality Records <span class="badge bg-secondary ms-1">@qrCount</span>
+            @L["Quality Records"] <span class="badge bg-secondary ms-1">@qrCount</span>
         </a>
     </li>
     <li class="nav-item">
         <a asp-action="Reviews" asp-route-id="@Model.Id" class="nav-link">
-            Reviews <span class="badge bg-secondary ms-1">@reviewCount</span>
+            @L["Reviews"] <span class="badge bg-secondary ms-1">@reviewCount</span>
         </a>
     </li>
     <li class="nav-item">
@@ -233,10 +233,10 @@
                     <dt class="col-sm-5">@L["Legal ID"]</dt><dd class="col-sm-7">@(Model.LegalId ?? "-")</dd>
                     <dt class="col-sm-5">@L["Website"]</dt><dd class="col-sm-7">@(Model.Website ?? "-")</dd>
                     <dt class="col-sm-5">@L["Created By"]</dt><dd class="col-sm-7">@(Model.CreatedBy ?? "-")</dd>
-                    <dt class="col-sm-5">Created On</dt><dd class="col-sm-7">@Model.CreatedOn.ToSite().ToString("dd/MM/yyyy")</dd>
+                    <dt class="col-sm-5">@L["Created On"]</dt><dd class="col-sm-7">@Model.CreatedOn.ToSite().ToString("dd/MM/yyyy")</dd>
                 </dl>
 
-                <h6 class="text-muted text-uppercase small mt-3">Primary Address</h6>
+                <h6 class="text-muted text-uppercase small mt-3">@L["Primary Address"]</h6>
                 <dl class="row">
                     <dt class="col-sm-5">@L["Street"]</dt><dd class="col-sm-7">@(Model.Street ?? "-")</dd>
                     <dt class="col-sm-5">@L["City"]</dt><dd class="col-sm-7">@(Model.City ?? "-")</dd>
@@ -255,7 +255,7 @@
             <div class="col-md-6">
                 <h6 class="text-muted text-uppercase small">@L["Classification"]</h6>
                 <dl class="row">
-                    <dt class="col-sm-5">Supplier Type</dt><dd class="col-sm-7">@Model.SupplierType</dd>
+                    <dt class="col-sm-5">@L["Supplier Type"]</dt><dd class="col-sm-7">@L.Enum(Model.SupplierType)</dd>
                     @if (Model.SupplierProducts != null && Model.SupplierProducts.Any())
                     {
                         <dt class="col-sm-5">@L["Products"]</dt>
@@ -278,7 +278,7 @@
                     @if (Model.AssessedBy != null)
                     {
                         <dt class="col-sm-5">@L["Assessed By"]</dt><dd class="col-sm-7">@Model.AssessedBy</dd>
-                        <dt class="col-sm-5">Assessed On</dt>
+                        <dt class="col-sm-5">@L["Assessed On"]</dt>
                         <dd class="col-sm-7">@(Model.AssessedOn.HasValue ? Model.AssessedOn.Value.ToSite().ToString("dd/MM/yyyy") : "-")</dd>
                     }
                     <dt class="col-sm-5">@L["Risk Level"]</dt>
@@ -291,11 +291,11 @@
                                         : rl == OpenQMS.Models.SupplierRiskLevel.Low ? "bg-light text-dark border"
                                         : "bg-secondary";
                         }
-                        <span class="badge @rlBadge">@Model.RiskLevel</span>
+                        <span class="badge @rlBadge">@L.Enum(Model.RiskLevel)</span>
                     </dd>
-                    <dt class="col-sm-5">Risk Justification</dt>
+                    <dt class="col-sm-5">@L["Risk Justification"]</dt>
                     <dd class="col-sm-7">@(Model.RiskJustification ?? "-")</dd>
-                    <dt class="col-sm-5">Review Frequency</dt><dd class="col-sm-7">@Model.ReviewFrequency</dd>
+                    <dt class="col-sm-5">@L["Review Frequency"]</dt><dd class="col-sm-7">@L.Enum(Model.ReviewFrequency)</dd>
                     @if (Model.NextReviewDate.HasValue)
                     {
                         <dt class="col-sm-5">@L["Next Review Date"]</dt>
@@ -303,16 +303,16 @@
                     }
                     @if (!string.IsNullOrEmpty(Model.ApprovalComments))
                     {
-                        <dt class="col-sm-5">Approval Comments</dt>
+                        <dt class="col-sm-5">@L["Approval Comments"]</dt>
                         <dd class="col-sm-7">@Model.ApprovalComments</dd>
                     }
                     @if (Model.ApprovalStatus != null)
                     {
-                        <dt class="col-sm-5">Qualification Required</dt>
+                        <dt class="col-sm-5">@L["Qualification Required"]</dt>
                         <dd class="col-sm-7">@(Model.QualificationRequired ? "Yes" : "No")</dd>
                         @if (!string.IsNullOrEmpty(Model.QualificationJustification))
                         {
-                            <dt class="col-sm-5">Qualification Justification</dt>
+                            <dt class="col-sm-5">@L["Qualification Justification"]</dt>
                             <dd class="col-sm-7">@Model.QualificationJustification</dd>
                         }
                     }
@@ -325,22 +325,22 @@
                         <dt class="col-sm-5">@L["Approved By"]</dt><dd class="col-sm-7">@Model.ApprovedBy</dd>
                         <dt class="col-sm-5">@L["Approved On"]</dt>
                         <dd class="col-sm-7">@(Model.ApprovedOn.HasValue ? Model.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy") : "-")</dd>
-                        <dt class="col-sm-5">Effective Date</dt>
+                        <dt class="col-sm-5">@L["Effective Date"]</dt>
                         <dd class="col-sm-7">@(Model.EffectiveDate.HasValue ? Model.EffectiveDate.Value.ToSite().ToString("dd/MM/yyyy") : "-")</dd>
                         <dt class="col-sm-5">@L["Approval Expiry"]</dt>
                         <dd class="col-sm-7">@(Model.ExpiryDate.HasValue ? Model.ExpiryDate.Value.ToString("dd/MM/yyyy") : "None (valid until next review)")</dd>
                         @if (Model.ExpiryDate.HasValue && !string.IsNullOrWhiteSpace(Model.ApprovalExpiryReason))
                         {
-                            <dt class="col-sm-5">Expiry Reason</dt><dd class="col-sm-7">@Model.ApprovalExpiryReason</dd>
+                            <dt class="col-sm-5">@L["Expiry Reason"]</dt><dd class="col-sm-7">@Model.ApprovalExpiryReason</dd>
                         }
-                        <dt class="col-sm-5">Approval Comments</dt><dd class="col-sm-7">@(Model.ApprovalComments ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Approval Comments"]</dt><dd class="col-sm-7">@(Model.ApprovalComments ?? "-")</dd>
                         <dt class="col-sm-5">@L["Next Review"]</dt>
                         <dd class="col-sm-7">@(Model.NextReviewDate.HasValue ? Model.NextReviewDate.Value.ToString("dd/MM/yyyy") : "-")</dd>
-                        <dt class="col-sm-5">Last Review</dt>
+                        <dt class="col-sm-5">@L["Last Review"]</dt>
                         <dd class="col-sm-7">@(Model.LastReviewDate.HasValue ? Model.LastReviewDate.Value.ToSite().ToString("dd/MM/yyyy") : "-")</dd>
                         @if (Model.SupplierType != OpenQMS.Models.SupplierType.Service)
                         {
-                            <dt class="col-sm-5">Testing</dt><dd class="col-sm-7">@Model.TestingRequirement</dd>
+                            <dt class="col-sm-5">@L["Testing"]</dt><dd class="col-sm-7">@L.Enum(Model.TestingRequirement)</dd>
                         }
                     </dl>
                 }
@@ -349,16 +349,16 @@
                 {
                     <h6 class="text-muted text-uppercase small mt-3">@L["Qualification"]</h6>
                     <dl class="row">
-                        <dt class="col-sm-5">Qualified By</dt><dd class="col-sm-7">@Model.QualifiedBy</dd>
-                        <dt class="col-sm-5">Qualified On</dt>
+                        <dt class="col-sm-5">@L["Qualified By"]</dt><dd class="col-sm-7">@Model.QualifiedBy</dd>
+                        <dt class="col-sm-5">@L["Qualified On"]</dt>
                         <dd class="col-sm-7">@(Model.QualifiedOn.HasValue ? Model.QualifiedOn.Value.ToSite().ToString("dd/MM/yyyy") : "-")</dd>
-                        <dt class="col-sm-5">Qual. Basis</dt>
-                        <dd class="col-sm-7">@(Model.QualificationBasis.HasValue ? Model.QualificationBasis.ToString() : "-")</dd>
-                        <dt class="col-sm-5">Qual. Justification</dt>
+                        <dt class="col-sm-5">@L["Qual. Basis"]</dt>
+                        <dd class="col-sm-7">@(Model.QualificationBasis.HasValue ? L.Enum(Model.QualificationBasis) : "-")</dd>
+                        <dt class="col-sm-5">@L["Qual. Justification"]</dt>
                         <dd class="col-sm-7">@(Model.QualificationJustification ?? "-")</dd>
-                        <dt class="col-sm-5">Reference Doc</dt>
+                        <dt class="col-sm-5">@L["Reference Doc"]</dt>
                         <dd class="col-sm-7">@(Model.QualificationReferenceDoc ?? "-")</dd>
-                        <dt class="col-sm-5">Qual. Comments</dt>
+                        <dt class="col-sm-5">@L["Qual. Comments"]</dt>
                         <dd class="col-sm-7">@(Model.QualificationComments ?? "-")</dd>
                     </dl>
                 }
@@ -368,7 +368,7 @@
         <!-- Addresses -->
         <div class="card mt-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Additional Addresses</span>
+                <span class="fw-semibold">@L["Additional Addresses"]</span>
                 <span class="badge bg-secondary" id="addrCount">@(Model.Addresses?.Count ?? 0)</span>
             </div>
             <div class="card-body p-0">
@@ -390,7 +390,7 @@
                                         @if (isPending && canManageAddresses)
                                         {
                                             <form asp-action="DeleteAddress" method="post" class="d-inline"
-                                                  onsubmit="return confirm('Remove this address?')">
+                                                  data-confirm="@L["Remove this address?"]" onsubmit="return confirm(this.dataset.confirm);">
                                                 @Html.AntiForgeryToken()
                                                 <input type="hidden" name="id" value="@addr.Id" />
                                                 <input type="hidden" name="supplierId" value="@Model.Id" />
@@ -405,7 +405,7 @@
                 }
                 else
                 {
-                    <p class="text-muted p-3 mb-0">No additional addresses recorded.</p>
+                    <p class="text-muted p-3 mb-0">@L["No additional addresses recorded."]</p>
                 }
             </div>
             @if (isPending && canManageAddresses)
@@ -484,7 +484,7 @@
                         };
                         <tr>
                             <td><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@r.Id">@r.LCNumber</a></td>
-                            <td>@r.Category</td>
+                            <td>@L.Enum(r.Category)</td>
                             <td>@(r.LicenceType?.DisplayName ?? "—")</td>
                             <td><span class="badge @lcBadge">@L.Enum(r.Status)</span></td>
                             <td>@(r.ExpiryDate.HasValue ? r.ExpiryDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture) : "—")</td>
@@ -516,18 +516,18 @@
         <div class="modal-content">
             <form asp-action="StartAssessment" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header"><h5 class="modal-title">Submit Assessment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">@L["Submit Assessment"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <p class="text-muted small">Ensure Risk Level, Review Frequency and other assessment fields are saved in the Edit view before submitting.</p>
+                    <p class="text-muted small">@L["Ensure Risk Level, Review Frequency and other assessment fields are saved in the Edit view before submitting."]</p>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Assessment Recommendation</label>
+                        <label class="form-label fw-bold">@L["Assessment Recommendation"]</label>
                         <select id="assessRecommendation" class="form-select">
-                            <option value="approve">Recommend Approval</option>
+                            <option value="approve">@L["Recommend Approval"]</option>
                             @if (everCompleted)
                             {
-                                <option value="suspend">Recommend Suspension</option>
+                                <option value="suspend">@L["Recommend Suspension"]</option>
                             }
-                            <option value="cancel">Recommend Cancellation</option>
+                            <option value="cancel">@L["Recommend Cancellation"]</option>
                         </select>
                     </div>
                     <div id="suspensionFields" style="display:none">
@@ -538,18 +538,18 @@
                     </div>
                     <div id="cancellationFields" style="display:none">
                         <div class="mb-3">
-                            <label class="form-label">Cancellation Reason <span class="text-danger">*</span></label>
+                            <label class="form-label">@L["Cancellation Reason"] <span class="text-danger">*</span></label>
                             <textarea name="cancellationReason" id="cancellationReason" class="form-control" rows="2"></textarea>
                         </div>
                     </div>
                     <hr />
-                    <h6>E-Signature</h6>
+                    <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-2"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-primary">Submit Assessment</button>
+                    <button type="submit" class="btn btn-primary">@L["Submit Assessment"]</button>
                 </div>
             </form>
         </div>
@@ -565,24 +565,24 @@
         <div class="modal-content">
             <form asp-action="Approve" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header"><h5 class="modal-title">Approve Supplier</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">@L["Approve Supplier"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <p class="text-muted small">Review the assessment details in the Overview tab before approving. To amend any fields, return the record to Assessment first.</p>
+                    <p class="text-muted small">@L["Review the assessment details in the Overview tab before approving. To amend any fields, return the record to Assessment first."]</p>
                     <div class="mb-3">
                         <label class="form-label">Approval Expiry <small class="text-muted">(optional)</small></label>
                         <input type="date" name="approvalExpiry" class="form-control" min="@SiteTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
-                        <div class="form-text">Set only for time-limited or conditional approvals. Leave blank if the approval is valid until the next review.</div>
+                        <div class="form-text">@L["Set only for time-limited or conditional approvals. Leave blank if the approval is valid until the next review."]</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Reason for time-limited approval <small class="text-muted">(required if an expiry date is set)</small></label>
-                        <textarea name="approvalExpiryReason" class="form-control" rows="2" maxlength="1000" placeholder="e.g. Conditional approval pending on-site audit"></textarea>
+                        <textarea name="approvalExpiryReason" class="form-control" rows="2" maxlength="1000" placeholder="@L["e.g. Conditional approval pending on-site audit"]"></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">@L["Notes"]</label>
                         <textarea name="notes" class="form-control" rows="2"></textarea>
                     </div>
                     <hr />
-                    <h6>E-Signature</h6>
+                    <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-2"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                 </div>
@@ -604,18 +604,18 @@
         <div class="modal-content">
             <form asp-action="ReturnToAssessment" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header"><h5 class="modal-title">Return to Assessment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">@L["Return to Assessment"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <p class="text-muted">This will return the supplier to Assessment status for revision.</p>
-                    <div class="mb-3"><label class="form-label">Reason / Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    <p class="text-muted">@L["This will return the supplier to Assessment status for revision."]</p>
+                    <div class="mb-3"><label class="form-label">@L["Reason / Notes"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                     <hr />
-                    <h6>E-Signature</h6>
+                    <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-2"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-secondary">Return to Assessment</button>
+                    <button type="submit" class="btn btn-secondary">@L["Return to Assessment"]</button>
                 </div>
             </form>
         </div>
@@ -635,13 +635,13 @@
                 <div class="modal-body">
                     <div class="alert alert-warning">Suspension Reason: <strong>@Model.SuspensionReason</strong></div>
                     <hr />
-                    <h6>E-Signature</h6>
+                    <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-2"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-warning text-dark">Confirm Suspend</button>
+                    <button type="submit" class="btn btn-warning text-dark">@L["Confirm Suspend"]</button>
                 </div>
             </form>
         </div>
@@ -657,17 +657,17 @@
         <div class="modal-content">
             <form asp-action="Cancel" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header bg-danger text-white"><h5 class="modal-title">Confirm Cancellation</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header bg-danger text-white"><h5 class="modal-title">@L["Confirm Cancellation"]</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="alert alert-secondary">Cancellation Reason: <strong>@Model.CancellationReason</strong></div>
                     <hr />
-                    <h6>E-Signature</h6>
+                    <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-2"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-danger">Confirm Cancel</button>
+                    <button type="submit" class="btn btn-danger">@L["Confirm Cancel"]</button>
                 </div>
             </form>
         </div>
@@ -683,52 +683,52 @@
         <div class="modal-content">
             <form asp-action="Qualify" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header"><h5 class="modal-title">Progress to Qualified</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">@L["Progress to Qualified"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <p class="text-muted">Reduced testing / CoA reliance will be permitted after qualification.</p>
+                    <p class="text-muted">@L["Reduced testing / CoA reliance will be permitted after qualification."]</p>
                     <div class="mb-3">
                         <label class="form-label">Risk Level <small class="text-muted">(update if required)</small></label>
                         <select name="riskLevel" class="form-select" asp-items='Html.GetEnumSelectList<OpenQMS.Models.SupplierRiskLevel>().Where(x => x.Value != "4")'></select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Risk Justification</label>
+                        <label class="form-label">@L["Risk Justification"]</label>
                         <textarea name="riskJustification" class="form-control" rows="2">@Model.RiskJustification</textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Qualification Justification <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Qualification Justification"] <span class="text-danger">*</span></label>
                         <textarea name="qualJustification" class="form-control" rows="2" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Qualification Basis</label>
+                        <label class="form-label">@L["Qualification Basis"]</label>
                         <select name="qualBasis" class="form-select" asp-items="Html.GetEnumSelectList<OpenQMS.Models.QualificationBasis>()">
-                            <option value="">-- Select --</option>
+                            <option value="">@L["-- Select --"]</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Reference Document</label>
+                        <label class="form-label">@L["Reference Document"]</label>
                         <input type="text" name="qualRefDoc" class="form-control" />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Approval Expiry <small class="text-muted">(optional)</small></label>
                         <input type="date" name="approvalExpiry" class="form-control" min="@SiteTime.Today.AddDays(1).ToString("yyyy-MM-dd")" value="@(Model.ExpiryDate.HasValue ? Model.ExpiryDate.Value.ToString("yyyy-MM-dd") : "")" />
-                        <div class="form-text">Set only for time-limited or conditional approvals. Leave blank if the approval is valid until the next review.</div>
+                        <div class="form-text">@L["Set only for time-limited or conditional approvals. Leave blank if the approval is valid until the next review."]</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Reason for time-limited approval <small class="text-muted">(required if an expiry date is set)</small></label>
-                        <textarea name="approvalExpiryReason" class="form-control" rows="2" maxlength="1000" placeholder="e.g. Conditional approval pending on-site audit">@Model.ApprovalExpiryReason</textarea>
+                        <textarea name="approvalExpiryReason" class="form-control" rows="2" maxlength="1000" placeholder="@L["e.g. Conditional approval pending on-site audit"]">@Model.ApprovalExpiryReason</textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Qualification Comments</label>
+                        <label class="form-label">@L["Qualification Comments"]</label>
                         <textarea name="qualificationComments" class="form-control" rows="2"></textarea>
                     </div>
                     <hr />
-                    <h6>E-Signature</h6>
+                    <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-2"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-primary">Qualify</button>
+                    <button type="submit" class="btn btn-primary">@L["Qualify"]</button>
                 </div>
             </form>
         </div>
@@ -744,20 +744,20 @@
         <div class="modal-content">
             <form asp-action="Suspend" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header bg-warning"><h5 class="modal-title">Suspend Supplier</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header bg-warning"><h5 class="modal-title">@L["Suspend Supplier"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">@L["Suspension Reason"] <span class="text-danger">*</span></label>
                         <textarea name="suspensionReason" class="form-control" rows="2" required></textarea>
                     </div>
                     <hr />
-                    <h6>E-Signature</h6>
+                    <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-2"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-warning text-dark">Suspend</button>
+                    <button type="submit" class="btn btn-warning text-dark">@L["Suspend"]</button>
                 </div>
             </form>
         </div>
@@ -769,20 +769,20 @@
         <div class="modal-content">
             <form asp-action="Cancel" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header bg-danger text-white"><h5 class="modal-title">Cancel Supplier</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header bg-danger text-white"><h5 class="modal-title">@L["Cancel Supplier"]</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Cancellation Reason <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Cancellation Reason"] <span class="text-danger">*</span></label>
                         <textarea name="cancellationReason" class="form-control" rows="2" required></textarea>
                     </div>
                     <hr />
-                    <h6>E-Signature</h6>
+                    <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-2"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-danger">Cancel Supplier</button>
+                    <button type="submit" class="btn btn-danger">@L["Cancel Supplier"]</button>
                 </div>
             </form>
         </div>
@@ -798,18 +798,18 @@
         <div class="modal-content">
             <form asp-action="Reactivate" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header bg-success text-white"><h5 class="modal-title">Reactivate Supplier</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header bg-success text-white"><h5 class="modal-title">@L["Reactivate Supplier"]</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <p class="text-muted">This will reactivate the supplier and return it to pending status for a new assessment cycle.</p>
-                    <div class="mb-3"><label class="form-label">Reason / Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    <p class="text-muted">@L["This will reactivate the supplier and return it to pending status for a new assessment cycle."]</p>
+                    <div class="mb-3"><label class="form-label">@L["Reason / Notes"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                     <hr />
-                    <h6>E-Signature</h6>
+                    <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
                     <div class="mb-2"><label class="form-label">@L["Password"]</label><input type="password" name="pwd" class="form-control" required /></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success">Reactivate</button>
+                    <button type="submit" class="btn btn-success">@L["Reactivate"]</button>
                 </div>
             </form>
         </div>

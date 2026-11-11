@@ -26,32 +26,32 @@
 @if (canIssueCert)
 {
     <div class="mb-3">
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#issueCertModal">Issue Certificate</button>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#issueCertModal">@L["Issue Certificate"]</button>
     </div>
 }
 @if (canIssueQO)
 {
     <div class="mb-3">
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#issueQOModal">Issue QO Report</button>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#issueQOModal">@L["Issue QO Report"]</button>
     </div>
 }
 
 @if (Model.Certificates == null || !Model.Certificates.Any())
 {
-    <p class="text-muted">No certificates issued yet.</p>
+    <p class="text-muted">@L["No certificates issued yet."]</p>
 }
 else
 {
     <table class="table table-sm">
         <thead class="table-light">
             <tr>
-                <th>Certificate No.</th>
+                <th>@L["Certificate No."]</th>
                 <th>@L["Type"]</th>
                 <th>@L["Version"]</th>
                 <th>@L["Status"]</th>
-                <th>Issued By</th>
-                <th>Issued Date</th>
-                <th>Signed By</th>
+                <th>@L["Issued By"]</th>
+                <th>@L["Issued Date"]</th>
+                <th>@L["Signed By"]</th>
                 <th>@L["Actions"]</th>
             </tr>
         </thead>
@@ -90,34 +90,34 @@ else
             <form asp-action="IssueCertificate" asp-route-releaseRecordId="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Issue Certificate — Electronic Signature</h5>
+                    <h5 class="modal-title">@L["Issue Certificate — Electronic Signature"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-info small">Issuing a certificate constitutes an electronic signature. Your email and password confirm your identity.</div>
+                    <div class="alert alert-info small">@L["Issuing a certificate constitutes an electronic signature. Your email and password confirm your identity."]</div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Certificate Type</label>
+                        <label class="form-label fw-semibold">@L["Certificate Type"]</label>
                         <select name="type" id="certTypeSelect" class="form-select">
                             @if (Model.ReleaseType == ReleaseType.ReleaseForSupply ||
                                  Model.ReleaseType == ReleaseType.ReleaseUnderQuarantine ||
                                  Model.ReleaseType == ReleaseType.ReleaseForFurtherProcessing)
                             {
-                                <option value="@((int)CertificateType.CoA)">CoA — Certificate of Analysis</option>
-                                <option value="@((int)CertificateType.Combined)">Combined CoA + CoC</option>
+                                <option value="@((int)CertificateType.CoA)">@L["CoA — Certificate of Analysis"]</option>
+                                <option value="@((int)CertificateType.Combined)">@L["Combined CoA + CoC"]</option>
                             }
-                            <option value="@((int)CertificateType.CoC)">CoC — Certificate of Conformance</option>
+                            <option value="@((int)CertificateType.CoC)">@L["CoC — Certificate of Conformance"]</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Certificate Statement</label>
+                        <label class="form-label fw-semibold">@L["Certificate Statement"]</label>
                         <textarea name="statement" id="certStatement" class="form-control" rows="5" required></textarea>
-                        <div class="form-text">This statement will appear on the issued certificate. Edit as required before signing.</div>
+                        <div class="form-text">@L["This statement will appear on the issued certificate. Edit as required before signing."]</div>
                     </div>
 
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to sign this certificate.</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to sign this certificate."]</p>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -129,7 +129,7 @@ else
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success">Issue Certificate</button>
+                    <button type="submit" class="btn btn-success">@L["Issue Certificate"]</button>
                 </div>
             </form>
         </div></div>
@@ -170,20 +170,20 @@ else
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="type" value="@((int)CertificateType.CoC)" />
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Issue Quality Oversight Report — Electronic Signature</h5>
+                    <h5 class="modal-title">@L["Issue Quality Oversight Report — Electronic Signature"]</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-info small">Issuing this report constitutes an electronic signature. Your email and password confirm your identity.</div>
+                    <div class="alert alert-info small">@L["Issuing this report constitutes an electronic signature. Your email and password confirm your identity."]</div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Report Statement</label>
+                        <label class="form-label fw-semibold">@L["Report Statement"]</label>
                         <textarea name="statement" class="form-control" rows="5" required>@stmtQO</textarea>
-                        <div class="form-text">This statement will appear on the issued Quality Oversight Report. Edit as required before signing.</div>
+                        <div class="form-text">@L["This statement will appear on the issued Quality Oversight Report. Edit as required before signing."]</div>
                     </div>
 
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to sign this report.</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to sign this report."]</p>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -195,7 +195,7 @@ else
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success">Issue QO Report</button>
+                    <button type="submit" class="btn btn-success">@L["Issue QO Report"]</button>
                 </div>
             </form>
         </div></div>

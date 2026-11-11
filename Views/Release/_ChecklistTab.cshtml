@@ -44,26 +44,26 @@
 }
 
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <span class="badge @typeBadge">@typeLabel</span>
-    <small class="text-muted">@(Model.ChecklistItems?.Count ?? 0) items</small>
+    <span class="badge @typeBadge">@L[typeLabel]</span>
+    <small class="text-muted">@L["{0} items", Model.ChecklistItems?.Count ?? 0]</small>
 </div>
 
 @if (blockingOutstanding > 0)
 {
     <div class="alert alert-danger">
-        <strong>&#9888; @blockingOutstanding Blocking Outstanding item(s)</strong> — AP submission is blocked until these are resolved.
+        <strong>&#9888; @blockingOutstanding Blocking Outstanding item(s)</strong> @L["— AP submission is blocked until these are resolved."]
     </div>
 }
 else if (outstanding > 0)
 {
     <div class="alert alert-warning">
-        <strong>&#9888; @outstanding Outstanding item(s)</strong> — Non-blocking; AP submission is not prevented but items should be addressed.
+        @H["<strong>&#9888; {0} Outstanding item(s)</strong> — Non-blocking; AP submission is not prevented but items should be addressed.", outstanding]
     </div>
 }
 
 @if (grouped == null || !grouped.Any())
 {
-    <p class="text-muted">No checklist items found.</p>
+    <p class="text-muted">@L["No checklist items found."]</p>
 }
 else
 {
@@ -73,9 +73,9 @@ else
         <table class="table table-sm table-hover">
             <thead class="table-light">
                 <tr>
-                    <th style="width:45%">Item</th>
+                    <th style="width:45%">@L["Item"]</th>
                     <th style="width:20%">@L["Status"]</th>
-                    <th>Comment</th>
+                    <th>@L["Comment"]</th>
                     <th style="width:12%">@L["Reviewed By"]</th>
                     <th style="width:8%">@L["Date"]</th>
                     @if (!checklistLocked)
@@ -97,7 +97,7 @@ else
                             @item.ItemText
                             @if (item.IsBlocking)
                             {
-                                <span class="badge bg-warning text-dark ms-1 small">Blocking</span>
+                                <span class="badge bg-warning text-dark ms-1 small">@L["Blocking"]</span>
                             }
                         </td>
                         <td>
@@ -106,13 +106,13 @@ else
                                 <select class="form-select form-select-sm checklist-status" data-item-id="@item.Id" data-row="row-@item.Id">
                                     @foreach (ChecklistItemStatus s in Enum.GetValues(typeof(ChecklistItemStatus)))
                                     {
-                                        <option value="@((int)s)" selected="@(item.Status == s)">@StatusDisplayName(s)</option>
+                                        <option value="@((int)s)" selected="@(item.Status == s)">@L[StatusDisplayName(s)]</option>
                                     }
                                 </select>
                             }
                             else
                             {
-                                <span>@StatusDisplayName(item.Status)</span>
+                                <span>@L[StatusDisplayName(item.Status)]</span>
                             }
                         </td>
                         <td>
@@ -175,12 +175,12 @@ else
                     btn.textContent = 'Saved ✓';
                     setTimeout(function(){ btn.textContent = 'Save'; }, 2000);
                 } else {
-                    alert('Save failed: ' + (data.error || 'Unknown error'));
+                    alert(@Json.Serialize(L["Save failed:"].Value) + ' ' + (data.error || @Json.Serialize(L["Unknown error"].Value)));
                     btn.textContent = 'Save';
                 }
             })
             .catch(function(err) {
-                alert('Save failed: ' + err.message);
+                alert(@Json.Serialize(L["Save failed:"].Value) + ' ' + err.message);
                 btn.textContent = 'Save';
             });
         });

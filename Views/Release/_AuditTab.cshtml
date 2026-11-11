@@ -2,18 +2,18 @@
 
 @if (Model.AuditEntries == null || !Model.AuditEntries.Any())
 {
-    <p class="text-muted">No audit entries.</p>
+    <p class="text-muted">@L["No audit entries."]</p>
 }
 else
 {
     <table class="table table-sm table-hover">
         <thead class="table-light">
             <tr>
-                <th>Timestamp <span class="fw-normal text-muted">(@SiteTime.Label)</span></th>
+                <th>@L["Timestamp"] <span class="fw-normal text-muted">(@SiteTime.Label)</span></th>
                 <th>@L["Action"]</th>
                 <th>@L["Details"]</th>
-                <th>From Status</th>
-                <th>To Status</th>
+                <th>@L["From Status"]</th>
+                <th>@L["To Status"]</th>
                 <th>@L["Performed By"]</th>
             </tr>
         </thead>

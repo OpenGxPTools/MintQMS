@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenQMS.Authorization;
 using OpenQMS.Data;
+using OpenQMS.Localization;
 using OpenQMS.Models;
 using OpenQMS.Services;
 
@@ -283,10 +284,10 @@ namespace OpenQMS.Controllers
             int[]? selectedDeviations, int[]? selectedCapas)
         {
             if (maintenance.ScheduledDate.Date < SiteTime.Today)
-                ModelState.AddModelError(nameof(maintenance.ScheduledDate), "Scheduled date must be today or in the future.");
+                ModelState.AddModelError(nameof(maintenance.ScheduledDate), this.T("Scheduled date must be today or in the future."));
 
             if (!IsFrequencyValid(maintenance.Type, maintenance.Frequency))
-                ModelState.AddModelError(nameof(maintenance.Frequency), $"'{maintenance.Frequency}' is not a valid frequency for {maintenance.Type} maintenance.");
+                ModelState.AddModelError(nameof(maintenance.Frequency), this.T("'{0}' is not a valid frequency for {1} maintenance.", this.T(EnumHelper.Display(maintenance.Frequency)), this.T(EnumHelper.Display(maintenance.Type))));
 
             if (ModelState.IsValid)
             {
@@ -311,7 +312,7 @@ namespace OpenQMS.Controllers
                     $"ID: {maintenance.MaintenanceId}; Title: {maintenance.Title}; Type: {maintenance.Type}; Scheduled by: {maintenance.ScheduledBy}");
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = $"Maintenance {maintenance.MaintenanceId} created.";
+                TempData["Success"] = this.T("Maintenance {0} created.", maintenance.MaintenanceId);
                 return RedirectToAction(nameof(Details), new { id = maintenance.Id });
             }
 
@@ -387,10 +388,10 @@ namespace OpenQMS.Controllers
 
             if (updated && maintenance.Status == Maintenance.MaintenanceStatus.Scheduled
                 && maintenance.ScheduledDate.Date < SiteTime.Today)
-                ModelState.AddModelError(nameof(maintenance.ScheduledDate), "Scheduled date must be today or in the future.");
+                ModelState.AddModelError(nameof(maintenance.ScheduledDate), this.T("Scheduled date must be today or in the future."));
 
             if (updated && !IsFrequencyValid(maintenance.Type, maintenance.Frequency))
-                ModelState.AddModelError(nameof(maintenance.Frequency), $"'{maintenance.Frequency}' is not a valid frequency for {maintenance.Type} maintenance.");
+                ModelState.AddModelError(nameof(maintenance.Frequency), this.T("'{0}' is not a valid frequency for {1} maintenance.", this.T(EnumHelper.Display(maintenance.Frequency)), this.T(EnumHelper.Display(maintenance.Type))));
 
             if (updated && ModelState.IsValid)
             {
@@ -438,7 +439,7 @@ namespace OpenQMS.Controllers
                     else throw;
                 }
 
-                TempData["Success"] = "Maintenance updated.";
+                TempData["Success"] = this.T("Maintenance updated.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -529,7 +530,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -539,7 +540,7 @@ namespace OpenQMS.Controllers
             if (maintenance.Status != Maintenance.MaintenanceStatus.Scheduled
                 && maintenance.Status != Maintenance.MaintenanceStatus.Overdue)
             {
-                TempData["WorkflowError"] = "Maintenance must be in Scheduled or Overdue status to start work.";
+                TempData["WorkflowError"] = this.T("Maintenance must be in Scheduled or Overdue status to start work.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -551,7 +552,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(maintenance.Id, "Work Started", from, maintenance.Status.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Maintenance work started.";
+            TempData["Success"] = this.T("Maintenance work started.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -568,12 +569,12 @@ namespace OpenQMS.Controllers
             if (maintenance == null) return NotFound();
             if (maintenance.Status != Maintenance.MaintenanceStatus.InProgress)
             {
-                TempData["WorkflowError"] = "Work details can only be recorded while the maintenance is In Progress.";
+                TempData["WorkflowError"] = this.T("Work details can only be recorded while the maintenance is In Progress.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (cost is < 0)
             {
-                TempData["WorkflowError"] = "Cost cannot be negative.";
+                TempData["WorkflowError"] = this.T("Cost cannot be negative.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -585,7 +586,7 @@ namespace OpenQMS.Controllers
             AuditDiffHelper.Track<decimal>(diff, "Cost",           maintenance.Cost,          cost);
             if (diff.Count == 0)
             {
-                TempData["Success"] = "No changes to the work details.";
+                TempData["Success"] = this.T("No changes to the work details.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -594,7 +595,7 @@ namespace OpenQMS.Controllers
             maintenance.Cost          = cost;
             AddAuditLog(maintenance.Id, "Work Recorded", null, null, AuditDiffHelper.Build(diff));
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Work details recorded.";
+            TempData["Success"] = this.T("Work details recorded.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -605,7 +606,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -614,7 +615,7 @@ namespace OpenQMS.Controllers
 
             if (maintenance.Status != Maintenance.MaintenanceStatus.InProgress)
             {
-                TempData["WorkflowError"] = "Maintenance is not In Progress.";
+                TempData["WorkflowError"] = this.T("Maintenance is not In Progress.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -629,7 +630,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(maintenance.Id, "Work Completed", from, maintenance.Status.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Maintenance work completed.";
+            TempData["Success"] = this.T("Maintenance work completed.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -641,7 +642,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -650,7 +651,7 @@ namespace OpenQMS.Controllers
 
             if (maintenance.Status != Maintenance.MaintenanceStatus.Completed)
             {
-                TempData["WorkflowError"] = "Maintenance is not in Completed status.";
+                TempData["WorkflowError"] = this.T("Maintenance is not in Completed status.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -697,11 +698,11 @@ namespace OpenQMS.Controllers
                 AddAuditLog(nextOccurrence.Id, "Auto-scheduled", null, nextOccurrence.Status.ToString(),
                     $"Auto-generated from {maintenance.MaintenanceId}. Scheduled: {nextOccurrence.ScheduledDate:yyyy-MM-dd}");
                 await _context.SaveChangesAsync();
-                TempData["Success"] = $"Maintenance reviewed and closed. Next occurrence {nextOccurrence.MaintenanceId} scheduled for {nextOccurrence.ScheduledDate:dd MMM yyyy}.";
+                TempData["Success"] = this.T("Maintenance reviewed and closed. Next occurrence {0} scheduled for {1}.", nextOccurrence.MaintenanceId, nextOccurrence.ScheduledDate.ToString("dd MMM yyyy", DisplayDates.Culture));
             }
             else
             {
-                TempData["Success"] = "Maintenance reviewed and closed.";
+                TempData["Success"] = this.T("Maintenance reviewed and closed.");
             }
 
             TempData["ActiveTab"] = "auditlog";
@@ -717,12 +718,12 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrWhiteSpace(notes))
             {
-                TempData["WorkflowError"] = "A reason is required to send back.";
+                TempData["WorkflowError"] = this.T("A reason is required to send back.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -730,7 +731,7 @@ namespace OpenQMS.Controllers
             if (maintenance == null) return NotFound();
             if (maintenance.Status != Maintenance.MaintenanceStatus.InProgress)
             {
-                TempData["WorkflowError"] = "Maintenance is not In Progress.";
+                TempData["WorkflowError"] = this.T("Maintenance is not In Progress.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -742,7 +743,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(maintenance.Id, "Sent Back to Scheduled", from, maintenance.Status.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Maintenance sent back to Scheduled for rework.";
+            TempData["Success"] = this.T("Maintenance sent back to Scheduled for rework.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -754,12 +755,12 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrWhiteSpace(notes))
             {
-                TempData["WorkflowError"] = "A reason is required to send back.";
+                TempData["WorkflowError"] = this.T("A reason is required to send back.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -767,7 +768,7 @@ namespace OpenQMS.Controllers
             if (maintenance == null) return NotFound();
             if (maintenance.Status != Maintenance.MaintenanceStatus.Completed)
             {
-                TempData["WorkflowError"] = "Maintenance is not in Completed status.";
+                TempData["WorkflowError"] = this.T("Maintenance is not in Completed status.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -780,7 +781,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(maintenance.Id, "Sent Back to In Progress", from, maintenance.Status.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Maintenance sent back to In Progress for rework.";
+            TempData["Success"] = this.T("Maintenance sent back to In Progress for rework.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -792,12 +793,12 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrWhiteSpace(notes))
             {
-                TempData["WorkflowError"] = "A reason is required to send back.";
+                TempData["WorkflowError"] = this.T("A reason is required to send back.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -805,7 +806,7 @@ namespace OpenQMS.Controllers
             if (maintenance == null) return NotFound();
             if (maintenance.Status != Maintenance.MaintenanceStatus.Reviewed)
             {
-                TempData["WorkflowError"] = "Maintenance is not in Reviewed status.";
+                TempData["WorkflowError"] = this.T("Maintenance is not in Reviewed status.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -834,7 +835,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Maintenance sent back to Completed for re-review.";
+            TempData["Success"] = this.T("Maintenance sent back to Completed for re-review.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -848,12 +849,12 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A reason is required to suspend a maintenance schedule.";
+                TempData["WorkflowError"] = this.T("A reason is required to suspend a maintenance schedule.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -869,7 +870,7 @@ namespace OpenQMS.Controllers
             };
             if (!suspendable.Contains(maintenance.Status))
             {
-                TempData["WorkflowError"] = $"Maintenance cannot be suspended from '{maintenance.Status}' status.";
+                TempData["WorkflowError"] = this.T("Maintenance cannot be suspended from '{0}' status.", this.T(EnumHelper.Display(maintenance.Status)));
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -882,7 +883,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(maintenance.Id, "Suspended", from, maintenance.Status.ToString(), reason);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Maintenance schedule suspended.";
+            TempData["Success"] = this.T("Maintenance schedule suspended.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -894,7 +895,7 @@ namespace OpenQMS.Controllers
         {
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Transition was not applied.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Transition was not applied.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -902,7 +903,7 @@ namespace OpenQMS.Controllers
             if (maintenance == null) return NotFound();
             if (maintenance.Status != Maintenance.MaintenanceStatus.Suspended)
             {
-                TempData["WorkflowError"] = "Maintenance is not suspended.";
+                TempData["WorkflowError"] = this.T("Maintenance is not suspended.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -915,7 +916,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(maintenance.Id, "Reactivated", from, maintenance.Status.ToString(), notes);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Maintenance schedule reactivated.";
+            TempData["Success"] = this.T("Maintenance schedule reactivated.");
             TempData["ActiveTab"] = "auditlog";
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -930,7 +931,7 @@ namespace OpenQMS.Controllers
             if (User.IsInRole(Constants.ReadOnlyRole)) return Forbid();
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = maintenanceId });
             }
@@ -939,13 +940,13 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = "File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.";
+                TempData["Error"] = this.T("File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = maintenanceId });
             }
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File size exceeds the 25 MB limit.";
+                TempData["Error"] = this.T("File size exceeds the 25 MB limit.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = maintenanceId });
             }
@@ -955,7 +956,7 @@ namespace OpenQMS.Controllers
 
             if (maintenance.Status == Maintenance.MaintenanceStatus.Reviewed || maintenance.Status == Maintenance.MaintenanceStatus.Approved)
             {
-                TempData["Error"] = "Attachments cannot be added to a reviewed or approved maintenance record.";
+                TempData["Error"] = this.T("Attachments cannot be added to a reviewed or approved maintenance record.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = maintenanceId });
             }
@@ -990,7 +991,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(maintenanceId, "Attachment uploaded", null, null, file.FileName);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"File '{file.FileName}' uploaded.";
+            TempData["Success"] = this.T("File '{0}' uploaded.", file.FileName);
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = maintenanceId });
         }
@@ -1005,7 +1006,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.MaintenanceId });
             }
@@ -1041,7 +1042,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.MaintenanceId });
             }
@@ -1083,14 +1084,14 @@ namespace OpenQMS.Controllers
                 var maintenance = await _context.Maintenance.FindAsync(maintenanceId);
                 if (maintenance != null && (maintenance.Status == Maintenance.MaintenanceStatus.Reviewed || maintenance.Status == Maintenance.MaintenanceStatus.Approved))
                 {
-                    TempData["Error"] = "Attachments cannot be removed from a reviewed or approved maintenance record.";
+                    TempData["Error"] = this.T("Attachments cannot be removed from a reviewed or approved maintenance record.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = maintenanceId });
                 }
 
                 if (string.IsNullOrWhiteSpace(deletionReason))
                 {
-                    TempData["Error"] = "A reason is required to delete an attachment.";
+                    TempData["Error"] = this.T("A reason is required to delete an attachment.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = maintenanceId });
                 }
@@ -1102,7 +1103,7 @@ namespace OpenQMS.Controllers
                 attachment.DeletionReason = deletionReason.Trim();
                 AddAuditLog(maintenanceId, "Attachment deleted", null, null, $"{attachment.FileName} — Reason: {attachment.DeletionReason}");
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Attachment deleted.";
+                TempData["Success"] = this.T("Attachment deleted.");
             }
 
             TempData["ActiveTab"] = "attachments";
@@ -1266,26 +1267,26 @@ namespace OpenQMS.Controllers
 
             if (maintenance.Status != Maintenance.MaintenanceStatus.Approved)
             {
-                TempData["WorkflowError"] = "This record is not in a state that can be administratively reopened.";
+                TempData["WorkflowError"] = this.T("This record is not in a state that can be administratively reopened.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A justification reason is required.";
+                TempData["WorkflowError"] = this.T("A justification reason is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1294,7 +1295,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(maintenance.Id, "Administrative Reopen", fromStatus, Maintenance.MaintenanceStatus.Reviewed.ToString(), reason);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Record has been administratively reopened to Reviewed stage.";
+            TempData["Success"] = this.T("Record has been administratively reopened to Reviewed stage.");
             return RedirectToAction(nameof(Details), new { id });
         }
     }

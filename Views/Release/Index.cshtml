@@ -16,7 +16,7 @@
 }
 
 @{
-    ViewData["Title"] = "Release Records";
+    ViewData["Title"] = L["Release Records"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -53,7 +53,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Release Records</h4>
+    <h4 class="mb-0">@L["Release Records"]</h4>
     <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["New Release Record"]</a>
 </div>
 <hr />
@@ -64,9 +64,9 @@
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Draft">@L["Draft"]</button>
     <button class="btn btn-outline-info btn-sm status-filter" data-status="Under Review">@L["Under Review"]</button>
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="On Hold">@L["On Hold"]</button>
-    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending AP Decision">Pending AP</button>
-    <button class="btn btn-outline-success btn-sm status-filter" data-status="Certified">Certified</button>
-    <button class="btn btn-outline-success btn-sm status-filter" data-status="Released">Released</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Pending AP Decision">@L["Pending AP"]</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Certified">@L["Certified"]</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="Released">@L["Released"]</button>
     <button class="btn btn-outline-danger btn-sm status-filter" data-status="Rejected">@L["Rejected"]</button>
 </div>
 
@@ -75,7 +75,7 @@
         <tr>
             <th>@L["Record No."]</th>
             <th>@L["Product"]</th>
-            <th>Batch No.</th>
+            <th>@L["Batch No."]</th>
             <th>@L["Status"]</th>
             <th>@L["Release Type"]</th>
             <th>@L["AP"]</th>
@@ -103,8 +103,8 @@
                 <td>@r.RecordNumber</td>
                 <td>@r.ProductName</td>
                 <td>@r.BatchNumber</td>
-                <td><span class="badge @badge">@ReleaseStatusLabel(r.Status)</span></td>
-                <td>@EnumDisplay(r.ReleaseType)</td>
+                <td><span class="badge @badge">@L[ReleaseStatusLabel(r.Status)]</span></td>
+                <td>@L[EnumDisplay(r.ReleaseType)]</td>
                 <td>@(r.APFullNameQualification ?? "-")</td>
                 <td>@(r.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</td>
                 <td>

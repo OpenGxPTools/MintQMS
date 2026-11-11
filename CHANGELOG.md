@@ -14,6 +14,10 @@
 - Change Control, Audits and Risk in Spanish and Portuguese: pages, guidance texts, the action plan, the
   signature dialogs (what each step does and where the record goes), alerts, messages and validation errors.
   The suggested actions loaded into an action plan stay in English, because they become part of the record.
+- Suppliers, Maintenance, Batch Release (with certification statements settings) and Data Disposal in
+  Spanish and Portuguese: pages, dashboards, signature dialogs, checklists, test results, alerts, messages
+  and validation errors. Printed release certificates stay in English, as signed records; checklist item
+  names and certification statement texts are record content and also stay as entered.
 - Deviations, Complaints, CAPA, Documents and Training: the signature dialog titles, the status shown on
   edit and detail pages, the "Click to remove" hint and the remaining messages after an action are now
   translated too.
@@ -28,10 +32,15 @@
   dashboards.
 - Change Control: the *Return for Rework* dialog said the change goes back to Proposal; it goes back to
   Assessment, and now says so.
+- Batch Release: the "?" help buttons in the workflow dialogs did nothing (their script ran before the page's
+  Bootstrap library had loaded); they open again.
 - Audits: the edit page raised a script error while the audit was still Scheduled (harmless, but it showed
   in the browser console).
 - Option and type names that showed as code (e.g. "NeedsImprovement", "QualitySystem", "ProductQuality") in
-  audit and risk drop-downs and details now read properly.
+  audit and risk drop-downs and details now read properly; likewise in Suppliers, Maintenance and Batch
+  Release ("NotAssessed", "OneTime", "NotApplicable", "QualitySystemsCertificate"; maintenance types now
+  read e.g. "Preventive Maintenance"). The Suppliers register's browser tab reads "Suppliers" instead of
+  "Index". A supplier review snapshot showed its review trigger by code name; it now shows the proper name.
 - Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the
   Approval Status column, but "Under Assessment" is a workflow stage shown in the Workflow column. It now
   filters the Workflow column and finds both first assessments and re-reviews.

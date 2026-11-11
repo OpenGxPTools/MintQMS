@@ -29,7 +29,7 @@
     <div class="card mb-4">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <strong>@L["Workflow Actions"]</strong>
-            <span class="small">Current: @ReleaseStatusLabel(Model.Status)</span>
+            <span class="small">@L["Current: {0}", L[ReleaseStatusLabel(Model.Status)].Value]</span>
         </div>
         <div class="card-body d-flex gap-2 flex-wrap">
 
@@ -42,8 +42,8 @@
 
             @if (Model.Status == ReleaseStatus.UnderReview && isQO)
             {
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submitAPModal">Submit to AP</button>
-                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#holdModal">Place on Hold</button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submitAPModal">@L["Submit to AP"]</button>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#holdModal">@L["Place on Hold"]</button>
                 <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#returnDraftModal">@L["Return for Rework"]</button>
                 @* Finding 4: direct cancel from Under Review *@
                 <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">@L["Cancel"]</button>
@@ -51,21 +51,21 @@
 
             @if (Model.Status == ReleaseStatus.OnHold && (isQO || isAP))
             {
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#liftHoldModal">Lift Hold</button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#liftHoldModal">@L["Lift Hold"]</button>
                 <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">@L["Cancel"]</button>
             }
 
             @if (Model.Status == ReleaseStatus.PendingAPDecision && isAP)
             {
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#certifyModal">Certify Batch</button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#certifyModal">@L["Certify Batch"]</button>
                 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">@L["Reject"]</button>
-                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#holdModal">Place on Hold</button>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#holdModal">@L["Place on Hold"]</button>
                 <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#returnReviewModal">@L["Return for Rework"]</button>
             }
 
             @if (Model.Status == ReleaseStatus.Certified && (isQO || isAP))
             {
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmReleaseModal">Confirm Transfer to Saleable Stock</button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmReleaseModal">@L["Confirm Transfer to Saleable Stock"]</button>
             }
 
             @if (Model.Status == ReleaseStatus.Rejected)
@@ -77,7 +77,7 @@
                 @* Finding 5: AP can override rejection *@
                 @if (isAP)
                 {
-                    <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#returnFromRejectionModal">Override Rejection</button>
+                    <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#returnFromRejectionModal">@L["Override Rejection"]</button>
                 }
             }
         </div>
@@ -92,11 +92,11 @@
                 <div class="modal-header"><h5 class="modal-title">@L["Submit for Review"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Comments (optional)</label>
+                        <label class="form-label">@L["Comments (optional)"]</label>
                         <textarea name="comments" class="form-control" rows="3"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -118,7 +118,7 @@
         <div class="modal-dialog"><div class="modal-content">
             <form asp-action="SubmitToAP" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header"><h5 class="modal-title">Submit to Authorised Person</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">@L["Submit to Authorised Person"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     @{
                         var outstandingCount = Model.ChecklistItems?.Count(i => i.Status == ChecklistItemStatus.Outstanding) ?? 0;
@@ -134,27 +134,27 @@
                     @if (blockingOutstandingCount > 0)
                     {
                         <div class="alert alert-danger">
-                            <strong>&#9888; @blockingOutstandingCount Blocking Outstanding checklist item(s)</strong> — submission blocked. Resolve all blocking items first.
+                            <strong>&#9888; @blockingOutstandingCount Blocking Outstanding checklist item(s)</strong> @L["— submission blocked. Resolve all blocking items first."]
                         </div>
                     }
                     else if (outstandingCount > 0)
                     {
                         <div class="alert alert-warning">
-                            <strong>&#9888; @outstandingCount Outstanding checklist item(s)</strong> — non-blocking, but should be addressed.
+                            <strong>&#9888; @outstandingCount Outstanding checklist item(s)</strong> @L["— non-blocking, but should be addressed."]
                         </div>
                     }
                     @if (pendingResultCount > 0)
                     {
                         <div class="alert alert-danger">
-                            <strong>&#9888; @pendingResultCount Pending analytical result(s)</strong> — submission blocked. Enter a result (Pass, Fail, or N/A) for all listed tests.
+                            <strong>&#9888; @pendingResultCount Pending analytical result(s)</strong> @L["— submission blocked. Enter a result (Pass, Fail, or N/A) for all listed tests."]
                         </div>
                     }
                     <div class="mb-3">
-                        <label class="form-label">Comments (optional)</label>
+                        <label class="form-label">@L["Comments (optional)"]</label>
                         <textarea name="comments" class="form-control" rows="3"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -166,7 +166,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-primary" @(apSubmitBlocked ? "disabled" : "")>Submit to AP</button>
+                    <button type="submit" class="btn btn-primary" @(apSubmitBlocked ? "disabled" : "")>@L["Submit to AP"]</button>
                 </div>
             </form>
         </div></div>
@@ -176,14 +176,14 @@
         <div class="modal-dialog"><div class="modal-content">
             <form asp-action="PlaceOnHold" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header"><h5 class="modal-title">Place on Hold</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">@L["Place on Hold"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Hold Reason <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Hold Reason"] <span class="text-danger">*</span></label>
                         <textarea name="reason" class="form-control" rows="3" required></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -195,7 +195,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-warning">Place on Hold</button>
+                    <button type="submit" class="btn btn-warning">@L["Place on Hold"]</button>
                 </div>
             </form>
         </div></div>
@@ -206,21 +206,21 @@
         <div class="modal-dialog"><div class="modal-content">
             <form asp-action="LiftHold" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header"><h5 class="modal-title">Lift Hold</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">@L["Lift Hold"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Return Record To</label>
+                        <label class="form-label">@L["Return Record To"]</label>
                         <select name="targetState" class="form-select">
-                            <option value="UnderReview" selected>Under Review (continue quality review)</option>
-                            <option value="Draft">Draft (major rework required)</option>
+                            <option value="UnderReview" selected>@L["Under Review (continue quality review)"]</option>
+                            <option value="Draft">@L["Draft (major rework required)"]</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Comments (optional)</label>
+                        <label class="form-label">@L["Comments (optional)"]</label>
                         <textarea name="comments" class="form-control" rows="3"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -232,7 +232,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success">Lift Hold</button>
+                    <button type="submit" class="btn btn-success">@L["Lift Hold"]</button>
                 </div>
             </form>
         </div></div>
@@ -244,13 +244,13 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-header"><h5 class="modal-title">@L["Return for Rework"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <div class="alert alert-info small">The record will return to <strong>@L["Draft"]</strong>. All fields will be available for editing.</div>
+                    <div class="alert alert-info small">@H["The record will return to <strong>{0}</strong>. All fields will be available for editing.", L["Draft"].Value]</div>
                     <div class="mb-3">
-                        <label class="form-label">Reason / Comments</label>
+                        <label class="form-label">@L["Reason / Comments"]</label>
                         <textarea name="comments" class="form-control" rows="3"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -274,13 +274,13 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-header"><h5 class="modal-title">@L["Return for Rework"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <div class="alert alert-info small">The record will return to <strong>@L["Under Review"]</strong>. Quality Notes can be updated; Product, Batch, and Site details remain locked until returned to Draft.</div>
+                    <div class="alert alert-info small">@H["The record will return to <strong>{0}</strong>. Quality Notes can be updated; Product, Batch, and Site details remain locked until returned to Draft.", L["Under Review"].Value]</div>
                     <div class="mb-3">
-                        <label class="form-label">Reason / Comments</label>
+                        <label class="form-label">@L["Reason / Comments"]</label>
                         <textarea name="comments" class="form-control" rows="3"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -302,15 +302,15 @@
         <div class="modal-dialog modal-lg"><div class="modal-content">
             <form asp-action="Certify" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header bg-success text-white"><h5 class="modal-title">AP Certification — Electronic Signature</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header bg-success text-white"><h5 class="modal-title">@L["AP Certification — Electronic Signature"]</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <div class="alert alert-info small">By certifying this batch, you are providing an electronic signature under PIC/S Annex 16. Your email and password confirm your identity.</div>
+                    <div class="alert alert-info small">@L["By certifying this batch, you are providing an electronic signature under PIC/S Annex 16. Your email and password confirm your identity."]</div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">AP Full Name &amp; Qualification</label>
+                        <label class="form-label fw-semibold">@L["AP Full Name & Qualification"]</label>
                         <input name="apFullName" class="form-control" value="@(Model.APFullNameQualification ?? ViewBag.APDefaultName)" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Certification Statement</label>
+                        <label class="form-label fw-semibold">@L["Certification Statement"]</label>
                         <textarea name="statement" class="form-control" rows="6">@(Model.APCertificationStatement ?? ViewBag.APDefaultStatement ?? "I hereby certify that this batch has been manufactured, tested, and reviewed in accordance with the conditions of the Marketing Authorisation and all applicable GMP requirements. All manufacturing records, quality control results, deviation status, and regulatory obligations have been reviewed and found satisfactory. This batch is approved for release for supply.")</textarea>
                     </div>
                     <hr />
@@ -325,7 +325,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success">Certify Batch</button>
+                    <button type="submit" class="btn btn-success">@L["Certify Batch"]</button>
                 </div>
             </form>
         </div></div>
@@ -335,14 +335,14 @@
         <div class="modal-dialog"><div class="modal-content">
             <form asp-action="Reject" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header bg-danger text-white"><h5 class="modal-title">Reject Batch</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header bg-danger text-white"><h5 class="modal-title">@L["Reject Batch"]</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Rejection Reason"] <span class="text-danger">*</span></label>
                         <textarea name="reason" class="form-control" rows="4" required></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -354,7 +354,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-danger">Reject Batch</button>
+                    <button type="submit" class="btn btn-danger">@L["Reject Batch"]</button>
                 </div>
             </form>
         </div></div>
@@ -364,25 +364,25 @@
         <div class="modal-dialog"><div class="modal-content">
             <form asp-action="ConfirmRelease" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header"><h5 class="modal-title">Confirm Transfer to Saleable Stock</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">@L["Confirm Transfer to Saleable Stock"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">
-                            Release Reference Number
+                            @L["Release Reference Number"]
                             <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn-release" data-help="releaseref"
-                                    aria-label="Release Reference Number guidance">?</button>
+                                    aria-label="@L["Release Reference Number guidance"]">?</button>
                         </label>
                         <input type="text" name="releaseRegisterRef" class="form-control"
-                               placeholder="e.g. WMS-2026-0042 (optional)"
+                               placeholder="@L["e.g. WMS-2026-0042 (optional)"]"
                                value="@Model.ReleaseRegisterRef" />
-                        <div class="form-text">Optional — enter the WMS / ERP / register reference for this batch release.</div>
+                        <div class="form-text">@L["Optional — enter the WMS / ERP / register reference for this batch release."]</div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Comments (optional)</label>
+                        <label class="form-label">@L["Comments (optional)"]</label>
                         <textarea name="comments" class="form-control" rows="2"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -394,7 +394,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-success">Confirm Release</button>
+                    <button type="submit" class="btn btn-success">@L["Confirm Release"]</button>
                 </div>
             </form>
         </div></div>
@@ -403,13 +403,14 @@
     <!-- Popover help content for Release Reference Number -->
     <div class="d-none">
         <div id="help-releaseref">
-            <p class="mb-1"><strong>Release Reference Number</strong></p>
-            <p class="mb-0">Optional. Enter the reference number or code assigned to this batch release in your Warehouse Management System (WMS), ERP, or external release register. This field is intended as a cross-reference to the operational release record outside this QMS. Leave blank if not applicable.</p>
+            <p class="mb-1"><strong>@L["Release Reference Number"]</strong></p>
+            <p class="mb-0">@L["Optional. Enter the reference number or code assigned to this batch release in your Warehouse Management System (WMS), ERP, or external release register. This field is intended as a cross-reference to the operational release record outside this QMS. Leave blank if not applicable."]</p>
         </div>
     </div>
 
     <script>
-        (function () {
+        // Runs once the page (and Bootstrap, loaded at the end of the layout) is ready.
+        document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.help-btn-release').forEach(function (btn) {
                 var contentEl = document.getElementById('help-' + btn.dataset.help);
                 new bootstrap.Popover(btn, {
@@ -425,21 +426,21 @@
                     });
                 }
             });
-        })();
+        });
     </script>
 
     <div class="modal fade" id="closeModal" tabindex="-1">
         <div class="modal-dialog"><div class="modal-content">
             <form asp-action="Close" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header"><h5 class="modal-title">Close Record</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">@L["Close Record"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Comments (optional)</label>
+                        <label class="form-label">@L["Comments (optional)"]</label>
                         <textarea name="comments" class="form-control" rows="3"></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -451,7 +452,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-outline-secondary">Close Record</button>
+                    <button type="submit" class="btn btn-outline-secondary">@L["Close Record"]</button>
                 </div>
             </form>
         </div></div>
@@ -461,14 +462,14 @@
         <div class="modal-dialog"><div class="modal-content">
             <form asp-action="Cancel" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header"><h5 class="modal-title">Cancel Record</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header"><h5 class="modal-title">@L["Cancel Record"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Cancellation Reason <span class="text-danger">*</span></label>
+                        <label class="form-label">@L["Cancellation Reason"] <span class="text-danger">*</span></label>
                         <textarea name="reason" class="form-control" rows="3" required></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -480,7 +481,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-outline-danger">Cancel Record</button>
+                    <button type="submit" class="btn btn-outline-danger">@L["Cancel Record"]</button>
                 </div>
             </form>
         </div></div>
@@ -491,15 +492,15 @@
         <div class="modal-dialog"><div class="modal-content">
             <form asp-action="ReturnFromRejection" asp-route-id="@Model.Id" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-header bg-warning"><h5 class="modal-title">Override Rejection</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header bg-warning"><h5 class="modal-title">@L["Override Rejection"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <div class="alert alert-warning small">This action overrides the AP rejection and returns the record to Under Review. An electronic signature is required. Use only when the rejection was made in error or new information has been obtained.</div>
+                    <div class="alert alert-warning small">@L["This action overrides the AP rejection and returns the record to Under Review. An electronic signature is required. Use only when the rejection was made in error or new information has been obtained."]</div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Reason for Override <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold">@L["Reason for Override"] <span class="text-danger">*</span></label>
                         <textarea name="comments" class="form-control" rows="4" required></textarea>
                     </div>
                     <hr />
-                    <p class="text-muted small mb-2">Enter your credentials to confirm this action (electronic signature).</p>
+                    <p class="text-muted small mb-2">@L["Enter your credentials to confirm this action (electronic signature)."]</p>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Email Address"] <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" required autocomplete="email" />
@@ -511,7 +512,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                    <button type="submit" class="btn btn-warning">Override Rejection</button>
+                    <button type="submit" class="btn btn-warning">@L["Override Rejection"]</button>
                 </div>
             </form>
         </div></div>

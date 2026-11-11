@@ -2,7 +2,7 @@
 @using OpenQMS.Models.Release
 
 @{
-    ViewData["Title"] = "Release Register";
+    ViewData["Title"] = L["Release Register"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -26,25 +26,25 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">AP Release Register</h4>
+    <h4 class="mb-0">@L["AP Release Register"]</h4>
     <div class="d-flex gap-2">
         <a asp-action="ExportRegister" class="btn btn-outline-success btn-sm">@L["Export Excel"]</a>
         <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">@L["Dashboard"]</a>
     </div>
 </div>
-<p class="text-muted small">Formal AP register — all issued certificates. Required by PIC/S Annex 16 section 1.10.</p>
+<p class="text-muted small">@L["Formal AP register — all issued certificates. Required by PIC/S Annex 16 section 1.10."]</p>
 <hr />
 
 <table id="registerTable" class="table" style="width:100%">
     <thead>
         <tr>
-            <th>Certificate No.</th>
+            <th>@L["Certificate No."]</th>
             <th>@L["Record No."]</th>
             <th>@L["Product"]</th>
-            <th>Batch No.</th>
+            <th>@L["Batch No."]</th>
             <th>@L["Release Type"]</th>
-            <th>Cert Type</th>
-            <th>AP Name</th>
+            <th>@L["Cert Type"]</th>
+            <th>@L["AP Name"]</th>
             <th>@L["Cert. Date"]</th>
             <th>@L["Issue Date"]</th>
             <th>@L["Status"]</th>

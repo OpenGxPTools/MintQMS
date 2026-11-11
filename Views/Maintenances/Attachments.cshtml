@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Maintenance
 
 @{
-    ViewData["Title"] = "Attachments";
+    ViewData["Title"] = L["Attachments"].Value;
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -9,7 +9,7 @@
         <h4 class="mb-0">@L["Attachments"]</h4>
         <small class="text-muted">@Model.MaintenanceId — @Model.Title</small>
     </div>
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Maintenance</a>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to Maintenance"]</a>
 </div>
 <hr />
 
@@ -69,7 +69,7 @@ else
                 <th>@L["Description"]</th>
                 <th>@L["Size"]</th>
                 <th>@L["Uploaded By"]</th>
-                <th>Upload Date</th>
+                <th>@L["Upload Date"]</th>
                 <th>@L["Action"]</th>
             </tr>
         </thead>

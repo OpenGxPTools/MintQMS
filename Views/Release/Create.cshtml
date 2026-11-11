@@ -2,7 +2,7 @@
 @using OpenQMS.Models.Release
 
 @{
-    ViewData["Title"] = "New Release Record";
+    ViewData["Title"] = L["New Release Record"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -38,13 +38,13 @@
                 <div class="col-12">
                     <label asp-for="ProductName" class="form-label"></label>
                     <select asp-for="ProductName" class="form-select" asp-items="ViewBag.ProductsList">
-                        <option value="">-- Select Product --</option>
+                        <option value="">@L["-- Select Product --"]</option>
                     </select>
                     <span asp-validation-for="ProductName" class="text-danger small"></span>
                     <input type="hidden" id="LinkedProductId" name="LinkedProductId" value="" />
                     <input type="hidden" id="ProductType" name="ProductType" value="" />
                     <small id="specsNotice" class="text-info d-none mt-1 d-block">
-                        <i class="bi bi-info-circle me-1"></i>This product has specifications — Analytical Results will be pre-populated on save.
+                        <i class="bi bi-info-circle me-1"></i>@L["This product has specifications — Analytical Results will be pre-populated on save."]
                     </small>
                 </div>
 
@@ -104,7 +104,7 @@
                 <div class="col-md-6 rel-group" data-rpt="Pharmaceutical,Biological,ConsumerHealth,Cosmetic" style="display:none">
                     <label asp-for="Strength" class="form-label">@L["Strength / Presentation"]</label>
                     <select asp-for="Strength" id="Strength" class="form-select">
-                        <option value="">-- Select product first --</option>
+                        <option value="">@L["-- Select product first --"]</option>
                     </select>
                 </div>
 
@@ -157,13 +157,13 @@
 
                 <!-- Manufacturing Site -->
                 <div class="col-12">
-                    <label class="form-label fw-semibold">Manufacturing Site <span class="text-danger">*</span></label>
+                    <label class="form-label fw-semibold">@L["Manufacturing Site"] <span class="text-danger">*</span></label>
                     <select id="mfgSiteSel" class="form-select mb-1" onchange="handleSite(this,'mfgSiteOther','ManufacturingSite')">
-                        <option value="">-- Select Approved Manufacturer --</option>
+                        <option value="">@L["-- Select Approved Manufacturer --"]</option>
                         @foreach (var s in (ViewBag.ManufacturingSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
-                        <option value="__OTHER__">Other (specify below)</option>
+                        <option value="__OTHER__">@L["Other (specify below)"]</option>
                     </select>
-                    <input id="mfgSiteOther" type="text" class="form-control mb-1" placeholder="Enter manufacturing site name" style="display:none" oninput="document.getElementById('ManufacturingSite').value=this.value" />
+                    <input id="mfgSiteOther" type="text" class="form-control mb-1" placeholder="@L["Enter manufacturing site name"]" style="display:none" oninput="document.getElementById('ManufacturingSite').value=this.value" />
                     <input type="hidden" asp-for="ManufacturingSite" id="ManufacturingSite" />
                     <span asp-validation-for="ManufacturingSite" class="text-danger small"></span>
                 </div>
@@ -176,11 +176,11 @@
                 <div class="col-12">
                     <label class="form-label fw-semibold">@L["Packaging Site"]</label>
                     <select id="pkgSiteSel" class="form-select mb-1" onchange="handleSite(this,'pkgSiteOther','PackagingSite')">
-                        <option value="">-- Select Approved Supplier (Service) --</option>
+                        <option value="">@L["-- Select Approved Supplier (Service) --"]</option>
                         @foreach (var s in (ViewBag.ServiceSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
-                        <option value="__OTHER__">Other (specify below)</option>
+                        <option value="__OTHER__">@L["Other (specify below)"]</option>
                     </select>
-                    <input id="pkgSiteOther" type="text" class="form-control mb-1" placeholder="Enter packaging site name" style="display:none" oninput="document.getElementById('PackagingSite').value=this.value" />
+                    <input id="pkgSiteOther" type="text" class="form-control mb-1" placeholder="@L["Enter packaging site name"]" style="display:none" oninput="document.getElementById('PackagingSite').value=this.value" />
                     <input type="hidden" asp-for="PackagingSite" id="PackagingSite" />
                 </div>
                 <div class="col-12">
@@ -190,10 +190,10 @@
 
                 <!-- Testing Laboratories (multiple) -->
                 <div class="col-12">
-                    <label class="form-label fw-semibold">Testing Laboratory / Laboratories</label>
+                    <label class="form-label fw-semibold">@L["Testing Laboratory / Laboratories"]</label>
                     <div id="labsContainer"></div>
                     <button type="button" class="btn btn-sm btn-outline-secondary mt-1" onclick="addLabRow()">
-                        <i class="bi bi-plus-circle me-1"></i>Add Testing Laboratory
+                        <i class="bi bi-plus-circle me-1"></i>@L["Add Testing Laboratory"]
                     </button>
                 </div>
 
@@ -201,12 +201,12 @@
                 <div class="col-12">
                     <label class="form-label fw-semibold">@L["Releasing Company"]</label>
                     <select id="relCoSel" class="form-select mb-1" onchange="handleSite(this,'relCoOther','ReleasingCompany')">
-                        <option value="">-- Select --</option>
+                        <option value="">@L["-- Select --"]</option>
                         @if (!string.IsNullOrEmpty(ViewBag.OwnCompanyName as string)) { <option value="@ViewBag.OwnCompanyName">@ViewBag.OwnCompanyName (Own Company)</option> }
                         @foreach (var s in (ViewBag.ReleasingSuppliers as List<string> ?? new List<string>())) { <option value="@s">@s</option> }
-                        <option value="__OTHER__">Other (specify below)</option>
+                        <option value="__OTHER__">@L["Other (specify below)"]</option>
                     </select>
-                    <input id="relCoOther" type="text" class="form-control mb-1" placeholder="Enter releasing company name" style="display:none" oninput="document.getElementById('ReleasingCompany').value=this.value" />
+                    <input id="relCoOther" type="text" class="form-control mb-1" placeholder="@L["Enter releasing company name"]" style="display:none" oninput="document.getElementById('ReleasingCompany').value=this.value" />
                     <input type="hidden" asp-for="ReleasingCompany" id="ReleasingCompany" />
                 </div>
                 <div class="col-12">
@@ -221,7 +221,7 @@
     <!-- Conditional: shown for ReleaseToCustomer and RFFP -->
     <div id="finalReleaseSection">
         <div class="card mb-4">
-            <div class="card-header fw-semibold">Delegation / Technical Agreement</div>
+            <div class="card-header fw-semibold">@L["Delegation / Technical Agreement"]</div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-12">
@@ -238,7 +238,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Specification &amp; Storage</div>
+        <div class="card-header fw-semibold">@L["Specification & Storage"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -270,7 +270,7 @@
     </div>
 
     <div class="d-flex gap-2">
-        <input type="submit" value="Create Release Record" class="btn btn-primary" />
+        <input type="submit" value="@L["Create Release Record"]" class="btn btn-primary" />
         <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
     </div>
 </form>
@@ -296,9 +296,9 @@
     var labSuppliers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ServiceSuppliers as List<string> ?? new List<string>()));
 
     function buildLabOptions() {
-        var html = '<option value="">-- Select Approved Lab --</option>';
+        var html = '<option value="">' + @Json.Serialize(L["-- Select Approved Lab --"].Value) + '</option>';
         labSuppliers.forEach(function(s) { html += '<option value="' + s.replace(/"/g, '&quot;') + '">' + s + '</option>'; });
-        html += '<option value="__OTHER__">Other (specify below)</option>';
+        html += '<option value="__OTHER__">' + @Json.Serialize(L["Other (specify below)"].Value) + '</option>';
         return html;
     }
 
@@ -309,17 +309,17 @@
         div.innerHTML =
             '<div class="row g-2 align-items-end">' +
                 '<div class="col-md-5">' +
-                    '<label class="form-label small mb-1">Laboratory Name</label>' +
+                    '<label class="form-label small mb-1">' + @Json.Serialize(L["Laboratory Name"].Value) + '</label>' +
                     '<select class="form-select form-select-sm lab-sel">' + buildLabOptions() + '</select>' +
-                    '<input type="text" class="form-control form-control-sm lab-other mt-1" placeholder="Enter laboratory name" style="display:none" />' +
+                    '<input type="text" class="form-control form-control-sm lab-other mt-1" placeholder="' + @Json.Serialize(L["Enter laboratory name"].Value) + '" style="display:none" />' +
                     '<input type="hidden" class="lab-name" name="labNames" />' +
                 '</div>' +
                 '<div class="col-md-5">' +
-                    '<label class="form-label small mb-1">Testing Site GMP Licence / Clearance No.</label>' +
-                    '<input type="text" class="form-control form-control-sm" name="labRefs" placeholder="e.g. GMP 12345" />' +
+                    '<label class="form-label small mb-1">' + @Json.Serialize(L["Testing Site GMP Licence / Clearance No."].Value) + '</label>' +
+                    '<input type="text" class="form-control form-control-sm" name="labRefs" placeholder="' + @Json.Serialize(L["e.g. GMP 12345"].Value) + '" />' +
                 '</div>' +
                 '<div class="col-md-2 d-flex align-items-end">' +
-                    '<button type="button" class="btn btn-sm btn-outline-danger w-100" onclick="removeLabRow(this)">Remove</button>' +
+                    '<button type="button" class="btn btn-sm btn-outline-danger w-100" onclick="removeLabRow(this)">' + @Json.Serialize(L["Remove"].Value) + '</button>' +
                 '</div>' +
             '</div>';
         container.appendChild(div);
@@ -426,7 +426,7 @@
                 if (data.strengths && data.strengths.length > 0) {
                     var placeholder = document.createElement('option');
                     placeholder.value = '';
-                    placeholder.textContent = '-- Select Strength --';
+                    placeholder.textContent = @Json.Serialize(L["-- Select Strength --"].Value);
                     strengthSel.appendChild(placeholder);
                     data.strengths.forEach(function(s) {
                         var opt = document.createElement('option');
@@ -438,7 +438,7 @@
                 } else {
                     var opt = document.createElement('option');
                     opt.value = '';
-                    opt.textContent = '-- No strengths defined in master data --';
+                    opt.textContent = @Json.Serialize(L["-- No strengths defined in master data --"].Value);
                     strengthSel.appendChild(opt);
                 }
             })
@@ -493,7 +493,7 @@
         var errors = [];
         var mfgSite = document.getElementById('ManufacturingSite');
         if (!mfgSite || !mfgSite.value.trim()) {
-            errors.push('Manufacturing Site is required — please select a site or choose "Other" and enter a name.');
+            errors.push(@Json.Serialize(L["Manufacturing Site is required — please select a site or choose \"Other\" and enter a name."].Value));
             if (mfgSite) {
                 document.getElementById('mfgSiteSel').classList.add('is-invalid');
                 document.getElementById('mfgSiteSel').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -502,7 +502,7 @@
         if (errors.length > 0) {
             e.preventDefault();
             var summary = document.getElementById('validationSummary');
-            summary.innerHTML = '<strong>Please fix the following before saving:</strong><ul class="mb-0 mt-1">' +
+            summary.innerHTML = '<strong>' + @Json.Serialize(L["Please fix the following before saving:"].Value) + '</strong><ul class="mb-0 mt-1">' +
                 errors.map(function(m){ return '<li>' + m + '</li>'; }).join('') + '</ul>';
             summary.className = 'alert alert-danger mb-3';
             summary.scrollIntoView({ behavior: 'smooth', block: 'start' });

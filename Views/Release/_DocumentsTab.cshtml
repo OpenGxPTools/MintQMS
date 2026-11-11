@@ -15,15 +15,15 @@
                 <label class="form-label small">@L["File"] <span class="text-danger">*</span></label>
                 <input type="file" name="file" class="form-control form-control-sm" required
                        accept="@UploadRules.Accept" />
-                <small class="text-muted">@UploadRules.AcceptedLabel — max 25 MB</small>
+                <small class="text-muted">@L["{0} — max 25 MB", UploadRules.AcceptedLabel]</small>
             </div>
             <div class="col-md-3">
                 <label class="form-label small">@L["Category"]</label>
                 <select name="category" class="form-select form-select-sm">
-                    <option value="">-- Select --</option>
+                    <option value="">@L["-- Select --"]</option>
                     @foreach (var cat in categories)
                     {
-                        <option>@cat</option>
+                        <option value="@cat">@L[cat]</option>
                     }
                 </select>
             </div>
@@ -40,7 +40,7 @@
 
 @if (Model.Documents == null || !Model.Documents.Any())
 {
-    <p class="text-muted">No documents uploaded.</p>
+    <p class="text-muted">@L["No documents uploaded."]</p>
 }
 else
 {
@@ -61,7 +61,7 @@ else
             {
                 <tr>
                     <td><span class="text-break">@doc.FileName</span></td>
-                    <td><span class="badge bg-secondary">@doc.DocumentCategory</span></td>
+                    <td><span class="badge bg-secondary">@L.Message(doc.DocumentCategory)</span></td>
                     <td><small>@doc.Description</small></td>
                     <td><small>@(doc.FileSizeBytes > 0 ? $"{doc.FileSizeBytes / 1024:N0} KB" : "-")</small></td>
                     <td><small>@doc.UploadedBy</small></td>

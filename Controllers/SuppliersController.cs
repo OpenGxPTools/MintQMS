@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OpenQMS.Data;
+using OpenQMS.Localization;
 using OpenQMS.Models;
 using OpenQMS.Models.LC;
 using OpenQMS.Services;
@@ -52,10 +53,10 @@ namespace OpenQMS.Controllers
 
         // Server-side workflow guard: a transition is only legal from the states in which the
         // Details page offers it, so a crafted request cannot skip or reorder workflow steps.
-        private bool TransitionAllowed(Supplier supplier, string action, out IActionResult rejection, params SupplierStatus[] allowedFrom)
+        private bool TransitionAllowed(Supplier supplier, Func<string, string> refusal, out IActionResult rejection, params SupplierStatus[] allowedFrom)
         {
             if (allowedFrom.Contains(supplier.Status)) { rejection = null!; return true; }
-            TempData["WorkflowError"] = $"Cannot {action}: the supplier is {EnumHelper.Display(supplier.Status)}.";
+            TempData["WorkflowError"] = refusal(this.T(EnumHelper.Display(supplier.Status)));   // e.g. "Cannot approve: the supplier is Suspended."
             rejection = RedirectToAction(nameof(Details), new { id = supplier.Id });
             return false;
         }
@@ -68,13 +69,13 @@ namespace OpenQMS.Controllers
 
         // Approval expiry (optional): when set it must lie in the future and carry a documented
         // reason (conditional / time-limited approval). Returns an error message, or null if valid.
-        private static string? ValidateApprovalExpiry(DateTime? expiry, string? reason)
+        private string? ValidateApprovalExpiry(DateTime? expiry, string? reason)
         {
             if (!expiry.HasValue) return null;
             if (expiry.Value.Date <= SiteTime.Today)
-                return "Approval expiry must be a future date (or left blank for no fixed expiry).";
+                return this.T("Approval expiry must be a future date (or left blank for no fixed expiry).");
             if (string.IsNullOrWhiteSpace(reason))
-                return "A reason is required for a time-limited approval (e.g. the condition or why the approval is time-limited).";
+                return this.T("A reason is required for a time-limited approval (e.g. the condition or why the approval is time-limited).");
             return null;
         }
 
@@ -291,7 +292,7 @@ namespace OpenQMS.Controllers
                     .Where(s => !s.IsDeleted && s.LegalName.ToLower() == supplier.LegalName.ToLower())
                     .FirstOrDefaultAsync();
                 if (duplicate != null)
-                    TempData["Warning"] = $"A supplier with the legal name '{supplier.LegalName}' already exists ({duplicate.SupplierCode}). Verify this is a different entity.";
+                    TempData["Warning"] = this.T("A supplier with the legal name '{0}' already exists ({1}). Verify this is a different entity.", supplier.LegalName, duplicate.SupplierCode);
 
                 supplier.SupplierCode = GenerateSupplierId();
                 supplier.Status = SupplierStatus.Pending;
@@ -469,7 +470,7 @@ namespace OpenQMS.Controllers
 
             if (supplier.Status != SupplierStatus.Pending && supplier.Status != SupplierStatus.UnderAssessment)
             {
-                TempData["Error"] = "Only suppliers in Pending or Under Assessment status can be deleted.";
+                TempData["Error"] = this.T("Only suppliers in Pending or Under Assessment status can be deleted.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -486,7 +487,7 @@ namespace OpenQMS.Controllers
             {
                 if (supplier.Status != SupplierStatus.Pending && supplier.Status != SupplierStatus.UnderAssessment)
                 {
-                    TempData["Error"] = "Only suppliers in Pending or Under Assessment status can be deleted.";
+                    TempData["Error"] = this.T("Only suppliers in Pending or Under Assessment status can be deleted.");
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -630,20 +631,20 @@ namespace OpenQMS.Controllers
             if (id == null) return NotFound();
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var supplier = await _context.Supplier.FindAsync(id);
             if (supplier != null)
             {
-                if (!TransitionAllowed(supplier, "submit the assessment", out var rejected, SupplierStatus.Pending)) return rejected;
+                if (!TransitionAllowed(supplier, st => this.T("Cannot submit the assessment: the supplier is {0}.", st), out var rejected, SupplierStatus.Pending)) return rejected;
 
                 // "Recommend Suspension" is only offered for suppliers that have held an approval
                 if (!string.IsNullOrWhiteSpace(suspensionReason)
                     && (supplier.ApprovalStatus == null || supplier.ApprovalStatus == SupplierStatus.Pending))
                 {
-                    TempData["WorkflowError"] = "Suspension can only be recommended for a supplier that has previously been approved.";
+                    TempData["WorkflowError"] = this.T("Suspension can only be recommended for a supplier that has previously been approved.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
                 var fromStatus = supplier.Status.ToString();
@@ -674,7 +675,7 @@ namespace OpenQMS.Controllers
                 }
                 await _context.SaveChangesAsync();
                 await AddAuditLog(supplier.Id, "Assessment Submitted", fromStatus, toStatus);
-                TempData["Success"] = "Assessment submitted successfully.";
+                TempData["Success"] = this.T("Assessment submitted successfully.");
             }
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -687,14 +688,14 @@ namespace OpenQMS.Controllers
             if (id == null) return NotFound();
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var supplier = await _context.Supplier.FindAsync(id);
             if (supplier != null)
             {
-                if (!TransitionAllowed(supplier, "return to assessment", out var rejected, SupplierStatus.UnderAssessment, SupplierStatus.PendingSuspension, SupplierStatus.PendingCancellation)) return rejected;
+                if (!TransitionAllowed(supplier, st => this.T("Cannot return to assessment: the supplier is {0}.", st), out var rejected, SupplierStatus.UnderAssessment, SupplierStatus.PendingSuspension, SupplierStatus.PendingCancellation)) return rejected;
                 var fromStatus = supplier.Status.ToString();
                 supplier.Status = SupplierStatus.Pending;
                 supplier.AssessedBy = null;
@@ -703,7 +704,7 @@ namespace OpenQMS.Controllers
                 supplier.CancellationReason = null;
                 await _context.SaveChangesAsync();
                 await AddAuditLog(supplier.Id, "Returned to Assessment", fromStatus, "Pending", notes);
-                TempData["Success"] = "Returned to assessment.";
+                TempData["Success"] = this.T("Returned to assessment.");
             }
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -723,7 +724,7 @@ namespace OpenQMS.Controllers
             }
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -737,7 +738,7 @@ namespace OpenQMS.Controllers
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (supplier != null)
             {
-                if (!TransitionAllowed(supplier, "approve", out var rejected, SupplierStatus.UnderAssessment)) return rejected;
+                if (!TransitionAllowed(supplier, st => this.T("Cannot approve: the supplier is {0}.", st), out var rejected, SupplierStatus.UnderAssessment)) return rejected;
                 var fromStatus = supplier.Status.ToString();
 
                 // Calculate next review date from the frequency already set in the Edit view
@@ -753,8 +754,7 @@ namespace OpenQMS.Controllers
                 // GMP: every approval must carry a periodic re-evaluation point
                 if (!HasFutureReviewDate(supplier))
                 {
-                    TempData["WorkflowError"] = "Cannot approve: a future next review date is required. For a Discretional review frequency, "
-                        + "return the supplier to assessment and set the next review date in Edit.";
+                    TempData["WorkflowError"] = this.T("Cannot approve: a future next review date is required. For a Discretional review frequency, return the supplier to assessment and set the next review date in Edit.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -773,7 +773,7 @@ namespace OpenQMS.Controllers
                 await _context.SaveChangesAsync();
                 await CreateSnapshot(supplier, email, supplier.ReviewTrigger);
                 await AddAuditLog(supplier.Id, "Approved", fromStatus, toStatus, WithExpiryNote(notes, supplier.ExpiryDate, supplier.ApprovalExpiryReason));
-                TempData["Success"] = $"Supplier {toStatus} successfully.";
+                TempData["Success"] = this.T("Supplier approved successfully.");
             }
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -796,7 +796,7 @@ namespace OpenQMS.Controllers
             }
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -810,17 +810,17 @@ namespace OpenQMS.Controllers
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (supplier != null)
             {
-                if (!TransitionAllowed(supplier, "qualify", out var rejected, SupplierStatus.Approved)) return rejected;
+                if (!TransitionAllowed(supplier, st => this.T("Cannot qualify: the supplier is {0}.", st), out var rejected, SupplierStatus.Approved)) return rejected;
 
                 if (!supplier.QualificationRequired)
                 {
-                    TempData["WorkflowError"] = "Qualification is not required for this supplier.";
+                    TempData["WorkflowError"] = this.T("Qualification is not required for this supplier.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
                 // GMP: the qualified status must also carry a periodic re-evaluation point
                 if (!HasFutureReviewDate(supplier))
                 {
-                    TempData["WorkflowError"] = "Cannot qualify: the supplier has no future next review date. Start a new review to re-establish the review schedule.";
+                    TempData["WorkflowError"] = this.T("Cannot qualify: the supplier has no future next review date. Start a new review to re-establish the review schedule.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
                 var fromStatus = supplier.Status.ToString();
@@ -842,7 +842,7 @@ namespace OpenQMS.Controllers
                 await _context.SaveChangesAsync();
                 await CreateSnapshot(supplier, email, supplier.ReviewTrigger);
                 await AddAuditLog(supplier.Id, "Qualified", fromStatus, "Qualified", WithExpiryNote(null, supplier.ExpiryDate, supplier.ApprovalExpiryReason));
-                TempData["Success"] = "Supplier progressed to Qualified.";
+                TempData["Success"] = this.T("Supplier progressed to Qualified.");
             }
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -855,7 +855,7 @@ namespace OpenQMS.Controllers
             if (id == null) return NotFound();
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -869,7 +869,7 @@ namespace OpenQMS.Controllers
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (supplier != null)
             {
-                if (!TransitionAllowed(supplier, "suspend", out var rejected, SupplierStatus.Approved, SupplierStatus.Qualified, SupplierStatus.PendingSuspension)) return rejected;
+                if (!TransitionAllowed(supplier, st => this.T("Cannot suspend: the supplier is {0}.", st), out var rejected, SupplierStatus.Approved, SupplierStatus.Qualified, SupplierStatus.PendingSuspension)) return rejected;
                 var fromStatus = supplier.Status.ToString();
                 supplier.Status = SupplierStatus.Suspended;
                 supplier.ApprovalStatus = SupplierStatus.Suspended;
@@ -880,7 +880,7 @@ namespace OpenQMS.Controllers
                 await _context.SaveChangesAsync();
                 await CreateSnapshot(supplier, email, supplier.ReviewTrigger);
                 await AddAuditLog(supplier.Id, "Suspended", fromStatus, "Suspended", suspensionReason);
-                TempData["Success"] = "Supplier suspended.";
+                TempData["Success"] = this.T("Supplier suspended.");
             }
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -893,7 +893,7 @@ namespace OpenQMS.Controllers
             if (id == null) return NotFound();
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -907,7 +907,7 @@ namespace OpenQMS.Controllers
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (supplier != null)
             {
-                if (!TransitionAllowed(supplier, "cancel", out var rejected, SupplierStatus.Approved, SupplierStatus.Qualified, SupplierStatus.PendingCancellation)) return rejected;
+                if (!TransitionAllowed(supplier, st => this.T("Cannot cancel: the supplier is {0}.", st), out var rejected, SupplierStatus.Approved, SupplierStatus.Qualified, SupplierStatus.PendingCancellation)) return rejected;
                 var fromStatus = supplier.Status.ToString();
                 supplier.Status = SupplierStatus.Cancelled;
                 supplier.ApprovalStatus = SupplierStatus.Cancelled;
@@ -917,7 +917,7 @@ namespace OpenQMS.Controllers
                 await _context.SaveChangesAsync();
                 await CreateSnapshot(supplier, email);
                 await AddAuditLog(supplier.Id, "Cancelled", fromStatus, "Cancelled", cancellationReason);
-                TempData["Success"] = "Supplier cancelled.";
+                TempData["Success"] = this.T("Supplier cancelled.");
             }
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -930,14 +930,14 @@ namespace OpenQMS.Controllers
             if (id == null) return NotFound();
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid credentials. Please try again.";
+                TempData["WorkflowError"] = this.T("Invalid credentials. Please try again.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var supplier = await _context.Supplier.FindAsync(id);
             if (supplier != null)
             {
-                if (!TransitionAllowed(supplier, "reactivate", out var rejected, SupplierStatus.Suspended)) return rejected;
+                if (!TransitionAllowed(supplier, st => this.T("Cannot reactivate: the supplier is {0}.", st), out var rejected, SupplierStatus.Suspended)) return rejected;
                 var fromStatus = supplier.Status.ToString();
                 supplier.Status = SupplierStatus.Pending;
                 supplier.ApprovalStatus = null;
@@ -946,7 +946,7 @@ namespace OpenQMS.Controllers
                 supplier.SuspensionReason = null;
                 await _context.SaveChangesAsync();
                 await AddAuditLog(supplier.Id, "Reactivated", fromStatus, "Pending", notes);
-                TempData["Success"] = "Supplier reactivated and returned to pending assessment.";
+                TempData["Success"] = this.T("Supplier reactivated and returned to pending assessment.");
             }
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -1145,7 +1145,7 @@ namespace OpenQMS.Controllers
                 string.IsNullOrWhiteSpace(state) && string.IsNullOrWhiteSpace(postCode) &&
                 string.IsNullOrWhiteSpace(country) && string.IsNullOrWhiteSpace(notes))
             {
-                TempData["Error"] = "At least one address field is required.";
+                TempData["Error"] = this.T("At least one address field is required.");
                 TempData["ActiveTab"] = "addresses";
                 return RedirectToAction(nameof(Details), new { id = supplierId });
             }
@@ -1154,7 +1154,7 @@ namespace OpenQMS.Controllers
             if (supplier == null) return NotFound();
             if (supplier.Status != SupplierStatus.Pending)
             {
-                TempData["Error"] = "Addresses can only be added to suppliers in Pending status.";
+                TempData["Error"] = this.T("Addresses can only be added to suppliers in Pending status.");
                 return RedirectToAction(nameof(Details), new { id = supplierId });
             }
 
@@ -1170,7 +1170,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Address added.";
+            TempData["Success"] = this.T("Address added.");
             TempData["ActiveTab"] = "addresses";
             return RedirectToAction(nameof(Details), new { id = supplierId });
         }
@@ -1187,13 +1187,13 @@ namespace OpenQMS.Controllers
                 var supplier = await _context.Supplier.FindAsync(supplierId);
                 if (supplier == null || supplier.Status != SupplierStatus.Pending)
                 {
-                    TempData["Error"] = "Addresses can only be removed from suppliers in Pending status.";
+                    TempData["Error"] = this.T("Addresses can only be removed from suppliers in Pending status.");
                     TempData["ActiveTab"] = "addresses";
                     return RedirectToAction(nameof(Details), new { id = supplierId });
                 }
                 _context.SupplierAddress.Remove(address);
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Address removed.";
+                TempData["Success"] = this.T("Address removed.");
             }
 
             TempData["ActiveTab"] = "addresses";
@@ -1208,7 +1208,7 @@ namespace OpenQMS.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 return RedirectToAction(nameof(Documents), new { id = supplierId });
             }
 
@@ -1216,12 +1216,12 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = "File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.";
+                TempData["Error"] = this.T("File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.");
                 return RedirectToAction(nameof(Documents), new { id = supplierId });
             }
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File size exceeds the 25 MB limit.";
+                TempData["Error"] = this.T("File size exceeds the 25 MB limit.");
                 return RedirectToAction(nameof(Documents), new { id = supplierId });
             }
 
@@ -1230,7 +1230,7 @@ namespace OpenQMS.Controllers
 
             if (DocumentsLocked(supplier.Status))
             {
-                TempData["Error"] = $"Documents are locked while the supplier is {EnumHelper.Display(supplier.Status)} — start a new review to add documents.";
+                TempData["Error"] = this.T("Documents are locked while the supplier is {0} — start a new review to add documents.", this.T(EnumHelper.Display(supplier.Status)));
                 return RedirectToAction(nameof(Documents), new { id = supplierId });
             }
 
@@ -1267,7 +1267,7 @@ namespace OpenQMS.Controllers
             await _context.SaveChangesAsync();
             await AddAuditLog(supplierId, "Document uploaded", null, null, $"{file.FileName} ({EnumHelper.Display(documentType)})");
 
-            TempData["Success"] = $"Document '{file.FileName}' uploaded successfully.";
+            TempData["Success"] = this.T("Document '{0}' uploaded successfully.", file.FileName);
             return RedirectToAction(nameof(Documents), new { id = supplierId });
         }
 
@@ -1281,7 +1281,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", doc.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 return RedirectToAction(nameof(Documents), new { id = doc.SupplierId });
             }
 
@@ -1321,13 +1321,13 @@ namespace OpenQMS.Controllers
                 var supplier = await _context.Supplier.FindAsync(supplierId);
                 if (supplier != null && DocumentsLocked(supplier.Status))
                 {
-                    TempData["Error"] = $"Documents are locked while the supplier is {EnumHelper.Display(supplier.Status)} — start a new review to change documents.";
+                    TempData["Error"] = this.T("Documents are locked while the supplier is {0} — start a new review to change documents.", this.T(EnumHelper.Display(supplier.Status)));
                     return RedirectToAction(nameof(Documents), new { id = supplierId });
                 }
 
                 if (string.IsNullOrWhiteSpace(deletionReason))
                 {
-                    TempData["Error"] = "A reason is required to delete a document.";
+                    TempData["Error"] = this.T("A reason is required to delete a document.");
                     return RedirectToAction(nameof(Documents), new { id = supplierId });
                 }
 
@@ -1337,7 +1337,7 @@ namespace OpenQMS.Controllers
                 doc.DeletedOn      = DateTime.UtcNow;
                 doc.DeletionReason = deletionReason.Trim();
                 await AddAuditLog(supplierId, "Document deleted", null, null, $"{doc.FileName} — Reason: {doc.DeletionReason}");
-                TempData["Success"] = "Document deleted.";
+                TempData["Success"] = this.T("Document deleted.");
             }
             return RedirectToAction(nameof(Documents), new { id = supplierId });
         }
@@ -1355,7 +1355,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", doc.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 return RedirectToAction(nameof(Reviews), new { id = doc.SnapshotId });
             }
 
@@ -1410,7 +1410,7 @@ namespace OpenQMS.Controllers
             ViewBag.SupplierCode = supplier.SupplierCode;
             ViewBag.LegalName = supplier.LegalName;
             // A new review starts only from a completed workflow outcome (as offered on the Reviews page)
-            if (!TransitionAllowed(supplier, "start a new review", out var rejected,
+            if (!TransitionAllowed(supplier, st => this.T("Cannot start a new review: the supplier is {0}.", st), out var rejected,
                     SupplierStatus.Approved, SupplierStatus.Qualified, SupplierStatus.Suspended, SupplierStatus.Cancelled))
                 return rejected;
 
@@ -1430,7 +1430,7 @@ namespace OpenQMS.Controllers
         {
             var supplier = await _context.Supplier.FindAsync(supplierId);
             if (supplier == null) return NotFound();
-            if (!TransitionAllowed(supplier, "start a new review", out var rejected,
+            if (!TransitionAllowed(supplier, st => this.T("Cannot start a new review: the supplier is {0}.", st), out var rejected,
                     SupplierStatus.Approved, SupplierStatus.Qualified, SupplierStatus.Suspended, SupplierStatus.Cancelled))
                 return rejected;
 
@@ -1475,7 +1475,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
             await AddAuditLog(supplierId, "Review Initiated", supplier.ApprovalStatus?.ToString(), "Pending");
-            TempData["Success"] = "New review started successfully.";
+            TempData["Success"] = this.T("New review started successfully.");
             return RedirectToAction(nameof(Details), new { id = supplierId });
         }
 
@@ -1548,7 +1548,7 @@ namespace OpenQMS.Controllers
             if (supplier == null) return NotFound();
             if (DocumentsLocked(supplier.Status))
             {
-                TempData["Error"] = $"Quality records are locked while the supplier is {EnumHelper.Display(supplier.Status)} — start a new review to change them.";
+                TempData["Error"] = this.T("Quality records are locked while the supplier is {0} — start a new review to change them.", this.T(EnumHelper.Display(supplier.Status)));
                 return RedirectToAction(nameof(QualityRecords), new { id = supplierId });
             }
 
@@ -1570,7 +1570,7 @@ namespace OpenQMS.Controllers
             _context.SupplierQualityRecord.Add(record);
             await _context.SaveChangesAsync();
             await AddAuditLog(supplierId, "Quality record linked", null, null, await QualityRecordLabel(record));
-            TempData["Success"] = "Quality record linked.";
+            TempData["Success"] = this.T("Quality record linked.");
             return RedirectToAction(nameof(QualityRecords), new { id = supplierId });
         }
 
@@ -1587,7 +1587,7 @@ namespace OpenQMS.Controllers
                 var supplier = await _context.Supplier.FindAsync(supplierId);
                 if (supplier != null && DocumentsLocked(supplier.Status))
                 {
-                    TempData["Error"] = $"Quality records are locked while the supplier is {EnumHelper.Display(supplier.Status)} — start a new review to change them.";
+                    TempData["Error"] = this.T("Quality records are locked while the supplier is {0} — start a new review to change them.", this.T(EnumHelper.Display(supplier.Status)));
                     return RedirectToAction(nameof(QualityRecords), new { id = supplierId });
                 }
                 var label = await QualityRecordLabel(record);

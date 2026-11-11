@@ -1,7 +1,7 @@
 @model IEnumerable<OpenQMS.Models.Maintenance>
 
 @{
-    ViewData["Title"] = "Maintenances";
+    ViewData["Title"] = L["Maintenances"].Value;
 }
 
 @section Scripts {
@@ -51,8 +51,8 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Maintenances</h4>
-    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Schedule Maintenance</a>
+    <h4 class="mb-0">@L["Maintenances"]</h4>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["Schedule Maintenance"]</a>
 </div>
 <hr />
 
@@ -62,7 +62,7 @@
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Scheduled"]">@L["Scheduled"]</button>
     <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["In Progress"]">@L["In Progress"]</button>
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Completed"]">@L["Completed"]</button>
-    <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Reviewed"]">Reviewed</button>
+    <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Reviewed"]">@L["Reviewed"]</button>
     <button class="btn btn-outline-danger btn-sm status-filter" data-status="@L["Overdue"]">@L["Overdue"]</button>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Suspended"]">@L["Suspended"]</button>
 </div>
@@ -74,7 +74,7 @@
             <th>@L["Title"]</th>
             <th>@L["Asset"]</th>
             <th>@L["Type"]</th>
-            <th>Scheduled Date</th>
+            <th>@L["Scheduled Date"]</th>
             <th>@L["Status"]</th>
             <th>@L["Action"]</th>
         </tr>
@@ -86,7 +86,7 @@
                 <td>@item.MaintenanceId</td>
                 <td>@item.Title</td>
                 <td>@(item.Asset?.Name ?? "-")</td>
-                <td>@item.Type</td>
+                <td>@L.Enum(item.Type)</td>
                 <td>@item.ScheduledDate.ToShortDateString()</td>
                 <td>@L.Enum(item.Status)</td>
                 <td>

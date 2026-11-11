@@ -41,7 +41,7 @@
 }
 
 @{
-    ViewData["Title"] = $"Release — {Model.RecordNumber}";
+    ViewData["Title"] = L["Release — {0}", Model.RecordNumber].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var statusBadge = Model.Status switch
@@ -69,15 +69,15 @@
 <!-- Header -->
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Release Record &mdash; <span class="fw-bold">@Model.RecordNumber</span></h4>
+        <h4 class="mb-0">@L["Release Record —"] <span class="fw-bold">@Model.RecordNumber</span></h4>
         <small class="text-muted">@Model.ProductName &mdash; Batch @Model.BatchNumber</small>
     </div>
     <div class="d-flex gap-2 align-items-center">
-        <span class="badge bg-secondary fs-6">@ReleaseTypeDisplayName(Model.ReleaseType)</span>
-        <span class="badge @statusBadge fs-6">@ReleaseStatusLabel(Model.Status)</span>
+        <span class="badge bg-secondary fs-6">@L[ReleaseTypeDisplayName(Model.ReleaseType)]</span>
+        <span class="badge @statusBadge fs-6">@L[ReleaseStatusLabel(Model.Status)]</span>
         @if (Model.IsLocked)
         {
-            <span class="badge bg-dark fs-6">&#128274; Locked</span>
+            <span class="badge bg-dark fs-6">&#128274; @L["Locked"]</span>
         }
     </div>
 </div>
@@ -101,8 +101,8 @@
 @if (Model.Status == ReleaseStatus.OnHold && !string.IsNullOrEmpty(Model.HoldReason))
 {
     <div class="alert alert-warning">
-        <strong>@L["On Hold"]</strong> since @(Model.HoldDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "unknown")
-        @if (!string.IsNullOrEmpty(Model.HoldBy)) { <text> by @Model.HoldBy</text> }
+        <strong>@L["On Hold"]</strong> @L["since {0}", Model.HoldDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? L["Unknown"].Value]
+        @if (!string.IsNullOrEmpty(Model.HoldBy)) { <text> @L["by {0}", Model.HoldBy]</text> }
         <br /><em>@Model.HoldReason</em>
     </div>
 }
@@ -111,8 +111,8 @@
 @if (Model.Status == ReleaseStatus.Rejected && !string.IsNullOrEmpty(Model.RejectionReason))
 {
     <div class="alert alert-danger">
-        <strong>@L["Rejected"]</strong> on @(Model.RejectionDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "unknown")
-        @if (!string.IsNullOrEmpty(Model.RejectedBy)) { <text> by @Model.RejectedBy</text> }
+        <strong>@L["Rejected"]</strong> @L["on {0}", Model.RejectionDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? L["Unknown"].Value]
+        @if (!string.IsNullOrEmpty(Model.RejectedBy)) { <text> @L["by {0}", Model.RejectedBy]</text> }
         <br /><em>@Model.RejectionReason</em>
     </div>
 }
@@ -143,10 +143,10 @@
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-3" id="detailTabs">
     <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#tabOverview">@L["Overview"]</button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabChecklist">Checklist <span class="badge bg-secondary">@checklistCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabChecklist">@L["Checklist"] <span class="badge bg-secondary">@checklistCount</span></button></li>
     <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabTests">@L["Analytical Results"] <span class="badge bg-secondary">@testCount</span></button></li>
     <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabDocs">@L["Attachments"] <span class="badge bg-secondary">@docCount</span></button></li>
-    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabCerts">Certificates <span class="badge bg-secondary">@certCount</span></button></li>
+    <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabCerts">@L["Certificates"] <span class="badge bg-secondary">@certCount</span></button></li>
     <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabLinked">@L["Linked Records"] <span class="badge bg-secondary">@xrefCount</span></button></li>
     <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#tabAudit">@L["Audit Log"] <span class="badge bg-secondary">@auditCount</span></button></li>
 </ul>
@@ -170,17 +170,17 @@
                             ProductType.RawMaterial    => "Raw Material",
                             _ => rpt.ToString()
                         };
-                        <dt class="col-sm-5">Product Type</dt><dd class="col-sm-7"><span class="badge bg-info text-dark">@rptLabel</span></dd>
+                        <dt class="col-sm-5">@L["Product Type"]</dt><dd class="col-sm-7"><span class="badge bg-info text-dark">@rptLabel</span></dd>
                     }
                     @if (!rpt.HasValue || rpt == ProductType.Pharmaceutical || rpt == ProductType.Biological || rpt == ProductType.ConsumerHealth)
                     {
-                        <dt class="col-sm-5">INN / Generic</dt><dd class="col-sm-7">@(Model.InnName ?? "-")</dd>
+                        <dt class="col-sm-5">@L["INN / Generic"]</dt><dd class="col-sm-7">@(Model.InnName ?? "-")</dd>
                         <dt class="col-sm-5">@L["Dosage Form"]</dt><dd class="col-sm-7">@(Model.DosageForm ?? "-")</dd>
                         <dt class="col-sm-5">@L["Strength / Presentation"]</dt><dd class="col-sm-7">@(Model.Strength ?? "-")</dd>
                     }
                     @if (rpt == ProductType.Cosmetic)
                     {
-                        <dt class="col-sm-5">INCI Name / Ingredient Ref.</dt><dd class="col-sm-7">@(Model.InciName ?? "-")</dd>
+                        <dt class="col-sm-5">@L["INCI Name / Ingredient Ref."]</dt><dd class="col-sm-7">@(Model.InciName ?? "-")</dd>
                         <dt class="col-sm-5">@L["Presentation / Form"]</dt><dd class="col-sm-7">@(Model.PresentationForm ?? "-")</dd>
                         <dt class="col-sm-5">@L["Strength / Presentation"]</dt><dd class="col-sm-7">@(Model.Strength ?? "-")</dd>
                     }
@@ -193,35 +193,35 @@
                     {
                         <dt class="col-sm-5">@L["Standard / Scientific Name"]</dt><dd class="col-sm-7">@(Model.StandardScientificName ?? "-")</dd>
                         <dt class="col-sm-5">@L["Material Type / Category"]</dt><dd class="col-sm-7">@(Model.RawMaterialTypeCategory ?? "-")</dd>
-                        <dt class="col-sm-5">Grade</dt><dd class="col-sm-7">@(Model.Grade ?? "-")</dd>
+                        <dt class="col-sm-5">@L["Grade"]</dt><dd class="col-sm-7">@(Model.Grade ?? "-")</dd>
                         <dt class="col-sm-5">@L["Presentation / Form"]</dt><dd class="col-sm-7">@(Model.PresentationForm ?? "-")</dd>
                     }
-                    <dt class="col-sm-5">Brand Name</dt><dd class="col-sm-7">@(Model.BrandName ?? "-")</dd>
-                    <dt class="col-sm-5">ARTG Reference</dt><dd class="col-sm-7">@(Model.ArtgReference ?? "-")</dd>
-                    <dt class="col-sm-5">Specification Ref.</dt><dd class="col-sm-7">@(Model.SpecificationReference ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Brand Name"]</dt><dd class="col-sm-7">@(Model.BrandName ?? "-")</dd>
+                    <dt class="col-sm-5">@L["ARTG Reference"]</dt><dd class="col-sm-7">@(Model.ArtgReference ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Specification Ref."]</dt><dd class="col-sm-7">@(Model.SpecificationReference ?? "-")</dd>
                 </dl>
             </div>
             <div class="col-md-6">
                 <h6 class="text-uppercase text-muted small border-bottom pb-1">@L["Batch Details"]</h6>
                 <dl class="row">
-                    <dt class="col-sm-5">Batch Number</dt><dd class="col-sm-7">@Model.BatchNumber</dd>
-                    <dt class="col-sm-5">Batch Size</dt><dd class="col-sm-7">@(Model.BatchSize ?? "-")</dd>
-                    <dt class="col-sm-5">Pack Size</dt><dd class="col-sm-7">@(Model.PackSize ?? "-")</dd>
-                    <dt class="col-sm-5">Mfg Date</dt><dd class="col-sm-7">@(Model.ManufacturingDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Batch Number"]</dt><dd class="col-sm-7">@Model.BatchNumber</dd>
+                    <dt class="col-sm-5">@L["Batch Size"]</dt><dd class="col-sm-7">@(Model.BatchSize ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Pack Size"]</dt><dd class="col-sm-7">@(Model.PackSize ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Mfg Date"]</dt><dd class="col-sm-7">@(Model.ManufacturingDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
                     <dt class="col-sm-5">@L["Expiry Date"]</dt><dd class="col-sm-7">@(Model.ExpiryDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
-                    <dt class="col-sm-5">Retest Date</dt><dd class="col-sm-7">@(Model.RetestDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Retest Date"]</dt><dd class="col-sm-7">@(Model.RetestDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
                 </dl>
             </div>
         </div>
         <div class="row mt-3">
             <div class="col-md-6">
-                <h6 class="text-uppercase text-muted small border-bottom pb-1">Sites</h6>
+                <h6 class="text-uppercase text-muted small border-bottom pb-1">@L["Sites"]</h6>
                 <dl class="row">
-                    <dt class="col-sm-5">Mfg Site</dt><dd class="col-sm-7">@Model.ManufacturingSite</dd>
-                    <dt class="col-sm-5">Mfg GMP Ref.</dt><dd class="col-sm-7">@(Model.ManufacturingSiteGmpRef ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Mfg Site"]</dt><dd class="col-sm-7">@Model.ManufacturingSite</dd>
+                    <dt class="col-sm-5">@L["Mfg GMP Ref."]</dt><dd class="col-sm-7">@(Model.ManufacturingSiteGmpRef ?? "-")</dd>
                     <dt class="col-sm-5">@L["Packaging Site"]</dt><dd class="col-sm-7">@(Model.PackagingSite ?? "-")</dd>
-                    <dt class="col-sm-5">Pkg GMP Ref.</dt><dd class="col-sm-7">@(Model.PackagingSiteGmpRef ?? "-")</dd>
-                    <dt class="col-sm-5">Testing Lab(s)</dt>
+                    <dt class="col-sm-5">@L["Pkg GMP Ref."]</dt><dd class="col-sm-7">@(Model.PackagingSiteGmpRef ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Testing Lab(s)"]</dt>
                     <dd class="col-sm-7">
                         @if (Model.TestingLabs != null && Model.TestingLabs.Any()) {
                             @foreach (var lab in Model.TestingLabs) {
@@ -230,38 +230,38 @@
                         } else { <span>-</span> }
                     </dd>
                     <dt class="col-sm-5">@L["Releasing Company"]</dt><dd class="col-sm-7">@(Model.ReleasingCompany ?? "-")</dd>
-                    <dt class="col-sm-5">TGA Licence / Clearance</dt><dd class="col-sm-7">@(Model.ReleasingCompanyLicenceRef ?? "-")</dd>
+                    <dt class="col-sm-5">@L["TGA Licence / Clearance"]</dt><dd class="col-sm-7">@(Model.ReleasingCompanyLicenceRef ?? "-")</dd>
                 </dl>
             </div>
             <div class="col-md-6">
-                <h6 class="text-uppercase text-muted small border-bottom pb-1">Release Decision</h6>
+                <h6 class="text-uppercase text-muted small border-bottom pb-1">@L["Release Decision"]</h6>
                 <dl class="row">
-                    <dt class="col-sm-5">@L["Release Type"]</dt><dd class="col-sm-7">@ReleaseTypeDisplayName(Model.ReleaseType)</dd>
+                    <dt class="col-sm-5">@L["Release Type"]</dt><dd class="col-sm-7">@L[ReleaseTypeDisplayName(Model.ReleaseType)]</dd>
                     <dt class="col-sm-5">@L["AP"]</dt><dd class="col-sm-7">@(Model.APFullNameQualification ?? "-")</dd>
-                    <dt class="col-sm-5">Certification Date</dt><dd class="col-sm-7">@(Model.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
-                    <dt class="col-sm-5">Register Ref.</dt><dd class="col-sm-7">@(Model.ReleaseRegisterRef ?? "-")</dd>
-                    <dt class="col-sm-5">Storage Conditions</dt><dd class="col-sm-7">@(Model.StorageConditions ?? "-")</dd>
-                    <dt class="col-sm-5">Distribution</dt><dd class="col-sm-7">@(Model.DistributionConditions ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Certification Date"]</dt><dd class="col-sm-7">@(Model.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Register Ref."]</dt><dd class="col-sm-7">@(Model.ReleaseRegisterRef ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Storage Conditions"]</dt><dd class="col-sm-7">@(Model.StorageConditions ?? "-")</dd>
+                    <dt class="col-sm-5">@L["Distribution"]</dt><dd class="col-sm-7">@(Model.DistributionConditions ?? "-")</dd>
                 </dl>
                 @if (!string.IsNullOrEmpty(Model.OpenDeviationsNotes))
                 {
-                    <div class="alert alert-warning small mt-2"><strong>Open Deviations / Exceptions:</strong><br />@Model.OpenDeviationsNotes</div>
+                    <div class="alert alert-warning small mt-2"><strong>@L["Open Deviations / Exceptions:"]</strong><br />@Model.OpenDeviationsNotes</div>
                 }
                 @if (!string.IsNullOrEmpty(Model.LimitationsNotes))
                 {
-                    <div class="alert alert-info small mt-2"><strong>Limitations / Conditions on Release:</strong><br />@Model.LimitationsNotes</div>
+                    <div class="alert alert-info small mt-2"><strong>@L["Limitations / Conditions on Release:"]</strong><br />@Model.LimitationsNotes</div>
                 }
             </div>
         </div>
         @if (!string.IsNullOrEmpty(Model.Notes))
         {
             <div class="mt-3">
-                <h6 class="text-uppercase text-muted small border-bottom pb-1">General Notes</h6>
+                <h6 class="text-uppercase text-muted small border-bottom pb-1">@L["General Notes"]</h6>
                 <p>@Model.Notes</p>
             </div>
         }
         <div class="mt-3">
-            <h6 class="text-uppercase text-muted small border-bottom pb-1">Record Metadata</h6>
+            <h6 class="text-uppercase text-muted small border-bottom pb-1">@L["Record Metadata"]</h6>
             <dl class="row">
                 <dt class="col-sm-3">@L["Created By"]</dt><dd class="col-sm-9">@Model.CreatedBy — @Model.CreatedDate.ToSite().ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture)</dd>
                 @if (Model.LastModifiedDate.HasValue)
@@ -298,12 +298,12 @@
         {
             <form id="xrefForm" asp-action="AddCrossReference" asp-route-releaseRecordId="@Model.Id" method="post" class="card mb-3 p-3 bg-light">
                 @Html.AntiForgeryToken()
-                <h6 class="mb-2">Add Cross-Reference</h6>
+                <h6 class="mb-2">@L["Add Cross-Reference"]</h6>
                 <div class="row g-2 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label small mb-1">@L["Module"]</label>
                         <select id="xrefModule" name="moduleType" class="form-select form-select-sm" required>
-                            <option value="">-- Select Module --</option>
+                            <option value="">@L["-- Select Module --"]</option>
                             <option value="Deviation">@L["Deviation"]</option>
                             <option value="Complaint">@L["Complaint"]</option>
                             <option value="CAPA">@L["CAPA"]</option>
@@ -318,7 +318,7 @@
                     <div class="col-md-4">
                         <label class="form-label small mb-1">@L["Record"]</label>
                         <select id="xrefRecord" class="form-select form-select-sm" disabled required>
-                            <option value="">-- Select Module first --</option>
+                            <option value="">@L["-- Select Module first --"]</option>
                         </select>
                         <input type="hidden" name="linkedRecordId"     id="xrefRecordId" />
                         <input type="hidden" name="linkedRecordNumber" id="xrefRecordNumber" />
@@ -326,7 +326,7 @@
                     </div>
                     <div class="col-md-3">
                         <label class="form-label small mb-1">@L["Notes (optional)"]</label>
-                        <input name="notes" class="form-control form-control-sm" placeholder="e.g. Related deviation" />
+                        <input name="notes" class="form-control form-control-sm" placeholder="@L["e.g. Related deviation"]" />
                     </div>
                     <div class="col-md-2">
                         <button type="submit" id="xrefAddBtn" class="btn btn-sm btn-primary w-100" disabled>@L["Add"]</button>
@@ -337,7 +337,7 @@
 
         @if (Model.CrossReferences == null || !Model.CrossReferences.Any())
         {
-            <p class="text-muted">No linked records.</p>
+            <p class="text-muted">@L["No linked records."]</p>
         }
         else
         {
@@ -370,7 +370,7 @@
                             <td>
                                 @if (!Model.IsLocked)
                                 {
-                                    <form asp-action="DeleteCrossReference" asp-route-id="@x.Id" method="post" style="display:inline" onsubmit="return confirm('Remove this link?')">
+                                    <form asp-action="DeleteCrossReference" asp-route-id="@x.Id" method="post" style="display:inline" data-confirm="@L["Remove this link?"]" onsubmit="return confirm(this.dataset.confirm);">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="btn btn-sm btn-outline-danger">@L["Remove"]</button>
                                     </form>
@@ -393,7 +393,7 @@
 <div class="mt-3 d-flex gap-3 flex-wrap">
     @if (!Model.IsLocked && Model.Status != ReleaseStatus.Rejected && Model.Status != ReleaseStatus.PendingAPDecision)
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil me-1"></i>Edit Record</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil me-1"></i>@L["Edit Record"]</a>
     }
     <a asp-action="ExportDetailCsv" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-csv me-1"></i>@L["Export CSV"]</a>
     <a asp-action="ExportDetailPdf" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm"><i class="fas fa-file-pdf me-1"></i>@L["Export PDF"]</a>
@@ -422,7 +422,7 @@
                     @if (certWarning)
                     {
                         <div class="alert alert-warning">
-                            <strong>Certificate Withdrawal:</strong> One or more issued certificates associated with this record will be automatically set to <strong>Withdrawn</strong>.
+                            <strong>@L["Certificate Withdrawal:"]</strong> One or more issued certificates associated with this record will be automatically set to <strong>@L["Withdrawn"]</strong>.
                         </div>
                     }
                     <div class="mb-3">
@@ -435,8 +435,8 @@
                             @if (certWarning) { <span class="text-danger">*</span> }
                             else { <text>(optional)</text> }
                         </label>
-                        <input type="text" name="deviationRef" class="form-control" required="@certWarning" placeholder="e.g. DEV-2026-0042" />
-                        <div class="form-text">Enter the Deviation record number documenting why this release record is being reopened.</div>
+                        <input type="text" name="deviationRef" class="form-control" required="@certWarning" placeholder="@L["e.g. DEV-2026-0042"]" />
+                        <div class="form-text">@L["Enter the Deviation record number documenting why this release record is being reopened."]</div>
                     </div>
                     <hr />
                     <p class="text-muted small mb-2">@L["Enter your credentials to authorise this action."]</p>

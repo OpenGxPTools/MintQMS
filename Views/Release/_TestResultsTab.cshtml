@@ -23,12 +23,12 @@
 @if (!locked && linkedSpecs != null && linkedSpecs.Count > 0)
 {
     <div class="alert alert-info d-flex align-items-center justify-content-between py-2 mb-3">
-        <span><i class="bi bi-clipboard-data me-1"></i>This release is linked to a product with <strong>@linkedSpecs.Count</strong> specification line(s).</span>
+        <span><i class="bi bi-clipboard-data me-1"></i>@H["This release is linked to a product with <strong>{0}</strong> specification line(s).", linkedSpecs.Count]</span>
         <form asp-action="ImportSpecsFromProduct" asp-route-releaseRecordId="@Model.Id" method="post" class="mb-0">
             @Html.AntiForgeryToken()
             <button type="submit" class="btn btn-sm btn-info"
-                    onclick="return confirm('Import @linkedSpecs.Count spec line(s) from product master? Lines already present will be skipped.')">
-                <i class="bi bi-cloud-download me-1"></i>Import from Product Specs
+                    data-confirm="@L["Import {0} spec line(s) from product master? Lines already present will be skipped.", linkedSpecs.Count]" onclick="return confirm(this.dataset.confirm);">
+                <i class="bi bi-cloud-download me-1"></i>@L["Import from Product Specs"]
             </button>
         </form>
     </div>
@@ -38,35 +38,35 @@
 {
     <form asp-action="AddTestResult" asp-route-releaseRecordId="@Model.Id" method="post" class="card mb-4 p-3 bg-light">
         @Html.AntiForgeryToken()
-        <h6 class="mb-3">Add Test Result</h6>
+        <h6 class="mb-3">@L["Add Test Result"]</h6>
         <div class="row g-2">
             <div class="col-md-3">
-                <input name="testParameter" class="form-control form-control-sm" placeholder="Test Parameter *" required />
+                <input name="testParameter" class="form-control form-control-sm" placeholder="@L["Test Parameter *"]" required />
             </div>
             <div class="col-md-2">
-                <input name="testMethod" class="form-control form-control-sm" placeholder="Method" />
+                <input name="testMethod" class="form-control form-control-sm" placeholder="@L["Method"]" />
             </div>
             <div class="col-md-3">
-                <input name="acceptanceCriterion" class="form-control form-control-sm" placeholder="Acceptance Criterion *" required />
+                <input name="acceptanceCriterion" class="form-control form-control-sm" placeholder="@L["Acceptance Criterion *"]" required />
             </div>
             <div class="col-md-2">
-                <input name="result" class="form-control form-control-sm" placeholder="Result" />
+                <input name="result" class="form-control form-control-sm" placeholder="@L["Result"]" />
             </div>
             <div class="col-md-2">
                 <select name="status" class="form-select form-select-sm">
                     @foreach (TestResultStatus s in Enum.GetValues(typeof(TestResultStatus)))
                     {
-                        <option value="@s">@s</option>
+                        <option value="@s">@L.Enum(s)</option>
                     }
                 </select>
             </div>
         </div>
         <div class="row g-2 mt-1">
             <div class="col-md-8">
-                <input name="comment" class="form-control form-control-sm" placeholder="Comment (optional)" />
+                <input name="comment" class="form-control form-control-sm" placeholder="@L["Comment (optional)"]" />
             </div>
             <div class="col-md-4">
-                <button type="submit" class="btn btn-sm btn-primary">Add Result</button>
+                <button type="submit" class="btn btn-sm btn-primary">@L["Add Result"]</button>
             </div>
         </div>
     </form>
@@ -74,7 +74,7 @@
 
 @if (Model.TestResults == null || !Model.TestResults.Any())
 {
-    <p class="text-muted">No test results recorded yet.</p>
+    <p class="text-muted">@L["No test results recorded yet."]</p>
 }
 else
 {
@@ -85,9 +85,9 @@ else
                 <th>@L["Test Parameter"]</th>
                 <th>@L["Test Method"]</th>
                 <th>@L["Acceptance Criterion"]</th>
-                <th>Result</th>
+                <th>@L["Result"]</th>
                 <th>@L["Status"]</th>
-                <th>Comment</th>
+                <th>@L["Comment"]</th>
                 @if (!locked)
                 {
                     <th>@L["Actions"]</th>
@@ -143,7 +143,7 @@ else
                             <select class="form-select form-select-sm" style="max-width:120px" id="status-@t.Id">
                                 @foreach (TestResultStatus s in Enum.GetValues(typeof(TestResultStatus)))
                                 {
-                                    <option value="@s" selected="@(t.Status == s)">@s</option>
+                                    <option value="@s" selected="@(t.Status == s)">@L.Enum(s)</option>
                                 }
                             </select>
                         }
@@ -168,13 +168,13 @@ else
                     @if (!locked)
                     {
                         <td class="text-nowrap">
-                            <button type="button" class="btn btn-xs btn-outline-secondary btn-sm me-1 edit-result" data-id="@t.Id" title="Edit parameter, method and criterion">
+                            <button type="button" class="btn btn-xs btn-outline-secondary btn-sm me-1 edit-result" data-id="@t.Id" title="@L["Edit parameter, method and criterion"]">
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <button type="button" class="btn btn-xs btn-outline-primary btn-sm me-1 save-result" data-id="@t.Id">@L["Save"]</button>
-                            <form asp-action="DeleteTestResult" asp-route-resultId="@t.Id" method="post" style="display:inline" onsubmit="return confirm('Delete this result?')">
+                            <form asp-action="DeleteTestResult" asp-route-resultId="@t.Id" method="post" style="display:inline" data-confirm="@L["Delete this result?"]" onsubmit="return confirm(this.dataset.confirm);">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-xs btn-outline-danger btn-sm">Del</button>
+                                <button type="submit" class="btn btn-xs btn-outline-danger btn-sm">@L["Del"]</button>
                             </form>
                         </td>
                     }

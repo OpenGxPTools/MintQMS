@@ -3,7 +3,7 @@
 @model List<ReleaseCertificationSetting>
 
 @{
-    ViewData["Title"] = "Release Certification Statements";
+    ViewData["Title"] = L["Release Certification Statements"].Value;
     bool canEdit = ViewBag.CanEdit == true;
 
     var groupOrder = new Dictionary<string, int>
@@ -23,19 +23,17 @@
     };
 }
 
-<h4 class="mb-0">Release Certification Statements</h4>
+<h4 class="mb-0">@L["Release Certification Statements"]</h4>
 <hr />
 
 <p class="text-muted">
-    These statements pre-populate the Certification Statement field in the AP Certification modal when approving a release record.
-    The system selects the appropriate statement based on the release type and product type of the record being certified.
-    The AP can edit the statement before signing.
+    @L["These statements pre-populate the Certification Statement field in the AP Certification modal when approving a release record. The system selects the appropriate statement based on the release type and product type of the record being certified. The AP can edit the statement before signing."]
 </p>
 
 @if (!canEdit)
 {
     <div class="alert alert-info" role="alert">
-        <i class="fas fa-info-circle me-2"></i>You have view-only access. Contact an Administrator to make changes.
+        <i class="fas fa-info-circle me-2"></i>@L["You have view-only access. Contact an Administrator to make changes."]
     </div>
 }
 
@@ -57,14 +55,14 @@
     if (!rows.Any()) continue;
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">@rtLabel</div>
+        <div class="card-header fw-semibold">@L[rtLabel]</div>
         <div class="card-body p-0">
             <table class="table table-sm table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th style="width:28%">Product Group</th>
-                        <th>Statement</th>
-                        <th style="width:14%">Last Modified By</th>
+                        <th style="width:28%">@L["Product Group"]</th>
+                        <th>@L["Statement"]</th>
+                        <th style="width:14%">@L["Last Modified By"]</th>
                         <th style="width:10%">@L["Date"]</th>
                         @if (canEdit)
                         {
@@ -108,15 +106,15 @@
 @if (auditLogs.Any())
 {
     <div class="card mb-4">
-        <div class="card-header fw-semibold"><i class="fas fa-history me-1"></i>Change History</div>
+        <div class="card-header fw-semibold"><i class="fas fa-history me-1"></i>@L["Change History"]</div>
         <div class="card-body p-0">
             <table class="table table-sm table-hover mb-0">
                 <thead class="table-light">
                     <tr>
                         <th style="width:14%">@L["Date / Time"] <span class="fw-normal text-muted">(@SiteTime.Label)</span></th>
-                        <th style="width:24%">Setting</th>
+                        <th style="width:24%">@L["Setting"]</th>
                         <th>@L["Change"]</th>
-                        <th style="width:14%">Changed By</th>
+                        <th style="width:14%">@L["Changed By"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -125,12 +123,12 @@
                         var rtLabel = releaseTypes.Where(rt => rt.Type == log.ReleaseType).Select(rt => rt.Label).FirstOrDefault() ?? log.ReleaseType.ToString();
                         <tr>
                             <td class="small align-middle">@(SiteTime.ToSite((DateTime)log.ChangedOn).ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture))</td>
-                            <td class="small align-middle">@rtLabel — @log.ProductGroupLabel</td>
+                            <td class="small align-middle">@L[rtLabel] — @log.ProductGroupLabel</td>
                             <td class="small align-middle">
                                 <details>
                                     <summary style="cursor:pointer;list-style:none">@log.FieldName updated <span class="text-muted">[show]</span></summary>
-                                    <div class="mt-1"><span class="text-danger fw-semibold">Old:</span> <span class="text-muted">@log.OldValue</span></div>
-                                    <div class="mt-1"><span class="text-success fw-semibold">New:</span> <span class="text-muted">@log.NewValue</span></div>
+                                    <div class="mt-1"><span class="text-danger fw-semibold">@L["Old:"]</span> <span class="text-muted">@log.OldValue</span></div>
+                                    <div class="mt-1"><span class="text-success fw-semibold">@L["New:"]</span> <span class="text-muted">@log.NewValue</span></div>
                                 </details>
                             </td>
                             <td class="small align-middle">@log.ChangedBy</td>
@@ -152,20 +150,20 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" id="editId" />
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editModalTitle">Edit Statement</h5>
+                        <h5 class="modal-title" id="editModalTitle">@L["Edit Statement"]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <p class="text-muted small mb-3" id="editModalSubtitle"></p>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Certification Statement</label>
+                            <label class="form-label fw-semibold">@L["Certification Statement"]</label>
                             <textarea name="statement" id="editStatement" class="form-control" rows="7" required></textarea>
-                            <div class="form-text">This text will pre-populate the statement field in the AP Certification modal. The AP can still edit it before signing.</div>
+                            <div class="form-text">@L["This text will pre-populate the statement field in the AP Certification modal. The AP can still edit it before signing."]</div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
-                        <button type="submit" class="btn btn-primary">Save Statement</button>
+                        <button type="submit" class="btn btn-primary">@L["Save Statement"]</button>
                     </div>
                 </form>
             </div>

@@ -1,6 +1,6 @@
 @model OpenQMS.Models.Supplier
 @{
-    ViewData["Title"] = "Supplier Reviews";
+    ViewData["Title"] = L["Supplier Reviews"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool isComplete = Model.Status == OpenQMS.Models.SupplierStatus.Approved
                    || Model.Status == OpenQMS.Models.SupplierStatus.Qualified
@@ -10,12 +10,12 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Review History — @Model.SupplierCode</h4>
+        <h4 class="mb-0">@L["Review History"] — @Model.SupplierCode</h4>
         <small class="text-muted">@Model.LegalName</small>
     </div>
     @if (isComplete)
     {
-        <a asp-action="CreateReview" asp-route-id="@Model.Id" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Start New Review</a>
+        <a asp-action="CreateReview" asp-route-id="@Model.Id" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>@L["Start New Review"]</a>
     }
 </div>
 <hr />
@@ -30,7 +30,7 @@
 
 @if (Model.Snapshots == null || !Model.Snapshots.Any())
 {
-    <p class="text-muted">No completed review cycles recorded yet.</p>
+    <p class="text-muted">@L["No completed review cycles recorded yet."]</p>
 }
 else
 {
@@ -41,13 +41,13 @@ else
                 <th>@L["Legal Name"]</th>
                 <th>@L["Type"]</th>
                 <th>@L["Risk Level"]</th>
-                <th>Supplier Status</th>
-                <th>Completed By</th>
+                <th>@L["Supplier Status"]</th>
+                <th>@L["Completed By"]</th>
                 <th>@L["Completed On"]</th>
-                <th>Review Trigger</th>
-                <th>Next Review Was</th>
+                <th>@L["Review Trigger"]</th>
+                <th>@L["Next Review Was"]</th>
                 <th>@L["Documents"]</th>
-                <th>Quality Records</th>
+                <th>@L["Quality Records"]</th>
                 <th>@L["Details"]</th>
             </tr>
         </thead>
@@ -74,7 +74,7 @@ else
                     </td>
                     <td>@(snap.CompletedBy ?? "-")</td>
                     <td>@snap.SnapshotDate.ToSite().ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@(snap.ReviewTrigger.HasValue ? snap.ReviewTrigger.ToString() : "-")</td>
+                    <td>@(snap.ReviewTrigger.HasValue ? L.Enum(snap.ReviewTrigger) : "-")</td>
                     <td>@(snap.NextReviewDate.HasValue ? snap.NextReviewDate.Value.ToString("dd/MM/yyyy") : "-")</td>
                     <td>@(snap.Documents?.Count ?? 0)</td>
                     <td>@(snap.QualityRecords?.Count ?? 0)</td>

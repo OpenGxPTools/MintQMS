@@ -1,15 +1,15 @@
 @model OpenQMS.Models.SupplierReview
 
 @{
-    ViewData["Title"] = "Start New Review";
+    ViewData["Title"] = L["Start New Review"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool isReassessment = ViewBag.IsReassessment ?? false;
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Start New Review — @ViewBag.SupplierCode</h4>
-        <small class="text-muted">@ViewBag.LegalName &middot; Current Status: <strong>@ViewBag.CurrentStatus</strong></small>
+        <h4 class="mb-0">@L["Start New Review"] — @ViewBag.SupplierCode</h4>
+        <small class="text-muted">@ViewBag.LegalName &middot; @L["Current Status:"] <strong>@ViewBag.CurrentStatus</strong></small>
     </div>
 </div>
 <hr />
@@ -22,7 +22,7 @@
     <input type="hidden" name="linkedQRTitle" id="linkedQRTitle" />
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Review Details</div>
+        <div class="card-header fw-semibold">@L["Review Details"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
@@ -38,14 +38,14 @@
                     </select>
                 </div>
                 <div class="col-md-6" id="qualityRecordSection" style="display:none;">
-                    <label class="form-label">Linked Quality Record</label>
+                    <label class="form-label">@L["Linked Quality Record"]</label>
                     <select id="linkedRecordDropdown" class="form-select">
-                        <option value="">-- Select a record --</option>
+                        <option value="">@L["-- Select a record --"]</option>
                     </select>
-                    <small class="text-muted">Select the specific record that triggered this review.</small>
+                    <small class="text-muted">@L["Select the specific record that triggered this review."]</small>
                 </div>
                 <div class="col-12">
-                    <label asp-for="ReviewSummary" class="form-label">Reason for Review</label>
+                    <label asp-for="ReviewSummary" class="form-label">@L["Reason for Review"]</label>
                     <textarea asp-for="ReviewSummary" class="form-control" rows="4"></textarea>
                 </div>
             </div>
@@ -53,8 +53,8 @@
     </div>
 
     <div class="d-flex gap-2">
-        <input type="submit" value="Start New Review" class="btn btn-primary" />
-        <a asp-action="Reviews" asp-route-id="@ViewBag.SupplierId" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Reviews</a>
+        <input type="submit" value="@L["Start New Review"]" class="btn btn-primary" />
+        <a asp-action="Reviews" asp-route-id="@ViewBag.SupplierId" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to Reviews"]</a>
     </div>
 </form>
 

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenQMS.Authorization;
 using OpenQMS.Data;
+using OpenQMS.Localization;
 using OpenQMS.Models;
 using OpenQMS.Services;
 
@@ -73,7 +74,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Retention hold set on {module} record {reference}.";
+            TempData["Success"] = this.T("Retention hold set on {0} record {1}.", this.T(module), reference);
             return RedirectToAction(nameof(Index));
         }
 
@@ -89,13 +90,13 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, InputEmail, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["Error"] = "Electronic signature must use your own credentials.";
+                TempData["Error"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Index));
             }
             if (_passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, InputPassword)
                     == PasswordVerificationResult.Failed)
             {
-                TempData["Error"] = "Electronic signature verification failed.";
+                TempData["Error"] = this.T("Electronic signature verification failed.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -117,7 +118,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Retention hold removed. Record will be available for disposal after {settings.RetentionHoldCooldownDays}-day cooldown.";
+            TempData["Success"] = this.T("Retention hold removed. Record will be available for disposal after {0}-day cooldown.", settings.RetentionHoldCooldownDays);
             return RedirectToAction(nameof(Index));
         }
 
@@ -129,7 +130,7 @@ namespace OpenQMS.Controllers
         {
             if (selections == null || selections.Length == 0)
             {
-                TempData["Error"] = "No records selected.";
+                TempData["Error"] = this.T("No records selected.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -137,14 +138,14 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, InputEmail, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["Error"] = "Electronic signature must use your own credentials.";
+                TempData["Error"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Index));
             }
             if (string.IsNullOrEmpty(InputPassword) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, InputPassword)
                     == PasswordVerificationResult.Failed)
             {
-                TempData["Error"] = "Electronic signature verification failed.";
+                TempData["Error"] = this.T("Electronic signature verification failed.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -195,9 +196,9 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"{disposed} record(s) disposed.";
+            TempData["Success"] = this.T("{0} record(s) disposed.", disposed);
             if (blocked > 0)
-                TempData["Warning"] = $"{blocked} record(s) were skipped — active retention hold or cooldown.";
+                TempData["Warning"] = this.T("{0} record(s) were skipped — active retention hold or cooldown.", blocked);
 
             return RedirectToAction(nameof(Index));
         }

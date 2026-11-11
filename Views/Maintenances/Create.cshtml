@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Maintenance
 
 @{
-    ViewData["Title"] = "Schedule Maintenance";
+    ViewData["Title"] = L["Schedule Maintenance"].Value;
     var assets     = ViewData["Assets"]     as List<OpenQMS.Models.Asset>;
     var processes  = ViewData["Processes"]  as List<OpenQMS.Models.Process>;
     var deviations = ViewData["Deviations"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
@@ -13,7 +13,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Schedule New Maintenance</h4>
+        <h4 class="mb-0">@L["Schedule New Maintenance"]</h4>
     </div>
 </div>
 <hr />
@@ -36,18 +36,18 @@
                             <textarea asp-for="Description" class="form-control" rows="3"></textarea>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="AssetId" class="form-label">Asset (Required)</label>
+                            <label asp-for="AssetId" class="form-label">@L["Asset (Required)"]</label>
                             <select asp-for="AssetId" class="form-select">
-                                <option value="">-- Select Asset --</option>
+                                <option value="">@L["-- Select Asset --"]</option>
                                 @foreach (var asset in assets ?? new())
                                 { <option value="@asset.Id">@asset.AssetId - @asset.Name</option> }
                             </select>
                             <span asp-validation-for="AssetId" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="ProcessId" class="form-label">Process (Optional)</label>
+                            <label asp-for="ProcessId" class="form-label">@L["Process (Optional)"]</label>
                             <select asp-for="ProcessId" class="form-select">
-                                <option value="">-- Select Process --</option>
+                                <option value="">@L["-- Select Process --"]</option>
                                 @foreach (var p in processes ?? new())
                                 { <option value="@p.Id">@p.ProcessId - @p.Name</option> }
                             </select>
@@ -72,13 +72,13 @@
             </div>
 
             <div class="card mb-4">
-                <div class="card-header fw-semibold">Related QMS Records (Optional)</div>
+                <div class="card-header fw-semibold">@L["Related QMS Records (Optional)"]</div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Related Deviations</label>
+                            <label class="form-label">@L["Related Deviations"]</label>
                             <select id="deviationDropdown" class="form-select">
-                                <option value="">-- Add Deviation --</option>
+                                <option value="">@L["-- Add Deviation --"]</option>
                                 @foreach (var d in deviations)
                                 { <option value="@d.Value" data-text="@d.Text">@d.Text</option> }
                             </select>
@@ -86,9 +86,9 @@
                             <div id="deviationHidden" class="d-none"></div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Related CAPAs</label>
+                            <label class="form-label">@L["Related CAPAs"]</label>
                             <select id="capaDropdown" class="form-select">
-                                <option value="">-- Add CAPA --</option>
+                                <option value="">@L["-- Add CAPA --"]</option>
                                 @foreach (var c in capas)
                                 { <option value="@c.Value" data-text="@c.Text">@c.Text</option> }
                             </select>
@@ -100,7 +100,7 @@
             </div>
 
             <div class="d-flex gap-2">
-                <input type="submit" value="Schedule Maintenance" class="btn btn-primary" />
+                <input type="submit" value="@L["Schedule Maintenance"]" class="btn btn-primary" />
                 <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>@L["Back to List"]</a>
             </div>
         </form>

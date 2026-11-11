@@ -1,6 +1,6 @@
 @model OpenQMS.Models.Supplier
 @{
-    ViewData["Title"] = "Quality Records";
+    ViewData["Title"] = L["Quality Records"].Value;
     bool isLocked = Model.Status == OpenQMS.Models.SupplierStatus.Approved
                  || Model.Status == OpenQMS.Models.SupplierStatus.Qualified
                  || Model.Status == OpenQMS.Models.SupplierStatus.Suspended
@@ -18,7 +18,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Quality Records — @Model.SupplierCode</h4>
+        <h4 class="mb-0">@L["Quality Records"] — @Model.SupplierCode</h4>
         <small class="text-muted">@Model.LegalName</small>
     </div>
 </div>
@@ -42,7 +42,7 @@
 @if (!isLocked)
 {
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Link Quality Record</div>
+        <div class="card-header fw-semibold">@L["Link Quality Record"]</div>
         <div class="card-body">
             <form asp-action="LinkQualityRecord" method="post">
                 @Html.AntiForgeryToken()
@@ -55,24 +55,24 @@
                 <input type="hidden" name="auditId" id="auditId" />
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label">Record Type</label>
+                        <label class="form-label">@L["Record Type"]</label>
                         <select name="recordType" class="form-select" id="recordType"
                                 asp-items="Html.GetEnumSelectList<OpenQMS.Models.QualityRecordType>()">
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Quality Record</label>
+                        <label class="form-label">@L["Quality Record"]</label>
                         <select id="qualityRecordSelect" class="form-select">
-                            <option value="">-- Select Record Type first --</option>
+                            <option value="">@L["-- Select Record Type first --"]</option>
                         </select>
-                        <small class="text-muted">Select record type above to load available records.</small>
+                        <small class="text-muted">@L["Select record type above to load available records."]</small>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">@L["Notes"]</label>
                         <textarea name="notes" class="form-control" rows="2"></textarea>
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-outline-primary btn-sm">Link Record</button>
+                        <button type="submit" class="btn btn-outline-primary btn-sm">@L["Link Record"]</button>
                     </div>
                 </div>
             </form>
@@ -81,14 +81,14 @@
 }
 else
 {
-    <div class="alert alert-secondary">Quality records can only be linked while the supplier is not locked.</div>
+    <div class="alert alert-secondary">@L["Quality records can only be linked while the supplier is not locked."]</div>
 }
 
 <h6 class="text-muted text-uppercase small mt-3">@L["Linked Records"]</h6>
 
 @if (Model.QualityRecords == null || !Model.QualityRecords.Any())
 {
-    <p class="text-muted">No quality records linked yet.</p>
+    <p class="text-muted">@L["No quality records linked yet."]</p>
 }
 else
 {
@@ -96,11 +96,11 @@ else
         <thead>
             <tr>
                 <th>@L["Type"]</th>
-                <th>Id</th>
+                <th>@L["Id"]</th>
                 <th>@L["Title"]</th>
                 <th>@L["Notes"]</th>
-                <th>Linked By</th>
-                <th>Linked On</th>
+                <th>@L["Linked By"]</th>
+                <th>@L["Linked On"]</th>
                 <th>@L["Action"]</th>
             </tr>
         </thead>
@@ -164,7 +164,7 @@ else
                                 <input type="hidden" name="id" value="@qr.Id" />
                                 <input type="hidden" name="supplierId" value="@Model.Id" />
                                 <button type="submit" class="btn btn-link p-0 text-danger"
-                                        onclick="return confirm('Remove this linked record?')">@L["Remove"]</button>
+                                        data-confirm="@L["Remove this linked record?"]" onclick="return confirm(this.dataset.confirm);">@L["Remove"]</button>
                             </form>
                         }
                     </td>

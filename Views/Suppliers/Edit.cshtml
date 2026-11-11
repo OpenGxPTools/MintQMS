@@ -1,7 +1,7 @@
 @model OpenQMS.Models.Supplier
 
 @{
-    ViewData["Title"] = "Edit Supplier";
+    ViewData["Title"] = L["Edit Supplier"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
     var selectedProducts = (ViewBag.SelectedProducts as List<int>) ?? new List<int>();
     var selectedMaterials = (ViewBag.SelectedMaterials as List<int>) ?? new List<int>();
@@ -13,7 +13,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">Edit Supplier — @Model.SupplierCode</h4>
+        <h4 class="mb-0">@L["Edit Supplier"] — @Model.SupplierCode</h4>
     </div>
 </div>
 <hr />
@@ -54,7 +54,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header fw-semibold">Primary Address</div>
+        <div class="card-header fw-semibold">@L["Primary Address"]</div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12">
@@ -111,10 +111,10 @@
                             asp-items="Html.GetEnumSelectList<OpenQMS.Models.SupplierType>()"></select>
                 </div>
                 <div id="productsGroup" style="display:none;" class="col-12">
-                    <label class="form-label">Products Supplied</label>
+                    <label class="form-label">@L["Products Supplied"]</label>
                     <div id="productTags" class="mb-2" style="min-height:32px;"></div>
                     <select id="productDropdown" class="form-select">
-                        <option value="">-- Select a Product to Add --</option>
+                        <option value="">@L["-- Select a Product to Add --"]</option>
                         @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Products)
                         {
                             <option value="@item.Value">@item.Text</option>
@@ -123,10 +123,10 @@
                     <div id="productHidden"></div>
                 </div>
                 <div id="materialsGroup" style="display:none;" class="col-12">
-                    <label class="form-label">Materials Supplied</label>
+                    <label class="form-label">@L["Materials Supplied"]</label>
                     <div id="materialTags" class="mb-2" style="min-height:32px;"></div>
                     <select id="materialDropdown" class="form-select">
-                        <option value="">-- Select a Material to Add --</option>
+                        <option value="">@L["-- Select a Material to Add --"]</option>
                         @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Materials)
                         {
                             <option value="@item.Value">@item.Text</option>
@@ -135,10 +135,10 @@
                     <div id="materialHidden"></div>
                 </div>
                 <div id="servicesGroup" style="display:none;" class="col-12">
-                    <label class="form-label">Services Provided</label>
+                    <label class="form-label">@L["Services Provided"]</label>
                     <div id="serviceTags" class="mb-2" style="min-height:32px;"></div>
                     <select id="serviceDropdown" class="form-select">
-                        <option value="">-- Select a Service to Add --</option>
+                        <option value="">@L["-- Select a Service to Add --"]</option>
                         @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Services)
                         {
                             <option value="@item.Value">@item.Text</option>

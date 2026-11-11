@@ -1,13 +1,13 @@
 @model IEnumerable<OpenQMS.Models.DisposalAuditLog>
 @{
-    ViewData["Title"] = "Disposal Audit Log";
+    ViewData["Title"] = L["Disposal Audit Log"].Value;
 }
 
-<h4 class="mb-0">Disposal Audit Log</h4>
-<p class="text-muted">Immutable record of all data retention and disposal actions.</p>
+<h4 class="mb-0">@L["Disposal Audit Log"]</h4>
+<p class="text-muted">@L["Immutable record of all data retention and disposal actions."]</p>
 
 <a asp-action="Index" class="btn btn-outline-secondary btn-sm mb-3">
-    &larr; Back to Disposal Management
+    &larr; @L["Back to Disposal Management"]
 </a>
 
 <table class="table table-sm table-bordered table-hover" id="auditTable">

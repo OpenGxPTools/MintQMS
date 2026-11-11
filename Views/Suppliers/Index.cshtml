@@ -1,7 +1,7 @@
 @model IEnumerable<OpenQMS.Models.Supplier>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = L["Suppliers"].Value;
 }
 
 @section Scripts {
@@ -71,10 +71,10 @@
 <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
     <span class="text-muted small me-1">@L["Filter by status:"]</span>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="">@L["All"]</button>
-    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Pending">Pending</button>
-    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Under Assessment"]" data-col="5">Under Assessment</button>
+    <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Pending">@L["Pending"]</button>
+    <button class="btn btn-outline-info btn-sm status-filter" data-status="@L["Under Assessment"]" data-col="5">@L["Under Assessment"]</button>
     <button class="btn btn-outline-success btn-sm status-filter" data-status="Approved">@L["Approved"]</button>
-    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Qualified">Qualified</button>
+    <button class="btn btn-outline-primary btn-sm status-filter" data-status="Qualified">@L["Qualified"]</button>
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="Suspended">@L["Suspended"]</button>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Cancelled">@L["Cancelled"]</button>
 </div>
@@ -86,8 +86,8 @@
             <th>@L["Legal Name"]</th>
             <th>@L["Type"]</th>
             <th>@L["Risk Level"]</th>
-            <th>Approval Status</th>
-            <th>Workflow</th>
+            <th>@L["Approval Status"]</th>
+            <th>@L["Workflow"]</th>
             <th>@L["Next Review"]</th>
             <th>@L["Action"]</th>
         </tr>
@@ -121,9 +121,9 @@
             <tr>
                 <td>@item.SupplierCode</td>
                 <td>@item.LegalName</td>
-                <td>@item.SupplierType</td>
-                <td>@(item.ApprovalStatus != null ? item.RiskLevel.ToString() : "-")</td>
-                <td>@approvalLabel</td>
+                <td>@L.Enum(item.SupplierType)</td>
+                <td>@(item.ApprovalStatus != null ? L.Enum(item.RiskLevel) : "-")</td>
+                <td>@L[approvalLabel]</td>
                 <td>@workflowLabel</td>
                 <td>@(item.NextReviewDate.HasValue ? item.NextReviewDate.Value.ToString("dd/MM/yyyy") : "-")</td>
                 <td>
