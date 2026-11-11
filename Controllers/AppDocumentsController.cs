@@ -300,7 +300,7 @@ namespace OpenQMS.Controllers
                                 || document.DocType == AppDocument.DocumentType.Template;
             if (!isFormOrTemplate || document.Status != AppDocument.DocumentStatus.Effective)
             {
-                TempData["WorkflowError"] = "A working copy is only available for an Effective Form or Template.";
+                TempData["WorkflowError"] = this.T("A working copy is only available for an Effective Form or Template.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -440,7 +440,7 @@ namespace OpenQMS.Controllers
             {
                 if (document.Status != AppDocument.DocumentStatus.UnderReview)
                 {
-                    TempData["WorkflowError"] = "Only documents under review can be approved.";
+                    TempData["WorkflowError"] = this.T("Only documents under review can be approved.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -448,14 +448,14 @@ namespace OpenQMS.Controllers
                 var loggedUser = _userManager.GetUserName(User);
                 if (userSigning == null || userSigning.UserName != loggedUser)
                 {
-                    TempData["WorkflowError"] = "Invalid email or password.";
+                    TempData["WorkflowError"] = this.T("Invalid email or password.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
                 var result = _passwordHasher.VerifyHashedPassword(userSigning, userSigning.PasswordHash ?? string.Empty, InputPassword);
                 if (result != PasswordVerificationResult.Success)
                 {
-                    TempData["WorkflowError"] = "Invalid email or password.";
+                    TempData["WorkflowError"] = this.T("Invalid email or password.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -496,13 +496,13 @@ namespace OpenQMS.Controllers
             {
                 if (document.Status != AppDocument.DocumentStatus.UnderReview)
                 {
-                    TempData["WorkflowError"] = "Only documents under review can be rejected.";
+                    TempData["WorkflowError"] = this.T("Only documents under review can be rejected.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
                 if (string.IsNullOrWhiteSpace(RejectionReason))
                 {
-                    TempData["WorkflowError"] = "A rejection reason is required.";
+                    TempData["WorkflowError"] = this.T("A rejection reason is required.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -510,13 +510,13 @@ namespace OpenQMS.Controllers
                 var rejectLoggedUser = _userManager.GetUserName(User);
                 if (rejectSigning == null || rejectSigning.UserName != rejectLoggedUser)
                 {
-                    TempData["WorkflowError"] = "Invalid email or password.";
+                    TempData["WorkflowError"] = this.T("Invalid email or password.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
                 var rejectResult = _passwordHasher.VerifyHashedPassword(rejectSigning, rejectSigning.PasswordHash ?? string.Empty, InputPassword);
                 if (rejectResult != PasswordVerificationResult.Success)
                 {
-                    TempData["WorkflowError"] = "Invalid email or password.";
+                    TempData["WorkflowError"] = this.T("Invalid email or password.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
@@ -562,13 +562,13 @@ namespace OpenQMS.Controllers
             await _context.SaveChangesAsync();
             if (status == AppDocument.DocumentStatus.Approved)
             {
-                TempData["Success"] = "Document approved successfully.";
+                TempData["Success"] = this.T("Document approved successfully.");
                 if (document.DocType.HasValue && _trainingRelevantTypes.Contains(document.DocType.Value))
                     TempData["TrainingReminder"] = this.T("Training required: this document type ({0}) typically requires personnel training. Please schedule training records for all affected staff.", this.T(EnumHelper.Display(document.DocType)));
             }
             else
             {
-                TempData["Success"] = "Document rejected.";
+                TempData["Success"] = this.T("Document rejected.");
             }
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -587,7 +587,7 @@ namespace OpenQMS.Controllers
             var allowedStatuses = new[] { AppDocument.DocumentStatus.Effective, AppDocument.DocumentStatus.Approved };
             if (!allowedStatuses.Contains(document.Status) || document.IsLocked)
             {
-                TempData["WorkflowError"] = "Only an active (unlocked) Effective or Approved document can be obsoleted.";
+                TempData["WorkflowError"] = this.T("Only an active (unlocked) Effective or Approved document can be obsoleted.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -595,14 +595,14 @@ namespace OpenQMS.Controllers
             var loggedUser = _userManager.GetUserName(User);
             if (userSigning == null || userSigning.UserName != loggedUser)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var result = _passwordHasher.VerifyHashedPassword(userSigning, userSigning.PasswordHash ?? string.Empty, InputPassword);
             if (result != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -652,7 +652,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Document has been marked as Obsolete.";
+            TempData["Success"] = this.T("Document has been marked as Obsolete.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -673,13 +673,13 @@ namespace OpenQMS.Controllers
             var allowed = new[] { AppDocument.DocumentStatus.Draft, AppDocument.DocumentStatus.UnderReview };
             if (!allowed.Contains(document.Status) || document.IsLocked)
             {
-                TempData["WorkflowError"] = "Only an in-progress (Draft or Under Review) document can have its author reassigned.";
+                TempData["WorkflowError"] = this.T("Only an in-progress (Draft or Under Review) document can have its author reassigned.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(ReassignReason))
             {
-                TempData["WorkflowError"] = "A reason is required to reassign the author.";
+                TempData["WorkflowError"] = this.T("A reason is required to reassign the author.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -688,13 +688,13 @@ namespace OpenQMS.Controllers
             var loggedUser = _userManager.GetUserName(User);
             if (userSigning == null || userSigning.UserName != loggedUser)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = _passwordHasher.VerifyHashedPassword(userSigning, userSigning.PasswordHash ?? string.Empty, InputPassword ?? string.Empty);
             if (result != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -702,17 +702,17 @@ namespace OpenQMS.Controllers
             var newAuthor = string.IsNullOrWhiteSpace(NewAuthorId) ? null : await _userManager.FindByIdAsync(NewAuthorId);
             if (newAuthor == null)
             {
-                TempData["WorkflowError"] = "Please select a valid new author.";
+                TempData["WorkflowError"] = this.T("Please select a valid new author.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (await _userManager.IsInRoleAsync(newAuthor, Constants.ReadOnlyRole))
             {
-                TempData["WorkflowError"] = "A read-only user cannot be made the author of a document.";
+                TempData["WorkflowError"] = this.T("A read-only user cannot be made the author of a document.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (newAuthor.LockoutEnd.HasValue && newAuthor.LockoutEnd > DateTimeOffset.UtcNow)
             {
-                TempData["WorkflowError"] = "The selected user account is inactive.";
+                TempData["WorkflowError"] = this.T("The selected user account is inactive.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -720,7 +720,7 @@ namespace OpenQMS.Controllers
             var newAuthorName = newAuthor.UserName ?? string.Empty;
             if (newAuthorName == previousAuthor)
             {
-                TempData["WorkflowError"] = "The selected user is already the author of this document.";
+                TempData["WorkflowError"] = this.T("The selected user is already the author of this document.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -758,20 +758,20 @@ namespace OpenQMS.Controllers
 
             if (document.Status != AppDocument.DocumentStatus.Effective || document.IsLocked)
             {
-                TempData["WorkflowError"] = "Only an active Effective document can be sent for periodic review.";
+                TempData["WorkflowError"] = this.T("Only an active Effective document can be sent for periodic review.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (!document.PeriodicReviewRequired)
             {
-                TempData["WorkflowError"] = "This document does not have periodic review enabled.";
+                TempData["WorkflowError"] = this.T("This document does not have periodic review enabled.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             // High #6: enforce overdue condition in controller — view-only guard is insufficient
             if (!document.ReviewDueDate.HasValue || document.ReviewDueDate.Value.Date >= SiteTime.Today)
             {
-                TempData["WorkflowError"] = "Periodic review can only be initiated when the review date is overdue.";
+                TempData["WorkflowError"] = this.T("Periodic review can only be initiated when the review date is overdue.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -780,13 +780,13 @@ namespace OpenQMS.Controllers
             var loggedUser = _userManager.GetUserName(User);
             if (userSigning == null || userSigning.UserName != loggedUser)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var sigResult = _passwordHasher.VerifyHashedPassword(userSigning, userSigning.PasswordHash ?? string.Empty, InputPassword);
             if (sigResult != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -864,7 +864,7 @@ namespace OpenQMS.Controllers
 
             if (document.Status != AppDocument.DocumentStatus.Draft)
             {
-                TempData["WorkflowError"] = "Only Draft documents can be submitted for review.";
+                TempData["WorkflowError"] = this.T("Only Draft documents can be submitted for review.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -872,13 +872,13 @@ namespace OpenQMS.Controllers
             var loggedUser = _userManager.GetUserName(User);
             if (userSigning == null || userSigning.UserName != loggedUser)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var result = _passwordHasher.VerifyHashedPassword(userSigning, userSigning.PasswordHash ?? string.Empty, InputPassword);
             if (result != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -894,7 +894,7 @@ namespace OpenQMS.Controllers
                 PerformedOn   = DateTime.UtcNow
             });
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Document submitted for review.";
+            TempData["Success"] = this.T("Document submitted for review.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -911,13 +911,13 @@ namespace OpenQMS.Controllers
 
             if (document.Status != AppDocument.DocumentStatus.UnderReview)
             {
-                TempData["WorkflowError"] = "Only documents under review can be returned for rework.";
+                TempData["WorkflowError"] = this.T("Only documents under review can be returned for rework.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(ReturnReason))
             {
-                TempData["WorkflowError"] = "A reason for return is required.";
+                TempData["WorkflowError"] = this.T("A reason for return is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -926,13 +926,13 @@ namespace OpenQMS.Controllers
             var loggedUser = _userManager.GetUserName(User);
             if (userSigning == null || userSigning.UserName != loggedUser)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var sigResult = _passwordHasher.VerifyHashedPassword(userSigning, userSigning.PasswordHash ?? string.Empty, InputPassword);
             if (sigResult != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -950,7 +950,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Document returned for rework. The author can now edit and resubmit.";
+            TempData["Success"] = this.T("Document returned for rework. The author can now edit and resubmit.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -964,7 +964,7 @@ namespace OpenQMS.Controllers
 
             if (document.Status != AppDocument.DocumentStatus.UnderReview)
             {
-                TempData["WorkflowError"] = "Only documents under review can be approved.";
+                TempData["WorkflowError"] = this.T("Only documents under review can be approved.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -997,7 +997,7 @@ namespace OpenQMS.Controllers
 
             if (document.Status != AppDocument.DocumentStatus.UnderReview)
             {
-                TempData["WorkflowError"] = "Only documents under review can be approved.";
+                TempData["WorkflowError"] = this.T("Only documents under review can be approved.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1006,14 +1006,14 @@ namespace OpenQMS.Controllers
             var loggedUser = _userManager.GetUserName(User);
             if (userSigning == null || userSigning.UserName != loggedUser)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 await PopulateApproveViewData(document);
                 return View(vm);
             }
             var sigResult = _passwordHasher.VerifyHashedPassword(userSigning, userSigning.PasswordHash ?? string.Empty, vm.InputPassword);
             if (sigResult != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 await PopulateApproveViewData(document);
                 return View(vm);
             }
@@ -1021,7 +1021,7 @@ namespace OpenQMS.Controllers
             // Validate periodic review date if required
             if (document.PeriodicReviewRequired && !vm.ReviewDueDate.HasValue)
             {
-                TempData["WorkflowError"] = "A Next Review Date is required because this document is marked for periodic review.";
+                TempData["WorkflowError"] = this.T("A Next Review Date is required because this document is marked for periodic review.");
                 await PopulateApproveViewData(document);
                 return View(vm);
             }
@@ -1029,7 +1029,7 @@ namespace OpenQMS.Controllers
             // Validate training groups if training is required
             if (document.TrainingRequired && (vm.TrainingGroups == null || vm.TrainingGroups.Count == 0))
             {
-                TempData["WorkflowError"] = "At least one training group is required when Training Required is enabled.";
+                TempData["WorkflowError"] = this.T("At least one training group is required when Training Required is enabled.");
                 await PopulateApproveViewData(document);
                 return View(vm);
             }
@@ -1190,7 +1190,7 @@ namespace OpenQMS.Controllers
                 }
 
                 await transaction.CommitAsync();
-                TempData["Success"] = "Document approved successfully.";
+                TempData["Success"] = this.T("Document approved successfully.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch (Exception ex)
@@ -1217,13 +1217,13 @@ namespace OpenQMS.Controllers
 
             if (document.Status != AppDocument.DocumentStatus.Approved)
             {
-                TempData["WorkflowError"] = "Manual issue is only available for Approved documents.";
+                TempData["WorkflowError"] = this.T("Manual issue is only available for Approved documents.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(Commentary))
             {
-                TempData["WorkflowError"] = "A justification commentary is required for manual issue.";
+                TempData["WorkflowError"] = this.T("A justification commentary is required for manual issue.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1231,13 +1231,13 @@ namespace OpenQMS.Controllers
             var loggedUser = _userManager.GetUserName(User);
             if (userSigning == null || userSigning.UserName != loggedUser)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             var sigResult = _passwordHasher.VerifyHashedPassword(userSigning, userSigning.PasswordHash ?? string.Empty, InputPassword);
             if (sigResult != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1254,7 +1254,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Document has been manually issued as Effective.";
+            TempData["Success"] = this.T("Document has been manually issued as Effective.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -1541,7 +1541,7 @@ namespace OpenQMS.Controllers
 
             if (document.Status == AppDocument.DocumentStatus.UnderReview)
             {
-                TempData["Error"] = "This document is currently under review and cannot be edited.";
+                TempData["Error"] = this.T("This document is currently under review and cannot be edited.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1575,7 +1575,7 @@ namespace OpenQMS.Controllers
                     // to editing is "Return for Rework" (e-signed, with reason), not a silent demotion.
                     if (dbDoc.Status == AppDocument.DocumentStatus.UnderReview)
                     {
-                        TempData["Error"] = "This document is currently under review and cannot be edited.";
+                        TempData["Error"] = this.T("This document is currently under review and cannot be edited.");
                         return RedirectToAction(nameof(Details), new { id });
                     }
 

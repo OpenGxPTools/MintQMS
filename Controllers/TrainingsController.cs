@@ -333,7 +333,7 @@ namespace OpenQMS.Controllers
                     }
                     if (diff.Count > 0) AddAuditLog(trainingToUpdate.Id, "Edited", null, null, AuditDiffHelper.Build(diff));
                     await _context.SaveChangesAsync();
-                    TempData["Success"] = "Training updated successfully.";
+                    TempData["Success"] = this.T("Training updated successfully.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
                 catch (DbUpdateException)
@@ -428,13 +428,13 @@ namespace OpenQMS.Controllers
 
             if (training.Status != Training.TrainingStatus.Scheduled)
             {
-                TempData["WorkflowError"] = "Training is not in Scheduled status.";
+                TempData["WorkflowError"] = this.T("Training is not in Scheduled status.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(CompletionNotes))
             {
-                TempData["WorkflowError"] = "Competency Verification Notes are required.";
+                TempData["WorkflowError"] = this.T("Competency Verification Notes are required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -442,12 +442,12 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, InputEmail, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (_passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash ?? string.Empty, InputPassword) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Email or password is incorrect.";
+                TempData["WorkflowError"] = this.T("Email or password is incorrect.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -618,26 +618,26 @@ namespace OpenQMS.Controllers
 
             if (training.Status != Training.TrainingStatus.Scheduled)
             {
-                TempData["WorkflowError"] = "Only Scheduled trainings can be cancelled.";
+                TempData["WorkflowError"] = this.T("Only Scheduled trainings can be cancelled.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash ?? string.Empty, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A reason is required to cancel a training.";
+                TempData["WorkflowError"] = this.T("A reason is required to cancel a training.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -657,26 +657,26 @@ namespace OpenQMS.Controllers
 
             if (training.Status != Training.TrainingStatus.Completed)
             {
-                TempData["WorkflowError"] = "This record is not in a state that can be administratively reopened.";
+                TempData["WorkflowError"] = this.T("This record is not in a state that can be administratively reopened.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash ?? string.Empty, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A justification reason is required.";
+                TempData["WorkflowError"] = this.T("A justification reason is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -689,7 +689,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(training.Id, "Administrative Reopen", Training.TrainingStatus.Completed.ToString(), Training.TrainingStatus.Scheduled.ToString(), reason);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Training record has been administratively reopened to Scheduled stage.";
+            TempData["Success"] = this.T("Training record has been administratively reopened to Scheduled stage.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -778,26 +778,26 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || currentUser.Id != row.TraineeId)
             {
-                TempData["WorkflowError"] = "You can only acknowledge your own training record.";
+                TempData["WorkflowError"] = this.T("You can only acknowledge your own training record.");
                 return RedirectToAction(nameof(MyTraining));
             }
 
             if (row.Status != UserTrainingStatus.Scheduled)
             {
-                TempData["WorkflowError"] = "This training record has already been acknowledged.";
+                TempData["WorkflowError"] = this.T("This training record has already been acknowledged.");
                 return RedirectToAction(nameof(MyTraining));
             }
 
             if (row.Training?.Status == Training.TrainingStatus.Cancelled)
             {
-                TempData["WorkflowError"] = "This training has been cancelled.";
+                TempData["WorkflowError"] = this.T("This training has been cancelled.");
                 return RedirectToAction(nameof(MyTraining));
             }
 
             if (!string.Equals(currentUser.Email, InputEmail, StringComparison.OrdinalIgnoreCase) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash ?? string.Empty, InputPassword) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(MyTraining));
             }
 
@@ -828,11 +828,11 @@ namespace OpenQMS.Controllers
 
             if (training.TrainingType == TrainingType.ReadAndAcknowledge)
             {
-                TempData["Success"] = "Training acknowledged and marked as complete.";
+                TempData["Success"] = this.T("Training acknowledged and marked as complete.");
             }
             else
             {
-                TempData["Success"] = "Document reading acknowledged.";
+                TempData["Success"] = this.T("Document reading acknowledged.");
                 TempData["WorkflowInfo"] = "This training requires a competency assessment. Your reading acknowledgement has been recorded, but this training will only be fully complete once your trainer has confirmed your competency. Please complete the assessment as instructed by your trainer.";
             }
             return RedirectToAction(nameof(MyTraining));
@@ -852,7 +852,7 @@ namespace OpenQMS.Controllers
 
             if (row.Status != UserTrainingStatus.PendingTrainerConfirmation)
             {
-                TempData["WorkflowError"] = "This trainee is not pending trainer confirmation.";
+                TempData["WorkflowError"] = this.T("This trainee is not pending trainer confirmation.");
                 return RedirectToAction(nameof(Details), new { id = row.TrainingId });
             }
 
@@ -861,7 +861,7 @@ namespace OpenQMS.Controllers
                 !string.Equals(currentUser.Email, InputEmail, StringComparison.OrdinalIgnoreCase) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash ?? string.Empty, InputPassword) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id = row.TrainingId });
             }
 
@@ -914,8 +914,8 @@ namespace OpenQMS.Controllers
             }
 
             TempData["Success"] = passed
-                ? "Competency verified. Trainee marked as completed."
-                : "Competency failed. A new training attempt has been created for the trainee.";
+                ? this.T("Competency verified. Trainee marked as completed.")
+                : this.T("Competency failed. A new training attempt has been created for the trainee.");
             return RedirectToAction(nameof(Details), new { id = row.TrainingId });
         }
 
@@ -945,14 +945,14 @@ namespace OpenQMS.Controllers
             var trainingStatus = row.Training.Status;
             if (trainingStatus == Training.TrainingStatus.Completed || trainingStatus == Training.TrainingStatus.Cancelled)
             {
-                TempData["WorkflowError"] = "Attachments cannot be added to a completed or cancelled training.";
+                TempData["WorkflowError"] = this.T("Attachments cannot be added to a completed or cancelled training.");
                 TempData["ActiveTab"] = "trainees";
                 return RedirectToAction(nameof(Details), new { id = row.TrainingId });
             }
 
             if (file == null || file.Length == 0)
             {
-                TempData["WorkflowError"] = "Please select a file to upload.";
+                TempData["WorkflowError"] = this.T("Please select a file to upload.");
                 TempData["ActiveTab"] = "trainees";
                 return RedirectToAction(nameof(Details), new { id = row.TrainingId });
             }
@@ -967,7 +967,7 @@ namespace OpenQMS.Controllers
             // Training attachments are stored in the database, hence the lower limit
             if (file.Length > 10L * 1024 * 1024)
             {
-                TempData["WorkflowError"] = "File exceeds the 10 MB limit.";
+                TempData["WorkflowError"] = this.T("File exceeds the 10 MB limit.");
                 TempData["ActiveTab"] = "trainees";
                 return RedirectToAction(nameof(Details), new { id = row.TrainingId });
             }
@@ -989,7 +989,7 @@ namespace OpenQMS.Controllers
                 $"{Path.GetFileName(file.FileName)} (trainee record: {userTrainingId}; uploaded by: {_userManager.GetUserName(User) ?? "Unknown"})");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Attachment uploaded.";
+            TempData["Success"] = this.T("Attachment uploaded.");
             TempData["ActiveTab"] = "trainees";
             return RedirectToAction(nameof(Details), new { id = row.TrainingId });
         }

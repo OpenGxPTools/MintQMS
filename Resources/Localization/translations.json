@@ -173,6 +173,14 @@
   "es": "Ya hay una CAPA vinculada a esta auditoría.",
   "pt-BR": "Já existe uma CAPA vinculada a esta auditoria."
  },
+ "A CAPA is already linked to this complaint.": {
+  "es": "Ya hay una CAPA vinculada a esta reclamación.",
+  "pt-BR": "Já existe uma CAPA vinculada a esta reclamação."
+ },
+ "A CAPA is already linked to this deviation.": {
+  "es": "Ya hay una CAPA vinculada a esta desviación.",
+  "pt-BR": "Já existe uma CAPA vinculada a este desvio."
+ },
  "A CAPA is required.": {
   "es": "Se requiere una CAPA.",
   "pt-BR": "Uma CAPA é necessária."
@@ -206,9 +214,21 @@
   "es": "Se requiere un motivo de devolución.",
   "pt-BR": "É necessário um motivo de devolução."
  },
+ "A reason is required to cancel a training.": {
+  "es": "Se requiere un motivo para cancelar una capacitación.",
+  "pt-BR": "É necessário um motivo para cancelar um treinamento."
+ },
  "A reason is required to delete an attachment.": {
   "es": "Se requiere un motivo para eliminar un adjunto.",
   "pt-BR": "É necessário um motivo para excluir um anexo."
+ },
+ "A reason is required to return a complaint for rework.": {
+  "es": "Se requiere un motivo para devolver una reclamación para retrabajo.",
+  "pt-BR": "É necessário um motivo para devolver uma reclamação para retrabalho."
+ },
+ "A reason is required to return a record.": {
+  "es": "Se requiere un motivo para devolver un registro.",
+  "pt-BR": "É necessário um motivo para devolver um registro."
  },
  "A reason is required.": {
   "es": "Se requiere un motivo.",
@@ -492,6 +512,10 @@
  "Adverse Event": {
   "es": "Evento adverso",
   "pt-BR": "Evento adverso"
+ },
+ "Adverse event unlinked.": {
+  "es": "Evento adverso desvinculado.",
+  "pt-BR": "Evento adverso desvinculado."
  },
  "Adverse Events": {
   "es": "Eventos adversos",
@@ -803,6 +827,10 @@
   "es": "Adjunto eliminado.",
   "pt-BR": "Anexo excluído."
  },
+ "Attachment uploaded.": {
+  "es": "Adjunto cargado.",
+  "pt-BR": "Anexo enviado."
+ },
  "Attachments": {
   "es": "Adjuntos",
   "pt-BR": "Anexos"
@@ -815,13 +843,41 @@
   "es": "No se pueden agregar adjuntos a una auditoría cerrada.",
   "pt-BR": "Não é possível adicionar anexos a uma auditoria encerrada."
  },
+ "Attachments cannot be added to a closed complaint.": {
+  "es": "No se pueden agregar adjuntos a una reclamación cerrada.",
+  "pt-BR": "Não é possível adicionar anexos a uma reclamação fechada."
+ },
+ "Attachments cannot be added to a completed or cancelled training.": {
+  "es": "No se pueden agregar adjuntos a una capacitación completada o cancelada.",
+  "pt-BR": "Não é possível adicionar anexos a um treinamento concluído ou cancelado."
+ },
+ "Attachments cannot be added to an approved CAPA.": {
+  "es": "No se pueden agregar adjuntos a una CAPA aprobada.",
+  "pt-BR": "Não é possível adicionar anexos a uma CAPA aprovada."
+ },
  "Attachments cannot be added to an approved change record.": {
   "es": "No se pueden agregar adjuntos a un registro de cambio aprobado.",
   "pt-BR": "Não é possível adicionar anexos a um registro de mudança aprovado."
  },
+ "Attachments cannot be added to an approved deviation.": {
+  "es": "No se pueden agregar adjuntos a una desviación aprobada.",
+  "pt-BR": "Não é possível adicionar anexos a um desvio aprovado."
+ },
+ "Attachments cannot be removed from a closed complaint.": {
+  "es": "No se pueden eliminar adjuntos de una reclamación cerrada.",
+  "pt-BR": "Não é possível excluir anexos de uma reclamação fechada."
+ },
+ "Attachments cannot be removed from an approved CAPA.": {
+  "es": "No se pueden eliminar adjuntos de una CAPA aprobada.",
+  "pt-BR": "Não é possível excluir anexos de uma CAPA aprovada."
+ },
  "Attachments cannot be removed from an approved change record.": {
   "es": "No se pueden quitar adjuntos de un registro de cambio aprobado.",
   "pt-BR": "Não é possível remover anexos de um registro de mudança aprovado."
+ },
+ "Attachments cannot be removed from an approved deviation.": {
+  "es": "No se pueden eliminar adjuntos de una desviación aprobada.",
+  "pt-BR": "Não é possível excluir anexos de um desvio aprovado."
  },
  "Audit": {
   "es": "Auditoría",
@@ -1139,6 +1195,10 @@
   "es": "Cancelado",
   "pt-BR": "Cancelado"
  },
+ "Cannot change links on a closed complaint.": {
+  "es": "No se pueden cambiar los vínculos de una reclamación cerrada.",
+  "pt-BR": "Não é possível alterar os vínculos de uma reclamação fechada."
+ },
  "Cannot complete: the following trainee(s) have not yet acknowledged reading the document: {0}.": {
   "es": "No se puede completar: los siguientes participantes aún no han confirmado la lectura del documento: {0}.",
   "pt-BR": "Não é possível concluir: os seguintes participantes ainda não confirmaram a leitura do documento: {0}."
@@ -1152,9 +1212,25 @@
   "es": "CAPA",
   "pt-BR": "CAPA"
  },
+ "CAPA accepted. Implementation can now begin.": {
+  "es": "CAPA aceptada. Ya puede comenzar la implementación.",
+  "pt-BR": "CAPA aceita. A implementação já pode começar."
+ },
+ "CAPA approved successfully.": {
+  "es": "CAPA aprobada correctamente.",
+  "pt-BR": "CAPA aprovada com sucesso."
+ },
  "CAPA can only be created once the audit is underway and not yet closed.": {
   "es": "Solo se puede crear una CAPA cuando la auditoría está en marcha y aún no está cerrada.",
   "pt-BR": "Só é possível criar uma CAPA quando a auditoria está em andamento e ainda não foi encerrada."
+ },
+ "CAPA cannot be returned from its current status.": {
+  "es": "La CAPA no puede devolverse desde su estado actual.",
+  "pt-BR": "A CAPA não pode ser devolvida a partir do status atual."
+ },
+ "CAPA cannot be submitted for acceptance from its current status.": {
+  "es": "La CAPA no puede enviarse para aceptación desde su estado actual.",
+  "pt-BR": "A CAPA não pode ser enviada para aceitação a partir do status atual."
  },
  "CAPA Dashboard": {
   "es": "Panel de CAPA",
@@ -1172,6 +1248,10 @@
   "es": "ID de la CAPA",
   "pt-BR": "ID da CAPA"
  },
+ "CAPA must be in Implementation status to submit for approval.": {
+  "es": "La CAPA debe estar en estado Implementación para enviarla para aprobación.",
+  "pt-BR": "A CAPA deve estar no status Implementação para ser enviada para aprovação."
+ },
  "CAPA Register": {
   "es": "Registro de CAPA",
   "pt-BR": "Registro de CAPA"
@@ -1187,6 +1267,14 @@
  "CAPA returned for rework ({0}).": {
   "es": "CAPA devuelta para corrección ({0}).",
   "pt-BR": "CAPA devolvida para retrabalho ({0})."
+ },
+ "CAPA submitted for acceptance.": {
+  "es": "CAPA enviada para aceptación.",
+  "pt-BR": "CAPA enviada para aceitação."
+ },
+ "CAPA submitted for approval.": {
+  "es": "CAPA enviada para aprobación.",
+  "pt-BR": "CAPA enviada para aprovação."
  },
  "CAPA Type": {
   "es": "Tipo de CAPA",
@@ -1531,17 +1619,33 @@
   "es": "Evaluación de competencia",
   "pt-BR": "Avaliação de competência"
  },
+ "Competency failed. A new training attempt has been created for the trainee.": {
+  "es": "Competencia no superada. Se ha creado un nuevo intento de capacitación para el participante.",
+  "pt-BR": "Competência não aprovada. Foi criada uma nova tentativa de treinamento para o participante."
+ },
  "Competency Notes": {
   "es": "Notas de competencia",
   "pt-BR": "Observações de competência"
+ },
+ "Competency Verification Notes are required.": {
+  "es": "Las notas de verificación de competencia son obligatorias.",
+  "pt-BR": "As notas de verificação de competência são obrigatórias."
  },
  "Competency Verified On": {
   "es": "Competencia verificada el",
   "pt-BR": "Competência verificada em"
  },
+ "Competency verified. Trainee marked as completed.": {
+  "es": "Competencia verificada. Participante marcado como completado.",
+  "pt-BR": "Competência verificada. Participante marcado como concluído."
+ },
  "Complaint": {
   "es": "Reclamación",
   "pt-BR": "Reclamação"
+ },
+ "Complaint cannot be returned from its current status.": {
+  "es": "La reclamación no puede devolverse desde su estado actual.",
+  "pt-BR": "A reclamação não pode ser devolvida a partir do status atual."
  },
  "Complaint Dashboard": {
   "es": "Panel de reclamaciones",
@@ -1559,9 +1663,33 @@
   "es": "Recepción de la reclamación",
   "pt-BR": "Recebimento da reclamação"
  },
+ "Complaint must be in Accepted status to submit for resolution.": {
+  "es": "La reclamación debe estar en estado Aceptado para enviarla a resolución.",
+  "pt-BR": "A reclamação deve estar no status Aceito para ser enviada para resolução."
+ },
+ "Complaint must be in Evaluation status to submit for acceptance.": {
+  "es": "La reclamación debe estar en estado Evaluación para enviarla para aceptación.",
+  "pt-BR": "A reclamação deve estar no status Avaliação para ser enviada para aceitação."
+ },
+ "Complaint must be in Pending Acceptance status to accept.": {
+  "es": "La reclamación debe estar en estado Pendiente de aceptación para aceptarla.",
+  "pt-BR": "A reclamação deve estar no status Pendente de aceitação para ser aceita."
+ },
+ "Complaint must be in Received status to start evaluation.": {
+  "es": "La reclamación debe estar en estado Recibido para iniciar la evaluación.",
+  "pt-BR": "A reclamação deve estar no status Recebido para iniciar a avaliação."
+ },
+ "Complaint must be in Resolution status to close.": {
+  "es": "La reclamación debe estar en estado Resolución para cerrarla.",
+  "pt-BR": "A reclamação deve estar no status Resolução para ser fechada."
+ },
  "Complaint Register": {
   "es": "Registro de reclamaciones",
   "pt-BR": "Registro de reclamações"
+ },
+ "Complaint updated successfully.": {
+  "es": "Reclamación actualizada correctamente.",
+  "pt-BR": "Reclamação atualizada com sucesso."
  },
  "Complaint {0} accepted by {1}.": {
   "es": "{1} aceptó la reclamación {0}.",
@@ -1874,6 +2002,10 @@
   "es": "Acción correctiva y seguimiento",
   "pt-BR": "Ação corretiva e acompanhamento"
  },
+ "Corrective Action and Preventive Action must be completed before submitting for acceptance.": {
+  "es": "La acción correctiva y la acción preventiva deben completarse antes de enviar para aceptación.",
+  "pt-BR": "A ação corretiva e a ação preventiva devem ser preenchidas antes de enviar para aceitação."
+ },
  "Corrective action guidance": {
   "es": "Guía de acción correctiva",
   "pt-BR": "Orientação de ação corretiva"
@@ -1881,6 +2013,10 @@
  "Corrective Action is required.": {
   "es": "La acción correctiva es obligatoria.",
   "pt-BR": "A ação corretiva é obrigatória."
+ },
+ "Corrective Action must be recorded before submitting for acceptance.": {
+  "es": "La acción correctiva debe registrarse antes de enviar para aceptación.",
+  "pt-BR": "A ação corretiva deve ser registrada antes de enviar para aceitação."
  },
  "Corrective Action must include:": {
   "es": "La acción correctiva debe incluir:",
@@ -1890,6 +2026,10 @@
  "Corrective and Preventive Action": {
   "es": "Acción correctiva y preventiva",
   "pt-BR": "Ação corretiva e preventiva"
+ },
+ "Corrective and Preventive Action must be completed before submitting.": {
+  "es": "La acción correctiva y preventiva debe completarse antes de enviar.",
+  "pt-BR": "A ação corretiva e preventiva deve ser preenchida antes de enviar."
  },
  "Corrective and Preventive Action must include:": {
   "es": "La acción correctiva y preventiva debe incluir:",
@@ -2335,9 +2475,33 @@
   "es": "ID de la desviación",
   "pt-BR": "ID do desvio"
  },
+ "Deviation must be in Accepted status to submit for approval.": {
+  "es": "La desviación debe estar en estado Aceptado para enviarla para aprobación.",
+  "pt-BR": "O desvio deve estar no status Aceito para ser enviado para aprovação."
+ },
+ "Deviation must be in Evaluation status to submit the evaluation.": {
+  "es": "La desviación debe estar en estado Evaluación para enviar la evaluación.",
+  "pt-BR": "O desvio deve estar no status Avaliação para enviar a avaliação."
+ },
+ "Deviation must be in Identification status to submit for evaluation.": {
+  "es": "La desviación debe estar en estado Identificación para enviarla a evaluación.",
+  "pt-BR": "O desvio deve estar no status Identificação para ser enviado para avaliação."
+ },
+ "Deviation must be in Pending Acceptance status to accept.": {
+  "es": "La desviación debe estar en estado Pendiente de aceptación para aceptarla.",
+  "pt-BR": "O desvio deve estar no status Pendente de aceitação para ser aceito."
+ },
+ "Deviation must be in Resolution status to approve.": {
+  "es": "La desviación debe estar en estado Resolución para aprobarla.",
+  "pt-BR": "O desvio deve estar no status Resolução para ser aprovado."
+ },
  "Deviation Register": {
   "es": "Registro de desviaciones",
   "pt-BR": "Registro de desvios"
+ },
+ "Deviation updated successfully.": {
+  "es": "Desviación actualizada correctamente.",
+  "pt-BR": "Desvio atualizado com sucesso."
  },
  "Deviation {0} accepted by {1}.": {
   "es": "{1} aceptó la desviación {0}.",
@@ -2468,6 +2632,10 @@
  "Document Provenance": {
   "es": "Procedencia del documento",
   "pt-BR": "Procedência do documento"
+ },
+ "Document reading acknowledged.": {
+  "es": "Lectura del documento confirmada.",
+  "pt-BR": "Leitura do documento confirmada."
  },
  "Document Register": {
   "es": "Registro de documentos",
@@ -2759,6 +2927,10 @@
   "es": "Dirección de correo electrónico",
   "pt-BR": "Endereço de e-mail"
  },
+ "Email or password is incorrect.": {
+  "es": "El correo electrónico o la contraseña son incorrectos.",
+  "pt-BR": "E-mail ou senha incorretos."
+ },
  "Emergency": {
   "es": "Emergencia",
   "pt-BR": "Emergencial"
@@ -2875,6 +3047,10 @@
   "es": "Fecha de evaluación",
   "pt-BR": "Data da avaliação"
  },
+ "Evaluation findings must be recorded before submitting for acceptance.": {
+  "es": "Los hallazgos de la evaluación deben registrarse antes de enviar para aceptación.",
+  "pt-BR": "Os achados da avaliação devem ser registrados antes de enviar para aceitação."
+ },
  "Evaluation guidance": {
   "es": "Guía de evaluación",
   "pt-BR": "Orientação de avaliação"
@@ -2888,6 +3064,10 @@
   "es": "La evaluación debe abordar:",
   "pt-BR": "A avaliação deve abordar:",
   "note": "GUIDANCE — review"
+ },
+ "Evaluation must be completed before submitting.": {
+  "es": "La evaluación debe completarse antes de enviar.",
+  "pt-BR": "A avaliação deve ser preenchida antes de enviar."
  },
  "Evaluation Started By": {
   "es": "Evaluación iniciada por",
@@ -2912,6 +3092,10 @@
  "Event Type guidance": {
   "es": "Guía de tipos de evento",
   "pt-BR": "Orientação sobre tipos de evento"
+ },
+ "Event Type must be selected before submitting for evaluation.": {
+  "es": "Debe seleccionarse el tipo de evento antes de enviar a evaluación.",
+  "pt-BR": "O tipo de evento deve ser selecionado antes de enviar para avaliação."
  },
  "Evidence / reference": {
   "es": "Evidencia / referencia",
@@ -3049,6 +3233,10 @@
   "es": "El archivo supera el límite de 25 MB.",
   "pt-BR": "O arquivo excede o limite de 25 MB."
  },
+ "File exceeds the 10 MB limit.": {
+  "es": "El archivo supera el límite de 10 MB.",
+  "pt-BR": "O arquivo excede o limite de 10 MB."
+ },
  "File exceeds the 25 MB maximum size limit.": {
   "es": "El archivo supera el tamaño máximo de 25 MB.",
   "pt-BR": "O arquivo excede o tamanho máximo de 25 MB."
@@ -3076,6 +3264,10 @@
  "File type '{0}' is not allowed. Accepted: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.": {
   "es": "El tipo de archivo «{0}» no está permitido. Aceptados: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG.",
   "pt-BR": "O tipo de arquivo \"{0}\" não é permitido. Aceitos: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG."
+ },
+ "File type not allowed.": {
+  "es": "Tipo de archivo no permitido.",
+  "pt-BR": "Tipo de arquivo não permitido."
  },
  "File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.": {
   "es": "Tipo de archivo no permitido. Se aceptan: PDF, Word, Excel, ZIP, JPG, PNG.",
@@ -3294,6 +3486,10 @@
  "Identification": {
   "es": "Identificación",
   "pt-BR": "Identificação"
+ },
+ "Identification description must be completed before submitting for evaluation.": {
+  "es": "La descripción de la identificación debe completarse antes de enviar a evaluación.",
+  "pt-BR": "A descrição da identificação deve ser preenchida antes de enviar para avaliação."
  },
  "Identification guidance": {
   "es": "Guía de identificación",
@@ -3520,6 +3716,10 @@
   "es": "Guía de investigación",
   "pt-BR": "Orientação de investigação"
  },
+ "Investigation must be completed before submitting.": {
+  "es": "La investigación debe completarse antes de enviar.",
+  "pt-BR": "A investigação deve ser preenchida antes de enviar."
+ },
  "Investigation must document:": {
   "es": "La investigación debe documentar:",
   "pt-BR": "A investigação deve documentar:",
@@ -3703,6 +3903,10 @@
  "Link": {
   "es": "Vincular",
   "pt-BR": "Vincular"
+ },
+ "Link Existing Adverse Event": {
+  "es": "Vincular evento adverso existente",
+  "pt-BR": "Vincular evento adverso existente"
  },
  "Link existing AE": {
   "es": "Vincular EA existente",
@@ -4419,6 +4623,22 @@
   "es": "No evaluado",
   "pt-BR": "Não avaliado"
  },
+ "Not authorised to accept this CAPA in its current status.": {
+  "es": "No está autorizado para aceptar esta CAPA en su estado actual.",
+  "pt-BR": "Você não tem autorização para aceitar esta CAPA no status atual."
+ },
+ "Not authorised to approve this CAPA in its current status.": {
+  "es": "No está autorizado para aprobar esta CAPA en su estado actual.",
+  "pt-BR": "Você não tem autorização para aprovar esta CAPA no status atual."
+ },
+ "Not authorised to submit this CAPA for acceptance.": {
+  "es": "No está autorizado para enviar esta CAPA para aceptación.",
+  "pt-BR": "Você não tem autorização para enviar esta CAPA para aceitação."
+ },
+ "Not authorised to submit this CAPA for approval.": {
+  "es": "No está autorizado para enviar esta CAPA para aprobación.",
+  "pt-BR": "Você não tem autorização para enviar esta CAPA para aprovação."
+ },
  "Not in system": {
   "es": "No está en el sistema",
   "pt-BR": "Não está no sistema"
@@ -4518,6 +4738,14 @@
  "Only complete if the complainant is not recorded in the Customer Master. If entered here, no linked customer record will be created.": {
   "es": "Complete solo si el reclamante no está registrado en los datos maestros de clientes. Si lo ingresa aquí, no se creará un registro de cliente vinculado.",
   "pt-BR": "Preencha somente se o reclamante não estiver cadastrado nos dados mestres de clientes. Se informado aqui, nenhum registro de cliente vinculado será criado."
+ },
+ "Only Quality Managers, Administrators and Authorised Persons can return a CAPA.": {
+  "es": "Solo los gerentes de calidad, los administradores y las Personas Autorizadas pueden devolver una CAPA.",
+  "pt-BR": "Somente gerentes da qualidade, administradores e Pessoas Autorizadas podem devolver uma CAPA."
+ },
+ "Only Scheduled trainings can be cancelled.": {
+  "es": "Solo se pueden cancelar las capacitaciones en estado Programado.",
+  "pt-BR": "Somente treinamentos no status Programado podem ser cancelados."
  },
  "OOS": {
   "es": "OOS",
@@ -5358,6 +5586,10 @@
   "es": "Adjuntos de registros — Registro de vencimientos",
   "pt-BR": "Anexos de registros — Registro de vencimentos"
  },
+ "Record cannot be returned from its current status.": {
+  "es": "El registro no puede devolverse desde su estado actual.",
+  "pt-BR": "O registro não pode ser devolvido a partir do status atual."
+ },
  "Record Closed:": {
   "es": "Registro cerrado:",
   "pt-BR": "Registro fechado:"
@@ -5373,6 +5605,10 @@
  "Record has been administratively reopened to Mitigation stage.": {
   "es": "El registro se ha reabierto administrativamente en la etapa Mitigación.",
   "pt-BR": "O registro foi reaberto administrativamente na etapa Mitigação."
+ },
+ "Record has been administratively reopened to Resolution stage.": {
+  "es": "El registro se ha reabierto administrativamente en la etapa Resolución.",
+  "pt-BR": "O registro foi reaberto administrativamente na etapa Resolução."
  },
  "Record is approved — no new attachments can be added.": {
   "es": "El registro está aprobado: no se pueden agregar adjuntos.",
@@ -5779,6 +6015,14 @@
   "es": "Guía de resolución",
   "pt-BR": "Orientação de resolução"
  },
+ "Resolution must be documented before approving the deviation.": {
+  "es": "La resolución debe documentarse antes de aprobar la desviación.",
+  "pt-BR": "A resolução deve ser documentada antes de aprovar o desvio."
+ },
+ "Resolution must be documented before submitting for approval.": {
+  "es": "La resolución debe documentarse antes de enviar para aprobación.",
+  "pt-BR": "A resolução deve ser documentada antes de enviar para aprovação."
+ },
  "Resolution must document:": {
   "es": "La resolución debe documentar:",
   "pt-BR": "A resolução deve documentar:",
@@ -5787,6 +6031,14 @@
  "Resolution summary": {
   "es": "Resumen de la resolución",
   "pt-BR": "Resumo da resolução"
+ },
+ "Resolution summary must be documented before submitting for closure.": {
+  "es": "El resumen de la resolución debe documentarse antes de enviar para cierre.",
+  "pt-BR": "O resumo da resolução deve ser documentado antes de enviar para fechamento."
+ },
+ "Resolution summary must be recorded before closing the complaint.": {
+  "es": "El resumen de la resolución debe registrarse antes de cerrar la reclamación.",
+  "pt-BR": "O resumo da resolução deve ser registrado antes de fechar a reclamação."
  },
  "Resolved": {
   "es": "Resuelto",
@@ -6106,6 +6358,14 @@
   "es": "Guía de categorías de causa raíz",
   "pt-BR": "Orientação sobre categorias de causa-raiz"
  },
+ "Root Cause Category must be selected before submitting for acceptance.": {
+  "es": "Debe seleccionarse la categoría de causa raíz antes de enviar para aceptación.",
+  "pt-BR": "A categoria da causa-raiz deve ser selecionada antes de enviar para aceitação."
+ },
+ "Root Cause Category must be selected before submitting.": {
+  "es": "Debe seleccionarse la categoría de causa raíz antes de enviar.",
+  "pt-BR": "A categoria da causa-raiz deve ser selecionada antes de enviar."
+ },
  "Root Cause On": {
   "es": "Causa raíz determinada el",
   "pt-BR": "Causa-raiz determinada em"
@@ -6250,6 +6510,10 @@
   "es": "Seleccione usuarios…",
   "pt-BR": "Selecione usuários…"
  },
+ "Selected adverse event not found.": {
+  "es": "No se encontró el evento adverso seleccionado.",
+  "pt-BR": "O evento adverso selecionado não foi encontrado."
+ },
  "Semi-Annual": {
   "es": "Semestral",
   "pt-BR": "Semestral"
@@ -6258,6 +6522,10 @@
   "es": "Devolver a borrador",
   "pt-BR": "Devolver para rascunho",
   "note": "WORKFLOW — review"
+ },
+ "Send for Evaluation": {
+  "es": "Enviar a evaluación",
+  "pt-BR": "Enviar para avaliação"
  },
  "Send verification email": {
   "es": "Enviar correo de verificación",
@@ -6776,6 +7044,10 @@
   "pt-BR": "Obrigado por confirmar a alteração de e-mail.",
   "note": "status message"
  },
+ "That adverse event is already linked to another complaint.": {
+  "es": "Ese evento adverso ya está vinculado a otra reclamación.",
+  "pt-BR": "Esse evento adverso já está vinculado a outra reclamação."
+ },
  "The action plan can only be edited while the change is in Assessment or Implementation.": {
   "es": "El plan de acción solo se puede editar mientras el cambio está en Evaluación o Implementación.",
   "pt-BR": "O plano de ação só pode ser editado enquanto a mudança está em Avaliação ou Implementação."
@@ -6965,6 +7237,10 @@
   "es": "Esta reclamación tiene varios eventos adversos vinculados de antes de que se exigiera la vinculación uno a uno. Desvincule los adicionales para mantener una sola asociación.",
   "pt-BR": "Esta reclamação tem vários eventos adversos vinculados de antes da exigência de vínculo um a um. Desvincule os extras para manter uma única associação."
  },
+ "This complaint is already linked to an adverse event. Unlink it first.": {
+  "es": "Esta reclamación ya está vinculada a un evento adverso. Desvincúlelo primero.",
+  "pt-BR": "Esta reclamação já está vinculada a um evento adverso. Desvincule-o primeiro."
+ },
  "This complaint is closed. No new attachments can be uploaded.": {
   "es": "Esta reclamación está cerrada. No se pueden cargar nuevos adjuntos.",
   "pt-BR": "Esta reclamação está fechada. Não é possível enviar novos anexos."
@@ -6972,6 +7248,10 @@
  "This deviation is approved. No new attachments can be uploaded.": {
   "es": "Esta desviación está aprobada. No se pueden cargar nuevos adjuntos.",
   "pt-BR": "Este desvio está aprovado. Não é possível enviar novos anexos."
+ },
+ "This document is currently under review and cannot be edited.": {
+  "es": "Este documento está en revisión y no se puede editar.",
+  "pt-BR": "Este documento está em revisão e não pode ser editado."
  },
  "This document is due for review on <strong>{0}</strong> ({1} days remaining).": {
   "es": "Este documento debe revisarse el <strong>{0}</strong> (faltan {1} días).",
@@ -7016,6 +7296,18 @@
  "This risk is closed. No new attachments can be uploaded.": {
   "es": "Este riesgo está cerrado. No se pueden cargar nuevos adjuntos.",
   "pt-BR": "Este risco está encerrado. Não é possível enviar novos anexos."
+ },
+ "This trainee is not pending trainer confirmation.": {
+  "es": "Este participante no está pendiente de confirmación del instructor.",
+  "pt-BR": "Este participante não está pendente de confirmação do instrutor."
+ },
+ "This training has been cancelled.": {
+  "es": "Esta capacitación ha sido cancelada.",
+  "pt-BR": "Este treinamento foi cancelado."
+ },
+ "This training record has already been acknowledged.": {
+  "es": "Este registro de capacitación ya ha sido confirmado.",
+  "pt-BR": "Este registro de treinamento já foi confirmado."
  },
  "This will lock the CAPA for Quality Manager review. Corrective Action, Preventive Action and Assessment must all be completed.": {
   "es": "Esto bloqueará la CAPA para la revisión del gerente de calidad. La acción correctiva, la acción preventiva y la evaluación deben estar completas.",
@@ -7150,6 +7442,10 @@
   "es": "Capacitación",
   "pt-BR": "Treinamento"
  },
+ "Training acknowledged and marked as complete.": {
+  "es": "Capacitación confirmada y marcada como completada.",
+  "pt-BR": "Treinamento confirmado e marcado como concluído."
+ },
  "Training Action Required:": {
   "es": "Acción de capacitación requerida:",
   "pt-BR": "Ação de treinamento necessária:"
@@ -7178,6 +7474,10 @@
   "es": "ID de capacitación",
   "pt-BR": "ID do treinamento"
  },
+ "Training is not in Scheduled status.": {
+  "es": "La capacitación no está en estado Programado.",
+  "pt-BR": "O treinamento não está no status Programado."
+ },
  "Training Material": {
   "es": "Material de capacitación",
   "pt-BR": "Material de treinamento"
@@ -7185,6 +7485,10 @@
  "Training or documentation updates required": {
   "es": "Actualizaciones de capacitación o documentación requeridas",
   "pt-BR": "Atualizações de treinamento ou documentação necessárias"
+ },
+ "Training record has been administratively reopened to Scheduled stage.": {
+  "es": "El registro de capacitación se ha reabierto administrativamente en la etapa Programado.",
+  "pt-BR": "O registro de treinamento foi reaberto administrativamente na etapa Programado."
  },
  "Training Register": {
   "es": "Registro de capacitación",
@@ -7209,6 +7513,10 @@
  "Training Type": {
   "es": "Tipo de capacitación",
   "pt-BR": "Tipo de treinamento"
+ },
+ "Training updated successfully.": {
+  "es": "Capacitación actualizada correctamente.",
+  "pt-BR": "Treinamento atualizado com sucesso."
  },
  "Training {0} competency verified and marked as Completed.": {
   "es": "Capacitación {0}: competencia verificada y marcada como completada.",
@@ -7653,6 +7961,10 @@
   "es": "Está enviando <strong>{0}</strong> v{1} a revisión. El documento quedará bloqueado para nuevas ediciones.",
   "pt-BR": "Você está enviando <strong>{0}</strong> v{1} para revisão. O documento ficará bloqueado para novas edições.",
   "note": "SIGNATURE context — review"
+ },
+ "You can only acknowledge your own training record.": {
+  "es": "Solo puede confirmar su propio registro de capacitación.",
+  "pt-BR": "Você só pode confirmar o seu próprio registro de treinamento."
  },
  "You cannot reuse any of your last {0} passwords.": {
   "es": "No puede reutilizar ninguna de sus últimas {0} contraseñas.",

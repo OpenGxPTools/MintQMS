@@ -14,6 +14,9 @@
 - Change Control, Audits and Risk in Spanish and Portuguese: pages, guidance texts, the action plan, the
   signature dialogs (what each step does and where the record goes), alerts, messages and validation errors.
   The suggested actions loaded into an action plan stay in English, because they become part of the record.
+- Deviations, Complaints, CAPA, Documents and Training: the signature dialog titles, the status shown on
+  edit and detail pages, the "Click to remove" hint and the remaining messages after an action are now
+  translated too.
 - Drop-down lists of types, categories, ratings and similar options now show their translated names in every
   module (before, only some lists were translated).
 - Messages after an action are translated where they are shown (all modules), so the code that sets them —
@@ -23,6 +26,10 @@
 
 - CAPA Dashboard: the Status Distribution chart drew oversized; it is now the same size as on the other
   dashboards.
+- Change Control: the *Return for Rework* dialog said the change goes back to Proposal; it goes back to
+  Assessment, and now says so.
+- Audits: the edit page raised a script error while the audit was still Scheduled (harmless, but it showed
+  in the browser console).
 - Option and type names that showed as code (e.g. "NeedsImprovement", "QualitySystem", "ProductQuality") in
   audit and risk drop-downs and details now read properly.
 - Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the

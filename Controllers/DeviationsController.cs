@@ -515,7 +515,7 @@ namespace OpenQMS.Controllers
                 throw;
             }
 
-            TempData["Success"] = "Deviation updated successfully.";
+            TempData["Success"] = this.T("Deviation updated successfully.");
             return RedirectToAction(nameof(Details), new { id = deviation.Id });
         }
 
@@ -535,32 +535,32 @@ namespace OpenQMS.Controllers
 
             if (deviation.Status != DeviationStatus.Identification)
             {
-                TempData["WorkflowError"] = "Deviation must be in Identification status to submit for evaluation.";
+                TempData["WorkflowError"] = this.T("Deviation must be in Identification status to submit for evaluation.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (deviation.EventType == null)
             {
-                TempData["WorkflowError"] = "Event Type must be selected before submitting for evaluation.";
+                TempData["WorkflowError"] = this.T("Event Type must be selected before submitting for evaluation.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(deviation.Identification))
             {
-                TempData["WorkflowError"] = "Identification description must be completed before submitting for evaluation.";
+                TempData["WorkflowError"] = this.T("Identification description must be completed before submitting for evaluation.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -592,41 +592,41 @@ namespace OpenQMS.Controllers
 
             if (deviation.Status != DeviationStatus.Evaluation)
             {
-                TempData["WorkflowError"] = "Deviation must be in Evaluation status to submit the evaluation.";
+                TempData["WorkflowError"] = this.T("Deviation must be in Evaluation status to submit the evaluation.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(deviation.Evaluation))
             {
-                TempData["WorkflowError"] = "Evaluation must be completed before submitting.";
+                TempData["WorkflowError"] = this.T("Evaluation must be completed before submitting.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrWhiteSpace(deviation.Investigation))
             {
-                TempData["WorkflowError"] = "Investigation must be completed before submitting.";
+                TempData["WorkflowError"] = this.T("Investigation must be completed before submitting.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (deviation.RootCauseCategory == null)
             {
-                TempData["WorkflowError"] = "Root Cause Category must be selected before submitting.";
+                TempData["WorkflowError"] = this.T("Root Cause Category must be selected before submitting.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrWhiteSpace(deviation.CorrectiveAction))
             {
-                TempData["WorkflowError"] = "Corrective and Preventive Action must be completed before submitting.";
+                TempData["WorkflowError"] = this.T("Corrective and Preventive Action must be completed before submitting.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -667,26 +667,26 @@ namespace OpenQMS.Controllers
 
             if (deviation.Status != DeviationStatus.Accepted)
             {
-                TempData["WorkflowError"] = "Deviation must be in Accepted status to submit for approval.";
+                TempData["WorkflowError"] = this.T("Deviation must be in Accepted status to submit for approval.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(deviation.Resolution))
             {
-                TempData["WorkflowError"] = "Resolution must be documented before submitting for approval.";
+                TempData["WorkflowError"] = this.T("Resolution must be documented before submitting for approval.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -719,20 +719,20 @@ namespace OpenQMS.Controllers
 
             if (deviation.Status != DeviationStatus.PendingAcceptance)
             {
-                TempData["WorkflowError"] = "Deviation must be in Pending Acceptance status to accept.";
+                TempData["WorkflowError"] = this.T("Deviation must be in Pending Acceptance status to accept.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -760,7 +760,7 @@ namespace OpenQMS.Controllers
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A reason is required to return a record.";
+                TempData["WorkflowError"] = this.T("A reason is required to return a record.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -772,20 +772,20 @@ namespace OpenQMS.Controllers
                 && deviation.Status != DeviationStatus.Accepted
                 && deviation.Status != DeviationStatus.Resolution)
             {
-                TempData["WorkflowError"] = "Record cannot be returned from its current status.";
+                TempData["WorkflowError"] = this.T("Record cannot be returned from its current status.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -846,26 +846,26 @@ namespace OpenQMS.Controllers
 
             if (deviation.Status != DeviationStatus.Resolution)
             {
-                TempData["WorkflowError"] = "Deviation must be in Resolution status to approve.";
+                TempData["WorkflowError"] = this.T("Deviation must be in Resolution status to approve.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(deviation.Resolution))
             {
-                TempData["WorkflowError"] = "Resolution must be documented before approving the deviation.";
+                TempData["WorkflowError"] = this.T("Resolution must be documented before approving the deviation.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1183,7 +1183,7 @@ namespace OpenQMS.Controllers
             if (User.IsInRole(Constants.ReadOnlyRole)) return Forbid();
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = deviationId });
             }
@@ -1193,7 +1193,7 @@ namespace OpenQMS.Controllers
 
             if (deviation.Status == Deviation.DeviationStatus.Approved)
             {
-                TempData["Error"] = "Attachments cannot be added to an approved deviation.";
+                TempData["Error"] = this.T("Attachments cannot be added to an approved deviation.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = deviationId });
             }
@@ -1202,14 +1202,14 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = "File type not allowed. Accepted: PDF, Word, ZIP, JPG, PNG.";
+                TempData["Error"] = this.T("File type not allowed. Accepted: PDF, Word, ZIP, JPG, PNG.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = deviationId });
             }
 
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File exceeds 25 MB limit.";
+                TempData["Error"] = this.T("File exceeds 25 MB limit.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = deviationId });
             }
@@ -1259,7 +1259,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.DeviationId });
             }
@@ -1298,7 +1298,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.DeviationId });
             }
@@ -1344,14 +1344,14 @@ namespace OpenQMS.Controllers
                 var deviation = await _context.Deviation.FindAsync(deviationId);
                 if (deviation != null && deviation.Status == Deviation.DeviationStatus.Approved)
                 {
-                    TempData["Error"] = "Attachments cannot be removed from an approved deviation.";
+                    TempData["Error"] = this.T("Attachments cannot be removed from an approved deviation.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = deviationId });
                 }
 
                 if (string.IsNullOrWhiteSpace(deletionReason))
                 {
-                    TempData["Error"] = "A reason is required to delete an attachment.";
+                    TempData["Error"] = this.T("A reason is required to delete an attachment.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = deviationId });
                 }
@@ -1363,7 +1363,7 @@ namespace OpenQMS.Controllers
                 attachment.DeletionReason = deletionReason.Trim();
                 AddAuditLog(deviationId, "Attachment deleted", null, null, $"{attachment.FileName} — Reason: {attachment.DeletionReason}");
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Attachment deleted successfully.";
+                TempData["Success"] = this.T("Attachment deleted successfully.");
             }
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = deviationId });
@@ -1380,7 +1380,7 @@ namespace OpenQMS.Controllers
 
             if (deviation.LinkedCapaId.HasValue)
             {
-                TempData["Error"] = "A CAPA is already linked to this deviation.";
+                TempData["Error"] = this.T("A CAPA is already linked to this deviation.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1395,26 +1395,26 @@ namespace OpenQMS.Controllers
 
             if (deviation.Status != DeviationStatus.Approved)
             {
-                TempData["WorkflowError"] = "This record is not in a state that can be administratively reopened.";
+                TempData["WorkflowError"] = this.T("This record is not in a state that can be administratively reopened.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A justification reason is required.";
+                TempData["WorkflowError"] = this.T("A justification reason is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1423,7 +1423,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(deviation.Id, "Administrative Reopen", fromStatus, DeviationStatus.Resolution.ToString(), reason);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Record has been administratively reopened to Resolution stage.";
+            TempData["Success"] = this.T("Record has been administratively reopened to Resolution stage.");
             return RedirectToAction(nameof(Details), new { id });
         }
     }

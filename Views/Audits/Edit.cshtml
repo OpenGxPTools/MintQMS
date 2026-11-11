@@ -350,8 +350,11 @@
         function toggleCapa() {
             capaFields.style.display = capaCheckbox.checked ? '' : 'none';
         }
-        capaCheckbox.addEventListener('change', toggleCapa);
-        toggleCapa();
+        // The CAPA section only exists once the audit is past Scheduled.
+        if (capaCheckbox && capaFields) {
+            capaCheckbox.addEventListener('change', toggleCapa);
+            toggleCapa();
+        }
     });
     </script>
     <script>

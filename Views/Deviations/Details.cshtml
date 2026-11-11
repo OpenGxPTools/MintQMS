@@ -23,11 +23,7 @@
         _ => "bg-secondary"
     };
 
-    var statusLabel = Model.Status switch
-    {
-        OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance => "Pending Acceptance",
-        _ => Model.Status.ToString()
-    };
+    var statusLabel = L.Enum(Model.Status);
 
     var ageDays = (SiteTime.Today - Model.IdentifiedOn.Date).Days;
     var isAged  = Model.Status != OpenQMS.Models.Deviation.DeviationStatus.Approved && ageDays > 30;
@@ -131,7 +127,7 @@ else if (isApproaching)
     <div class="card mb-3">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <strong><i class="fas fa-tasks me-2"></i>@L["Workflow Actions"]</strong>
-            <span class="small">Current: @statusLabel</span>
+            <span class="small">@L["Current: {0}", statusLabel]</span>
         </div>
         <div class="card-body py-2 d-flex flex-wrap gap-2">
             @if (canForwardToEvaluation)
@@ -548,7 +544,7 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-arrow-right me-1"></i>Submit for Evaluation — @Model.DeviationId</h5>
+                        <h5 class="modal-title"><i class="fas fa-arrow-right me-1"></i>@L["Submit for Evaluation"] — @Model.DeviationId</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
@@ -586,7 +582,7 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>Submit for Acceptance — @Model.DeviationId</h5>
+                        <h5 class="modal-title"><i class="fas fa-paper-plane me-1"></i>@L["Submit for Acceptance"] — @Model.DeviationId</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
@@ -625,7 +621,7 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-arrow-right me-1"></i>Submit for Approval — @Model.DeviationId</h5>
+                        <h5 class="modal-title"><i class="fas fa-arrow-right me-1"></i>@L["Submit for Approval"] — @Model.DeviationId</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
@@ -663,7 +659,7 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-warning">
-                        <h5 class="modal-title"><i class="fas fa-undo me-1"></i>Return for Rework — @Model.DeviationId</h5>
+                        <h5 class="modal-title"><i class="fas fa-undo me-1"></i>@L["Return for Rework"] — @Model.DeviationId</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
@@ -711,7 +707,7 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-check-circle me-1"></i>Accept Deviation — @Model.DeviationId</h5>
+                        <h5 class="modal-title"><i class="fas fa-check-circle me-1"></i>@L["Accept Deviation"] — @Model.DeviationId</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
@@ -749,7 +745,7 @@ else if (isApproaching)
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title"><i class="fas fa-thumbs-up me-1"></i>Approve Deviation — @Model.DeviationId</h5>
+                        <h5 class="modal-title"><i class="fas fa-thumbs-up me-1"></i>@L["Approve Deviation"] — @Model.DeviationId</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">

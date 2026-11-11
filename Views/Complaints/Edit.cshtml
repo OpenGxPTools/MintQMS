@@ -19,8 +19,7 @@
         OpenQMS.Models.Complaint.ComplaintStatus.Closed            => "bg-success",
         _ => "bg-secondary"
     };
-    var statusLabel = s == OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance
-        ? "Pending Acceptance" : s.ToString();
+    var statusLabel = L.Enum(s);
     var severityBadge = Model.Severity switch
     {
         OpenQMS.Models.Complaint.ComplaintSeverity.Critical => "bg-danger",

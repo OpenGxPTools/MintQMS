@@ -473,7 +473,7 @@ namespace OpenQMS.Controllers
                     throw;
                 }
 
-                TempData["Success"] = "Complaint updated successfully.";
+                TempData["Success"] = this.T("Complaint updated successfully.");
                 return RedirectToAction(nameof(Details), new { id = existing.Id });
             }
 
@@ -517,13 +517,13 @@ namespace OpenQMS.Controllers
 
             if (complaint.Status != Complaint.ComplaintStatus.Received)
             {
-                TempData["WorkflowError"] = "Complaint must be in Received status to start evaluation.";
+                TempData["WorkflowError"] = this.T("Complaint must be in Received status to start evaluation.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -551,31 +551,31 @@ namespace OpenQMS.Controllers
 
             if (complaint.Status != Complaint.ComplaintStatus.Evaluation)
             {
-                TempData["WorkflowError"] = "Complaint must be in Evaluation status to submit for acceptance.";
+                TempData["WorkflowError"] = this.T("Complaint must be in Evaluation status to submit for acceptance.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(complaint.Evaluation))
             {
-                TempData["WorkflowError"] = "Evaluation findings must be recorded before submitting for acceptance.";
+                TempData["WorkflowError"] = this.T("Evaluation findings must be recorded before submitting for acceptance.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (complaint.RootCauseCategory == null)
             {
-                TempData["WorkflowError"] = "Root Cause Category must be selected before submitting for acceptance.";
+                TempData["WorkflowError"] = this.T("Root Cause Category must be selected before submitting for acceptance.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(complaint.CorrectiveAction))
             {
-                TempData["WorkflowError"] = "Corrective Action must be recorded before submitting for acceptance.";
+                TempData["WorkflowError"] = this.T("Corrective Action must be recorded before submitting for acceptance.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -604,13 +604,13 @@ namespace OpenQMS.Controllers
 
             if (complaint.Status != Complaint.ComplaintStatus.PendingAcceptance)
             {
-                TempData["WorkflowError"] = "Complaint must be in Pending Acceptance status to accept.";
+                TempData["WorkflowError"] = this.T("Complaint must be in Pending Acceptance status to accept.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -638,19 +638,19 @@ namespace OpenQMS.Controllers
 
             if (complaint.Status != Complaint.ComplaintStatus.Accepted)
             {
-                TempData["WorkflowError"] = "Complaint must be in Accepted status to submit for resolution.";
+                TempData["WorkflowError"] = this.T("Complaint must be in Accepted status to submit for resolution.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(complaint.Resolution))
             {
-                TempData["WorkflowError"] = "Resolution summary must be documented before submitting for closure.";
+                TempData["WorkflowError"] = this.T("Resolution summary must be documented before submitting for closure.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -679,19 +679,19 @@ namespace OpenQMS.Controllers
 
             if (complaint.Status != Complaint.ComplaintStatus.Resolution)
             {
-                TempData["WorkflowError"] = "Complaint must be in Resolution status to close.";
+                TempData["WorkflowError"] = this.T("Complaint must be in Resolution status to close.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(complaint.Resolution))
             {
-                TempData["WorkflowError"] = "Resolution summary must be recorded before closing the complaint.";
+                TempData["WorkflowError"] = this.T("Resolution summary must be recorded before closing the complaint.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (!await VerifyCredentials(email, pwd))
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -718,7 +718,7 @@ namespace OpenQMS.Controllers
         {
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A reason is required to return a complaint for rework.";
+                TempData["WorkflowError"] = this.T("A reason is required to return a complaint for rework.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -730,20 +730,20 @@ namespace OpenQMS.Controllers
                 && complaint.Status != Complaint.ComplaintStatus.Accepted
                 && complaint.Status != Complaint.ComplaintStatus.Resolution)
             {
-                TempData["WorkflowError"] = "Complaint cannot be returned from its current status.";
+                TempData["WorkflowError"] = this.T("Complaint cannot be returned from its current status.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -954,7 +954,7 @@ namespace OpenQMS.Controllers
             if (User.IsInRole(Constants.ReadOnlyRole)) return Forbid();
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = complaintId });
             }
@@ -964,7 +964,7 @@ namespace OpenQMS.Controllers
 
             if (complaint.Status == Complaint.ComplaintStatus.Closed)
             {
-                TempData["Error"] = "Attachments cannot be added to a closed complaint.";
+                TempData["Error"] = this.T("Attachments cannot be added to a closed complaint.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = complaintId });
             }
@@ -973,14 +973,14 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = "File type not allowed.";
+                TempData["Error"] = this.T("File type not allowed.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = complaintId });
             }
 
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File exceeds 25 MB limit.";
+                TempData["Error"] = this.T("File exceeds 25 MB limit.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = complaintId });
             }
@@ -1029,7 +1029,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.ComplaintId });
             }
@@ -1068,7 +1068,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.ComplaintId });
             }
@@ -1113,14 +1113,14 @@ namespace OpenQMS.Controllers
                 var complaint = await _context.Complaint.FindAsync(complaintId);
                 if (complaint != null && complaint.Status == Complaint.ComplaintStatus.Closed)
                 {
-                    TempData["Error"] = "Attachments cannot be removed from a closed complaint.";
+                    TempData["Error"] = this.T("Attachments cannot be removed from a closed complaint.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = complaintId });
                 }
 
                 if (string.IsNullOrWhiteSpace(deletionReason))
                 {
-                    TempData["Error"] = "A reason is required to delete an attachment.";
+                    TempData["Error"] = this.T("A reason is required to delete an attachment.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = complaintId });
                 }
@@ -1132,7 +1132,7 @@ namespace OpenQMS.Controllers
                 attachment.DeletionReason = deletionReason.Trim();
                 AddAuditLog(complaintId, "Attachment deleted", null, null, $"{attachment.FileName} — Reason: {attachment.DeletionReason}");
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Attachment deleted successfully.";
+                TempData["Success"] = this.T("Attachment deleted successfully.");
             }
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = complaintId });
@@ -1150,7 +1150,7 @@ namespace OpenQMS.Controllers
 
             if (complaint.Status == Complaint.ComplaintStatus.Closed)
             {
-                TempData["Error"] = "Cannot change links on a closed complaint.";
+                TempData["Error"] = this.T("Cannot change links on a closed complaint.");
                 TempData["ActiveTab"] = "pv";
                 return RedirectToAction(nameof(Details), new { id = complaintId });
             }
@@ -1158,14 +1158,14 @@ namespace OpenQMS.Controllers
             var ae = await _context.AdverseEvent.FindAsync(adverseEventId);
             if (ae == null)
             {
-                TempData["Error"] = "Selected adverse event not found.";
+                TempData["Error"] = this.T("Selected adverse event not found.");
                 TempData["ActiveTab"] = "pv";
                 return RedirectToAction(nameof(Details), new { id = complaintId });
             }
 
             if (ae.LinkedComplaintId.HasValue && ae.LinkedComplaintId != complaintId)
             {
-                TempData["Error"] = "That adverse event is already linked to another complaint.";
+                TempData["Error"] = this.T("That adverse event is already linked to another complaint.");
                 TempData["ActiveTab"] = "pv";
                 return RedirectToAction(nameof(Details), new { id = complaintId });
             }
@@ -1175,7 +1175,7 @@ namespace OpenQMS.Controllers
                 || await _context.AdverseEvent.AnyAsync(a => a.LinkedComplaintId == complaintId && a.Id != adverseEventId);
             if (alreadyLinked)
             {
-                TempData["Error"] = "This complaint is already linked to an adverse event. Unlink it first.";
+                TempData["Error"] = this.T("This complaint is already linked to an adverse event. Unlink it first.");
                 TempData["ActiveTab"] = "pv";
                 return RedirectToAction(nameof(Details), new { id = complaintId });
             }
@@ -1202,7 +1202,7 @@ namespace OpenQMS.Controllers
 
             if (complaint.Status == Complaint.ComplaintStatus.Closed)
             {
-                TempData["Error"] = "Cannot change links on a closed complaint.";
+                TempData["Error"] = this.T("Cannot change links on a closed complaint.");
                 TempData["ActiveTab"] = "pv";
                 return RedirectToAction(nameof(Details), new { id = complaintId });
             }
@@ -1224,7 +1224,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Adverse event unlinked.";
+            TempData["Success"] = this.T("Adverse event unlinked.");
             TempData["ActiveTab"] = "pv";
             return RedirectToAction(nameof(Details), new { id = complaintId });
         }
@@ -1240,7 +1240,7 @@ namespace OpenQMS.Controllers
 
             if (complaint.LinkedCapaId.HasValue)
             {
-                TempData["Error"] = "A CAPA is already linked to this complaint.";
+                TempData["Error"] = this.T("A CAPA is already linked to this complaint.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1349,26 +1349,26 @@ namespace OpenQMS.Controllers
 
             if (complaint.Status != Complaint.ComplaintStatus.Closed)
             {
-                TempData["WorkflowError"] = "This record is not in a state that can be administratively reopened.";
+                TempData["WorkflowError"] = this.T("This record is not in a state that can be administratively reopened.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A justification reason is required.";
+                TempData["WorkflowError"] = this.T("A justification reason is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1377,7 +1377,7 @@ namespace OpenQMS.Controllers
             AddAuditLog(complaint.Id, "Administrative Reopen", fromStatus, Complaint.ComplaintStatus.Resolution.ToString(), reason);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Record has been administratively reopened to Resolution stage.";
+            TempData["Success"] = this.T("Record has been administratively reopened to Resolution stage.");
             return RedirectToAction(nameof(Details), new { id });
         }
     }

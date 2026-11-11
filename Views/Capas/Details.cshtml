@@ -114,7 +114,7 @@ else if (isApproaching)
     <div class="card mb-3">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <strong><i class="fas fa-tasks me-2"></i>@L["Workflow Actions"]</strong>
-            <span class="small">Current: @statusLabel</span>
+            <span class="small">@L["Current: {0}", statusLabel]</span>
         </div>
         <div class="card-body py-2 d-flex flex-wrap gap-2">
             @if (canSubmitForAcceptance)

@@ -263,7 +263,7 @@
                 var chip = document.createElement('span');
                 chip.style.cssText = 'display:inline-block;background:#0d6efd;color:white;padding:2px 8px;border-radius:12px;margin:2px;font-size:12px;cursor:pointer;';
                 chip.innerHTML = text + ' &times;';
-                chip.title = 'Click to remove';
+                chip.title = @Json.Serialize(L["Click to remove"].Value);
                 chip.addEventListener('click', function() {
                     delete selected[id];
                     var opt = document.querySelector('#' + dropdownId + ' option[value="' + id + '"]');

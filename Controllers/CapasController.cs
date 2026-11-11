@@ -737,7 +737,7 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -745,14 +745,14 @@ namespace OpenQMS.Controllers
             if (string.IsNullOrEmpty(password) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, password) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (!(User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AuthorisedPersonRole)) || capa.Status != CapaStatus.PendingAssessment)
             {
-                TempData["WorkflowError"] = "Not authorised to accept this CAPA in its current status.";
+                TempData["WorkflowError"] = this.T("Not authorised to accept this CAPA in its current status.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -776,7 +776,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = "CAPA accepted. Implementation can now begin.";
+            TempData["Success"] = this.T("CAPA accepted. Implementation can now begin.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -792,7 +792,7 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -800,14 +800,14 @@ namespace OpenQMS.Controllers
             if (string.IsNullOrEmpty(password) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, password) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (!(User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AuthorisedPersonRole)) || capa.Status != CapaStatus.PendingApproval)
             {
-                TempData["WorkflowError"] = "Not authorised to approve this CAPA in its current status.";
+                TempData["WorkflowError"] = this.T("Not authorised to approve this CAPA in its current status.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -833,7 +833,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = "CAPA approved successfully.";
+            TempData["Success"] = this.T("CAPA approved successfully.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -848,14 +848,14 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(password) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, password) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -865,25 +865,25 @@ namespace OpenQMS.Controllers
                 && !User.IsInRole(Constants.AuthorisedPersonRole)
                 && !User.IsInRole(Constants.AuditorRole))
             {
-                TempData["WorkflowError"] = "Not authorised to submit this CAPA for acceptance.";
+                TempData["WorkflowError"] = this.T("Not authorised to submit this CAPA for acceptance.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (capa.Status != CapaStatus.Determination && capa.Status != CapaStatus.Assessment)
             {
-                TempData["WorkflowError"] = "CAPA cannot be submitted for acceptance from its current status.";
+                TempData["WorkflowError"] = this.T("CAPA cannot be submitted for acceptance from its current status.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrWhiteSpace(capa.CorrectiveAction) || string.IsNullOrWhiteSpace(capa.PreventiveAction))
             {
-                TempData["WorkflowError"] = "Corrective Action and Preventive Action must be completed before submitting for acceptance.";
+                TempData["WorkflowError"] = this.T("Corrective Action and Preventive Action must be completed before submitting for acceptance.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrWhiteSpace(capa.Assessment))
             {
-                TempData["WorkflowError"] = "Assessment must be completed before submitting for acceptance.";
+                TempData["WorkflowError"] = this.T("Assessment must be completed before submitting for acceptance.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -907,7 +907,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = "CAPA submitted for acceptance.";
+            TempData["Success"] = this.T("CAPA submitted for acceptance.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -922,14 +922,14 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(password) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, password) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -939,19 +939,19 @@ namespace OpenQMS.Controllers
                 && !User.IsInRole(Constants.AuthorisedPersonRole)
                 && !User.IsInRole(Constants.AuditorRole))
             {
-                TempData["WorkflowError"] = "Not authorised to submit this CAPA for approval.";
+                TempData["WorkflowError"] = this.T("Not authorised to submit this CAPA for approval.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (capa.Status != CapaStatus.Implementation)
             {
-                TempData["WorkflowError"] = "CAPA must be in Implementation status to submit for approval.";
+                TempData["WorkflowError"] = this.T("CAPA must be in Implementation status to submit for approval.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrWhiteSpace(capa.Implementation))
             {
-                TempData["WorkflowError"] = "Implementation details must be completed before submitting for approval.";
+                TempData["WorkflowError"] = this.T("Implementation details must be completed before submitting for approval.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -975,7 +975,7 @@ namespace OpenQMS.Controllers
             });
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = "CAPA submitted for approval.";
+            TempData["Success"] = this.T("CAPA submitted for approval.");
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -989,7 +989,7 @@ namespace OpenQMS.Controllers
 
             if (!(User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AuthorisedPersonRole)))
             {
-                TempData["WorkflowError"] = "Only Quality Managers, Administrators and Authorised Persons can return a CAPA.";
+                TempData["WorkflowError"] = this.T("Only Quality Managers, Administrators and Authorised Persons can return a CAPA.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -997,14 +997,14 @@ namespace OpenQMS.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(password) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, password) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 TempData["ActiveTab"] = "workflow";
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -1038,7 +1038,7 @@ namespace OpenQMS.Controllers
                     break;
 
                 default:
-                    TempData["WorkflowError"] = "CAPA cannot be returned from its current status.";
+                    TempData["WorkflowError"] = this.T("CAPA cannot be returned from its current status.");
                     TempData["ActiveTab"] = "workflow";
                     return RedirectToAction(nameof(Details), new { id });
             }
@@ -1397,7 +1397,7 @@ namespace OpenQMS.Controllers
             if (User.IsInRole(Constants.ReadOnlyRole)) return Forbid();
             if (file == null || file.Length == 0)
             {
-                TempData["Error"] = "Please select a file to upload.";
+                TempData["Error"] = this.T("Please select a file to upload.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = capaId });
             }
@@ -1406,13 +1406,13 @@ namespace OpenQMS.Controllers
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(ext))
             {
-                TempData["Error"] = "File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.";
+                TempData["Error"] = this.T("File type not allowed. Accepted: PDF, Word, Excel, ZIP, JPG, PNG.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = capaId });
             }
             if (file.Length > UploadRules.MaxBytes)
             {
-                TempData["Error"] = "File size exceeds the 25 MB limit.";
+                TempData["Error"] = this.T("File size exceeds the 25 MB limit.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = capaId });
             }
@@ -1425,7 +1425,7 @@ namespace OpenQMS.Controllers
 
             if (capa.Status == Capa.CapaStatus.Approved)
             {
-                TempData["Error"] = "Attachments cannot be added to an approved CAPA.";
+                TempData["Error"] = this.T("Attachments cannot be added to an approved CAPA.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = capaId });
             }
@@ -1489,7 +1489,7 @@ namespace OpenQMS.Controllers
 
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.CapaId });
             }
@@ -1537,7 +1537,7 @@ namespace OpenQMS.Controllers
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
             if (!System.IO.File.Exists(filePath))
             {
-                TempData["Error"] = "File not found on server.";
+                TempData["Error"] = this.T("File not found on server.");
                 TempData["ActiveTab"] = "attachments";
                 return RedirectToAction(nameof(Details), new { id = attachment.CapaId });
             }
@@ -1590,14 +1590,14 @@ namespace OpenQMS.Controllers
                 var capa = await _context.Capa.FindAsync(capaId);
                 if (capa != null && capa.Status == Capa.CapaStatus.Approved)
                 {
-                    TempData["Error"] = "Attachments cannot be removed from an approved CAPA.";
+                    TempData["Error"] = this.T("Attachments cannot be removed from an approved CAPA.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = capaId });
                 }
 
                 if (string.IsNullOrWhiteSpace(deletionReason))
                 {
-                    TempData["Error"] = "A reason is required to delete an attachment.";
+                    TempData["Error"] = this.T("A reason is required to delete an attachment.");
                     TempData["ActiveTab"] = "attachments";
                     return RedirectToAction(nameof(Details), new { id = capaId });
                 }
@@ -1617,7 +1617,7 @@ namespace OpenQMS.Controllers
                 });
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = "Attachment deleted successfully.";
+                TempData["Success"] = this.T("Attachment deleted successfully.");
             }
 
             TempData["ActiveTab"] = "attachments";
@@ -1632,26 +1632,26 @@ namespace OpenQMS.Controllers
 
             if (capa.Status != CapaStatus.Approved)
             {
-                TempData["WorkflowError"] = "This record is not in a state that can be administratively reopened.";
+                TempData["WorkflowError"] = this.T("This record is not in a state that can be administratively reopened.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null || !string.Equals(currentUser.Email, email, StringComparison.OrdinalIgnoreCase))
             {
-                TempData["WorkflowError"] = "Electronic signature must use your own credentials.";
+                TempData["WorkflowError"] = this.T("Electronic signature must use your own credentials.");
                 return RedirectToAction(nameof(Details), new { id });
             }
             if (string.IsNullOrEmpty(pwd) ||
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
-                TempData["WorkflowError"] = "Invalid email or password.";
+                TempData["WorkflowError"] = this.T("Invalid email or password.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["WorkflowError"] = "A justification reason is required.";
+                TempData["WorkflowError"] = this.T("A justification reason is required.");
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -1669,7 +1669,7 @@ namespace OpenQMS.Controllers
             });
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Record has been administratively reopened to Implementation stage.";
+            TempData["Success"] = this.T("Record has been administratively reopened to Implementation stage.");
             return RedirectToAction(nameof(Details), new { id });
         }
     }
