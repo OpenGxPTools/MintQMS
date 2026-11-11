@@ -409,7 +409,8 @@
     </div>
 
     <script>
-        (function () {
+        // Runs once the page (and Bootstrap, loaded at the end of the layout) is ready.
+        document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.help-btn-release').forEach(function (btn) {
                 var contentEl = document.getElementById('help-' + btn.dataset.help);
                 new bootstrap.Popover(btn, {
@@ -425,7 +426,7 @@
                     });
                 }
             });
-        })();
+        });
     </script>
 
     <div class="modal fade" id="closeModal" tabindex="-1">
