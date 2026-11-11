@@ -872,11 +872,11 @@ else if (isApproaching)
                     <div class="modal-body">
                         <p class="text-muted small">
                             @if (s == OpenQMS.Models.Change.ChangeStatus.PendingAssessment)
-                            { <text>Returns to <strong>Proposal</strong> — assessment stamp will be cleared. All fields will be editable.</text> }
+                            { <text>Returns to <strong>Assessment</strong> — assessment stamp will be cleared. All fields will be editable.</text> }
                             else if (s == OpenQMS.Models.Change.ChangeStatus.PendingApproval)
                             { <text>Returns to <strong>Implementation</strong> — implementation stamp will be cleared.</text> }
                             else if (s == OpenQMS.Models.Change.ChangeStatus.Implementation)
-                            { <text>Returns to <strong>Proposal</strong> — all intermediate stamps will be cleared. All fields will be editable.</text> }
+                            { <text>Returns to <strong>Assessment</strong> — all intermediate stamps will be cleared. All fields will be editable.</text> }
                         </p>
                         <div class="mb-3">
                             <label class="form-label">Reason for Return <span class="text-danger">*</span></label>
