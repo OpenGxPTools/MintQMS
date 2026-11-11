@@ -32,6 +32,9 @@
   in English, as records.
 - Dashboard charts in every module show their labels (statuses, types, categories, series names) and month
   names in the user's language; the "All" choice in table page-size menus is translated everywhere.
+- Home page, user and role administration (with role descriptions), login history, the account pages
+  (profile, e-mail, password, two-factor authentication) and the error page in Spanish and Portuguese. The
+  About page stays in English: it holds the licence and disclaimer.
 - Deviations, Complaints, CAPA, Documents and Training: the signature dialog titles, the status shown on
   edit and detail pages, the "Click to remove" hint and the remaining messages after an action are now
   translated too.
@@ -69,6 +72,8 @@
 - Settings audit log: the time column was headed "(UTC)" but showed the site's time zone; it now names the
   site's zone. The attachment expiry register likewise said "UTC" after a time shown in the site's zone.
 - Complaints register: the browser tab reads "Complaints" instead of "Index".
+- Create user page: a leftover developer note about "external authentication services" no longer links to
+  an ASP.NET setup article.
 - Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the
   Approval Status column, but "Under Assessment" is a workflow stage shown in the Workflow column. It now
   filters the Workflow column and finds both first assessments and re-reviews.

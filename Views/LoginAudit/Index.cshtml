@@ -23,7 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @model IEnumerable<OpenQMS.Models.LoginAuditLog>
 
 @{
-    ViewData["Title"] = "Login History";
+    ViewData["Title"] = L["Login History"].Value;
 
     string ActionBadge(string action) => action switch
     {
@@ -36,8 +36,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">Login History</h4>
-    <span class="text-muted small">@Model.Count() records shown</span>
+    <h4 class="mb-0">@L["Login History"]</h4>
+    <span class="text-muted small">@L["{0} records shown", Model.Count()]</span>
 </div>
 
 @* ── Filter bar ── *@
@@ -45,17 +45,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="card-body">
         <form method="get" class="row g-3 align-items-end">
             <div class="col-sm-4 col-lg-3">
-                <label class="form-label small fw-semibold text-uppercase text-muted">Username</label>
-                <input type="text" name="userName" value="@ViewBag.UserName" class="form-control form-control-sm" placeholder="Filter by username" />
+                <label class="form-label small fw-semibold text-uppercase text-muted">@L["Username"]</label>
+                <input type="text" name="userName" value="@ViewBag.UserName" class="form-control form-control-sm" placeholder="@L["Filter by username"]" />
             </div>
             <div class="col-sm-4 col-lg-2">
                 <label class="form-label small fw-semibold text-uppercase text-muted">@L["Action"]</label>
                 <select name="actionFilter" class="form-select form-select-sm">
                     <option value="">@L["All"]</option>
-                    <option value="Login"        selected="@(ViewBag.ActionFilter == "Login"        ? "selected" : null)">Login</option>
-                    <option value="Logout"       selected="@(ViewBag.ActionFilter == "Logout"       ? "selected" : null)">Logout</option>
-                    <option value="Failed Login" selected="@(ViewBag.ActionFilter == "Failed Login" ? "selected" : null)">Failed Login</option>
-                    <option value="Locked Out"   selected="@(ViewBag.ActionFilter == "Locked Out"   ? "selected" : null)">Locked Out</option>
+                    <option value="Login"        selected="@(ViewBag.ActionFilter == "Login"        ? "selected" : null)">@L["Login"]</option>
+                    <option value="Logout"       selected="@(ViewBag.ActionFilter == "Logout"       ? "selected" : null)">@L["Logout"]</option>
+                    <option value="Failed Login" selected="@(ViewBag.ActionFilter == "Failed Login" ? "selected" : null)">@L["Failed Login"]</option>
+                    <option value="Locked Out"   selected="@(ViewBag.ActionFilter == "Locked Out"   ? "selected" : null)">@L["Locked Out"]</option>
                 </select>
             </div>
             <div class="col-sm-4 col-lg-2">
@@ -80,11 +80,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <table id="loginAuditTable" class="table table-sm table-hover mb-0">
             <thead class="table-light">
                 <tr>
-                    <th class="ps-3">Timestamp (UTC)</th>
-                    <th>Username</th>
+                    <th class="ps-3">@L["Timestamp (UTC)"]</th>
+                    <th>@L["Username"]</th>
                     <th>@L["Action"]</th>
-                    <th>IP Address</th>
-                    <th class="pe-3">Browser / User Agent</th>
+                    <th>@L["IP Address"]</th>
+                    <th class="pe-3">@L["Browser / User Agent"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -103,7 +103,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
     @if (!Model.Any())
     {
-        <div class="card-body text-muted small">No records found for the selected filters.</div>
+        <div class="card-body text-muted small">@L["No records found for the selected filters."]</div>
     }
 </div>
 

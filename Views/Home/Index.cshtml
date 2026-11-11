@@ -23,14 +23,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @model OpenQMS.Models.ViewModels.HomeViewModel
 
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = L["Home"].Value;
 
     string Badge(string cls) => cls == "warning" ? "bg-warning text-dark" : "bg-" + cls;
 }
 
 @* ── Page header ──────────────────────────────────────────────── *@
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Quality Overview</h2>
+    <h2 class="mb-0">@L["Quality Overview"]</h2>
     <span class="text-muted small">@DisplayDates.Long(SiteTime.Today)</span>
 </div>
 
@@ -38,17 +38,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
    MY ITEMS  (personalised)
    ══════════════════════════════════════════════════════════════════ *@
 
-<p class="text-uppercase text-muted fw-semibold small mb-2">My Items</p>
+<p class="text-uppercase text-muted fw-semibold small mb-2">@L["My Items"]</p>
 <div class="row g-3 mb-3">
 
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #fd7e14 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">My Open CAPAs</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Open CAPAs"]</p>
                 <h2 class="fw-bold mb-0">@Model.MyCAPAs</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -56,11 +56,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #fd7e14 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">My Open Deviations</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Open Deviations"]</p>
                 <h2 class="fw-bold mb-0">@Model.MyDeviations</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -68,11 +68,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #6c757d !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">My Documents</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Documents"]</p>
                 <h2 class="fw-bold mb-0">@Model.MyDocuments</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -80,11 +80,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #198754 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">My Trainings</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Trainings"]</p>
                 <h2 class="fw-bold mb-0">@Model.MyTrainings</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -92,11 +92,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0d6efd !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">My Open Changes</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Open Changes"]</p>
                 <h2 class="fw-bold mb-0">@Model.MyChanges</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -104,11 +104,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #dc3545 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">My Open Risks</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Open Risks"]</p>
                 <h2 class="fw-bold mb-0">@Model.MyRisks</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -124,8 +124,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">My Open CAPAs</span>
-                        <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["My Open CAPAs"]</span>
+                        <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
@@ -136,7 +136,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -152,8 +152,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">My Open Deviations</span>
-                        <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["My Open Deviations"]</span>
+                        <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
@@ -164,7 +164,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -180,19 +180,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">My Documents for Review</span>
-                        <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["My Documents for Review"]</span>
+                        <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">Authored</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Authored"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.MyRecentDocuments)
                                 {
                                     <tr>
                                         <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -208,8 +208,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">My Scheduled Trainings</span>
-                        <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["My Scheduled Trainings"]</span>
+                        <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
@@ -220,7 +220,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Trainings" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -236,19 +236,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">My Open Changes</span>
-                        <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["My Open Changes"]</span>
+                        <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">Proposed</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Proposed"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.MyRecentChanges)
                                 {
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Changes" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -264,8 +264,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">My Open Risks</span>
-                        <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["My Open Risks"]</span>
+                        <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
@@ -276,7 +276,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -291,7 +291,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 else
 {
-    <p class="text-muted small mb-5">Nothing currently assigned to you.</p>
+    <p class="text-muted small mb-5">@L["Nothing currently assigned to you."]</p>
 }
 
 @* ══════════════════════════════════════════════════════════════════
@@ -300,7 +300,7 @@ else
 
 @if (Model.IsQualityManager || Model.IsRegulatoryManager)
 {
-    <p class="text-uppercase text-muted fw-semibold small mb-3">Pending My Action</p>
+    <p class="text-uppercase text-muted fw-semibold small mb-3">@L["Pending My Action"]</p>
     <div class="row g-4 mb-5">
 
         @* ── Quality Manager tables ── *@
@@ -310,10 +310,10 @@ else
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">CAPAs Pending Action</span>
-                        <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["CAPAs Pending Action"]</span>
+                        <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
-                    @if (!Model.PendingCAPAs.Any()) { <div class="card-body text-muted small">No CAPAs pending your action.</div> }
+                    @if (!Model.PendingCAPAs.Any()) { <div class="card-body text-muted small">@L["No CAPAs pending your action."]</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                             <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
@@ -322,7 +322,7 @@ else
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -336,10 +336,10 @@ else
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Deviations Pending Action</span>
-                        <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["Deviations Pending Action"]</span>
+                        <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
-                    @if (!Model.PendingDeviations.Any()) { <div class="card-body text-muted small">No deviations pending your action.</div> }
+                    @if (!Model.PendingDeviations.Any()) { <div class="card-body text-muted small">@L["No deviations pending your action."]</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                             <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
@@ -348,7 +348,7 @@ else
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -362,10 +362,10 @@ else
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Changes Pending Action</span>
-                        <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["Changes Pending Action"]</span>
+                        <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
-                    @if (!Model.PendingChanges.Any()) { <div class="card-body text-muted small">No changes pending your action.</div> }
+                    @if (!Model.PendingChanges.Any()) { <div class="card-body text-muted small">@L["No changes pending your action."]</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                             <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
@@ -374,7 +374,7 @@ else
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Changes" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -388,10 +388,10 @@ else
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Audits Pending Action</span>
-                        <a asp-controller="Audits" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["Audits Pending Action"]</span>
+                        <a asp-controller="Audits" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
-                    @if (!Model.PendingAudits.Any()) { <div class="card-body text-muted small">No audits pending action.</div> }
+                    @if (!Model.PendingAudits.Any()) { <div class="card-body text-muted small">@L["No audits pending action."]</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                             <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Scheduled"]</th></tr></thead>
@@ -400,7 +400,7 @@ else
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Audits" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -414,19 +414,19 @@ else
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Documents Pending Approval</span>
-                        <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["Documents Pending Approval"]</span>
+                        <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
-                    @if (!Model.PendingDocuments.Any()) { <div class="card-body text-muted small">No documents pending approval.</div> }
+                    @if (!Model.PendingDocuments.Any()) { <div class="card-body text-muted small">@L["No documents pending approval."]</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">Authored</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Authored"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingDocuments) {
                                     <tr>
                                         <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -440,10 +440,10 @@ else
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Complaints Pending Action</span>
-                        <a asp-controller="Complaints" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["Complaints Pending Action"]</span>
+                        <a asp-controller="Complaints" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
-                    @if (!Model.PendingComplaints.Any()) { <div class="card-body text-muted small">No complaints pending your action.</div> }
+                    @if (!Model.PendingComplaints.Any()) { <div class="card-body text-muted small">@L["No complaints pending your action."]</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                             <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Received"]</th></tr></thead>
@@ -452,7 +452,7 @@ else
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Complaints" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -466,10 +466,10 @@ else
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Risks Pending Action</span>
-                        <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["Risks Pending Action"]</span>
+                        <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
-                    @if (!Model.PendingRisks.Any()) { <div class="card-body text-muted small">No risks pending your action.</div> }
+                    @if (!Model.PendingRisks.Any()) { <div class="card-body text-muted small">@L["No risks pending your action."]</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                             <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Identified"]</th></tr></thead>
@@ -478,7 +478,7 @@ else
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -496,19 +496,19 @@ else
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Adverse Events Pending Approval</span>
-                        <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["Adverse Events Pending Approval"]</span>
+                        <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
-                    @if (!Model.PendingAdverseEvents.Any()) { <div class="card-body text-muted small">No adverse events pending approval.</div> }
+                    @if (!Model.PendingAdverseEvents.Any()) { <div class="card-body text-muted small">@L["No adverse events pending approval."]</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">AE#</th><th>MedDRA Term</th><th>@L["Action Required"]</th><th class="pe-3">Deadline</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["AE#"]</th><th>@L["MedDRA Term"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Deadline"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingAdverseEvents) {
                                     <tr>
                                         <td class="ps-3"><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -522,19 +522,19 @@ else
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Confirmed Signals — Action Required</span>
-                        <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["Confirmed Signals — Action Required"]</span>
+                        <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
-                    @if (!Model.PendingSignalReviews.Any()) { <div class="card-body text-muted small">No confirmed signals requiring action.</div> }
+                    @if (!Model.PendingSignalReviews.Any()) { <div class="card-body text-muted small">@L["No confirmed signals requiring action."]</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">SIG#</th><th>MedDRA Term</th><th>@L["Action Required"]</th><th class="pe-3">@L["Detected"]</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["SIG#"]</th><th>@L["MedDRA Term"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Detected"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingSignalReviews) {
                                     <tr>
                                         <td class="ps-3"><a asp-controller="PVSignalReview" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -548,19 +548,19 @@ else
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Licences &amp; Certs — Renewal Due</span>
-                        <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                        <span class="fw-semibold">@L["Licences & Certs — Renewal Due"]</span>
+                        <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
                     </div>
-                    @if (!Model.PendingLCRenewals.Any()) { <div class="card-body text-muted small">No licences or certifications with renewal due.</div> }
+                    @if (!Model.PendingLCRenewals.Any()) { <div class="card-body text-muted small">@L["No licences or certifications with renewal due."]</div> }
                     else {
                         <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">LC#</th><th>Holder</th><th>@L["Action Required"]</th><th class="pe-3">@L["Expiry"]</th></tr></thead>
+                            <thead class="table-light"><tr><th class="ps-3">@L["LC#"]</th><th>@L["Holder"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Expiry"]</th></tr></thead>
                             <tbody>
                                 @foreach (var item in Model.PendingLCRenewals) {
                                     <tr>
                                         <td class="ps-3"><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                         <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                         <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                                     </tr>
                                 }
@@ -578,17 +578,17 @@ else
    QUALITY EVENTS
    ══════════════════════════════════════════════════════════════════ *@
 
-<p class="text-uppercase text-muted fw-semibold small mb-2">Quality Events</p>
+<p class="text-uppercase text-muted fw-semibold small mb-2">@L["Quality Events"]</p>
 <div class="row g-3 mb-4">
 
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #fd7e14 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Open CAPAs</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Open CAPAs"]</p>
                 <h2 class="fw-bold mb-0">@Model.OpenCAPAs</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -596,11 +596,11 @@ else
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #fd7e14 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Deviations</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Open Deviations"]</p>
                 <h2 class="fw-bold mb-0">@Model.OpenDeviations</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -608,11 +608,11 @@ else
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #dc3545 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Complaints</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Open Complaints"]</p>
                 <h2 class="fw-bold mb-0">@Model.OpenComplaints</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Complaints" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Complaints" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -620,11 +620,11 @@ else
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0d6efd !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Changes</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Open Changes"]</p>
                 <h2 class="fw-bold mb-0">@Model.OpenChanges</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -635,17 +635,17 @@ else
    QUALITY SYSTEMS
    ══════════════════════════════════════════════════════════════════ *@
 
-<p class="text-uppercase text-muted fw-semibold small mb-2">Quality Systems</p>
+<p class="text-uppercase text-muted fw-semibold small mb-2">@L["Quality Systems"]</p>
 <div class="row g-3 mb-4">
 
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0dcaf0 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Active Audits</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Active Audits"]</p>
                 <h2 class="fw-bold mb-0">@Model.ActiveAudits</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Audits" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Audits" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -653,11 +653,11 @@ else
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #dc3545 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Risks</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Open Risks"]</p>
                 <h2 class="fw-bold mb-0">@Model.OpenRisks</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -665,11 +665,11 @@ else
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #198754 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Scheduled Trainings</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Scheduled Trainings"]</p>
                 <h2 class="fw-bold mb-0">@Model.ScheduledTrainings</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -677,11 +677,11 @@ else
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #6c757d !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Documents in Progress</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Documents in Progress"]</p>
                 <h2 class="fw-bold mb-0">@Model.DocumentsForReview</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -689,15 +689,15 @@ else
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid @(Model.DocsReviewOverdue > 0 ? "#dc3545" : "#6c757d") !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Docs Overdue for Review</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Docs Overdue for Review"]</p>
                 <h2 class="fw-bold mb-0 @(Model.DocsReviewOverdue > 0 ? "text-danger" : "")">@Model.DocsReviewOverdue</h2>
                 @if (Model.DocsReviewDueSoon > 0)
                 {
-                    <p class="text-warning small mb-0 mt-1">@Model.DocsReviewDueSoon due within 30 days</p>
+                    <p class="text-warning small mb-0 mt-1">@L["{0} due within 30 days", Model.DocsReviewDueSoon]</p>
                 }
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="AppDocuments" asp-action="Dashboard" class="small text-muted text-decoration-none">View document dashboard &rarr;</a>
+                <a asp-controller="AppDocuments" asp-action="Dashboard" class="small text-muted text-decoration-none">@L["View document dashboard"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -708,21 +708,21 @@ else
    SUPPORTING DOCUMENTS
    ══════════════════════════════════════════════════════════════════ *@
 
-<p class="text-uppercase text-muted fw-semibold small mb-2">Record Attachments</p>
+<p class="text-uppercase text-muted fw-semibold small mb-2">@L["Record Attachments"]</p>
 <div class="row g-3 mb-5">
 
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid @(Model.SupportingDocsExpired > 0 ? "#dc3545" : "#6c757d") !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Record Attachments Expired</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Record Attachments Expired"]</p>
                 <h2 class="fw-bold mb-0 @(Model.SupportingDocsExpired > 0 ? "text-danger" : "")">@Model.SupportingDocsExpired</h2>
                 @if (Model.SupportingDocsExpiringSoon > 0)
                 {
-                    <p class="text-warning small mb-0 mt-1">@Model.SupportingDocsExpiringSoon expiring soon</p>
+                    <p class="text-warning small mb-0 mt-1">@L["{0} expiring soon", Model.SupportingDocsExpiringSoon]</p>
                 }
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Reports" asp-action="SupportingDocumentExpiry" class="small text-muted text-decoration-none">View expiry register &rarr;</a>
+                <a asp-controller="Reports" asp-action="SupportingDocumentExpiry" class="small text-muted text-decoration-none">@L["View expiry register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -733,17 +733,17 @@ else
    ACTIVE ITEMS  (global)
    ══════════════════════════════════════════════════════════════════ *@
 
-<p class="text-uppercase text-muted fw-semibold small mb-3">Active Items</p>
+<p class="text-uppercase text-muted fw-semibold small mb-3">@L["Active Items"]</p>
 <div class="row g-4 mb-5">
 
     @* Open CAPAs *@
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Open CAPAs</span>
-                <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Open CAPAs"]</span>
+                <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.RecentCAPAs.Any()) { <div class="card-body text-muted small">No open CAPAs.</div> }
+            @if (!Model.RecentCAPAs.Any()) { <div class="card-body text-muted small">@L["No open CAPAs."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                     <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
@@ -752,7 +752,7 @@ else
                             <tr>
                                 <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
@@ -766,10 +766,10 @@ else
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Open Deviations</span>
-                <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Open Deviations"]</span>
+                <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.RecentDeviations.Any()) { <div class="card-body text-muted small">No open deviations.</div> }
+            @if (!Model.RecentDeviations.Any()) { <div class="card-body text-muted small">@L["No open deviations."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                     <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
@@ -778,7 +778,7 @@ else
                             <tr>
                                 <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
@@ -792,10 +792,10 @@ else
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Open Complaints</span>
-                <a asp-controller="Complaints" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Open Complaints"]</span>
+                <a asp-controller="Complaints" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.RecentComplaints.Any()) { <div class="card-body text-muted small">No open complaints.</div> }
+            @if (!Model.RecentComplaints.Any()) { <div class="card-body text-muted small">@L["No open complaints."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                     <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Received"]</th></tr></thead>
@@ -804,7 +804,7 @@ else
                             <tr>
                                 <td class="ps-3"><a asp-controller="Complaints" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
@@ -818,10 +818,10 @@ else
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Open Risks</span>
-                <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Open Risks"]</span>
+                <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.RecentRisks.Any()) { <div class="card-body text-muted small">No open risks.</div> }
+            @if (!Model.RecentRisks.Any()) { <div class="card-body text-muted small">@L["No open risks."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                     <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Identified"]</th></tr></thead>
@@ -830,7 +830,7 @@ else
                             <tr>
                                 <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
@@ -844,10 +844,10 @@ else
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Active Audits</span>
-                <a asp-controller="Audits" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Active Audits"]</span>
+                <a asp-controller="Audits" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.RecentAudits.Any()) { <div class="card-body text-muted small">No active audits.</div> }
+            @if (!Model.RecentAudits.Any()) { <div class="card-body text-muted small">@L["No active audits."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                     <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Scheduled"]</th></tr></thead>
@@ -856,7 +856,7 @@ else
                             <tr>
                                 <td class="ps-3"><a asp-controller="Audits" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
@@ -870,19 +870,19 @@ else
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Documents for Review</span>
-                <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Documents for Review"]</span>
+                <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.RecentDocuments.Any()) { <div class="card-body text-muted small">No documents pending review.</div> }
+            @if (!Model.RecentDocuments.Any()) { <div class="card-body text-muted small">@L["No documents pending review."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">Authored</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Authored"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentDocuments) {
                             <tr>
                                 <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
@@ -896,10 +896,10 @@ else
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Scheduled Trainings</span>
-                <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Scheduled Trainings"]</span>
+                <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.RecentTrainings.Any()) { <div class="card-body text-muted small">No scheduled trainings.</div> }
+            @if (!Model.RecentTrainings.Any()) { <div class="card-body text-muted small">@L["No scheduled trainings."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
                     <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Name"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
@@ -908,7 +908,7 @@ else
                             <tr>
                                 <td class="ps-3"><a asp-controller="Trainings" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
@@ -926,21 +926,21 @@ else
    REGULATORY OVERVIEW
    ══════════════════════════════════════════════════════════════════ *@
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Regulatory Overview</h2>
+    <h2 class="mb-0">@L["Regulatory Overview"]</h2>
     <span class="text-muted small">@DisplayDates.Long(SiteTime.Today)</span>
 </div>
 
-<p class="text-uppercase text-muted fw-semibold small mb-2">Key Metrics</p>
+<p class="text-uppercase text-muted fw-semibold small mb-2">@L["Key Metrics"]</p>
 <div class="row g-3 mb-5">
 
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #dc3545 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Adverse Events</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Open Adverse Events"]</p>
                 <h2 class="fw-bold mb-0">@Model.OpenAdverseEvents</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -948,11 +948,11 @@ else
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #ffc107 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">LC Renewals Due</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["LC Renewals Due"]</p>
                 <h2 class="fw-bold mb-0">@Model.LCRenewalsDue</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -960,11 +960,11 @@ else
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0d6efd !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Active RI Applications</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Active RI Applications"]</p>
                 <h2 class="fw-bold mb-0">@Model.ActiveRIApplications</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="RegulatoryIntelligence" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="RegulatoryIntelligence" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -972,11 +972,11 @@ else
     <div class="col-sm-6 col-lg-3">
         <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #6f42c1 !important;">
             <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Open Signal Reviews</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["Open Signal Reviews"]</p>
                 <h2 class="fw-bold mb-0">@Model.OpenSignalReviews</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">View register &rarr;</a>
+                <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
             </div>
         </div>
     </div>
@@ -987,26 +987,26 @@ else
    REGULATORY ITEMS
    ══════════════════════════════════════════════════════════════════ *@
 
-<p class="text-uppercase text-muted fw-semibold small mb-3">Regulatory Items</p>
+<p class="text-uppercase text-muted fw-semibold small mb-3">@L["Regulatory Items"]</p>
 <div class="row g-4">
 
     @* Open Adverse Events *@
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Open Adverse Events</span>
-                <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Open Adverse Events"]</span>
+                <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.RecentAdverseEvents.Any()) { <div class="card-body text-muted small">No open adverse events.</div> }
+            @if (!Model.RecentAdverseEvents.Any()) { <div class="card-body text-muted small">@L["No open adverse events."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">AE#</th><th>MedDRA Term</th><th>@L["Status"]</th><th class="pe-3">Deadline</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["AE#"]</th><th>@L["MedDRA Term"]</th><th>@L["Status"]</th><th class="pe-3">@L["Deadline"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentAdverseEvents) {
                             <tr>
                                 <td class="ps-3"><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
@@ -1020,19 +1020,19 @@ else
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Licences &amp; Certs Expiring (@(ViewBag.LcExpiryWarningDays ?? 90) days)</span>
-                <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Licences & Certs Expiring ({0} days)", ViewBag.LcExpiryWarningDays ?? 90]</span>
+                <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.LCExpiringSoon.Any()) { <div class="card-body text-muted small">No licences or certifications expiring within @(ViewBag.LcExpiryWarningDays ?? 90) days.</div> }
+            @if (!Model.LCExpiringSoon.Any()) { <div class="card-body text-muted small">@L["No licences or certifications expiring within {0} days.", ViewBag.LcExpiryWarningDays ?? 90]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">LC#</th><th>Holder</th><th>@L["Status"]</th><th class="pe-3">@L["Expiry"]</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["LC#"]</th><th>@L["Holder"]</th><th>@L["Status"]</th><th class="pe-3">@L["Expiry"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.LCExpiringSoon) {
                             <tr>
                                 <td class="ps-3"><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
@@ -1046,19 +1046,19 @@ else
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Active RI Applications</span>
-                <a asp-controller="RegulatoryIntelligence" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Active RI Applications"]</span>
+                <a asp-controller="RegulatoryIntelligence" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.RecentRIApplications.Any()) { <div class="card-body text-muted small">No active regulatory applications.</div> }
+            @if (!Model.RecentRIApplications.Any()) { <div class="card-body text-muted small">@L["No active regulatory applications."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">RI#</th><th>@L["Product"]</th><th>@L["Status"]</th><th class="pe-3">Target</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["RI#"]</th><th>@L["Product"]</th><th>@L["Status"]</th><th class="pe-3">@L["Target"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentRIApplications) {
                             <tr>
                                 <td class="ps-3"><a asp-controller="RegulatoryIntelligence" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }
@@ -1072,19 +1072,19 @@ else
     <div class="col-md-6">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Open Signal Reviews</span>
-                <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">View all &rarr;</a>
+                <span class="fw-semibold">@L["Open Signal Reviews"]</span>
+                <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
             </div>
-            @if (!Model.RecentSignalReviews.Any()) { <div class="card-body text-muted small">No open signal reviews.</div> }
+            @if (!Model.RecentSignalReviews.Any()) { <div class="card-body text-muted small">@L["No open signal reviews."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>MedDRA Term</th><th>@L["Status"]</th><th class="pe-3">@L["Detected"]</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["MedDRA Term"]</th><th>@L["Status"]</th><th class="pe-3">@L["Detected"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentSignalReviews) {
                             <tr>
                                 <td class="ps-3"><a asp-controller="PVSignalReview" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                <td><span class="badge @Badge(item.BadgeClass)">@item.Status</span></td>
+                                <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
                                 <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
                             </tr>
                         }

@@ -23,15 +23,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @model IEnumerable<OpenQMS.Models.UserAuditLog>
 
 @{
-    ViewData["Title"] = "User Audit Log";
+    ViewData["Title"] = L["User Audit Log"].Value;
 }
 
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
-        <h4 class="mb-0">User Audit Log</h4>
+        <h4 class="mb-0">@L["User Audit Log"]</h4>
         <p class="text-muted mb-0">@ViewBag.UserName &mdash; @ViewBag.Email</p>
     </div>
-    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to Users</a>
+    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">@L["Back to Users"]</a>
 </div>
 <hr />
 
@@ -46,7 +46,7 @@ else
             <tr>
                 <th>@L["Date / Time (UTC)"]</th>
                 <th>@L["Action"]</th>
-                <th>Detail</th>
+                <th>@L["Detail"]</th>
                 <th>@L["Performed By"]</th>
             </tr>
         </thead>

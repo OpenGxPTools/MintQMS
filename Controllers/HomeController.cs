@@ -20,6 +20,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
+using OpenQMS.Localization;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -391,7 +392,7 @@ namespace OpenQMS.Controllers
                     .Select(ae => new HomeActivityItem
                     {
                         Id = ae.Id, RecordId = ae.AENumber,
-                        Title = ae.MedDRAPT ?? "(No preferred term)",
+                        Title = ae.MedDRAPT ?? this.T("(No preferred term)"),
                         Status = "Needs Approval", BadgeClass = "danger",
                         Date = ae.TGADeadlineDate ?? ae.ReportDate
                     }).ToList();
@@ -689,7 +690,7 @@ namespace OpenQMS.Controllers
                 .Select(ae => new HomeActivityItem
                 {
                     Id = ae.Id, RecordId = ae.AENumber,
-                    Title = ae.MedDRAPT ?? "(No preferred term)",
+                    Title = ae.MedDRAPT ?? this.T("(No preferred term)"),
                     Status = ae.Status switch
                     {
                         AdverseEvent.AEStatus.UnderMedicalReview => "Under Medical Review",

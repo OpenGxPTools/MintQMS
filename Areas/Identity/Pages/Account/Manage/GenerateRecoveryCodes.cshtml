@@ -16,8 +16,7 @@
         @L["If you lose your device and don't have the recovery codes you will lose access to your account."]
     </p>
     <p>
-        Generating new recovery codes does not change the keys used in authenticator apps. If you wish to change the key
-        used in an authenticator app you should <a asp-page="./ResetAuthenticator">@L["reset your authenticator keys."]</a>
+        @H["Generating new recovery codes does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should <a href=\"{0}\">reset your authenticator keys.</a>", Url.Page("./ResetAuthenticator")!]
     </p>
 </div>
 <div>

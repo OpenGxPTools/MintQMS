@@ -24,10 +24,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @model IEnumerable<UserRolesViewModel>
 
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = L["Users"].Value;
 }
 
-<h4 class="mb-0">Users</h4>
+<h4 class="mb-0">@L["Users"]</h4>
 <hr />
 
 @if (TempData["Success"] != null)
@@ -67,11 +67,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>
                     @if (item.IsActive)
                     {
-                        <span class="badge bg-success">Active</span>
+                        <span class="badge bg-success">@L["Active"]</span>
                     }
                     else
                     {
-                        <span class="badge bg-danger">Inactive</span>
+                        <span class="badge bg-danger">@L["Inactive"]</span>
                     }
                 </td>
                 <td>
@@ -81,7 +81,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     }
                     else
                     {
-                        <span class="text-muted fst-italic">No roles assigned</span>
+                        <span class="text-muted fst-italic">@L["No roles assigned"]</span>
                     }
                 </td>
                 @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.RegulatoryManagerRole))
@@ -89,9 +89,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <td>
                         @if (User.IsInRole(Constants.AdministratorsRole))
                         {
-                            <a asp-action="ManageRoles" asp-route-userId="@item.UserId" class="btn btn-sm btn-outline-secondary">Manage Roles</a>
+                            <a asp-action="ManageRoles" asp-route-userId="@item.UserId" class="btn btn-sm btn-outline-secondary">@L["Manage Roles"]</a>
                         }
-                        <a asp-action="History" asp-route-userId="@item.UserId" class="btn btn-sm btn-outline-info ms-1">History</a>
+                        <a asp-action="History" asp-route-userId="@item.UserId" class="btn btn-sm btn-outline-info ms-1">@L["History"]</a>
                     </td>
                 }
             </tr>
@@ -102,6 +102,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @if (User.IsInRole(Constants.AdministratorsRole))
 {
     <p>
-        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary">Create New User</a>
+        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary">@L["Create New User"]</a>
     </p>
 }

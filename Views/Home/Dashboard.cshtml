@@ -23,7 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @model IEnumerable<OpenQMS.Models.ViewModels.AuthoredOnGroup>
 
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = L["Dashboard"].Value;
 }
 
 <h2>@L["Dashboard"]</h2>
@@ -36,7 +36,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             @L["Date"]
         </th>
         <th style="text-align:center">
-            Documents Authored
+            @L["Documents Authored"]
         </th>
     </tr>
 

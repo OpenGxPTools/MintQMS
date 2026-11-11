@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 @model IEnumerable<AppRole>
 
 @{
-    ViewData["Title"] = "Roles";
+    ViewData["Title"] = L["Roles"].Value;
 }
 
 <h4 class="mb-0">@L["Roles"]</h4>
@@ -43,7 +43,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {
             <tr>
                 <td><strong>@L.Role(item.Name)</strong></td>
-                <td class="text-muted">@item.Description</td>
+                <td class="text-muted">@L.Message(item.Description)</td>
             </tr>
         }
     </tbody>

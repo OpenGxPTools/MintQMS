@@ -20,6 +20,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
+using OpenQMS.Localization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -155,7 +156,7 @@ namespace OpenQMS.Controllers
             var currentUserId = _userManager.GetUserId(User);
             if (vm.UserId == currentUserId && !vm.IsActive)
             {
-                TempData["Error"] = "You cannot deactivate your own account.";
+                TempData["Error"] = this.T("You cannot deactivate your own account.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -164,7 +165,7 @@ namespace OpenQMS.Controllers
                 var result = await _userManager.SetLockoutEndDateAsync(user, null);
                 if (!result.Succeeded)
                 {
-                    TempData["Error"] = "Failed to activate account: " + string.Join(", ", result.Errors.Select(e => e.Description));
+                    TempData["Error"] = this.T("Failed to activate account: {0}", string.Join(", ", result.Errors.Select(e => e.Description)));
                     return RedirectToAction(nameof(Index));
                 }
                 _context.UserAuditLog.Add(new UserAuditLog
@@ -182,7 +183,7 @@ namespace OpenQMS.Controllers
                 var result = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
                 if (!result.Succeeded)
                 {
-                    TempData["Error"] = "Failed to deactivate account: " + string.Join(", ", result.Errors.Select(e => e.Description));
+                    TempData["Error"] = this.T("Failed to deactivate account: {0}", string.Join(", ", result.Errors.Select(e => e.Description)));
                     return RedirectToAction(nameof(Index));
                 }
                 _context.UserAuditLog.Add(new UserAuditLog
@@ -217,7 +218,7 @@ namespace OpenQMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"User {user.UserName} updated.";
+            TempData["Success"] = this.T("User {0} updated.", user.UserName);
             return RedirectToAction(nameof(Index));
         }
     }

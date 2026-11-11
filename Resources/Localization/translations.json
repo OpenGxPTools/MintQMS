@@ -20,6 +20,10 @@
   "pt-BR": "(filtrado de _MAX_ registros no total)",
   "note": "DataTables: keep _MAX_ as is"
  },
+ "(No preferred term)": {
+  "es": "(Sin término preferido)",
+  "pt-BR": "(Sem termo preferido)"
+ },
  "(open >30 days)": {
   "es": "(abiertas >30 días)",
   "pt-BR": "(abertas >30 dias)"
@@ -357,6 +361,10 @@
   "es": "<strong>eCTD</strong> — Documento Técnico Común electrónico; la presentación electrónica estructurada estándar (TGA, FDA, EMA).",
   "pt-BR": "<strong>eCTD</strong> — Documento Técnico Comum eletrônico; a submissão eletrônica estruturada padrão (TGA, FDA, EMA)."
  },
+ "<strong>Email is not configured yet.</strong> Once SMTP is set up in System Settings, confirmation emails will be sent automatically.": {
+  "es": "<strong>El correo electrónico aún no está configurado.</strong> Cuando se configure el SMTP en la configuración del sistema, los correos de confirmación se enviarán automáticamente.",
+  "pt-BR": "<strong>O e-mail ainda não está configurado.</strong> Quando o SMTP for configurado nas configurações do sistema, os e-mails de confirmação serão enviados automaticamente."
+ },
  "<strong>Expectedness</strong> asks whether this event is already listed in the product's reference safety information (e.g. the approved PI / SmPC / CCDS). <strong>Unexpected</strong> = not listed, or more severe/specific than listed. A serious + unexpected + related case is typically what triggers expedited regulatory reporting.": {
   "es": "La <strong>expectabilidad</strong> indica si este evento ya figura en la información de seguridad de referencia del producto (p. ej., la ficha técnica / SmPC / CCDS aprobada). <strong>Inesperado</strong> = no figura, o es más grave/específico de lo indicado. Un caso grave + inesperado + relacionado es normalmente lo que obliga a la notificación regulatoria expedita.",
   "pt-BR": "A <strong>expectabilidade</strong> indica se este evento já consta das informações de segurança de referência do produto (p. ex., a bula / SmPC / CCDS aprovada). <strong>Inesperado</strong> = não consta, ou é mais grave/específico do que o descrito. Um caso grave + inesperado + relacionado é normalmente o que exige notificação regulatória expedita."
@@ -396,6 +404,10 @@
  "<strong>Supply Credential At Risk:</strong> This record is <strong>{0}</strong>. All {1} linked product application(s) may be affected.": {
   "es": "<strong>Credencial de suministro en riesgo:</strong> Este registro está <strong>{0}</strong>. Las {1} solicitud(es) de producto vinculada(s) pueden verse afectadas.",
   "pt-BR": "<strong>Credencial de fornecimento em risco:</strong> Este registro está <strong>{0}</strong>. Todas as {1} solicitação(ões) de produto vinculada(s) podem ser afetadas."
+ },
+ "<strong>The Development environment shouldn't be enabled for deployed applications.</strong> It can result in displaying sensitive information from exceptions to end users. For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong> and restarting the app.": {
+  "es": "<strong>El entorno Development no debe activarse en aplicaciones desplegadas.</strong> Puede mostrar a los usuarios información sensible de las excepciones. Para depurar en local, active el entorno <strong>Development</strong> asignando a la variable de entorno <strong>ASPNETCORE_ENVIRONMENT</strong> el valor <strong>Development</strong> y reiniciando la aplicación.",
+  "pt-BR": "<strong>O ambiente Development não deve ser ativado em aplicações implantadas.</strong> Ele pode exibir aos usuários informações sensíveis das exceções. Para depurar localmente, ative o ambiente <strong>Development</strong> definindo a variável de ambiente <strong>ASPNETCORE_ENVIRONMENT</strong> como <strong>Development</strong> e reiniciando a aplicação."
  },
  "<strong>The ISO certification cycle</strong> (typically a 3-year certificate):": {
   "es": "<strong>El ciclo de certificación ISO</strong> (normalmente un certificado de 3 años):",
@@ -477,6 +489,10 @@
   "es": "Una descripción clara y objetiva de la desviación: qué ocurrió, cuándo y dónde, cómo se detectó y las acciones inmediatas tomadas. Adjunte documentación de respaldo y fotos cuando corresponda.",
   "pt-BR": "Uma descrição clara e objetiva do desvio: o que ocorreu, quando e onde, como foi detectado e as ações imediatas tomadas. Anexe documentação de suporte e fotos, quando pertinente.",
   "note": "GUIDANCE — review"
+ },
+ "A confirmation email has been sent to <strong>{0}</strong>. The user must click the link in that email before they can log in.": {
+  "es": "Se envió un correo de confirmación a <strong>{0}</strong>. El usuario debe hacer clic en el enlace de ese correo antes de poder iniciar sesión.",
+  "pt-BR": "Um e-mail de confirmação foi enviado para <strong>{0}</strong>. O usuário deve clicar no link desse e-mail antes de poder entrar."
  },
  "A description of each action": {
   "es": "Una descripción de cada acción",
@@ -733,6 +749,11 @@
   "es": "Vías de acceso que vencen (≤ 60 días)",
   "pt-BR": "Vias de acesso a vencer (≤ 60 dias)"
  },
+ "Access to Quality Events, Risks (create/edit/submit), Quality Operations, Release (view), Audits (create/manage up to UnderReview — cannot approve/close), Training Dashboard (view), Settings (view), User/Role/Login Audit (view). Can create and edit CAPAs to support audit findings.": {
+  "es": "Acceso a Eventos de calidad, Riesgos (crear/editar/enviar), Operaciones de calidad, Liberación (ver), Auditorías (crear/gestionar hasta En revisión; no puede aprobar/cerrar), panel de capacitación (ver), configuración (ver), usuarios/roles/historial de inicios de sesión (ver). Puede crear y editar CAPA para atender hallazgos de auditoría.",
+  "pt-BR": "Acesso a Eventos de qualidade, Riscos (criar/editar/enviar), Operações da qualidade, Liberação (ver), Auditorias (criar/gerenciar até Em revisão; não pode aprovar/encerrar), painel de treinamentos (ver), configurações (ver), usuários/funções/histórico de logins (ver). Pode criar e editar CAPAs para tratar constatações de auditoria.",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
+ },
  "Account Number": {
   "es": "Número de cuenta",
   "pt-BR": "Número da conta"
@@ -831,9 +852,21 @@
   "es": "Eventos adversos activos",
   "pt-BR": "Eventos adversos ativos"
  },
+ "Active Audits": {
+  "es": "Auditorías activas",
+  "pt-BR": "Auditorias ativas"
+ },
  "Active Contracts": {
   "es": "Contratos vigentes",
   "pt-BR": "Contratos vigentes"
+ },
+ "Active Items": {
+  "es": "Elementos activos",
+  "pt-BR": "Itens ativos"
+ },
+ "Active RI Applications": {
+  "es": "Solicitudes regulatorias activas",
+  "pt-BR": "Solicitações regulatórias ativas"
  },
  "Active Substance / INN": {
   "es": "Principio activo / DCI",
@@ -898,6 +931,10 @@
  "Add another service to log in.": {
   "es": "Agregue otro servicio para iniciar sesión.",
   "pt-BR": "Adicione outro serviço para entrar."
+ },
+ "Add authenticator app": {
+  "es": "Agregar aplicación de autenticación",
+  "pt-BR": "Adicionar aplicativo autenticador"
  },
  "Add Condition": {
   "es": "Añadir condición",
@@ -1058,6 +1095,10 @@
   "es": "Eventos adversos",
   "pt-BR": "Eventos adversos"
  },
+ "Adverse Events Pending Approval": {
+  "es": "Eventos adversos pendientes de aprobación",
+  "pt-BR": "Eventos adversos pendentes de aprovação"
+ },
  "Adverse Events with MedDRA PT:": {
   "es": "Eventos adversos con PT MedDRA:",
   "pt-BR": "Eventos adversos com PT MedDRA:"
@@ -1114,6 +1155,10 @@
  "AE Start Date": {
   "es": "Fecha de inicio del EA",
   "pt-BR": "Data de início do EA"
+ },
+ "AE#": {
+  "es": "N.º EA",
+  "pt-BR": "Nº EA"
  },
  "AEMS Portal": {
   "es": "Portal AEMS",
@@ -1311,6 +1356,10 @@
  "AP Number": {
   "es": "N.º de vía de acceso",
   "pt-BR": "Nº da via de acesso"
+ },
+ "AP Qualification": {
+  "es": "Cualificación de la PA",
+  "pt-BR": "Qualificação da PA"
  },
  "AP Register": {
   "es": "Registro de la PA",
@@ -1769,6 +1818,10 @@
   "es": "Asignado a",
   "pt-BR": "Atribuído a"
  },
+ "Associate your {0} account.": {
+  "es": "Asocie su cuenta de {0}.",
+  "pt-BR": "Associe sua conta {0}."
+ },
  "At least one address field is required.": {
   "es": "Se requiere al menos un campo de dirección.",
   "pt-BR": "É necessário pelo menos um campo de endereço."
@@ -2013,9 +2066,21 @@
   "es": "Auditorías",
   "pt-BR": "Auditorias"
  },
+ "Audits Pending Action": {
+  "es": "Auditorías con acción pendiente",
+  "pt-BR": "Auditorias com ação pendente"
+ },
+ "Authenticator app": {
+  "es": "Aplicación de autenticación",
+  "pt-BR": "Aplicativo autenticador"
+ },
  "Authenticator code": {
   "es": "Código de autenticación",
   "pt-BR": "Código do autenticador"
+ },
+ "Authored": {
+  "es": "Redactados",
+  "pt-BR": "Elaborados"
  },
  "Authored By": {
   "es": "Redactado por",
@@ -2028,7 +2093,7 @@
  "Authorised Person": {
   "es": "Persona Autorizada",
   "pt-BR": "Pessoa Autorizada",
-  "note": "as in Cuabity courses (PIC/S Authorised Person)"
+  "note": "PIC/S Authorised Person (the role named in Annex 16)"
  },
  "Authorised Prescriber": {
   "es": "Prescriptor autorizado",
@@ -2194,6 +2259,10 @@
   "es": "Volver a en revisión",
   "pt-BR": "Voltar para em análise"
  },
+ "Back to Users": {
+  "es": "Volver a usuarios",
+  "pt-BR": "Voltar aos usuários"
+ },
  "Back to {0}": {
   "es": "Volver a {0}",
   "pt-BR": "Voltar para {0}"
@@ -2312,6 +2381,15 @@
   "es": "BRL",
   "pt-BR": "BRL"
  },
+ "Broad access across all quality modules. Can create, edit, manage and approve/reject/close records in Quality Events, Quality Assurance, Quality Operations and Release. Can view users and settings. Cannot delete records (Administrator only).": {
+  "es": "Acceso amplio a todos los módulos de calidad. Puede crear, editar, gestionar y aprobar/rechazar/cerrar registros en Eventos de calidad, Aseguramiento de la calidad, Operaciones de calidad y Liberación. Puede ver usuarios y configuración. No puede eliminar registros (solo el administrador).",
+  "pt-BR": "Acesso amplo a todos os módulos da qualidade. Pode criar, editar, gerenciar e aprovar/rejeitar/encerrar registros em Eventos de qualidade, Garantia da qualidade, Operações da qualidade e Liberação. Pode ver usuários e configurações. Não pode excluir registros (somente o administrador).",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
+ },
+ "Browser / User Agent": {
+  "es": "Navegador / agente de usuario",
+  "pt-BR": "Navegador / agente do usuário"
+ },
  "Business Requirements": {
   "es": "Requisitos del negocio",
   "pt-BR": "Requisitos do negócio"
@@ -2369,6 +2447,31 @@
  "Calibration": {
   "es": "Calibración",
   "pt-BR": "Calibração"
+ },
+ "Can create and edit records in Regulatory Intelligence, Licences & Certifications, and Pharmacovigilance. Can submit PV cases for review but cannot approve. No access to quality event workflows, Maintenances, Release or most quality-only modules.": {
+  "es": "Puede crear y editar registros en Inteligencia regulatoria, Licencias y certificaciones y Farmacovigilancia. Puede enviar casos de FV a revisión, pero no aprobarlos. Sin acceso a los flujos de eventos de calidad, Mantenimiento, Liberación ni a la mayoría de módulos solo de calidad.",
+  "pt-BR": "Pode criar e editar registros em Inteligência regulatória, Licenças e certificações e Farmacovigilância. Pode enviar casos de FV para revisão, mas não aprová-los. Sem acesso aos fluxos de eventos de qualidade, Manutenção, Liberação ou à maioria dos módulos exclusivos da qualidade.",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
+ },
+ "Can create Deviation, Complaint, CAPA, Change and Supplier records. Can view most quality module registers. No access to Release, Maintenances, Regulatory, Risks, Audits, Reports or Settings. Cannot approve or advance any workflow.": {
+  "es": "Puede crear registros de desviaciones, reclamaciones, CAPA, cambios y proveedores. Puede ver la mayoría de los registros de los módulos de calidad. Sin acceso a Liberación, Mantenimiento, Regulatorio, Riesgos, Auditorías, Informes ni Configuración. No puede aprobar ni avanzar ningún flujo de trabajo.",
+  "pt-BR": "Pode criar registros de desvios, reclamações, CAPAs, mudanças e fornecedores. Pode ver a maioria dos registros dos módulos da qualidade. Sem acesso a Liberação, Manutenção, Regulatório, Riscos, Auditorias, Relatórios ou Configurações. Não pode aprovar nem avançar nenhum fluxo de trabalho.",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
+ },
+ "Can create Deviations, Complaints, CAPAs, Changes, Suppliers. Can create/edit Suppliers and addresses. Can create and perform Maintenance tasks (StartWork, CompleteWork). Can create and edit draft Release records. Cannot approve or advance quality/release workflows. No access to Regulatory, Risks, Audits, Reports or Settings.": {
+  "es": "Puede crear desviaciones, reclamaciones, CAPA, cambios y proveedores. Puede crear/editar proveedores y direcciones. Puede crear y realizar tareas de mantenimiento (iniciar y completar trabajos). Puede crear y editar registros de liberación en borrador. No puede aprobar ni avanzar flujos de calidad/liberación. Sin acceso a Regulatorio, Riesgos, Auditorías, Informes ni Configuración.",
+  "pt-BR": "Pode criar desvios, reclamações, CAPAs, mudanças e fornecedores. Pode criar/editar fornecedores e endereços. Pode criar e executar tarefas de manutenção (iniciar e concluir trabalhos). Pode criar e editar registros de liberação em rascunho. Não pode aprovar nem avançar fluxos de qualidade/liberação. Sem acesso a Regulatório, Riscos, Auditorias, Relatórios ou Configurações.",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
+ },
+ "Can create, assign, edit and complete Training records. Has view access to Maintenances and Release. Cannot access quality event workflows, approval steps or regulatory modules.": {
+  "es": "Puede crear, asignar, editar y completar registros de capacitación. Tiene acceso de lectura a Mantenimiento y Liberación. No puede acceder a los flujos de eventos de calidad, pasos de aprobación ni módulos regulatorios.",
+  "pt-BR": "Pode criar, atribuir, editar e concluir registros de treinamento. Tem acesso de leitura a Manutenção e Liberação. Não pode acessar os fluxos de eventos de qualidade, etapas de aprovação nem módulos regulatórios.",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
+ },
+ "Can create, edit and advance workflow in Quality Events (Deviations, Complaints, CAPAs, Changes), Suppliers and Release. Cannot approve, accept or close records. Has access to Documents Dashboard and ReviewRegister.": {
+  "es": "Puede crear, editar y avanzar el flujo de trabajo en Eventos de calidad (desviaciones, reclamaciones, CAPA, cambios), Proveedores y Liberación. No puede aprobar, aceptar ni cerrar registros. Tiene acceso al panel de documentos y al registro de revisiones.",
+  "pt-BR": "Pode criar, editar e avançar o fluxo de trabalho em Eventos de qualidade (desvios, reclamações, CAPAs, mudanças), Fornecedores e Liberação. Não pode aprovar, aceitar nem encerrar registros. Tem acesso ao painel de documentos e ao registro de revisões.",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
  },
  "Can only approve from Pending Approval status.": {
   "es": "Solo se puede aprobar desde el estado Pendiente de aprobación.",
@@ -2620,6 +2723,10 @@
  "CAPAs by Status": {
   "es": "CAPA por estado",
   "pt-BR": "CAPAs por status"
+ },
+ "CAPAs Pending Action": {
+  "es": "CAPA con acción pendiente",
+  "pt-BR": "CAPAs com ação pendente"
  },
  "Capsule (Hard)": {
   "es": "Cápsula (dura)",
@@ -2926,6 +3033,10 @@
   "es": "Panel de cambios",
   "pt-BR": "Painel de mudanças"
  },
+ "Changes Pending Action": {
+  "es": "Cambios con acción pendiente",
+  "pt-BR": "Mudanças com ação pendente"
+ },
  "Check if this document was authored and approved outside this system (e.g. supplier document, regulatory guidance, legacy record).": {
   "es": "Marque si este documento se redactó y aprobó fuera de este sistema (p. ej., documento de proveedor, guía regulatoria, registro histórico).",
   "pt-BR": "Marque se este documento foi redigido e aprovado fora deste sistema (ex.: documento de fornecedor, guia regulatório, registro legado)."
@@ -3002,9 +3113,17 @@
   "es": "Haga clic en <strong>{0}</strong> para continuar con su sesión.",
   "pt-BR": "Clique em <strong>{0}</strong> para continuar sua sessão."
  },
+ "Click here to confirm your account": {
+  "es": "Haga clic aquí para confirmar la cuenta",
+  "pt-BR": "Clique aqui para confirmar a conta"
+ },
  "click here to log in": {
   "es": "haga clic aquí para iniciar sesión",
   "pt-BR": "clique aqui para entrar"
+ },
+ "Click here to Logout": {
+  "es": "Haga clic aquí para cerrar sesión",
+  "pt-BR": "Clique aqui para sair"
  },
  "Click to expand": {
   "es": "Haga clic para ampliar",
@@ -3335,6 +3454,10 @@
  "Complaints Dashboard": {
   "es": "Panel de reclamaciones",
   "pt-BR": "Painel de reclamações"
+ },
+ "Complaints Pending Action": {
+  "es": "Reclamaciones con acción pendiente",
+  "pt-BR": "Reclamações com ação pendente"
  },
  "Complete": {
   "es": "Completo",
@@ -3715,6 +3838,10 @@
   "es": "Confirmado",
   "pt-BR": "Confirmado"
  },
+ "Confirmed Signals — Action Required": {
+  "es": "Señales confirmadas — requieren acción",
+  "pt-BR": "Sinais confirmados — ação necessária"
+ },
  "Confirms the assessment package is complete and acceptable. Moves from <strong>{0}</strong> to <strong>{1}</strong>. Enter your credentials to confirm.": {
   "es": "Confirma que el paquete de evaluación está completo y es aceptable. Pasa de <strong>{0}</strong> a <strong>{1}</strong>. Ingrese sus credenciales para confirmar.",
   "pt-BR": "Confirma que o pacote de avaliação está completo e é aceitável. Passa de <strong>{0}</strong> para <strong>{1}</strong>. Informe suas credenciais para confirmar."
@@ -3954,6 +4081,10 @@
  "Create Linked CAPA": {
   "es": "Crear CAPA vinculada",
   "pt-BR": "Criar CAPA vinculada"
+ },
+ "Create New User": {
+  "es": "Crear usuario",
+  "pt-BR": "Criar usuário"
  },
  "Create New Version": {
   "es": "Crear nueva versión",
@@ -4362,6 +4493,10 @@
   "es": "Días hasta el vencimiento",
   "pt-BR": "Dias até o vencimento"
  },
+ "Deadline": {
+  "es": "Plazo",
+  "pt-BR": "Prazo"
+ },
  "Deadline approaching:": {
   "es": "Plazo próximo:",
   "pt-BR": "Prazo próximo:"
@@ -4677,6 +4812,10 @@
   "es": "Designaciones",
   "pt-BR": "Designações"
  },
+ "Detail": {
+  "es": "Detalle",
+  "pt-BR": "Detalhe"
+ },
  "Detailed Action Plan": {
   "es": "Plan de acción detallado",
   "pt-BR": "Plano de ação detalhado"
@@ -4835,6 +4974,10 @@
   "es": "Panel de desviaciones",
   "pt-BR": "Painel de desvios"
  },
+ "Deviations Pending Action": {
+  "es": "Desviaciones con acción pendiente",
+  "pt-BR": "Desvios com ação pendente"
+ },
  "Device Part": {
   "es": "Pieza de dispositivo",
   "pt-BR": "Peça de dispositivo"
@@ -4874,6 +5017,10 @@
  "Disable two-factor authentication (2FA)": {
   "es": "Desactivar la autenticación de dos factores (2FA)",
   "pt-BR": "Desativar a autenticação de dois fatores (2FA)"
+ },
+ "Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should <a href=\"{0}\">reset your authenticator keys.</a>": {
+  "es": "Desactivar la 2FA no cambia las claves usadas en las aplicaciones de autenticación. Si desea cambiar la clave usada en una aplicación de autenticación, debe <a href=\"{0}\">restablecer sus claves de autenticación.</a>",
+  "pt-BR": "Desativar a 2FA não altera as chaves usadas nos aplicativos autenticadores. Se quiser alterar a chave usada em um aplicativo autenticador, você deve <a href=\"{0}\">redefinir suas chaves de autenticação.</a>"
  },
  "Discretional": {
   "es": "Discrecional",
@@ -4938,6 +5085,10 @@
  "Doc Type": {
   "es": "Tipo de doc.",
   "pt-BR": "Tipo de doc."
+ },
+ "Docs Overdue for Review": {
+  "es": "Documentos con revisión vencida",
+  "pt-BR": "Documentos com revisão em atraso"
  },
  "Document": {
   "es": "Documento",
@@ -5089,6 +5240,10 @@
   "es": "Documentos al momento de completarse",
   "pt-BR": "Documentos no momento da conclusão"
  },
+ "Documents Authored": {
+  "es": "Documentos redactados",
+  "pt-BR": "Documentos elaborados"
+ },
  "Documents can be uploaded after the application is saved.": {
   "es": "Los documentos se pueden subir después de guardar la solicitud.",
   "pt-BR": "Os documentos podem ser enviados depois de salvar a solicitação."
@@ -5145,6 +5300,18 @@
   "es": "Panel de documentos",
   "pt-BR": "Painel de documentos"
  },
+ "Documents for Review": {
+  "es": "Documentos para revisar",
+  "pt-BR": "Documentos para revisar"
+ },
+ "Documents in Progress": {
+  "es": "Documentos en curso",
+  "pt-BR": "Documentos em andamento"
+ },
+ "Documents Pending Approval": {
+  "es": "Documentos pendientes de aprobación",
+  "pt-BR": "Documentos pendentes de aprovação"
+ },
  "Documents with status '{0}' cannot be deleted. Use the Obsolete workflow to retire active documents.": {
   "es": "No se pueden eliminar documentos en estado «{0}». Use el flujo de obsolescencia para retirar documentos activos.",
   "pt-BR": "Documentos com status \"{0}\" não podem ser excluídos. Use o fluxo de obsolescência para retirar documentos ativos."
@@ -5192,6 +5359,10 @@
  "Download": {
   "es": "Descargar",
   "pt-BR": "Baixar"
+ },
+ "Download a two-factor authenticator app like Microsoft Authenticator for <a href=\"https://go.microsoft.com/fwlink/?Linkid=825072\">Android</a> and <a href=\"https://go.microsoft.com/fwlink/?Linkid=825073\">iOS</a> or Google Authenticator for <a href=\"https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en\">Android</a> and <a href=\"https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8\">iOS</a>.": {
+  "es": "Descargue una aplicación de autenticación de dos factores, como Microsoft Authenticator para <a href=\"https://go.microsoft.com/fwlink/?Linkid=825072\">Android</a> e <a href=\"https://go.microsoft.com/fwlink/?Linkid=825073\">iOS</a> o Google Authenticator para <a href=\"https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en\">Android</a> e <a href=\"https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8\">iOS</a>.",
+  "pt-BR": "Baixe um aplicativo autenticador de dois fatores, como o Microsoft Authenticator para <a href=\"https://go.microsoft.com/fwlink/?Linkid=825072\">Android</a> e <a href=\"https://go.microsoft.com/fwlink/?Linkid=825073\">iOS</a> ou o Google Authenticator para <a href=\"https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en\">Android</a> e <a href=\"https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8\">iOS</a>."
  },
  "Download File": {
   "es": "Descargar archivo",
@@ -5329,6 +5500,10 @@
  "e.g. authority advised early resubmission, scheduling ahead of lead time, change in supply arrangements...": {
   "es": "p. ej., la autoridad recomendó volver a presentar antes, planificación antes del plazo de antelación, cambio en las condiciones de suministro...",
   "pt-BR": "p. ex., a autoridade recomendou reenviar antes, planejamento antes da antecedência, mudança nas condições de fornecimento..."
+ },
+ "e.g. BPharm, MPS": {
+  "es": "p. ej., licenciado en Farmacia, MPS",
+  "pt-BR": "ex.: farmacêutico, MPS"
  },
  "e.g. Chronic Myeloid Leukaemia (CML)": {
   "es": "p. ej., leucemia mieloide crónica (LMC)",
@@ -6221,6 +6396,18 @@
   "es": "No aprobado",
   "pt-BR": "Reprovado"
  },
+ "Failed Login": {
+  "es": "Inicio de sesión fallido",
+  "pt-BR": "Falha de login"
+ },
+ "Failed to activate account: {0}": {
+  "es": "No se pudo activar la cuenta: {0}",
+  "pt-BR": "Não foi possível ativar a conta: {0}"
+ },
+ "Failed to deactivate account: {0}": {
+  "es": "No se pudo desactivar la cuenta: {0}",
+  "pt-BR": "Não foi possível desativar a conta: {0}"
+ },
  "Fatal": {
   "es": "Mortal",
   "pt-BR": "Fatal"
@@ -6365,6 +6552,10 @@
   "es": "Filtrar por estado:",
   "pt-BR": "Filtrar por status:"
  },
+ "Filter by username": {
+  "es": "Filtrar por nombre de usuario",
+  "pt-BR": "Filtrar por nome de usuário"
+ },
  "Filters": {
   "es": "Filtros",
   "pt-BR": "Filtros"
@@ -6441,6 +6632,14 @@
   "es": "Para Gmail, use <strong>smtp.gmail.com</strong>, el puerto <strong>587</strong> y una <a href=\"https://myaccount.google.com/apppasswords\" target=\"_blank\">contraseña de aplicación</a> (no su contraseña habitual de Gmail).",
   "pt-BR": "Para o Gmail, use <strong>smtp.gmail.com</strong>, a porta <strong>587</strong> e uma <a href=\"https://myaccount.google.com/apppasswords\" target=\"_blank\">senha de app</a> (não a sua senha normal do Gmail)."
  },
+ "For now, use this link to confirm the account:": {
+  "es": "Por ahora, use este enlace para confirmar la cuenta:",
+  "pt-BR": "Por enquanto, use este link para confirmar a conta:"
+ },
+ "Forget this browser": {
+  "es": "Olvidar este navegador",
+  "pt-BR": "Esquecer este navegador"
+ },
  "Forgot password confirmation": {
   "es": "Confirmación de contraseña olvidada",
   "pt-BR": "Confirmação de senha esquecida"
@@ -6489,6 +6688,11 @@
   "es": "BPM completas",
   "pt-BR": "BPF completas"
  },
+ "Full management of Regulatory Intelligence, Licences & Certifications, and all PV sub-modules. Can approve and close regulatory records. Can create and manage Training records. Can view Settings, Users and Roles. No access to Quality Event, Maintenance or Release workflows.": {
+  "es": "Gestión completa de Inteligencia regulatoria, Licencias y certificaciones y todos los submódulos de FV. Puede aprobar y cerrar registros regulatorios. Puede crear y gestionar registros de capacitación. Puede ver configuración, usuarios y roles. Sin acceso a los flujos de Eventos de calidad, Mantenimiento ni Liberación.",
+  "pt-BR": "Gestão completa de Inteligência regulatória, Licenças e certificações e todos os submódulos de FV. Pode aprovar e encerrar registros regulatórios. Pode criar e gerenciar registros de treinamento. Pode ver configurações, usuários e funções. Sem acesso aos fluxos de Eventos de qualidade, Manutenção ou Liberação.",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
+ },
  "Full Registration": {
   "es": "Registro completo",
   "pt-BR": "Registro completo"
@@ -6496,6 +6700,11 @@
  "Full Testing": {
   "es": "Análisis completo",
   "pt-BR": "Análise completa"
+ },
+ "Full, unrestricted access to every module, action, user, role and setting. Only role that can delete records, manage user roles, save system settings, and force-reopen closed records.": {
+  "es": "Acceso completo y sin restricciones a todos los módulos, acciones, usuarios, roles y configuraciones. Único rol que puede eliminar registros, gestionar los roles de los usuarios, guardar la configuración del sistema y reabrir a la fuerza registros cerrados.",
+  "pt-BR": "Acesso total e irrestrito a todos os módulos, ações, usuários, funções e configurações. Única função que pode excluir registros, gerenciar as funções dos usuários, salvar as configurações do sistema e reabrir à força registros encerrados.",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
  },
  "Gel": {
   "es": "Gel",
@@ -6524,6 +6733,10 @@
  "Generated: {0} {1}.": {
   "es": "Generado: {0} {1}.",
   "pt-BR": "Gerado em: {0} {1}."
+ },
+ "Generating new recovery codes does not change the keys used in authenticator apps. If you wish to change the key used in an authenticator app you should <a href=\"{0}\">reset your authenticator keys.</a>": {
+  "es": "Generar códigos de recuperación nuevos no cambia las claves usadas en las aplicaciones de autenticación. Si desea cambiar la clave usada en una aplicación de autenticación, debe <a href=\"{0}\">restablecer sus claves de autenticación.</a>",
+  "pt-BR": "Gerar novos códigos de recuperação não altera as chaves usadas nos aplicativos autenticadores. Se quiser alterar a chave usada em um aplicativo autenticador, você deve <a href=\"{0}\">redefinir suas chaves de autenticação.</a>"
  },
  "Generic": {
   "es": "Genérico",
@@ -6671,6 +6884,10 @@
   "es": "Abiertos con NPR alto",
   "pt-BR": "Abertos com NPR alto"
  },
+ "History": {
+  "es": "Historial",
+  "pt-BR": "Histórico"
+ },
  "Hold": {
   "es": "Espera",
   "pt-BR": "Espera"
@@ -6694,6 +6911,10 @@
  "Hold Set": {
   "es": "Retención establecida",
   "pt-BR": "Retenção definida"
+ },
+ "Holder": {
+  "es": "Titular",
+  "pt-BR": "Titular"
  },
  "Holder / Site": {
   "es": "Titular / sitio",
@@ -6927,6 +7148,18 @@
   "es": "Diagnóstico in vitro (IVD)",
   "pt-BR": "Diagnóstico in vitro (IVD)"
  },
+ "Inactive": {
+  "es": "Inactivo",
+  "pt-BR": "Inativo"
+ },
+ "Inactive (account locked)": {
+  "es": "Inactivo (cuenta bloqueada)",
+  "pt-BR": "Inativo (conta bloqueada)"
+ },
+ "Inactive users cannot log in. All their records are preserved.": {
+  "es": "Los usuarios inactivos no pueden iniciar sesión. Todos sus registros se conservan.",
+  "pt-BR": "Usuários inativos não podem entrar. Todos os seus registros são preservados."
+ },
  "INCI Name / Ingredient Decl. Ref.": {
   "es": "Nombre INCI / ref. declaración de ingredientes",
   "pt-BR": "Nome INCI / ref. declaração de ingredientes"
@@ -7152,6 +7385,10 @@
   "es": "iOS",
   "pt-BR": "iOS"
  },
+ "IP Address": {
+  "es": "Dirección IP",
+  "pt-BR": "Endereço IP"
+ },
  "Is Serious": {
   "es": "Es grave",
   "pt-BR": "É grave"
@@ -7338,6 +7575,10 @@
   "es": "Fechas clave",
   "pt-BR": "Datas principais"
  },
+ "Key Metrics": {
+  "es": "Indicadores clave",
+  "pt-BR": "Indicadores-chave"
+ },
  "Keywords and MeSH terms used...": {
   "es": "Palabras clave y términos MeSH utilizados...",
   "pt-BR": "Palavras-chave e termos MeSH utilizados..."
@@ -7442,6 +7683,14 @@
   "es": "Registro de licencias",
   "pt-BR": "Registro de licenças"
  },
+ "LC Renewals Due": {
+  "es": "Renovaciones de LC pendientes",
+  "pt-BR": "Renovações de LC pendentes"
+ },
+ "LC#": {
+  "es": "N.º LC",
+  "pt-BR": "Nº LC"
+ },
  "Lead Auditor": {
   "es": "Auditor líder",
   "pt-BR": "Auditor líder"
@@ -7469,6 +7718,11 @@
  "Legal Name": {
   "es": "Razón social",
   "pt-BR": "Razão social"
+ },
+ "Legally defined batch release sign-off role (PIC/S Annex 16). Sole authority to certify and reject batch releases and issue release certificates. Participates in Quality Event workflows (create, edit, approve). Cannot author or approve documents. Cannot access Regulatory or PV modules.": {
+  "es": "Rol definido legalmente para firmar la liberación de lotes (PIC/S Anexo 16). Única autoridad para certificar y rechazar liberaciones de lotes y emitir certificados de liberación. Participa en los flujos de Eventos de calidad (crear, editar, aprobar). No puede redactar ni aprobar documentos. No puede acceder a los módulos regulatorios ni de FV.",
+  "pt-BR": "Função definida legalmente para assinar a liberação de lotes (PIC/S Anexo 16). Única autoridade para certificar e rejeitar liberações de lotes e emitir certificados de liberação. Participa dos fluxos de Eventos de qualidade (criar, editar, aprovar). Não pode elaborar nem aprovar documentos. Não pode acessar os módulos regulatórios nem de FV.",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
  },
  "Let Users Choose Their Language": {
   "es": "Permitir que cada usuario elija su idioma",
@@ -7521,6 +7775,14 @@
  "Licences & Certs": {
   "es": "Licencias y certif.",
   "pt-BR": "Licenças e certif."
+ },
+ "Licences & Certs Expiring ({0} days)": {
+  "es": "Licencias y certificados que vencen ({0} días)",
+  "pt-BR": "Licenças e certificados a vencer ({0} dias)"
+ },
+ "Licences & Certs — Renewal Due": {
+  "es": "Licencias y certificados — renovación pendiente",
+  "pt-BR": "Licenças e certificados — renovação pendente"
  },
  "Life Sciences Industry": {
   "es": "Industria de ciencias de la vida",
@@ -7786,6 +8048,10 @@
   "es": "Cuenta bloqueada",
   "pt-BR": "Conta bloqueada"
  },
+ "Locked Out": {
+  "es": "Cuenta bloqueada",
+  "pt-BR": "Conta bloqueada"
+ },
  "Lockout is not enabled for this user.": {
   "es": "El bloqueo no está habilitado para este usuario.",
   "pt-BR": "O bloqueio não está habilitado para este usuário."
@@ -7793,6 +8059,10 @@
  "Log in": {
   "es": "Iniciar sesión",
   "pt-BR": "Entrar"
+ },
+ "Log in using your {0} account": {
+  "es": "Inicie sesión con su cuenta de {0}",
+  "pt-BR": "Entre com sua conta {0}"
  },
  "log in with a recovery code": {
   "es": "iniciar sesión con un código de recuperación",
@@ -7817,6 +8087,10 @@
  "Log TGA Submission": {
   "es": "Registrar presentación a la TGA",
   "pt-BR": "Registrar envio à TGA"
+ },
+ "Login": {
+  "es": "Inicio de sesión",
+  "pt-BR": "Login"
  },
  "Login History": {
   "es": "Historial de inicios de sesión",
@@ -8018,6 +8292,10 @@
  "Manage Email": {
   "es": "Administrar correo electrónico",
   "pt-BR": "Gerenciar e-mail"
+ },
+ "Manage Roles": {
+  "es": "Gestionar roles",
+  "pt-BR": "Gerenciar funções"
  },
  "Manage your account": {
   "es": "Administre su cuenta",
@@ -8258,6 +8536,10 @@
  "MedDRA System Organ Class": {
   "es": "Clase de sistema u órgano MedDRA",
   "pt-BR": "Classe de sistema de órgãos MedDRA"
+ },
+ "MedDRA Term": {
+  "es": "Término MedDRA",
+  "pt-BR": "Termo MedDRA"
  },
  "Medical Device": {
   "es": "Dispositivo médico",
@@ -8554,8 +8836,44 @@
   "es": "Mi certificado",
   "pt-BR": "Meu certificado"
  },
+ "My Documents": {
+  "es": "Mis documentos",
+  "pt-BR": "Meus documentos"
+ },
+ "My Documents for Review": {
+  "es": "Mis documentos para revisar",
+  "pt-BR": "Meus documentos para revisar"
+ },
+ "My Items": {
+  "es": "Mis elementos",
+  "pt-BR": "Meus itens"
+ },
+ "My Open CAPAs": {
+  "es": "Mis CAPA abiertas",
+  "pt-BR": "Minhas CAPAs abertas"
+ },
+ "My Open Changes": {
+  "es": "Mis cambios abiertos",
+  "pt-BR": "Minhas mudanças abertas"
+ },
+ "My Open Deviations": {
+  "es": "Mis desviaciones abiertas",
+  "pt-BR": "Meus desvios abertos"
+ },
+ "My Open Risks": {
+  "es": "Mis riesgos abiertos",
+  "pt-BR": "Meus riscos abertos"
+ },
+ "My Scheduled Trainings": {
+  "es": "Mis capacitaciones programadas",
+  "pt-BR": "Meus treinamentos agendados"
+ },
  "My Training": {
   "es": "Mi capacitación",
+  "pt-BR": "Meus treinamentos"
+ },
+ "My Trainings": {
+  "es": "Mis capacitaciones",
   "pt-BR": "Meus treinamentos"
  },
  "MYR": {
@@ -8597,6 +8915,21 @@
  "Nebuliser Solution": {
   "es": "Solución para nebulizador",
   "pt-BR": "Solução para nebulização"
+ },
+ "Needs Acceptance": {
+  "es": "Requiere aceptación",
+  "pt-BR": "Requer aceitação",
+  "note": "Status label set in Controllers/HomeController.cs, shown with L.Message — keep even though the check lists it as unused."
+ },
+ "Needs Approval": {
+  "es": "Requiere aprobación",
+  "pt-BR": "Requer aprovação",
+  "note": "Status label set in Controllers/HomeController.cs, shown with L.Message — keep even though the check lists it as unused."
+ },
+ "Needs Closure": {
+  "es": "Requiere cierre",
+  "pt-BR": "Requer encerramento",
+  "note": "Status label set in Controllers/HomeController.cs, shown with L.Message — keep even though the check lists it as unused."
  },
  "Needs Improvement": {
   "es": "Requiere mejora",
@@ -8802,6 +9135,14 @@
   "es": "No se encontraron registros de EA activos para este término.",
   "pt-BR": "Nenhum registro de EA ativo encontrado para este termo."
  },
+ "No active audits.": {
+  "es": "No hay auditorías activas.",
+  "pt-BR": "Não há auditorias ativas."
+ },
+ "No active regulatory applications.": {
+  "es": "No hay solicitudes regulatorias activas.",
+  "pt-BR": "Não há solicitações regulatórias ativas."
+ },
  "No active signal flags.": {
   "es": "No hay señales activas.",
   "pt-BR": "Nenhum sinal ativo."
@@ -8825,6 +9166,10 @@
  "No adverse events linked to this complaint.": {
   "es": "No hay eventos adversos vinculados a esta reclamación.",
   "pt-BR": "Nenhum evento adverso vinculado a esta reclamação."
+ },
+ "No adverse events pending approval.": {
+  "es": "No hay eventos adversos pendientes de aprobación.",
+  "pt-BR": "Não há eventos adversos pendentes de aprovação."
  },
  "No AE cases linked to this PSUR yet.": {
   "es": "Aún no hay casos de EA vinculados a este PSUR.",
@@ -8898,6 +9243,10 @@
   "es": "Aún no hay entradas en la pista de auditoría.",
   "pt-BR": "Ainda não há entradas na trilha de auditoria."
  },
+ "No audits pending action.": {
+  "es": "No hay auditorías con acción pendiente.",
+  "pt-BR": "Não há auditorias com ação pendente."
+ },
  "No backup recorded": {
   "es": "No hay copias registradas",
   "pt-BR": "Nenhum backup registrado"
@@ -8918,9 +9267,17 @@
   "es": "No hay CAPA en espera de aprobación.",
   "pt-BR": "Nenhuma CAPA aguardando aprovação."
  },
+ "No CAPAs pending your action.": {
+  "es": "No hay CAPA pendientes de su acción.",
+  "pt-BR": "Não há CAPAs pendentes de sua ação."
+ },
  "No certificates issued yet.": {
   "es": "Aún no se han emitido certificados.",
   "pt-BR": "Nenhum certificado emitido ainda."
+ },
+ "No changes pending your action.": {
+  "es": "No hay cambios pendientes de su acción.",
+  "pt-BR": "Não há mudanças pendentes de sua ação."
  },
  "No changes to the work details.": {
   "es": "Sin cambios en los detalles del trabajo.",
@@ -8937,6 +9294,10 @@
  "No complaints open for more than 30 days.": {
   "es": "No hay reclamaciones abiertas desde hace más de 30 días.",
   "pt-BR": "Não há reclamações abertas há mais de 30 dias."
+ },
+ "No complaints pending your action.": {
+  "es": "No hay reclamaciones pendientes de su acción.",
+  "pt-BR": "Não há reclamações pendentes de sua ação."
  },
  "No completed review cycles recorded yet.": {
   "es": "Aún no hay ciclos de revisión completados.",
@@ -8962,6 +9323,10 @@
   "es": "No hay condiciones registradas para esta licencia / certificación.",
   "pt-BR": "Nenhuma condição registrada para esta licença / certificação."
  },
+ "No confirmed signals requiring action.": {
+  "es": "No hay señales confirmadas que requieran acción.",
+  "pt-BR": "Não há sinais confirmados que exijam ação."
+ },
  "No contracts expiring within 90 days.": {
   "es": "No hay contratos que venzan en los próximos 90 días.",
   "pt-BR": "Não há contratos que vençam nos próximos 90 dias."
@@ -8974,9 +9339,21 @@
   "es": "No hay desviaciones abiertas desde hace más de 30 días.",
   "pt-BR": "Não há desvios abertos há mais de 30 dias."
  },
+ "No deviations pending your action.": {
+  "es": "No hay desviaciones pendientes de su acción.",
+  "pt-BR": "Não há desvios pendentes de sua ação."
+ },
  "No documents awaiting approval.": {
   "es": "No hay documentos en espera de aprobación.",
   "pt-BR": "Não há documentos aguardando aprovação."
+ },
+ "No documents pending approval.": {
+  "es": "No hay documentos pendientes de aprobación.",
+  "pt-BR": "Não há documentos pendentes de aprovação."
+ },
+ "No documents pending review.": {
+  "es": "No hay documentos pendientes de revisión.",
+  "pt-BR": "Não há documentos pendentes de revisão."
  },
  "No documents uploaded yet.": {
   "es": "Aún no se han cargado documentos.",
@@ -9026,6 +9403,14 @@
   "es": "No hay registros de licencias/certificaciones vinculados a esta solicitud.",
   "pt-BR": "Nenhum registro de licença/certificação vinculado a esta solicitação."
  },
+ "No licences or certifications expiring within {0} days.": {
+  "es": "No hay licencias ni certificaciones que venzan en los próximos {0} días.",
+  "pt-BR": "Não há licenças nem certificações que vençam nos próximos {0} dias."
+ },
+ "No licences or certifications with renewal due.": {
+  "es": "No hay licencias ni certificaciones con renovación pendiente.",
+  "pt-BR": "Não há licenças nem certificações com renovação pendente."
+ },
  "No linked CAPAs.": {
   "es": "No hay CAPA vinculadas.",
   "pt-BR": "Nenhuma CAPA vinculada."
@@ -9066,6 +9451,18 @@
   "es": "No hay hitos registrados. Use <strong>Aplicar plantilla estándar</strong> para un conjunto propio de la jurisdicción, o <strong>Añadir hito</strong> para añadirlos manualmente.",
   "pt-BR": "Nenhum marco registrado. Use <strong>Aplicar modelo padrão</strong> para um conjunto próprio da jurisdição, ou <strong>Adicionar marco</strong> para adicioná-los manualmente."
  },
+ "No open adverse events.": {
+  "es": "No hay eventos adversos abiertos.",
+  "pt-BR": "Não há eventos adversos abertos."
+ },
+ "No open CAPAs.": {
+  "es": "No hay CAPA abiertas.",
+  "pt-BR": "Não há CAPAs abertas."
+ },
+ "No open complaints.": {
+  "es": "No hay reclamaciones abiertas.",
+  "pt-BR": "Não há reclamações abertas."
+ },
  "No open conditions.": {
   "es": "No hay condiciones abiertas.",
   "pt-BR": "Nenhuma condição aberta."
@@ -9073,6 +9470,18 @@
  "No open critical complaints.": {
   "es": "No hay reclamaciones críticas abiertas.",
   "pt-BR": "Nenhuma reclamação crítica aberta."
+ },
+ "No open deviations.": {
+  "es": "No hay desviaciones abiertas.",
+  "pt-BR": "Não há desvios abertos."
+ },
+ "No open risks.": {
+  "es": "No hay riesgos abiertos.",
+  "pt-BR": "Não há riscos abertos."
+ },
+ "No open signal reviews.": {
+  "es": "No hay revisiones de señales abiertas.",
+  "pt-BR": "Não há revisões de sinais abertas."
  },
  "No outstanding training items. Well done!": {
   "es": "No tiene capacitaciones pendientes. ¡Bien hecho!",
@@ -9126,6 +9535,10 @@
   "es": "No hay registros en estado Renovación pendiente.",
   "pt-BR": "Nenhum registro no status Renovação pendente."
  },
+ "No records found for the selected filters.": {
+  "es": "No se encontraron registros con los filtros seleccionados.",
+  "pt-BR": "Nenhum registro encontrado com os filtros selecionados."
+ },
  "No records found.": {
   "es": "No se encontraron registros.",
   "pt-BR": "Nenhum registro encontrado."
@@ -9153,6 +9566,18 @@
  "No reviews due within 30 days.": {
   "es": "No hay revisiones que venzan en 30 días.",
   "pt-BR": "Nenhuma revisão vence em 30 dias."
+ },
+ "No risks pending your action.": {
+  "es": "No hay riesgos pendientes de su acción.",
+  "pt-BR": "Não há riscos pendentes de sua ação."
+ },
+ "No roles assigned": {
+  "es": "Sin roles asignados",
+  "pt-BR": "Nenhuma função atribuída"
+ },
+ "No scheduled trainings.": {
+  "es": "No hay capacitaciones programadas.",
+  "pt-BR": "Não há treinamentos agendados."
  },
  "No settings changes have been recorded yet.": {
   "es": "Aún no se ha registrado ningún cambio de configuración.",
@@ -9362,6 +9787,10 @@
   "es": "Notas / hallazgos",
   "pt-BR": "Notas / achados"
  },
+ "Nothing currently assigned to you.": {
+  "es": "Actualmente no tiene nada asignado.",
+  "pt-BR": "No momento não há nada atribuído a você."
+ },
  "Notification": {
   "es": "Notificación",
   "pt-BR": "Notificação"
@@ -9570,9 +9999,25 @@
   "es": "Abierto",
   "pt-BR": "Aberto"
  },
+ "Open Adverse Events": {
+  "es": "Eventos adversos abiertos",
+  "pt-BR": "Eventos adversos abertos"
+ },
+ "Open CAPAs": {
+  "es": "CAPA abiertas",
+  "pt-BR": "CAPAs abertas"
+ },
  "Open Cases": {
   "es": "Casos abiertos",
   "pt-BR": "Casos abertos"
+ },
+ "Open Changes": {
+  "es": "Cambios abiertos",
+  "pt-BR": "Mudanças abertas"
+ },
+ "Open Complaints": {
+  "es": "Reclamaciones abiertas",
+  "pt-BR": "Reclamações abertas"
  },
  "Open Conditions": {
   "es": "Condiciones abiertas",
@@ -9585,6 +10030,10 @@
  "Open Critical Complaints": {
   "es": "Reclamaciones críticas abiertas",
   "pt-BR": "Reclamações críticas abertas"
+ },
+ "Open Deviations": {
+  "es": "Desviaciones abiertas",
+  "pt-BR": "Desvios abertos"
  },
  "Open Deviations / Exceptions": {
   "es": "Desviaciones / Excepciones abiertas",
@@ -9601,6 +10050,14 @@
  "Open High-RPN Risks": {
   "es": "Riesgos abiertos con NPR alto",
   "pt-BR": "Riscos abertos com NPR alto"
+ },
+ "Open Risks": {
+  "es": "Riesgos abiertos",
+  "pt-BR": "Riscos abertos"
+ },
+ "Open Signal Reviews": {
+  "es": "Revisiones de señales abiertas",
+  "pt-BR": "Revisões de sinais abertas"
  },
  "Opened in Period": {
   "es": "Abiertos en el período",
@@ -10091,6 +10548,10 @@
   "es": "Pendiente de evaluación (recibida)",
   "pt-BR": "Pendente de avaliação (recebida)"
  },
+ "Pending My Action": {
+  "es": "Pendientes de mi acción",
+  "pt-BR": "Pendentes de minha ação"
+ },
  "Pending Review": {
   "es": "Pendiente de revisión",
   "pt-BR": "Pendente de revisão"
@@ -10482,6 +10943,10 @@
   "es": "Portal PRISM",
   "pt-BR": "Portal PRISM"
  },
+ "Privacy and cookie policy have not been accepted.": {
+  "es": "No se ha aceptado la política de privacidad y cookies.",
+  "pt-BR": "A política de privacidade e cookies não foi aceita."
+ },
  "Probability": {
   "es": "Probabilidad",
   "pt-BR": "Probabilidade"
@@ -10702,6 +11167,10 @@
   "es": "Proponga un cambio, describa su justificación y vincúlelo a los procesos o productos afectados.",
   "pt-BR": "Proponha uma mudança, descreva a justificativa e vincule-a aos processos ou produtos afetados."
  },
+ "Proposed": {
+  "es": "Propuesto",
+  "pt-BR": "Proposto"
+ },
  "Proposed By": {
   "es": "Propuesto por",
   "pt-BR": "Proposto por"
@@ -10794,6 +11263,10 @@
   "es": "Informe de CC",
   "pt-BR": "Relatório de CQ",
   "note": "used through a variable: Views/Release/_DocumentsTab.cshtml (categories)"
+ },
+ "QR code for authenticator app": {
+  "es": "Código QR para la aplicación de autenticación",
+  "pt-BR": "Código QR para o aplicativo autenticador"
  },
  "Qual. Basis": {
   "es": "Base de calif.",
@@ -10891,6 +11364,10 @@
   "es": "Supervisión de calidad",
   "pt-BR": "Supervisão da qualidade"
  },
+ "Quality Overview": {
+  "es": "Resumen de calidad",
+  "pt-BR": "Visão geral da qualidade"
+ },
  "Quality Record": {
   "es": "Registro de calidad",
   "pt-BR": "Registro da qualidade"
@@ -10922,6 +11399,10 @@
  "Quality System": {
   "es": "Sistema de calidad",
   "pt-BR": "Sistema da qualidade"
+ },
+ "Quality Systems": {
+  "es": "Sistemas de calidad",
+  "pt-BR": "Sistemas da qualidade"
  },
  "Quality Systems Certificate": {
   "es": "Certificado del sistema de calidad",
@@ -11182,6 +11663,14 @@
  "Record Approved:": {
   "es": "Registro aprobado:",
   "pt-BR": "Registro aprovado:"
+ },
+ "Record Attachments": {
+  "es": "Adjuntos de registros",
+  "pt-BR": "Anexos de registros"
+ },
+ "Record Attachments Expired": {
+  "es": "Adjuntos de registros vencidos",
+  "pt-BR": "Anexos de registros vencidos"
  },
  "Record Attachments — Expiry Register": {
   "es": "Adjuntos de registros — Registro de vencimientos",
@@ -11517,6 +12006,10 @@
   "es": "Panel de inteligencia regulatoria",
   "pt-BR": "Painel de inteligência regulatória"
  },
+ "Regulatory Items": {
+  "es": "Elementos regulatorios",
+  "pt-BR": "Itens regulatórios"
+ },
  "Regulatory Licence": {
   "es": "Licencia regulatoria",
   "pt-BR": "Licença regulatória"
@@ -11524,6 +12017,10 @@
  "Regulatory Manager": {
   "es": "Gerente regulatorio",
   "pt-BR": "Gerente regulatório"
+ },
+ "Regulatory Overview": {
+  "es": "Resumen regulatorio",
+  "pt-BR": "Visão geral regulatória"
  },
  "Regulatory Statement": {
   "es": "Declaración regulatoria",
@@ -11751,6 +12248,10 @@
   "es": "¿Eliminar este registro vinculado?",
   "pt-BR": "Remover este registro vinculado?"
  },
+ "Remove this {0} login from your account": {
+  "es": "Quitar este inicio de sesión de {0} de su cuenta",
+  "pt-BR": "Remover este login {0} da sua conta"
+ },
  "Remove {0}?": {
   "es": "¿Quitar {0}?",
   "pt-BR": "Remover {0}?"
@@ -11952,6 +12453,10 @@
   "es": "Restablecer",
   "pt-BR": "Redefinir"
  },
+ "Reset authenticator app": {
+  "es": "Restablecer aplicación de autenticación",
+  "pt-BR": "Redefinir aplicativo autenticador"
+ },
  "Reset authenticator key": {
   "es": "Restablecer la clave de autenticación",
   "pt-BR": "Redefinir a chave do autenticador"
@@ -11967,6 +12472,10 @@
  "Reset password confirmation": {
   "es": "Confirmación de restablecimiento de contraseña",
   "pt-BR": "Confirmação de redefinição de senha"
+ },
+ "Reset recovery codes": {
+  "es": "Restablecer códigos de recuperación",
+  "pt-BR": "Redefinir códigos de recuperação"
  },
  "reset your authenticator keys.": {
   "es": "restablecer sus claves de autenticación.",
@@ -12355,6 +12864,10 @@
   "es": "Registro de IR",
   "pt-BR": "Registro de IR"
  },
+ "RI#": {
+  "es": "N.º IR",
+  "pt-BR": "Nº IR"
+ },
  "Risk": {
   "es": "Riesgo",
   "pt-BR": "Risco"
@@ -12506,6 +13019,10 @@
  "Risks": {
   "es": "Riesgos",
   "pt-BR": "Riscos"
+ },
+ "Risks Pending Action": {
+  "es": "Riesgos con acción pendiente",
+  "pt-BR": "Riscos com ação pendente"
  },
  "RMP": {
   "es": "PGR (RMP)",
@@ -12687,6 +13204,10 @@
   "es": "Al guardar se creará un nuevo borrador y se bloqueará la versión aprobada actual.",
   "pt-BR": "Ao salvar, será criado um novo rascunho e a versão aprovada atual será bloqueada."
  },
+ "Scan the QR Code or enter this key <kbd>{0}</kbd> into your two factor authenticator app. Spaces and casing do not matter.": {
+  "es": "Escanee el código QR o introduzca esta clave <kbd>{0}</kbd> en su aplicación de autenticación de dos factores. Los espacios y las mayúsculas no importan.",
+  "pt-BR": "Escaneie o código QR ou digite esta chave <kbd>{0}</kbd> no seu aplicativo autenticador de dois fatores. Espaços e maiúsculas não importam."
+ },
  "Schedule": {
   "es": "Programación",
   "pt-BR": "Programação"
@@ -12722,6 +13243,10 @@
  "Scheduled On": {
   "es": "Programado el",
   "pt-BR": "Programado em"
+ },
+ "Scheduled Trainings": {
+  "es": "Capacitaciones programadas",
+  "pt-BR": "Treinamentos agendados"
  },
  "Scheduled {0}": {
   "es": "Programado el {0}",
@@ -12981,6 +13506,10 @@
   "es": "Aplicar bloqueo de retención —",
   "pt-BR": "Aplicar bloqueio de retenção —"
  },
+ "Set up authenticator app": {
+  "es": "Configurar aplicación de autenticación",
+  "pt-BR": "Configurar aplicativo autenticador"
+ },
  "Set your password": {
   "es": "Establezca su contraseña",
   "pt-BR": "Defina sua senha"
@@ -13062,6 +13591,10 @@
  "Showing period: <strong>{0}</strong> to <strong>{1}</strong>": {
   "es": "Período mostrado: <strong>{0}</strong> a <strong>{1}</strong>",
   "pt-BR": "Período exibido: <strong>{0}</strong> a <strong>{1}</strong>"
+ },
+ "SIG#": {
+  "es": "N.º SEÑ",
+  "pt-BR": "Nº SIN"
  },
  "Signal Details": {
   "es": "Detalles de la señal",
@@ -13845,6 +14378,10 @@
   "es": "Motivo de la suspensión:",
   "pt-BR": "Motivo da suspensão:"
  },
+ "Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.": {
+  "es": "Cambiar al entorno <strong>Development</strong> mostrará información más detallada sobre el error.",
+  "pt-BR": "Mudar para o ambiente <strong>Development</strong> exibirá informações mais detalhadas sobre o erro."
+ },
  "Syrup": {
   "es": "Jarabe",
   "pt-BR": "Xarope"
@@ -13872,6 +14409,10 @@
  "tablets": {
   "es": "comprimidos",
   "pt-BR": "comprimidos"
+ },
+ "Target": {
+  "es": "Objetivo",
+  "pt-BR": "Meta"
  },
  "Target Completion": {
   "es": "Cumplimiento objetivo",
@@ -14319,6 +14860,10 @@
  "Therapeutic Device": {
   "es": "Dispositivo terapéutico",
   "pt-BR": "Dispositivo terapêutico"
+ },
+ "There are no external authentication services configured.": {
+  "es": "No hay servicios de autenticación externos configurados.",
+  "pt-BR": "Não há serviços de autenticação externos configurados."
  },
  "There are no open complaints available to link.": {
   "es": "No hay reclamaciones abiertas disponibles para vincular.",
@@ -15319,6 +15864,10 @@
   "es": "Use Devolver para corrección en la página de detalles si se necesitan cambios en estos campos.",
   "pt-BR": "Use Devolver para retrabalho na página de detalhes se forem necessárias alterações nestes campos."
  },
+ "Used to pre-fill the AP Full Name & Qualification field on the certification modal. Only applies when this user holds the Authorised Person role.": {
+  "es": "Se usa para rellenar el campo Nombre completo y cualificación de la PA en el diálogo de certificación. Solo se aplica cuando el usuario tiene el rol de Persona Autorizada.",
+  "pt-BR": "Usado para preencher o campo Nome completo e qualificação da PA no diálogo de certificação. Só se aplica quando o usuário tem a função de Pessoa Autorizada."
+ },
  "Used to send password reset and account confirmation emails.": {
   "es": "Se usa para enviar los correos de restablecimiento de contraseña y de confirmación de cuenta.",
   "pt-BR": "Usado para enviar os e-mails de redefinição de senha e de confirmação de conta."
@@ -15331,6 +15880,10 @@
   "es": "El usuario ya tiene una contraseña establecida.",
   "pt-BR": "O usuário já tem uma senha definida."
  },
+ "User Audit Log": {
+  "es": "Registro de auditoría del usuario",
+  "pt-BR": "Trilha de auditoria do usuário"
+ },
  "User choice": {
   "es": "Elección del usuario",
   "pt-BR": "Escolha do usuário"
@@ -15342,6 +15895,14 @@
  "User Role": {
   "es": "Rol del usuario",
   "pt-BR": "Perfil do usuário"
+ },
+ "User {0} updated.": {
+  "es": "Usuario {0} actualizado.",
+  "pt-BR": "Usuário {0} atualizado."
+ },
+ "Username": {
+  "es": "Nombre de usuario",
+  "pt-BR": "Nome de usuário"
  },
  "Username '{0}' is already taken.": {
   "es": "El nombre de usuario «{0}» ya está en uso.",
@@ -15508,6 +16069,10 @@
   "es": "Ver todo",
   "pt-BR": "Ver tudo"
  },
+ "View all": {
+  "es": "Ver todo",
+  "pt-BR": "Ver tudo"
+ },
  "View Audit Log": {
   "es": "Ver registro de auditoría",
   "pt-BR": "Ver trilha de auditoria"
@@ -15520,9 +16085,21 @@
   "es": "Ver detalles",
   "pt-BR": "Ver detalhes"
  },
+ "View document dashboard": {
+  "es": "Ver panel de documentos",
+  "pt-BR": "Ver painel de documentos"
+ },
+ "View expiry register": {
+  "es": "Ver registro de vencimientos",
+  "pt-BR": "Ver registro de vencimentos"
+ },
  "View in Register": {
   "es": "Ver en el registro",
   "pt-BR": "Ver no registro"
+ },
+ "View register": {
+  "es": "Ver registro",
+  "pt-BR": "Ver registro"
  },
  "View Report": {
   "es": "Ver informe",
@@ -15531,6 +16108,11 @@
  "View Training Records": {
   "es": "Ver registros de capacitación",
   "pt-BR": "Ver registros de treinamento"
+ },
+ "View-only access to registers, dashboards and record details across accessible modules. Cannot create, edit, submit, upload, delete or approve anything. Intended for internal auditors (view-only), authorised non-QA personnel or observers.": {
+  "es": "Acceso de solo lectura a registros, paneles y detalles en los módulos accesibles. No puede crear, editar, enviar, subir, eliminar ni aprobar nada. Pensado para auditores internos (solo lectura), personal autorizado ajeno a calidad u observadores.",
+  "pt-BR": "Acesso somente leitura a registros, painéis e detalhes nos módulos acessíveis. Não pode criar, editar, enviar, carregar, excluir nem aprovar nada. Destinado a auditores internos (somente leitura), pessoal autorizado de fora da qualidade ou observadores.",
+  "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
  },
  "Void Adverse Event": {
   "es": "Anular evento adverso",
@@ -15786,6 +16368,10 @@
   "pt-BR": "Você está enviando <strong>{0}</strong> v{1} para revisão. O documento ficará bloqueado para novas edições.",
   "note": "SIGNATURE context — review"
  },
+ "You can <a href=\"{0}\">generate a new set of recovery codes</a>.": {
+  "es": "Puede <a href=\"{0}\">generar un nuevo juego de códigos de recuperación</a>.",
+  "pt-BR": "Você pode <a href=\"{0}\">gerar um novo conjunto de códigos de recuperação</a>."
+ },
  "You can edit individual milestone dates after applying the template.": {
   "es": "Puede editar las fechas de cada hito después de aplicar la plantilla.",
   "pt-BR": "Você pode editar as datas de cada marco depois de aplicar o modelo."
@@ -15793,6 +16379,10 @@
  "You can only acknowledge your own training record.": {
   "es": "Solo puede confirmar su propio registro de capacitación.",
   "pt-BR": "Você só pode confirmar o seu próprio registro de treinamento."
+ },
+ "You cannot deactivate your own account.": {
+  "es": "No puede desactivar su propia cuenta.",
+  "pt-BR": "Você não pode desativar sua própria conta."
  },
  "You cannot reuse any of your last {0} passwords.": {
   "es": "No puede reutilizar ninguna de sus últimas {0} contraseñas.",
@@ -15818,6 +16408,10 @@
   "es": "No tiene permiso para devolver para retrabajo.",
   "pt-BR": "Você não tem permissão para devolver para retrabalho."
  },
+ "You have 1 recovery code left.": {
+  "es": "Le queda 1 código de recuperación.",
+  "pt-BR": "Resta 1 código de recuperação."
+ },
  "You have been inactive for a while. For security, you will be logged out in:": {
   "es": "Ha estado inactivo durante un tiempo. Por seguridad, su sesión se cerrará en:",
   "pt-BR": "Você está inativo há algum tempo. Por segurança, sua sessão será encerrada em:"
@@ -15827,6 +16421,10 @@
   "pt-BR": "Você gerou novos códigos de recuperação.",
   "note": "status message"
  },
+ "You have no recovery codes left.": {
+  "es": "No le quedan códigos de recuperación.",
+  "pt-BR": "Não restam códigos de recuperação."
+ },
  "You have requested to log in with a recovery code. This login will not be remembered until you provide an authenticator app code at log in or disable 2FA and log in again.": {
   "es": "Solicitó iniciar sesión con un código de recuperación. Este inicio de sesión no se recordará hasta que ingrese un código de la aplicación de autenticación al iniciar sesión, o desactive la 2FA y vuelva a iniciar sesión.",
   "pt-BR": "Você solicitou entrar com um código de recuperação. Este login não será lembrado até que você informe um código do aplicativo autenticador ao entrar, ou desative a 2FA e entre novamente."
@@ -15835,6 +16433,10 @@
   "es": "Ha seleccionado <strong id=\"selectedCount\">{0}</strong> registro(s) para eliminar.",
   "pt-BR": "Você selecionou <strong id=\"selectedCount\">{0}</strong> registro(s) para descarte."
  },
+ "You have successfully logged out of the application.": {
+  "es": "Ha cerrado sesión correctamente.",
+  "pt-BR": "Você saiu da aplicação com sucesso."
+ },
  "You have view-only access to system settings. Contact an Administrator to make changes.": {
   "es": "Tiene acceso de solo lectura a la configuración del sistema. Contacte con un administrador para hacer cambios.",
   "pt-BR": "Você tem acesso somente leitura às configurações do sistema. Contate um administrador para fazer alterações."
@@ -15842,6 +16444,26 @@
  "You have view-only access. Contact an Administrator to make changes.": {
   "es": "Tiene acceso de solo lectura. Contacte a un administrador para hacer cambios.",
   "pt-BR": "Você tem acesso somente leitura. Contate um administrador para fazer alterações."
+ },
+ "You have {0} recovery codes left.": {
+  "es": "Le quedan {0} códigos de recuperación.",
+  "pt-BR": "Restam {0} códigos de recuperação."
+ },
+ "You must <a href=\"{0}\">generate a new set of recovery codes</a> before you can log in with a recovery code.": {
+  "es": "Debe <a href=\"{0}\">generar un nuevo juego de códigos de recuperación</a> antes de poder iniciar sesión con un código de recuperación.",
+  "pt-BR": "Você deve <a href=\"{0}\">gerar um novo conjunto de códigos de recuperação</a> antes de poder entrar com um código de recuperação."
+ },
+ "You must accept the policy before you can enable two factor authentication.": {
+  "es": "Debe aceptar la política antes de poder activar la autenticación de dos factores.",
+  "pt-BR": "Você deve aceitar a política antes de poder ativar a autenticação de dois fatores."
+ },
+ "You should <a href=\"{0}\">generate a new set of recovery codes</a>.": {
+  "es": "Debería <a href=\"{0}\">generar un nuevo juego de códigos de recuperación</a>.",
+  "pt-BR": "Você deveria <a href=\"{0}\">gerar um novo conjunto de códigos de recuperação</a>."
+ },
+ "You've successfully authenticated with <strong>{0}</strong>. Please enter an email address for this site below and click the Register button to finish logging in.": {
+  "es": "Se ha autenticado correctamente con <strong>{0}</strong>. Introduzca abajo una dirección de correo para este sitio y haga clic en el botón Registrar para terminar de iniciar sesión.",
+  "pt-BR": "Você se autenticou com sucesso em <strong>{0}</strong>. Informe abaixo um endereço de e-mail para este site e clique no botão Registrar para concluir o login."
  },
  "Your account contains personal data that you have given us. This page allows you to download that data.": {
   "es": "Su cuenta contiene datos personales que usted nos proporcionó. Esta página le permite descargarlos.",
@@ -15981,6 +16603,10 @@
   "es": "{0} días de retraso",
   "pt-BR": "{0} dias de atraso"
  },
+ "{0} due within 30 days": {
+  "es": "{0} vencen en los próximos 30 días",
+  "pt-BR": "{0} vencem nos próximos 30 dias"
+ },
  "{0} expired": {
   "es": "{0} vencidos",
   "pt-BR": "{0} vencidos"
@@ -16008,6 +16634,10 @@
  "{0} record(s) were skipped — active retention hold or cooldown.": {
   "es": "Se omitieron {0} registro(s) — bloqueo de retención activo o período de espera.",
   "pt-BR": "{0} registro(s) ignorado(s) — bloqueio de retenção ativo ou período de carência."
+ },
+ "{0} records shown": {
+  "es": "{0} registros mostrados",
+  "pt-BR": "{0} registros exibidos"
  },
  "{0} serious": {
   "es": "{0} graves",
