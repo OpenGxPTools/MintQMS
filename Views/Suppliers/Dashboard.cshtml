@@ -29,14 +29,14 @@
 {
     <div class="alert alert-danger d-flex align-items-center mb-2">
         <strong class="me-2">&#9888;</strong>
-        <span><strong>@ViewBag.OverdueReviewCount supplier(s) overdue for review</strong> @L["— immediate action required."]</span>
+        <span><strong>@L["{0} supplier(s) overdue for review", (int)ViewBag.OverdueReviewCount]</strong> @L["— immediate action required."]</span>
     </div>
 }
 @if ((int)ViewBag.ExpiredCount > 0)
 {
     <div class="alert alert-danger d-flex align-items-center mb-4">
         <strong class="me-2">&#9888;</strong>
-        <span><strong>@ViewBag.ExpiredCount supplier(s) with an expired approval</strong> @L["— approval expiry date has passed."]</span>
+        <span><strong>@L["{0} supplier(s) with an expired approval", (int)ViewBag.ExpiredCount]</strong> @L["— approval expiry date has passed."]</span>
     </div>
 }
 
@@ -158,8 +158,8 @@
                                 <tr class="table-danger">
                                     <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
                                     <td>@s.LegalName</td>
-                                    <td>@s.ApprovalStatus</td>
-                                    <td><strong>@daysOver days ago</strong></td>
+                                    <td>@L.Enum(s.ApprovalStatus)</td>
+                                    <td><strong>@L["{0} days ago", daysOver]</strong></td>
                                 </tr>
                             }
                         </tbody>
@@ -196,7 +196,7 @@
                                 <tr class="@rc">
                                     <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
                                     <td>@s.LegalName</td>
-                                    <td>@s.ApprovalStatus</td>
+                                    <td>@L.Enum(s.ApprovalStatus)</td>
                                     <td>@s.NextReviewDate!.Value.ToString("dd/MM/yyyy")</td>
                                 </tr>
                             }
@@ -260,7 +260,7 @@
                                     <tr class="table-danger">
                                         <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
                                         <td>@s.LegalName</td>
-                                        <td>@s.ApprovalStatus</td>
+                                        <td>@L.Enum(s.ApprovalStatus)</td>
                                         <td><strong>@s.ExpiryDate!.Value.ToString("dd/MM/yyyy")</strong></td>
                                     </tr>
                                 }
@@ -296,7 +296,7 @@
                                     <tr class="table-warning">
                                         <td><a asp-action="Details" asp-route-id="@s.Id">@s.SupplierCode</a></td>
                                         <td>@s.LegalName</td>
-                                        <td>@s.ApprovalStatus</td>
+                                        <td>@L.Enum(s.ApprovalStatus)</td>
                                         <td>@s.ExpiryDate!.Value.ToString("dd/MM/yyyy")</td>
                                     </tr>
                                 }

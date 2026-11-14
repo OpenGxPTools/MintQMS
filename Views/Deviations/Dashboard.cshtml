@@ -17,7 +17,7 @@
         <a asp-action="Index" class="btn btn-outline-secondary">@L["Register"]</a>
         @if (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.QualityUserRole))
         {
-            <a asp-action="Create" class="btn btn-primary">+ New Deviation</a>
+            <a asp-action="Create" class="btn btn-primary">@L["+ New Deviation"]</a>
         }
     </div>
 </div>
@@ -52,7 +52,7 @@
         <div class="card text-center h-100 @(aged.Count > 0 ? "border-warning" : "")">
             <div class="card-body">
                 <div class="display-5 fw-bold @(aged.Count > 0 ? "text-warning" : "text-secondary")">@aged.Count</div>
-                <div class="text-muted">Aged (&gt;30 days)</div>
+                <div class="text-muted">@L["Aged (>30 days)"]</div>
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@
                                 _ => "bg-secondary"
                             };
                             <tr>
-                                <td>@kv.Key</td>
+                                <td>@L[kv.Key]</td>
                                 <td>@kv.Value</td>
                                 <td>
                                     <div class="progress" style="height:8px">
@@ -191,7 +191,7 @@
                             <td>@d.Title</td>
                             <td>@L.Enum(d.Status)</td>
                             <td>@d.TargetResolutionDate!.Value.ToShortDateString()</td>
-                            <td><strong>@over days</strong></td>
+                            <td><strong>@L["{0} days", over]</strong></td>
                         </tr>
                     }
                 </tbody>
@@ -205,7 +205,7 @@
 {
     <div class="card mb-4 border-warning">
         <div class="card-header bg-warning d-flex justify-content-between">
-            <span>Aged Open Deviations (&gt;30 days)</span>
+            <span>@L["Aged Open Deviations (>30 days)"]</span>
             <span class="badge bg-dark">@aged.Count</span>
         </div>
         <div class="card-body p-0">
@@ -220,7 +220,7 @@
                             <td>@d.Title</td>
                             <td>@L.Enum(d.Status)</td>
                             <td>@d.IdentifiedOn.ToSite().ToShortDateString()</td>
-                            <td><strong>@age days</strong></td>
+                            <td><strong>@L["{0} days", age]</strong></td>
                         </tr>
                     }
                 </tbody>

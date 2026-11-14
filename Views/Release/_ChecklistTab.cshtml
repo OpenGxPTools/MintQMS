@@ -51,7 +51,7 @@
 @if (blockingOutstanding > 0)
 {
     <div class="alert alert-danger">
-        <strong>&#9888; @blockingOutstanding Blocking Outstanding item(s)</strong> @L["— AP submission is blocked until these are resolved."]
+        <strong>&#9888; @L["{0} Blocking Outstanding item(s)", blockingOutstanding]</strong> @L["— AP submission is blocked until these are resolved."]
     </div>
 }
 else if (outstanding > 0)

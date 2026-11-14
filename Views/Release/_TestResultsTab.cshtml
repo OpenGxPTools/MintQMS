@@ -11,9 +11,9 @@
 @if (Model.TestResults?.Any() == true)
 {
     <div class="d-flex gap-3 mb-3">
-        <span class="badge bg-success fs-6">Pass: @passCount</span>
-        <span class="badge bg-danger fs-6">Fail: @failCount</span>
-        <span class="badge bg-secondary fs-6">Pending: @pendingCount</span>
+        <span class="badge bg-success fs-6">@L["Pass: {0}", passCount]</span>
+        <span class="badge bg-danger fs-6">@L["Fail: {0}", failCount]</span>
+        <span class="badge bg-secondary fs-6">@L["Pending: {0}", pendingCount]</span>
     </div>
 }
 

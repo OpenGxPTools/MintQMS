@@ -38,8 +38,8 @@
             <dd class="col-sm-8">@(delLinked.Any() ? string.Join(", ", delLinked) : "-")</dd>
             <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DeterminedBy)</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.DeterminedBy)</dd>
-            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Status)</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.Status)</dd>
+            <dt class="col-sm-4">@L["Status"]</dt>
+            <dd class="col-sm-8">@L.Enum(Model.Status)</dd>
         </dl>
 
         @if (Model.Changes.Any())

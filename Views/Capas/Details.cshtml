@@ -524,7 +524,7 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Accepting moves this CAPA from <strong>@L["Pending Assessment"]</strong> to <strong>@L["Implementation"]</strong>. Implementation can begin immediately.</p>
+                        <p>@H["Accepting moves this CAPA from <strong>{0}</strong> to <strong>{1}</strong>. Implementation can begin immediately.", L["Pending Assessment"].Value, L["Implementation"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Your Email"]</label>
                             <input type="email" name="email" class="form-control" required />
@@ -562,7 +562,7 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>This will lock the CAPA for Quality Manager approval (<strong>@L["Implementation"]</strong> → <strong>@L["Pending Approval"]</strong>).</p>
+                        <p>@H["This will lock the CAPA for Quality Manager approval (<strong>{0}</strong> → <strong>{1}</strong>).", L["Implementation"].Value, L["Pending Approval"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Your Email"]</label>
                             <input type="email" name="email" class="form-control" required />
@@ -600,7 +600,7 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Approving moves this CAPA from <strong>@L["Pending Approval"]</strong> to <strong>@L["Approved"]</strong>.</p>
+                        <p>@H["Approving moves this CAPA from <strong>{0}</strong> to <strong>{1}</strong>.", L["Pending Approval"].Value, L["Approved"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Your Email"]</label>
                             <input type="email" name="email" class="form-control" required />
@@ -640,15 +640,15 @@ else if (isApproaching)
                     <div class="modal-body">
                         @if (Model.Status == Capa.CapaStatus.PendingAssessment)
                         {
-                            <p>This will return the CAPA to <strong>@L["Determination"]</strong> for revision. The submitted-for-acceptance stamp will be cleared.</p>
+                            <p>@H["This will return the CAPA to <strong>{0}</strong> for revision. The submitted-for-acceptance stamp will be cleared.", L["Determination"].Value]</p>
                         }
                         else if (Model.Status == Capa.CapaStatus.PendingApproval)
                         {
-                            <p>This will return the CAPA to <strong>@L["Implementation"]</strong> for revision. The submitted-for-approval stamp will be cleared.</p>
+                            <p>@H["This will return the CAPA to <strong>{0}</strong> for revision. The submitted-for-approval stamp will be cleared.", L["Implementation"].Value]</p>
                         }
                         else if (Model.Status == Capa.CapaStatus.Implementation)
                         {
-                            <p>This will return the CAPA to <strong>@L["Determination"]</strong> for full rework. The acceptance and assessment stamps will be cleared.</p>
+                            <p>@H["This will return the CAPA to <strong>{0}</strong> for full rework. The acceptance and assessment stamps will be cleared.", L["Determination"].Value]</p>
                         }
                         <div class="mb-3">
                             <label class="form-label">@L["Your Email"]</label>
@@ -685,7 +685,7 @@ else if (isApproaching)
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>@L["Warning:"]</strong> Administratively reopening a completed record reverts it to the Implementation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
+                        <strong>@L["Warning:"]</strong> @L["Administratively reopening a completed record reverts it to the Implementation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval."]
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>

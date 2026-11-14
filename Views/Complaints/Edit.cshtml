@@ -44,7 +44,7 @@
         <small class="text-muted">@Model.Title</small>
     </div>
     <div class="d-flex gap-2 align-items-center">
-        <span class="badge @severityBadge fs-6">@Model.Severity</span>
+        <span class="badge @severityBadge fs-6">@L.Enum(Model.Severity)</span>
         <span class="badge @statusBadge fs-6">@statusLabel</span>
     </div>
 </div>
@@ -60,7 +60,7 @@
             <!-- ── Section 1: Complaint Intake ───────────────────────────────── -->
             <div class="card mb-4 @(isAccepted ? "opacity-50" : "")">
                 <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-                    Complaint Intake
+                    @L["Complaint Intake"]
                     @if (isAccepted)
                     {
                         <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
@@ -77,7 +77,7 @@
                             <input type="hidden" asp-for="Title" />
 
                             <dt class="col-sm-3">@L["Severity"]</dt>
-                            <dd class="col-sm-9"><span class="badge @severityBadge">@Model.Severity</span></dd>
+                            <dd class="col-sm-9"><span class="badge @severityBadge">@L.Enum(Model.Severity)</span></dd>
                             <input type="hidden" asp-for="Severity" />
 
                             <dt class="col-sm-3">@L["Customer"]</dt>
@@ -172,7 +172,7 @@
                                 </div>
                                 <div class="col-md-6" id="CustomerNameRow">
                                     <label asp-for="CustomerName" class="form-label">
-                                        @L["Customer Name"] <span class="text-muted small">(if not in system)</span>
+                                        @L["Customer Name"] <span class="text-muted small">@L["(if not in system)"]</span>
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="customername"
                                                 aria-label="@L["Customer name guidance"]">?</button>
                                     </label>
@@ -268,7 +268,7 @@
             {
                 <div class="card mb-4 @(isAccepted ? "opacity-50" : "")">
                     <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-                        Evaluation &amp; Investigation
+                        @L["Evaluation & Investigation"]
                         @if (isAccepted)
                         {
                             <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
@@ -375,7 +375,7 @@
             <form asp-action="CreateCapa" method="post" class="mt-3 d-inline">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
-                <button type="submit" class="btn btn-outline-primary btn-sm">+ Create Linked CAPA</button>
+                <button type="submit" class="btn btn-outline-primary btn-sm">@L["+ Create Linked CAPA"]</button>
             </form>
         }
         else
@@ -454,7 +454,7 @@
     <div id="help-resolution">
         <p class="mb-1"><strong>@L["Resolution must document:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>All CAPA actions completed, with evidence (e.g. SOP revised on [date], training completed by [names] on [date])</li>
+            <li>@L["All CAPA actions completed, with evidence (e.g. SOP revised on [date], training completed by [names] on [date])"]</li>
             <li>@L["Confirmation that the root cause has been addressed"]</li>
             <li>@L["Whether a response or compensation was issued to the complainant"]</li>
             <li>@L["Effectiveness check result — confirm the issue has not recurred"]</li>

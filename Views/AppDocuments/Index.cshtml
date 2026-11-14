@@ -134,8 +134,8 @@
                     }
                 </td>
                 <td>@item.Title</td>
-                <td>@(catDisplay ?? "-")</td>
-                <td>@(typeDisplay ?? "-")</td>
+                <td>@(catDisplay != null ? L[catDisplay].Value : "-")</td>
+                <td>@(typeDisplay != null ? L[typeDisplay].Value : "-")</td>
                 <td>@item.Version.ToString("0.00")</td>
                 <td>@item.AuthoredBy</td>
                 <td>@item.AuthoredOn.ToSite().ToString("dd/MM/yyyy")</td>

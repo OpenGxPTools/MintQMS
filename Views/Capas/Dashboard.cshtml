@@ -100,7 +100,7 @@
                             var bc  = badgeMap.TryGetValue(kvp.Key, out var bv) ? bv : "bg-secondary";
                             <tr>
                                 <td class="ps-3" style="width:150px">
-                                    <span class="badge @bc">@kvp.Key</span>
+                                    <span class="badge @bc">@L[kvp.Key]</span>
                                 </td>
                                 <td>
                                     <div class="progress mt-1" style="height:14px">
@@ -136,7 +136,7 @@
                             <li class="list-group-item px-3 py-2">
                                 <a asp-action="Details" asp-route-id="@c.Id" class="fw-semibold text-decoration-none">@c.CapaId</a>
                                 <div class="text-truncate small text-muted">@c.Title</div>
-                                <span class="badge bg-warning text-dark">@daysLeft day@(daysLeft == 1 ? "" : "s") left</span>
+                                <span class="badge bg-warning text-dark">@L["{0} day(s) left", daysLeft]</span>
                             </li>
                         }
                     </ul>
@@ -155,7 +155,7 @@
 {
     <div class="card shadow-sm border-danger mb-4">
         <div class="card-header bg-danger text-white fw-semibold">
-            <i class="fas fa-exclamation-circle me-1"></i>Overdue CAPAs (@overdueCAPAs.Count)
+            <i class="fas fa-exclamation-circle me-1"></i>@L["Overdue CAPAs ({0})", overdueCAPAs.Count]
         </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
@@ -175,7 +175,7 @@
                             <td>@c.Title</td>
                             <td><span class="badge @csBadge">@csLabel</span></td>
                             <td>@c.TargetCompletionDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
-                            <td class="text-danger fw-bold">@daysOver day@(daysOver == 1 ? "" : "s")</td>
+                            <td class="text-danger fw-bold">@L["{0} day(s)", daysOver]</td>
                             <td class="small">
                                 @if (c.Deviation != null) { <span>Dev: @c.Deviation.DeviationId</span> }
                                 else if (c.Complaint != null) { <span>Cmp: @c.Complaint.ComplaintId</span> }
@@ -194,7 +194,7 @@
 <div class="row g-3 mb-4">
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
-            <div class="card-header fw-semibold"><i class="fas fa-check-circle me-1 text-info"></i>Awaiting Acceptance (@pendingAccept.Count)</div>
+            <div class="card-header fw-semibold"><i class="fas fa-check-circle me-1 text-info"></i>@L["Awaiting Acceptance ({0})", pendingAccept.Count]</div>
             <div class="card-body p-0">
                 @if (pendingAccept.Any())
                 {
@@ -222,7 +222,7 @@
     </div>
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
-            <div class="card-header fw-semibold"><i class="fas fa-thumbs-up me-1 text-secondary"></i>Awaiting Approval (@pendingApprove.Count)</div>
+            <div class="card-header fw-semibold"><i class="fas fa-thumbs-up me-1 text-secondary"></i>@L["Awaiting Approval ({0})", pendingApprove.Count]</div>
             <div class="card-body p-0">
                 @if (pendingApprove.Any())
                 {

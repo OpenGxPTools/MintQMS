@@ -77,7 +77,7 @@
             <!-- ── Section 1: Determination ──────────────────────────────────── -->
             <div class="card mb-4 @(!planEditable ? "opacity-50" : "")">
                 <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-                    Determination
+                    @L["Determination"]
                     @if (!planEditable)
                     {
                         <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
@@ -295,7 +295,7 @@
             <!-- ── Section 2: Assessment ──────────────────────────────────────── -->
             <div class="card mb-4 @(!planEditable ? "opacity-50" : "")">
                 <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-                    Assessment
+                    @L["Assessment"]
                     @if (!planEditable)
                     {
                         <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> @L["Locked"]</span>
@@ -359,7 +359,7 @@
 <!-- Popover help content -->
 <div class="d-none">
     <div id="help-capatype">
-        <p class="mb-0">Recall / Market Action makes this CAPA the master record for a recall; Improvement Opportunity is a planned business improvement, not a response to a problem.</p>
+        <p class="mb-0">@L["Recall / Market Action makes this CAPA the master record for a recall; Improvement Opportunity is a planned business improvement, not a response to a problem."]</p>
     </div>
     <div id="help-corrective">
         <p class="mb-1"><strong>@L["Corrective Action must include:"]</strong></p>
@@ -391,7 +391,7 @@
     <div id="help-implementation">
         <p class="mb-1"><strong>@L["Implementation must document:"]</strong></p>
         <ul class="mb-0 ps-3">
-            <li>All CAPA actions completed, with evidence (e.g. SOP revised on [date], training completed by [names] on [date])</li>
+            <li>@L["All CAPA actions completed, with evidence (e.g. SOP revised on [date], training completed by [names] on [date])"]</li>
             <li>@L["Confirmation that the root cause has been eliminated"]</li>
             <li>@L["Effectiveness check result — confirm the issue has not recurred"]</li>
             <li>@L["Date each action was completed and by whom"]</li>

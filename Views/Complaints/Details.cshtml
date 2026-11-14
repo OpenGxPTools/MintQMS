@@ -54,7 +54,7 @@
         <small class="text-muted">@Model.Title</small>
     </div>
     <div class="d-flex gap-2 align-items-center">
-        <span class="badge @severityBadge fs-6">@Model.Severity</span>
+        <span class="badge @severityBadge fs-6">@L.Enum(Model.Severity)</span>
         <span class="badge @statusBadge fs-6">@statusLabel</span>
     </div>
 </div>
@@ -93,7 +93,7 @@ else if (Model.Severity == OpenQMS.Models.Complaint.ComplaintSeverity.Critical &
         <strong>@L["Critical Complaint"]</strong> — @L["requires priority handling."]
         @if (daysUntilDeadline.HasValue)
         {
-            <span>Target resolution: @Model.TargetResolutionDate!.Value.ToShortDateString() (@daysUntilDeadline day(s) remaining).</span>
+            <span>@L["Target resolution date is {0} ({1} day(s) remaining).", Model.TargetResolutionDate!.Value.ToShortDateString(), daysUntilDeadline!.Value]</span>
         }
     </div>
 }
@@ -208,11 +208,11 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                     <dt class="col-sm-4">@L["Complaint ID"]</dt><dd class="col-sm-8">@Model.ComplaintId</dd>
                     <dt class="col-sm-4">@L["Title"]</dt><dd class="col-sm-8">@Model.Title</dd>
                     <dt class="col-sm-4">@L["Severity"]</dt>
-                    <dd class="col-sm-8"><span class="badge @severityBadge">@Model.Severity</span></dd>
+                    <dd class="col-sm-8"><span class="badge @severityBadge">@L.Enum(Model.Severity)</span></dd>
                     <dt class="col-sm-4">@L["Status"]</dt>
                     <dd class="col-sm-8"><span class="badge @statusBadge">@statusLabel</span></dd>
                     <dt class="col-sm-4">@L["Received On"]</dt>
-                    <dd class="col-sm-8">@Model.ReceivedOn.ToSite().ToShortDateString() <span class="text-muted small">(@ageDays days ago)</span></dd>
+                    <dd class="col-sm-8">@Model.ReceivedOn.ToSite().ToShortDateString() <span class="text-muted small">@L["({0} days ago)", ageDays]</span></dd>
                     @if (Model.TargetResolutionDate.HasValue)
                     {
                         <dt class="col-sm-4">@L["Target Resolution"]</dt>
@@ -563,9 +563,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-body">
                 <p class="text-muted small">
-                    Moves the complaint to <strong>@L["Evaluation"]</strong> status. The Evaluation, Investigation,
-                    Root Cause Category, and Corrective and Preventive Action fields will become available for editing.
-                    Enter your credentials to confirm.
+                    @H["Moves the complaint to <strong>{0}</strong> status. The Evaluation, Investigation, Root Cause Category, and Corrective and Preventive Action fields will become available for editing. Enter your credentials to confirm.", L["Evaluation"].Value]
                 </p>
                 <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
@@ -591,9 +589,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-body">
                 <p class="text-muted small">
-                    Submits the complaint to <strong>@L["Pending Acceptance"]</strong> for QA Manager review. The record will be
-                    locked for editing until accepted or returned. Before confirming, ensure the following fields are completed:
-                    <strong>@L["Evaluation, Root Cause Category, Corrective and Preventive Action."]</strong>
+                    @H["Submits the complaint to <strong>{0}</strong> for QA Manager review. The record will be locked for editing until accepted or returned. Before confirming, ensure the following fields are completed: <strong>{1}</strong>", L["Pending Acceptance"].Value, L["Evaluation, Root Cause Category, Corrective and Preventive Action."].Value]
                 </p>
                 <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
@@ -621,8 +617,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-body">
                 <p class="text-muted small">
-                    Confirms the evaluation package is complete and acceptable. Moves the complaint to <strong>@L["Accepted"]</strong> status.
-                    The quality user will then document the resolution summary. Enter your credentials to confirm.
+                    @H["Confirms the evaluation package is complete and acceptable. Moves the complaint to <strong>{0}</strong> status. The quality user will then document the resolution summary. Enter your credentials to confirm.", L["Accepted"].Value]
                 </p>
                 <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
@@ -651,8 +646,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-body">
                 <p class="text-muted small">
-                    Moves the complaint to <strong>@L["Resolution"]</strong> status for final QA Manager review and closure.
-                    The <strong>@L["Resolution summary"]</strong> field must be completed before confirming.
+                    @H["Moves the complaint to <strong>{0}</strong> status for final QA Manager review and closure. The <strong>{1}</strong> field must be completed before confirming.", L["Resolution"].Value, L["Resolution summary"].Value]
                 </p>
                 <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
@@ -679,9 +673,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             </div>
             <div class="modal-body">
                 <p class="text-muted small">
-                    Closes the complaint and <strong>@L["permanently locks the record"]</strong>. The retention period
-                    will be calculated from today. Before confirming, ensure the
-                    <strong>@L["Resolution summary"]</strong> field is completed. Enter your credentials to confirm.
+                    @H["Closes the complaint and <strong>permanently locks the record</strong>. The retention period will be calculated from today. Before confirming, ensure the <strong>{0}</strong> field is completed. Enter your credentials to confirm.", L["Resolution summary"].Value]
                 </p>
                 <div class="mb-3"><label class="form-label">@L["Notes (optional)"]</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 <div class="mb-3"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
@@ -710,13 +702,13 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
             <div class="modal-body">
                 <p class="text-muted small">
                     @if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Evaluation)
-                    { <text>Returns to <strong>@L["Received"]</strong> status — the complaint will need to be re-sent for evaluation.</text> }
+                    { @H["Returns to <strong>{0}</strong> status — the complaint will need to be re-sent for evaluation.", L["Received"].Value] }
                     else if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.PendingAcceptance)
-                    { <text>Returns to <strong>@L["Evaluation"]</strong> status — evaluation fields will be unlocked for rework.</text> }
+                    { @H["Returns to <strong>{0}</strong> status — evaluation fields will be unlocked for rework.", L["Evaluation"].Value] }
                     else if (Model.Status == OpenQMS.Models.Complaint.ComplaintStatus.Accepted)
-                    { <text>Returns to <strong>@L["Evaluation"]</strong> status — evaluation fields will be unlocked for full rework.</text> }
+                    { @H["Returns to <strong>{0}</strong> status — evaluation fields will be unlocked for full rework.", L["Evaluation"].Value] }
                     else
-                    { <text>Returns to <strong>@L["Accepted"]</strong> status — the resolution field will be unlocked for rework.</text> }
+                    { @H["Returns to <strong>{0}</strong> status — the resolution field will be unlocked for rework.", L["Accepted"].Value] }
                 </p>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">@L["Reason for Return"] <span class="text-danger">*</span></label>
@@ -746,7 +738,7 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>@L["Warning:"]</strong> Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.
+                        <strong>@L["Warning:"]</strong> @L["Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure."]
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>

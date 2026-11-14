@@ -120,7 +120,7 @@
                 </td>
                 <td>
                     @if (item.Severity.HasValue)
-                    { <span class="badge @sevBadge">@item.Severity.Value</span> }
+                    { <span class="badge @sevBadge">@L.Enum(item.Severity.Value)</span> }
                     else { <span class="text-muted">-</span> }
                 </td>
                 <td>@string.Join(", ", iLinked)</td>

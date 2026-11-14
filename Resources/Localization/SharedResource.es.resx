@@ -10,13 +10,21 @@
   <data name="(auto-calculated)" xml:space="preserve"><value>(calculado automáticamente)</value></data>
   <data name="(current register snapshot)" xml:space="preserve"><value>(instantánea actual del registro)</value></data>
   <data name="(filtered from _MAX_ total entries)" xml:space="preserve"><value>(filtrado de _MAX_ registros en total)</value></data>
+  <data name="(if not in system)" xml:space="preserve"><value>(si no está en el sistema)</value></data>
   <data name="(No preferred term)" xml:space="preserve"><value>(Sin término preferido)</value></data>
   <data name="(open &gt;30 days)" xml:space="preserve"><value>(abiertas &gt;30 días)</value></data>
+  <data name="(optional — leave blank to keep existing file)" xml:space="preserve"><value>(opcional: déjelo en blanco para conservar el archivo actual)</value></data>
+  <data name="(optional)" xml:space="preserve"><value>(opcional)</value></data>
   <data name="(planned start within selected period)" xml:space="preserve"><value>(inicio previsto dentro del período seleccionado)</value></data>
   <data name="(regulatory clock start)" xml:space="preserve"><value>(inicio del plazo regulatorio)</value></data>
+  <data name="(required if an expiry date is set)" xml:space="preserve"><value>(obligatorio si se fija una fecha de vencimiento)</value></data>
+  <data name="(update if required)" xml:space="preserve"><value>(actualice si es necesario)</value></data>
+  <data name="({0} days ago)" xml:space="preserve"><value>(hace {0} días)</value></data>
   <data name="({0} days)" xml:space="preserve"><value>({0} días)</value></data>
   <data name="({0} file(s) uploaded)" xml:space="preserve"><value>({0} archivo(s) subido(s))</value></data>
   <data name="(≥3 in 90 days)" xml:space="preserve"><value>(≥3 en 90 días)</value></data>
+  <data name="+ Create Linked CAPA" xml:space="preserve"><value>+ Crear CAPA vinculada</value></data>
+  <data name="+ New Deviation" xml:space="preserve"><value>+ Nueva desviación</value></data>
   <data name="-- Add Asset --" xml:space="preserve"><value>-- Agregar activo --</value></data>
   <data name="-- Add Audit --" xml:space="preserve"><value>-- Agregar auditoría --</value></data>
   <data name="-- Add CAPA --" xml:space="preserve"><value>-- Agregar CAPA --</value></data>
@@ -150,6 +158,7 @@
   <data name="A rejection reason is required." xml:space="preserve"><value>Se requiere un motivo de rechazo.</value></data>
   <data name="A renewal can only be initiated from an Approved application." xml:space="preserve"><value>Solo se puede iniciar una renovación desde una solicitud aprobada.</value></data>
   <data name="A renewal can only be initiated from an Issued / Active record." xml:space="preserve"><value>Solo se puede iniciar una renovación desde un registro emitido / activo.</value></data>
+  <data name="A retention hold is active on this record. Reopening will clear the retention date — ensure this is compliant with your retention policy." xml:space="preserve"><value>Este registro tiene una retención activa. Al reabrirlo se borrará la fecha de retención: asegúrese de que esto cumple su política de retención.</value></data>
   <data name="A single cross-module view of everything currently overdue — CAPAs, changes, audits, risks, deviations, and complaints. Refreshed in real time. Intended as a daily operational tool for QA managers." xml:space="preserve"><value>Una vista única de todo lo que está vencido en todos los módulos: CAPA, cambios, auditorías, riesgos, desviaciones y reclamaciones. Se actualiza en tiempo real. Pensada como herramienta operativa diaria para los responsables de calidad.</value></data>
   <data name="A supplier with the legal name '{0}' already exists ({1}). Verify this is a different entity." xml:space="preserve"><value>Ya existe un proveedor con la razón social '{0}' ({1}). Verifique que se trata de otra entidad.</value></data>
   <data name="A suspension reason is required." xml:space="preserve"><value>Se requiere un motivo de suspensión.</value></data>
@@ -181,6 +190,7 @@
   <data name="Accepted: {0} · Max 25 MB" xml:space="preserve"><value>Aceptados: {0} · Máx. 25 MB</value></data>
   <data name="Accepted: {0}. Max 25 MB per file." xml:space="preserve"><value>Aceptados: {0}. Máx. 25 MB por archivo.</value></data>
   <data name="Accepted: {0}. Max 25 MB." xml:space="preserve"><value>Aceptados: {0}. Máx. 25 MB.</value></data>
+  <data name="Accepting moves this CAPA from &lt;strong&gt;{0}&lt;/strong&gt; to &lt;strong&gt;{1}&lt;/strong&gt;. Implementation can begin immediately." xml:space="preserve"><value>Al aceptar, esta CAPA pasa de &lt;strong&gt;{0}&lt;/strong&gt; a &lt;strong&gt;{1}&lt;/strong&gt;. La implementación puede comenzar de inmediato.</value></data>
   <data name="Accepting will move this risk to Mitigation. The risk scoring is locked from this point." xml:space="preserve"><value>Al aceptar, este riesgo pasará a Mitigación. La puntuación del riesgo queda bloqueada a partir de este momento.</value></data>
   <data name="Access denied" xml:space="preserve"><value>Acceso denegado</value></data>
   <data name="Access Pathway" xml:space="preserve"><value>Vía de acceso</value></data>
@@ -265,6 +275,10 @@
   <data name="Administratively reopening a completed record reverts it to the Approved stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure." xml:space="preserve"><value>La reapertura administrativa de un registro completado lo devuelve a la etapa Aprobado. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después del cierre formal.</value></data>
   <data name="Administratively reopening a completed record reverts it to the Implementation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval." xml:space="preserve"><value>La reapertura administrativa de un registro completado lo devuelve a la etapa Implementación. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después de la aprobación formal.</value></data>
   <data name="Administratively reopening a completed record reverts it to the Mitigation stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure." xml:space="preserve"><value>La reapertura administrativa de un registro completado lo devuelve a la etapa Mitigación. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después del cierre formal.</value></data>
+  <data name="Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval." xml:space="preserve"><value>La reapertura administrativa de un registro completado lo devuelve a la etapa Resolución. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después de la aprobación formal.</value></data>
+  <data name="Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure." xml:space="preserve"><value>La reapertura administrativa de un registro completado lo devuelve a la etapa Resolución. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después del cierre formal.</value></data>
+  <data name="Administratively reopening a completed record reverts it to the Reviewed stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval." xml:space="preserve"><value>La reapertura administrativa de un registro completado lo devuelve a la etapa Revisado. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después de la aprobación formal.</value></data>
+  <data name="Administratively reopening a completed training reverts it to Scheduled, clears the completion record, and removes the retention date. This action is logged in the audit trail and requires your credentials." xml:space="preserve"><value>La reapertura administrativa de una capacitación completada la devuelve a Programado, borra el registro de finalización y elimina la fecha de retención. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales.</value></data>
   <data name="Administrator" xml:space="preserve"><value>Administrador</value></data>
   <data name="Advance to Preparation" xml:space="preserve"><value>Pasar a preparación</value></data>
   <data name="Adverse Event" xml:space="preserve"><value>Evento adverso</value></data>
@@ -296,9 +310,12 @@
   <data name="Age" xml:space="preserve"><value>Edad</value></data>
   <data name="Age (days)" xml:space="preserve"><value>Antigüedad (días)</value></data>
   <data name="Age Unit" xml:space="preserve"><value>Unidad de edad</value></data>
+  <data name="Aged (&gt;30 days)" xml:space="preserve"><value>Antiguas (&gt;30 días)</value></data>
   <data name="Aged Care Facility" xml:space="preserve"><value>Residencia de mayores</value></data>
   <data name="Aged Complaint:" xml:space="preserve"><value>Reclamación antigua:</value></data>
   <data name="Aged Deviation:" xml:space="preserve"><value>Desviación antigua:</value></data>
+  <data name="Aged Open Complaints (&gt;30 days)" xml:space="preserve"><value>Reclamaciones abiertas antiguas (&gt;30 días)</value></data>
+  <data name="Aged Open Deviations (&gt;30 days)" xml:space="preserve"><value>Desviaciones abiertas antiguas (&gt;30 días)</value></data>
   <data name="Aggregated KPIs across all quality modules for a selected date range — CAPAs, deviations, changes, complaints, audits, and risks. Required input for ISO 13485 / GMP management review meetings. Exportable to Excel." xml:space="preserve"><value>KPI agregados de todos los módulos de calidad para un rango de fechas: CAPA, desviaciones, cambios, reclamaciones, auditorías y riesgos. Información de entrada necesaria para las reuniones de revisión por la dirección ISO 13485 / GMP. Exportable a Excel.</value></data>
   <data name="Aggregated quality system KPIs for ISO 13485 / GMP management review. Use the date filter to select the reporting period. Audit and risk data noted where it reflects the full register rather than just the period." xml:space="preserve"><value>KPI agregados del sistema de calidad para la revisión por la dirección ISO 13485 / GMP. Use el filtro de fechas para elegir el período del informe. Se indica cuándo los datos de auditorías y riesgos reflejan todo el registro y no solo el período.</value></data>
   <data name="Agreements" xml:space="preserve"><value>Acuerdos</value></data>
@@ -307,9 +324,11 @@
   <data name="All Adverse Events" xml:space="preserve"><value>Todos los eventos adversos</value></data>
   <data name="All applicable actions complete" xml:space="preserve"><value>Todas las acciones aplicables completadas</value></data>
   <data name="All CAPA actions completed with evidence" xml:space="preserve"><value>Todas las acciones de la CAPA completadas con evidencia</value></data>
+  <data name="All CAPA actions completed, with evidence (e.g. SOP revised on [date], training completed by [names] on [date])" xml:space="preserve"><value>Todas las acciones CAPA completadas, con evidencia (p. ej., PNT revisado el [fecha], capacitación completada por [nombres] el [fecha])</value></data>
   <data name="All Categories" xml:space="preserve"><value>Todas las categorías</value></data>
   <data name="All conditions are satisfied. Application will auto-transition to &lt;strong&gt;Approved&lt;/strong&gt; when the final condition is closed." xml:space="preserve"><value>Todas las condiciones se cumplen. La solicitud pasará automáticamente a &lt;strong&gt;Aprobada&lt;/strong&gt; cuando se cierre la última condición.</value></data>
   <data name="All Findings (excl. obs.)" xml:space="preserve"><value>Todos los hallazgos (excl. obs.)</value></data>
+  <data name="All four fields must be completed: &lt;strong&gt;{0}&lt;/strong&gt;." xml:space="preserve"><value>Los cuatro campos deben estar completos: &lt;strong&gt;{0}&lt;/strong&gt;.</value></data>
   <data name="All issued certificates have been withdrawn." xml:space="preserve"><value>Se han retirado todos los certificados emitidos.</value></data>
   <data name="All items currently past their due date or open for more than 30 days across all quality modules. This is a live snapshot — refresh the page to see the current state." xml:space="preserve"><value>Todos los elementos que han pasado su fecha límite o llevan más de 30 días abiertos, en todos los módulos de calidad. Es una instantánea en vivo: actualice la página para ver el estado actual.</value></data>
   <data name="All Jurisdictions" xml:space="preserve"><value>Todas las jurisdicciones</value></data>
@@ -381,6 +400,7 @@
   <data name="Approval Letter" xml:space="preserve"><value>Carta de aprobación</value></data>
   <data name="Approval Letter / Reference Number" xml:space="preserve"><value>Carta de aprobación / número de referencia</value></data>
   <data name="Approval Status" xml:space="preserve"><value>Estado de aprobación</value></data>
+  <data name="Approval: {0}" xml:space="preserve"><value>Aprobación: {0}</value></data>
   <data name="Approve" xml:space="preserve"><value>Aprobar</value></data>
   <data name="Approve &amp; Lock Record" xml:space="preserve"><value>Aprobar y bloquear el registro</value></data>
   <data name="Approve &amp; Sign" xml:space="preserve"><value>Aprobar y firmar</value></data>
@@ -403,12 +423,14 @@
   <data name="Approved / Active" xml:space="preserve"><value>Aprobado / activo</value></data>
   <data name="Approved / Qualified" xml:space="preserve"><value>Aprobado / Calificado</value></data>
   <data name="Approved By" xml:space="preserve"><value>Aprobado por</value></data>
+  <data name="Approved documents that require periodic review, ordered by review due date." xml:space="preserve"><value>Documentos aprobados que requieren revisión periódica, ordenados por fecha límite de revisión.</value></data>
   <data name="Approved in Period" xml:space="preserve"><value>Aprobados en el período</value></data>
   <data name="Approved On" xml:space="preserve"><value>Aprobado el</value></data>
   <data name="Approved records cannot be voided." xml:space="preserve"><value>Los registros aprobados no se pueden anular.</value></data>
   <data name="Approved {0}" xml:space="preserve"><value>Aprobado el {0}</value></data>
   <data name="Approved {0} UTC" xml:space="preserve"><value>Aprobado el {0} UTC</value></data>
   <data name="Approved — Pending Closure" xml:space="preserve"><value>Aprobado — pendiente de cierre</value></data>
+  <data name="Approving moves this CAPA from &lt;strong&gt;{0}&lt;/strong&gt; to &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve"><value>Al aprobar, esta CAPA pasa de &lt;strong&gt;{0}&lt;/strong&gt; a &lt;strong&gt;{1}&lt;/strong&gt;.</value></data>
   <data name="Approving will lock this record. A Follow-up Report must be created to add further information." xml:space="preserve"><value>Al aprobar se bloqueará este registro. Para añadir más información habrá que crear un informe de seguimiento.</value></data>
   <data name="Archive size" xml:space="preserve"><value>Tamaño del archivo comprimido</value></data>
   <data name="Are you sure you want to delete this document? This action cannot be undone." xml:space="preserve"><value>¿Está seguro de que desea eliminar este documento? Esta acción no se puede deshacer.</value></data>
@@ -454,6 +476,7 @@
   <data name="Associate your {0} account." xml:space="preserve"><value>Asocie su cuenta de {0}.</value></data>
   <data name="At least one address field is required." xml:space="preserve"><value>Se requiere al menos un campo de dirección.</value></data>
   <data name="At least one of Expiry Date or Retest Date is required for AP submission" xml:space="preserve"><value>Para enviar a la PA se requiere al menos la fecha de vencimiento o la fecha de reanálisis</value></data>
+  <data name="Attached Files ({0})" xml:space="preserve"><value>Archivos adjuntos ({0})</value></data>
   <data name="Attachment deleted successfully." xml:space="preserve"><value>Adjunto eliminado correctamente.</value></data>
   <data name="Attachment deleted." xml:space="preserve"><value>Adjunto eliminado.</value></data>
   <data name="Attachment uploaded." xml:space="preserve"><value>Adjunto cargado.</value></data>
@@ -471,6 +494,7 @@
   <data name="Attachments cannot be removed from an approved CAPA." xml:space="preserve"><value>No se pueden eliminar adjuntos de una CAPA aprobada.</value></data>
   <data name="Attachments cannot be removed from an approved change record." xml:space="preserve"><value>No se pueden quitar adjuntos de un registro de cambio aprobado.</value></data>
   <data name="Attachments cannot be removed from an approved deviation." xml:space="preserve"><value>No se pueden eliminar adjuntos de una desviación aprobada.</value></data>
+  <data name="Attachments for Deviation: {0}" xml:space="preserve"><value>Adjuntos de la desviación: {0}</value></data>
   <data name="Attachments — {0}" xml:space="preserve"><value>Adjuntos — {0}</value></data>
   <data name="Attendees" xml:space="preserve"><value>Asistentes</value></data>
   <data name="AUD" xml:space="preserve"><value>AUD</value></data>
@@ -538,8 +562,10 @@
   <data name="Auto-filled from product selection, or enter manually" xml:space="preserve"><value>Se completa al elegir el producto, o ingréselo manualmente</value></data>
   <data name="Automatically logs out users after this many minutes of inactivity. 0 = disabled." xml:space="preserve"><value>Cierra automáticamente la sesión de los usuarios tras estos minutos de inactividad. 0 = desactivado.</value></data>
   <data name="Awaiting Acceptance" xml:space="preserve"><value>En espera de aceptación</value></data>
+  <data name="Awaiting Acceptance ({0})" xml:space="preserve"><value>En espera de aceptación ({0})</value></data>
   <data name="Awaiting Approval" xml:space="preserve"><value>En espera de aprobación</value></data>
   <data name="Awaiting Approval (Under Review)" xml:space="preserve"><value>En espera de aprobación (en revisión)</value></data>
+  <data name="Awaiting Approval ({0})" xml:space="preserve"><value>En espera de aprobación ({0})</value></data>
   <data name="Awaiting Quality Manager acceptance. No actions available at this stage." xml:space="preserve"><value>En espera de la aceptación del Gerente de calidad. No hay acciones disponibles en esta etapa.</value></data>
   <data name="Awaiting Quality Manager review and closure. No actions available at this stage." xml:space="preserve"><value>En espera de la revisión y el cierre por el Gerente de calidad. No hay acciones disponibles en esta etapa.</value></data>
   <data name="Awaiting trainer" xml:space="preserve"><value>En espera del capacitador</value></data>
@@ -575,6 +601,7 @@
   <data name="Batch No." xml:space="preserve"><value>N.º de lote</value></data>
   <data name="Batch Number" xml:space="preserve"><value>Número de lote</value></data>
   <data name="Batch Size" xml:space="preserve"><value>Tamaño del lote</value></data>
+  <data name="Batch {0}" xml:space="preserve"><value>Lote {0}</value></data>
   <data name="Before submitting, confirm:" xml:space="preserve"><value>Antes de enviar, confirme:</value></data>
   <data name="Benefit-Risk Conclusion" xml:space="preserve"><value>Conclusión beneficio-riesgo</value></data>
   <data name="Benefit-risk narrative for the period..." xml:space="preserve"><value>Narrativa beneficio-riesgo del período...</value></data>
@@ -623,6 +650,7 @@
   <data name="Cancel Supplier" xml:space="preserve"><value>Cancelar proveedor</value></data>
   <data name="Cancel Training" xml:space="preserve"><value>Cancelar capacitación</value></data>
   <data name="Cancellation Reason" xml:space="preserve"><value>Motivo de cancelación</value></data>
+  <data name="Cancellation Reason:" xml:space="preserve"><value>Motivo de la cancelación:</value></data>
   <data name="Cancelled" xml:space="preserve"><value>Cancelado</value></data>
   <data name="Cancelled By" xml:space="preserve"><value>Cancelado por</value></data>
   <data name="Cancelled On" xml:space="preserve"><value>Cancelado el</value></data>
@@ -795,6 +823,7 @@
   <data name="Closed By" xml:space="preserve"><value>Cerrado por</value></data>
   <data name="Closed in Period" xml:space="preserve"><value>Cerrados en el período</value></data>
   <data name="Closed On" xml:space="preserve"><value>Cerrado el</value></data>
+  <data name="Closes the complaint and &lt;strong&gt;permanently locks the record&lt;/strong&gt;. The retention period will be calculated from today. Before confirming, ensure the &lt;strong&gt;{0}&lt;/strong&gt; field is completed. Enter your credentials to confirm." xml:space="preserve"><value>Cierra la reclamación y &lt;strong&gt;bloquea el registro de forma permanente&lt;/strong&gt;. El período de retención se calculará a partir de hoy. Antes de confirmar, asegúrese de que el campo &lt;strong&gt;{0}&lt;/strong&gt; esté completo. Ingrese sus credenciales para confirmar.</value></data>
   <data name="Closing flags this case for PSUR inclusion." xml:space="preserve"><value>Al cerrar, este caso se marca para incluirlo en el PSUR.</value></data>
   <data name="Closing this risk is a final action. A Review Conclusion is required and will be permanently recorded." xml:space="preserve"><value>Cerrar este riesgo es una acción definitiva. Se requiere una conclusión de la revisión, que quedará registrada de forma permanente.</value></data>
   <data name="Closing:" xml:space="preserve"><value>Cierre de:</value></data>
@@ -863,10 +892,12 @@
   <data name="Complete the risk identification and initial assessment, then submit for formal Quality Manager assessment." xml:space="preserve"><value>Complete la identificación del riesgo y la evaluación inicial y, después, envíelo al Gerente de calidad para su evaluación formal.</value></data>
   <data name="Complete Work" xml:space="preserve"><value>Completar trabajo</value></data>
   <data name="Completed" xml:space="preserve"><value>Completado</value></data>
+  <data name="Completed ({0})" xml:space="preserve"><value>Completadas ({0})</value></data>
   <data name="Completed / Acknowledged" xml:space="preserve"><value>Completado / confirmado</value></data>
   <data name="Completed By" xml:space="preserve"><value>Completado por</value></data>
   <data name="Completed date" xml:space="preserve"><value>Fecha de finalización</value></data>
   <data name="Completed On" xml:space="preserve"><value>Completado el</value></data>
+  <data name="Completed {0} by {1}" xml:space="preserve"><value>Completada el {0} por {1}</value></data>
   <data name="Completion" xml:space="preserve"><value>Finalización</value></data>
   <data name="Completion Notes" xml:space="preserve"><value>Notas de cierre</value></data>
   <data name="Completion Notes are required." xml:space="preserve"><value>Las notas de cierre son obligatorias.</value></data>
@@ -949,6 +980,8 @@
   <data name="Confirmed" xml:space="preserve"><value>Confirmado</value></data>
   <data name="Confirmed Signals — Action Required" xml:space="preserve"><value>Señales confirmadas — requieren acción</value></data>
   <data name="Confirms the assessment package is complete and acceptable. Moves from &lt;strong&gt;{0}&lt;/strong&gt; to &lt;strong&gt;{1}&lt;/strong&gt;. Enter your credentials to confirm." xml:space="preserve"><value>Confirma que el paquete de evaluación está completo y es aceptable. Pasa de &lt;strong&gt;{0}&lt;/strong&gt; a &lt;strong&gt;{1}&lt;/strong&gt;. Ingrese sus credenciales para confirmar.</value></data>
+  <data name="Confirms the evaluation package is complete and acceptable. Moves the complaint to &lt;strong&gt;{0}&lt;/strong&gt; status. The quality user will then document the resolution summary. Enter your credentials to confirm." xml:space="preserve"><value>Confirma que el paquete de evaluación está completo y es aceptable. Pasa la reclamación al estado &lt;strong&gt;{0}&lt;/strong&gt;. A continuación, el usuario de calidad documentará el resumen de la resolución. Ingrese sus credenciales para confirmar.</value></data>
+  <data name="Confirms the evaluation package is complete and acceptable. Moves the deviation to &lt;strong&gt;{0}&lt;/strong&gt; status. Enter your credentials to confirm." xml:space="preserve"><value>Confirma que el paquete de evaluación está completo y es aceptable. Pasa la desviación al estado &lt;strong&gt;{0}&lt;/strong&gt;. Ingrese sus credenciales para confirmar.</value></data>
   <data name="Congenital Anomaly" xml:space="preserve"><value>Anomalía congénita</value></data>
   <data name="Congenital Anomaly / Birth Defect" xml:space="preserve"><value>Anomalía congénita / defecto de nacimiento</value></data>
   <data name="Consulting / Professional Services" xml:space="preserve"><value>Consultoría / servicios profesionales</value></data>
@@ -1334,6 +1367,7 @@
   <data name="Dry Powder Inhaler (DPI)" xml:space="preserve"><value>Inhalador de polvo seco (DPI)</value></data>
   <data name="Due" xml:space="preserve"><value>Vence</value></data>
   <data name="Due Date" xml:space="preserve"><value>Fecha límite</value></data>
+  <data name="Due in {0} days" xml:space="preserve"><value>Vence en {0} días</value></data>
   <data name="Due soon" xml:space="preserve"><value>Vence pronto</value></data>
   <data name="Due TODAY" xml:space="preserve"><value>Vence HOY</value></data>
   <data name="Due Within 14 Days" xml:space="preserve"><value>Vencen en 14 días</value></data>
@@ -1431,6 +1465,7 @@
   <data name="Edit Statement" xml:space="preserve"><value>Editar declaración</value></data>
   <data name="Edit Supplier" xml:space="preserve"><value>Editar proveedor</value></data>
   <data name="Edit Supply Report" xml:space="preserve"><value>Editar informe de suministro</value></data>
+  <data name="Edit Training — {0}" xml:space="preserve"><value>Editar capacitación — {0}</value></data>
   <data name="Edit Variation" xml:space="preserve"><value>Editar variación</value></data>
   <data name="Edit — {0}" xml:space="preserve"><value>Editar — {0}</value></data>
   <data name="Edited By" xml:space="preserve"><value>Editado por</value></data>
@@ -1502,6 +1537,7 @@
   <data name="Evaluated By" xml:space="preserve"><value>Evaluado por</value></data>
   <data name="Evaluated On" xml:space="preserve"><value>Evaluado el</value></data>
   <data name="Evaluation" xml:space="preserve"><value>Evaluación</value></data>
+  <data name="Evaluation &amp; Investigation" xml:space="preserve"><value>Evaluación e investigación</value></data>
   <data name="Evaluation Date" xml:space="preserve"><value>Fecha de evaluación</value></data>
   <data name="Evaluation findings must be recorded before submitting for acceptance." xml:space="preserve"><value>Los hallazgos de la evaluación deben registrarse antes de enviar para aceptación.</value></data>
   <data name="Evaluation guidance" xml:space="preserve"><value>Guía de evaluación</value></data>
@@ -1573,6 +1609,7 @@
   <data name="Eye Ointment" xml:space="preserve"><value>Pomada oftálmica</value></data>
   <data name="Facility / Infrastructure" xml:space="preserve"><value>Instalaciones / infraestructura</value></data>
   <data name="Fail" xml:space="preserve"><value>No conforme</value></data>
+  <data name="Fail: {0}" xml:space="preserve"><value>No conforme: {0}</value></data>
   <data name="Failed" xml:space="preserve"><value>No aprobado</value></data>
   <data name="Failed Login" xml:space="preserve"><value>Inicio de sesión fallido</value></data>
   <data name="Failed to activate account: {0}" xml:space="preserve"><value>No se pudo activar la cuenta: {0}</value></data>
@@ -1947,9 +1984,11 @@
   <data name="Linked CAPA ID: {0}" xml:space="preserve"><value>ID de CAPA vinculada: {0}</value></data>
   <data name="Linked CAPA:" xml:space="preserve"><value>CAPA vinculada:</value></data>
   <data name="Linked CAPAs" xml:space="preserve"><value>CAPA vinculadas</value></data>
+  <data name="Linked CAPAs:" xml:space="preserve"><value>CAPA vinculadas:</value></data>
   <data name="Linked Changes" xml:space="preserve"><value>Cambios vinculados</value></data>
   <data name="Linked Complaint" xml:space="preserve"><value>Reclamación vinculada</value></data>
   <data name="Linked Complaints" xml:space="preserve"><value>Reclamaciones vinculadas</value></data>
+  <data name="Linked Deviation Reference" xml:space="preserve"><value>Referencia de la desviación vinculada</value></data>
   <data name="Linked Deviations" xml:space="preserve"><value>Desviaciones vinculadas</value></data>
   <data name="Linked from Adverse Event: &lt;strong&gt;{0}&lt;/strong&gt;" xml:space="preserve"><value>Vinculado desde el evento adverso: &lt;strong&gt;{0}&lt;/strong&gt;</value></data>
   <data name="Linked from Signal Review: &lt;strong&gt;{0}&lt;/strong&gt;" xml:space="preserve"><value>Vinculado desde la revisión de señal: &lt;strong&gt;{0}&lt;/strong&gt;</value></data>
@@ -2169,6 +2208,12 @@
   <data name="Moves the change from &lt;strong&gt;{0}&lt;/strong&gt; to &lt;strong&gt;{1}&lt;/strong&gt; for Quality Manager review. Assessment must be completed. Enter your credentials to confirm." xml:space="preserve"><value>Pasa el cambio de &lt;strong&gt;{0}&lt;/strong&gt; a &lt;strong&gt;{1}&lt;/strong&gt; para su revisión por el Gerente de calidad. La evaluación debe estar completa. Ingrese sus credenciales para confirmar.</value></data>
   <data name="Moves the change from &lt;strong&gt;{0}&lt;/strong&gt; to &lt;strong&gt;{1}&lt;/strong&gt; for Quality Manager review. Implementation details must be completed. Enter your credentials to confirm." xml:space="preserve"><value>Pasa el cambio de &lt;strong&gt;{0}&lt;/strong&gt; a &lt;strong&gt;{1}&lt;/strong&gt; para su revisión por el Gerente de calidad. Los detalles de la implementación deben estar completos. Ingrese sus credenciales para confirmar.</value></data>
   <data name="Moves the change from &lt;strong&gt;{0}&lt;/strong&gt; to &lt;strong&gt;{1}&lt;/strong&gt;. Enter your credentials to confirm." xml:space="preserve"><value>Pasa el cambio de &lt;strong&gt;{0}&lt;/strong&gt; a &lt;strong&gt;{1}&lt;/strong&gt;. Ingrese sus credenciales para confirmar.</value></data>
+  <data name="Moves the complaint to &lt;strong&gt;{0}&lt;/strong&gt; status for final QA Manager review and closure. The &lt;strong&gt;{1}&lt;/strong&gt; field must be completed before confirming." xml:space="preserve"><value>Pasa la reclamación al estado &lt;strong&gt;{0}&lt;/strong&gt; para la revisión final y el cierre por el Gerente de calidad. El campo &lt;strong&gt;{1}&lt;/strong&gt; debe estar completo antes de confirmar.</value></data>
+  <data name="Moves the complaint to &lt;strong&gt;{0}&lt;/strong&gt; status. The Evaluation, Investigation, Root Cause Category, and Corrective and Preventive Action fields will become available for editing. Enter your credentials to confirm." xml:space="preserve"><value>Pasa la reclamación al estado &lt;strong&gt;{0}&lt;/strong&gt;. Los campos Evaluación, Investigación, Categoría de causa raíz y Acción correctiva y preventiva quedarán disponibles para edición. Ingrese sus credenciales para confirmar.</value></data>
+  <data name="Moves the deviation to &lt;strong&gt;{0}&lt;/strong&gt; and locks the evaluation fields. A QA Manager will review and accept or return the record." xml:space="preserve"><value>Pasa la desviación a &lt;strong&gt;{0}&lt;/strong&gt; y bloquea los campos de evaluación. Un Gerente de calidad revisará el registro y lo aceptará o devolverá.</value></data>
+  <data name="Moves the deviation to &lt;strong&gt;{0}&lt;/strong&gt; status and locks the record. Enter your credentials to confirm." xml:space="preserve"><value>Pasa la desviación al estado &lt;strong&gt;{0}&lt;/strong&gt; y bloquea el registro. Ingrese sus credenciales para confirmar.</value></data>
+  <data name="Moves the deviation to &lt;strong&gt;{0}&lt;/strong&gt; status for final QA approval. Enter your credentials to confirm." xml:space="preserve"><value>Pasa la desviación al estado &lt;strong&gt;{0}&lt;/strong&gt; para la aprobación final de calidad. Ingrese sus credenciales para confirmar.</value></data>
+  <data name="Moves the deviation to &lt;strong&gt;{0}&lt;/strong&gt; status. Enter your credentials to confirm." xml:space="preserve"><value>Pasa la desviación al estado &lt;strong&gt;{0}&lt;/strong&gt;. Ingrese sus credenciales para confirmar.</value></data>
   <data name="MRA" xml:space="preserve"><value>ARM (MRA)</value></data>
   <data name="MRA (Mutual Recognition Agreement)" xml:space="preserve"><value>MRA (acuerdo de reconocimiento mutuo)</value></data>
   <data name="MXN" xml:space="preserve"><value>MXN</value></data>
@@ -2426,6 +2471,7 @@
   <data name="once daily, etc." xml:space="preserve"><value>una vez al día, etc.</value></data>
   <data name="Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code. Enter the code in the confirmation box below." xml:space="preserve"><value>Después de escanear el código QR o ingresar la clave anterior, su aplicación de autenticación de dos factores le dará un código único. Ingréselo en el cuadro de confirmación de abajo.</value></data>
   <data name="Oncology Centre" xml:space="preserve"><value>Centro oncológico</value></data>
+  <data name="One or more issued certificates associated with this record will be automatically set to &lt;strong&gt;{0}&lt;/strong&gt;." xml:space="preserve"><value>Uno o más certificados emitidos asociados a este registro pasarán automáticamente a &lt;strong&gt;{0}&lt;/strong&gt;.</value></data>
   <data name="One or more selected roles have no active users." xml:space="preserve"><value>Uno o más de los roles seleccionados no tienen usuarios activos.</value></data>
   <data name="One-time" xml:space="preserve"><value>Única vez</value></data>
   <data name="Ongoing Monitoring" xml:space="preserve"><value>Monitoreo continuo</value></data>
@@ -2518,11 +2564,14 @@
   <data name="Outcome" xml:space="preserve"><value>Desenlace</value></data>
   <data name="Outcome / Decision Rationale" xml:space="preserve"><value>Resultado / Justificación de la decisión</value></data>
   <data name="Outstanding" xml:space="preserve"><value>Pendiente</value></data>
+  <data name="Outstanding ({0})" xml:space="preserve"><value>Pendientes ({0})</value></data>
   <data name="Overall Rating" xml:space="preserve"><value>Calificación global</value></data>
   <data name="Overdue" xml:space="preserve"><value>Vencido</value></data>
   <data name="Overdue (past review date)" xml:space="preserve"><value>Vencido (fecha de revisión pasada)</value></data>
   <data name="Overdue (past target)" xml:space="preserve"><value>Vencido (pasada la fecha objetivo)</value></data>
   <data name="Overdue (Scheduled past date)" xml:space="preserve"><value>Vencido (programado con fecha pasada)</value></data>
+  <data name="OVERDUE by {0} days" xml:space="preserve"><value>VENCIDO hace {0} días</value></data>
+  <data name="Overdue CAPAs ({0})" xml:space="preserve"><value>CAPA vencidas ({0})</value></data>
   <data name="Overdue Changes" xml:space="preserve"><value>Cambios vencidos</value></data>
   <data name="Overdue for Review" xml:space="preserve"><value>Revisión vencida</value></data>
   <data name="Overdue Items" xml:space="preserve"><value>Elementos vencidos</value></data>
@@ -2557,6 +2606,7 @@
   <data name="Parts Used" xml:space="preserve"><value>Repuestos utilizados</value></data>
   <data name="PAS" xml:space="preserve"><value>PAS</value></data>
   <data name="Pass" xml:space="preserve"><value>Conforme</value></data>
+  <data name="Pass: {0}" xml:space="preserve"><value>Conforme: {0}</value></data>
   <data name="Password" xml:space="preserve"><value>Contraseña</value></data>
   <data name="Password Expiry (days)" xml:space="preserve"><value>Caducidad de la contraseña (días)</value></data>
   <data name="Password History Count" xml:space="preserve"><value>Contraseñas anteriores recordadas</value></data>
@@ -2601,7 +2651,7 @@
   <data name="Pending Submission" xml:space="preserve"><value>Pendiente de envío</value></data>
   <data name="Pending Suspension" xml:space="preserve"><value>Pendiente de suspensión</value></data>
   <data name="Pending Trainer Confirmation" xml:space="preserve"><value>Pendiente de confirmación del capacitador</value></data>
-  <data name="pending training completion" xml:space="preserve"><value>pendiente de completar la capacitación</value></data>
+  <data name="Pending: {0}" xml:space="preserve"><value>Pendiente: {0}</value></data>
   <data name="Performance History" xml:space="preserve"><value>Historial de desempeño</value></data>
   <data name="Performed" xml:space="preserve"><value>Realizado</value></data>
   <data name="Performed By" xml:space="preserve"><value>Realizado por</value></data>
@@ -2615,7 +2665,6 @@
   <data name="Periodic Safety Update Reports (PSUR)" xml:space="preserve"><value>Informes periódicos de seguridad (PSUR)</value></data>
   <data name="Permanent" xml:space="preserve"><value>Permanente</value></data>
   <data name="Permanent / Temporary / Emergency" xml:space="preserve"><value>Permanente / temporal / de emergencia</value></data>
-  <data name="permanently locks the record" xml:space="preserve"><value>bloquea el registro de forma permanente</value></data>
   <data name="Personal Data" xml:space="preserve"><value>Datos personales</value></data>
   <data name="Personnel" xml:space="preserve"><value>Personal</value></data>
   <data name="Personnel involved" xml:space="preserve"><value>Personal involucrado</value></data>
@@ -2847,11 +2896,13 @@
   <data name="Reason for Review" xml:space="preserve"><value>Motivo de la revisión</value></data>
   <data name="Reason for Review:" xml:space="preserve"><value>Motivo de la revisión:</value></data>
   <data name="Reason for sending back" xml:space="preserve"><value>Motivo de la devolución</value></data>
+  <data name="Reason for time-limited approval" xml:space="preserve"><value>Motivo de la aprobación por tiempo limitado</value></data>
   <data name="Reason this licence type is not required for the current operating model..." xml:space="preserve"><value>Motivo por el que este tipo de licencia no es necesario para el modelo operativo actual...</value></data>
   <data name="Reason:" xml:space="preserve"><value>Motivo:</value></data>
   <data name="Reason: {0}" xml:space="preserve"><value>Motivo: {0}</value></data>
   <data name="Reassign Author" xml:space="preserve"><value>Reasignar autor</value></data>
   <data name="Recall / Market Action" xml:space="preserve"><value>Retiro del mercado / acción de mercado</value></data>
+  <data name="Recall / Market Action makes this CAPA the master record for a recall; Improvement Opportunity is a planned business improvement, not a response to a problem." xml:space="preserve"><value>Retiro del mercado / acción de mercado convierte esta CAPA en el registro principal de un retiro; Oportunidad de mejora es una mejora planificada del negocio, no una respuesta a un problema.</value></data>
   <data name="Received" xml:space="preserve"><value>Recibido</value></data>
   <data name="Received By" xml:space="preserve"><value>Recibido por</value></data>
   <data name="Received in Period" xml:space="preserve"><value>Recibidas en el período</value></data>
@@ -3119,6 +3170,12 @@
   <data name="Return to Mitigation" xml:space="preserve"><value>Devolver a Mitigación</value></data>
   <data name="Return to Review" xml:space="preserve"><value>Devolver a revisión</value></data>
   <data name="Returned to assessment." xml:space="preserve"><value>Devuelto a evaluación.</value></data>
+  <data name="Returning &lt;strong&gt;{0}&lt;/strong&gt; v{1} to Draft. The author will be able to make changes and resubmit for review." xml:space="preserve"><value>Devolviendo &lt;strong&gt;{0}&lt;/strong&gt; v{1} a Borrador. El autor podrá hacer cambios y volver a enviarlo a revisión.</value></data>
+  <data name="Returns to &lt;strong&gt;{0}&lt;/strong&gt; status — evaluation fields will be unlocked for full rework." xml:space="preserve"><value>Vuelve al estado &lt;strong&gt;{0}&lt;/strong&gt;: los campos de evaluación se desbloquearán para una corrección completa.</value></data>
+  <data name="Returns to &lt;strong&gt;{0}&lt;/strong&gt; status — evaluation fields will be unlocked for rework." xml:space="preserve"><value>Vuelve al estado &lt;strong&gt;{0}&lt;/strong&gt;: los campos de evaluación se desbloquearán para su corrección.</value></data>
+  <data name="Returns to &lt;strong&gt;{0}&lt;/strong&gt; status — the complaint will need to be re-sent for evaluation." xml:space="preserve"><value>Vuelve al estado &lt;strong&gt;{0}&lt;/strong&gt;: la reclamación deberá enviarse de nuevo a evaluación.</value></data>
+  <data name="Returns to &lt;strong&gt;{0}&lt;/strong&gt; status — the resolution field will be unlocked for rework." xml:space="preserve"><value>Vuelve al estado &lt;strong&gt;{0}&lt;/strong&gt;: el campo de resolución se desbloqueará para su corrección.</value></data>
+  <data name="Returns to &lt;strong&gt;{0}&lt;/strong&gt; status." xml:space="preserve"><value>Vuelve al estado &lt;strong&gt;{0}&lt;/strong&gt;.</value></data>
   <data name="Returns to &lt;strong&gt;{0}&lt;/strong&gt; — all intermediate stamps will be cleared. All fields will be editable." xml:space="preserve"><value>Vuelve a &lt;strong&gt;{0}&lt;/strong&gt;: se borrarán todos los sellos intermedios. Todos los campos serán editables.</value></data>
   <data name="Returns to &lt;strong&gt;{0}&lt;/strong&gt; — assessment stamp will be cleared. All fields will be editable." xml:space="preserve"><value>Vuelve a &lt;strong&gt;{0}&lt;/strong&gt;: se borrará el sello de evaluación. Todos los campos serán editables.</value></data>
   <data name="Returns to &lt;strong&gt;{0}&lt;/strong&gt; — implementation stamp will be cleared." xml:space="preserve"><value>Vuelve a &lt;strong&gt;{0}&lt;/strong&gt;: se borrará el sello de implementación.</value></data>
@@ -3148,6 +3205,7 @@
   <data name="Review Overdue:" xml:space="preserve"><value>Revisión vencida:</value></data>
   <data name="Review Register" xml:space="preserve"><value>Registro de revisiones</value></data>
   <data name="Review Snapshot" xml:space="preserve"><value>Instantánea de la revisión</value></data>
+  <data name="Review Snapshot — {0}" xml:space="preserve"><value>Instantánea de la revisión — {0}</value></data>
   <data name="Review Status" xml:space="preserve"><value>Estado de la revisión</value></data>
   <data name="Review the assessment details in the Overview tab before approving. To amend any fields, return the record to Assessment first." xml:space="preserve"><value>Revise los detalles de la evaluación en la pestaña Resumen antes de aprobar. Para modificar algún campo, devuelva primero el registro a Evaluación.</value></data>
   <data name="Review Trigger" xml:space="preserve"><value>Motivo de inicio de la revisión</value></data>
@@ -3348,6 +3406,7 @@
   <data name="Showing 0 to 0 of 0 entries" xml:space="preserve"><value>Mostrando 0 a 0 de 0 registros</value></data>
   <data name="Showing _START_ to _END_ of _TOTAL_ entries" xml:space="preserve"><value>Mostrando _START_ a _END_ de _TOTAL_ registros</value></data>
   <data name="Showing period: &lt;strong&gt;{0}&lt;/strong&gt; to &lt;strong&gt;{1}&lt;/strong&gt;" xml:space="preserve"><value>Período mostrado: &lt;strong&gt;{0}&lt;/strong&gt; a &lt;strong&gt;{1}&lt;/strong&gt;</value></data>
+  <data name="Showing {0} effective document(s)." xml:space="preserve"><value>Se muestran {0} documento(s) vigente(s).</value></data>
   <data name="SIG#" xml:space="preserve"><value>N.º SEÑ</value></data>
   <data name="Signal Details" xml:space="preserve"><value>Detalles de la señal</value></data>
   <data name="Signal Detected" xml:space="preserve"><value>Señal detectada</value></data>
@@ -3481,6 +3540,7 @@
   <data name="Submit to AP" xml:space="preserve"><value>Enviar a la PA</value></data>
   <data name="Submit to Authorised Person" xml:space="preserve"><value>Enviar a la Persona Autorizada</value></data>
   <data name="Submit to Authority" xml:space="preserve"><value>Presentar a la autoridad</value></data>
+  <data name="Submits the complaint to &lt;strong&gt;{0}&lt;/strong&gt; for QA Manager review. The record will be locked for editing until accepted or returned. Before confirming, ensure the following fields are completed: &lt;strong&gt;{1}&lt;/strong&gt;" xml:space="preserve"><value>Envía la reclamación a &lt;strong&gt;{0}&lt;/strong&gt; para su revisión por el Gerente de calidad. El registro quedará bloqueado para edición hasta que se acepte o se devuelva. Antes de confirmar, asegúrese de que estos campos estén completos: &lt;strong&gt;{1}&lt;/strong&gt;</value></data>
   <data name="Submitted" xml:space="preserve"><value>Enviado</value></data>
   <data name="Submitted By" xml:space="preserve"><value>Enviado por</value></data>
   <data name="Submitted for Acceptance By" xml:space="preserve"><value>Enviado para aceptación por</value></data>
@@ -3678,6 +3738,7 @@
   <data name="This action overrides the AP rejection and returns the record to Under Review. An electronic signature is required. Use only when the rejection was made in error or new information has been obtained." xml:space="preserve"><value>Esta acción anula el rechazo de la PA y devuelve el registro a En revisión. Se requiere firma electrónica. Úsela solo si el rechazo fue un error o se obtuvo información nueva.</value></data>
   <data name="This action requires Licence Manager credentials." xml:space="preserve"><value>Esta acción requiere credenciales de gestor de licencias.</value></data>
   <data name="This action requires your electronic signature and is permanently logged." xml:space="preserve"><value>Esta acción requiere su firma electrónica y queda registrada de forma permanente.</value></data>
+  <data name="This action reverts the record to &lt;strong&gt;{0}&lt;/strong&gt; stage. It is logged in the audit trail and requires your credentials. Use only when a correction is necessary after formal completion." xml:space="preserve"><value>Esta acción devuelve el registro a la etapa &lt;strong&gt;{0}&lt;/strong&gt;. Queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sea necesaria una corrección después de la finalización formal.</value></data>
   <data name="This action will soft-delete the selected records. It cannot be undone without direct database access." xml:space="preserve"><value>Esta acción eliminará lógicamente los registros seleccionados. No puede deshacerse sin acceso directo a la base de datos.</value></data>
   <data name="This adverse event is already linked to another complaint. Unlink it first." xml:space="preserve"><value>Este evento adverso ya está vinculado a otra reclamación. Desvincúlelo primero.</value></data>
   <data name="This application is approved and locked." xml:space="preserve"><value>Esta solicitud está aprobada y bloqueada.</value></data>
@@ -3700,6 +3761,7 @@
   <data name="This customer has uploaded Documents. Remove them before deleting." xml:space="preserve"><value>Este cliente tiene documentos subidos. Quítelos antes de eliminarlo.</value></data>
   <data name="This customer is currently under review and cannot be edited." xml:space="preserve"><value>Este cliente está en revisión y no se puede editar.</value></data>
   <data name="This deviation is approved. No new attachments can be uploaded." xml:space="preserve"><value>Esta desviación está aprobada. No se pueden cargar nuevos adjuntos.</value></data>
+  <data name="This document is &lt;strong&gt;pending training completion&lt;/strong&gt; before it becomes Effective." xml:space="preserve"><value>Este documento está &lt;strong&gt;pendiente de que se complete la capacitación&lt;/strong&gt; antes de pasar a Vigente.</value></data>
   <data name="This document is currently under review and cannot be edited." xml:space="preserve"><value>Este documento está en revisión y no se puede editar.</value></data>
   <data name="This document is due for review on &lt;strong&gt;{0}&lt;/strong&gt; ({1} days remaining)." xml:space="preserve"><value>Este documento debe revisarse el &lt;strong&gt;{0}&lt;/strong&gt; (faltan {1} días).</value></data>
   <data name="This document is marked as requiring periodic review. You must set the next review date before approving." xml:space="preserve"><value>Este documento requiere revisión periódica. Debe fijar la próxima fecha de revisión antes de aprobarlo.</value></data>
@@ -3755,8 +3817,10 @@
   <data name="This training has been cancelled." xml:space="preserve"><value>Esta capacitación ha sido cancelada.</value></data>
   <data name="This training record has already been acknowledged." xml:space="preserve"><value>Este registro de capacitación ya ha sido confirmado.</value></data>
   <data name="This will create standard milestones for &lt;strong&gt;{0}&lt;/strong&gt; based on the review timeline for &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve"><value>Esto creará hitos estándar para &lt;strong&gt;{0}&lt;/strong&gt; según el calendario de revisión de &lt;strong&gt;{1}&lt;/strong&gt;.</value></data>
+  <data name="This will lock the CAPA for Quality Manager approval (&lt;strong&gt;{0}&lt;/strong&gt; → &lt;strong&gt;{1}&lt;/strong&gt;)." xml:space="preserve"><value>Esto bloqueará la CAPA para la aprobación del Gerente de calidad (&lt;strong&gt;{0}&lt;/strong&gt; → &lt;strong&gt;{1}&lt;/strong&gt;).</value></data>
   <data name="This will lock the CAPA for Quality Manager review. Corrective Action, Preventive Action and Assessment must all be completed." xml:space="preserve"><value>Esto bloqueará la CAPA para la revisión del gerente de calidad. La acción correctiva, la acción preventiva y la evaluación deben estar completas.</value></data>
   <data name="This will lock the record and send it to the Quality Manager for formal assessment. Enter your credentials to confirm." xml:space="preserve"><value>Esto bloqueará el registro y lo enviará al Gerente de calidad para su evaluación formal. Ingrese sus credenciales para confirmar.</value></data>
+  <data name="This will make &lt;strong&gt;{0}&lt;/strong&gt; v{1} immediately Effective, overriding any pending training requirements." xml:space="preserve"><value>Esto hará que &lt;strong&gt;{0}&lt;/strong&gt; v{1} pase a Vigente de inmediato, sin esperar a los requisitos de capacitación pendientes.</value></data>
   <data name="This will mark &lt;strong&gt;{0}&lt;/strong&gt; as &lt;strong class=&quot;text-danger&quot;&gt;Suspended&lt;/strong&gt; and lock the record." xml:space="preserve"><value>Esto marcará &lt;strong&gt;{0}&lt;/strong&gt; como &lt;strong class="text-danger"&gt;Suspendido&lt;/strong&gt; y bloqueará el registro.</value></data>
   <data name="This will mark &lt;strong&gt;{0}&lt;/strong&gt; as &lt;strong class=&quot;text-danger&quot;&gt;Suspended&lt;/strong&gt; and lock the record. Enter your credentials and the suspension reason." xml:space="preserve"><value>Esto marcará &lt;strong&gt;{0}&lt;/strong&gt; como &lt;strong class="text-danger"&gt;Suspendida&lt;/strong&gt; y bloqueará el registro. Ingrese sus credenciales y el motivo de la suspensión.</value></data>
   <data name="This will mark &lt;strong&gt;{0}&lt;/strong&gt; as &lt;strong class=&quot;text-success&quot;&gt;Issued &amp;amp; Active&lt;/strong&gt;." xml:space="preserve"><value>Esto marcará &lt;strong&gt;{0}&lt;/strong&gt; como &lt;strong class="text-success"&gt;Emitido y activo&lt;/strong&gt;.</value></data>
@@ -3766,6 +3830,9 @@
   <data name="This will move &lt;strong&gt;{0}&lt;/strong&gt; to &lt;strong class=&quot;text-warning-emphasis&quot;&gt;Renewal Due&lt;/strong&gt; so the renewal submission can be progressed." xml:space="preserve"><value>Esto pasará &lt;strong&gt;{0}&lt;/strong&gt; a &lt;strong class="text-warning-emphasis"&gt;Renovación pendiente&lt;/strong&gt; para avanzar con la presentación de la renovación.</value></data>
   <data name="This will reactivate the supplier and return it to pending status for a new assessment cycle." xml:space="preserve"><value>Esto reactivará el proveedor y lo devolverá al estado pendiente para un nuevo ciclo de evaluación.</value></data>
   <data name="This will reopen the record for re-review. Review comments, reviewer, and retention date will be cleared. The action will be logged in the audit trail." xml:space="preserve"><value>Esto reabrirá el registro para una nueva revisión. Se borrarán los comentarios de revisión, el revisor y la fecha de retención. La acción quedará en el registro de auditoría.</value></data>
+  <data name="This will return the CAPA to &lt;strong&gt;{0}&lt;/strong&gt; for full rework. The acceptance and assessment stamps will be cleared." xml:space="preserve"><value>Esto devolverá la CAPA a &lt;strong&gt;{0}&lt;/strong&gt; para una corrección completa. Se borrarán los sellos de aceptación y evaluación.</value></data>
+  <data name="This will return the CAPA to &lt;strong&gt;{0}&lt;/strong&gt; for revision. The submitted-for-acceptance stamp will be cleared." xml:space="preserve"><value>Esto devolverá la CAPA a &lt;strong&gt;{0}&lt;/strong&gt; para su revisión. Se borrará el sello de envío a aceptación.</value></data>
+  <data name="This will return the CAPA to &lt;strong&gt;{0}&lt;/strong&gt; for revision. The submitted-for-approval stamp will be cleared." xml:space="preserve"><value>Esto devolverá la CAPA a &lt;strong&gt;{0}&lt;/strong&gt; para su revisión. Se borrará el sello de envío a aprobación.</value></data>
   <data name="This will return the risk to Identification for the submitter to revise. The submission signature will be cleared." xml:space="preserve"><value>Esto devolverá el riesgo a Identificación para que quien lo envió lo revise. Se borrará la firma del envío.</value></data>
   <data name="This will return the risk to Mitigation for further work. The review submission signature will be cleared." xml:space="preserve"><value>Esto devolverá el riesgo a Mitigación para continuar el trabajo. Se borrará la firma del envío a revisión.</value></data>
   <data name="This will return the supplier to Assessment status for revision." xml:space="preserve"><value>Esto devolverá el proveedor al estado Evaluación para su revisión.</value></data>
@@ -4032,6 +4099,9 @@
   <data name="You are accepting this externally-sourced document into the QMS. The original authorship details below are recorded for audit purposes and are separate from the system acceptance record." xml:space="preserve"><value>Está aceptando este documento de origen externo en el SGC. Los datos originales de autoría que figuran abajo se registran para fines de auditoría y son independientes del registro de aceptación del sistema.</value></data>
   <data name="You are already logged in from another location. Please log out there first, or wait for that session to expire." xml:space="preserve"><value>Ya tiene una sesión iniciada en otro lugar. Ciérrela allí primero o espere a que esa sesión expire.</value></data>
   <data name="You are approving &lt;strong&gt;{0} — {1}&lt;/strong&gt;." xml:space="preserve"><value>Está aprobando &lt;strong&gt;{0} — {1}&lt;/strong&gt;.</value></data>
+  <data name="You are cancelling &lt;strong&gt;{0} — {1}&lt;/strong&gt;. This action cannot be undone." xml:space="preserve"><value>Está cancelando &lt;strong&gt;{0} — {1}&lt;/strong&gt;. Esta acción no se puede deshacer.</value></data>
+  <data name="You are marking &lt;strong&gt;{0} — {1}&lt;/strong&gt; as Completed." xml:space="preserve"><value>Está marcando &lt;strong&gt;{0} — {1}&lt;/strong&gt; como Completado.</value></data>
+  <data name="You are rejecting &lt;strong&gt;{0}&lt;/strong&gt; v{1}." xml:space="preserve"><value>Está rechazando &lt;strong&gt;{0}&lt;/strong&gt; v{1}.</value></data>
   <data name="You are submitting &lt;strong&gt;{0}&lt;/strong&gt; v{1} for review. The document will be locked from further editing." xml:space="preserve"><value>Está enviando &lt;strong&gt;{0}&lt;/strong&gt; v{1} a revisión. El documento quedará bloqueado para nuevas ediciones.</value></data>
   <data name="You can &lt;a href=&quot;{0}&quot;&gt;generate a new set of recovery codes&lt;/a&gt;." xml:space="preserve"><value>Puede &lt;a href="{0}"&gt;generar un nuevo juego de códigos de recuperación&lt;/a&gt;.</value></data>
   <data name="You can edit individual milestone dates after applying the template." xml:space="preserve"><value>Puede editar las fechas de cada hito después de aplicar la plantilla.</value></data>
@@ -4083,22 +4153,33 @@
   <data name="{0} Approval" xml:space="preserve"><value>Aprobación de {0}</value></data>
   <data name="{0} Approval Letter / Reference" xml:space="preserve"><value>Carta de aprobación / referencia de {0}</value></data>
   <data name="{0} approved, {1} qualified" xml:space="preserve"><value>{0} aprobados, {1} calificados</value></data>
+  <data name="{0} Blocking Outstanding checklist item(s)" xml:space="preserve"><value>{0} elemento(s) bloqueante(s) pendiente(s) de la lista de verificación</value></data>
+  <data name="{0} Blocking Outstanding item(s)" xml:space="preserve"><value>{0} elemento(s) bloqueante(s) pendiente(s)</value></data>
   <data name="{0} cases" xml:space="preserve"><value>{0} casos</value></data>
   <data name="{0} cases in 90 days" xml:space="preserve"><value>{0} casos en 90 días</value></data>
   <data name="{0} cond · {1} milestones · {2} reports" xml:space="preserve"><value>{0} cond. · {1} hitos · {2} informes</value></data>
+  <data name="{0} day(s)" xml:space="preserve"><value>{0} día(s)</value></data>
+  <data name="{0} day(s) left" xml:space="preserve"><value>Falta(n) {0} día(s)</value></data>
+  <data name="{0} day(s) remaining" xml:space="preserve"><value>Falta(n) {0} día(s)</value></data>
   <data name="{0} days" xml:space="preserve"><value>{0} días</value></data>
+  <data name="{0} days ago" xml:space="preserve"><value>hace {0} días</value></data>
   <data name="{0} days overdue" xml:space="preserve"><value>{0} días de retraso</value></data>
   <data name="{0} due within 30 days" xml:space="preserve"><value>{0} vencen en los próximos 30 días</value></data>
   <data name="{0} expired" xml:space="preserve"><value>{0} vencidos</value></data>
   <data name="{0} expiring soon" xml:space="preserve"><value>{0} vencen pronto</value></data>
   <data name="{0} items" xml:space="preserve"><value>{0} elementos</value></data>
+  <data name="{0} of {1} milestones complete" xml:space="preserve"><value>{0} de {1} hitos completados</value></data>
   <data name="{0} on {1}" xml:space="preserve"><value>{0} el {1}</value></data>
+  <data name="{0} Outstanding checklist item(s)" xml:space="preserve"><value>{0} elemento(s) pendiente(s) de la lista de verificación</value></data>
   <data name="{0} overdue" xml:space="preserve"><value>{0} vencidos</value></data>
+  <data name="{0} Pending analytical result(s)" xml:space="preserve"><value>{0} resultado(s) analítico(s) pendiente(s)</value></data>
   <data name="{0} record(s) disposed." xml:space="preserve"><value>{0} registro(s) eliminado(s).</value></data>
   <data name="{0} record(s) were skipped — active retention hold or cooldown." xml:space="preserve"><value>Se omitieron {0} registro(s) — bloqueo de retención activo o período de espera.</value></data>
   <data name="{0} records shown" xml:space="preserve"><value>{0} registros mostrados</value></data>
   <data name="{0} serious" xml:space="preserve"><value>{0} graves</value></data>
   <data name="{0} specification line(s) imported from product master." xml:space="preserve"><value>{0} línea(s) de especificación importada(s) de los datos maestros del producto.</value></data>
+  <data name="{0} supplier(s) overdue for review" xml:space="preserve"><value>{0} proveedor(es) con revisión vencida</value></data>
+  <data name="{0} supplier(s) with an expired approval" xml:space="preserve"><value>{0} proveedor(es) con la aprobación vencida</value></data>
   <data name="{0} total" xml:space="preserve"><value>{0} en total</value></data>
   <data name="{0} under re-review" xml:space="preserve"><value>{0} en revisión periódica</value></data>
   <data name="{0} — max 25 MB" xml:space="preserve"><value>{0} — máx. 25 MB</value></data>

@@ -88,7 +88,7 @@ namespace OpenQMS.Controllers
                 return Json(new List<object>());
 
             var types = _categoryTypeMap.TryGetValue(cat, out var list) ? list : Array.Empty<AppDocument.DocumentType>();
-            var result = types.Select(t => new { value = t.ToString(), text = GetDocTypeDisplayName(t) });
+            var result = types.Select(t => new { value = t.ToString(), text = this.T(GetDocTypeDisplayName(t)) });
             return Json(result);
         }
 
@@ -1283,11 +1283,11 @@ namespace OpenQMS.Controllers
             // (ViewData["Categories"] / ViewData["DocTypes"] as List<SelectListItem>).
             ViewData["Categories"] = Enum.GetValues(typeof(AppDocument.DocumentCategory))
                 .Cast<AppDocument.DocumentCategory>()
-                .Select(c => new SelectListItem { Value = c.ToString(), Text = GetCategoryDisplayName(c) })
+                .Select(c => new SelectListItem { Value = c.ToString(), Text = this.T(GetCategoryDisplayName(c)) })
                 .ToList();
             ViewData["DocTypes"] = Enum.GetValues(typeof(AppDocument.DocumentType))
                 .Cast<AppDocument.DocumentType>()
-                .Select(t => new SelectListItem { Value = t.ToString(), Text = GetDocTypeDisplayName(t) })
+                .Select(t => new SelectListItem { Value = t.ToString(), Text = this.T(GetDocTypeDisplayName(t)) })
                 .ToList();
 
             ViewBag.Search   = search;
@@ -2097,7 +2097,7 @@ namespace OpenQMS.Controllers
             ViewData["CategoryList"] = new SelectList(
                 Enum.GetValues(typeof(AppDocument.DocumentCategory))
                     .Cast<AppDocument.DocumentCategory>()
-                    .Select(c => new { Value = c.ToString(), Text = GetCategoryDisplayName(c) }),
+                    .Select(c => new { Value = c.ToString(), Text = this.T(GetCategoryDisplayName(c)) }),
                 "Value", "Text",
                 selectedCategory?.ToString());
 
@@ -2105,7 +2105,7 @@ namespace OpenQMS.Controllers
             if (selectedCategory.HasValue && _categoryTypeMap.TryGetValue(selectedCategory.Value, out var types))
             {
                 ViewData["DocTypeList"] = new SelectList(
-                    types.Select(t => new { Value = t.ToString(), Text = GetDocTypeDisplayName(t) }),
+                    types.Select(t => new { Value = t.ToString(), Text = this.T(GetDocTypeDisplayName(t)) }),
                     "Value", "Text");
             }
             else

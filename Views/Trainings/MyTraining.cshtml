@@ -44,7 +44,7 @@
 }
 
 @* OUTSTANDING *@
-<h6 class="fw-semibold text-uppercase text-muted small mb-2">Outstanding (@outstanding.Count)</h6>
+<h6 class="fw-semibold text-uppercase text-muted small mb-2">@L["Outstanding ({0})", outstanding.Count]</h6>
 @if (outstanding.Any())
 {
     <div class="table-responsive mb-4">
@@ -163,7 +163,7 @@ else
 }
 
 @* COMPLETED *@
-<h6 class="fw-semibold text-uppercase text-muted small mb-2">Completed (@completed.Count)</h6>
+<h6 class="fw-semibold text-uppercase text-muted small mb-2">@L["Completed ({0})", completed.Count]</h6>
 @if (completed.Any())
 {
     <div class="table-responsive">

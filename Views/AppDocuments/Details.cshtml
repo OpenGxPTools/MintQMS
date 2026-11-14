@@ -233,7 +233,7 @@
                         .GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
                         .Cast<System.ComponentModel.DataAnnotations.DisplayAttribute>()
                         .FirstOrDefault();
-                    <span class="badge bg-info text-dark">@(catAttr?.Name ?? Model.Category.Value.ToString())</span>
+                    <span class="badge bg-info text-dark">@L[catAttr?.Name ?? Model.Category.Value.ToString()]</span>
                 }
                 else { <span class="text-muted">-</span> }
             </dd>
@@ -247,7 +247,7 @@
                         .GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
                         .Cast<System.ComponentModel.DataAnnotations.DisplayAttribute>()
                         .FirstOrDefault();
-                    <span>@(dtAttr?.Name ?? Model.DocType.Value.ToString())</span>
+                    <span>@L[dtAttr?.Name ?? Model.DocType.Value.ToString()]</span>
                 }
                 else { <span class="text-muted">-</span> }
             </dd>
@@ -391,7 +391,7 @@
                     }
                     else if (daysToReview.Value <= 30)
                     {
-                        <span class="badge bg-warning text-dark ms-2">Due in @daysToReview.Value days</span>
+                        <span class="badge bg-warning text-dark ms-2">@L["Due in {0} days", daysToReview.Value]</span>
                     }
                 }
                 else { <span class="text-muted">-</span> }
@@ -445,7 +445,7 @@
             <div class="alert alert-warning d-flex align-items-center gap-2 mt-3 mb-0" role="alert">
                 <i class="bi bi-hourglass-split"></i>
                 <span>
-                    This document is <strong>@L["pending training completion"]</strong> before it becomes Effective.
+                    @H["This document is <strong>pending training completion</strong> before it becomes Effective."]
                     <a asp-controller="Trainings" asp-action="Index" class="alert-link ms-1">@L["View Training Records"]</a>
                 </span>
             </div>
@@ -673,8 +673,7 @@
                     <div class="modal-body">
                         <div class="alert alert-warning mb-3">
                             <i class="bi bi-exclamation-triangle me-1"></i>
-                            This will make <strong>@Model.Title</strong> v@(Math.Ceiling(Model.Version).ToString("0.0")) immediately Effective,
-                            overriding any pending training requirements.
+                            @H["This will make <strong>{0}</strong> v{1} immediately Effective, overriding any pending training requirements.", Model.Title, Math.Ceiling(Model.Version).ToString("0.0")]
                         </div>
                         <div class="mb-3">
                             <label class="form-label">@L["Commentary"]</label>
@@ -717,7 +716,7 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>You are rejecting <strong>@Model.Title</strong> v@(Model.Version.ToString("0.00")).</p>
+                        <p>@H["You are rejecting <strong>{0}</strong> v{1}.", Model.Title, Model.Version.ToString("0.00")]</p>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">@L["Reason for Rejection"] <span class="text-danger">*</span></label>
                             <textarea name="RejectionReason" class="form-control" rows="3" required
@@ -857,7 +856,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Returning <strong>@Model.Title</strong> v@(Model.Version.ToString("0.00")) to Draft. The author will be able to make changes and resubmit for review.</p>
+                        <p>@H["Returning <strong>{0}</strong> v{1} to Draft. The author will be able to make changes and resubmit for review.", Model.Title, Model.Version.ToString("0.00")]</p>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">@L["Reason for Return"] <span class="text-danger">*</span></label>
                             <textarea name="ReturnReason" class="form-control" rows="3" required

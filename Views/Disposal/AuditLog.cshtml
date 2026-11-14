@@ -13,7 +13,7 @@
 <table class="table table-sm table-bordered table-hover" id="auditTable">
     <thead class="table-dark">
         <tr>
-            <th>@L["Date / Time (UTC)"]</th>
+            <th>@L["Date / Time"] <span class="fw-normal text-muted">(@SiteTime.Label)</span></th>
             <th>@L["Action"]</th>
             <th>@L["Module"]</th>
             <th>@L["Reference"]</th>
@@ -34,7 +34,7 @@
             _                        => "bg-light text-dark"
         };
         <tr>
-            <td>@entry.ActionOn.ToSite().ToString("yyyy-MM-dd HH:mm") UTC</td>
+            <td>@entry.ActionOn.ToSite().ToString("yyyy-MM-dd HH:mm")</td>
             <td><span class="badge @badgeClass">@entry.Action</span></td>
             <td>@entry.Module</td>
             <td><strong>@entry.RecordReference</strong></td>

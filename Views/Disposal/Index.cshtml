@@ -183,7 +183,7 @@
                 <div class="modal-body">
                     <div class="alert alert-warning">
                         @H["Removing a retention hold starts a <strong>{0}-day cooldown</strong> before the record becomes eligible for disposal.", (int)ViewBag.CooldownDays]
-                        This action requires your electronic signature and is permanently logged.
+                        @L["This action requires your electronic signature and is permanently logged."]
                     </div>
                     <div class="mb-3">
                         <label class="form-label">@L["Reason for removing hold"] <span class="text-danger">*</span></label>

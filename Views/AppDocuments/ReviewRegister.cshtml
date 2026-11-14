@@ -17,8 +17,8 @@
 </div>
 
 <p class="text-muted mb-3">
-    Approved documents that require periodic review, ordered by review due date.
-    Generated: @SiteTime.Now.ToString("dd MMM yyyy HH:mm", DisplayDates.Culture) @SiteTime.Label.
+    @L["Approved documents that require periodic review, ordered by review due date."]
+    @L["Generated: {0} {1}.", SiteTime.Now.ToString("dd MMM yyyy HH:mm", DisplayDates.Culture), SiteTime.Label]
 </p>
 
 @* Summary cards *@

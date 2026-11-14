@@ -73,7 +73,7 @@
 
 @if (Model.Any())
 {
-    <p class="text-muted small">Showing @Model.Count() effective document(s).</p>
+    <p class="text-muted small">@L["Showing {0} effective document(s).", Model.Count()]</p>
     <div class="table-responsive">
         <table class="table table-sm align-middle" id="libraryTable">
             <thead class="table-light">
@@ -119,8 +119,8 @@
                             </a>
                         </td>
                         <td>@doc.Title</td>
-                        <td>@(catName ?? "—")</td>
-                        <td>@(typeName ?? "—")</td>
+                        <td>@(catName != null ? L[catName].Value : "—")</td>
+                        <td>@(typeName != null ? L[typeName].Value : "—")</td>
                         <td>@doc.Version.ToString("0.0")</td>
                         <td>@(doc.IssuedOn.HasValue ? doc.IssuedOn.Value.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) : "—")</td>
                         <td class="@reviewCls">

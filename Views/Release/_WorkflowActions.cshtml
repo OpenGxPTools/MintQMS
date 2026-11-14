@@ -134,19 +134,19 @@
                     @if (blockingOutstandingCount > 0)
                     {
                         <div class="alert alert-danger">
-                            <strong>&#9888; @blockingOutstandingCount Blocking Outstanding checklist item(s)</strong> @L["— submission blocked. Resolve all blocking items first."]
+                            <strong>&#9888; @L["{0} Blocking Outstanding checklist item(s)", blockingOutstandingCount]</strong> @L["— submission blocked. Resolve all blocking items first."]
                         </div>
                     }
                     else if (outstandingCount > 0)
                     {
                         <div class="alert alert-warning">
-                            <strong>&#9888; @outstandingCount Outstanding checklist item(s)</strong> @L["— non-blocking, but should be addressed."]
+                            <strong>&#9888; @L["{0} Outstanding checklist item(s)", outstandingCount]</strong> @L["— non-blocking, but should be addressed."]
                         </div>
                     }
                     @if (pendingResultCount > 0)
                     {
                         <div class="alert alert-danger">
-                            <strong>&#9888; @pendingResultCount Pending analytical result(s)</strong> @L["— submission blocked. Enter a result (Pass, Fail, or N/A) for all listed tests."]
+                            <strong>&#9888; @L["{0} Pending analytical result(s)", pendingResultCount]</strong> @L["— submission blocked. Enter a result (Pass, Fail, or N/A) for all listed tests."]
                         </div>
                     }
                     <div class="mb-3">

@@ -108,7 +108,7 @@
             <tr>
                 <td>@item.ComplaintId</td>
                 <td>@item.Title</td>
-                <td><span class="badge @sevBadge">@item.Severity</span></td>
+                <td><span class="badge @sevBadge">@L.Enum(item.Severity)</span></td>
                 <td>@string.Join(", ", iLinked)</td>
                 <td>@(item.Customer?.LegalName ?? "-")</td>
                 <td>@item.ReceivedOn.ToSite().ToShortDateString()</td>

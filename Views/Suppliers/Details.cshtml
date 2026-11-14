@@ -70,7 +70,7 @@
                 OpenQMS.Models.SupplierStatus.Cancelled => "bg-danger",
                 _                                       => "bg-secondary"
             };
-            <span class="badge @approvalBadge fs-6">Approval: @L.Enum(Model.ApprovalStatus.Value)</span>
+            <span class="badge @approvalBadge fs-6">@L["Approval: {0}", L.Enum(Model.ApprovalStatus.Value)]</span>
         }
         <span class="badge @statusBadge fs-6">@L.Enum(Model.Status)</span>
     </div>
@@ -569,12 +569,12 @@
                 <div class="modal-body">
                     <p class="text-muted small">@L["Review the assessment details in the Overview tab before approving. To amend any fields, return the record to Assessment first."]</p>
                     <div class="mb-3">
-                        <label class="form-label">Approval Expiry <small class="text-muted">(optional)</small></label>
+                        <label class="form-label">@L["Approval Expiry"] <small class="text-muted">@L["(optional)"]</small></label>
                         <input type="date" name="approvalExpiry" class="form-control" min="@SiteTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
                         <div class="form-text">@L["Set only for time-limited or conditional approvals. Leave blank if the approval is valid until the next review."]</div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Reason for time-limited approval <small class="text-muted">(required if an expiry date is set)</small></label>
+                        <label class="form-label">@L["Reason for time-limited approval"] <small class="text-muted">@L["(required if an expiry date is set)"]</small></label>
                         <textarea name="approvalExpiryReason" class="form-control" rows="2" maxlength="1000" placeholder="@L["e.g. Conditional approval pending on-site audit"]"></textarea>
                     </div>
                     <div class="mb-3">
@@ -633,7 +633,7 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-warning"><h5 class="modal-title">@L["Confirm Suspension"]</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <div class="alert alert-warning">Suspension Reason: <strong>@Model.SuspensionReason</strong></div>
+                    <div class="alert alert-warning">@L["Suspension Reason:"] <strong>@Model.SuspensionReason</strong></div>
                     <hr />
                     <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
@@ -659,7 +659,7 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-danger text-white"><h5 class="modal-title">@L["Confirm Cancellation"]</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <div class="alert alert-secondary">Cancellation Reason: <strong>@Model.CancellationReason</strong></div>
+                    <div class="alert alert-secondary">@L["Cancellation Reason:"] <strong>@Model.CancellationReason</strong></div>
                     <hr />
                     <h6>@L["E-Signature"]</h6>
                     <div class="mb-2"><label class="form-label">@L["Email"]</label><input type="email" name="email" class="form-control" required /></div>
@@ -687,7 +687,7 @@
                 <div class="modal-body">
                     <p class="text-muted">@L["Reduced testing / CoA reliance will be permitted after qualification."]</p>
                     <div class="mb-3">
-                        <label class="form-label">Risk Level <small class="text-muted">(update if required)</small></label>
+                        <label class="form-label">@L["Risk Level"] <small class="text-muted">@L["(update if required)"]</small></label>
                         <select name="riskLevel" class="form-select" asp-items='Html.GetEnumSelectList<OpenQMS.Models.SupplierRiskLevel>().Where(x => x.Value != "4")'></select>
                     </div>
                     <div class="mb-3">
@@ -709,12 +709,12 @@
                         <input type="text" name="qualRefDoc" class="form-control" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Approval Expiry <small class="text-muted">(optional)</small></label>
+                        <label class="form-label">@L["Approval Expiry"] <small class="text-muted">@L["(optional)"]</small></label>
                         <input type="date" name="approvalExpiry" class="form-control" min="@SiteTime.Today.AddDays(1).ToString("yyyy-MM-dd")" value="@(Model.ExpiryDate.HasValue ? Model.ExpiryDate.Value.ToString("yyyy-MM-dd") : "")" />
                         <div class="form-text">@L["Set only for time-limited or conditional approvals. Leave blank if the approval is valid until the next review."]</div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Reason for time-limited approval <small class="text-muted">(required if an expiry date is set)</small></label>
+                        <label class="form-label">@L["Reason for time-limited approval"] <small class="text-muted">@L["(required if an expiry date is set)"]</small></label>
                         <textarea name="approvalExpiryReason" class="form-control" rows="2" maxlength="1000" placeholder="@L["e.g. Conditional approval pending on-site audit"]">@Model.ApprovalExpiryReason</textarea>
                     </div>
                     <div class="mb-3">

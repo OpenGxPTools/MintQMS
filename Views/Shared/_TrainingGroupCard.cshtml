@@ -58,7 +58,7 @@
             <div class="col-md-6 trainer-row" @(isCA ? "" : "style=\"display:none\"")>
                 <label class="form-label">@L["Trainer"]</label>
                 <select name="TrainingGroups[@idx].TrainerId" class="form-select">
-                    <option value="">— None —</option>
+                    <option value="">@L["— None —"]</option>
                     @foreach (var t in trainers)
                     {
                         @if (g.TrainerId == t.Id.ToString())

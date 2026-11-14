@@ -4,7 +4,7 @@
     ViewData["Title"] = L["Attachments"].Value;
 }
 
-<h2>Attachments for Deviation: @Model.Title</h2>
+<h2>@L["Attachments for Deviation: {0}", Model.Title]</h2>
 <hr />
 
 @if (Model.Status != OpenQMS.Models.Deviation.DeviationStatus.Approved)
@@ -42,7 +42,7 @@ else
 
 <hr />
 
-<h4>Attached Files (@(Model.Attachments?.Count ?? 0))</h4>
+<h4>@L["Attached Files ({0})", Model.Attachments?.Count ?? 0]</h4>
 
 @if (Model.Attachments != null && Model.Attachments.Any())
 {

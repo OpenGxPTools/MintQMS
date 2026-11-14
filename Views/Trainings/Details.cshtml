@@ -367,7 +367,7 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>You are marking <strong>@Model.TrainingId — @Model.Name</strong> as Completed.</p>
+                        <p>@H["You are marking <strong>{0} — {1}</strong> as Completed.", Model.TrainingId, Model.Name]</p>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">@L["Completion Notes"] <span class="text-danger">*</span></label>
                             <textarea name="CompletionNotes" class="form-control" rows="4" required
@@ -409,12 +409,12 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>@L["Warning:"]</strong> Administratively reopening a completed training reverts it to Scheduled, clears the completion record, and removes the retention date. This action is logged in the audit trail and requires your credentials.
+                        <strong>@L["Warning:"]</strong> @L["Administratively reopening a completed training reverts it to Scheduled, clears the completion record, and removes the retention date. This action is logged in the audit trail and requires your credentials."]
                     </div>
                     @if (Model.RetentionExtended == true)
                     {
                         <div class="alert alert-warning">
-                            <strong>@L["Note:"]</strong> A retention hold is active on this record. Reopening will clear the retention date — ensure this is compliant with your retention policy.
+                            <strong>@L["Note:"]</strong> @L["A retention hold is active on this record. Reopening will clear the retention date — ensure this is compliant with your retention policy."]
                         </div>
                     }
                     <div class="mb-3">
@@ -496,7 +496,7 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>You are cancelling <strong>@Model.TrainingId — @Model.Name</strong>. This action cannot be undone.</p>
+                        <p>@H["You are cancelling <strong>{0} — {1}</strong>. This action cannot be undone.", Model.TrainingId, Model.Name]</p>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">@L["Reason"] <span class="text-danger">*</span></label>
                             <textarea name="reason" class="form-control" rows="3" required placeholder="@L["Provide a reason for cancellation..."]"></textarea>

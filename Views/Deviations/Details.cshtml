@@ -71,7 +71,7 @@
     <div class="d-flex gap-2 align-items-center">
         @if (Model.Severity.HasValue)
         {
-            <span class="badge @severityBadge fs-6">@Model.Severity.Value</span>
+            <span class="badge @severityBadge fs-6">@L.Enum(Model.Severity.Value)</span>
         }
         <span class="badge @badgeClass fs-6">@statusLabel</span>
     </div>
@@ -227,12 +227,12 @@ else if (isApproaching)
                     <dt class="col-sm-4">@L["Severity"]</dt>
                     <dd class="col-sm-8">
                         @if (Model.Severity.HasValue)
-                        { <span class="badge @severityBadge">@Model.Severity.Value</span> }
+                        { <span class="badge @severityBadge">@L.Enum(Model.Severity.Value)</span> }
                         else { <span class="text-muted">-</span> }
                     </dd>
 
                     <dt class="col-sm-4">@L["Identified On"]</dt>
-                    <dd class="col-sm-8">@Model.IdentifiedOn.ToSite().ToShortDateString() <span class="text-muted small">(@ageDays days ago)</span></dd>
+                    <dd class="col-sm-8">@Model.IdentifiedOn.ToSite().ToShortDateString() <span class="text-muted small">@L["({0} days ago)", ageDays]</span></dd>
 
                     @if (Model.TargetResolutionDate.HasValue)
                     {
@@ -548,7 +548,7 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the deviation to <strong>@L["Evaluation"]</strong> status. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">@H["Moves the deviation to <strong>{0}</strong> status. Enter your credentials to confirm.", L["Evaluation"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -586,8 +586,8 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the deviation to <strong>@L["Pending Acceptance"]</strong> and locks the evaluation fields. A QA Manager will review and accept or return the record.</p>
-                        <p class="text-muted small">All four fields must be completed: <strong>@L["Evaluation, Investigation, Root Cause Category, Corrective and Preventive Action"]</strong>.</p>
+                        <p class="text-muted small">@H["Moves the deviation to <strong>{0}</strong> and locks the evaluation fields. A QA Manager will review and accept or return the record.", L["Pending Acceptance"].Value]</p>
+                        <p class="text-muted small">@H["All four fields must be completed: <strong>{0}</strong>.", L["Evaluation, Investigation, Root Cause Category, Corrective and Preventive Action"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -625,7 +625,7 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the deviation to <strong>@L["Resolution"]</strong> status for final QA approval. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">@H["Moves the deviation to <strong>{0}</strong> status for final QA approval. Enter your credentials to confirm.", L["Resolution"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -665,13 +665,13 @@ else if (isApproaching)
                     <div class="modal-body">
                         <p class="text-muted small">
                             @if (Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Evaluation)
-                            { <text>Returns to <strong>@L["Identification"]</strong> status.</text> }
+                            { @H["Returns to <strong>{0}</strong> status.", L["Identification"].Value] }
                             else if (Model.Status == OpenQMS.Models.Deviation.DeviationStatus.PendingAcceptance)
-                            { <text>Returns to <strong>@L["Evaluation"]</strong> status — evaluation fields will be unlocked for rework.</text> }
+                            { @H["Returns to <strong>{0}</strong> status — evaluation fields will be unlocked for rework.", L["Evaluation"].Value] }
                             else if (Model.Status == OpenQMS.Models.Deviation.DeviationStatus.Accepted)
-                            { <text>Returns to <strong>@L["Evaluation"]</strong> status — evaluation fields will be unlocked for full rework.</text> }
+                            { @H["Returns to <strong>{0}</strong> status — evaluation fields will be unlocked for full rework.", L["Evaluation"].Value] }
                             else
-                            { <text>Returns to <strong>@L["Accepted"]</strong> status — resolution field will be unlocked for rework.</text> }
+                            { @H["Returns to <strong>{0}</strong> status — the resolution field will be unlocked for rework.", L["Accepted"].Value] }
                         </p>
                         <div class="mb-3">
                             <label class="form-label">@L["Reason for Return"] <span class="text-danger">*</span></label>
@@ -711,7 +711,7 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Confirms the evaluation package is complete and acceptable. Moves the deviation to <strong>@L["Accepted"]</strong> status. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">@H["Confirms the evaluation package is complete and acceptable. Moves the deviation to <strong>{0}</strong> status. Enter your credentials to confirm.", L["Accepted"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -749,7 +749,7 @@ else if (isApproaching)
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted small">Moves the deviation to <strong>@L["Approved"]</strong> status and locks the record. Enter your credentials to confirm.</p>
+                        <p class="text-muted small">@H["Moves the deviation to <strong>{0}</strong> status and locks the record. Enter your credentials to confirm.", L["Approved"].Value]</p>
                         <div class="mb-3">
                             <label class="form-label">@L["Notes (optional)"]</label>
                             <textarea name="notes" class="form-control" rows="2"></textarea>
@@ -785,7 +785,7 @@ else if (isApproaching)
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>@L["Warning:"]</strong> Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
+                        <strong>@L["Warning:"]</strong> @L["Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval."]
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>

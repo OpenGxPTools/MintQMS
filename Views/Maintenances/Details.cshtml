@@ -307,7 +307,7 @@
                 <dt class="col-sm-3">@L["Next Occurrence"]</dt>
                 <dd class="col-sm-9">
                     <a asp-action="Details" asp-route-id="@child.Id">@child.MaintenanceId</a>
-                    &mdash; @LocalizerExtensions.Enum(L, (System.Enum?)child.Status) | Scheduled @child.ScheduledDate.ToShortDateString()
+                    &mdash; @LocalizerExtensions.Enum(L, (System.Enum?)child.Status) | @L["Scheduled {0}", child.ScheduledDate.ToShortDateString()]
                 </dd>
             }
         </dl>
@@ -577,7 +577,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>@L["Warning:"]</strong> Administratively reopening a completed record reverts it to the Reviewed stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.
+                        <strong>@L["Warning:"]</strong> @L["Administratively reopening a completed record reverts it to the Reviewed stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval."]
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["Reason / Justification"] <span class="text-danger">*</span></label>

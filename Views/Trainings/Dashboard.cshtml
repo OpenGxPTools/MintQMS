@@ -102,7 +102,7 @@
                             <td>@t.TrainingId</td>
                             <td>@t.Name</td>
                             <td>@(t.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</td>
-                            <td><span class="badge bg-danger">@daysOver days</span></td>
+                            <td><span class="badge bg-danger">@L["{0} days", daysOver]</span></td>
                             <td>@t.TrainerEmail</td>
                             <td><a asp-action="Details" asp-route-id="@t.Id" class="btn btn-outline-danger btn-sm">@L["View"]</a></td>
                         </tr>
@@ -118,7 +118,7 @@
     <div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-warning text-dark fw-semibold">
-                <i class="fas fa-calendar me-1"></i>Due Within @(ViewBag.TrainingDueWarningDays ?? 30) Days
+                <i class="fas fa-calendar me-1"></i>@L["Due Within {0} Days", (int)(ViewBag.TrainingDueWarningDays ?? 30)]
                 <span class="badge bg-dark ms-1">@upcoming.Count</span>
             </div>
             <div class="card-body p-0">
@@ -144,7 +144,7 @@
                 }
                 else
                 {
-                    <p class="text-muted p-3 mb-0">None due within @(ViewBag.TrainingDueWarningDays ?? 30) days.</p>
+                    <p class="text-muted p-3 mb-0">@L["None due within {0} days.", (int)(ViewBag.TrainingDueWarningDays ?? 30)]</p>
                 }
             </div>
         </div>

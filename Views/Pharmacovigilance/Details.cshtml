@@ -73,9 +73,9 @@
     var alertClass = daysLeft < 0 ? "danger" : daysLeft <= 2 ? "danger" : daysLeft <= 5 ? "warning" : "info";
     <div class="alert alert-@alertClass mb-3">
         <strong>@L["TGA Reporting Deadline:"]</strong> @Model.TGADeadlineDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
-        @if (daysLeft < 0) { <span class="badge bg-danger ms-2">OVERDUE by @(Math.Abs(daysLeft)) days</span> }
+        @if (daysLeft < 0) { <span class="badge bg-danger ms-2">@L["OVERDUE by {0} days", Math.Abs(daysLeft)]</span> }
         else if (daysLeft == 0) { <span class="badge bg-danger ms-2">@L["Due TODAY"]</span> }
-        else { <span class="badge bg-@alertClass ms-2">@daysLeft day(s) remaining</span> }
+        else { <span class="badge bg-@alertClass ms-2">@L["{0} day(s) remaining", daysLeft]</span> }
     </div>
 }
 

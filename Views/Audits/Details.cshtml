@@ -74,7 +74,7 @@
 @if (linkedCapas?.Any() == true)
 {
     <div class="alert alert-info">
-        Linked CAPA@(linkedCapas.Count > 1 ? "s" : ""):
+        @(linkedCapas.Count > 1 ? L["Linked CAPAs:"] : L["Linked CAPA:"])
         @foreach (var lc in linkedCapas)
         {
             <a asp-controller="Capas" asp-action="Details" asp-route-id="@lc.CapaId" class="ms-1"><strong>@lc.Capa!.CapaId</strong></a><span class="ms-1">— @lc.Capa.Title (@lc.Capa.Status)</span>

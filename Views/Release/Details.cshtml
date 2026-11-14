@@ -70,7 +70,7 @@
 <div class="d-flex align-items-center justify-content-between mb-2">
     <div>
         <h4 class="mb-0">@L["Release Record —"] <span class="fw-bold">@Model.RecordNumber</span></h4>
-        <small class="text-muted">@Model.ProductName &mdash; Batch @Model.BatchNumber</small>
+        <small class="text-muted">@Model.ProductName &mdash; @L["Batch {0}", Model.BatchNumber]</small>
     </div>
     <div class="d-flex gap-2 align-items-center">
         <span class="badge bg-secondary fs-6">@L[ReleaseTypeDisplayName(Model.ReleaseType)]</span>
@@ -417,12 +417,12 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>@L["Warning:"]</strong> This action reverts the record to <strong>@reopenTarget</strong> stage. It is logged in the audit trail and requires your credentials. Use only when a correction is necessary after formal completion.
+                        <strong>@L["Warning:"]</strong> @H["This action reverts the record to <strong>{0}</strong> stage. It is logged in the audit trail and requires your credentials. Use only when a correction is necessary after formal completion.", L[reopenTarget].Value]
                     </div>
                     @if (certWarning)
                     {
                         <div class="alert alert-warning">
-                            <strong>@L["Certificate Withdrawal:"]</strong> One or more issued certificates associated with this record will be automatically set to <strong>@L["Withdrawn"]</strong>.
+                            <strong>@L["Certificate Withdrawal:"]</strong> @H["One or more issued certificates associated with this record will be automatically set to <strong>{0}</strong>.", L["Withdrawn"].Value]
                         </div>
                     }
                     <div class="mb-3">
@@ -431,7 +431,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
-                            Linked Deviation Reference
+                            @L["Linked Deviation Reference"]
                             @if (certWarning) { <span class="text-danger">*</span> }
                             else { <text>(optional)</text> }
                         </label>

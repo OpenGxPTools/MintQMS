@@ -69,7 +69,7 @@
         <div class="card text-center h-100 @(agedCount > 0 ? "border-warning" : "")">
             <div class="card-body">
                 <div class="display-5 fw-bold @(agedCount > 0 ? "text-warning" : "text-secondary")">@agedCount</div>
-                <div class="text-muted">Aged (&gt;30 days)</div>
+                <div class="text-muted">@L["Aged (>30 days)"]</div>
             </div>
         </div>
     </div>
@@ -107,7 +107,7 @@
                                 _ => "bg-secondary"
                             };
                             <tr>
-                                <td>@kv.Key</td>
+                                <td>@L[System.Text.RegularExpressions.Regex.Replace(kv.Key, "(?<=[a-z])(?=[A-Z])", " ")]</td>
                                 <td>@kv.Value</td>
                                 <td>
                                     <div class="progress" style="height:8px">
@@ -140,7 +140,7 @@
                                 _ => "bg-secondary"
                             };
                             <tr>
-                                <td><span class="badge @badgeClass">@kv.Key</span></td>
+                                <td><span class="badge @badgeClass">@L[kv.Key]</span></td>
                                 <td><strong>@kv.Value</strong></td>
                             </tr>
                         }
@@ -173,7 +173,7 @@
                                 <tr>
                                     <td><a asp-action="Details" asp-route-id="@c.Id">@c.ComplaintId</a></td>
                                     <td>@c.Title</td>
-                                    <td><span class="badge @sev">@c.Severity</span></td>
+                                    <td><span class="badge @sev">@L.Enum(c.Severity)</span></td>
                                     <td>@c.ReceivedOn.ToSite().ToShortDateString()</td>
                                 </tr>
                             }
@@ -204,7 +204,7 @@
                                 <tr>
                                     <td><a asp-action="Details" asp-route-id="@c.Id">@c.ComplaintId</a></td>
                                     <td>@c.Title</td>
-                                    <td><span class="badge @sev">@c.Severity</span></td>
+                                    <td><span class="badge @sev">@L.Enum(c.Severity)</span></td>
                                     <td>@c.ReceivedOn.ToSite().ToShortDateString()</td>
                                 </tr>
                             }
@@ -250,7 +250,7 @@
 {
     <div class="card mb-4 border-warning">
         <div class="card-header bg-warning d-flex justify-content-between">
-            <span>Aged Open Complaints (&gt;30 days)</span>
+            <span>@L["Aged Open Complaints (>30 days)"]</span>
             <span class="badge bg-dark">@aged.Count</span>
         </div>
         <div class="card-body p-0">
@@ -266,7 +266,7 @@
                         <tr class="table-warning">
                             <td><a asp-action="Details" asp-route-id="@c.Id">@c.ComplaintId</a></td>
                             <td>@c.Title</td>
-                            <td><span class="badge @sev">@c.Severity</span></td>
+                            <td><span class="badge @sev">@L.Enum(c.Severity)</span></td>
                             <td>@L.Enum(c.Status)</td>
                             <td>@c.ReceivedOn.ToSite().ToShortDateString()</td>
                             <td><strong>@age</strong></td>

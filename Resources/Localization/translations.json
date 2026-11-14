@@ -20,6 +20,10 @@
   "pt-BR": "(filtrado de _MAX_ registros no total)",
   "note": "DataTables: keep _MAX_ as is"
  },
+ "(if not in system)": {
+  "es": "(si no está en el sistema)",
+  "pt-BR": "(se não estiver no sistema)"
+ },
  "(No preferred term)": {
   "es": "(Sin término preferido)",
   "pt-BR": "(Sem termo preferido)"
@@ -28,6 +32,14 @@
   "es": "(abiertas >30 días)",
   "pt-BR": "(abertas >30 dias)"
  },
+ "(optional — leave blank to keep existing file)": {
+  "es": "(opcional: déjelo en blanco para conservar el archivo actual)",
+  "pt-BR": "(opcional: deixe em branco para manter o arquivo atual)"
+ },
+ "(optional)": {
+  "es": "(opcional)",
+  "pt-BR": "(opcional)"
+ },
  "(planned start within selected period)": {
   "es": "(inicio previsto dentro del período seleccionado)",
   "pt-BR": "(início previsto dentro do período selecionado)"
@@ -35,6 +47,18 @@
  "(regulatory clock start)": {
   "es": "(inicio del plazo regulatorio)",
   "pt-BR": "(início do prazo regulatório)"
+ },
+ "(required if an expiry date is set)": {
+  "es": "(obligatorio si se fija una fecha de vencimiento)",
+  "pt-BR": "(obrigatório se for definida uma data de vencimento)"
+ },
+ "(update if required)": {
+  "es": "(actualice si es necesario)",
+  "pt-BR": "(atualize se necessário)"
+ },
+ "({0} days ago)": {
+  "es": "(hace {0} días)",
+  "pt-BR": "(há {0} dias)"
  },
  "({0} days)": {
   "es": "({0} días)",
@@ -47,6 +71,14 @@
  "(≥3 in 90 days)": {
   "es": "(≥3 en 90 días)",
   "pt-BR": "(≥3 em 90 dias)"
+ },
+ "+ Create Linked CAPA": {
+  "es": "+ Crear CAPA vinculada",
+  "pt-BR": "+ Criar CAPA vinculada"
+ },
+ "+ New Deviation": {
+  "es": "+ Nueva desviación",
+  "pt-BR": "+ Novo desvio"
  },
  "-- Add Asset --": {
   "es": "-- Agregar activo --",
@@ -586,6 +618,10 @@
   "es": "Solo se puede iniciar una renovación desde un registro emitido / activo.",
   "pt-BR": "Só é possível iniciar uma renovação a partir de um registro emitido / ativo."
  },
+ "A retention hold is active on this record. Reopening will clear the retention date — ensure this is compliant with your retention policy.": {
+  "es": "Este registro tiene una retención activa. Al reabrirlo se borrará la fecha de retención: asegúrese de que esto cumple su política de retención.",
+  "pt-BR": "Este registro tem uma retenção ativa. Ao reabri-lo, a data de retenção será apagada: verifique se isso está de acordo com sua política de retenção."
+ },
  "A single cross-module view of everything currently overdue — CAPAs, changes, audits, risks, deviations, and complaints. Refreshed in real time. Intended as a daily operational tool for QA managers.": {
   "es": "Una vista única de todo lo que está vencido en todos los módulos: CAPA, cambios, auditorías, riesgos, desviaciones y reclamaciones. Se actualiza en tiempo real. Pensada como herramienta operativa diaria para los responsables de calidad.",
   "pt-BR": "Uma visão única de tudo o que está em atraso em todos os módulos: CAPAs, mudanças, auditorias, riscos, desvios e reclamações. Atualizada em tempo real. Pensada como ferramenta operacional diária para os gestores da qualidade."
@@ -716,6 +752,10 @@
  "Accepted: {0}. Max 25 MB.": {
   "es": "Aceptados: {0}. Máx. 25 MB.",
   "pt-BR": "Aceitos: {0}. Máx. 25 MB."
+ },
+ "Accepting moves this CAPA from <strong>{0}</strong> to <strong>{1}</strong>. Implementation can begin immediately.": {
+  "es": "Al aceptar, esta CAPA pasa de <strong>{0}</strong> a <strong>{1}</strong>. La implementación puede comenzar de inmediato.",
+  "pt-BR": "Ao aceitar, esta CAPA passa de <strong>{0}</strong> para <strong>{1}</strong>. A implementação pode começar imediatamente."
  },
  "Accepting will move this risk to Mitigation. The risk scoring is locked from this point.": {
   "es": "Al aceptar, este riesgo pasará a Mitigación. La puntuación del riesgo queda bloqueada a partir de este momento.",
@@ -1058,6 +1098,22 @@
   "es": "La reapertura administrativa de un registro completado lo devuelve a la etapa Mitigación. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después del cierre formal.",
   "pt-BR": "A reabertura administrativa de um registro concluído o devolve à etapa Mitigação. Esta ação é registrada na trilha de auditoria e exige suas credenciais. Use somente quando forem necessárias correções após o encerramento formal."
  },
+ "Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.": {
+  "es": "La reapertura administrativa de un registro completado lo devuelve a la etapa Resolución. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después de la aprobación formal.",
+  "pt-BR": "A reabertura administrativa de um registro concluído o devolve à etapa Resolução. Esta ação é registrada na trilha de auditoria e exige suas credenciais. Use somente quando forem necessárias correções após a aprovação formal."
+ },
+ "Administratively reopening a completed record reverts it to the Resolution stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal closure.": {
+  "es": "La reapertura administrativa de un registro completado lo devuelve a la etapa Resolución. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después del cierre formal.",
+  "pt-BR": "A reabertura administrativa de um registro concluído o devolve à etapa Resolução. Esta ação é registrada na trilha de auditoria e exige suas credenciais. Use somente quando forem necessárias correções após o encerramento formal."
+ },
+ "Administratively reopening a completed record reverts it to the Reviewed stage. This action is logged in the audit trail and requires your credentials. Use only when corrections are necessary after formal approval.": {
+  "es": "La reapertura administrativa de un registro completado lo devuelve a la etapa Revisado. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sean necesarias correcciones después de la aprobación formal.",
+  "pt-BR": "A reabertura administrativa de um registro concluído o devolve à etapa Revisado. Esta ação é registrada na trilha de auditoria e exige suas credenciais. Use somente quando forem necessárias correções após a aprovação formal."
+ },
+ "Administratively reopening a completed training reverts it to Scheduled, clears the completion record, and removes the retention date. This action is logged in the audit trail and requires your credentials.": {
+  "es": "La reapertura administrativa de una capacitación completada la devuelve a Programado, borra el registro de finalización y elimina la fecha de retención. Esta acción queda registrada en la pista de auditoría y requiere sus credenciales.",
+  "pt-BR": "A reabertura administrativa de um treinamento concluído o devolve a Programado, apaga o registro de conclusão e remove a data de retenção. Esta ação é registrada na trilha de auditoria e exige suas credenciais."
+ },
  "Administrator": {
   "es": "Administrador",
   "pt-BR": "Administrador"
@@ -1184,6 +1240,10 @@
   "es": "Unidad de edad",
   "pt-BR": "Unidade de idade"
  },
+ "Aged (>30 days)": {
+  "es": "Antiguas (>30 días)",
+  "pt-BR": "Antigas (>30 dias)"
+ },
  "Aged Care Facility": {
   "es": "Residencia de mayores",
   "pt-BR": "Instituição de longa permanência para idosos"
@@ -1195,6 +1255,14 @@
  "Aged Deviation:": {
   "es": "Desviación antigua:",
   "pt-BR": "Desvio antigo:"
+ },
+ "Aged Open Complaints (>30 days)": {
+  "es": "Reclamaciones abiertas antiguas (>30 días)",
+  "pt-BR": "Reclamações abertas antigas (>30 dias)"
+ },
+ "Aged Open Deviations (>30 days)": {
+  "es": "Desviaciones abiertas antiguas (>30 días)",
+  "pt-BR": "Desvios abertos antigos (>30 dias)"
  },
  "Aggregated KPIs across all quality modules for a selected date range — CAPAs, deviations, changes, complaints, audits, and risks. Required input for ISO 13485 / GMP management review meetings. Exportable to Excel.": {
   "es": "KPI agregados de todos los módulos de calidad para un rango de fechas: CAPA, desviaciones, cambios, reclamaciones, auditorías y riesgos. Información de entrada necesaria para las reuniones de revisión por la dirección ISO 13485 / GMP. Exportable a Excel.",
@@ -1228,6 +1296,10 @@
   "es": "Todas las acciones de la CAPA completadas con evidencia",
   "pt-BR": "Todas as ações da CAPA concluídas com evidência"
  },
+ "All CAPA actions completed, with evidence (e.g. SOP revised on [date], training completed by [names] on [date])": {
+  "es": "Todas las acciones CAPA completadas, con evidencia (p. ej., PNT revisado el [fecha], capacitación completada por [nombres] el [fecha])",
+  "pt-BR": "Todas as ações CAPA concluídas, com evidências (ex.: POP revisado em [data], treinamento concluído por [nomes] em [data])"
+ },
  "All Categories": {
   "es": "Todas las categorías",
   "pt-BR": "Todas as categorias"
@@ -1239,6 +1311,10 @@
  "All Findings (excl. obs.)": {
   "es": "Todos los hallazgos (excl. obs.)",
   "pt-BR": "Todas as constatações (excl. obs.)"
+ },
+ "All four fields must be completed: <strong>{0}</strong>.": {
+  "es": "Los cuatro campos deben estar completos: <strong>{0}</strong>.",
+  "pt-BR": "Os quatro campos devem estar preenchidos: <strong>{0}</strong>."
  },
  "All issued certificates have been withdrawn.": {
   "es": "Se han retirado todos los certificados emitidos.",
@@ -1526,6 +1602,10 @@
   "es": "Estado de aprobación",
   "pt-BR": "Status de aprovação"
  },
+ "Approval: {0}": {
+  "es": "Aprobación: {0}",
+  "pt-BR": "Aprovação: {0}"
+ },
  "Approve": {
   "es": "Aprobar",
   "pt-BR": "Aprovar",
@@ -1621,6 +1701,10 @@
   "pt-BR": "Aprovado por",
   "note": "SIGNATURE — review"
  },
+ "Approved documents that require periodic review, ordered by review due date.": {
+  "es": "Documentos aprobados que requieren revisión periódica, ordenados por fecha límite de revisión.",
+  "pt-BR": "Documentos aprovados que exigem revisão periódica, ordenados pela data-limite de revisão."
+ },
  "Approved in Period": {
   "es": "Aprobados en el período",
   "pt-BR": "Aprovados no período"
@@ -1645,6 +1729,10 @@
  "Approved — Pending Closure": {
   "es": "Aprobado — pendiente de cierre",
   "pt-BR": "Aprovado — pendente de encerramento"
+ },
+ "Approving moves this CAPA from <strong>{0}</strong> to <strong>{1}</strong>.": {
+  "es": "Al aprobar, esta CAPA pasa de <strong>{0}</strong> a <strong>{1}</strong>.",
+  "pt-BR": "Ao aprovar, esta CAPA passa de <strong>{0}</strong> para <strong>{1}</strong>."
  },
  "Approving will lock this record. A Follow-up Report must be created to add further information.": {
   "es": "Al aprobar se bloqueará este registro. Para añadir más información habrá que crear un informe de seguimiento.",
@@ -1830,6 +1918,10 @@
   "es": "Para enviar a la PA se requiere al menos la fecha de vencimiento o la fecha de reanálisis",
   "pt-BR": "Para enviar à PA é necessária pelo menos a data de vencimento ou a data de reteste"
  },
+ "Attached Files ({0})": {
+  "es": "Archivos adjuntos ({0})",
+  "pt-BR": "Arquivos anexados ({0})"
+ },
  "Attachment deleted successfully.": {
   "es": "Adjunto eliminado correctamente.",
   "pt-BR": "Anexo excluído com sucesso."
@@ -1897,6 +1989,10 @@
  "Attachments cannot be removed from an approved deviation.": {
   "es": "No se pueden eliminar adjuntos de una desviación aprobada.",
   "pt-BR": "Não é possível excluir anexos de um desvio aprovado."
+ },
+ "Attachments for Deviation: {0}": {
+  "es": "Adjuntos de la desviación: {0}",
+  "pt-BR": "Anexos do desvio: {0}"
  },
  "Attachments — {0}": {
   "es": "Adjuntos — {0}",
@@ -2167,6 +2263,10 @@
   "es": "En espera de aceptación",
   "pt-BR": "Aguardando aceitação"
  },
+ "Awaiting Acceptance ({0})": {
+  "es": "En espera de aceptación ({0})",
+  "pt-BR": "Aguardando aceitação ({0})"
+ },
  "Awaiting Approval": {
   "es": "En espera de aprobación",
   "pt-BR": "Aguardando aprovação"
@@ -2174,6 +2274,10 @@
  "Awaiting Approval (Under Review)": {
   "es": "En espera de aprobación (en revisión)",
   "pt-BR": "Aguardando aprovação (em revisão)"
+ },
+ "Awaiting Approval ({0})": {
+  "es": "En espera de aprobación ({0})",
+  "pt-BR": "Aguardando aprovação ({0})"
  },
  "Awaiting Quality Manager acceptance. No actions available at this stage.": {
   "es": "En espera de la aceptación del Gerente de calidad. No hay acciones disponibles en esta etapa.",
@@ -2314,6 +2418,10 @@
  "Batch Size": {
   "es": "Tamaño del lote",
   "pt-BR": "Tamanho do lote"
+ },
+ "Batch {0}": {
+  "es": "Lote {0}",
+  "pt-BR": "Lote {0}"
  },
  "Before submitting, confirm:": {
   "es": "Antes de enviar, confirme:",
@@ -2517,6 +2625,10 @@
  "Cancellation Reason": {
   "es": "Motivo de cancelación",
   "pt-BR": "Motivo do cancelamento"
+ },
+ "Cancellation Reason:": {
+  "es": "Motivo de la cancelación:",
+  "pt-BR": "Motivo do cancelamento:"
  },
  "Cancelled": {
   "es": "Cancelado",
@@ -3218,6 +3330,10 @@
   "es": "Cerrado el",
   "pt-BR": "Encerrado em"
  },
+ "Closes the complaint and <strong>permanently locks the record</strong>. The retention period will be calculated from today. Before confirming, ensure the <strong>{0}</strong> field is completed. Enter your credentials to confirm.": {
+  "es": "Cierra la reclamación y <strong>bloquea el registro de forma permanente</strong>. El período de retención se calculará a partir de hoy. Antes de confirmar, asegúrese de que el campo <strong>{0}</strong> esté completo. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Encerra a reclamação e <strong>bloqueia o registro permanentemente</strong>. O período de retenção será calculado a partir de hoje. Antes de confirmar, verifique se o campo <strong>{0}</strong> está preenchido. Informe suas credenciais para confirmar."
+ },
  "Closing flags this case for PSUR inclusion.": {
   "es": "Al cerrar, este caso se marca para incluirlo en el PSUR.",
   "pt-BR": "Ao encerrar, este caso é marcado para inclusão no PSUR."
@@ -3491,6 +3607,10 @@
   "es": "Completado",
   "pt-BR": "Concluído"
  },
+ "Completed ({0})": {
+  "es": "Completadas ({0})",
+  "pt-BR": "Concluídos ({0})"
+ },
  "Completed / Acknowledged": {
   "es": "Completado / confirmado",
   "pt-BR": "Concluído / confirmado"
@@ -3506,6 +3626,10 @@
  "Completed On": {
   "es": "Completado el",
   "pt-BR": "Concluído em"
+ },
+ "Completed {0} by {1}": {
+  "es": "Completada el {0} por {1}",
+  "pt-BR": "Concluída em {0} por {1}"
  },
  "Completion": {
   "es": "Finalización",
@@ -3845,6 +3969,14 @@
  "Confirms the assessment package is complete and acceptable. Moves from <strong>{0}</strong> to <strong>{1}</strong>. Enter your credentials to confirm.": {
   "es": "Confirma que el paquete de evaluación está completo y es aceptable. Pasa de <strong>{0}</strong> a <strong>{1}</strong>. Ingrese sus credenciales para confirmar.",
   "pt-BR": "Confirma que o pacote de avaliação está completo e é aceitável. Passa de <strong>{0}</strong> para <strong>{1}</strong>. Informe suas credenciais para confirmar."
+ },
+ "Confirms the evaluation package is complete and acceptable. Moves the complaint to <strong>{0}</strong> status. The quality user will then document the resolution summary. Enter your credentials to confirm.": {
+  "es": "Confirma que el paquete de evaluación está completo y es aceptable. Pasa la reclamación al estado <strong>{0}</strong>. A continuación, el usuario de calidad documentará el resumen de la resolución. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Confirma que o pacote de avaliação está completo e é aceitável. Passa a reclamação para o status <strong>{0}</strong>. Em seguida, o usuário da qualidade documentará o resumo da resolução. Informe suas credenciais para confirmar."
+ },
+ "Confirms the evaluation package is complete and acceptable. Moves the deviation to <strong>{0}</strong> status. Enter your credentials to confirm.": {
+  "es": "Confirma que el paquete de evaluación está completo y es aceptable. Pasa la desviación al estado <strong>{0}</strong>. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Confirma que o pacote de avaliação está completo e é aceitável. Passa o desvio para o status <strong>{0}</strong>. Informe suas credenciais para confirmar."
  },
  "Congenital Anomaly": {
   "es": "Anomalía congénita",
@@ -5417,6 +5549,10 @@
   "es": "Fecha límite",
   "pt-BR": "Data limite"
  },
+ "Due in {0} days": {
+  "es": "Vence en {0} días",
+  "pt-BR": "Vence em {0} dias"
+ },
  "Due soon": {
   "es": "Vence pronto",
   "pt-BR": "Vence em breve"
@@ -5809,6 +5945,10 @@
   "es": "Editar informe de suministro",
   "pt-BR": "Editar relatório de fornecimento"
  },
+ "Edit Training — {0}": {
+  "es": "Editar capacitación — {0}",
+  "pt-BR": "Editar treinamento — {0}"
+ },
  "Edit Variation": {
   "es": "Editar variación",
   "pt-BR": "Editar alteração"
@@ -6106,6 +6246,10 @@
   "es": "Evaluación",
   "pt-BR": "Avaliação"
  },
+ "Evaluation & Investigation": {
+  "es": "Evaluación e investigación",
+  "pt-BR": "Avaliação e investigação"
+ },
  "Evaluation Date": {
   "es": "Fecha de evaluación",
   "pt-BR": "Data da avaliação"
@@ -6391,6 +6535,10 @@
  "Fail": {
   "es": "No conforme",
   "pt-BR": "Reprovado"
+ },
+ "Fail: {0}": {
+  "es": "No conforme: {0}",
+  "pt-BR": "Reprovado: {0}"
  },
  "Failed": {
   "es": "No aprobado",
@@ -7916,6 +8064,10 @@
   "es": "CAPA vinculadas",
   "pt-BR": "CAPAs vinculadas"
  },
+ "Linked CAPAs:": {
+  "es": "CAPA vinculadas:",
+  "pt-BR": "CAPAs vinculadas:"
+ },
  "Linked Changes": {
   "es": "Cambios vinculados",
   "pt-BR": "Mudanças vinculadas"
@@ -7927,6 +8079,10 @@
  "Linked Complaints": {
   "es": "Reclamaciones vinculadas",
   "pt-BR": "Reclamações vinculadas"
+ },
+ "Linked Deviation Reference": {
+  "es": "Referencia de la desviación vinculada",
+  "pt-BR": "Referência do desvio vinculado"
  },
  "Linked Deviations": {
   "es": "Desviaciones vinculadas",
@@ -8818,6 +8974,30 @@
  "Moves the change from <strong>{0}</strong> to <strong>{1}</strong>. Enter your credentials to confirm.": {
   "es": "Pasa el cambio de <strong>{0}</strong> a <strong>{1}</strong>. Ingrese sus credenciales para confirmar.",
   "pt-BR": "Passa a mudança de <strong>{0}</strong> para <strong>{1}</strong>. Informe suas credenciais para confirmar."
+ },
+ "Moves the complaint to <strong>{0}</strong> status for final QA Manager review and closure. The <strong>{1}</strong> field must be completed before confirming.": {
+  "es": "Pasa la reclamación al estado <strong>{0}</strong> para la revisión final y el cierre por el Gerente de calidad. El campo <strong>{1}</strong> debe estar completo antes de confirmar.",
+  "pt-BR": "Passa a reclamação para o status <strong>{0}</strong> para revisão final e encerramento pelo Gerente da qualidade. O campo <strong>{1}</strong> deve estar preenchido antes de confirmar."
+ },
+ "Moves the complaint to <strong>{0}</strong> status. The Evaluation, Investigation, Root Cause Category, and Corrective and Preventive Action fields will become available for editing. Enter your credentials to confirm.": {
+  "es": "Pasa la reclamación al estado <strong>{0}</strong>. Los campos Evaluación, Investigación, Categoría de causa raíz y Acción correctiva y preventiva quedarán disponibles para edición. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Passa a reclamação para o status <strong>{0}</strong>. Os campos Avaliação, Investigação, Categoria da causa-raiz e Ação corretiva e preventiva ficarão disponíveis para edição. Informe suas credenciais para confirmar."
+ },
+ "Moves the deviation to <strong>{0}</strong> and locks the evaluation fields. A QA Manager will review and accept or return the record.": {
+  "es": "Pasa la desviación a <strong>{0}</strong> y bloquea los campos de evaluación. Un Gerente de calidad revisará el registro y lo aceptará o devolverá.",
+  "pt-BR": "Passa o desvio para <strong>{0}</strong> e bloqueia os campos de avaliação. Um Gerente da qualidade revisará o registro e o aceitará ou devolverá."
+ },
+ "Moves the deviation to <strong>{0}</strong> status and locks the record. Enter your credentials to confirm.": {
+  "es": "Pasa la desviación al estado <strong>{0}</strong> y bloquea el registro. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Passa o desvio para o status <strong>{0}</strong> e bloqueia o registro. Informe suas credenciais para confirmar."
+ },
+ "Moves the deviation to <strong>{0}</strong> status for final QA approval. Enter your credentials to confirm.": {
+  "es": "Pasa la desviación al estado <strong>{0}</strong> para la aprobación final de calidad. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Passa o desvio para o status <strong>{0}</strong> para a aprovação final da qualidade. Informe suas credenciais para confirmar."
+ },
+ "Moves the deviation to <strong>{0}</strong> status. Enter your credentials to confirm.": {
+  "es": "Pasa la desviación al estado <strong>{0}</strong>. Ingrese sus credenciales para confirmar.",
+  "pt-BR": "Passa o desvio para o status <strong>{0}</strong>. Informe suas credenciais para confirmar."
  },
  "MRA": {
   "es": "ARM (MRA)",
@@ -9859,6 +10039,10 @@
   "es": "Centro oncológico",
   "pt-BR": "Centro oncológico"
  },
+ "One or more issued certificates associated with this record will be automatically set to <strong>{0}</strong>.": {
+  "es": "Uno o más certificados emitidos asociados a este registro pasarán automáticamente a <strong>{0}</strong>.",
+  "pt-BR": "Um ou mais certificados emitidos associados a este registro passarão automaticamente para <strong>{0}</strong>."
+ },
  "One or more selected roles have no active users.": {
   "es": "Uno o más de los roles seleccionados no tienen usuarios activos.",
   "pt-BR": "Um ou mais perfis selecionados não têm usuários ativos."
@@ -10227,6 +10411,10 @@
   "es": "Pendiente",
   "pt-BR": "Pendente"
  },
+ "Outstanding ({0})": {
+  "es": "Pendientes ({0})",
+  "pt-BR": "Pendentes ({0})"
+ },
  "Overall Rating": {
   "es": "Calificación global",
   "pt-BR": "Classificação geral"
@@ -10246,6 +10434,14 @@
  "Overdue (Scheduled past date)": {
   "es": "Vencido (programado con fecha pasada)",
   "pt-BR": "Atrasado (programado com data passada)"
+ },
+ "OVERDUE by {0} days": {
+  "es": "VENCIDO hace {0} días",
+  "pt-BR": "ATRASADO há {0} dias"
+ },
+ "Overdue CAPAs ({0})": {
+  "es": "CAPA vencidas ({0})",
+  "pt-BR": "CAPAs atrasadas ({0})"
  },
  "Overdue Changes": {
   "es": "Cambios vencidos",
@@ -10391,6 +10587,10 @@
  "Pass": {
   "es": "Conforme",
   "pt-BR": "Aprovado"
+ },
+ "Pass: {0}": {
+  "es": "Conforme: {0}",
+  "pt-BR": "Aprovado: {0}"
  },
  "Password": {
   "es": "Contraseña",
@@ -10568,9 +10768,9 @@
   "es": "Pendiente de confirmación del capacitador",
   "pt-BR": "Pendente de confirmação do instrutor"
  },
- "pending training completion": {
-  "es": "pendiente de completar la capacitación",
-  "pt-BR": "pendente de conclusão do treinamento"
+ "Pending: {0}": {
+  "es": "Pendiente: {0}",
+  "pt-BR": "Pendente: {0}"
  },
  "Performance History": {
   "es": "Historial de desempeño",
@@ -10623,11 +10823,6 @@
  "Permanent / Temporary / Emergency": {
   "es": "Permanente / temporal / de emergencia",
   "pt-BR": "Permanente / temporária / emergencial"
- },
- "permanently locks the record": {
-  "es": "bloquea el registro de forma permanente",
-  "pt-BR": "bloqueia o registro permanentemente",
-  "note": "SIGNATURE context — review"
  },
  "Personal Data": {
   "es": "Datos personales",
@@ -11564,6 +11759,10 @@
   "es": "Motivo de la devolución",
   "pt-BR": "Motivo da devolução"
  },
+ "Reason for time-limited approval": {
+  "es": "Motivo de la aprobación por tiempo limitado",
+  "pt-BR": "Motivo da aprovação por tempo limitado"
+ },
  "Reason this licence type is not required for the current operating model...": {
   "es": "Motivo por el que este tipo de licencia no es necesario para el modelo operativo actual...",
   "pt-BR": "Motivo pelo qual este tipo de licença não é necessário para o modelo operacional atual..."
@@ -11583,6 +11782,10 @@
  "Recall / Market Action": {
   "es": "Retiro del mercado / acción de mercado",
   "pt-BR": "Recolhimento / ação de mercado"
+ },
+ "Recall / Market Action makes this CAPA the master record for a recall; Improvement Opportunity is a planned business improvement, not a response to a problem.": {
+  "es": "Retiro del mercado / acción de mercado convierte esta CAPA en el registro principal de un retiro; Oportunidad de mejora es una mejora planificada del negocio, no una respuesta a un problema.",
+  "pt-BR": "Recolhimento / ação de mercado torna esta CAPA o registro principal de um recolhimento; Oportunidade de melhoria é uma melhoria planejada do negócio, não uma resposta a um problema."
  },
  "Received": {
   "es": "Recibido",
@@ -12663,6 +12866,30 @@
   "es": "Devuelto a evaluación.",
   "pt-BR": "Devolvido para avaliação."
  },
+ "Returning <strong>{0}</strong> v{1} to Draft. The author will be able to make changes and resubmit for review.": {
+  "es": "Devolviendo <strong>{0}</strong> v{1} a Borrador. El autor podrá hacer cambios y volver a enviarlo a revisión.",
+  "pt-BR": "Devolvendo <strong>{0}</strong> v{1} para Rascunho. O autor poderá fazer alterações e reenviá-lo para revisão."
+ },
+ "Returns to <strong>{0}</strong> status — evaluation fields will be unlocked for full rework.": {
+  "es": "Vuelve al estado <strong>{0}</strong>: los campos de evaluación se desbloquearán para una corrección completa.",
+  "pt-BR": "Volta ao status <strong>{0}</strong>: os campos de avaliação serão desbloqueados para retrabalho completo."
+ },
+ "Returns to <strong>{0}</strong> status — evaluation fields will be unlocked for rework.": {
+  "es": "Vuelve al estado <strong>{0}</strong>: los campos de evaluación se desbloquearán para su corrección.",
+  "pt-BR": "Volta ao status <strong>{0}</strong>: os campos de avaliação serão desbloqueados para retrabalho."
+ },
+ "Returns to <strong>{0}</strong> status — the complaint will need to be re-sent for evaluation.": {
+  "es": "Vuelve al estado <strong>{0}</strong>: la reclamación deberá enviarse de nuevo a evaluación.",
+  "pt-BR": "Volta ao status <strong>{0}</strong>: a reclamação precisará ser reenviada para avaliação."
+ },
+ "Returns to <strong>{0}</strong> status — the resolution field will be unlocked for rework.": {
+  "es": "Vuelve al estado <strong>{0}</strong>: el campo de resolución se desbloqueará para su corrección.",
+  "pt-BR": "Volta ao status <strong>{0}</strong>: o campo de resolução será desbloqueado para retrabalho."
+ },
+ "Returns to <strong>{0}</strong> status.": {
+  "es": "Vuelve al estado <strong>{0}</strong>.",
+  "pt-BR": "Volta ao status <strong>{0}</strong>."
+ },
  "Returns to <strong>{0}</strong> — all intermediate stamps will be cleared. All fields will be editable.": {
   "es": "Vuelve a <strong>{0}</strong>: se borrarán todos los sellos intermedios. Todos los campos serán editables.",
   "pt-BR": "Volta para <strong>{0}</strong>: todos os carimbos intermediários serão apagados. Todos os campos poderão ser editados."
@@ -12779,6 +13006,10 @@
  "Review Snapshot": {
   "es": "Instantánea de la revisión",
   "pt-BR": "Registro histórico da revisão"
+ },
+ "Review Snapshot — {0}": {
+  "es": "Instantánea de la revisión — {0}",
+  "pt-BR": "Registro histórico da revisão — {0}"
  },
  "Review Status": {
   "es": "Estado de la revisión",
@@ -13592,6 +13823,10 @@
   "es": "Período mostrado: <strong>{0}</strong> a <strong>{1}</strong>",
   "pt-BR": "Período exibido: <strong>{0}</strong> a <strong>{1}</strong>"
  },
+ "Showing {0} effective document(s).": {
+  "es": "Se muestran {0} documento(s) vigente(s).",
+  "pt-BR": "Exibindo {0} documento(s) vigente(s)."
+ },
  "SIG#": {
   "es": "N.º SEÑ",
   "pt-BR": "Nº SIN"
@@ -14131,6 +14366,10 @@
  "Submit to Authority": {
   "es": "Presentar a la autoridad",
   "pt-BR": "Enviar à autoridade"
+ },
+ "Submits the complaint to <strong>{0}</strong> for QA Manager review. The record will be locked for editing until accepted or returned. Before confirming, ensure the following fields are completed: <strong>{1}</strong>": {
+  "es": "Envía la reclamación a <strong>{0}</strong> para su revisión por el Gerente de calidad. El registro quedará bloqueado para edición hasta que se acepte o se devuelva. Antes de confirmar, asegúrese de que estos campos estén completos: <strong>{1}</strong>",
+  "pt-BR": "Envia a reclamação para <strong>{0}</strong> para revisão do Gerente da qualidade. O registro ficará bloqueado para edição até ser aceito ou devolvido. Antes de confirmar, verifique se estes campos estão preenchidos: <strong>{1}</strong>"
  },
  "Submitted": {
   "es": "Enviado",
@@ -14934,6 +15173,10 @@
   "es": "Esta acción requiere su firma electrónica y queda registrada de forma permanente.",
   "pt-BR": "Esta ação exige sua assinatura eletrônica e fica registrada permanentemente."
  },
+ "This action reverts the record to <strong>{0}</strong> stage. It is logged in the audit trail and requires your credentials. Use only when a correction is necessary after formal completion.": {
+  "es": "Esta acción devuelve el registro a la etapa <strong>{0}</strong>. Queda registrada en la pista de auditoría y requiere sus credenciales. Úsela solo cuando sea necesaria una corrección después de la finalización formal.",
+  "pt-BR": "Esta ação devolve o registro à etapa <strong>{0}</strong>. Ela é registrada na trilha de auditoria e exige suas credenciais. Use somente quando for necessária uma correção após a conclusão formal."
+ },
  "This action will soft-delete the selected records. It cannot be undone without direct database access.": {
   "es": "Esta acción eliminará lógicamente los registros seleccionados. No puede deshacerse sin acceso directo a la base de datos.",
   "pt-BR": "Esta ação excluirá logicamente os registros selecionados. Não pode ser desfeita sem acesso direto ao banco de dados."
@@ -15021,6 +15264,10 @@
  "This deviation is approved. No new attachments can be uploaded.": {
   "es": "Esta desviación está aprobada. No se pueden cargar nuevos adjuntos.",
   "pt-BR": "Este desvio está aprovado. Não é possível enviar novos anexos."
+ },
+ "This document is <strong>pending training completion</strong> before it becomes Effective.": {
+  "es": "Este documento está <strong>pendiente de que se complete la capacitación</strong> antes de pasar a Vigente.",
+  "pt-BR": "Este documento está <strong>aguardando a conclusão do treinamento</strong> antes de se tornar Vigente."
  },
  "This document is currently under review and cannot be edited.": {
   "es": "Este documento está en revisión y no se puede editar.",
@@ -15242,6 +15489,10 @@
   "es": "Esto creará hitos estándar para <strong>{0}</strong> según el calendario de revisión de <strong>{1}</strong>.",
   "pt-BR": "Isto criará marcos padrão para <strong>{0}</strong> com base no cronograma de análise de <strong>{1}</strong>."
  },
+ "This will lock the CAPA for Quality Manager approval (<strong>{0}</strong> → <strong>{1}</strong>).": {
+  "es": "Esto bloqueará la CAPA para la aprobación del Gerente de calidad (<strong>{0}</strong> → <strong>{1}</strong>).",
+  "pt-BR": "Isto bloqueará a CAPA para aprovação do Gerente da qualidade (<strong>{0}</strong> → <strong>{1}</strong>)."
+ },
  "This will lock the CAPA for Quality Manager review. Corrective Action, Preventive Action and Assessment must all be completed.": {
   "es": "Esto bloqueará la CAPA para la revisión del gerente de calidad. La acción correctiva, la acción preventiva y la evaluación deben estar completas.",
   "pt-BR": "Isso bloqueará a CAPA para revisão do gerente da qualidade. A ação corretiva, a ação preventiva e a avaliação devem estar concluídas.",
@@ -15250,6 +15501,10 @@
  "This will lock the record and send it to the Quality Manager for formal assessment. Enter your credentials to confirm.": {
   "es": "Esto bloqueará el registro y lo enviará al Gerente de calidad para su evaluación formal. Ingrese sus credenciales para confirmar.",
   "pt-BR": "Isso bloqueará o registro e o enviará ao Gerente da qualidade para avaliação formal. Informe suas credenciais para confirmar."
+ },
+ "This will make <strong>{0}</strong> v{1} immediately Effective, overriding any pending training requirements.": {
+  "es": "Esto hará que <strong>{0}</strong> v{1} pase a Vigente de inmediato, sin esperar a los requisitos de capacitación pendientes.",
+  "pt-BR": "Isto tornará <strong>{0}</strong> v{1} Vigente imediatamente, ignorando os requisitos de treinamento pendentes."
  },
  "This will mark <strong>{0}</strong> as <strong class=\"text-danger\">Suspended</strong> and lock the record.": {
   "es": "Esto marcará <strong>{0}</strong> como <strong class=\"text-danger\">Suspendido</strong> y bloqueará el registro.",
@@ -15286,6 +15541,18 @@
  "This will reopen the record for re-review. Review comments, reviewer, and retention date will be cleared. The action will be logged in the audit trail.": {
   "es": "Esto reabrirá el registro para una nueva revisión. Se borrarán los comentarios de revisión, el revisor y la fecha de retención. La acción quedará en el registro de auditoría.",
   "pt-BR": "Isso reabrirá o registro para nova revisão. Os comentários da revisão, o revisor e a data de retenção serão apagados. A ação ficará na trilha de auditoria."
+ },
+ "This will return the CAPA to <strong>{0}</strong> for full rework. The acceptance and assessment stamps will be cleared.": {
+  "es": "Esto devolverá la CAPA a <strong>{0}</strong> para una corrección completa. Se borrarán los sellos de aceptación y evaluación.",
+  "pt-BR": "Isto devolverá a CAPA para <strong>{0}</strong> para retrabalho completo. Os carimbos de aceitação e avaliação serão apagados."
+ },
+ "This will return the CAPA to <strong>{0}</strong> for revision. The submitted-for-acceptance stamp will be cleared.": {
+  "es": "Esto devolverá la CAPA a <strong>{0}</strong> para su revisión. Se borrará el sello de envío a aceptación.",
+  "pt-BR": "Isto devolverá a CAPA para <strong>{0}</strong> para revisão. O carimbo de envio para aceitação será apagado."
+ },
+ "This will return the CAPA to <strong>{0}</strong> for revision. The submitted-for-approval stamp will be cleared.": {
+  "es": "Esto devolverá la CAPA a <strong>{0}</strong> para su revisión. Se borrará el sello de envío a aprobación.",
+  "pt-BR": "Isto devolverá a CAPA para <strong>{0}</strong> para revisão. O carimbo de envio para aprovação será apagado."
  },
  "This will return the risk to Identification for the submitter to revise. The submission signature will be cleared.": {
   "es": "Esto devolverá el riesgo a Identificación para que quien lo envió lo revise. Se borrará la firma del envío.",
@@ -16363,6 +16630,18 @@
   "es": "Está aprobando <strong>{0} — {1}</strong>.",
   "pt-BR": "Você está aprovando <strong>{0} — {1}</strong>."
  },
+ "You are cancelling <strong>{0} — {1}</strong>. This action cannot be undone.": {
+  "es": "Está cancelando <strong>{0} — {1}</strong>. Esta acción no se puede deshacer.",
+  "pt-BR": "Você está cancelando <strong>{0} — {1}</strong>. Esta ação não pode ser desfeita."
+ },
+ "You are marking <strong>{0} — {1}</strong> as Completed.": {
+  "es": "Está marcando <strong>{0} — {1}</strong> como Completado.",
+  "pt-BR": "Você está marcando <strong>{0} — {1}</strong> como Concluído."
+ },
+ "You are rejecting <strong>{0}</strong> v{1}.": {
+  "es": "Está rechazando <strong>{0}</strong> v{1}.",
+  "pt-BR": "Você está rejeitando <strong>{0}</strong> v{1}."
+ },
  "You are submitting <strong>{0}</strong> v{1} for review. The document will be locked from further editing.": {
   "es": "Está enviando <strong>{0}</strong> v{1} a revisión. El documento quedará bloqueado para nuevas ediciones.",
   "pt-BR": "Você está enviando <strong>{0}</strong> v{1} para revisão. O documento ficará bloqueado para novas edições.",
@@ -16583,6 +16862,14 @@
   "es": "{0} aprobados, {1} calificados",
   "pt-BR": "{0} aprovados, {1} qualificados"
  },
+ "{0} Blocking Outstanding checklist item(s)": {
+  "es": "{0} elemento(s) bloqueante(s) pendiente(s) de la lista de verificación",
+  "pt-BR": "{0} item(ns) bloqueante(s) pendente(s) da lista de verificação"
+ },
+ "{0} Blocking Outstanding item(s)": {
+  "es": "{0} elemento(s) bloqueante(s) pendiente(s)",
+  "pt-BR": "{0} item(ns) bloqueante(s) pendente(s)"
+ },
  "{0} cases": {
   "es": "{0} casos",
   "pt-BR": "{0} casos"
@@ -16595,9 +16882,25 @@
   "es": "{0} cond. · {1} hitos · {2} informes",
   "pt-BR": "{0} cond. · {1} marcos · {2} relatórios"
  },
+ "{0} day(s)": {
+  "es": "{0} día(s)",
+  "pt-BR": "{0} dia(s)"
+ },
+ "{0} day(s) left": {
+  "es": "Falta(n) {0} día(s)",
+  "pt-BR": "Falta(m) {0} dia(s)"
+ },
+ "{0} day(s) remaining": {
+  "es": "Falta(n) {0} día(s)",
+  "pt-BR": "Falta(m) {0} dia(s)"
+ },
  "{0} days": {
   "es": "{0} días",
   "pt-BR": "{0} dias"
+ },
+ "{0} days ago": {
+  "es": "hace {0} días",
+  "pt-BR": "há {0} dias"
  },
  "{0} days overdue": {
   "es": "{0} días de retraso",
@@ -16619,13 +16922,25 @@
   "es": "{0} elementos",
   "pt-BR": "{0} itens"
  },
+ "{0} of {1} milestones complete": {
+  "es": "{0} de {1} hitos completados",
+  "pt-BR": "{0} de {1} marcos concluídos"
+ },
  "{0} on {1}": {
   "es": "{0} el {1}",
   "pt-BR": "{0} em {1}"
  },
+ "{0} Outstanding checklist item(s)": {
+  "es": "{0} elemento(s) pendiente(s) de la lista de verificación",
+  "pt-BR": "{0} item(ns) pendente(s) da lista de verificação"
+ },
  "{0} overdue": {
   "es": "{0} vencidos",
   "pt-BR": "{0} em atraso"
+ },
+ "{0} Pending analytical result(s)": {
+  "es": "{0} resultado(s) analítico(s) pendiente(s)",
+  "pt-BR": "{0} resultado(s) analítico(s) pendente(s)"
  },
  "{0} record(s) disposed.": {
   "es": "{0} registro(s) eliminado(s).",
@@ -16646,6 +16961,14 @@
  "{0} specification line(s) imported from product master.": {
   "es": "{0} línea(s) de especificación importada(s) de los datos maestros del producto.",
   "pt-BR": "{0} linha(s) de especificação importada(s) dos dados mestres do produto."
+ },
+ "{0} supplier(s) overdue for review": {
+  "es": "{0} proveedor(es) con revisión vencida",
+  "pt-BR": "{0} fornecedor(es) com revisão atrasada"
+ },
+ "{0} supplier(s) with an expired approval": {
+  "es": "{0} proveedor(es) con la aprobación vencida",
+  "pt-BR": "{0} fornecedor(es) com a aprovação vencida"
  },
  "{0} total": {
   "es": "{0} en total",

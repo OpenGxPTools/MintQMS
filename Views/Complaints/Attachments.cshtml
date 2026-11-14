@@ -44,7 +44,7 @@ else
     </div>
 }
 
-<h5>Attached Files (@(Model.Attachments?.Count ?? 0))</h5>
+<h5>@L["Attached Files ({0})", Model.Attachments?.Count ?? 0]</h5>
 
 @if (Model.Attachments != null && Model.Attachments.Any())
 {
