@@ -1,9 +1,10 @@
 """Site time zone: stored UTC timestamps are displayed in the configured site zone.
 
-- Settings shows the Site Time Zone (default Australia/Brisbane) and rejects unknown zones.
+- Settings offers every zone in the world (grouped by continent) and rejects unknown zones.
 - A UTC audit entry 2026-09-27 20:30 shows as 2026-09-28 06:30 with an (AEST) header label.
 - A UTC record date late in the UTC day shows the next (Brisbane) calendar date.
-- Switching the setting to UTC changes the display immediately and is audit-logged; restored after.
+- Switching the setting to UTC or Mexico City changes the display immediately and is audit-logged;
+  the zone the site had is restored after.
 - Excel export info sheet carries the site-zone label.
 """
 import io, re, zipfile
@@ -20,8 +21,11 @@ def settings_form():
 
 
 page, f = settings_form()
+original = f and f.get("TimeZoneId")
 check("settings: zone select present", 'name="TimeZoneId"' in page.text)
-check("settings: Brisbane selected by default", f and f.get("TimeZoneId") == "Australia/Brisbane", f and f.get("TimeZoneId"))
+for z in ("America/Mexico_City", "America/Sao_Paulo", "Europe/Madrid", "Australia/Brisbane", "UTC"):
+    check(f"settings: zone {z} offered", f'value="{z}"' in page.text)
+check("settings: zones grouped by continent", '<optgroup label="America">' in page.text)
 
 # Supplier with a UTC audit entry and a UTC CreatedOn late in the UTC day
 exec_sql("""insert into Supplier (CreatedOn, IsDeleted, LegalName, QualificationRequired, ReviewFrequency, ReviewTrigger, RiskLevel,
@@ -31,12 +35,6 @@ sid = q1("select Id from Supplier where SupplierCode=?", (f"SUP-T{run}",))["Id"]
 exec_sql("insert into SupplierAuditLog (Action, ParentId, PerformedBy, PerformedOn) values (?, ?, 'e2e', '2026-09-27 20:30:00')",
          (f"TZ probe {run}", sid))
 
-html = get(s, f"/Suppliers/Details/{sid}").text
-row = re.search(r"<tr>\s*<td[^>]*>([^<]+)</td>\s*<td>TZ probe " + run, html)
-check("audit row shown in Brisbane time (UTC+10)", row and row.group(1).strip() == "2026-09-28 06:30", row and row.group(1))
-check("audit header labelled (AEST)", "(AEST)" in html)
-
-
 def save_zone(zone):
     _, f = settings_form()
     f = {k: v for k, v in f.items() if k != "logoFile"}
@@ -44,6 +42,13 @@ def save_zone(zone):
     f["OrganisationName"] = f.get("OrganisationName") or "E2E Org"          # required; empty on a fresh DB
     f["OrganisationAddress"] = f.get("OrganisationAddress") or "1 E2E Street"
     return s.post(f"{BASE}/Settings/Save", data=f, allow_redirects=False)
+
+
+save_zone("Australia/Brisbane")
+html = get(s, f"/Suppliers/Details/{sid}").text
+row = re.search(r"<tr>\s*<td[^>]*>([^<]+)</td>\s*<td>TZ probe " + run, html)
+check("audit row shown in Brisbane time (UTC+10)", row and row.group(1).strip() == "2026-09-28 06:30", row and row.group(1))
+check("audit header labelled (AEST)", "(AEST)" in html)
 
 
 r = save_zone("Mars/Olympus_Mons")
@@ -57,8 +62,14 @@ row = re.search(r"<tr>\s*<td[^>]*>([^<]+)</td>\s*<td>TZ probe " + run, html)
 check("UTC setting: audit row shows raw UTC", row and row.group(1).strip() == "2026-09-27 20:30", row and row.group(1))
 check("UTC setting: header labelled (UTC)", "(UTC)" in html)
 
+r = save_zone("America/Mexico_City")
+html = get(s, f"/Suppliers/Details/{sid}").text
+row = re.search(r"<tr>\s*<td[^>]*>([^<]+)</td>\s*<td>TZ probe " + run, html)
+check("Mexico City setting: audit row shown at UTC-6", row and row.group(1).strip() == "2026-09-27 14:30", row and row.group(1))
+check("Mexico City setting: header labelled (UTC-06:00)", "(UTC-06:00)" in html)
+
 r = save_zone("Australia/Brisbane")
-check("settings: restored to Brisbane", q1("select TimeZoneId from SystemSettings")["TimeZoneId"] == "Australia/Brisbane", r.status_code)
+check("settings: Brisbane saved", q1("select TimeZoneId from SystemSettings")["TimeZoneId"] == "Australia/Brisbane", r.status_code)
 
 # Excel export carries the zone label ("Exported" info cell)
 found = False
@@ -71,5 +82,8 @@ for href in ["/Deviations/ExportRegister", "/Capas/ExportRegister", "/Changes/Ex
         if found:
             break
 check("Excel export shows AEST stamp", found)
+
+if original:
+    save_zone(original)
 
 sys.exit(summary())

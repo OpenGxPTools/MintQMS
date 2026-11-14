@@ -6,7 +6,6 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="'{0}' is not a valid frequency for {1} maintenance." xml:space="preserve"><value>'{0}' no es una frecuencia válida para el mantenimiento {1}.</value></data>
-  <data name="(AHPRA# or equiv.)" xml:space="preserve"><value>(n.º AHPRA o equiv.)</value></data>
   <data name="(auto-calculated)" xml:space="preserve"><value>(calculado automáticamente)</value></data>
   <data name="(current register snapshot)" xml:space="preserve"><value>(instantánea actual del registro)</value></data>
   <data name="(filtered from _MAX_ total entries)" xml:space="preserve"><value>(filtrado de _MAX_ registros en total)</value></data>
@@ -16,6 +15,7 @@
   <data name="(optional — leave blank to keep existing file)" xml:space="preserve"><value>(opcional: déjelo en blanco para conservar el archivo actual)</value></data>
   <data name="(optional)" xml:space="preserve"><value>(opcional)</value></data>
   <data name="(planned start within selected period)" xml:space="preserve"><value>(inicio previsto dentro del período seleccionado)</value></data>
+  <data name="(professional registration no.)" xml:space="preserve"><value>(n.º de registro profesional)</value></data>
   <data name="(regulatory clock start)" xml:space="preserve"><value>(inicio del plazo regulatorio)</value></data>
   <data name="(required if an expiry date is set)" xml:space="preserve"><value>(obligatorio si se fija una fecha de vencimiento)</value></data>
   <data name="(update if required)" xml:space="preserve"><value>(actualice si es necesario)</value></data>
@@ -93,7 +93,6 @@
   <data name="5 - Low (Hard to Detect)" xml:space="preserve"><value>5 - Baja (difícil de detectar)</value></data>
   <data name="5. Case Assessment" xml:space="preserve"><value>5. Evaluación del caso</value></data>
   <data name="6. Regulatory" xml:space="preserve"><value>6. Regulatorio</value></data>
-  <data name="7-Day Deadline (Fatal/Life-Threatening)" xml:space="preserve"><value>Plazo de 7 días (mortal/potencialmente mortal)</value></data>
   <data name="7. Attachments" xml:space="preserve"><value>7. Adjuntos</value></data>
   <data name="90 days" xml:space="preserve"><value>90 días</value></data>
   <data name="&lt;strong&gt;&amp;#9888; {0} Outstanding item(s)&lt;/strong&gt; — Non-blocking; AP submission is not prevented but items should be addressed." xml:space="preserve"><value>&lt;strong&gt;&amp;#9888; {0} elemento(s) pendiente(s)&lt;/strong&gt; — No bloqueante; no impide el envío a la PA, pero los elementos deben atenderse.</value></data>
@@ -105,7 +104,7 @@
   <data name="&lt;strong&gt;Email is not configured yet.&lt;/strong&gt; Once SMTP is set up in System Settings, confirmation emails will be sent automatically." xml:space="preserve"><value>&lt;strong&gt;El correo electrónico aún no está configurado.&lt;/strong&gt; Cuando se configure el SMTP en la configuración del sistema, los correos de confirmación se enviarán automáticamente.</value></data>
   <data name="&lt;strong&gt;Expectedness&lt;/strong&gt; asks whether this event is already listed in the product's reference safety information (e.g. the approved PI / SmPC / CCDS). &lt;strong&gt;Unexpected&lt;/strong&gt; = not listed, or more severe/specific than listed. A serious + unexpected + related case is typically what triggers expedited regulatory reporting." xml:space="preserve"><value>La &lt;strong&gt;expectabilidad&lt;/strong&gt; indica si este evento ya figura en la información de seguridad de referencia del producto (p. ej., la ficha técnica / SmPC / CCDS aprobada). &lt;strong&gt;Inesperado&lt;/strong&gt; = no figura, o es más grave/específico de lo indicado. Un caso grave + inesperado + relacionado es normalmente lo que obliga a la notificación regulatoria expedita.</value></data>
   <data name="&lt;strong&gt;EXPIRED&lt;/strong&gt; — This licence/certification expired on {0} ({1} days ago). Immediate action required." xml:space="preserve"><value>&lt;strong&gt;VENCIDA&lt;/strong&gt; — Esta licencia/certificación venció el {0} (hace {1} días). Se requiere acción inmediata.</value></data>
-  <data name="&lt;strong&gt;How the overseas GMP clearance is being obtained&lt;/strong&gt; (TGA framework):" xml:space="preserve"><value>&lt;strong&gt;Cómo se obtiene la autorización BPF del sitio extranjero&lt;/strong&gt; (marco de la TGA):</value></data>
+  <data name="&lt;strong&gt;How GMP compliance of the overseas site is being evidenced&lt;/strong&gt;:" xml:space="preserve"><value>&lt;strong&gt;Cómo se acredita el cumplimiento BPF del sitio extranjero&lt;/strong&gt;:</value></data>
   <data name="&lt;strong&gt;ICH seriousness criteria.&lt;/strong&gt; An event is &lt;strong&gt;serious&lt;/strong&gt; if it meets one or more of these — and serious cases usually require expedited reporting:" xml:space="preserve"><value>&lt;strong&gt;Criterios de gravedad ICH.&lt;/strong&gt; Un evento es &lt;strong&gt;grave&lt;/strong&gt; si cumple uno o más de estos — y los casos graves suelen requerir notificación expedita:</value></data>
   <data name="&lt;strong&gt;MedDRA&lt;/strong&gt; (Medical Dictionary for Regulatory Activities) is the standard terminology for coding events. The &lt;strong&gt;Preferred Term (PT)&lt;/strong&gt; is the specific medical concept (e.g. &quot;Nausea&quot;); the &lt;strong&gt;System Organ Class (SOC)&lt;/strong&gt; is its high-level grouping (e.g. &quot;Gastrointestinal disorders&quot;). Coding consistently lets cases be aggregated and signals detected." xml:space="preserve"><value>&lt;strong&gt;MedDRA&lt;/strong&gt; (Diccionario médico para actividades regulatorias) es la terminología estándar para codificar eventos. El &lt;strong&gt;término preferente (PT)&lt;/strong&gt; es el concepto médico específico (p. ej., "Náuseas"); la &lt;strong&gt;clase de órgano o sistema (SOC)&lt;/strong&gt; es su agrupación de alto nivel (p. ej., "Trastornos gastrointestinales"). Codificar de forma coherente permite agregar casos y detectar señales.</value></data>
   <data name="&lt;strong&gt;Orphan Designation&lt;/strong&gt; — for rare-disease products; brings fee relief and market exclusivity." xml:space="preserve"><value>&lt;strong&gt;Designación huérfana&lt;/strong&gt; — para productos de enfermedades raras; conlleva reducción de tasas y exclusividad de mercado.</value></data>
@@ -205,7 +204,7 @@
   <data name="Accreditation No." xml:space="preserve"><value>N.º de acreditación</value></data>
   <data name="Acknowledge" xml:space="preserve"><value>Confirmar lectura</value></data>
   <data name="Acknowledge Reading" xml:space="preserve"><value>Confirmar lectura</value></data>
-  <data name="Acknowledged by TGA" xml:space="preserve"><value>Acusado por la TGA</value></data>
+  <data name="Acknowledged by Authority" xml:space="preserve"><value>Acusado por la autoridad</value></data>
   <data name="Acknowledged On" xml:space="preserve"><value>Lectura confirmada el</value></data>
   <data name="Acknowledged On:" xml:space="preserve"><value>Confirmado el:</value></data>
   <data name="Acknowledgement Date" xml:space="preserve"><value>Fecha de acuse de recibo</value></data>
@@ -287,6 +286,7 @@
   <data name="Adverse Event" xml:space="preserve"><value>Evento adverso</value></data>
   <data name="Adverse Event Description" xml:space="preserve"><value>Descripción del evento adverso</value></data>
   <data name="Adverse Event Description:" xml:space="preserve"><value>Descripción del evento adverso:</value></data>
+  <data name="Adverse Event Reporting Deadlines" xml:space="preserve"><value>Plazos de notificación de eventos adversos</value></data>
   <data name="Adverse event unlinked." xml:space="preserve"><value>Evento adverso desvinculado.</value></data>
   <data name="Adverse Event updated successfully." xml:space="preserve"><value>Evento adverso actualizado correctamente.</value></data>
   <data name="Adverse Event {0} created successfully." xml:space="preserve"><value>Evento adverso {0} creado correctamente.</value></data>
@@ -310,7 +310,6 @@
   <data name="AE Start" xml:space="preserve"><value>Inicio del EA</value></data>
   <data name="AE Start Date" xml:space="preserve"><value>Fecha de inicio del EA</value></data>
   <data name="AE#" xml:space="preserve"><value>N.º EA</value></data>
-  <data name="AEMS Portal" xml:space="preserve"><value>Portal AEMS</value></data>
   <data name="AEs Found" xml:space="preserve"><value>EA encontrados</value></data>
   <data name="AEs Identified" xml:space="preserve"><value>EA identificados</value></data>
   <data name="Age" xml:space="preserve"><value>Edad</value></data>
@@ -329,8 +328,10 @@
   <data name="All actions completed, with reference to evidence (e.g. SOP revised on [date], training completed by [names] on [date])" xml:space="preserve"><value>Todas las acciones completadas, con referencia a la evidencia (p. ej., PNT revisado el [fecha], capacitación completada por [nombres] el [fecha])</value></data>
   <data name="All Adverse Events" xml:space="preserve"><value>Todos los eventos adversos</value></data>
   <data name="All applicable actions complete" xml:space="preserve"><value>Todas las acciones aplicables completadas</value></data>
+  <data name="All batch-related deviations reviewed; no outstanding deviations with unresolved quality impact" xml:space="preserve"><value>Todas las desviaciones relacionadas con el lote revisadas; sin desviaciones pendientes con impacto en la calidad sin resolver</value></data>
   <data name="All CAPA actions completed with evidence" xml:space="preserve"><value>Todas las acciones de la CAPA completadas con evidencia</value></data>
   <data name="All CAPA actions completed, with evidence (e.g. SOP revised on [date], training completed by [names] on [date])" xml:space="preserve"><value>Todas las acciones CAPA completadas, con evidencia (p. ej., PNT revisado el [fecha], capacitación completada por [nombres] el [fecha])</value></data>
+  <data name="All CAPAs linked to batch-relevant deviations reviewed; no outstanding CAPAs with unresolved batch impact" xml:space="preserve"><value>Todas las CAPA vinculadas a desviaciones relevantes para el lote revisadas; sin CAPA pendientes con impacto en el lote sin resolver</value></data>
   <data name="All Categories" xml:space="preserve"><value>Todas las categorías</value></data>
   <data name="All conditions are satisfied. Application will auto-transition to &lt;strong&gt;Approved&lt;/strong&gt; when the final condition is closed." xml:space="preserve"><value>Todas las condiciones se cumplen. La solicitud pasará automáticamente a &lt;strong&gt;Aprobada&lt;/strong&gt; cuando se cierre la última condición.</value></data>
   <data name="All Findings (excl. obs.)" xml:space="preserve"><value>Todos los hallazgos (excl. obs.)</value></data>
@@ -356,6 +357,7 @@
   <data name="Android" xml:space="preserve"><value>Android</value></data>
   <data name="Annual" xml:space="preserve"><value>Anual</value></data>
   <data name="Any" xml:space="preserve"><value>Cualquiera</value></data>
+  <data name="Any applicable post-marketing regulatory commitments addressed" xml:space="preserve"><value>Compromisos regulatorios poscomercialización aplicables atendidos</value></data>
   <data name="Any deviations from the approved implementation plan" xml:space="preserve"><value>Cualquier desviación respecto del plan de implementación aprobado</value></data>
   <data name="Any immediate actions already taken" xml:space="preserve"><value>Cualquier acción inmediata ya tomada</value></data>
   <data name="AP" xml:space="preserve"><value>PA</value></data>
@@ -448,13 +450,6 @@
   <data name="Are you sure you want to delete this supplier? This cannot be undone." xml:space="preserve"><value>¿Está seguro de que desea eliminar este proveedor? No se puede deshacer.</value></data>
   <data name="Are you sure you want to delete this?" xml:space="preserve"><value>¿Está seguro de que desea eliminarlo?</value></data>
   <data name="Are you sure you want to void &lt;strong&gt;{0}&lt;/strong&gt;? The record will be marked as Voided and will no longer appear in active lists." xml:space="preserve"><value>¿Seguro que desea anular &lt;strong&gt;{0}&lt;/strong&gt;? El registro se marcará como anulado y dejará de aparecer en las listas activas.</value></data>
-  <data name="ARTG / Regulatory Ref." xml:space="preserve"><value>ARTG / ref. regulatoria</value></data>
-  <data name="ARTG / Regulatory Reference" xml:space="preserve"><value>ARTG / referencia regulatoria</value></data>
-  <data name="ARTG Entry / Regulatory Ref." xml:space="preserve"><value>Entrada ARTG / Ref. regulatoria</value></data>
-  <data name="ARTG Entry / Regulatory Reference" xml:space="preserve"><value>Entrada ARTG / referencia regulatoria</value></data>
-  <data name="ARTG Number" xml:space="preserve"><value>Número ARTG</value></data>
-  <data name="ARTG Ref.:" xml:space="preserve"><value>Ref. ARTG:</value></data>
-  <data name="ARTG Reference" xml:space="preserve"><value>Referencia ARTG</value></data>
   <data name="As Needed" xml:space="preserve"><value>Según necesidad</value></data>
   <data name="Assess" xml:space="preserve"><value>Evaluar</value></data>
   <data name="Assess Signal" xml:space="preserve"><value>Evaluar señal</value></data>
@@ -561,19 +556,30 @@
   <data name="Authored By" xml:space="preserve"><value>Redactado por</value></data>
   <data name="Authored On" xml:space="preserve"><value>Redactado el</value></data>
   <data name="Authorised Person" xml:space="preserve"><value>Persona Autorizada</value></data>
-  <data name="Authorised Prescriber" xml:space="preserve"><value>Prescriptor autorizado</value></data>
+  <data name="Authorised Prescriber (AU)" xml:space="preserve"><value>Prescriptor autorizado (AU)</value></data>
   <data name="Authority" xml:space="preserve"><value>Autoridad</value></data>
+  <data name="Authority Case Reference" xml:space="preserve"><value>Referencia del caso ante la autoridad</value></data>
+  <data name="Authority Case Reference Number" xml:space="preserve"><value>N.º de referencia del caso ante la autoridad</value></data>
   <data name="Authority Contact Email" xml:space="preserve"><value>Correo de contacto de la autoridad</value></data>
+  <data name="Authority Inspection" xml:space="preserve"><value>Inspección de la autoridad</value></data>
   <data name="Authority Letter" xml:space="preserve"><value>Carta de la autoridad</value></data>
+  <data name="Authority Online Portal" xml:space="preserve"><value>Portal en línea de la autoridad</value></data>
   <data name="Authority Portal / Login URL" xml:space="preserve"><value>Portal de la autoridad / URL de acceso</value></data>
   <data name="Authority Portal Username" xml:space="preserve"><value>Usuario del portal de la autoridad</value></data>
   <data name="Authority Rapporteur / PM" xml:space="preserve"><value>Ponente / JP de la autoridad</value></data>
   <data name="Authority Rapporteur / Project Manager" xml:space="preserve"><value>Ponente / jefe de proyecto de la autoridad</value></data>
   <data name="Authority Ref #" xml:space="preserve"><value>Ref. de la autoridad</value></data>
   <data name="Authority Ref No." xml:space="preserve"><value>N.º de ref. de la autoridad</value></data>
+  <data name="Authority Reference" xml:space="preserve"><value>Referencia de la autoridad</value></data>
   <data name="Authority Reference #" xml:space="preserve"><value>N.º de referencia de la autoridad</value></data>
   <data name="Authority Reference guidance" xml:space="preserve"><value>Ayuda sobre la referencia de la autoridad</value></data>
   <data name="Authority Reference No." xml:space="preserve"><value>N.º de referencia de la autoridad</value></data>
+  <data name="Authority Reference Number" xml:space="preserve"><value>Número de referencia de la autoridad</value></data>
+  <data name="Authority Submission Date" xml:space="preserve"><value>Fecha de envío a la autoridad</value></data>
+  <data name="Authority submission deadline: {0}." xml:space="preserve"><value>Plazo de presentación a la autoridad: {0}.</value></data>
+  <data name="Authority Submission Method" xml:space="preserve"><value>Método de envío a la autoridad</value></data>
+  <data name="Authority submission recorded successfully." xml:space="preserve"><value>Envío a la autoridad registrado correctamente.</value></data>
+  <data name="Authority Submissions" xml:space="preserve"><value>Envíos a la autoridad</value></data>
   <data name="Authority waiver reference, management approval, documented justification..." xml:space="preserve"><value>Referencia de dispensa de la autoridad, aprobación de la dirección, justificación documentada...</value></data>
   <data name="Authority's reference number" xml:space="preserve"><value>Número de referencia de la autoridad</value></data>
   <data name="Auto-calculated from Day 0 + clock days." xml:space="preserve"><value>Calculado automáticamente a partir del Día 0 + días del plazo.</value></data>
@@ -621,6 +627,7 @@
   <data name="Batch Certified By (AP):" xml:space="preserve"><value>Lote certificado por (PA):</value></data>
   <data name="Batch certified. Record {0} is now Certified." xml:space="preserve"><value>Lote certificado. El registro {0} ahora está Certificado.</value></data>
   <data name="Batch Details" xml:space="preserve"><value>Detalles del lote</value></data>
+  <data name="Batch Manufacturing Record (BMR) reviewed and found in conformity with GMP and the approved Product Specification File" xml:space="preserve"><value>Registro de fabricación del lote (BMR) revisado y conforme con las BPF y el expediente de especificaciones del producto aprobado</value></data>
   <data name="Batch No." xml:space="preserve"><value>N.º de lote</value></data>
   <data name="Batch No.:" xml:space="preserve"><value>N.º de lote:</value></data>
   <data name="Batch Number" xml:space="preserve"><value>Número de lote</value></data>
@@ -644,13 +651,12 @@
   <data name="Breakthrough" xml:space="preserve"><value>Terapia innovadora</value></data>
   <data name="Breakthrough Therapy" xml:space="preserve"><value>Terapia innovadora</value></data>
   <data name="Brief description of this document's purpose" xml:space="preserve"><value>Breve descripción del propósito de este documento</value></data>
-  <data name="Brisbane (AEST, UTC+10, no daylight saving)" xml:space="preserve"><value>Brisbane (AEST, UTC+10, sin horario de verano)</value></data>
   <data name="BRL" xml:space="preserve"><value>BRL</value></data>
   <data name="Broad access across all quality modules. Can create, edit, manage and approve/reject/close records in Quality Events, Quality Assurance, Quality Operations and Release. Can view users and settings. Cannot delete records (Administrator only)." xml:space="preserve"><value>Acceso amplio a todos los módulos de calidad. Puede crear, editar, gestionar y aprobar/rechazar/cerrar registros en Eventos de calidad, Aseguramiento de la calidad, Operaciones de calidad y Liberación. Puede ver usuarios y configuración. No puede eliminar registros (solo el administrador).</value></data>
   <data name="Browser / User Agent" xml:space="preserve"><value>Navegador / agente de usuario</value></data>
   <data name="Business Requirements" xml:space="preserve"><value>Requisitos del negocio</value></data>
   <data name="By" xml:space="preserve"><value>Por</value></data>
-  <data name="By certifying this batch, you are providing an electronic signature under PIC/S Annex 16. Your email and password confirm your identity." xml:space="preserve"><value>Al certificar este lote, usted firma electrónicamente conforme al Anexo 16 de PIC/S. Su correo electrónico y contraseña confirman su identidad.</value></data>
+  <data name="By certifying this batch, you are signing electronically as the person responsible for batch certification (e.g. PIC/S Annex 16). Your email and password confirm your identity." xml:space="preserve"><value>Al certificar este lote, usted firma electrónicamente como persona responsable de la certificación del lote (p. ej., Anexo 16 de PIC/S). Su correo electrónico y contraseña confirman su identidad.</value></data>
   <data name="By Maintenance Type" xml:space="preserve"><value>Por tipo de mantenimiento</value></data>
   <data name="By Session" xml:space="preserve"><value>Por sesión</value></data>
   <data name="By signing below you confirm this document has been reviewed and meets the requirements for inclusion in the QMS, and you accept it into the system at version &lt;strong&gt;{0}&lt;/strong&gt;." xml:space="preserve"><value>Al firmar a continuación, confirma que este documento fue revisado y cumple los requisitos para su inclusión en el SGC, y lo acepta en el sistema en la versión &lt;strong&gt;{0}&lt;/strong&gt;.</value></data>
@@ -664,6 +670,7 @@
   <data name="CAD" xml:space="preserve"><value>CAD</value></data>
   <data name="Calculation:" xml:space="preserve"><value>Cálculo:</value></data>
   <data name="Calendar" xml:space="preserve"><value>Calendario</value></data>
+  <data name="Calendar days from Day 0 (the day the company first knew of the case) to the report to the authority. Set them to the rules of the authority you report to; a change applies to new cases, and to a case whose Day 0 or seriousness is changed afterwards." xml:space="preserve"><value>Días naturales desde el Día 0 (el día en que la empresa tuvo conocimiento del caso) hasta la notificación a la autoridad. Ajústelos a las normas de la autoridad a la que notifica; un cambio se aplica a los casos nuevos y a los casos cuyo Día 0 o gravedad se modifique después.</value></data>
   <data name="Calibration" xml:space="preserve"><value>Calibración</value></data>
   <data name="Can create and edit records in Regulatory Intelligence, Licences &amp; Certifications, and Pharmacovigilance. Can submit PV cases for review but cannot approve. No access to quality event workflows, Maintenances, Release or most quality-only modules." xml:space="preserve"><value>Puede crear y editar registros en Inteligencia regulatoria, Licencias y certificaciones y Farmacovigilancia. Puede enviar casos de FV a revisión, pero no aprobarlos. Sin acceso a los flujos de eventos de calidad, Mantenimiento, Liberación ni a la mayoría de módulos solo de calidad.</value></data>
   <data name="Can create Deviation, Complaint, CAPA, Change and Supplier records. Can view most quality module registers. No access to Release, Maintenances, Regulatory, Risks, Audits, Reports or Settings. Cannot approve or advance any workflow." xml:space="preserve"><value>Puede crear registros de desviaciones, reclamaciones, CAPA, cambios y proveedores. Puede ver la mayoría de los registros de los módulos de calidad. Sin acceso a Liberación, Mantenimiento, Regulatorio, Riesgos, Auditorías, Informes ni Configuración. No puede aprobar ni avanzar ningún flujo de trabajo.</value></data>
@@ -770,6 +777,7 @@
   <data name="Certificate of Analysis and Conformance — Signatory" xml:space="preserve"><value>Certificado de análisis y conformidad — Firmante</value></data>
   <data name="Certificate of Analysis — Signatory" xml:space="preserve"><value>Certificado de análisis — Firmante</value></data>
   <data name="Certificate of Conformance" xml:space="preserve"><value>Certificado de conformidad</value></data>
+  <data name="Certificate of Conformance (CoC) or equivalent supplier documentation received and reviewed" xml:space="preserve"><value>Certificado de conformidad (CoC) o documentación equivalente del proveedor recibida y revisada</value></data>
   <data name="Certificate of Conformance — Signatory" xml:space="preserve"><value>Certificado de conformidad — Firmante</value></data>
   <data name="Certificate Scope" xml:space="preserve"><value>Alcance del certificado</value></data>
   <data name="Certificate Statement" xml:space="preserve"><value>Declaración del certificado</value></data>
@@ -896,6 +904,7 @@
   <data name="Commercial" xml:space="preserve"><value>Comercial</value></data>
   <data name="Commercial User" xml:space="preserve"><value>Usuario comercial</value></data>
   <data name="Community Pharmacy" xml:space="preserve"><value>Farmacia comunitaria</value></data>
+  <data name="Company Registration / Tax ID" xml:space="preserve"><value>Registro mercantil / identificación fiscal</value></data>
   <data name="Competency" xml:space="preserve"><value>Competencia</value></data>
   <data name="Competency Assessment" xml:space="preserve"><value>Evaluación de competencia</value></data>
   <data name="Competency failed. A new training attempt has been created for the trainee." xml:space="preserve"><value>Competencia no superada. Se ha creado un nuevo intento de capacitación para el participante.</value></data>
@@ -1121,13 +1130,13 @@
   <data name="Critical Findings" xml:space="preserve"><value>Hallazgos críticos</value></data>
   <data name="Critical Open" xml:space="preserve"><value>Críticas abiertas</value></data>
   <data name="Critical Severity (all time)" xml:space="preserve"><value>Gravedad crítica (todo el período)</value></data>
-  <data name="CRITICAL — TGA deadline in {0} day(s) ({1})." xml:space="preserve"><value>CRÍTICO — Plazo de la TGA en {0} día(s) ({1}).</value></data>
+  <data name="CRITICAL — reporting deadline in {0} day(s) ({1})." xml:space="preserve"><value>CRÍTICO — Plazo de notificación en {0} día(s) ({1}).</value></data>
   <data name="CRO" xml:space="preserve"><value>CRO</value></data>
   <data name="Cross-module reports for management review, compliance monitoring, and operational planning. These reports aggregate data from all quality system modules and can be exported to Excel for sharing with auditors and regulators." xml:space="preserve"><value>Informes de todos los módulos para la revisión por la dirección, el seguimiento del cumplimiento y la planificación operativa. Agregan datos de todos los módulos del sistema de calidad y se pueden exportar a Excel para compartirlos con auditores y autoridades.</value></data>
   <data name="Cross-reference added." xml:space="preserve"><value>Referencia cruzada agregada.</value></data>
   <data name="Cross-reference removed." xml:space="preserve"><value>Referencia cruzada eliminada.</value></data>
   <data name="CTA" xml:space="preserve"><value>CTA</value></data>
-  <data name="CTN" xml:space="preserve"><value>CTN</value></data>
+  <data name="CTN (AU)" xml:space="preserve"><value>CTN (AU)</value></data>
   <data name="Currency" xml:space="preserve"><value>Moneda</value></data>
   <data name="Current" xml:space="preserve"><value>Vigente</value></data>
   <data name="Current (more than 30 days remaining)" xml:space="preserve"><value>Vigente (faltan más de 30 días)</value></data>
@@ -1162,10 +1171,8 @@
   <data name="CustomerId" xml:space="preserve"><value>Cliente</value></data>
   <data name="Customers" xml:space="preserve"><value>Clientes</value></data>
   <data name="CV" xml:space="preserve"><value>CV</value></data>
-  <data name="CV (Compliance Verification)" xml:space="preserve"><value>CV (verificación de cumplimiento)</value></data>
   <data name="Cycle {0}" xml:space="preserve"><value>Ciclo {0}</value></data>
   <data name="D. REPORTER" xml:space="preserve"><value>D. NOTIFICADOR</value></data>
-  <data name="Darwin (ACST, no daylight saving)" xml:space="preserve"><value>Darwin (ACST, sin horario de verano)</value></data>
   <data name="Dashboard" xml:space="preserve"><value>Panel</value></data>
   <data name="Data Disposal" xml:space="preserve"><value>Eliminación de datos</value></data>
   <data name="Data Disposal Management" xml:space="preserve"><value>Gestión de eliminación de datos</value></data>
@@ -1257,6 +1264,7 @@
   <data name="Deleted documents ({0})" xml:space="preserve"><value>Documentos eliminados ({0})</value></data>
   <data name="Deleted on" xml:space="preserve"><value>Eliminado el</value></data>
   <data name="Deleting this data will permanently remove your account, and this cannot be recovered." xml:space="preserve"><value>Eliminar estos datos borrará su cuenta de forma permanente y no se podrá recuperar.</value></data>
+  <data name="Delivery documentation reviewed (delivery note / invoice); product description and quantity match the purchase order" xml:space="preserve"><value>Documentación de entrega revisada (remisión / factura); la descripción y la cantidad del producto coinciden con la orden de compra</value></data>
   <data name="Denormalised name stored at time of creation." xml:space="preserve"><value>Nombre guardado tal como estaba al crear el registro.</value></data>
   <data name="Dental Device" xml:space="preserve"><value>Dispositivo dental</value></data>
   <data name="Dependencies" xml:space="preserve"><value>Dependencias</value></data>
@@ -1331,7 +1339,10 @@
   <data name="Deviations Dashboard" xml:space="preserve"><value>Panel de desviaciones</value></data>
   <data name="Deviations Pending Action" xml:space="preserve"><value>Desviaciones con acción pendiente</value></data>
   <data name="Deviations Register" xml:space="preserve"><value>Registro de desviaciones</value></data>
+  <data name="Device History Record (DHR) reviewed; all manufacturing steps completed in conformity with the approved Device Master Record (DMR)" xml:space="preserve"><value>Registro histórico del dispositivo (DHR) revisado; todas las etapas de fabricación completadas conforme al registro maestro del dispositivo (DMR) aprobado</value></data>
   <data name="Device Part" xml:space="preserve"><value>Pieza de dispositivo</value></data>
+  <data name="Device registered / approved under the applicable regulatory framework (TGA ARTG, CE MDR 2017/745, FDA 510(k) / PMA, etc.)" xml:space="preserve"><value>Dispositivo registrado / aprobado conforme al marco regulatorio aplicable (ARTG de la TGA, MDR 2017/745 de la UE, FDA 510(k) / PMA, COFEPRIS, ANVISA, etc.)</value></data>
+  <data name="Device release traceability system confirmed in place; release can be traced to consignee level" xml:space="preserve"><value>Sistema de trazabilidad de la liberación del dispositivo confirmado; la liberación puede rastrearse hasta el destinatario</value></data>
   <data name="Device Sub-Assembly" xml:space="preserve"><value>Subconjunto de dispositivo</value></data>
   <data name="Device Subcomponent" xml:space="preserve"><value>Subcomponente de dispositivo</value></data>
   <data name="Device Type / Category" xml:space="preserve"><value>Tipo / categoría de dispositivo</value></data>
@@ -1469,12 +1480,11 @@
   <data name="e.g. 500 mg" xml:space="preserve"><value>p. ej., 500 mg</value></data>
   <data name="e.g. Acme Pharma Ltd, ISO, TGA" xml:space="preserve"><value>p. ej., Acme Pharma Ltd, ISO, TGA</value></data>
   <data name="e.g. Acme Pharma Ltd, ISO, TGA, Internal legacy" xml:space="preserve"><value>p. ej., Acme Pharma Ltd, ISO, TGA, histórico interno</value></data>
-  <data name="e.g. AEMS-2026-XXXXX" xml:space="preserve"><value>p. ej., AEMS-2026-XXXXX</value></data>
   <data name="e.g. All Staff — Document Awareness" xml:space="preserve"><value>p. ej., Todo el personal — Conocimiento de documentos</value></data>
   <data name="e.g. API synthesis, formulation, fill-finish, packaging, QC testing" xml:space="preserve"><value>p. ej., síntesis del API, formulación, llenado y acabado, envasado, ensayos de CC</value></data>
   <data name="e.g. Aqua, Glycerin..." xml:space="preserve"><value>p. ej., Aqua, Glycerin...</value></data>
+  <data name="e.g. ARTG 123456, AUST R 12345, COFEPRIS or ANVISA registration no." xml:space="preserve"><value>p. ej., ARTG 123456, AUST R 12345, n.º de registro COFEPRIS o ANVISA</value></data>
   <data name="e.g. ARTG#, NDA#, EMA/H/..." xml:space="preserve"><value>p. ej., n.º ARTG, n.º NDA, EMA/H/...</value></data>
-  <data name="e.g. AUST R 12345" xml:space="preserve"><value>p. ej., AUST R 12345</value></data>
   <data name="e.g. authority advised early resubmission, scheduling ahead of expiry, change in product details..." xml:space="preserve"><value>p. ej., la autoridad recomendó volver a presentar antes, planificación antes del vencimiento, cambio en los datos del producto...</value></data>
   <data name="e.g. authority advised early resubmission, scheduling ahead of lead time, change in supply arrangements..." xml:space="preserve"><value>p. ej., la autoridad recomendó volver a presentar antes, planificación antes del plazo de antelación, cambio en las condiciones de suministro...</value></data>
   <data name="e.g. BPharm, MPS" xml:space="preserve"><value>p. ej., licenciado en Farmacia, MPS</value></data>
@@ -1487,7 +1497,6 @@
   <data name="e.g. Final PSUR document, Benefit-risk appendix…" xml:space="preserve"><value>p. ej., documento final del PSUR, anexo beneficio-riesgo…</value></data>
   <data name="e.g. Germany, India, USA" xml:space="preserve"><value>p. ej., Alemania, India, EE. UU.</value></data>
   <data name="e.g. GMP 12345" xml:space="preserve"><value>p. ej., BPM 12345</value></data>
-  <data name="e.g. GMP Clearance required for ARTG 123456 supply" xml:space="preserve"><value>p. ej., autorización BPF necesaria para suministrar ARTG 123456</value></data>
   <data name="e.g. Imatinib" xml:space="preserve"><value>p. ej., imatinib</value></data>
   <data name="e.g. initials or code" xml:space="preserve"><value>p. ej., iniciales o código</value></data>
   <data name="e.g. ISO 9001:2015" xml:space="preserve"><value>p. ej., ISO 9001:2015</value></data>
@@ -1505,6 +1514,7 @@
   <data name="e.g. Rev C, v2.1" xml:space="preserve"><value>p. ej., Rev. C, v2.1</value></data>
   <data name="e.g. Rev C, v2.1, 2023 Edition" xml:space="preserve"><value>p. ej., Rev. C, v2.1, edición 2023</value></data>
   <data name="e.g. SAI Global, BSI Group, Intertek, TÜV Rheinland" xml:space="preserve"><value>p. ej., SAI Global, BSI Group, Intertek, TÜV Rheinland</value></data>
+  <data name="e.g. Site GMP evidence required to supply registration 123456" xml:space="preserve"><value>p. ej., evidencia BPF del sitio necesaria para suministrar el registro 123456</value></data>
   <data name="e.g. smtp.gmail.com" xml:space="preserve"><value>p. ej., smtp.gmail.com</value></data>
   <data name="e.g. Superseded by external regulation, process discontinued..." xml:space="preserve"><value>p. ej., reemplazado por una regulación externa, proceso discontinuado...</value></data>
   <data name="e.g. v2.1" xml:space="preserve"><value>p. ej., v2.1</value></data>
@@ -1612,10 +1622,14 @@
   <data name="Enter your email." xml:space="preserve"><value>Ingrese su correo electrónico.</value></data>
   <data name="Environment/Facility" xml:space="preserve"><value>Ambiente / instalaciones</value></data>
   <data name="Environmental" xml:space="preserve"><value>Ambiental</value></data>
+  <data name="Environmental monitoring data reviewed; no unresolved OOT or OOS results with batch impact" xml:space="preserve"><value>Datos de monitoreo ambiental revisados; sin resultados OOT u OOS sin resolver con impacto en el lote</value></data>
   <data name="Environmental Monitoring Equipment" xml:space="preserve"><value>Equipos de monitoreo ambiental</value></data>
   <data name="Equipment" xml:space="preserve"><value>Equipos</value></data>
   <data name="Equipment / facility / utility" xml:space="preserve"><value>Equipo / instalación / servicio auxiliar</value></data>
+  <data name="Equipment cleaning records reviewed; no cross-contamination risk identified" xml:space="preserve"><value>Registros de limpieza de equipos revisados; no se identificó riesgo de contaminación cruzada</value></data>
   <data name="Equipment Failure" xml:space="preserve"><value>Falla de equipo</value></data>
+  <data name="Equipment qualification and calibration status confirmed current for all equipment used in manufacture" xml:space="preserve"><value>Estado de calificación y calibración confirmado como vigente para todos los equipos usados en la fabricación</value></data>
+  <data name="Equipment qualification status confirmed current" xml:space="preserve"><value>Estado de calificación de los equipos confirmado como vigente</value></data>
   <data name="Equipment/Instrumentation" xml:space="preserve"><value>Equipos / instrumentación</value></data>
   <data name="Error" xml:space="preserve"><value>Error</value></data>
   <data name="Error changing email." xml:space="preserve"><value>Error al cambiar el correo electrónico.</value></data>
@@ -1677,6 +1691,7 @@
   <data name="Expiry / Renewal Date" xml:space="preserve"><value>Fecha de vencimiento / renovación</value></data>
   <data name="Expiry / Retest Date:" xml:space="preserve"><value>Fecha de vencimiento / reanálisis:</value></data>
   <data name="Expiry / RFI Due (soon)" xml:space="preserve"><value>Vencimiento / RFI pendiente (pronto)</value></data>
+  <data name="Expiry / use-by date confirmed acceptable for intended use" xml:space="preserve"><value>Fecha de caducidad confirmada como aceptable para el uso previsto</value></data>
   <data name="Expiry Date" xml:space="preserve"><value>Fecha de vencimiento</value></data>
   <data name="Expiry Date:" xml:space="preserve"><value>Fecha de vencimiento:</value></data>
   <data name="Expiry Reason" xml:space="preserve"><value>Motivo del vencimiento</value></data>
@@ -1717,6 +1732,8 @@
   <data name="Failed to deactivate account: {0}" xml:space="preserve"><value>No se pudo desactivar la cuenta: {0}</value></data>
   <data name="Fatal" xml:space="preserve"><value>Mortal</value></data>
   <data name="Fatal / Life-Threatening" xml:space="preserve"><value>Mortal / potencialmente mortal</value></data>
+  <data name="Fatal / Life-Threatening Adverse Event Reporting Deadline (days)" xml:space="preserve"><value>Plazo de notificación de eventos adversos mortales o potencialmente mortales (días)</value></data>
+  <data name="Fatal / Life-Threatening Reporting Deadline" xml:space="preserve"><value>Plazo de notificación (mortal o potencialmente mortal)</value></data>
   <data name="Fatal or Life-Threatening" xml:space="preserve"><value>Mortal o potencialmente mortal</value></data>
   <data name="Fee Currency" xml:space="preserve"><value>Moneda de la tasa</value></data>
   <data name="Fee Paid" xml:space="preserve"><value>Tasa pagada</value></data>
@@ -1753,11 +1770,13 @@
   <data name="Filter by status:" xml:space="preserve"><value>Filtrar por estado:</value></data>
   <data name="Filter by username" xml:space="preserve"><value>Filtrar por nombre de usuario</value></data>
   <data name="Filters" xml:space="preserve"><value>Filtros</value></data>
+  <data name="Final product inspection and test results reviewed; all results comply with the approved product specification and acceptance criteria" xml:space="preserve"><value>Resultados de inspección y ensayos del producto final revisados; todos conformes con la especificación aprobada y los criterios de aceptación</value></data>
   <data name="Final Release Party" xml:space="preserve"><value>Responsable de la liberación final</value></data>
   <data name="Findings" xml:space="preserve"><value>Hallazgos</value></data>
   <data name="Findings / Notes" xml:space="preserve"><value>Hallazgos / notas</value></data>
   <data name="Findings Summary" xml:space="preserve"><value>Resumen de hallazgos</value></data>
   <data name="Findings that led to the root cause determination" xml:space="preserve"><value>Hallazgos que llevaron a determinar la causa raíz</value></data>
+  <data name="Finished product QC test results reviewed and comply with the approved product specification" xml:space="preserve"><value>Resultados de los análisis de CC del producto terminado revisados y conformes con la especificación aprobada del producto</value></data>
   <data name="First" xml:space="preserve"><value>Primero</value></data>
   <data name="First Name" xml:space="preserve"><value>Nombre</value></data>
   <data name="Foam" xml:space="preserve"><value>Espuma</value></data>
@@ -1776,7 +1795,7 @@
   <data name="Forgot password confirmation" xml:space="preserve"><value>Confirmación de contraseña olvidada</value></data>
   <data name="Forgot your password?" xml:space="preserve"><value>¿Olvidó su contraseña?</value></data>
   <data name="Form" xml:space="preserve"><value>Formulario</value></data>
-  <data name="Formal AP register — all issued certificates. Required by PIC/S Annex 16 section 1.10." xml:space="preserve"><value>Registro formal de la PA — todos los certificados emitidos. Exigido por el Anexo 16 de PIC/S, sección 1.10.</value></data>
+  <data name="Formal AP register — all issued certificates (required by GMP batch-certification rules, e.g. PIC/S Annex 16 section 1.10)." xml:space="preserve"><value>Registro formal de la PA — todos los certificados emitidos (exigido por las normas BPF de certificación de lotes, p. ej., Anexo 16 de PIC/S, sección 1.10).</value></data>
   <data name="Foundation" xml:space="preserve"><value>Base de maquillaje</value></data>
   <data name="Free software (AGPLv3), provided without warranty and not validated for regulated use" xml:space="preserve"><value>Software libre (AGPLv3), sin garantía y no validado para uso regulado</value></data>
   <data name="Frequency" xml:space="preserve"><value>Frecuencia</value></data>
@@ -1809,11 +1828,9 @@
   <data name="GMP / ISO specific details are shown for Third-Party Site Approvals and ISO Certifications." xml:space="preserve"><value>Los detalles BPF / ISO se muestran para las aprobaciones de sitios de terceros y las certificaciones ISO.</value></data>
   <data name="GMP / ISO Specifics" xml:space="preserve"><value>Detalles BPF / ISO</value></data>
   <data name="GMP Clearance" xml:space="preserve"><value>Autorización BPM</value></data>
-  <data name="GMP Clearance Details" xml:space="preserve"><value>Detalles de la autorización BPF</value></data>
-  <data name="GMP Clearance Details (Third-Party Site Approvals)" xml:space="preserve"><value>Detalles de la autorización BPF (aprobaciones de sitios de terceros)</value></data>
-  <data name="GMP Clearance Pathway" xml:space="preserve"><value>Vía de autorización BPM</value></data>
-  <data name="GMP Clearance Pathway guidance" xml:space="preserve"><value>Ayuda sobre la vía de autorización BPF</value></data>
   <data name="GMP Evidence Package" xml:space="preserve"><value>Paquete de evidencia BPM</value></data>
+  <data name="GMP Evidence Pathway" xml:space="preserve"><value>Vía de evidencia BPF</value></data>
+  <data name="GMP Evidence Pathway guidance" xml:space="preserve"><value>Ayuda sobre la vía de evidencia BPF</value></data>
   <data name="GMP Licence / Clearance: {0}" xml:space="preserve"><value>Licencia / autorización BPF: {0}</value></data>
   <data name="GMP note: disabling idle timeout is not recommended under 21 CFR Part 11 / EU Annex 11." xml:space="preserve"><value>Nota GMP: no se recomienda desactivar el cierre por inactividad según 21 CFR Part 11 / EU Anexo 11.</value></data>
   <data name="GMP: Critical severity complaints require expedited resolution (typically 7 days)." xml:space="preserve"><value>GMP: las reclamaciones de gravedad crítica requieren una resolución urgente (normalmente 7 días).</value></data>
@@ -1907,6 +1924,8 @@
   <data name="In Preparation" xml:space="preserve"><value>En preparación</value></data>
   <data name="In Progress" xml:space="preserve"><value>En curso</value></data>
   <data name="In Vitro Diagnostic (IVD)" xml:space="preserve"><value>Diagnóstico in vitro (IVD)</value></data>
+  <data name="In-process control results reviewed and compliant" xml:space="preserve"><value>Resultados de los controles en proceso revisados y conformes</value></data>
+  <data name="In-process inspection records reviewed; all results within acceptance criteria" xml:space="preserve"><value>Registros de inspección en proceso revisados; todos los resultados dentro de los criterios de aceptación</value></data>
   <data name="Inactive" xml:space="preserve"><value>Inactivo</value></data>
   <data name="Inactive (account locked)" xml:space="preserve"><value>Inactivo (cuenta bloqueada)</value></data>
   <data name="Inactive users cannot log in. All their records are preserved." xml:space="preserve"><value>Los usuarios inactivos no pueden iniciar sesión. Todos sus registros se conservan.</value></data>
@@ -1917,6 +1936,7 @@
   <data name="INCI Name / Ingredient Ref.:" xml:space="preserve"><value>Nombre INCI / ref. del ingrediente:</value></data>
   <data name="Include in Next PSUR" xml:space="preserve"><value>Incluir en el próximo PSUR</value></data>
   <data name="Include in PSUR" xml:space="preserve"><value>Incluir en el PSUR</value></data>
+  <data name="Incoming component and sub-assembly inspection records reviewed and accepted" xml:space="preserve"><value>Registros de inspección de recepción de componentes y subensambles revisados y aceptados</value></data>
   <data name="Incorrect password." xml:space="preserve"><value>Contraseña incorrecta.</value></data>
   <data name="Index" xml:space="preserve"><value>Índice</value></data>
   <data name="Indication" xml:space="preserve"><value>Indicación</value></data>
@@ -2024,6 +2044,8 @@
   <data name="Label / artwork / product information" xml:space="preserve"><value>Etiqueta / arte / información del producto</value></data>
   <data name="Label Update" xml:space="preserve"><value>Actualización de etiqueta</value></data>
   <data name="Labelling" xml:space="preserve"><value>Etiquetado</value></data>
+  <data name="Labelling and artwork reconciliation completed and confirmed correct" xml:space="preserve"><value>Conciliación de etiquetado y artes gráficas completada y confirmada como correcta</value></data>
+  <data name="Labelling reviewed and confirmed compliant with applicable regulatory requirements; UDI applied where required" xml:space="preserve"><value>Etiquetado revisado y confirmado conforme con los requisitos regulatorios aplicables; UDI aplicado cuando se requiere</value></data>
   <data name="Laboratory" xml:space="preserve"><value>Laboratorio</value></data>
   <data name="Laboratory Equipment" xml:space="preserve"><value>Equipos de laboratorio</value></data>
   <data name="Laboratory Name" xml:space="preserve"><value>Nombre del laboratorio</value></data>
@@ -2054,7 +2076,6 @@
   <data name="Legal" xml:space="preserve"><value>Legal</value></data>
   <data name="Legal entity or site name" xml:space="preserve"><value>Entidad legal o nombre del sitio</value></data>
   <data name="Legal ID" xml:space="preserve"><value>Identificación fiscal</value></data>
-  <data name="Legal ID (ABN/ACN/Other)" xml:space="preserve"><value>ID legal (ABN/ACN/otro)</value></data>
   <data name="Legal Name" xml:space="preserve"><value>Razón social</value></data>
   <data name="Legally defined batch release sign-off role (PIC/S Annex 16). Sole authority to certify and reject batch releases and issue release certificates. Participates in Quality Event workflows (create, edit, approve). Cannot author or approve documents. Cannot access Regulatory or PV modules." xml:space="preserve"><value>Rol definido legalmente para firmar la liberación de lotes (PIC/S Anexo 16). Única autoridad para certificar y rechazar liberaciones de lotes y emitir certificados de liberación. Participa en los flujos de Eventos de calidad (crear, editar, aprobar). No puede redactar ni aprobar documentos. No puede acceder a los módulos regulatorios ni de FV.</value></data>
   <data name="Let Users Choose Their Language" xml:space="preserve"><value>Permitir que cada usuario elija su idioma</value></data>
@@ -2147,6 +2168,7 @@
   <data name="Locked" xml:space="preserve"><value>Bloqueado</value></data>
   <data name="Locked Out" xml:space="preserve"><value>Cuenta bloqueada</value></data>
   <data name="Lockout is not enabled for this user." xml:space="preserve"><value>El bloqueo no está habilitado para este usuario.</value></data>
+  <data name="Log Authority Submission" xml:space="preserve"><value>Registrar envío a la autoridad</value></data>
   <data name="Log in" xml:space="preserve"><value>Iniciar sesión</value></data>
   <data name="Log in using your {0} account" xml:space="preserve"><value>Inicie sesión con su cuenta de {0}</value></data>
   <data name="log in with a recovery code" xml:space="preserve"><value>iniciar sesión con un código de recuperación</value></data>
@@ -2154,7 +2176,6 @@
   <data name="Log New Search" xml:space="preserve"><value>Registrar nueva búsqueda</value></data>
   <data name="Log out" xml:space="preserve"><value>Cerrar sesión</value></data>
   <data name="Log Out Now" xml:space="preserve"><value>Cerrar sesión ahora</value></data>
-  <data name="Log TGA Submission" xml:space="preserve"><value>Registrar presentación a la TGA</value></data>
   <data name="Login" xml:space="preserve"><value>Inicio de sesión</value></data>
   <data name="Login History" xml:space="preserve"><value>Historial de inicios de sesión</value></data>
   <data name="Logistics / Transportation" xml:space="preserve"><value>Logística / transporte</value></data>
@@ -2163,6 +2184,7 @@
   <data name="Logo must be 2 MB or smaller." xml:space="preserve"><value>El logotipo debe pesar 2 MB o menos.</value></data>
   <data name="Logo Path" xml:space="preserve"><value>Ruta del logotipo</value></data>
   <data name="Logout" xml:space="preserve"><value>Cerrar sesión</value></data>
+  <data name="Lot / batch number or other traceability reference recorded" xml:space="preserve"><value>Número de lote u otra referencia de trazabilidad registrado</value></data>
   <data name="Lotion" xml:space="preserve"><value>Loción</value></data>
   <data name="Low" xml:space="preserve"><value>Baja</value></data>
   <data name="Low Risk" xml:space="preserve"><value>Riesgo bajo</value></data>
@@ -2218,12 +2240,17 @@
   <data name="Management Review Input Report" xml:space="preserve"><value>Informe de entrada para la revisión por la dirección</value></data>
   <data name="Manufacturing" xml:space="preserve"><value>Fabricación</value></data>
   <data name="Manufacturing &amp; Testing Sites" xml:space="preserve"><value>Sitios de fabricación y análisis</value></data>
+  <data name="Manufacturing / Production" xml:space="preserve"><value>Fabricación / producción</value></data>
   <data name="Manufacturing Date" xml:space="preserve"><value>Fecha de fabricación</value></data>
   <data name="Manufacturing Equipment" xml:space="preserve"><value>Equipos de fabricación</value></data>
   <data name="Manufacturing GMP Ref" xml:space="preserve"><value>Ref. BPF de fabricación</value></data>
   <data name="Manufacturing GMP Ref." xml:space="preserve"><value>Ref. BPF de fabricación</value></data>
+  <data name="Manufacturing Licence No." xml:space="preserve"><value>N.º de licencia de fabricación</value></data>
+  <data name="Manufacturing Licence No.: {0}" xml:space="preserve"><value>N.º de licencia de fabricación: {0}</value></data>
   <data name="Manufacturing Site" xml:space="preserve"><value>Sitio de fabricación</value></data>
   <data name="Manufacturing Site GMP Licence / Clearance No." xml:space="preserve"><value>N.º de licencia / autorización BPM del sitio de fabricación</value></data>
+  <data name="Manufacturing site holds a current GMP licence / GMP clearance from the relevant authority for the manufacturing steps performed" xml:space="preserve"><value>El sitio de fabricación cuenta con una licencia / autorización BPF vigente de la autoridad competente para las etapas de fabricación realizadas</value></data>
+  <data name="Manufacturing site holds a current regulatory licence / registration appropriate for the device class and manufacturing steps performed" xml:space="preserve"><value>El sitio de fabricación cuenta con una licencia / registro regulatorio vigente adecuado para la clase del dispositivo y las etapas de fabricación realizadas</value></data>
   <data name="Manufacturing Site is required — please select a site or choose &quot;Other&quot; and enter a name." xml:space="preserve"><value>El sitio de fabricación es obligatorio — seleccione un sitio o elija "Otro" e ingrese un nombre.</value></data>
   <data name="Manufacturing Site:" xml:space="preserve"><value>Sitio de fabricación:</value></data>
   <data name="Manufacturing Steps (Scope)" xml:space="preserve"><value>Etapas de fabricación (alcance)</value></data>
@@ -2249,6 +2276,7 @@
   <data name="Master Batch Record" xml:space="preserve"><value>Registro maestro de lote</value></data>
   <data name="Material" xml:space="preserve"><value>Material</value></data>
   <data name="Material / component / specification" xml:space="preserve"><value>Material / componente / especificación</value></data>
+  <data name="Material approved for release to stores / production use" xml:space="preserve"><value>Material aprobado para su liberación a almacén / uso en producción</value></data>
   <data name="Material approved successfully." xml:space="preserve"><value>Material aprobado correctamente.</value></data>
   <data name="Material Attachments" xml:space="preserve"><value>Adjuntos del material</value></data>
   <data name="Material Detail Report" xml:space="preserve"><value>Informe detallado del material</value></data>
@@ -2256,6 +2284,7 @@
   <data name="Material Handling" xml:space="preserve"><value>Manejo de materiales</value></data>
   <data name="Material Handling Equipment" xml:space="preserve"><value>Equipos de manejo de materiales</value></data>
   <data name="Material ID" xml:space="preserve"><value>ID del material</value></data>
+  <data name="Material Safety Data Sheet (MSDS / SDS) available where applicable" xml:space="preserve"><value>Hoja de datos de seguridad (MSDS / SDS) disponible cuando aplique</value></data>
   <data name="Material sent back to Draft for rework." xml:space="preserve"><value>Material devuelto a borrador para retrabajo.</value></data>
   <data name="Material submitted for review." xml:space="preserve"><value>Material enviado a revisión.</value></data>
   <data name="Material Type / Category" xml:space="preserve"><value>Tipo / categoría de material</value></data>
@@ -2345,6 +2374,8 @@
   <data name="Monthly" xml:space="preserve"><value>Mensual</value></data>
   <data name="Monthly Releases (Current Year)" xml:space="preserve"><value>Liberaciones mensuales (año en curso)</value></data>
   <data name="Months" xml:space="preserve"><value>Meses</value></data>
+  <data name="Most recent Post-Market Surveillance (PMS) / Periodic Safety Update Report (PSUR) confirmed as completed, no adverse findings impacting this device type" xml:space="preserve"><value>Vigilancia poscomercialización (PMS) / informe periódico de seguridad (PSUR) más reciente confirmado como completado, sin hallazgos adversos que afecten a este tipo de dispositivo</value></data>
+  <data name="Most recent Product Quality Review confirmed as completed, no adverse findings impacting this batch" xml:space="preserve"><value>Revisión de calidad del producto más reciente confirmada como completada, sin hallazgos adversos que afecten a este lote</value></data>
   <data name="Mousse" xml:space="preserve"><value>Mousse</value></data>
   <data name="Move to Under Review" xml:space="preserve"><value>Pasar a en revisión</value></data>
   <data name="Moves the change from &lt;strong&gt;{0}&lt;/strong&gt; to &lt;strong&gt;{1}&lt;/strong&gt; and locks the record. Enter your credentials to confirm." xml:space="preserve"><value>Pasa el cambio de &lt;strong&gt;{0}&lt;/strong&gt; a &lt;strong&gt;{1}&lt;/strong&gt; y bloquea el registro. Ingrese sus credenciales para confirmar.</value></data>
@@ -2448,6 +2479,8 @@
   <data name="No adverse events pending approval." xml:space="preserve"><value>No hay eventos adversos pendientes de aprobación.</value></data>
   <data name="No AE cases linked to this PSUR yet." xml:space="preserve"><value>Aún no hay casos de EA vinculados a este PSUR.</value></data>
   <data name="No analytical results recorded." xml:space="preserve"><value>No hay resultados analíticos registrados.</value></data>
+  <data name="No applicable product recalls, quality alerts, or field safety corrective actions at time of certification" xml:space="preserve"><value>Sin retiros de producto, alertas de calidad ni acciones correctivas de seguridad en campo aplicables en el momento de la certificación</value></data>
+  <data name="No applicable recalls, field safety corrective actions or market withdrawal notices in effect at time of release" xml:space="preserve"><value>Sin retiros, acciones correctivas de seguridad en campo ni avisos de retiro del mercado aplicables vigentes en el momento de la liberación</value></data>
   <data name="No approaching decision dates." xml:space="preserve"><value>No hay fechas de decisión próximas.</value></data>
   <data name="No approval cycles recorded yet. A snapshot is captured automatically each time this application is transitioned to &lt;strong&gt;Approved&lt;/strong&gt;." xml:space="preserve"><value>Aún no hay ciclos de aprobación registrados. Se guarda una copia automáticamente cada vez que esta solicitud pasa a &lt;strong&gt;Aprobada&lt;/strong&gt;.</value></data>
   <data name="No approval cycles recorded yet. A snapshot is captured automatically each time this record is transitioned to &lt;strong&gt;Issued / Active&lt;/strong&gt;." xml:space="preserve"><value>Aún no hay ciclos de aprobación registrados. Se guarda una copia automáticamente cada vez que este registro pasa a &lt;strong&gt;Emitido / activo&lt;/strong&gt;.</value></data>
@@ -2525,6 +2558,7 @@
   <data name="No open deviations." xml:space="preserve"><value>No hay desviaciones abiertas.</value></data>
   <data name="No open risks." xml:space="preserve"><value>No hay riesgos abiertos.</value></data>
   <data name="No open signal reviews." xml:space="preserve"><value>No hay revisiones de señales abiertas.</value></data>
+  <data name="No open supplier quality issues or quality alerts affecting this material at time of release" xml:space="preserve"><value>Sin problemas de calidad del proveedor abiertos ni alertas de calidad que afecten a este material en el momento de la liberación</value></data>
   <data name="No outstanding training items. Well done!" xml:space="preserve"><value>No tiene capacitaciones pendientes. ¡Bien hecho!</value></data>
   <data name="No overdue audits." xml:space="preserve"><value>No hay auditorías vencidas.</value></data>
   <data name="No overdue CAPAs." xml:space="preserve"><value>No hay CAPA vencidas.</value></data>
@@ -2572,6 +2606,7 @@
   <data name="No — document becomes Effective immediately" xml:space="preserve"><value>No: el documento pasa a Vigente de inmediato</value></data>
   <data name="No — Further Action Required" xml:space="preserve"><value>No: se requieren más acciones</value></data>
   <data name="No. of Attendees" xml:space="preserve"><value>N.º de asistentes</value></data>
+  <data name="Non-conformances and deviations reviewed; all resolved or formally accepted with documented risk justification; no outstanding items with unresolved quality impact" xml:space="preserve"><value>No conformidades y desviaciones revisadas; todas resueltas o aceptadas formalmente con justificación de riesgo documentada; sin elementos pendientes con impacto en la calidad sin resolver</value></data>
   <data name="Non-Serious" xml:space="preserve"><value>No grave</value></data>
   <data name="None" xml:space="preserve"><value>Ninguno</value></data>
   <data name="None approaching in the next 14 days." xml:space="preserve"><value>Ninguno vence en los próximos 14 días.</value></data>
@@ -2618,6 +2653,7 @@
   <data name="Old:" xml:space="preserve"><value>Anterior:</value></data>
   <data name="On Hold" xml:space="preserve"><value>En espera</value></data>
   <data name="on {0}" xml:space="preserve"><value>el {0}</value></data>
+  <data name="On-Site Inspection by the Authority" xml:space="preserve"><value>Inspección in situ de la autoridad</value></data>
   <data name="once daily, etc." xml:space="preserve"><value>una vez al día, etc.</value></data>
   <data name="Once you have scanned the QR code or input the key above, your two factor authentication app will provide you with a unique code. Enter the code in the confirmation box below." xml:space="preserve"><value>Después de escanear el código QR o ingresar la clave anterior, su aplicación de autenticación de dos factores le dará un código único. Ingréselo en el cuadro de confirmación de abajo.</value></data>
   <data name="Oncology Centre" xml:space="preserve"><value>Centro oncológico</value></data>
@@ -2625,6 +2661,7 @@
   <data name="One or more selected roles have no active users." xml:space="preserve"><value>Uno o más de los roles seleccionados no tienen usuarios activos.</value></data>
   <data name="One-time" xml:space="preserve"><value>Única vez</value></data>
   <data name="Ongoing Monitoring" xml:space="preserve"><value>Monitoreo continuo</value></data>
+  <data name="Ongoing stability programme confirmed in place; no adverse findings impacting this batch" xml:space="preserve"><value>Programa de estabilidad en curso confirmado; sin hallazgos adversos que afecten a este lote</value></data>
   <data name="Online Portal" xml:space="preserve"><value>Portal en línea</value></data>
   <data name="Only assets under review can be approved." xml:space="preserve"><value>Solo se pueden aprobar activos en revisión.</value></data>
   <data name="Only assets under review can be sent back to draft." xml:space="preserve"><value>Solo se pueden devolver a borrador activos en revisión.</value></data>
@@ -2738,19 +2775,22 @@
   <data name="Overdue Risks" xml:space="preserve"><value>Riesgos vencidos</value></data>
   <data name="Overdue Scheduled Audits (planned start date passed)" xml:space="preserve"><value>Auditorías programadas vencidas (fecha de inicio prevista superada)</value></data>
   <data name="Overdue Submissions" xml:space="preserve"><value>Presentaciones atrasadas</value></data>
+  <data name="OVERDUE — reporting deadline was {0}. Submission not yet recorded." xml:space="preserve"><value>VENCIDO — El plazo de notificación era el {0}. La presentación aún no se ha registrado.</value></data>
   <data name="Overdue — Scheduled Past Date" xml:space="preserve"><value>Vencido: programado con fecha pasada</value></data>
-  <data name="OVERDUE — TGA deadline was {0}. Submission not yet recorded." xml:space="preserve"><value>VENCIDO — El plazo de la TGA era el {0}. La presentación aún no se ha registrado.</value></data>
   <data name="Overdue:" xml:space="preserve"><value>Vencido:</value></data>
   <data name="Override Rejection" xml:space="preserve"><value>Anular rechazo</value></data>
   <data name="Overseas Authorities" xml:space="preserve"><value>Autoridades extranjeras</value></data>
   <data name="Overseas Reporting" xml:space="preserve"><value>Notificación en el extranjero</value></data>
   <data name="Overseas Reporting Required" xml:space="preserve"><value>Se requiere notificación en el extranjero</value></data>
+  <data name="Overseas Site GMP Evidence" xml:space="preserve"><value>Evidencia BPF del sitio extranjero</value></data>
+  <data name="Overseas Site GMP Evidence (Third-Party Site Approvals)" xml:space="preserve"><value>Evidencia BPF del sitio extranjero (aprobaciones de sitios de terceros)</value></data>
   <data name="Overview" xml:space="preserve"><value>Resumen</value></data>
   <data name="Own Company" xml:space="preserve"><value>Empresa propia</value></data>
   <data name="Owner" xml:space="preserve"><value>Responsable</value></data>
   <data name="Pack Size" xml:space="preserve"><value>Tamaño del envase</value></data>
   <data name="Pack Size:" xml:space="preserve"><value>Tamaño del envase:</value></data>
   <data name="Packaging" xml:space="preserve"><value>Envasado y empaque</value></data>
+  <data name="Packaging and sterile barrier integrity confirmed; no evidence of compromise (if applicable)" xml:space="preserve"><value>Integridad del envase y de la barrera estéril confirmada; sin evidencia de compromiso (si aplica)</value></data>
   <data name="Packaging Equipment" xml:space="preserve"><value>Equipos de envasado y empaque</value></data>
   <data name="Packaging GMP Ref" xml:space="preserve"><value>Ref. BPF de envasado</value></data>
   <data name="Packaging GMP Ref." xml:space="preserve"><value>Ref. BPF de envasado</value></data>
@@ -2830,7 +2870,6 @@
   <data name="Personnel" xml:space="preserve"><value>Personal</value></data>
   <data name="Personnel involved" xml:space="preserve"><value>Personal involucrado</value></data>
   <data name="Personnel/Training" xml:space="preserve"><value>Personal / capacitación</value></data>
-  <data name="Perth (AWST, no daylight saving)" xml:space="preserve"><value>Perth (AWST, sin horario de verano)</value></data>
   <data name="Pessary" xml:space="preserve"><value>Óvulo vaginal</value></data>
   <data name="Pharmaceutical" xml:space="preserve"><value>Farmacéutico</value></data>
   <data name="Pharmaceutical Wholesale / Distribution" xml:space="preserve"><value>Mayorista / distribución farmacéutica</value></data>
@@ -2873,6 +2912,7 @@
   <data name="Possible" xml:space="preserve"><value>Posible</value></data>
   <data name="Post Code" xml:space="preserve"><value>Código postal</value></data>
   <data name="Post-Market Study" xml:space="preserve"><value>Estudio poscomercialización</value></data>
+  <data name="Post-Market Surveillance (PMS) review completed; no unresolved safety signals or outstanding Field Safety Corrective Actions (FSCAs) affecting this device type" xml:space="preserve"><value>Revisión de vigilancia poscomercialización (PMS) completada; sin señales de seguridad sin resolver ni acciones correctivas de seguridad en campo (FSCA) pendientes que afecten a este tipo de dispositivo</value></data>
   <data name="Potential risks or impacts on product quality, validated processes, or GMP compliance" xml:space="preserve"><value>Posibles riesgos o impactos sobre la calidad del producto, los procesos validados o el cumplimiento de las BPM</value></data>
   <data name="Powder" xml:space="preserve"><value>Polvo</value></data>
   <data name="Powder for Injection" xml:space="preserve"><value>Polvo para inyección</value></data>
@@ -2925,6 +2965,8 @@
   <data name="Process ID" xml:space="preserve"><value>ID del proceso</value></data>
   <data name="Process sent back to Draft for rework." xml:space="preserve"><value>Proceso devuelto a borrador para retrabajo.</value></data>
   <data name="Process submitted for review." xml:space="preserve"><value>Proceso enviado a revisión.</value></data>
+  <data name="Process validation / verification status confirmed current for all manufacturing processes applied to this batch" xml:space="preserve"><value>Estado de validación / verificación confirmado como vigente para todos los procesos de fabricación aplicados a este lote</value></data>
+  <data name="Process validation status confirmed current and appropriate for this batch" xml:space="preserve"><value>Estado de validación del proceso confirmado como vigente y adecuado para este lote</value></data>
   <data name="Process —" xml:space="preserve"><value>Proceso —</value></data>
   <data name="Process/Manufacturing" xml:space="preserve"><value>Proceso / fabricación</value></data>
   <data name="Processes" xml:space="preserve"><value>Procesos</value></data>
@@ -2940,6 +2982,8 @@
   <data name="Product Group" xml:space="preserve"><value>Grupo de productos</value></data>
   <data name="Product ID" xml:space="preserve"><value>ID del producto</value></data>
   <data name="Product Identification" xml:space="preserve"><value>Identificación del producto</value></data>
+  <data name="Product identity confirmed — labelling, markings and packaging consistent with the ordered specification" xml:space="preserve"><value>Identidad del producto confirmada — etiquetado, marcas y envase conformes con la especificación pedida</value></data>
+  <data name="Product is registered / approved for supply under the applicable pathway (e.g. product registration, special or named-patient access)" xml:space="preserve"><value>El producto está registrado / aprobado para su suministro por la vía aplicable (p. ej., registro sanitario, acceso especial o por paciente nominal)</value></data>
   <data name="Product Name" xml:space="preserve"><value>Nombre del producto</value></data>
   <data name="Product Name (snapshot)" xml:space="preserve"><value>Nombre del producto (copia)</value></data>
   <data name="Product Name (Tab 3)" xml:space="preserve"><value>Nombre del producto (pestaña 3)</value></data>
@@ -2955,6 +2999,7 @@
   <data name="Product submitted for review." xml:space="preserve"><value>Producto enviado a revisión.</value></data>
   <data name="Product Type" xml:space="preserve"><value>Tipo de producto</value></data>
   <data name="Product —" xml:space="preserve"><value>Producto —</value></data>
+  <data name="Production conditions (process parameters, yields) reviewed and within approved limits" xml:space="preserve"><value>Condiciones de producción (parámetros de proceso, rendimientos) revisadas y dentro de los límites aprobados</value></data>
   <data name="Products" xml:space="preserve"><value>Productos</value></data>
   <data name="Products / Materials / Services" xml:space="preserve"><value>Productos / Materiales / Servicios</value></data>
   <data name="Products Supplied" xml:space="preserve"><value>Productos suministrados</value></data>
@@ -2994,6 +3039,7 @@
   <data name="Put these codes in a safe place." xml:space="preserve"><value>Guarde estos códigos en un lugar seguro.</value></data>
   <data name="PV Dashboard" xml:space="preserve"><value>Panel de FV</value></data>
   <data name="PV Signal Reviews" xml:space="preserve"><value>Revisiones de señales de FV</value></data>
+  <data name="QC" xml:space="preserve"><value>CC</value></data>
   <data name="QC Report" xml:space="preserve"><value>Informe de CC</value></data>
   <data name="QR code for authenticator app" xml:space="preserve"><value>Código QR para la aplicación de autenticación</value></data>
   <data name="Qty Supplied" xml:space="preserve"><value>Cantidad suministrada</value></data>
@@ -3014,6 +3060,7 @@
   <data name="Qualify" xml:space="preserve"><value>Calificar</value></data>
   <data name="Quality Agreement" xml:space="preserve"><value>Acuerdo de calidad</value></data>
   <data name="Quality Assurance" xml:space="preserve"><value>Aseguramiento de la calidad</value></data>
+  <data name="Quality Control / Inspection" xml:space="preserve"><value>Control de calidad / inspección</value></data>
   <data name="Quality Events" xml:space="preserve"><value>Eventos de calidad</value></data>
   <data name="Quality Incident" xml:space="preserve"><value>Incidente de calidad</value></data>
   <data name="Quality Manager" xml:space="preserve"><value>Gerente de calidad</value></data>
@@ -3039,11 +3086,13 @@
   <data name="Quantity" xml:space="preserve"><value>Cantidad</value></data>
   <data name="Quantity Supplied" xml:space="preserve"><value>Cantidad suministrada</value></data>
   <data name="Quarantine" xml:space="preserve"><value>Cuarentena</value></data>
+  <data name="Quarantine controls in place during transit (if applicable — Release Under Quarantine type)" xml:space="preserve"><value>Controles de cuarentena establecidos durante el tránsito (si aplica — tipo Liberación en cuarentena)</value></data>
   <data name="Quarterly" xml:space="preserve"><value>Trimestral</value></data>
   <data name="Raise Adverse Event" xml:space="preserve"><value>Registrar evento adverso</value></data>
   <data name="Raise CAPA" xml:space="preserve"><value>Abrir CAPA</value></data>
   <data name="Rating" xml:space="preserve"><value>Calificación</value></data>
   <data name="Raw Material" xml:space="preserve"><value>Materia prima</value></data>
+  <data name="Raw material / excipient Certificates of Analysis reviewed" xml:space="preserve"><value>Certificados de análisis de materias primas / excipientes revisados</value></data>
   <data name="Re-review in progress" xml:space="preserve"><value>Revisión periódica en curso</value></data>
   <data name="Re-reviews in Progress" xml:space="preserve"><value>Revisiones periódicas en curso</value></data>
   <data name="Reaction (MedDRA PT)" xml:space="preserve"><value>Reacción (PT MedDRA)</value></data>
@@ -3080,6 +3129,7 @@
   <data name="Reassign Author" xml:space="preserve"><value>Reasignar autor</value></data>
   <data name="Recall / Market Action" xml:space="preserve"><value>Retiro del mercado / acción de mercado</value></data>
   <data name="Recall / Market Action makes this CAPA the master record for a recall; Improvement Opportunity is a planned business improvement, not a response to a problem." xml:space="preserve"><value>Retiro del mercado / acción de mercado convierte esta CAPA en el registro principal de un retiro; Oportunidad de mejora es una mejora planificada del negocio, no una respuesta a un problema.</value></data>
+  <data name="Receipt &amp; Identification" xml:space="preserve"><value>Recepción e identificación</value></data>
   <data name="Received" xml:space="preserve"><value>Recibido</value></data>
   <data name="Received By" xml:space="preserve"><value>Recibido por</value></data>
   <data name="Received in Period" xml:space="preserve"><value>Recibidas en el período</value></data>
@@ -3141,7 +3191,7 @@
   <data name="Record Work" xml:space="preserve"><value>Registrar trabajo</value></data>
   <data name="Record {0} deleted." xml:space="preserve"><value>Registro {0} eliminado.</value></data>
   <data name="Record: {0}   |   Status: {1}   |   Generated: {2}" xml:space="preserve"><value>Registro: {0}   |   Estado: {1}   |   Generado: {2}</value></data>
-  <data name="Recording N/A with justification is compliance-positive and demonstrates considered determination during TGA inspections." xml:space="preserve"><value>Registrar N/A con justificación favorece el cumplimiento y demuestra una decisión meditada en las inspecciones de la TGA.</value></data>
+  <data name="Recording N/A with justification is compliance-positive and demonstrates considered determination during regulatory inspections." xml:space="preserve"><value>Registrar N/A con justificación favorece el cumplimiento y demuestra una decisión meditada en las inspecciones regulatorias.</value></data>
   <data name="Records" xml:space="preserve"><value>Registros</value></data>
   <data name="Records by Status" xml:space="preserve"><value>Registros por estado</value></data>
   <data name="Records listed below have passed their minimum retention period. Records with a Retention Hold cannot be disposed until the hold is removed and the cooldown period elapses." xml:space="preserve"><value>Los registros a continuación han superado su período mínimo de retención. Los registros con un bloqueo de retención no pueden eliminarse hasta que se levante el bloqueo y transcurra el período de espera.</value></data>
@@ -3165,6 +3215,8 @@
   <data name="Reference Data" xml:space="preserve"><value>Datos maestros</value></data>
   <data name="Reference Doc" xml:space="preserve"><value>Doc. de referencia</value></data>
   <data name="Reference Document" xml:space="preserve"><value>Documento de referencia</value></data>
+  <data name="Reference issued by the authority" xml:space="preserve"><value>Referencia emitida por la autoridad</value></data>
+  <data name="Reference standards and reagents used are within validity" xml:space="preserve"><value>Los estándares de referencia y reactivos utilizados están dentro de su vigencia</value></data>
   <data name="Refute Signal" xml:space="preserve"><value>Refutar señal</value></data>
   <data name="Refuted" xml:space="preserve"><value>Refutado</value></data>
   <data name="RegIntel Application" xml:space="preserve"><value>Solicitud de inteligencia regulatoria</value></data>
@@ -3173,6 +3225,10 @@
   <data name="Register Ref." xml:space="preserve"><value>Ref. del registro</value></data>
   <data name="Register Ref.:" xml:space="preserve"><value>Ref. del registro:</value></data>
   <data name="Registered Logins" xml:space="preserve"><value>Inicios de sesión registrados</value></data>
+  <data name="Registration No." xml:space="preserve"><value>N.º de registro</value></data>
+  <data name="Registration No.:" xml:space="preserve"><value>N.º de registro:</value></data>
+  <data name="Registration Number" xml:space="preserve"><value>Número de registro</value></data>
+  <data name="Regulators require documented evidence of regular literature monitoring for any product under PV surveillance. All searches should be logged here promptly after completion." xml:space="preserve"><value>Las autoridades sanitarias exigen evidencia documentada de la vigilancia bibliográfica periódica de todo producto bajo farmacovigilancia. Registre aquí cada búsqueda en cuanto termine.</value></data>
   <data name="Regulatory" xml:space="preserve"><value>Regulatorio</value></data>
   <data name="Regulatory / Compliance" xml:space="preserve"><value>Regulatorio / cumplimiento</value></data>
   <data name="Regulatory Action Notes" xml:space="preserve"><value>Notas sobre medidas regulatorias</value></data>
@@ -3237,7 +3293,7 @@
   <data name="Released" xml:space="preserve"><value>Liberado</value></data>
   <data name="Releases by Type (All Records)" xml:space="preserve"><value>Liberaciones por tipo (todos los registros)</value></data>
   <data name="Releasing Company" xml:space="preserve"><value>Empresa que libera</value></data>
-  <data name="Releasing Company TGA Licence / Clearance No." xml:space="preserve"><value>N.º de licencia / autorización TGA de la empresa que libera</value></data>
+  <data name="Releasing Company Manufacturing Licence No." xml:space="preserve"><value>N.º de licencia de fabricación de la empresa que libera</value></data>
   <data name="Releasing Company:" xml:space="preserve"><value>Empresa que libera:</value></data>
   <data name="Relevant" xml:space="preserve"><value>Relevantes</value></data>
   <data name="Relevant Results" xml:space="preserve"><value>Resultados relevantes</value></data>
@@ -3279,8 +3335,8 @@
   <data name="Report Statement" xml:space="preserve"><value>Declaración del informe</value></data>
   <data name="Report Title" xml:space="preserve"><value>Título del informe</value></data>
   <data name="Report Type" xml:space="preserve"><value>Tipo de reporte</value></data>
-  <data name="Reportable to TGA" xml:space="preserve"><value>Notificable a la TGA</value></data>
-  <data name="Reportable to TGA?" xml:space="preserve"><value>¿Notificable a la TGA?</value></data>
+  <data name="Reportable to Authority" xml:space="preserve"><value>Notificable a la autoridad</value></data>
+  <data name="Reportable to Authority?" xml:space="preserve"><value>¿Notificable a la autoridad?</value></data>
   <data name="Reporter" xml:space="preserve"><value>Notificador</value></data>
   <data name="Reporter Country" xml:space="preserve"><value>País del notificador</value></data>
   <data name="Reporter Email" xml:space="preserve"><value>Correo electrónico del notificador</value></data>
@@ -3289,6 +3345,9 @@
   <data name="Reporter Phone" xml:space="preserve"><value>Teléfono del notificador</value></data>
   <data name="Reporter Qualification" xml:space="preserve"><value>Cualificación del notificador</value></data>
   <data name="Reporter Type" xml:space="preserve"><value>Tipo de notificador</value></data>
+  <data name="Reporting Deadline" xml:space="preserve"><value>Plazo de notificación</value></data>
+  <data name="Reporting Deadline Passed" xml:space="preserve"><value>Plazo de notificación vencido</value></data>
+  <data name="Reporting Deadline:" xml:space="preserve"><value>Plazo de notificación:</value></data>
   <data name="Reporting Decision Rationale" xml:space="preserve"><value>Justificación de la decisión de notificar</value></data>
   <data name="Reports" xml:space="preserve"><value>Informes</value></data>
   <data name="Reports Hub" xml:space="preserve"><value>Centro de informes</value></data>
@@ -3393,6 +3452,7 @@
   <data name="Review History" xml:space="preserve"><value>Historial de revisiones</value></data>
   <data name="Review ID" xml:space="preserve"><value>ID de revisión</value></data>
   <data name="review not due yet" xml:space="preserve"><value>revisión aún no vencida</value></data>
+  <data name="Review of Another Authority's Inspection (CV)" xml:space="preserve"><value>Revisión de la inspección de otra autoridad (CV)</value></data>
   <data name="Review of related processes, procedures, or controls" xml:space="preserve"><value>Revisión de procesos, procedimientos o controles relacionados</value></data>
   <data name="Review Overdue" xml:space="preserve"><value>Revisión vencida</value></data>
   <data name="Review Overdue:" xml:space="preserve"><value>Revisión vencida:</value></data>
@@ -3441,6 +3501,7 @@
   <data name="Risk Level Breakdown (Approved/Qualified)" xml:space="preserve"><value>Desglose por nivel de riesgo (aprobados/calificados)</value></data>
   <data name="Risk level if actions are not completed on time" xml:space="preserve"><value>Nivel de riesgo si las acciones no se completan a tiempo</value></data>
   <data name="Risk Management" xml:space="preserve"><value>Gestión de riesgos</value></data>
+  <data name="Risk Management File reviewed; no new hazards or risks identified that affect device safety or performance for this batch" xml:space="preserve"><value>Expediente de gestión de riesgos revisado; no se identificaron nuevos peligros o riesgos que afecten la seguridad o el desempeño del dispositivo para este lote</value></data>
   <data name="Risk Matrix (Severity × Probability)" xml:space="preserve"><value>Matriz de riesgo (gravedad × probabilidad)</value></data>
   <data name="Risk must be in Identification status to submit for assessment." xml:space="preserve"><value>El riesgo debe estar en estado Identificación para enviarlo a evaluación.</value></data>
   <data name="Risk must be in Mitigation status to submit for review." xml:space="preserve"><value>El riesgo debe estar en estado Mitigación para enviarlo a revisión.</value></data>
@@ -3489,9 +3550,9 @@
   <data name="Safety Study" xml:space="preserve"><value>Estudio de seguridad</value></data>
   <data name="SAP" xml:space="preserve"><value>SAP</value></data>
   <data name="SAR" xml:space="preserve"><value>SAR</value></data>
-  <data name="SAS Category A" xml:space="preserve"><value>SAS categoría A</value></data>
-  <data name="SAS Category B" xml:space="preserve"><value>SAS categoría B</value></data>
-  <data name="SAS Category C" xml:space="preserve"><value>SAS categoría C</value></data>
+  <data name="SAS Category A (AU)" xml:space="preserve"><value>SAS categoría A (AU)</value></data>
+  <data name="SAS Category B (AU)" xml:space="preserve"><value>SAS categoría B (AU)</value></data>
+  <data name="SAS Category C (AU)" xml:space="preserve"><value>SAS categoría C (AU)</value></data>
   <data name="SAS Reference Number" xml:space="preserve"><value>Número de referencia SAS</value></data>
   <data name="Satisfactory" xml:space="preserve"><value>Satisfactorio</value></data>
   <data name="Satisfactory with Comment" xml:space="preserve"><value>Satisfactorio con comentario</value></data>
@@ -3560,6 +3621,7 @@
   <data name="Send this service back to Draft for rework?" xml:space="preserve"><value>¿Devolver este servicio a borrador para retrabajo?</value></data>
   <data name="Send verification email" xml:space="preserve"><value>Enviar correo de verificación</value></data>
   <data name="Serious" xml:space="preserve"><value>Grave</value></data>
+  <data name="Serious Adverse Event Reporting Deadline (days)" xml:space="preserve"><value>Plazo de notificación de eventos adversos graves (días)</value></data>
   <data name="Serious Cases" xml:space="preserve"><value>Casos graves</value></data>
   <data name="Serious vs Non-Serious" xml:space="preserve"><value>Grave frente a no grave</value></data>
   <data name="SERIOUS — Criteria: " xml:space="preserve"><value>GRAVE — Criterios: </value></data>
@@ -3649,6 +3711,7 @@
   <data name="Soft-delete this application?" xml:space="preserve"><value>¿Eliminar esta solicitud (se conserva oculta)?</value></data>
   <data name="Software (SaMD)" xml:space="preserve"><value>Software (SaMD)</value></data>
   <data name="Software / IT Systems" xml:space="preserve"><value>Software / sistemas de TI</value></data>
+  <data name="Software verification and validation status confirmed current (if device includes software / firmware)" xml:space="preserve"><value>Estado de verificación y validación del software confirmado como vigente (si el dispositivo incluye software / firmware)</value></data>
   <data name="Solid" xml:space="preserve"><value>Sólido</value></data>
   <data name="Solution" xml:space="preserve"><value>Solución</value></data>
   <data name="Solution for Infusion" xml:space="preserve"><value>Solución para perfusión</value></data>
@@ -3713,11 +3776,15 @@
   <data name="Stay Signed In" xml:space="preserve"><value>Mantener la sesión</value></data>
   <data name="Sterile Single-Use Device" xml:space="preserve"><value>Dispositivo estéril de un solo uso</value></data>
   <data name="Sterilisation" xml:space="preserve"><value>Esterilización</value></data>
+  <data name="Sterilisation cycle records reviewed and batch release criteria met (if applicable)" xml:space="preserve"><value>Registros del ciclo de esterilización revisados y criterios de liberación del lote cumplidos (si aplica)</value></data>
   <data name="Sterilisation Equipment" xml:space="preserve"><value>Equipos de esterilización</value></data>
   <data name="Stick" xml:space="preserve"><value>Barra</value></data>
   <data name="Storage / Distribution" xml:space="preserve"><value>Almacenamiento / distribución</value></data>
   <data name="Storage / distribution / cold-chain" xml:space="preserve"><value>Almacenamiento / distribución / cadena de frío</value></data>
+  <data name="Storage and distribution conditions confirmed appropriate for batch dispatch" xml:space="preserve"><value>Condiciones de almacenamiento y distribución confirmadas como adecuadas para el despacho del lote</value></data>
+  <data name="Storage and transport conditions confirmed appropriate upon receipt" xml:space="preserve"><value>Condiciones de almacenamiento y transporte confirmadas como adecuadas a la recepción</value></data>
   <data name="Storage Conditions" xml:space="preserve"><value>Condiciones de almacenamiento</value></data>
+  <data name="Storage conditions during quarantine confirmed appropriate; no adverse environmental exposure identified" xml:space="preserve"><value>Condiciones de almacenamiento durante la cuarentena confirmadas como adecuadas; sin exposición ambiental adversa identificada</value></data>
   <data name="Storage Equipment" xml:space="preserve"><value>Equipos de almacenamiento</value></data>
   <data name="Stored copy, fixed on {0} (issued before stored copies were kept). Language: {1}. Checksum (SHA-256): {2}" xml:space="preserve"><value>Copia guardada, fijada el {0} (emitida antes de que se guardaran copias). Idioma: {1}. Suma de verificación (SHA-256): {2}</value></data>
   <data name="Stored copy, issued on {0}. Language: {1}. Checksum (SHA-256): {2}" xml:space="preserve"><value>Copia guardada, emitida el {0}. Idioma: {1}. Suma de verificación (SHA-256): {2}</value></data>
@@ -3766,7 +3833,6 @@
   <data name="Submitted On" xml:space="preserve"><value>Enviado el</value></data>
   <data name="Submitted This Month" xml:space="preserve"><value>Presentadas este mes</value></data>
   <data name="Submitted to Authority" xml:space="preserve"><value>Presentado a la autoridad</value></data>
-  <data name="Submitted to TGA" xml:space="preserve"><value>Enviado a la TGA</value></data>
   <data name="Summarise how the complaint was resolved, confirm all actions are complete, and document the outcome for the customer." xml:space="preserve"><value>Resuma cómo se resolvió la reclamación, confirme que todas las acciones están completas y documente el resultado para el cliente.</value></data>
   <data name="Summary of findings, or 'Nil relevant results identified'..." xml:space="preserve"><value>Resumen de hallazgos, o 'No se identificaron resultados relevantes'...</value></data>
   <data name="Superseded" xml:space="preserve"><value>Reemplazado</value></data>
@@ -3853,7 +3919,9 @@
   <data name="Target resolution date was {0} ({1} day(s) past deadline)." xml:space="preserve"><value>La fecha objetivo de resolución era {0} ({1} día(s) de atraso).</value></data>
   <data name="TargetCompletionDate" xml:space="preserve"><value>Fecha objetivo de cumplimiento</value></data>
   <data name="Technical" xml:space="preserve"><value>Técnico</value></data>
+  <data name="Technical / Quality Agreement confirmed in place with contract manufacturer or critical component supplier (if applicable)" xml:space="preserve"><value>Acuerdo técnico / de calidad confirmado con el fabricante por contrato o el proveedor de componentes críticos (si aplica)</value></data>
   <data name="Technical Agreement" xml:space="preserve"><value>Acuerdo técnico</value></data>
+  <data name="Technical Agreement in place and current (if applicable)" xml:space="preserve"><value>Acuerdo técnico establecido y vigente (si aplica)</value></data>
   <data name="Technical Agreement Ref." xml:space="preserve"><value>Ref. del acuerdo técnico</value></data>
   <data name="Technical Agreement Reference" xml:space="preserve"><value>Referencia del acuerdo técnico</value></data>
   <data name="Template" xml:space="preserve"><value>Plantilla</value></data>
@@ -3879,26 +3947,6 @@
   <data name="Testing Requirement" xml:space="preserve"><value>Requisito de ensayo</value></data>
   <data name="Testing Site GMP Licence / Clearance No." xml:space="preserve"><value>N.º de licencia / autorización BPM del sitio de ensayo</value></data>
   <data name="Testing/Laboratory" xml:space="preserve"><value>Ensayos / laboratorio</value></data>
-  <data name="TGA ADRS Reference" xml:space="preserve"><value>Referencia ADRS de la TGA</value></data>
-  <data name="TGA ADRS Reference Number" xml:space="preserve"><value>N.º de referencia ADRS de la TGA</value></data>
-  <data name="TGA Deadline" xml:space="preserve"><value>Plazo de la TGA</value></data>
-  <data name="TGA Deadline Date" xml:space="preserve"><value>Fecha límite de la TGA</value></data>
-  <data name="TGA Deadline Passed" xml:space="preserve"><value>Plazo de la TGA vencido</value></data>
-  <data name="TGA Inspection" xml:space="preserve"><value>Inspección de la TGA</value></data>
-  <data name="TGA Licence / Clearance" xml:space="preserve"><value>Licencia / autorización TGA</value></data>
-  <data name="TGA Licence / Clearance: {0}" xml:space="preserve"><value>Licencia / autorización de la TGA: {0}</value></data>
-  <data name="TGA Licence/Clearance Ref" xml:space="preserve"><value>Ref. de licencia / autorización de la TGA</value></data>
-  <data name="TGA On-Site Inspection" xml:space="preserve"><value>Inspección in situ de la TGA</value></data>
-  <data name="TGA Reference" xml:space="preserve"><value>Referencia de la TGA</value></data>
-  <data name="TGA Reference Number" xml:space="preserve"><value>Número de referencia de la TGA</value></data>
-  <data name="TGA Reporting Deadline:" xml:space="preserve"><value>Plazo de notificación a la TGA:</value></data>
-  <data name="TGA requires documented evidence of regular literature monitoring for any product under PV surveillance. All searches should be logged here promptly after completion." xml:space="preserve"><value>La TGA exige evidencia documentada de la vigilancia bibliográfica periódica de todo producto bajo farmacovigilancia. Registre aquí cada búsqueda en cuanto termine.</value></data>
-  <data name="TGA Submission Date" xml:space="preserve"><value>Fecha de envío a la TGA</value></data>
-  <data name="TGA submission deadline: {0}." xml:space="preserve"><value>Plazo de presentación a la TGA: {0}.</value></data>
-  <data name="TGA Submission Method" xml:space="preserve"><value>Método de presentación a la TGA</value></data>
-  <data name="TGA submission recorded successfully." xml:space="preserve"><value>Presentación a la TGA registrada correctamente.</value></data>
-  <data name="TGA Submissions" xml:space="preserve"><value>Presentaciones a la TGA</value></data>
-  <data name="TGA Submitted" xml:space="preserve"><value>Presentado a la TGA</value></data>
   <data name="Thank you for confirming your email change." xml:space="preserve"><value>Gracias por confirmar el cambio de correo electrónico.</value></data>
   <data name="That adverse event is already linked to another complaint." xml:space="preserve"><value>Ese evento adverso ya está vinculado a otra reclamación.</value></data>
   <data name="That complaint is already linked to another adverse event." xml:space="preserve"><value>Esa reclamación ya está vinculada a otro evento adverso.</value></data>
@@ -4122,6 +4170,7 @@
   <data name="Total Suppliers" xml:space="preserve"><value>Total de proveedores</value></data>
   <data name="Total Tracked" xml:space="preserve"><value>Total en seguimiento</value></data>
   <data name="Traceability" xml:space="preserve"><value>Trazabilidad</value></data>
+  <data name="Traceability records complete — lot / batch, serial numbers, and component / raw material traceability documented" xml:space="preserve"><value>Registros de trazabilidad completos — lote, números de serie y trazabilidad de componentes / materias primas documentados</value></data>
   <data name="Trading Name" xml:space="preserve"><value>Nombre comercial</value></data>
   <data name="Trainee" xml:space="preserve"><value>Participante</value></data>
   <data name="Trainee:" xml:space="preserve"><value>Participante:</value></data>
@@ -4203,6 +4252,7 @@
   <data name="Under Review / Clock Stop" xml:space="preserve"><value>En revisión / plazo suspendido</value></data>
   <data name="Unexpected (not in PI)" xml:space="preserve"><value>Inesperado (no descrito en la IPP)</value></data>
   <data name="Unexpected error when trying to set phone number." xml:space="preserve"><value>Error inesperado al establecer el número de teléfono.</value></data>
+  <data name="Unique Device Identifier (UDI) confirmed assigned, labelled and reported to the applicable regulatory database as required" xml:space="preserve"><value>Identificador único del dispositivo (UDI) confirmado como asignado, etiquetado y notificado a la base de datos regulatoria aplicable según se requiera</value></data>
   <data name="Unit" xml:space="preserve"><value>Unidad</value></data>
   <data name="Unknown" xml:space="preserve"><value>Desconocido</value></data>
   <data name="Unknown error" xml:space="preserve"><value>Error desconocido</value></data>
@@ -4295,6 +4345,8 @@
   <data name="View Report" xml:space="preserve"><value>Ver informe</value></data>
   <data name="View Training Records" xml:space="preserve"><value>Ver registros de capacitación</value></data>
   <data name="View-only access to registers, dashboards and record details across accessible modules. Cannot create, edit, submit, upload, delete or approve anything. Intended for internal auditors (view-only), authorised non-QA personnel or observers." xml:space="preserve"><value>Acceso de solo lectura a registros, paneles y detalles en los módulos accesibles. No puede crear, editar, enviar, subir, eliminar ni aprobar nada. Pensado para auditores internos (solo lectura), personal autorizado ajeno a calidad u observadores.</value></data>
+  <data name="Visual Inspection" xml:space="preserve"><value>Inspección visual</value></data>
+  <data name="Visual inspection completed; packaging intact, no visible damage, contamination or deterioration observed" xml:space="preserve"><value>Inspección visual completada; envase íntegro, sin daños, contaminación ni deterioro visibles</value></data>
   <data name="Void Adverse Event" xml:space="preserve"><value>Anular evento adverso</value></data>
   <data name="Void Record" xml:space="preserve"><value>Anular registro</value></data>
   <data name="Void this record" xml:space="preserve"><value>Anular este registro</value></data>
@@ -4306,7 +4358,7 @@
   <data name="Waiver Justification" xml:space="preserve"><value>Justificación de la dispensa</value></data>
   <data name="Warehouse" xml:space="preserve"><value>Almacén</value></data>
   <data name="Warehousing / Storage" xml:space="preserve"><value>Almacenaje / almacenamiento</value></data>
-  <data name="WARNING — TGA deadline in {0} day(s) ({1})." xml:space="preserve"><value>AVISO — Plazo de la TGA en {0} día(s) ({1}).</value></data>
+  <data name="WARNING — reporting deadline in {0} day(s) ({1})." xml:space="preserve"><value>AVISO — Plazo de notificación en {0} día(s) ({1}).</value></data>
   <data name="Warning:" xml:space="preserve"><value>Advertencia:</value></data>
   <data name="Waste Management" xml:space="preserve"><value>Gestión de residuos</value></data>
   <data name="Wax" xml:space="preserve"><value>Cera</value></data>
@@ -4460,7 +4512,7 @@
   <data name="— All Statuses —" xml:space="preserve"><value>— Todos los estados —</value></data>
   <data name="— All Trainees —" xml:space="preserve"><value>— Todos los participantes —</value></data>
   <data name="— an authority web portal that isn't eCTD (e.g. country-specific upload systems)." xml:space="preserve"><value>— un portal web de la autoridad que no es eCTD (p. ej., sistemas de carga propios de cada país).</value></data>
-  <data name="— an on-site TGA inspection, used where no MRA/CV pathway is available." xml:space="preserve"><value>— una inspección in situ de la TGA, cuando no hay vía MRA/CV disponible.</value></data>
+  <data name="— an on-site inspection by the authority, used where no MRA/CV pathway is available." xml:space="preserve"><value>— una inspección in situ de la autoridad, cuando no hay vía MRA/CV disponible.</value></data>
   <data name="— AP submission is blocked until these are resolved." xml:space="preserve"><value>— el envío a la PA está bloqueado hasta resolverlos.</value></data>
   <data name="— approval expiry date has passed." xml:space="preserve"><value>— la fecha de vencimiento de la aprobación ya pasó.</value></data>
   <data name="— caused or prolonged inpatient hospitalisation." xml:space="preserve"><value>— causó o prolongó la hospitalización.</value></data>
@@ -4481,7 +4533,7 @@
   <data name="— Low-risk departure with no direct impact on product quality or patient safety. Administrative or documentation in nature." xml:space="preserve"><value>— Desviación de bajo riesgo sin impacto directo en la calidad del producto ni en la seguridad del paciente. De naturaleza administrativa o documental.</value></data>
   <data name="— Low-risk issue with no direct impact on product quality or patient safety. Administrative or cosmetic in nature. Typical SLA: 60 days." xml:space="preserve"><value>— Problema de bajo riesgo sin impacto directo en la calidad del producto ni en la seguridad del paciente. De naturaleza administrativa o estética. Plazo típico: 60 días.</value></data>
   <data name="— may affect safety/efficacy, a registration or condition, or GMP compliance (e.g. new API source, site change)" xml:space="preserve"><value>— puede afectar a la seguridad o eficacia, a un registro o condición, o al cumplimiento de las BPM (p. ej., nuevo origen del API, cambio de planta)</value></data>
-  <data name="— Mutual Recognition Agreement: the site is in a country whose GMP inspections the TGA recognises." xml:space="preserve"><value>— Acuerdo de reconocimiento mutuo: el sitio está en un país cuyas inspecciones BPF reconoce la TGA.</value></data>
+  <data name="— Mutual Recognition Agreement: the site is in a country whose GMP inspections your authority recognises." xml:space="preserve"><value>— Acuerdo de reconocimiento mutuo: el sitio está en un país cuyas inspecciones BPF reconoce su autoridad.</value></data>
   <data name="— no impact on approved requirements, product quality or validated state (e.g. like-for-like, editorial)" xml:space="preserve"><value>— sin impacto en los requisitos aprobados, la calidad del producto o el estado validado (p. ej., equivalente, editorial)</value></data>
   <data name="— No linked supplier —" xml:space="preserve"><value>— Sin proveedor vinculado —</value></data>
   <data name="— non-blocking, but should be addressed." xml:space="preserve"><value>— no bloqueante, pero debe atenderse.</value></data>

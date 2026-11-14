@@ -124,4 +124,4 @@ r = s.get(BASE + f"/Deviations/DownloadAttachment/{disguised}", allow_redirects=
 check("TIFF disguised as .png served unchanged (TIFF decoder not used)", r.status_code == 200 and r.content == tiff,
       (r.status_code, len(r.content)))
 
-summary()
+sys.exit(summary())

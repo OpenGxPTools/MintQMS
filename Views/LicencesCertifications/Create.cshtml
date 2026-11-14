@@ -167,17 +167,17 @@
         <div class="tab-pane fade" id="tab4" role="tabpanel">
             <!-- GMP Clearance fields -->
             <div id="gmpSection">
-                <h6 class="text-muted text-uppercase small mb-3 border-bottom pb-1"><i class="fas fa-shield-alt me-1"></i>@L["GMP Clearance Details (Third-Party Site Approvals)"]</h6>
+                <h6 class="text-muted text-uppercase small mb-3 border-bottom pb-1"><i class="fas fa-shield-alt me-1"></i>@L["Overseas Site GMP Evidence (Third-Party Site Approvals)"]</h6>
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label asp-for="GmcPathway" class="form-label fw-bold">@L["GMP Clearance Pathway"]
-                            <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="gmcpathway" aria-label="@L["GMP Clearance Pathway guidance"]">?</button>
+                        <label asp-for="GmcPathway" class="form-label fw-bold">@L["GMP Evidence Pathway"]
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-1 help-btn" data-help="gmcpathway" aria-label="@L["GMP Evidence Pathway guidance"]">?</button>
                         </label>
                         <select asp-for="GmcPathway" class="form-select">
                             <option value="">@L["— Select Pathway —"]</option>
                             <option value="MRA">@L["MRA (Mutual Recognition Agreement)"]</option>
-                            <option value="CV">@L["CV (Compliance Verification)"]</option>
-                            <option value="TGAInspection">@L["TGA On-Site Inspection"]</option>
+                            <option value="CV">@L["Review of Another Authority's Inspection (CV)"]</option>
+                            <option value="TGAInspection">@L["On-Site Inspection by the Authority"]</option>
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -331,11 +331,11 @@
         </ul>
     </div>
     <div id="help-gmcpathway">
-        <p class="mb-1">@H["<strong>How the overseas GMP clearance is being obtained</strong> (TGA framework):"]</p>
+        <p class="mb-1">@H["<strong>How GMP compliance of the overseas site is being evidenced</strong>:"]</p>
         <ul class="mb-0 ps-3">
-            <li><strong>@L["MRA"]</strong> @L["— Mutual Recognition Agreement: the site is in a country whose GMP inspections the TGA recognises."]</li>
+            <li><strong>@L["MRA"]</strong> @L["— Mutual Recognition Agreement: the site is in a country whose GMP inspections your authority recognises."]</li>
             <li><strong>@L["CV"]</strong> @L["— Compliance Verification: clearance based on an inspection report from a recognised authority."]</li>
-            <li><strong>@L["TGA Inspection"]</strong> @L["— an on-site TGA inspection, used where no MRA/CV pathway is available."]</li>
+            <li><strong>@L["Authority Inspection"]</strong> @L["— an on-site inspection by the authority, used where no MRA/CV pathway is available."]</li>
         </ul>
     </div>
     <div id="help-rfi">

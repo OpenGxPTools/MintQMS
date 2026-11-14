@@ -68,4 +68,4 @@ for ctrl, table, pdf, csv in MODULES:
         check(f"{ctrl}: CSV detail export", r.status_code == 200 and len(r.content) > 0,
               (r.status_code, r.headers.get("Content-Type")))
 
-summary()
+sys.exit(summary())

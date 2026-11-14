@@ -126,8 +126,23 @@ public static class AuditDiffHelper
         }
     }
 
-    // "IsReportableToTGA" → "Is Reportable To TGA" for readable audit labels.
-    private static string Spacify(string s) => Regex.Replace(s, "(?<=[a-z0-9])(?=[A-Z])", " ");
+    // Field names that carry an Australian regulator's name in the code: the audit label uses the general
+    // wording shown on screen (the database names stay as they are).
+    private static readonly Dictionary<string, string> Labels = new(StringComparer.Ordinal)
+    {
+        ["IsReportableToTGA"]       = "Reportable To Authority",
+        ["TGASubmissionDate"]       = "Authority Submission Date",
+        ["TGAADRSReferenceNumber"]  = "Authority Case Reference Number",
+        ["TGADeadlineDate"]         = "Reporting Deadline",
+        ["TGAReferenceNumber"]      = "Authority Reference Number",
+        ["TGAApprovalLetterNumber"] = "Approval Letter Number",
+        ["ARTGNumber"]              = "Registration Number",
+        ["ArtgReference"]           = "Registration Number",
+    };
+
+    // "SubmissionMethod" → "Submission Method" for readable audit labels.
+    private static string Spacify(string s) =>
+        Labels.TryGetValue(s, out var label) ? label : Regex.Replace(s, "(?<=[a-z0-9])(?=[A-Z])", " ");
 
     // Full value stored; the UI layer handles display truncation.
     private static string Fmt(string v) => v.Length == 0 ? "(none)" : v;

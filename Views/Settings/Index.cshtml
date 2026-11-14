@@ -85,9 +85,22 @@
                     @if (canEdit)
                     {
                         <select asp-for="TimeZoneId" class="form-select">
-                            @foreach (var z in SiteTime.Choices)
+                            @if (!SiteTime.Choices.Any(z => z.Id == Model.TimeZoneId))
                             {
-                                <option value="@z.Id">@L[z.Label]</option>
+                                <option value="@Model.TimeZoneId">@Model.TimeZoneId</option>
+                            }
+                            @foreach (var g in SiteTime.Choices.GroupBy(z => z.Group))
+                            {
+                                if (g.Key == "")
+                                {
+                                    foreach (var z in g) { <option value="@z.Id">@z.Label</option> }
+                                }
+                                else
+                                {
+                                    <optgroup label="@g.Key">
+                                        @foreach (var z in g) { <option value="@z.Id">@z.Label</option> }
+                                    </optgroup>
+                                }
                             }
                         </select>
                     }
@@ -226,6 +239,34 @@
                     </div>
                     <div class="form-text text-muted">@L["GMP: Critical severity complaints require expedited resolution (typically 7 days)."]</div>
                     <span asp-validation-for="CriticalComplaintResolutionDays" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ── Adverse Event Reporting Deadlines ──────────────────────── *@
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">@L["Adverse Event Reporting Deadlines"]</div>
+        <div class="card-body">
+            <p class="text-muted small">@L["Calendar days from Day 0 (the day the company first knew of the case) to the report to the authority. Set them to the rules of the authority you report to; a change applies to new cases, and to a case whose Day 0 or seriousness is changed afterwards."]</p>
+            <div class="mb-3 row">
+                <label asp-for="SeriousAEReportingDays" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="SeriousAEReportingDays" class="form-control" type="number" min="1" max="90" disabled="@dis" />
+                        <span class="input-group-text">@L["days"]</span>
+                    </div>
+                    <span asp-validation-for="SeriousAEReportingDays" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label asp-for="FatalAEReportingDays" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input asp-for="FatalAEReportingDays" class="form-control" type="number" min="1" max="90" disabled="@dis" />
+                        <span class="input-group-text">@L["days"]</span>
+                    </div>
+                    <span asp-validation-for="FatalAEReportingDays" class="text-danger small"></span>
                 </div>
             </div>
         </div>

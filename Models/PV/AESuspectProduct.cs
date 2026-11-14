@@ -21,7 +21,7 @@ namespace OpenQMS.Models
         [Display(Name = "Product Name")]
         public string? ProductName { get; set; }
 
-        [Display(Name = "ARTG Number")]
+        [Display(Name = "Registration Number")]
         public string? ARTGNumber { get; set; }
 
         [Display(Name = "Batch / Lot Number")]

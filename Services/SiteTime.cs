@@ -3,25 +3,43 @@ namespace OpenQMS
     /// <summary>
     /// Site time zone for display. Timestamps are stored in UTC (DateTime.UtcNow); everything shown
     /// to users — screens, exports, PDFs, e-mails — is converted to the site zone configured in
-    /// System Settings (default Australia/Brisbane). "Today" for due/overdue logic is the site's today.
+    /// System Settings (default UTC until the administrator chooses the site zone). "Today" for due/overdue logic is the site's today.
     /// </summary>
     public static class SiteTime
     {
-        public const string DefaultZoneId = "Australia/Brisbane";
+        public const string DefaultZoneId = "UTC";
 
-        /// <summary>Zones offered in System Settings (IANA ids — the server runs on Linux).</summary>
-        public static readonly (string Id, string Label)[] Choices =
+        /// <summary>The zone MintQMS used before the site zone could be any zone in the world. An existing
+        /// installation that never saved its System Settings keeps it on upgrade.</summary>
+        public const string LegacyDefaultZoneId = "Australia/Brisbane";
+
+        private static readonly string[] Regions =
+            { "Africa", "America", "Antarctica", "Arctic", "Asia", "Atlantic", "Australia", "Europe", "Indian", "Pacific" };
+
+        private static readonly Lazy<IReadOnlyList<(string Id, string Group, string Label)>> _choices = new(BuildChoices);
+
+        /// <summary>Every time zone in the world offered in System Settings (IANA ids — the server runs on Linux),
+        /// grouped by continent, labelled "City (UTC±hh:mm)" with the offset in force today.</summary>
+        public static IReadOnlyList<(string Id, string Group, string Label)> Choices => _choices.Value;
+
+        private static IReadOnlyList<(string Id, string Group, string Label)> BuildChoices()
         {
-            ("Australia/Brisbane", "Brisbane (AEST, UTC+10, no daylight saving)"),
-            ("Australia/Sydney",   "Sydney / Canberra (AEST/AEDT)"),
-            ("Australia/Melbourne","Melbourne (AEST/AEDT)"),
-            ("Australia/Hobart",   "Hobart (AEST/AEDT)"),
-            ("Australia/Adelaide", "Adelaide (ACST/ACDT)"),
-            ("Australia/Darwin",   "Darwin (ACST, no daylight saving)"),
-            ("Australia/Perth",    "Perth (AWST, no daylight saving)"),
-            ("Pacific/Auckland",   "Auckland (NZST/NZDT)"),
-            ("UTC",                "UTC"),
-        };
+            var now = DateTime.UtcNow;
+            static string Offset(TimeSpan o) => "UTC" + (o < TimeSpan.Zero ? "-" : "+") + o.ToString(@"hh\:mm");
+            var zones = TimeZoneInfo.GetSystemTimeZones();
+            var list = zones
+                .Where(z => z.Id.Contains('/') && Regions.Contains(z.Id[..z.Id.IndexOf('/')]))
+                .Select(z => (Id: z.Id,
+                              Group: z.Id[..z.Id.IndexOf('/')],
+                              Label: z.Id[(z.Id.IndexOf('/') + 1)..].Replace('_', ' ').Replace("/", " / ")
+                                     + " (" + Offset(z.GetUtcOffset(now)) + ")"))
+                .OrderBy(z => z.Group, StringComparer.Ordinal).ThenBy(z => z.Label, StringComparer.Ordinal)
+                .ToList();
+            if (list.Count == 0)   // a server without IANA ids (Windows): offer its own zones
+                list = zones.Select(z => (z.Id, Group: "", Label: z.DisplayName)).ToList();
+            list.Insert(0, ("UTC", "", "UTC"));
+            return list;
+        }
 
         private static TimeZoneInfo _zone = Resolve(DefaultZoneId) ?? TimeZoneInfo.Utc;
 
@@ -41,8 +59,8 @@ namespace OpenQMS
             try { return TimeZoneInfo.FindSystemTimeZoneById(id); }
             catch (TimeZoneNotFoundException) { }
             catch (InvalidTimeZoneException) { }
-            // Windows fallback for the default zone
-            if (id == DefaultZoneId)
+            // Windows fallback for the former default zone
+            if (id == LegacyDefaultZoneId)
                 try { return TimeZoneInfo.FindSystemTimeZoneById("E. Australia Standard Time"); } catch { }
             return null;
         }

@@ -92,9 +92,9 @@ namespace OpenQMS.Services
             _context.AEAuditLog.Add(new AEAuditLog
             {
                 AdverseEventId = aeId,
-                Action = "TGASubmission",
+                Action = "AuthoritySubmission",
                 NewValue = $"Submitted on {submittedDate:dd MMM yyyy}" +
-                           (string.IsNullOrWhiteSpace(adrsRef) ? "" : $", ADRS Ref: {adrsRef}"),
+                           (string.IsNullOrWhiteSpace(adrsRef) ? "" : $", Authority Ref: {adrsRef}"),
                 PerformedBy = userId,
                 PerformedOn = DateTime.UtcNow
             });

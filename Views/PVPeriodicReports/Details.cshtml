@@ -122,7 +122,7 @@
                             <span class="badge bg-success">@Model.SubmissionDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
                         } else { <span class="text-muted">@L["Not yet submitted"]</span> }
                     </dd>
-                    <dt class="col-sm-4">@L["TGA Reference"]</dt>
+                    <dt class="col-sm-4">@L["Authority Reference"]</dt>
                     <dd class="col-sm-8">@(Model.TGAReferenceNumber ?? "—")</dd>
                     <dt class="col-sm-4">@L["Exposure Data"]</dt>
                     <dd class="col-sm-8">@(Model.ExposureData ?? "—")</dd>
@@ -158,7 +158,7 @@
                     <tr>
                         <th>#</th><th>@L["AE Number"]</th><th>@L["Report Date"]</th>
                         <th>@L["Patient"]</th><th>@L["Suspect Drug"]</th><th>@L["MedDRA PT"]</th>
-                        <th>@L["Serious"]</th><th>@L["Outcome"]</th><th>@L["Causality"]</th><th>@L["TGA Submitted"]</th>
+                        <th>@L["Serious"]</th><th>@L["Outcome"]</th><th>@L["Causality"]</th><th>@L["Submitted to Authority"]</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -98,7 +98,7 @@ namespace OpenQMS.Controllers
 
             new() { ReleaseType = ReleaseType.ReleaseForSupply, ProductGroup = "ConsumerHealth",
                 ProductGroupLabel = "Consumer Health",
-                Statement = "I hereby certify that this batch has been manufactured, tested, and reviewed in accordance with all applicable TGA requirements, GMP obligations, and the approved product specification. Manufacturing records, quality control results, and regulatory compliance have been reviewed and found satisfactory. This batch is approved for release for supply." },
+                Statement = "I hereby certify that this batch has been manufactured, tested, and reviewed in accordance with all applicable regulatory requirements, GMP obligations, and the approved product specification. Manufacturing records, quality control results, and regulatory compliance have been reviewed and found satisfactory. This batch is approved for release for supply." },
 
             new() { ReleaseType = ReleaseType.ReleaseForSupply, ProductGroup = "Cosmetic",
                 ProductGroupLabel = "Cosmetic",

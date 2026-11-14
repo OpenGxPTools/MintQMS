@@ -354,8 +354,7 @@ namespace OpenQMS.Controllers
 
                 if (ae.Day0Date.HasValue)
                 {
-                    var days = ae.IsFatalOrLifeThreatening ? 7 : 15;
-                    ae.TGADeadlineDate = ae.Day0Date.Value.AddDays(days);
+                    ae.TGADeadlineDate = ae.Day0Date.Value.AddDays(await ReportingDaysAsync(ae.IsFatalOrLifeThreatening));
                 }
 
                 _context.Add(ae);
@@ -495,8 +494,13 @@ namespace OpenQMS.Controllers
                     ae.SeriousnessCriteria.HasFlag(AdverseEvent.SeriousnessFlags.LifeThreatening);
                 if (ae.Day0Date.HasValue)
                 {
-                    var days = ae.IsFatalOrLifeThreatening ? 7 : 15;
-                    ae.TGADeadlineDate = ae.Day0Date.Value.AddDays(days);
+                    // The deadline stays as calculated unless what it depends on changed — a later change of
+                    // the deadline settings does not move the deadline of an existing case.
+                    ae.TGADeadlineDate = existing.TGADeadlineDate.HasValue
+                                         && existing.Day0Date?.Date == ae.Day0Date.Value.Date
+                                         && existing.IsFatalOrLifeThreatening == ae.IsFatalOrLifeThreatening
+                        ? existing.TGADeadlineDate
+                        : ae.Day0Date.Value.AddDays(await ReportingDaysAsync(ae.IsFatalOrLifeThreatening));
                 }
 
                 // Preserve immutable fields
@@ -512,6 +516,7 @@ namespace OpenQMS.Controllers
                 // Field-level change tracking for the audit log (existing = old values, ae = new)
                 var diff = new List<string>();
                 AuditDiffHelper.TrackDate(diff, "Day 0 Date",           existing.Day0Date,           ae.Day0Date);
+                AuditDiffHelper.TrackDate(diff, "Reporting Deadline",   existing.TGADeadlineDate,    ae.TGADeadlineDate);
                 AuditDiffHelper.TrackEnum(diff, "Report Type",          existing.ReportType,         ae.ReportType);
                 AuditDiffHelper.TrackEnum(diff, "Report Source",        existing.ReportSource,       ae.ReportSource);
                 AuditDiffHelper.Track(diff,     "SAS Reference",        existing.SASReferenceNumber, ae.SASReferenceNumber);
@@ -947,6 +952,13 @@ namespace OpenQMS.Controllers
             return RedirectToAction(nameof(Details), new { id = followUp.Id });
         }
 
+        /// <summary>Calendar days from Day 0 to the report to the authority (System Settings).</summary>
+        private async Task<int> ReportingDaysAsync(bool fatalOrLifeThreatening)
+        {
+            var st = await _context.SystemSettings.FindAsync(1) ?? new SystemSettings();
+            return fatalOrLifeThreatening ? st.FatalAEReportingDays : st.SeriousAEReportingDays;
+        }
+
         // POST: Pharmacovigilance/LogTGASubmission
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -963,7 +975,7 @@ namespace OpenQMS.Controllers
             var userId = _userManager.GetUserName(User) ?? User.Identity?.Name ?? "Unknown";
             await _regulatory.LogTGASubmission(id, parsedDate, adrsRef, method, userId);
 
-            TempData["Success"] = this.T("TGA submission recorded successfully.");
+            TempData["Success"] = this.T("Authority submission recorded successfully.");
             return RedirectToAction(nameof(Details), new { id });
         }
 

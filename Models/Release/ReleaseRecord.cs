@@ -41,7 +41,7 @@ namespace OpenQMS.Models.Release
         public string? Strength { get; set; }
 
         [MaxLength(100)]
-        [Display(Name = "ARTG Entry / Regulatory Ref.")]
+        [Display(Name = "Registration No.")]
         public string? ArtgReference { get; set; }
 
         // ── Product-type-specific fields ────────────────────────────
@@ -117,7 +117,7 @@ namespace OpenQMS.Models.Release
         public string? ReleasingCompany { get; set; }
 
         [MaxLength(200)]
-        [Display(Name = "Releasing Company TGA Licence / Clearance No.")]
+        [Display(Name = "Releasing Company Manufacturing Licence No.")]
         public string? ReleasingCompanyLicenceRef { get; set; }
 
         // ── For Release to Customer / RFFP ──────────────────────────

@@ -121,6 +121,8 @@ namespace OpenQMS.Controllers
             LogChange(settings.DefaultDeviationResolutionDays.ToString(), model.DefaultDeviationResolutionDays.ToString(), "DefaultDeviationResolutionDays", changedBy, now);
             LogChange(settings.DefaultComplaintResolutionDays.ToString(), model.DefaultComplaintResolutionDays.ToString(), "DefaultComplaintResolutionDays", changedBy, now);
             LogChange(settings.CriticalComplaintResolutionDays.ToString(), model.CriticalComplaintResolutionDays.ToString(), "CriticalComplaintResolutionDays", changedBy, now);
+            LogChange(settings.SeriousAEReportingDays.ToString(), model.SeriousAEReportingDays.ToString(), "SeriousAEReportingDays", changedBy, now);
+            LogChange(settings.FatalAEReportingDays.ToString(), model.FatalAEReportingDays.ToString(), "FatalAEReportingDays", changedBy, now);
             LogChange(settings.PasswordExpiryDays.ToString(), model.PasswordExpiryDays.ToString(), "PasswordExpiryDays", changedBy, now);
             LogChange(settings.PasswordHistoryCount.ToString(), model.PasswordHistoryCount.ToString(), "PasswordHistoryCount", changedBy, now);
             LogChange(settings.IdleTimeoutMinutes.ToString(), model.IdleTimeoutMinutes.ToString(), "IdleTimeoutMinutes", changedBy, now);
@@ -174,6 +176,8 @@ namespace OpenQMS.Controllers
             settings.DefaultDeviationResolutionDays = model.DefaultDeviationResolutionDays;
             settings.DefaultComplaintResolutionDays      = model.DefaultComplaintResolutionDays;
             settings.CriticalComplaintResolutionDays     = model.CriticalComplaintResolutionDays;
+            settings.SeriousAEReportingDays         = model.SeriousAEReportingDays;
+            settings.FatalAEReportingDays           = model.FatalAEReportingDays;
             settings.PasswordExpiryDays             = model.PasswordExpiryDays;
             settings.PasswordHistoryCount           = model.PasswordHistoryCount;
             settings.IdleTimeoutMinutes             = model.IdleTimeoutMinutes;

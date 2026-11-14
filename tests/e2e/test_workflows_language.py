@@ -97,4 +97,4 @@ drive("Complaints", "Complaint", cmp_, "pwd",
       [("Evaluation", 1), ("PendingAcceptance", 2), ("Accept", 5), ("SubmitForResolution", 3), ("Closed", 4)],
       "ComplaintAuditLog", "ParentId", 1, "Evaluation")
 
-summary()
+sys.exit(summary())

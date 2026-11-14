@@ -175,4 +175,4 @@ check("read-only user cannot record work",
       q1("select WorkPerformed from Maintenance where Id=?", (mid,))["WorkPerformed"] == "Replaced filter; leak test passed",
       r.status_code)
 
-summary()
+sys.exit(summary())

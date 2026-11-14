@@ -68,7 +68,7 @@ namespace OpenQMS.Services
                         && SiteTime.Today > ae.TGADeadlineDate.Value.Date)
                     {
                         return TransitionResult.Fail(
-                            "TGA submission deadline ({0}) has passed without a recorded submission date. " +
+                            "Authority submission deadline ({0}) has passed without a recorded submission date. " +
                             "Record the submission date on the Regulatory tab before proceeding.",
                             ae.TGADeadlineDate.Value);
                     }
@@ -179,7 +179,8 @@ namespace OpenQMS.Services
 
             // Recalculate deadline from today as new Day0
             followUp.Day0Date = SiteTime.Today;
-            var days = followUp.IsFatalOrLifeThreatening ? 7 : 15;
+            var st = await _context.SystemSettings.FindAsync(1) ?? new SystemSettings();
+            var days = followUp.IsFatalOrLifeThreatening ? st.FatalAEReportingDays : st.SeriousAEReportingDays;
             followUp.TGADeadlineDate = followUp.Day0Date.Value.AddDays(days);
 
             _context.AdverseEvent.Add(followUp);

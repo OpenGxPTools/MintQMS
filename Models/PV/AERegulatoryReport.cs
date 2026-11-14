@@ -12,25 +12,25 @@ namespace OpenQMS.Models
         [ForeignKey("AdverseEventId")]
         public virtual AdverseEvent? AdverseEvent { get; set; }
 
-        [Display(Name = "Reportable to TGA")]
+        [Display(Name = "Reportable to Authority")]
         public bool? IsReportableToTGA { get; set; }
 
         [Display(Name = "Reporting Decision Rationale")]
         public string? ReportingDecisionRationale { get; set; }
 
-        [Display(Name = "TGA Submission Date")]
+        [Display(Name = "Authority Submission Date")]
         public DateTime? TGASubmissionDate { get; set; }
 
-        [Display(Name = "TGA Submission Method")]
+        [Display(Name = "Authority Submission Method")]
         public TGASubmissionMethod? SubmissionMethod { get; set; }
 
-        [Display(Name = "TGA ADRS Reference Number")]
+        [Display(Name = "Authority Case Reference Number")]
         public string? TGAADRSReferenceNumber { get; set; }
 
         [Display(Name = "E2B Transmission Reference")]
         public string? E2BTransmissionReference { get; set; }
 
-        [Display(Name = "7-Day Deadline (Fatal/Life-Threatening)")]
+        [Display(Name = "Fatal / Life-Threatening Reporting Deadline")]
         public DateTime? SevenDayDeadlineDate { get; set; }
 
         [Display(Name = "Overseas Reporting Required")]
@@ -56,7 +56,7 @@ namespace OpenQMS.Models
 
         public enum TGASubmissionMethod
         {
-            [Display(Name = "AEMS Portal")]
+            [Display(Name = "Authority Online Portal")]
             AEMSPortal,
             [Display(Name = "E2B(R3) EDI")]
             E2BEDI,
@@ -70,9 +70,9 @@ namespace OpenQMS.Models
             NotRequired,
             [Display(Name = "Pending Submission")]
             PendingSubmission,
-            [Display(Name = "Submitted to TGA")]
+            [Display(Name = "Submitted to Authority")]
             SubmittedToTGA,
-            [Display(Name = "Acknowledged by TGA")]
+            [Display(Name = "Acknowledged by Authority")]
             AcknowledgedByTGA,
             [Display(Name = "Follow-up Submitted")]
             FollowUpSubmitted,

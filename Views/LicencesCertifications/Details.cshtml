@@ -328,10 +328,10 @@
     <div class="tab-pane fade" id="dtab4" role="tabpanel">
         @if (Model.Category == LCCategory.ThirdPartySiteApproval)
         {
-            <h6 class="text-uppercase small text-muted border-bottom pb-1 mb-3"><i class="fas fa-shield-alt me-1"></i>@L["GMP Clearance Details"]</h6>
+            <h6 class="text-uppercase small text-muted border-bottom pb-1 mb-3"><i class="fas fa-shield-alt me-1"></i>@L["Overseas Site GMP Evidence"]</h6>
             <div class="row g-3">
                 @if (Model.GmcPathway.HasValue)
-                { <div class="col-md-4"><label class="form-label text-muted small">@L["GMP Clearance Pathway"]</label><p>@L.Enum(Model.GmcPathway)</p></div> }
+                { <div class="col-md-4"><label class="form-label text-muted small">@L["GMP Evidence Pathway"]</label><p>@L.Enum(Model.GmcPathway)</p></div> }
                 @if (!string.IsNullOrEmpty(Model.SiteCountry))
                 { <div class="col-md-4"><label class="form-label text-muted small">@L["Site Country"]</label><p>@Model.SiteCountry</p></div> }
                 @if (!string.IsNullOrEmpty(Model.InspectionAuthority))
@@ -723,7 +723,7 @@
                     ("Identification", new [] { ("LC Number","LCNumber"), ("Holder Type","HolderType"), ("Holder Name","HolderName"), ("Linked Site Address","LinkedSiteAddress"), ("Linked Site Country","LinkedSiteCountry") }),
                     ("Classification", new [] { ("Category","Category"), ("Licence Type","LicenceType"), ("Issuing Body","IssuingBody"), ("Issuing Body URL","IssuingBodyUrl"), ("Issuing Body Portal","IssuingBodyPortal") }),
                     ("Licence Details", new [] { ("Licence / Cert Number","LicenceNumber"), ("Scope","Scope"), ("Application Date","ApplicationDate"), ("Issue Date","IssueDate"), ("Expiry Date","ExpiryDate"), ("Next Renewal Due","NextRenewalDue"), ("Renewal Lead Time (days)","RenewalLeadTimeDays") }),
-                    ("GMP Clearance", new [] { ("GMP Clearance Pathway","GmcPathway"), ("Site Country","SiteCountry"), ("Manufacturing Steps (Scope)","ManufacturingStepsScope"), ("Last Inspection Date","LastInspectionDate"), ("Inspection Authority","InspectionAuthority"), ("RFI Date","RFIDate"), ("RFI Response Due","RFIResponseDueDate"), ("RFI Response Submitted","RFIResponseSubmittedDate"), ("Letter of Access Available","LetterOfAccessAvailable") }),
+                    ("GMP Clearance", new [] { ("GMP Evidence Pathway","GmcPathway"), ("Site Country","SiteCountry"), ("Manufacturing Steps (Scope)","ManufacturingStepsScope"), ("Last Inspection Date","LastInspectionDate"), ("Inspection Authority","InspectionAuthority"), ("RFI Date","RFIDate"), ("RFI Response Due","RFIResponseDueDate"), ("RFI Response Submitted","RFIResponseSubmittedDate"), ("Letter of Access Available","LetterOfAccessAvailable") }),
                     ("ISO / Certification", new [] { ("Certification Body","CertificationBody"), ("Body Accreditation","CertificationBodyAccreditation"), ("Standard Version","StandardVersion"), ("Certificate Scope","CertificateScope"), ("Stage 1 Audit Date","Stage1AuditDate"), ("Stage 2 Audit Date","Stage2AuditDate"), ("Next Surveillance Audit","NextSurveillanceAuditDate"), ("Recertification Due","RecertificationDueDate") }),
                     ("Contacts", new [] { ("Internal Responsible Person","InternalResponsiblePerson"), ("External Consultant","ExternalConsultant"), ("Authority Contact Email","AuthorityContactEmail"), ("Authority Portal Username","AuthorityPortalUsername") }),
                     ("Fees", new [] { ("Application Fee","ApplicationFee"), ("Fee Currency","FeeCurrency"), ("Fee Paid Date","FeePaidDate"), ("Fee Reference","FeeReference") }),
@@ -993,7 +993,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">@L["Notes (optional)"]</label>
                         <input type="text" name="notes" class="form-control"
-                               placeholder="@L["e.g. GMP Clearance required for ARTG 123456 supply"]" />
+                               placeholder="@L["e.g. Site GMP evidence required to supply registration 123456"]" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1156,7 +1156,7 @@
                 </div>
                 <div class="modal-body">
                     <p>@H["This will mark <strong>{0}</strong> as <strong>Not Applicable</strong> with documented justification.", Model.LCNumber]</p>
-                    <div class="alert alert-info small"><i class="fas fa-info-circle me-1"></i>@L["Recording N/A with justification is compliance-positive and demonstrates considered determination during TGA inspections."]</div>
+                    <div class="alert alert-info small"><i class="fas fa-info-circle me-1"></i>@L["Recording N/A with justification is compliance-positive and demonstrates considered determination during regulatory inspections."]</div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">@L["Justification"] <span class="text-danger">*</span></label>
                         <textarea name="reason" class="form-control" rows="4" placeholder="@L["Reason this licence type is not required for the current operating model..."]" required></textarea>

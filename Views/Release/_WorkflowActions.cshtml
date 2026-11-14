@@ -304,7 +304,7 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-success text-white"><h5 class="modal-title">@L["AP Certification — Electronic Signature"]</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <div class="alert alert-info small">@L["By certifying this batch, you are providing an electronic signature under PIC/S Annex 16. Your email and password confirm your identity."]</div>
+                    <div class="alert alert-info small">@L["By certifying this batch, you are signing electronically as the person responsible for batch certification (e.g. PIC/S Annex 16). Your email and password confirm your identity."]</div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">@L["AP Full Name & Qualification"]</label>
                         <input name="apFullName" class="form-control" value="@(Model.APFullNameQualification ?? ViewBag.APDefaultName)" required />

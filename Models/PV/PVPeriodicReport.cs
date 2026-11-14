@@ -27,7 +27,7 @@ namespace OpenQMS.Models
         [Display(Name = "Submission Date")]
         public DateTime? SubmissionDate { get; set; }
 
-        [Display(Name = "TGA Reference Number")]
+        [Display(Name = "Authority Reference Number")]
         public string? TGAReferenceNumber { get; set; }
 
         [Display(Name = "Status")]

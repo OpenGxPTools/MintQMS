@@ -127,7 +127,7 @@
                                 <dt class="col-sm-4">@L["Grade"]</dt><dd class="col-sm-8">@(Model.Grade ?? "-")</dd>
                                 <dt class="col-sm-4">@L["Presentation / Form"]</dt><dd class="col-sm-8">@(Model.PresentationForm ?? "-")</dd>
                             }
-                            <dt class="col-sm-4">@L["ARTG Reference"]</dt><dd class="col-sm-8">@(Model.ArtgReference ?? "-")</dd>
+                            <dt class="col-sm-4">@L["Registration Number"]</dt><dd class="col-sm-8">@(Model.ArtgReference ?? "-")</dd>
                         </dl>
                         <input type="hidden" asp-for="ReleaseType" />
                         <input type="hidden" asp-for="ProductName" />
@@ -293,7 +293,7 @@
                                 else { <span>-</span> }
                             </dd>
                             <dt class="col-sm-4">@L["Releasing Company"]</dt><dd class="col-sm-8">@(Model.ReleasingCompany ?? "-")</dd>
-                            <dt class="col-sm-4">@L["TGA Licence / Clearance"]</dt><dd class="col-sm-8">@(Model.ReleasingCompanyLicenceRef ?? "-")</dd>
+                            <dt class="col-sm-4">@L["Manufacturing Licence No."]</dt><dd class="col-sm-8">@(Model.ReleasingCompanyLicenceRef ?? "-")</dd>
                         </dl>
                         <input type="hidden" asp-for="ManufacturingSite" />
                         <input type="hidden" asp-for="ManufacturingSiteGmpRef" />

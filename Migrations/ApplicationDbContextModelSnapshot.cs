@@ -7748,6 +7748,9 @@ namespace OpenQMS.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("FatalAEReportingDays")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("IdleTimeoutMinutes")
                         .HasColumnType("INTEGER");
 
@@ -7793,6 +7796,9 @@ namespace OpenQMS.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("RiskRetentionYears")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SeriousAEReportingDays")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("SiteLanguage")

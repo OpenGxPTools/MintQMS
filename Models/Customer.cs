@@ -24,7 +24,7 @@ namespace OpenQMS.Models
         [Display(Name = "Industry / Sector")]
         public string? Industry { get; set; }
 
-        [Display(Name = "Legal ID (ABN/ACN/Other)")]
+        [Display(Name = "Company Registration / Tax ID")]
         public string? LegalId { get; set; }
 
         [Display(Name = "Website")]

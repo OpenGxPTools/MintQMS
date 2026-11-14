@@ -166,9 +166,9 @@ investigation must be filled in before it can leave evaluation). The guide notes
 - **Nothing is truly deleted.** "Deleting" a record hides it from active views but retains it (a *soft delete*),
   so the history is never broken.
 - **Times are shown in your site's time zone.** The system stores every time-stamp in UTC and displays it in the
-  **site time zone** set in *Settings → System Settings* (each organisation sets its own; the initial value is
-  Brisbane, AEST). Audit-trail time columns and
-  watermarks show the zone label, e.g. *(AEST)*. "Today" for due and overdue flags is the site's today.
+  **site time zone** set in *Settings → System Settings* (any time zone in the world; a new installation starts
+  on UTC until the Administrator sets it). Audit-trail time columns and
+  watermarks show the zone label, e.g. *(AEST)* or *(UTC-06:00)*. "Today" for due and overdue flags is the site's today.
 
 ### 2.5 Attachments & watermarks
 
@@ -924,8 +924,9 @@ is **Certified** (or **Released**):
   event is recorded in the audit trail. The certificate's current status (*Superseded*, *Withdrawn*) is shown
   above it. Certificates issued before stored copies were introduced are fixed once, in English, the first time
   the upgraded system starts (marked "issued before stored copies were kept").
-- **Content follows Australian (TGA) requirements.** Field names and statements refer to the ARTG, TGA licences
-  and the Authorised Person (PIC/S Annex 16). Translating the certificate does **not** make it meet another
+- **Check the content against your local rules.** The certificate shows the product's **Registration Number**
+  (e.g. the ARTG number in Australia) and the releasing company's **Manufacturing Licence No.**, and is signed by
+  the Authorised Person (PIC/S Annex 16 model); the default statements are written for that model. Translating the certificate does **not** make it meet another
   country's rules (for example COFEPRIS in Mexico, which expects Spanish GMP documentation and a *Responsable
   Sanitario*): check your local requirements, and have the certificate wording in another language reviewed by
   a native-speaking regulatory professional before use.
@@ -952,7 +953,7 @@ Person may Certify or Reject** a batch. Quality staff prepare; operations enter 
 > Signal Reviews and Periodic Reports through their workflow. Read-Only can view but never change. Each module
 > section states which steps are electronically signed.
 >
-> **Deadlines in this group.** MintQMS calculates and displays regulatory deadlines (TGA reporting clocks,
+> **Deadlines in this group.** MintQMS calculates and displays regulatory deadlines (adverse-event reporting clocks,
 > decision dates, expiries, renewals, conditions, report due dates) and highlights them on the dashboards. It
 > does **not** send e-mail or on-screen alerts for them, so make checking the dashboards part of your
 > procedures.
@@ -960,13 +961,13 @@ Person may Certify or Reject** a batch. Quality staff prepare; operations enter 
 ### 7.1 Pharmacovigilance — Adverse Events
 
 **Purpose & intent.** Manages individual adverse-event safety cases (ICSRs) from intake through medical review,
-approval and closure. It works out the TGA reporting deadline for serious cases, records the regulatory
+approval and closure. It works out the reporting deadline for serious cases, records the regulatory
 submission, produces the **CIOMS I** form, and supports follow-up reports. Cases can be linked to complaints,
 CAPAs and periodic reports (PSURs). A case locks when it is approved.
 
 **Who can do what.**
 - **View** the register, dashboard and cases: every role except Operations User and Commercial User.
-- **Create, edit, move through the workflow, record the TGA submission, link complaints, create follow-ups and
+- **Create, edit, move through the workflow, record the submission to the authority, link complaints, create follow-ups and
   void cases:** Administrator, Regulatory Manager, Regulatory User.
 - **Electronically signed:** every workflow move (Submit for Review, Complete Evaluation, Send Back, Approve,
   Reject, Close) and Create Follow-up.
@@ -976,7 +977,7 @@ CAPAs and periodic reports (PSURs). A case locks when it is approved.
 | Step | Move | Rule |
 |---|---|---|
 | Submit for Review | Draft → Under Medical Review | Needs the four minimum case elements (below); serious cases also need Day 0 |
-| Complete Evaluation | Under Medical Review → Pending Approval | Needs the medical narrative; blocked if a reportable serious case has passed its TGA deadline with no submission date recorded |
+| Complete Evaluation | Under Medical Review → Pending Approval | Needs the medical narrative; blocked if a reportable serious case has passed its reporting deadline with no submission date recorded |
 | Send Back | Under Medical Review or Pending Approval → Draft | Optional comment |
 | Reject | Pending Approval → Under Medical Review | Optional comment |
 | Approve | Pending Approval → Approved | Locks the case |
@@ -987,27 +988,29 @@ CAPAs and periodic reports (PSURs). A case locks when it is approved.
 - **Seriousness criteria:** death, life-threatening, hospitalisation, disability, congenital anomaly, medically
   important. Ticking any of them makes the case **serious**.
 - **Day 0** is the date your organisation first received the minimum information for a valid case.
-- **TGA deadline**, calculated automatically from Day 0:
-  - **7 calendar days** for fatal or life-threatening cases
-  - **15 calendar days** for other serious cases
-- If you change the seriousness or Day 0, the deadline is recalculated.
+- **Reporting deadline**, calculated automatically from Day 0, in calendar days set in *Settings → System
+  Settings → Adverse Event Reporting Deadlines* (set them to the rules of the authority you report to):
+  - **7 calendar days** by default for fatal or life-threatening cases
+  - **15 calendar days** by default for other serious cases
+- If you change the seriousness or Day 0, the deadline is recalculated (with the settings in force then). A
+  later change of the settings does not move the deadline of an existing case.
 
 **Step-by-step walkthrough.**
 1. **Log the case.** *Regulatory → Pharmacovigilance → Adverse Events → Create.* The form has numbered
    sections:
    1. **Report Info:** report type (initial or follow-up), source (spontaneous, literature, clinical study,
-      post-market study, digital media, regulatory authority, other), Day 0, and any Special Access Scheme
-      reference.
+      post-market study, digital media, regulatory authority, other), Day 0, and any special-access reference
+      (e.g. the Australian SAS).
    2. **Patient:** identifier (initials or code, never a full name), date of birth or age, sex, weight, height,
       medical history, concomitant medicines, pregnancy.
-   3. **Suspect Product:** choose the product (name and ARTG number fill in), batch, route, dose and frequency,
+   3. **Suspect Product:** choose the product (name and registration number fill in), batch, route, dose and frequency,
       indication, treatment dates, action taken, and dechallenge and rechallenge results.
    4. **AE Details:** description, MedDRA preferred term and system organ class, start and end dates, outcome,
       seriousness criteria.
    5. **Case Assessment:** severity, causality (certain to unclassifiable), expectedness, medical narrative,
       evaluator and date, and whether it points to a possible signal.
-   6. **Regulatory:** whether the case is reportable to the TGA and why, submission method and date, ADRS
-      reference, overseas reporting, whether to include it in the next PSUR, and significant safety issue.
+   6. **Regulatory:** whether the case is reportable to the authority and why, submission method and date, the
+      authority's case reference (e.g. the TGA ADRS number), overseas reporting, whether to include it in the next PSUR, and significant safety issue.
    7. **Attachments.**
 
    The reporter's details (name, type, qualification, institution and contact details) are recorded too. The
@@ -1017,8 +1020,8 @@ CAPAs and periodic reports (PSURs). A case locks when it is approved.
    cases also need Day 0.
 3. **Medical review.** Complete the **Case Assessment** (causality, expectedness, severity and the medical
    narrative), then **Complete Evaluation** (signed) → Pending Approval.
-4. **Report to the TGA if required.** On the **Regulatory** tab, record the decision and, once submitted, use
-   **Log TGA Submission** to record the date, method and ADRS reference. Do this **before the deadline**:
+4. **Report to the authority if required.** On the **Regulatory** tab, record the decision and, once submitted,
+   use **Log Authority Submission** to record the date, method and the authority's case reference. Do this **before the deadline**:
    MintQMS will not let a reportable serious case move to Pending Approval after its deadline unless the
    submission date is recorded.
 5. **Approve** (signed). The case locks. **Export CIOMS** produces the CIOMS I form as a PDF at any stage.
@@ -1042,7 +1045,7 @@ CAPAs and periodic reports (PSURs). A case locks when it is approved.
 
 **Dashboard.** *Regulatory → PV Dashboard* shows:
 - open, serious and non-serious case counts
-- cases approaching or past their TGA deadline
+- cases approaching or past their reporting deadline
 - cases submitted this month
 - possible signals flagged on cases
 - a status chart and recent activity
@@ -1117,7 +1120,7 @@ records the term, the date it was detected and the number of cases.
    If you need more data first, set the conclusion to **Ongoing Monitoring** (via Edit) and keep the review
    Under Review. MintQMS records who reviewed it and when.
 5. **Act on a confirmed signal.** **Create CAPA** raises a linked CAPA, e.g. for a label update or risk
-   management plan change. A confirmed signal may also need reporting to the TGA under your procedures, outside
+   management plan change. A confirmed signal may also need reporting to the authority under your procedures, outside
    MintQMS.
 6. **Close** the review.
 
@@ -1159,7 +1162,7 @@ reporting period, linking the adverse-event cases it covers, review, submission 
    expectedness, regulatory status), as input to the report document. Upload the report and supporting files
    under **Attachments**.
 4. **Under Review:** move it for review; send it back to In Preparation if changes are needed.
-5. **Submit Report** (signed) when sent to the authority. Then record the TGA reference number.
+5. **Submit Report** (signed) when sent to the authority. Then record the authority's reference number.
 6. **Accept Report** (signed) when the authority acknowledges or accepts it. The report is then locked: it can
    no longer be edited and attachments cannot be added.
 
@@ -1293,8 +1296,9 @@ categories:
   licences, ODC import/export licences and permits, state wholesale licences. These are pre-loaded as licence
   types.
 - **ISO and private certifications**, e.g. ISO 9001 certificates.
-- **Third-party site approvals**, e.g. GMP clearances for overseas manufacturers, via the MRA, Compliance
-  Verification or TGA-inspection pathways.
+- **Third-party site approvals**, e.g. GMP evidence for overseas manufacturers (GMP clearance in Australia), via
+  a Mutual Recognition Agreement, a review of another authority's inspection (Compliance Verification) or an
+  on-site inspection by the authority.
 
 A record can be held by your **own company** or by a **third party** (an external manufacturing or supply site,
 linked to a supplier). Issued records are locked; changes go through a variation or renewal.
@@ -1335,7 +1339,8 @@ Suspend and Withdraw need a reason.
 2. **Fill in the details** across the tabs:
    - **Licence Details:** licence or certificate number, scope, application, issue and expiry dates, next
      renewal due and renewal lead time (in days).
-   - **GMP / ISO**, for third-party GMP clearances: pathway (MRA, Compliance Verification or TGA inspection),
+   - **GMP / ISO**, for third-party GMP clearances: GMP evidence pathway (MRA, review of another authority's inspection, or
+     on-site inspection by the authority),
      site country, manufacturing steps covered, last inspection date and authority, requests for information
      (RFI date, response due, response sent), letter of access. For ISO certificates: certification body and
      its accreditation, standard version, certificate scope, next surveillance audit and recertification dates.
@@ -1671,10 +1676,13 @@ eligibility), password policy and cool-down periods — and the **batch-release 
 which are recorded in the settings audit log. The page covers the organisation's name, address and logo; display
 preferences; the **warning periods** that decide what the dashboards show as due soon (licence and certificate
 expiry, maintenance, training); default resolution times; password expiry, password history and idle time-out;
-the e-mail (SMTP) server used for account confirmation and password resets; and retention periods.
+the **adverse-event reporting deadlines** (calendar days after Day 0 for serious and for fatal or
+life-threatening cases; defaults 15 and 7); the e-mail (SMTP) server used for account confirmation and password
+resets; and retention periods.
 **Display Preferences → Site Time Zone** sets the time zone in which every date/time is shown — screens, audit
 trails, exports and watermarks — and the "today" used for due and overdue flags; stored time-stamps are not
-changed. Set it to your site's own time zone (the initial value is Brisbane). Release-certification statement
+changed. Choose your site's own time zone from the full world list (a new installation starts on UTC; an
+existing installation keeps the zone it was using). Release-certification statement
 templates are maintained under *Settings → Release Certification Statements*.
 
 **Display Preferences → Site Language** sets the language every screen is shown in, for every user, including

@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+**Usable outside Australia**
+
+- **Site time zone:** System Settings now offers every time zone in the world, grouped by continent (before:
+  Australian cities, Auckland and UTC only). A new installation starts on UTC until the Administrator chooses;
+  an existing installation keeps the zone it was using, including one that never saved its settings (Brisbane).
+- **Adverse-event reporting deadlines** are System Settings (calendar days after Day 0: serious, default 15;
+  fatal or life-threatening, default 7) instead of fixed in the program. An existing case keeps its deadline when
+  the settings change; it is recalculated only when its Day 0 or seriousness changes, and the change is now in
+  the case's audit trail.
+- **General wording instead of Australian terms**, in English, Spanish and Portuguese:
+  *ARTG Number / ARTG Reference / ARTG Entry* → **Registration Number** (one wording everywhere: products, batch
+  release, release certificate, adverse-event suspect product, CIOMS form, exports); *Reportable to TGA, TGA
+  Deadline, TGA Submission…, Log TGA Submission, Submitted to / Acknowledged by TGA* → **Authority** wording
+  and **Reporting Deadline**; *TGA ADRS Reference* → **Authority Case Reference**; *AEMS Portal* → **Authority
+  Online Portal**; PSUR *TGA Reference* → **Authority Reference**; *Releasing Company TGA Licence / Clearance No.*
+  → **Releasing Company Manufacturing Licence No.**; *Legal ID (ABN/ACN/Other)* → **Company Registration / Tax
+  ID**; the licence *GMP Clearance Pathway* → **GMP Evidence Pathway** (MRA, review of another authority's
+  inspection, on-site inspection by the authority); help texts and the AP signature note refer to "the
+  authority" / "e.g. PIC/S Annex 16". Australian-only access pathways are marked **(AU)** (SAS A/B/C,
+  Authorised Prescriber, CTN). The default release checklist and the Consumer Health certification statement
+  no longer name the TGA. Database fields are unchanged (no data conversion). Exports and CSV/Excel column
+  headings use the new wording; audit entries written before keep the old field names; release certificates
+  already issued keep their wording (they are stored exactly as issued).
+
 **Documents and Training in Spanish and Portuguese**
 
 - Every page of the Documents and Training modules (registers, create/edit, approval and its signature
@@ -16,8 +40,9 @@
   The suggested actions loaded into an action plan stay in English, because they become part of the record.
 - Suppliers, Maintenance, Batch Release (with certification statements settings) and Data Disposal in
   Spanish and Portuguese: pages, dashboards, signature dialogs, checklists, test results, alerts, messages
-  and validation errors. Release certificates: see *Generated records and issued documents* below; checklist item
-  names and certification statement texts are record content and also stay as entered.
+  and validation errors. Release certificates: see *Generated records and issued documents* below. The standard
+  checklist lines are stored in English and shown in the screen language (they cannot be edited, so the
+  record itself does not change); certification statement texts are record content and stay as entered.
 - Pharmacovigilance (adverse events, literature monitoring, signal review, PSUR), Regulatory Intelligence
   (applications, conditions, variations, milestones, access pathways) and Licences & Certifications (register,
   calendar, dashboard) in Spanish and Portuguese: pages, guidance texts (seriousness, MedDRA, causality, Day 0,
@@ -28,7 +53,7 @@
   presentation forms, device and material categories, customer industries). Options are stored in English
   whatever the language, and a stored value is shown translated.
 - Reports (hub, management review, overdue items, training compliance, attachment expiry register) and
-  System Settings (with its audit log) in Spanish and Portuguese; the time zone list too. Excel exports: see
+  System Settings (with its audit log) in Spanish and Portuguese. Excel exports: see
   *Generated records and issued documents* below.
 - Dashboard charts in every module show their labels (statuses, types, categories, series names) and month
   names in the user's language; the "All" choice in table page-size menus is translated everywhere.

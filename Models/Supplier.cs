@@ -17,7 +17,7 @@ namespace OpenQMS.Models
         [Display(Name = "Trading Name")]
         public string? TradingName { get; set; }
 
-        [Display(Name = "Legal ID (ABN/ACN/Other)")]
+        [Display(Name = "Company Registration / Tax ID")]
         public string? LegalId { get; set; }
 
         [Display(Name = "Website")]

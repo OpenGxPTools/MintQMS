@@ -226,6 +226,13 @@ namespace OpenQMS.Services
             if (settings == null)
             {
                 settings = new SystemSettings { Id = 1 };
+                // An installation already in use kept the former default zone while it had no settings row;
+                // keep it, so its times and due dates do not move on upgrade. A new installation starts on UTC.
+                if (await _db.LoginAuditLog.AnyAsync())
+                {
+                    settings.TimeZoneId = SiteTime.LegacyDefaultZoneId;
+                    SiteTime.Configure(settings.TimeZoneId);
+                }
                 _db.SystemSettings.Add(settings);
             }
             if (settings.IssuedCopiesSince == null)

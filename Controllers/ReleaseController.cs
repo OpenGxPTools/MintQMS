@@ -38,7 +38,7 @@ namespace OpenQMS.Controllers
         // Tuple: (Category, ItemText, IsBlocking, NonBlockingForQO)
         // NonBlockingForQO=true means the item is created as non-blocking on Quality Oversight records.
         private static readonly (string Category, string ItemText, bool IsBlocking, bool NonBlockingForQO)[] DefaultChecklistItems = new[]
-        {
+        { /* i18n */
             ("Manufacturing", "Batch Manufacturing Record (BMR) reviewed and found in conformity with GMP and the approved Product Specification File", true,  true),
             ("Manufacturing", "Production conditions (process parameters, yields) reviewed and within approved limits",                                  true,  true),
             ("Manufacturing", "In-process control results reviewed and compliant",                                                                      true,  true),
@@ -50,8 +50,8 @@ namespace OpenQMS.Controllers
             ("QC",            "Raw material / excipient Certificates of Analysis reviewed",                                                             true,  true),
             ("QC",            "Environmental monitoring data reviewed; no unresolved OOT or OOS results with batch impact",                            true,  true),
             ("QC",            "Reference standards and reagents used are within validity",                                                              false, false),
-            ("Regulatory",    "Manufacturing site holds a current TGA GMP Licence / GMP Clearance for the manufacturing steps performed",              true,  false),
-            ("Regulatory",    "Product is registered / approved for supply under the applicable pathway (ARTG, SAS Cat B, AP, etc.)",                  true,  false),
+            ("Regulatory",    "Manufacturing site holds a current GMP licence / GMP clearance from the relevant authority for the manufacturing steps performed",              true,  false),
+            ("Regulatory",    "Product is registered / approved for supply under the applicable pathway (e.g. product registration, special or named-patient access)",                  true,  false),
             ("Regulatory",    "Any applicable post-marketing regulatory commitments addressed",                                                         false, false),
             ("Regulatory",    "Technical Agreement in place and current (if applicable)",                                                               false, false),
             ("Deviations",    "All batch-related deviations reviewed; no outstanding deviations with unresolved quality impact",                        true,  false),
@@ -65,7 +65,7 @@ namespace OpenQMS.Controllers
 
         // ── Medical Device / Raw Material (Device Part, Device Subcomponent)
         private static readonly (string Category, string ItemText, bool IsBlocking, bool NonBlockingForQO)[] MedicalDeviceChecklistItems = new[]
-        {
+        { /* i18n */
             ("Manufacturing / Production", "Device History Record (DHR) reviewed; all manufacturing steps completed in conformity with the approved Device Master Record (DMR)", true,  false),
             ("Manufacturing / Production", "In-process inspection records reviewed; all results within acceptance criteria",                                                      true,  false),
             ("Manufacturing / Production", "Equipment qualification and calibration status confirmed current for all equipment used in manufacture",                             true,  false),
@@ -92,7 +92,7 @@ namespace OpenQMS.Controllers
 
         // ── Raw Material (Consumable) — lighter framework
         private static readonly (string Category, string ItemText, bool IsBlocking, bool NonBlockingForQO)[] ConsumableChecklistItems = new[]
-        {
+        { /* i18n */
             ("Receipt & Identification", "Delivery documentation reviewed (delivery note / invoice); product description and quantity match the purchase order", true,  false),
             ("Receipt & Identification", "Product identity confirmed — labelling, markings and packaging consistent with the ordered specification",             true,  false),
             ("Receipt & Identification", "Lot / batch number or other traceability reference recorded",                                                         true,  false),
@@ -594,7 +594,7 @@ namespace OpenQMS.Controllers
                     AuditDiffHelper.Track(diff,     "INN Name",                   existing.InnName,                   record.InnName);
                     AuditDiffHelper.Track(diff,     "Dosage Form",                existing.DosageForm,                record.DosageForm);
                     AuditDiffHelper.Track(diff,     "Strength",                   existing.Strength,                  record.Strength);
-                    AuditDiffHelper.Track(diff,     "ARTG Reference",             existing.ArtgReference,             record.ArtgReference);
+                    AuditDiffHelper.Track(diff,     "Registration Number",             existing.ArtgReference,             record.ArtgReference);
                     AuditDiffHelper.Track(diff,     "INCI Name",                  existing.InciName,                  record.InciName);
                     AuditDiffHelper.Track(diff,     "Presentation Form",          existing.PresentationForm,          record.PresentationForm);
                     AuditDiffHelper.Track(diff,     "Device Type / Category",     existing.DeviceTypeCategory,        record.DeviceTypeCategory);
@@ -1473,7 +1473,7 @@ namespace OpenQMS.Controllers
                 (R("Material Type / Category"),   record.RawMaterialTypeCategory),
                 (R("Grade"),                      record.Grade),
                 (R("Strength / Presentation"),    record.Strength),
-                (R("ARTG Reference"),             record.ArtgReference),
+                (R("Registration Number"),             record.ArtgReference),
                 (R("Batch Number"),               record.BatchNumber),
                 (R("Batch Size"),                 record.BatchSize),
                 (R("Pack Size"),                  record.PackSize),
@@ -1486,7 +1486,7 @@ namespace OpenQMS.Controllers
                 (R("Packaging GMP Ref."),         record.PackagingSiteGmpRef),
                 (R("Testing Laboratories"),       string.Join("; ", (record.TestingLabs ?? new List<ReleaseTestingLab>()).Select(t => string.IsNullOrEmpty(t.GmpLicenceRef) ? t.LaboratoryName : $"{t.LaboratoryName} [{t.GmpLicenceRef}]"))),
                 (R("Releasing Company"),          record.ReleasingCompany),
-                (R("TGA Licence / Clearance"),    record.ReleasingCompanyLicenceRef),
+                (R("Manufacturing Licence No."),    record.ReleasingCompanyLicenceRef),
                 (R("Final Release Party"),        record.FinalReleaseParty),
                 (R("Technical Agreement Ref."),   record.TechnicalAgreementRef),
                 (R("Specification Ref."),         record.SpecificationReference),
@@ -1511,7 +1511,7 @@ namespace OpenQMS.Controllers
                  new[] { R("Category"), R("Item"), R("Status"), R("Comment") },
                  (record.ChecklistItems ?? new List<ReleaseChecklistItem>())
                      .OrderBy(c => c.DisplayOrder)
-                     .Select(c => new[] { c.Category ?? "", c.ItemText, RE(c.Status), c.Comment ?? "" })),
+                     .Select(c => new[] { c.Category == null ? "" : R(c.Category), string.IsNullOrEmpty(c.ItemText) ? "" : R(c.ItemText), RE(c.Status), c.Comment ?? "" })),
             };
 
             tables.Add((R("Analytical Results"),
@@ -1559,7 +1559,7 @@ namespace OpenQMS.Controllers
                 .Select(t => string.IsNullOrEmpty(t.GmpLicenceRef) ? t.LaboratoryName : $"{t.LaboratoryName} [{t.GmpLicenceRef}]"));
 
             builder.AppendLine(CsvHeader(
-                "Record Number", "Release Type", "Status", "Product Name", "Product Type", "INN/Generic", "INCI Name", "Standard/Scientific Name", "Brand Name", "Dosage Form", "Presentation/Form", "Device Type/Category", "Model/Version", "Material Type/Category", "Grade", "Strength/Presentation", "ARTG Reference", "Batch Number", "Batch Size", "Pack Size", "Manufacturing Date", "Expiry Date", "Retest Date", "Manufacturing Site", "Manufacturing GMP Ref", "Packaging Site", "Packaging GMP Ref", "Testing Laboratories", "Releasing Company", "TGA Licence/Clearance Ref", "Final Release Party", "Technical Agreement", "Specification Ref", "Storage Conditions", "Distribution Conditions", "Open Deviations Notes", "Limitations Notes", "Notes", "AP Name & Qualification", "Certification Date", "Release Reference Number", "Created By", "Created Date"));
+                "Record Number", "Release Type", "Status", "Product Name", "Product Type", "INN/Generic", "INCI Name", "Standard/Scientific Name", "Brand Name", "Dosage Form", "Presentation/Form", "Device Type/Category", "Model/Version", "Material Type/Category", "Grade", "Strength/Presentation", "Registration Number", "Batch Number", "Batch Size", "Pack Size", "Manufacturing Date", "Expiry Date", "Retest Date", "Manufacturing Site", "Manufacturing GMP Ref", "Packaging Site", "Packaging GMP Ref", "Testing Laboratories", "Releasing Company", "Manufacturing Licence No.", "Final Release Party", "Technical Agreement", "Specification Ref", "Storage Conditions", "Distribution Conditions", "Open Deviations Notes", "Limitations Notes", "Notes", "AP Name & Qualification", "Certification Date", "Release Reference Number", "Created By", "Created Date"));
 
             builder.AppendLine(string.Join(",",
                 CsvSafe(record.RecordNumber),

@@ -47,7 +47,7 @@
         <div class="row">
             <div class="col-md-4"><strong>@L["Product Name:"]</strong> @snap.ProductName</div>
             <div class="col-md-4"><strong>@L["Brand Name:"]</strong> @(snap.BrandName ?? "-")</div>
-            <div class="col-md-4"><strong>@L["ARTG Ref.:"]</strong> @(snap.ArtgReference ?? "-")</div>
+            <div class="col-md-4"><strong>@L["Registration No.:"]</strong> @(snap.ArtgReference ?? "-")</div>
         </div>
         @if (!cpt.HasValue || cpt == ProductType.Pharmaceutical || cpt == ProductType.Biological || cpt == ProductType.ConsumerHealth)
         {
@@ -142,7 +142,7 @@
             </div>
             <div class="col-md-6">
                 <strong>@L["Releasing Company:"]</strong> @(snap.ReleasingCompany ?? "-")<br />
-                <small class="text-muted">@L["TGA Licence / Clearance: {0}", snap.ReleasingCompanyLicenceRef ?? "-"]</small>
+                <small class="text-muted">@L["Manufacturing Licence No.: {0}", snap.ReleasingCompanyLicenceRef ?? "-"]</small>
             </div>
         </div>
     </div>

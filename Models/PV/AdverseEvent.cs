@@ -17,7 +17,7 @@ namespace OpenQMS.Models
         [Display(Name = "Day 0 Date")]
         public DateTime? Day0Date { get; set; }
 
-        [Display(Name = "TGA Deadline Date")]
+        [Display(Name = "Reporting Deadline")]
         public DateTime? TGADeadlineDate { get; set; }
 
         [Display(Name = "Report Type")]
@@ -70,7 +70,7 @@ namespace OpenQMS.Models
         [Display(Name = "Fatal or Life-Threatening")]
         public bool IsFatalOrLifeThreatening { get; set; }
 
-        [Display(Name = "Reportable to TGA")]
+        [Display(Name = "Reportable to Authority")]
         public bool? IsReportable { get; set; }
 
         [Display(Name = "Record Locked")]

@@ -53,9 +53,11 @@ namespace OpenQMS.Models.LC
 
     public enum LCGmcPathway
     {
+        [Display(Name = "MRA (Mutual Recognition Agreement)")]
         MRA          = 1,   // Mutual Recognition Agreement country
+        [Display(Name = "Review of Another Authority's Inspection (CV)")]
         CV           = 2,   // Compliance Verification (recognised authority inspection)
-        [Display(Name = "TGA On-Site Inspection")]
+        [Display(Name = "On-Site Inspection by the Authority")]
         TGAInspection= 3    // TGA On-Site Inspection (no MRA/CV available)
     }
 

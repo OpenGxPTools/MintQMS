@@ -80,7 +80,7 @@ namespace OpenQMS.Services
 
             var prod1 = NewTable(new float[] { 2, 1, 1 });
             AddLH(prod1, boldFont, R("Product Name"));
-            AddLH(prod1, boldFont, R("ARTG Number"));
+            AddLH(prod1, boldFont, R("Registration Number"));
             AddLH(prod1, boldFont, R("Batch / Lot"));
             AddLD(prod1, normalFont, product?.ProductName ?? "");
             AddLD(prod1, normalFont, product?.ARTGNumber ?? "");
@@ -176,8 +176,8 @@ namespace OpenQMS.Services
 
             var reg1 = NewTable(new float[] { 1, 1, 1 });
             AddLH(reg1, boldFont, R("Report Type"));
-            AddLH(reg1, boldFont, R("Reportable to TGA"));
-            AddLH(reg1, boldFont, R("TGA Deadline"));
+            AddLH(reg1, boldFont, R("Reportable to Authority"));
+            AddLH(reg1, boldFont, R("Reporting Deadline"));
             AddLD(reg1, normalFont, RE(ae.ReportType)!);
             AddLD(reg1, normalFont,
                 ae.IsReportable == null ? R("Pending Assessment") :

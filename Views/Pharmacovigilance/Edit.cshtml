@@ -129,7 +129,7 @@
                     <input asp-for="Day0Date" type="date" class="form-control" id="day0DateInput" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">@L["TGA Deadline"]</label>
+                    <label class="form-label">@L["Reporting Deadline"]</label>
                     <div id="deadlineBadge" class="mt-1">
                         @if (Model.TGADeadlineDate.HasValue && Model.IsSerious)
                         {
@@ -243,7 +243,7 @@
                     <input type="text" name="suspectProduct.ProductName" value="@sp?.ProductName" class="form-control" />
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">@L["ARTG Number"]</label>
+                    <label class="form-label">@L["Registration Number"]</label>
                     <input type="text" name="suspectProduct.ARTGNumber" value="@sp?.ARTGNumber" class="form-control" />
                 </div>
                 <div class="col-md-4">
@@ -428,7 +428,7 @@
         <div class="tab-pane fade" id="tab-regulatory">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label">@L["Reportable to TGA?"]</label>
+                    <label class="form-label">@L["Reportable to Authority?"]</label>
                     <select name="regulatoryReport.IsReportableToTGA" class="form-select">
                         @Html.Raw(
                             $"<option value=\"\"{(reg?.IsReportableToTGA == null ? " selected" : "")}>{System.Net.WebUtility.HtmlEncode(L["Pending Assessment"].Value)}</option>" +
@@ -437,7 +437,7 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">@L["TGA Submission Date"]</label>
+                    <label class="form-label">@L["Authority Submission Date"]</label>
                     <input type="date" name="regulatoryReport.TGASubmissionDate" value="@reg?.TGASubmissionDate?.ToString("yyyy-MM-dd")" class="form-control" />
                 </div>
                 <div class="col-md-4">
@@ -445,7 +445,7 @@
                     <select name="regulatoryReport.SubmissionMethod" class="form-select">@Html.Raw(SubmissionMethodOptions(reg?.SubmissionMethod))</select>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">@L["TGA ADRS Reference Number"]</label>
+                    <label class="form-label">@L["Authority Case Reference Number"]</label>
                     <input type="text" name="regulatoryReport.TGAADRSReferenceNumber" value="@reg?.TGAADRSReferenceNumber" class="form-control" />
                 </div>
                 <div class="col-md-6">

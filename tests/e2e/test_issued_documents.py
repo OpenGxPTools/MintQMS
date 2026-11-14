@@ -239,4 +239,4 @@ check("passed attempt: certificate issued for that attempt", second != first and
 check("…and the training's attendance list is fixed", active("AttendanceList", ca) is not None)
 
 site("en")
-summary()
+sys.exit(summary())

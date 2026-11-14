@@ -47,4 +47,4 @@ post_form(s, f"/Pharmacovigilance/Reject/{ae}", f"/Pharmacovigilance/Details/{ae
           {"email": ADMIN, "pwd": "wrong-password", "comment": "x"})
 check("Reject with a wrong password is refused", names.get(status()) == "PendingApproval", names.get(status()))
 
-summary()
+sys.exit(summary())

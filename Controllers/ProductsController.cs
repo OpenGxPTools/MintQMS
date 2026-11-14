@@ -385,7 +385,7 @@ namespace OpenQMS.Controllers
                         AuditDiffHelper.Track(diff,     "INN Name",                 snap.InnName,                 product.InnName);
                         AuditDiffHelper.Track(diff,     "Brand Name",               snap.BrandName,               product.BrandName);
                         AuditDiffHelper.Track(diff,     "Dosage Form",              snap.DosageForm,              product.DosageForm);
-                        AuditDiffHelper.Track(diff,     "ARTG Reference",           snap.ArtgReference,           product.ArtgReference);
+                        AuditDiffHelper.Track(diff,     "Registration Number",           snap.ArtgReference,           product.ArtgReference);
                         AuditDiffHelper.Track(diff,     "Description",              snap.Description,             product.Description);
                         AuditDiffHelper.Track(diff,     "INCI Name",                snap.InciName,                product.InciName);
                         AuditDiffHelper.Track(diff,     "Presentation Form",        snap.PresentationForm,        product.PresentationForm);
@@ -978,7 +978,7 @@ namespace OpenQMS.Controllers
                 (R("Model / Version"),               product.ModelVersion),
                 (R("Material Type / Category"),      product.RawMaterialTypeCategory),
                 (R("Grade"),                         product.Grade),
-                (R("ARTG / Regulatory Reference"),   product.ArtgReference),
+                (R("Registration Number"),   product.ArtgReference),
                 (R("Strength / Presentation"),       string.Join(", ", product.Strengths?.Select(s => s.Value) ?? Enumerable.Empty<string>())),
                 (R("Status"),                        RE(product.Status)),
                 (R("Description"),                   product.Description),
@@ -1022,7 +1022,7 @@ namespace OpenQMS.Controllers
 
             var strengths = string.Join(" | ", product.Strengths?.Select(s => s.Value) ?? Enumerable.Empty<string>());
             var builder = new StringBuilder();
-            builder.AppendLine(CsvHeader("Product Id", "Name", "Product Type", "INN/Generic Name", "INCI Name", "Standard/Scientific Name", "Brand/Trade Name", "Dosage Form", "Presentation/Form", "Device Type/Category", "Model/Version", "Material Type/Category", "Grade", "ARTG Reference", "Strength/Presentation", "Description", "Version", "Status", "Edited By", "Edited On", "Approved By", "Approved On"));
+            builder.AppendLine(CsvHeader("Product Id", "Name", "Product Type", "INN/Generic Name", "INCI Name", "Standard/Scientific Name", "Brand/Trade Name", "Dosage Form", "Presentation/Form", "Device Type/Category", "Model/Version", "Material Type/Category", "Grade", "Registration Number", "Strength/Presentation", "Description", "Version", "Status", "Edited By", "Edited On", "Approved By", "Approved On"));
             builder.AppendLine(string.Join(",",
                 product.ProductId,
                 $"\"{product.Name}\"",

@@ -168,7 +168,7 @@ namespace OpenQMS.Services
                 string level    = overdueDays > 30 ? "CRITICAL" : "WARNING";
                 string message  = $"RFI response overdue by {overdueDays} day(s). " +
                                   $"Response was due {r.RFIResponseDueDate.Value:dd MMM yyyy}. " +
-                                  "TGA assessment clock may be paused. Submit response or contact authority immediately.";
+                                  "The authority's assessment clock may be paused. Submit response or contact authority immediately.";
 
                 await notifier.SendAsync("RFIOverdue", level, r.LCNumber, message,
                     new[] { r.InternalResponsiblePersonId ?? "LicenceManager" });

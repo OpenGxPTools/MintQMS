@@ -83,7 +83,7 @@ namespace OpenQMS.Models.LC
         public int RenewalLeadTimeDays { get; set; } = 90;
 
         // ── GMP Clearance Specifics (Category C / ThirdPartySiteApproval) ────
-        [Display(Name = "GMP Clearance Pathway")]
+        [Display(Name = "GMP Evidence Pathway")]
         public LCGmcPathway? GmcPathway { get; set; }
 
         [MaxLength(100)]

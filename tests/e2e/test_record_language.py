@@ -96,4 +96,4 @@ check("download stamp in English when the site is English", t is None or "SUPPOR
 
 s.post(BASE + "/Language/Set", data={"culture": "en", "returnUrl": "/", "__RequestVerificationToken": token(pg.text)})
 exec_sql("update SystemSettings set SiteLanguage='en', AllowUserLanguageChoice=0")
-summary()
+sys.exit(summary())

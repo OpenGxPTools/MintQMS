@@ -72,7 +72,7 @@
     var daysLeft = (Model.TGADeadlineDate.Value.Date - SiteTime.Today).Days;
     var alertClass = daysLeft < 0 ? "danger" : daysLeft <= 2 ? "danger" : daysLeft <= 5 ? "warning" : "info";
     <div class="alert alert-@alertClass mb-3">
-        <strong>@L["TGA Reporting Deadline:"]</strong> @Model.TGADeadlineDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
+        <strong>@L["Reporting Deadline:"]</strong> @Model.TGADeadlineDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)
         @if (daysLeft < 0) { <span class="badge bg-danger ms-2">@L["OVERDUE by {0} days", Math.Abs(daysLeft)]</span> }
         else if (daysLeft == 0) { <span class="badge bg-danger ms-2">@L["Due TODAY"]</span> }
         else { <span class="badge bg-@alertClass ms-2">@L["{0} day(s) remaining", daysLeft]</span> }
@@ -118,7 +118,7 @@
             <dd class="col-sm-9">@L.Enum(Model.ReportType)</dd>
             <dt class="col-sm-3">@L["Day 0 Date"]</dt>
             <dd class="col-sm-9">@(Model.Day0Date?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
-            <dt class="col-sm-3">@L["TGA Deadline"]</dt>
+            <dt class="col-sm-3">@L["Reporting Deadline"]</dt>
             <dd class="col-sm-9">@(Model.TGADeadlineDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "-")</dd>
             <dt class="col-sm-3">@L["Created By"]</dt>
             <dd class="col-sm-9">@L["{0} on {1}", Model.CreatedBy, Model.CreatedOn.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture)]</dd>
@@ -182,7 +182,7 @@
                     @(sp.ProductName ?? "-")
                     @if (sp.Product != null) { <a asp-controller="Products" asp-action="Details" asp-route-id="@sp.ProductId" class="ms-2 badge bg-light text-dark">@L["View in Register"]</a> }
                 </dd>
-                <dt class="col-sm-3">@L["ARTG Number"]</dt>
+                <dt class="col-sm-3">@L["Registration Number"]</dt>
                 <dd class="col-sm-9">@(sp.ARTGNumber ?? "-")</dd>
                 <dt class="col-sm-3">@L["Batch / Lot"]</dt>
                 <dd class="col-sm-9">@(sp.BatchNumber ?? "-")</dd>
@@ -263,12 +263,12 @@
             {
                 var bannerText = deadlineStatus switch {
                     OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Overdue =>
-                        L["OVERDUE — TGA deadline was {0}. Submission not yet recorded.", Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value,
+                        L["OVERDUE — reporting deadline was {0}. Submission not yet recorded.", Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value,
                     OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Critical =>
-                        L["CRITICAL — TGA deadline in {0} day(s) ({1}).", (Model.TGADeadlineDate!.Value.Date - SiteTime.Today).Days, Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value,
+                        L["CRITICAL — reporting deadline in {0} day(s) ({1}).", (Model.TGADeadlineDate!.Value.Date - SiteTime.Today).Days, Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value,
                     OpenQMS.Services.PVRegulatoryService.DeadlineStatus.Warning =>
-                        L["WARNING — TGA deadline in {0} day(s) ({1}).", (Model.TGADeadlineDate!.Value.Date - SiteTime.Today).Days, Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value,
-                    _ => L["TGA submission deadline: {0}.", Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value
+                        L["WARNING — reporting deadline in {0} day(s) ({1}).", (Model.TGADeadlineDate!.Value.Date - SiteTime.Today).Days, Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value,
+                    _ => L["Authority submission deadline: {0}.", Model.TGADeadlineDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)].Value
                 };
                 <div class="alert alert-@deadlineBadgeClass d-flex align-items-center mb-3" role="alert">
                     <i class="fas fa-clock me-2"></i>
@@ -279,13 +279,13 @@
             <dl class="row">
                 <dt class="col-sm-3">@L["Deadline Status"]</dt>
                 <dd class="col-sm-9"><span class="badge bg-@deadlineBadgeClass">@deadlineStatus</span></dd>
-                <dt class="col-sm-3">@L["Reportable to TGA"]</dt>
+                <dt class="col-sm-3">@L["Reportable to Authority"]</dt>
                 <dd class="col-sm-9">
                     @if (reg.IsReportableToTGA == null) { <span class="badge bg-secondary">@L["Pending Assessment"]</span> }
                     else if (reg.IsReportableToTGA == true) { <span class="badge bg-danger">@L["Yes — Expedited Reporting Required"]</span> }
                     else { <span class="badge bg-success">@L["No"]</span> }
                 </dd>
-                <dt class="col-sm-3">@L["TGA Submission Date"]</dt>
+                <dt class="col-sm-3">@L["Authority Submission Date"]</dt>
                 <dd class="col-sm-9">
                     @if (reg.TGASubmissionDate.HasValue) {
                         <span class="badge bg-success">@reg.TGASubmissionDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</span>
@@ -293,7 +293,7 @@
                 </dd>
                 <dt class="col-sm-3">@L["Submission Method"]</dt>
                 <dd class="col-sm-9">@(reg.SubmissionMethod == null ? "-" : L.Enum(reg.SubmissionMethod))</dd>
-                <dt class="col-sm-3">@L["TGA ADRS Reference"]</dt>
+                <dt class="col-sm-3">@L["Authority Case Reference"]</dt>
                 <dd class="col-sm-9">@(reg.TGAADRSReferenceNumber ?? "-")</dd>
                 <dt class="col-sm-3">@L["E2B Reference"]</dt>
                 <dd class="col-sm-9">@(reg.E2BTransmissionReference ?? "-")</dd>
@@ -319,7 +319,7 @@
             {
                 <div class="card border-warning mb-3">
                     <div class="card-header bg-warning text-dark">
-                        <strong><i class="fas fa-paper-plane me-1"></i>@L["Log TGA Submission"]</strong>
+                        <strong><i class="fas fa-paper-plane me-1"></i>@L["Log Authority Submission"]</strong>
                     </div>
                     <div class="card-body">
                         <form method="post" asp-action="LogTGASubmission" asp-route-id="@Model.Id">
@@ -334,15 +334,15 @@
                                     <label class="form-label small fw-bold">@L["Submission Method"]</label>
                                     <select name="method" class="form-select form-select-sm">
                                         <option value="">@L["— select —"]</option>
-                                        <option value="AEMSPortal">@L["AEMS Portal"]</option>
+                                        <option value="AEMSPortal">@L["Authority Online Portal"]</option>
                                         <option value="E2BEDI">@L["E2B(R3) EDI"]</option>
                                         <option value="CIOMSEmail">@L["CIOMS-I Email"]</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label small fw-bold">@L["TGA ADRS Reference Number"]</label>
+                                    <label class="form-label small fw-bold">@L["Authority Case Reference Number"]</label>
                                     <input type="text" name="adrsRef" class="form-control form-control-sm"
-                                           placeholder="@L["e.g. AEMS-2026-XXXXX"]" />
+                                           placeholder="@L["Reference issued by the authority"]" />
                                 </div>
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-warning btn-sm w-100">

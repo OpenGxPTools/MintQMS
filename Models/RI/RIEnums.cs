@@ -102,14 +102,15 @@ namespace OpenQMS.Models.RI
 
     public enum RIAccessPathwayType
     {
-        [Display(Name = "SAS Category A")]
+        [Display(Name = "SAS Category A (AU)")]
         SAS_A               = 1,
-        [Display(Name = "SAS Category B")]
+        [Display(Name = "SAS Category B (AU)")]
         SAS_B               = 2,
-        [Display(Name = "SAS Category C")]
+        [Display(Name = "SAS Category C (AU)")]
         SAS_C               = 3,
-        [Display(Name = "Authorised Prescriber")]
+        [Display(Name = "Authorised Prescriber (AU)")]
         AuthorisedPrescriber = 4,
+        [Display(Name = "CTN (AU)")]
         CTN                 = 5,
         CTA                 = 6,
         SAP                 = 7,

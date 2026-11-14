@@ -134,7 +134,7 @@ namespace OpenQMS.Services
                     {
                         AdverseEventId = ae.Id,
                         Action = "DeadlineOverdue",
-                        NewValue = $"TGA deadline {ae.TGADeadlineDate!.Value:dd MMM yyyy} passed with no submission recorded.",
+                        NewValue = $"Reporting deadline {ae.TGADeadlineDate!.Value:dd MMM yyyy} passed with no submission recorded.",
                         PerformedBy = "System",
                         PerformedOn = DateTime.UtcNow
                     });
@@ -161,7 +161,7 @@ namespace OpenQMS.Services
                     {
                         AdverseEventId = ae.Id,
                         Action = action,
-                        NewValue = $"TGA deadline in {daysLeft} day(s) ({ae.TGADeadlineDate!.Value:dd MMM yyyy}).",
+                        NewValue = $"Reporting deadline in {daysLeft} day(s) ({ae.TGADeadlineDate!.Value:dd MMM yyyy}).",
                         PerformedBy = "System",
                         PerformedOn = DateTime.UtcNow
                     });

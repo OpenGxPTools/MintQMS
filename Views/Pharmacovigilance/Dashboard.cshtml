@@ -92,7 +92,7 @@ $(document).ready(function () {
                 <div class="text-muted small mt-1">@L["Overdue Submissions"]</div>
             </div>
             <div class="card-footer @(((int)(ViewBag.OverdueCount ?? 0)) > 0 ? "bg-danger" : "bg-secondary") text-white small py-1">
-                @L["TGA Deadline Passed"]
+                @L["Reporting Deadline Passed"]
             </div>
         </div>
     </div>
@@ -102,7 +102,7 @@ $(document).ready(function () {
                 <div class="display-5 fw-bold text-success">@ViewBag.SubmittedMonth</div>
                 <div class="text-muted small mt-1">@L["Submitted This Month"]</div>
             </div>
-            <div class="card-footer bg-success text-white small py-1">@L["TGA Submissions"]</div>
+            <div class="card-footer bg-success text-white small py-1">@L["Authority Submissions"]</div>
         </div>
     </div>
 </div>
@@ -130,7 +130,7 @@ $(document).ready(function () {
                         <thead class="table-light">
                             <tr>
                                 <th>@L["AE Number"]</th>
-                                <th>@L["TGA Deadline"]</th>
+                                <th>@L["Reporting Deadline"]</th>
                                 <th>@L["Days"]</th>
                                 <th>@L["Status"]</th>
                                 <th></th>
@@ -258,7 +258,7 @@ $(document).ready(function () {
                                     "DeadlineOverdue"  => "danger",
                                     "DeadlineCritical" => "danger",
                                     "DeadlineWarning"  => "warning",
-                                    "TGASubmission"    => "success",
+                                    "TGASubmission" or "AuthoritySubmission" => "success",
                                     "StatusTransition" => "info",
                                     "FollowUpCreated"  => "primary",
                                     _ => "secondary"

@@ -3,10 +3,6 @@
   "es": "'{0}' no es una frecuencia válida para el mantenimiento {1}.",
   "pt-BR": "'{0}' não é uma frequência válida para a manutenção {1}."
  },
- "(AHPRA# or equiv.)": {
-  "es": "(n.º AHPRA o equiv.)",
-  "pt-BR": "(nº AHPRA ou equiv.)"
- },
  "(auto-calculated)": {
   "es": "(calculado automáticamente)",
   "pt-BR": "(calculado automaticamente)"
@@ -43,6 +39,11 @@
  "(planned start within selected period)": {
   "es": "(inicio previsto dentro del período seleccionado)",
   "pt-BR": "(início previsto dentro do período selecionado)"
+ },
+ "(professional registration no.)": {
+  "es": "(n.º de registro profesional)",
+  "pt-BR": "(nº de registro profissional)",
+  "note": "needs native regulatory review"
  },
  "(regulatory clock start)": {
   "es": "(inicio del plazo regulatorio)",
@@ -357,10 +358,6 @@
   "es": "6. Regulatorio",
   "pt-BR": "6. Regulatório"
  },
- "7-Day Deadline (Fatal/Life-Threatening)": {
-  "es": "Plazo de 7 días (mortal/potencialmente mortal)",
-  "pt-BR": "Prazo de 7 dias (fatal/com risco de morte)"
- },
  "7. Attachments": {
   "es": "7. Adjuntos",
   "pt-BR": "7. Anexos"
@@ -405,9 +402,10 @@
   "es": "<strong>VENCIDA</strong> — Esta licencia/certificación venció el {0} (hace {1} días). Se requiere acción inmediata.",
   "pt-BR": "<strong>VENCIDA</strong> — Esta licença/certificação venceu em {0} (há {1} dias). É necessária ação imediata."
  },
- "<strong>How the overseas GMP clearance is being obtained</strong> (TGA framework):": {
-  "es": "<strong>Cómo se obtiene la autorización BPF del sitio extranjero</strong> (marco de la TGA):",
-  "pt-BR": "<strong>Como a autorização de BPF do local estrangeiro está sendo obtida</strong> (estrutura da TGA):"
+ "<strong>How GMP compliance of the overseas site is being evidenced</strong>:": {
+  "es": "<strong>Cómo se acredita el cumplimiento BPF del sitio extranjero</strong>:",
+  "pt-BR": "<strong>Como a conformidade com as BPF do local estrangeiro está sendo comprovada</strong>:",
+  "note": "needs native regulatory review"
  },
  "<strong>ICH seriousness criteria.</strong> An event is <strong>serious</strong> if it meets one or more of these — and serious cases usually require expedited reporting:": {
   "es": "<strong>Criterios de gravedad ICH.</strong> Un evento es <strong>grave</strong> si cumple uno o más de estos — y los casos graves suelen requerir notificación expedita:",
@@ -817,9 +815,10 @@
   "pt-BR": "Confirmar leitura",
   "note": "SIGNATURE — review"
  },
- "Acknowledged by TGA": {
-  "es": "Acusado por la TGA",
-  "pt-BR": "Recebimento confirmado pela TGA"
+ "Acknowledged by Authority": {
+  "es": "Acusado por la autoridad",
+  "pt-BR": "Recebimento confirmado pela autoridade",
+  "note": "needs native regulatory review"
  },
  "Acknowledged On": {
   "es": "Lectura confirmada el",
@@ -1151,6 +1150,11 @@
   "pt-BR": "Descrição do evento adverso:",
   "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
  },
+ "Adverse Event Reporting Deadlines": {
+  "es": "Plazos de notificación de eventos adversos",
+  "pt-BR": "Prazos de notificação de eventos adversos",
+  "note": "needs native regulatory review"
+ },
  "Adverse event unlinked.": {
   "es": "Evento adverso desvinculado.",
   "pt-BR": "Evento adverso desvinculado."
@@ -1246,10 +1250,6 @@
   "es": "N.º EA",
   "pt-BR": "Nº EA"
  },
- "AEMS Portal": {
-  "es": "Portal AEMS",
-  "pt-BR": "Portal AEMS"
- },
  "AEs Found": {
   "es": "EA encontrados",
   "pt-BR": "EAs encontrados"
@@ -1322,6 +1322,11 @@
   "es": "Todas las acciones aplicables completadas",
   "pt-BR": "Todas as ações aplicáveis concluídas"
  },
+ "All batch-related deviations reviewed; no outstanding deviations with unresolved quality impact": {
+  "es": "Todas las desviaciones relacionadas con el lote revisadas; sin desviaciones pendientes con impacto en la calidad sin resolver",
+  "pt-BR": "Todos os desvios relacionados ao lote revisados; nenhum desvio pendente com impacto na qualidade não resolvido",
+  "note": "needs native regulatory review"
+ },
  "All CAPA actions completed with evidence": {
   "es": "Todas las acciones de la CAPA completadas con evidencia",
   "pt-BR": "Todas as ações da CAPA concluídas com evidência"
@@ -1329,6 +1334,11 @@
  "All CAPA actions completed, with evidence (e.g. SOP revised on [date], training completed by [names] on [date])": {
   "es": "Todas las acciones CAPA completadas, con evidencia (p. ej., PNT revisado el [fecha], capacitación completada por [nombres] el [fecha])",
   "pt-BR": "Todas as ações CAPA concluídas, com evidências (ex.: POP revisado em [data], treinamento concluído por [nomes] em [data])"
+ },
+ "All CAPAs linked to batch-relevant deviations reviewed; no outstanding CAPAs with unresolved batch impact": {
+  "es": "Todas las CAPA vinculadas a desviaciones relevantes para el lote revisadas; sin CAPA pendientes con impacto en el lote sin resolver",
+  "pt-BR": "Todas as CAPAs vinculadas a desvios relevantes para o lote revisadas; nenhuma CAPA pendente com impacto no lote não resolvido",
+  "note": "needs native regulatory review"
  },
  "All Categories": {
   "es": "Todas las categorías",
@@ -1429,6 +1439,11 @@
  "Any": {
   "es": "Cualquiera",
   "pt-BR": "Qualquer"
+ },
+ "Any applicable post-marketing regulatory commitments addressed": {
+  "es": "Compromisos regulatorios poscomercialización aplicables atendidos",
+  "pt-BR": "Compromissos regulatórios pós-comercialização aplicáveis atendidos",
+  "note": "needs native regulatory review"
  },
  "Any deviations from the approved implementation plan": {
   "es": "Cualquier desviación respecto del plan de implementación aprobado",
@@ -1811,36 +1826,6 @@
  "Are you sure you want to void <strong>{0}</strong>? The record will be marked as Voided and will no longer appear in active lists.": {
   "es": "¿Seguro que desea anular <strong>{0}</strong>? El registro se marcará como anulado y dejará de aparecer en las listas activas.",
   "pt-BR": "Tem certeza de que deseja anular <strong>{0}</strong>? O registro será marcado como anulado e não aparecerá mais nas listas ativas."
- },
- "ARTG / Regulatory Ref.": {
-  "es": "ARTG / ref. regulatoria",
-  "pt-BR": "ARTG / ref. regulatória"
- },
- "ARTG / Regulatory Reference": {
-  "es": "ARTG / referencia regulatoria",
-  "pt-BR": "ARTG / referência regulatória",
-  "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
- },
- "ARTG Entry / Regulatory Ref.": {
-  "es": "Entrada ARTG / Ref. regulatoria",
-  "pt-BR": "Entrada ARTG / Ref. regulatória"
- },
- "ARTG Entry / Regulatory Reference": {
-  "es": "Entrada ARTG / referencia regulatoria",
-  "pt-BR": "Entrada ARTG / referência regulatória"
- },
- "ARTG Number": {
-  "es": "Número ARTG",
-  "pt-BR": "Número ARTG"
- },
- "ARTG Ref.:": {
-  "es": "Ref. ARTG:",
-  "pt-BR": "Ref. ARTG:",
-  "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
- },
- "ARTG Reference": {
-  "es": "Referencia ARTG",
-  "pt-BR": "Referência ARTG"
  },
  "As Needed": {
   "es": "Según necesidad",
@@ -2281,21 +2266,42 @@
   "pt-BR": "Pessoa Autorizada",
   "note": "PIC/S Authorised Person (the role named in Annex 16)"
  },
- "Authorised Prescriber": {
-  "es": "Prescriptor autorizado",
-  "pt-BR": "Prescritor autorizado"
+ "Authorised Prescriber (AU)": {
+  "es": "Prescriptor autorizado (AU)",
+  "pt-BR": "Prescritor autorizado (AU)",
+  "note": "needs native regulatory review"
  },
  "Authority": {
   "es": "Autoridad",
   "pt-BR": "Autoridade"
  },
+ "Authority Case Reference": {
+  "es": "Referencia del caso ante la autoridad",
+  "pt-BR": "Referência do caso na autoridade",
+  "note": "needs native regulatory review"
+ },
+ "Authority Case Reference Number": {
+  "es": "N.º de referencia del caso ante la autoridad",
+  "pt-BR": "Nº de referência do caso na autoridade",
+  "note": "needs native regulatory review"
+ },
  "Authority Contact Email": {
   "es": "Correo de contacto de la autoridad",
   "pt-BR": "E-mail de contato da autoridade"
  },
+ "Authority Inspection": {
+  "es": "Inspección de la autoridad",
+  "pt-BR": "Inspeção da autoridade",
+  "note": "needs native regulatory review"
+ },
  "Authority Letter": {
   "es": "Carta de la autoridad",
   "pt-BR": "Carta da autoridade"
+ },
+ "Authority Online Portal": {
+  "es": "Portal en línea de la autoridad",
+  "pt-BR": "Portal on-line da autoridade",
+  "note": "needs native regulatory review"
  },
  "Authority Portal / Login URL": {
   "es": "Portal de la autoridad / URL de acceso",
@@ -2323,6 +2329,11 @@
   "pt-BR": "N.º de ref. da autoridade",
   "note": "Exported record — wording needs native regulatory review."
  },
+ "Authority Reference": {
+  "es": "Referencia de la autoridad",
+  "pt-BR": "Referência da autoridade",
+  "note": "needs native regulatory review"
+ },
  "Authority Reference #": {
   "es": "N.º de referencia de la autoridad",
   "pt-BR": "Nº de referência da autoridade"
@@ -2334,6 +2345,36 @@
  "Authority Reference No.": {
   "es": "N.º de referencia de la autoridad",
   "pt-BR": "Nº de referência da autoridade"
+ },
+ "Authority Reference Number": {
+  "es": "Número de referencia de la autoridad",
+  "pt-BR": "Número de referência da autoridade",
+  "note": "needs native regulatory review"
+ },
+ "Authority Submission Date": {
+  "es": "Fecha de envío a la autoridad",
+  "pt-BR": "Data de envio à autoridade",
+  "note": "needs native regulatory review"
+ },
+ "Authority submission deadline: {0}.": {
+  "es": "Plazo de presentación a la autoridad: {0}.",
+  "pt-BR": "Prazo de envio à autoridade: {0}.",
+  "note": "needs native regulatory review"
+ },
+ "Authority Submission Method": {
+  "es": "Método de envío a la autoridad",
+  "pt-BR": "Método de envio à autoridade",
+  "note": "needs native regulatory review"
+ },
+ "Authority submission recorded successfully.": {
+  "es": "Envío a la autoridad registrado correctamente.",
+  "pt-BR": "Envio à autoridade registrado com sucesso.",
+  "note": "needs native regulatory review"
+ },
+ "Authority Submissions": {
+  "es": "Envíos a la autoridad",
+  "pt-BR": "Envios à autoridade",
+  "note": "needs native regulatory review"
  },
  "Authority waiver reference, management approval, documented justification...": {
   "es": "Referencia de dispensa de la autoridad, aprobación de la dirección, justificación documentada...",
@@ -2527,6 +2568,11 @@
   "es": "Detalles del lote",
   "pt-BR": "Detalhes do lote"
  },
+ "Batch Manufacturing Record (BMR) reviewed and found in conformity with GMP and the approved Product Specification File": {
+  "es": "Registro de fabricación del lote (BMR) revisado y conforme con las BPF y el expediente de especificaciones del producto aprobado",
+  "pt-BR": "Registro de fabricação do lote (BMR) revisado e conforme com as BPF e o arquivo de especificações do produto aprovado",
+  "note": "needs native regulatory review"
+ },
  "Batch No.": {
   "es": "N.º de lote",
   "pt-BR": "N.º do lote"
@@ -2625,11 +2671,6 @@
   "es": "Breve descripción del propósito de este documento",
   "pt-BR": "Breve descrição da finalidade deste documento"
  },
- "Brisbane (AEST, UTC+10, no daylight saving)": {
-  "es": "Brisbane (AEST, UTC+10, sin horario de verano)",
-  "pt-BR": "Brisbane (AEST, UTC+10, sem horário de verão)",
-  "note": "Time zone name from Services/SiteTime.cs (Choices), shown with L[z.Label] — keep even though the check lists it as unused."
- },
  "BRL": {
   "es": "BRL",
   "pt-BR": "BRL"
@@ -2651,9 +2692,10 @@
   "es": "Por",
   "pt-BR": "Por"
  },
- "By certifying this batch, you are providing an electronic signature under PIC/S Annex 16. Your email and password confirm your identity.": {
-  "es": "Al certificar este lote, usted firma electrónicamente conforme al Anexo 16 de PIC/S. Su correo electrónico y contraseña confirman su identidad.",
-  "pt-BR": "Ao certificar este lote, você assina eletronicamente conforme o Anexo 16 do PIC/S. Seu e-mail e senha confirmam sua identidade."
+ "By certifying this batch, you are signing electronically as the person responsible for batch certification (e.g. PIC/S Annex 16). Your email and password confirm your identity.": {
+  "es": "Al certificar este lote, usted firma electrónicamente como persona responsable de la certificación del lote (p. ej., Anexo 16 de PIC/S). Su correo electrónico y contraseña confirman su identidad.",
+  "pt-BR": "Ao certificar este lote, você assina eletronicamente como a pessoa responsável pela certificação do lote (p. ex., Anexo 16 do PIC/S). Seu e-mail e senha confirmam sua identidade.",
+  "note": "needs native regulatory review"
  },
  "By Maintenance Type": {
   "es": "Por tipo de mantenimiento",
@@ -2711,6 +2753,11 @@
  "Calendar": {
   "es": "Calendario",
   "pt-BR": "Calendário"
+ },
+ "Calendar days from Day 0 (the day the company first knew of the case) to the report to the authority. Set them to the rules of the authority you report to; a change applies to new cases, and to a case whose Day 0 or seriousness is changed afterwards.": {
+  "es": "Días naturales desde el Día 0 (el día en que la empresa tuvo conocimiento del caso) hasta la notificación a la autoridad. Ajústelos a las normas de la autoridad a la que notifica; un cambio se aplica a los casos nuevos y a los casos cuyo Día 0 o gravedad se modifique después.",
+  "pt-BR": "Dias corridos desde o Dia 0 (o dia em que a empresa tomou conhecimento do caso) até a notificação à autoridade. Ajuste-os às normas da autoridade à qual você notifica; uma alteração se aplica aos casos novos e aos casos cujo Dia 0 ou gravidade for alterado depois.",
+  "note": "needs native regulatory review"
  },
  "Calibration": {
   "es": "Calibración",
@@ -3160,6 +3207,11 @@
   "es": "Certificado de conformidad",
   "pt-BR": "Certificado de conformidade",
   "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
+ },
+ "Certificate of Conformance (CoC) or equivalent supplier documentation received and reviewed": {
+  "es": "Certificado de conformidad (CoC) o documentación equivalente del proveedor recibida y revisada",
+  "pt-BR": "Certificado de conformidade (CoC) ou documentação equivalente do fornecedor recebida e revisada",
+  "note": "needs native regulatory review"
  },
  "Certificate of Conformance — Signatory": {
   "es": "Certificado de conformidad — Firmante",
@@ -3683,6 +3735,11 @@
  "Community Pharmacy": {
   "es": "Farmacia comunitaria",
   "pt-BR": "Farmácia comunitária"
+ },
+ "Company Registration / Tax ID": {
+  "es": "Registro mercantil / identificación fiscal",
+  "pt-BR": "Registro empresarial / identificação fiscal",
+  "note": "needs native regulatory review"
  },
  "Competency": {
   "es": "Competencia",
@@ -4619,9 +4676,10 @@
   "pt-BR": "Gravidade crítica (todo o período)",
   "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
  },
- "CRITICAL — TGA deadline in {0} day(s) ({1}).": {
-  "es": "CRÍTICO — Plazo de la TGA en {0} día(s) ({1}).",
-  "pt-BR": "CRÍTICO — Prazo da TGA em {0} dia(s) ({1})."
+ "CRITICAL — reporting deadline in {0} day(s) ({1}).": {
+  "es": "CRÍTICO — Plazo de notificación en {0} día(s) ({1}).",
+  "pt-BR": "CRÍTICO — Prazo de notificação em {0} dia(s) ({1}).",
+  "note": "needs native regulatory review"
  },
  "CRO": {
   "es": "CRO",
@@ -4643,9 +4701,10 @@
   "es": "CTA",
   "pt-BR": "CTA"
  },
- "CTN": {
-  "es": "CTN",
-  "pt-BR": "CTN"
+ "CTN (AU)": {
+  "es": "CTN (AU)",
+  "pt-BR": "CTN (AU)",
+  "note": "needs native regulatory review"
  },
  "Currency": {
   "es": "Moneda",
@@ -4795,10 +4854,6 @@
   "es": "CV",
   "pt-BR": "CV"
  },
- "CV (Compliance Verification)": {
-  "es": "CV (verificación de cumplimiento)",
-  "pt-BR": "CV (verificação de conformidade)"
- },
  "Cycle {0}": {
   "es": "Ciclo {0}",
   "pt-BR": "Ciclo {0}"
@@ -4807,11 +4862,6 @@
   "es": "D. NOTIFICADOR",
   "pt-BR": "D. NOTIFICADOR",
   "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
- },
- "Darwin (ACST, no daylight saving)": {
-  "es": "Darwin (ACST, sin horario de verano)",
-  "pt-BR": "Darwin (ACST, sem horário de verão)",
-  "note": "Time zone name from Services/SiteTime.cs (Choices), shown with L[z.Label] — keep even though the check lists it as unused."
  },
  "Dashboard": {
   "es": "Panel",
@@ -5193,6 +5243,11 @@
   "es": "Eliminar estos datos borrará su cuenta de forma permanente y no se podrá recuperar.",
   "pt-BR": "Excluir estes dados removerá sua conta permanentemente, sem possibilidade de recuperação."
  },
+ "Delivery documentation reviewed (delivery note / invoice); product description and quantity match the purchase order": {
+  "es": "Documentación de entrega revisada (remisión / factura); la descripción y la cantidad del producto coinciden con la orden de compra",
+  "pt-BR": "Documentação de entrega revisada (nota de entrega / fatura); a descrição e a quantidade do produto correspondem ao pedido de compra",
+  "note": "needs native regulatory review"
+ },
  "Denormalised name stored at time of creation.": {
   "es": "Nombre guardado tal como estaba al crear el registro.",
   "pt-BR": "Nome gravado como estava na criação do registro."
@@ -5495,9 +5550,24 @@
   "pt-BR": "Registro de desvios",
   "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
  },
+ "Device History Record (DHR) reviewed; all manufacturing steps completed in conformity with the approved Device Master Record (DMR)": {
+  "es": "Registro histórico del dispositivo (DHR) revisado; todas las etapas de fabricación completadas conforme al registro maestro del dispositivo (DMR) aprobado",
+  "pt-BR": "Registro histórico do dispositivo (DHR) revisado; todas as etapas de fabricação concluídas conforme o registro mestre do dispositivo (DMR) aprovado",
+  "note": "needs native regulatory review"
+ },
  "Device Part": {
   "es": "Pieza de dispositivo",
   "pt-BR": "Peça de dispositivo"
+ },
+ "Device registered / approved under the applicable regulatory framework (TGA ARTG, CE MDR 2017/745, FDA 510(k) / PMA, etc.)": {
+  "es": "Dispositivo registrado / aprobado conforme al marco regulatorio aplicable (ARTG de la TGA, MDR 2017/745 de la UE, FDA 510(k) / PMA, COFEPRIS, ANVISA, etc.)",
+  "pt-BR": "Dispositivo registrado / aprovado conforme o marco regulatório aplicável (ARTG da TGA, MDR 2017/745 da UE, FDA 510(k) / PMA, COFEPRIS, ANVISA etc.)",
+  "note": "needs native regulatory review"
+ },
+ "Device release traceability system confirmed in place; release can be traced to consignee level": {
+  "es": "Sistema de trazabilidad de la liberación del dispositivo confirmado; la liberación puede rastrearse hasta el destinatario",
+  "pt-BR": "Sistema de rastreabilidade da liberação do dispositivo confirmado; a liberação pode ser rastreada até o destinatário",
+  "note": "needs native regulatory review"
  },
  "Device Sub-Assembly": {
   "es": "Subconjunto de dispositivo",
@@ -6075,10 +6145,6 @@
   "es": "p. ej., Acme Pharma Ltd, ISO, TGA, histórico interno",
   "pt-BR": "ex.: Acme Pharma Ltd, ISO, TGA, legado interno"
  },
- "e.g. AEMS-2026-XXXXX": {
-  "es": "p. ej., AEMS-2026-XXXXX",
-  "pt-BR": "p. ex., AEMS-2026-XXXXX"
- },
  "e.g. All Staff — Document Awareness": {
   "es": "p. ej., Todo el personal — Conocimiento de documentos",
   "pt-BR": "ex.: Todos os colaboradores — Conhecimento de documentos"
@@ -6091,13 +6157,14 @@
   "es": "p. ej., Aqua, Glycerin...",
   "pt-BR": "ex.: Aqua, Glycerin..."
  },
+ "e.g. ARTG 123456, AUST R 12345, COFEPRIS or ANVISA registration no.": {
+  "es": "p. ej., ARTG 123456, AUST R 12345, n.º de registro COFEPRIS o ANVISA",
+  "pt-BR": "ex.: ARTG 123456, AUST R 12345, nº de registro COFEPRIS ou ANVISA",
+  "note": "needs native regulatory review"
+ },
  "e.g. ARTG#, NDA#, EMA/H/...": {
   "es": "p. ej., n.º ARTG, n.º NDA, EMA/H/...",
   "pt-BR": "p. ex., nº ARTG, nº NDA, EMA/H/..."
- },
- "e.g. AUST R 12345": {
-  "es": "p. ej., AUST R 12345",
-  "pt-BR": "ex.: AUST R 12345"
  },
  "e.g. authority advised early resubmission, scheduling ahead of expiry, change in product details...": {
   "es": "p. ej., la autoridad recomendó volver a presentar antes, planificación antes del vencimiento, cambio en los datos del producto...",
@@ -6146,10 +6213,6 @@
  "e.g. GMP 12345": {
   "es": "p. ej., BPM 12345",
   "pt-BR": "p. ex., BPF 12345"
- },
- "e.g. GMP Clearance required for ARTG 123456 supply": {
-  "es": "p. ej., autorización BPF necesaria para suministrar ARTG 123456",
-  "pt-BR": "p. ex., autorização de BPF necessária para o fornecimento do ARTG 123456"
  },
  "e.g. Imatinib": {
   "es": "p. ej., imatinib",
@@ -6218,6 +6281,11 @@
  "e.g. SAI Global, BSI Group, Intertek, TÜV Rheinland": {
   "es": "p. ej., SAI Global, BSI Group, Intertek, TÜV Rheinland",
   "pt-BR": "p. ex., SAI Global, BSI Group, Intertek, TÜV Rheinland"
+ },
+ "e.g. Site GMP evidence required to supply registration 123456": {
+  "es": "p. ej., evidencia BPF del sitio necesaria para suministrar el registro 123456",
+  "pt-BR": "ex.: evidência de BPF do local necessária para fornecer o registro 123456",
+  "note": "needs native regulatory review"
  },
  "e.g. smtp.gmail.com": {
   "es": "p. ej., smtp.gmail.com",
@@ -6661,6 +6729,11 @@
   "es": "Ambiental",
   "pt-BR": "Ambiental"
  },
+ "Environmental monitoring data reviewed; no unresolved OOT or OOS results with batch impact": {
+  "es": "Datos de monitoreo ambiental revisados; sin resultados OOT u OOS sin resolver con impacto en el lote",
+  "pt-BR": "Dados de monitoramento ambiental revisados; nenhum resultado OOT ou OOS não resolvido com impacto no lote",
+  "note": "needs native regulatory review"
+ },
  "Environmental Monitoring Equipment": {
   "es": "Equipos de monitoreo ambiental",
   "pt-BR": "Equipamentos de monitoramento ambiental"
@@ -6673,9 +6746,24 @@
   "es": "Equipo / instalación / servicio auxiliar",
   "pt-BR": "Equipamento / instalação / utilidade"
  },
+ "Equipment cleaning records reviewed; no cross-contamination risk identified": {
+  "es": "Registros de limpieza de equipos revisados; no se identificó riesgo de contaminación cruzada",
+  "pt-BR": "Registros de limpeza dos equipamentos revisados; nenhum risco de contaminação cruzada identificado",
+  "note": "needs native regulatory review"
+ },
  "Equipment Failure": {
   "es": "Falla de equipo",
   "pt-BR": "Falha de equipamento"
+ },
+ "Equipment qualification and calibration status confirmed current for all equipment used in manufacture": {
+  "es": "Estado de calificación y calibración confirmado como vigente para todos los equipos usados en la fabricación",
+  "pt-BR": "Status de qualificação e calibração confirmado como vigente para todos os equipamentos usados na fabricação",
+  "note": "needs native regulatory review"
+ },
+ "Equipment qualification status confirmed current": {
+  "es": "Estado de calificación de los equipos confirmado como vigente",
+  "pt-BR": "Status de qualificação dos equipamentos confirmado como vigente",
+  "note": "needs native regulatory review"
  },
  "Equipment/Instrumentation": {
   "es": "Equipos / instrumentación",
@@ -6929,6 +7017,11 @@
   "es": "Vencimiento / RFI pendiente (pronto)",
   "pt-BR": "Vencimento / RFI pendente (em breve)"
  },
+ "Expiry / use-by date confirmed acceptable for intended use": {
+  "es": "Fecha de caducidad confirmada como aceptable para el uso previsto",
+  "pt-BR": "Data de validade confirmada como aceitável para o uso pretendido",
+  "note": "needs native regulatory review"
+ },
  "Expiry Date": {
   "es": "Fecha de vencimiento",
   "pt-BR": "Data de vencimento"
@@ -7094,6 +7187,16 @@
   "es": "Mortal / potencialmente mortal",
   "pt-BR": "Fatal / com risco de morte"
  },
+ "Fatal / Life-Threatening Adverse Event Reporting Deadline (days)": {
+  "es": "Plazo de notificación de eventos adversos mortales o potencialmente mortales (días)",
+  "pt-BR": "Prazo de notificação de eventos adversos fatais ou com risco de morte (dias)",
+  "note": "needs native regulatory review"
+ },
+ "Fatal / Life-Threatening Reporting Deadline": {
+  "es": "Plazo de notificación (mortal o potencialmente mortal)",
+  "pt-BR": "Prazo de notificação (fatal ou com risco de morte)",
+  "note": "needs native regulatory review"
+ },
  "Fatal or Life-Threatening": {
   "es": "Mortal o potencialmente mortal",
   "pt-BR": "Fatal ou com risco de morte"
@@ -7238,6 +7341,11 @@
   "es": "Filtros",
   "pt-BR": "Filtros"
  },
+ "Final product inspection and test results reviewed; all results comply with the approved product specification and acceptance criteria": {
+  "es": "Resultados de inspección y ensayos del producto final revisados; todos conformes con la especificación aprobada y los criterios de aceptación",
+  "pt-BR": "Resultados de inspeção e testes do produto final revisados; todos conformes com a especificação aprovada e os critérios de aceitação",
+  "note": "needs native regulatory review"
+ },
  "Final Release Party": {
   "es": "Responsable de la liberación final",
   "pt-BR": "Responsável pela liberação final"
@@ -7257,6 +7365,11 @@
  "Findings that led to the root cause determination": {
   "es": "Hallazgos que llevaron a determinar la causa raíz",
   "pt-BR": "Constatações que levaram à determinação da causa-raiz"
+ },
+ "Finished product QC test results reviewed and comply with the approved product specification": {
+  "es": "Resultados de los análisis de CC del producto terminado revisados y conformes con la especificación aprobada del producto",
+  "pt-BR": "Resultados dos testes de CQ do produto acabado revisados e conformes com a especificação aprovada do produto",
+  "note": "needs native regulatory review"
  },
  "First": {
   "es": "Primero",
@@ -7330,9 +7443,10 @@
   "es": "Formulario",
   "pt-BR": "Formulário"
  },
- "Formal AP register — all issued certificates. Required by PIC/S Annex 16 section 1.10.": {
-  "es": "Registro formal de la PA — todos los certificados emitidos. Exigido por el Anexo 16 de PIC/S, sección 1.10.",
-  "pt-BR": "Registro formal da PA — todos os certificados emitidos. Exigido pelo Anexo 16 do PIC/S, seção 1.10."
+ "Formal AP register — all issued certificates (required by GMP batch-certification rules, e.g. PIC/S Annex 16 section 1.10).": {
+  "es": "Registro formal de la PA — todos los certificados emitidos (exigido por las normas BPF de certificación de lotes, p. ej., Anexo 16 de PIC/S, sección 1.10).",
+  "pt-BR": "Registro formal da PA — todos os certificados emitidos (exigido pelas normas de BPF de certificação de lotes, p. ex., Anexo 16 do PIC/S, seção 1.10).",
+  "note": "needs native regulatory review"
  },
  "Foundation": {
   "es": "Base de maquillaje",
@@ -7469,25 +7583,19 @@
   "pt-BR": "Autorização BPF",
   "note": "used through a variable: Views/Release/_DocumentsTab.cshtml (categories)"
  },
- "GMP Clearance Details": {
-  "es": "Detalles de la autorización BPF",
-  "pt-BR": "Detalhes da autorização de BPF"
- },
- "GMP Clearance Details (Third-Party Site Approvals)": {
-  "es": "Detalles de la autorización BPF (aprobaciones de sitios de terceros)",
-  "pt-BR": "Detalhes da autorização de BPF (aprovações de locais de terceiros)"
- },
- "GMP Clearance Pathway": {
-  "es": "Vía de autorización BPM",
-  "pt-BR": "Via de aprovação de BPF"
- },
- "GMP Clearance Pathway guidance": {
-  "es": "Ayuda sobre la vía de autorización BPF",
-  "pt-BR": "Ajuda sobre a via de autorização de BPF"
- },
  "GMP Evidence Package": {
   "es": "Paquete de evidencia BPM",
   "pt-BR": "Pacote de evidências de BPF"
+ },
+ "GMP Evidence Pathway": {
+  "es": "Vía de evidencia BPF",
+  "pt-BR": "Via de evidência de BPF",
+  "note": "needs native regulatory review"
+ },
+ "GMP Evidence Pathway guidance": {
+  "es": "Ayuda sobre la vía de evidencia BPF",
+  "pt-BR": "Ajuda sobre a via de evidência de BPF",
+  "note": "needs native regulatory review"
  },
  "GMP Licence / Clearance: {0}": {
   "es": "Licencia / autorización BPF: {0}",
@@ -7881,6 +7989,16 @@
   "es": "Diagnóstico in vitro (IVD)",
   "pt-BR": "Diagnóstico in vitro (IVD)"
  },
+ "In-process control results reviewed and compliant": {
+  "es": "Resultados de los controles en proceso revisados y conformes",
+  "pt-BR": "Resultados dos controles em processo revisados e conformes",
+  "note": "needs native regulatory review"
+ },
+ "In-process inspection records reviewed; all results within acceptance criteria": {
+  "es": "Registros de inspección en proceso revisados; todos los resultados dentro de los criterios de aceptación",
+  "pt-BR": "Registros de inspeção em processo revisados; todos os resultados dentro dos critérios de aceitação",
+  "note": "needs native regulatory review"
+ },
  "Inactive": {
   "es": "Inactivo",
   "pt-BR": "Inativo"
@@ -7922,6 +8040,11 @@
  "Include in PSUR": {
   "es": "Incluir en el PSUR",
   "pt-BR": "Incluir no PSUR"
+ },
+ "Incoming component and sub-assembly inspection records reviewed and accepted": {
+  "es": "Registros de inspección de recepción de componentes y subensambles revisados y aceptados",
+  "pt-BR": "Registros de inspeção de recebimento de componentes e submontagens revisados e aceitos",
+  "note": "needs native regulatory review"
  },
  "Incorrect password.": {
   "es": "Contraseña incorrecta.",
@@ -8367,6 +8490,16 @@
   "es": "Etiquetado",
   "pt-BR": "Rotulagem"
  },
+ "Labelling and artwork reconciliation completed and confirmed correct": {
+  "es": "Conciliación de etiquetado y artes gráficas completada y confirmada como correcta",
+  "pt-BR": "Reconciliação de rotulagem e artes concluída e confirmada como correta",
+  "note": "needs native regulatory review"
+ },
+ "Labelling reviewed and confirmed compliant with applicable regulatory requirements; UDI applied where required": {
+  "es": "Etiquetado revisado y confirmado conforme con los requisitos regulatorios aplicables; UDI aplicado cuando se requiere",
+  "pt-BR": "Rotulagem revisada e confirmada conforme os requisitos regulatórios aplicáveis; UDI aplicado quando exigido",
+  "note": "needs native regulatory review"
+ },
  "Laboratory": {
   "es": "Laboratorio",
   "pt-BR": "Laboratório"
@@ -8488,10 +8621,6 @@
  "Legal ID": {
   "es": "Identificación fiscal",
   "pt-BR": "CNPJ / identificação fiscal"
- },
- "Legal ID (ABN/ACN/Other)": {
-  "es": "ID legal (ABN/ACN/otro)",
-  "pt-BR": "ID legal (ABN/ACN/outro)"
  },
  "Legal Name": {
   "es": "Razón social",
@@ -8872,6 +9001,11 @@
   "es": "El bloqueo no está habilitado para este usuario.",
   "pt-BR": "O bloqueio não está habilitado para este usuário."
  },
+ "Log Authority Submission": {
+  "es": "Registrar envío a la autoridad",
+  "pt-BR": "Registrar envio à autoridade",
+  "note": "needs native regulatory review"
+ },
  "Log in": {
   "es": "Iniciar sesión",
   "pt-BR": "Entrar"
@@ -8899,10 +9033,6 @@
  "Log Out Now": {
   "es": "Cerrar sesión ahora",
   "pt-BR": "Sair agora"
- },
- "Log TGA Submission": {
-  "es": "Registrar presentación a la TGA",
-  "pt-BR": "Registrar envio à TGA"
  },
  "Login": {
   "es": "Inicio de sesión",
@@ -8935,6 +9065,11 @@
  "Logout": {
   "es": "Cerrar sesión",
   "pt-BR": "Sair"
+ },
+ "Lot / batch number or other traceability reference recorded": {
+  "es": "Número de lote u otra referencia de trazabilidad registrado",
+  "pt-BR": "Número de lote ou outra referência de rastreabilidade registrado",
+  "note": "needs native regulatory review"
  },
  "Lotion": {
   "es": "Loción",
@@ -9159,6 +9294,11 @@
   "es": "Sitios de fabricación y análisis",
   "pt-BR": "Locais de fabricação e análise"
  },
+ "Manufacturing / Production": {
+  "es": "Fabricación / producción",
+  "pt-BR": "Fabricação / produção",
+  "note": "needs native regulatory review"
+ },
  "Manufacturing Date": {
   "es": "Fecha de fabricación",
   "pt-BR": "Data de fabricação"
@@ -9177,6 +9317,16 @@
   "pt-BR": "Ref. BPF de fabricação",
   "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
  },
+ "Manufacturing Licence No.": {
+  "es": "N.º de licencia de fabricación",
+  "pt-BR": "Nº da licença de fabricação",
+  "note": "needs native regulatory review"
+ },
+ "Manufacturing Licence No.: {0}": {
+  "es": "N.º de licencia de fabricación: {0}",
+  "pt-BR": "Nº da licença de fabricação: {0}",
+  "note": "needs native regulatory review"
+ },
  "Manufacturing Site": {
   "es": "Sitio de fabricación",
   "pt-BR": "Local de fabricação"
@@ -9184,6 +9334,16 @@
  "Manufacturing Site GMP Licence / Clearance No.": {
   "es": "N.º de licencia / autorización BPM del sitio de fabricación",
   "pt-BR": "N.º da licença / autorização BPF do local de fabricação"
+ },
+ "Manufacturing site holds a current GMP licence / GMP clearance from the relevant authority for the manufacturing steps performed": {
+  "es": "El sitio de fabricación cuenta con una licencia / autorización BPF vigente de la autoridad competente para las etapas de fabricación realizadas",
+  "pt-BR": "O local de fabricação possui licença / autorização de BPF vigente da autoridade competente para as etapas de fabricação realizadas",
+  "note": "needs native regulatory review"
+ },
+ "Manufacturing site holds a current regulatory licence / registration appropriate for the device class and manufacturing steps performed": {
+  "es": "El sitio de fabricación cuenta con una licencia / registro regulatorio vigente adecuado para la clase del dispositivo y las etapas de fabricación realizadas",
+  "pt-BR": "O local de fabricação possui licença / registro regulatório vigente adequado à classe do dispositivo e às etapas de fabricação realizadas",
+  "note": "needs native regulatory review"
  },
  "Manufacturing Site is required — please select a site or choose \"Other\" and enter a name.": {
   "es": "El sitio de fabricación es obligatorio — seleccione un sitio o elija \"Otro\" e ingrese un nombre.",
@@ -9294,6 +9454,11 @@
   "es": "Material / componente / especificación",
   "pt-BR": "Material / componente / especificação"
  },
+ "Material approved for release to stores / production use": {
+  "es": "Material aprobado para su liberación a almacén / uso en producción",
+  "pt-BR": "Material aprovado para liberação ao almoxarifado / uso na produção",
+  "note": "needs native regulatory review"
+ },
  "Material approved successfully.": {
   "es": "Material aprobado correctamente.",
   "pt-BR": "Material aprovado com sucesso."
@@ -9327,6 +9492,11 @@
   "es": "ID del material",
   "pt-BR": "ID do material",
   "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
+ },
+ "Material Safety Data Sheet (MSDS / SDS) available where applicable": {
+  "es": "Hoja de datos de seguridad (MSDS / SDS) disponible cuando aplique",
+  "pt-BR": "Ficha de dados de segurança (FDS / SDS) disponível quando aplicável",
+  "note": "needs native regulatory review"
  },
  "Material sent back to Draft for rework.": {
   "es": "Material devuelto a borrador para retrabajo.",
@@ -9695,6 +9865,16 @@
  "Months": {
   "es": "Meses",
   "pt-BR": "Meses"
+ },
+ "Most recent Post-Market Surveillance (PMS) / Periodic Safety Update Report (PSUR) confirmed as completed, no adverse findings impacting this device type": {
+  "es": "Vigilancia poscomercialización (PMS) / informe periódico de seguridad (PSUR) más reciente confirmado como completado, sin hallazgos adversos que afecten a este tipo de dispositivo",
+  "pt-BR": "Vigilância pós-comercialização (PMS) / relatório periódico de segurança (PSUR) mais recente confirmado como concluído, sem achados adversos que afetem este tipo de dispositivo",
+  "note": "needs native regulatory review"
+ },
+ "Most recent Product Quality Review confirmed as completed, no adverse findings impacting this batch": {
+  "es": "Revisión de calidad del producto más reciente confirmada como completada, sin hallazgos adversos que afecten a este lote",
+  "pt-BR": "Revisão da qualidade do produto mais recente confirmada como concluída, sem achados adversos que afetem este lote",
+  "note": "needs native regulatory review"
  },
  "Mousse": {
   "es": "Mousse",
@@ -10115,6 +10295,16 @@
   "pt-BR": "Nenhum resultado analítico registrado.",
   "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
  },
+ "No applicable product recalls, quality alerts, or field safety corrective actions at time of certification": {
+  "es": "Sin retiros de producto, alertas de calidad ni acciones correctivas de seguridad en campo aplicables en el momento de la certificación",
+  "pt-BR": "Nenhum recolhimento de produto, alerta de qualidade ou ação corretiva de segurança em campo aplicável no momento da certificação",
+  "note": "needs native regulatory review"
+ },
+ "No applicable recalls, field safety corrective actions or market withdrawal notices in effect at time of release": {
+  "es": "Sin retiros, acciones correctivas de seguridad en campo ni avisos de retiro del mercado aplicables vigentes en el momento de la liberación",
+  "pt-BR": "Nenhum recolhimento, ação corretiva de segurança em campo ou aviso de retirada do mercado aplicável em vigor no momento da liberação",
+  "note": "needs native regulatory review"
+ },
  "No approaching decision dates.": {
   "es": "No hay fechas de decisión próximas.",
   "pt-BR": "Nenhuma data de decisão próxima."
@@ -10423,6 +10613,11 @@
   "es": "No hay revisiones de señales abiertas.",
   "pt-BR": "Não há revisões de sinais abertas."
  },
+ "No open supplier quality issues or quality alerts affecting this material at time of release": {
+  "es": "Sin problemas de calidad del proveedor abiertos ni alertas de calidad que afecten a este material en el momento de la liberación",
+  "pt-BR": "Nenhum problema de qualidade do fornecedor em aberto nem alerta de qualidade que afete este material no momento da liberação",
+  "note": "needs native regulatory review"
+ },
  "No outstanding training items. Well done!": {
   "es": "No tiene capacitaciones pendientes. ¡Bien hecho!",
   "pt-BR": "Nenhum treinamento pendente. Muito bem!"
@@ -10612,6 +10807,11 @@
   "es": "N.º de asistentes",
   "pt-BR": "N.º de participantes",
   "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
+ },
+ "Non-conformances and deviations reviewed; all resolved or formally accepted with documented risk justification; no outstanding items with unresolved quality impact": {
+  "es": "No conformidades y desviaciones revisadas; todas resueltas o aceptadas formalmente con justificación de riesgo documentada; sin elementos pendientes con impacto en la calidad sin resolver",
+  "pt-BR": "Não conformidades e desvios revisados; todos resolvidos ou formalmente aceitos com justificativa de risco documentada; nenhum item pendente com impacto na qualidade não resolvido",
+  "note": "needs native regulatory review"
  },
  "Non-Serious": {
   "es": "No grave",
@@ -10812,6 +11012,11 @@
   "es": "el {0}",
   "pt-BR": "em {0}"
  },
+ "On-Site Inspection by the Authority": {
+  "es": "Inspección in situ de la autoridad",
+  "pt-BR": "Inspeção presencial da autoridade",
+  "note": "needs native regulatory review"
+ },
  "once daily, etc.": {
   "es": "una vez al día, etc.",
   "pt-BR": "uma vez ao dia etc."
@@ -10839,6 +11044,11 @@
  "Ongoing Monitoring": {
   "es": "Monitoreo continuo",
   "pt-BR": "Monitoramento contínuo"
+ },
+ "Ongoing stability programme confirmed in place; no adverse findings impacting this batch": {
+  "es": "Programa de estabilidad en curso confirmado; sin hallazgos adversos que afecten a este lote",
+  "pt-BR": "Programa de estabilidade em andamento confirmado; nenhum achado adverso que afete este lote",
+  "note": "needs native regulatory review"
  },
  "Online Portal": {
   "es": "Portal en línea",
@@ -11301,13 +11511,14 @@
   "es": "Presentaciones atrasadas",
   "pt-BR": "Envios atrasados"
  },
+ "OVERDUE — reporting deadline was {0}. Submission not yet recorded.": {
+  "es": "VENCIDO — El plazo de notificación era el {0}. La presentación aún no se ha registrado.",
+  "pt-BR": "VENCIDO — O prazo de notificação era {0}. O envio ainda não foi registrado.",
+  "note": "needs native regulatory review"
+ },
  "Overdue — Scheduled Past Date": {
   "es": "Vencido: programado con fecha pasada",
   "pt-BR": "Atrasado — programado com data passada"
- },
- "OVERDUE — TGA deadline was {0}. Submission not yet recorded.": {
-  "es": "VENCIDO — El plazo de la TGA era el {0}. La presentación aún no se ha registrado.",
-  "pt-BR": "VENCIDO — O prazo da TGA era {0}. O envio ainda não foi registrado."
  },
  "Overdue:": {
   "es": "Vencido:",
@@ -11328,6 +11539,16 @@
  "Overseas Reporting Required": {
   "es": "Se requiere notificación en el extranjero",
   "pt-BR": "Notificação no exterior necessária"
+ },
+ "Overseas Site GMP Evidence": {
+  "es": "Evidencia BPF del sitio extranjero",
+  "pt-BR": "Evidência de BPF do local estrangeiro",
+  "note": "needs native regulatory review"
+ },
+ "Overseas Site GMP Evidence (Third-Party Site Approvals)": {
+  "es": "Evidencia BPF del sitio extranjero (aprobaciones de sitios de terceros)",
+  "pt-BR": "Evidência de BPF do local estrangeiro (aprovações de locais de terceiros)",
+  "note": "needs native regulatory review"
  },
  "Overview": {
   "es": "Resumen",
@@ -11353,6 +11574,11 @@
  "Packaging": {
   "es": "Envasado y empaque",
   "pt-BR": "Embalagem"
+ },
+ "Packaging and sterile barrier integrity confirmed; no evidence of compromise (if applicable)": {
+  "es": "Integridad del envase y de la barrera estéril confirmada; sin evidencia de compromiso (si aplica)",
+  "pt-BR": "Integridade da embalagem e da barreira estéril confirmada; sem evidência de comprometimento (se aplicável)",
+  "note": "needs native regulatory review"
  },
  "Packaging Equipment": {
   "es": "Equipos de envasado y empaque",
@@ -11684,11 +11910,6 @@
   "es": "Personal / capacitación",
   "pt-BR": "Pessoal / treinamento"
  },
- "Perth (AWST, no daylight saving)": {
-  "es": "Perth (AWST, sin horario de verano)",
-  "pt-BR": "Perth (AWST, sem horário de verão)",
-  "note": "Time zone name from Services/SiteTime.cs (Choices), shown with L[z.Label] — keep even though the check lists it as unused."
- },
  "Pessary": {
   "es": "Óvulo vaginal",
   "pt-BR": "Óvulo vaginal"
@@ -11856,6 +12077,11 @@
  "Post-Market Study": {
   "es": "Estudio poscomercialización",
   "pt-BR": "Estudo pós-comercialização"
+ },
+ "Post-Market Surveillance (PMS) review completed; no unresolved safety signals or outstanding Field Safety Corrective Actions (FSCAs) affecting this device type": {
+  "es": "Revisión de vigilancia poscomercialización (PMS) completada; sin señales de seguridad sin resolver ni acciones correctivas de seguridad en campo (FSCA) pendientes que afecten a este tipo de dispositivo",
+  "pt-BR": "Revisão de vigilância pós-comercialização (PMS) concluída; nenhum sinal de segurança não resolvido nem ação corretiva de segurança em campo (FSCA) pendente que afete este tipo de dispositivo",
+  "note": "needs native regulatory review"
  },
  "Potential risks or impacts on product quality, validated processes, or GMP compliance": {
   "es": "Posibles riesgos o impactos sobre la calidad del producto, los procesos validados o el cumplimiento de las BPM",
@@ -12078,6 +12304,16 @@
   "es": "Proceso enviado a revisión.",
   "pt-BR": "Processo enviado para revisão."
  },
+ "Process validation / verification status confirmed current for all manufacturing processes applied to this batch": {
+  "es": "Estado de validación / verificación confirmado como vigente para todos los procesos de fabricación aplicados a este lote",
+  "pt-BR": "Status de validação / verificação confirmado como vigente para todos os processos de fabricação aplicados a este lote",
+  "note": "needs native regulatory review"
+ },
+ "Process validation status confirmed current and appropriate for this batch": {
+  "es": "Estado de validación del proceso confirmado como vigente y adecuado para este lote",
+  "pt-BR": "Status de validação do processo confirmado como vigente e adequado para este lote",
+  "note": "needs native regulatory review"
+ },
  "Process —": {
   "es": "Proceso —",
   "pt-BR": "Processo —"
@@ -12144,6 +12380,16 @@
   "es": "Identificación del producto",
   "pt-BR": "Identificação do produto"
  },
+ "Product identity confirmed — labelling, markings and packaging consistent with the ordered specification": {
+  "es": "Identidad del producto confirmada — etiquetado, marcas y envase conformes con la especificación pedida",
+  "pt-BR": "Identidade do produto confirmada — rotulagem, marcações e embalagem conformes com a especificação solicitada",
+  "note": "needs native regulatory review"
+ },
+ "Product is registered / approved for supply under the applicable pathway (e.g. product registration, special or named-patient access)": {
+  "es": "El producto está registrado / aprobado para su suministro por la vía aplicable (p. ej., registro sanitario, acceso especial o por paciente nominal)",
+  "pt-BR": "O produto está registrado / aprovado para fornecimento pela via aplicável (p. ex., registro sanitário, acesso especial ou por paciente nominal)",
+  "note": "needs native regulatory review"
+ },
  "Product Name": {
   "es": "Nombre del producto",
   "pt-BR": "Nome do produto"
@@ -12204,6 +12450,11 @@
  "Product —": {
   "es": "Producto —",
   "pt-BR": "Produto —"
+ },
+ "Production conditions (process parameters, yields) reviewed and within approved limits": {
+  "es": "Condiciones de producción (parámetros de proceso, rendimientos) revisadas y dentro de los límites aprobados",
+  "pt-BR": "Condições de produção (parâmetros de processo, rendimentos) revisadas e dentro dos limites aprovados",
+  "note": "needs native regulatory review"
  },
  "Products": {
   "es": "Productos",
@@ -12364,6 +12615,11 @@
   "es": "Revisiones de señales de FV",
   "pt-BR": "Revisões de sinais de FV"
  },
+ "QC": {
+  "es": "CC",
+  "pt-BR": "CQ",
+  "note": "needs native regulatory review"
+ },
  "QC Report": {
   "es": "Informe de CC",
   "pt-BR": "Relatório de CQ",
@@ -12445,6 +12701,11 @@
  "Quality Assurance": {
   "es": "Aseguramiento de la calidad",
   "pt-BR": "Garantia da qualidade"
+ },
+ "Quality Control / Inspection": {
+  "es": "Control de calidad / inspección",
+  "pt-BR": "Controle de qualidade / inspeção",
+  "note": "needs native regulatory review"
  },
  "Quality Events": {
   "es": "Eventos de calidad",
@@ -12548,6 +12809,11 @@
   "es": "Cuarentena",
   "pt-BR": "Quarentena"
  },
+ "Quarantine controls in place during transit (if applicable — Release Under Quarantine type)": {
+  "es": "Controles de cuarentena establecidos durante el tránsito (si aplica — tipo Liberación en cuarentena)",
+  "pt-BR": "Controles de quarentena estabelecidos durante o trânsito (se aplicável — tipo Liberação em quarentena)",
+  "note": "needs native regulatory review"
+ },
  "Quarterly": {
   "es": "Trimestral",
   "pt-BR": "Trimestral"
@@ -12567,6 +12833,11 @@
  "Raw Material": {
   "es": "Materia prima",
   "pt-BR": "Matéria-prima"
+ },
+ "Raw material / excipient Certificates of Analysis reviewed": {
+  "es": "Certificados de análisis de materias primas / excipientes revisados",
+  "pt-BR": "Certificados de análise de matérias-primas / excipientes revisados",
+  "note": "needs native regulatory review"
  },
  "Re-review in progress": {
   "es": "Revisión periódica en curso",
@@ -12716,6 +12987,11 @@
  "Recall / Market Action makes this CAPA the master record for a recall; Improvement Opportunity is a planned business improvement, not a response to a problem.": {
   "es": "Retiro del mercado / acción de mercado convierte esta CAPA en el registro principal de un retiro; Oportunidad de mejora es una mejora planificada del negocio, no una respuesta a un problema.",
   "pt-BR": "Recolhimento / ação de mercado torna esta CAPA o registro principal de um recolhimento; Oportunidade de melhoria é uma melhoria planejada do negócio, não uma resposta a um problema."
+ },
+ "Receipt & Identification": {
+  "es": "Recepción e identificación",
+  "pt-BR": "Recebimento e identificação",
+  "note": "needs native regulatory review"
  },
  "Received": {
   "es": "Recibido",
@@ -12967,9 +13243,10 @@
   "pt-BR": "Registro: {0}   |   Status: {1}   |   Gerado: {2}",
   "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
  },
- "Recording N/A with justification is compliance-positive and demonstrates considered determination during TGA inspections.": {
-  "es": "Registrar N/A con justificación favorece el cumplimiento y demuestra una decisión meditada en las inspecciones de la TGA.",
-  "pt-BR": "Registrar N/A com justificativa favorece a conformidade e demonstra uma decisão ponderada nas inspeções da TGA."
+ "Recording N/A with justification is compliance-positive and demonstrates considered determination during regulatory inspections.": {
+  "es": "Registrar N/A con justificación favorece el cumplimiento y demuestra una decisión meditada en las inspecciones regulatorias.",
+  "pt-BR": "Registrar N/A com justificativa favorece a conformidade e demonstra uma decisão ponderada nas inspeções regulatórias.",
+  "note": "needs native regulatory review"
  },
  "Records": {
   "es": "Registros",
@@ -13063,6 +13340,16 @@
   "es": "Documento de referencia",
   "pt-BR": "Documento de referência"
  },
+ "Reference issued by the authority": {
+  "es": "Referencia emitida por la autoridad",
+  "pt-BR": "Referência emitida pela autoridade",
+  "note": "needs native regulatory review"
+ },
+ "Reference standards and reagents used are within validity": {
+  "es": "Los estándares de referencia y reactivos utilizados están dentro de su vigencia",
+  "pt-BR": "Os padrões de referência e reagentes utilizados estão dentro da validade",
+  "note": "needs native regulatory review"
+ },
  "Refute Signal": {
   "es": "Refutar señal",
   "pt-BR": "Refutar sinal"
@@ -13095,6 +13382,26 @@
  "Registered Logins": {
   "es": "Inicios de sesión registrados",
   "pt-BR": "Logins registrados"
+ },
+ "Registration No.": {
+  "es": "N.º de registro",
+  "pt-BR": "Nº de registro",
+  "note": "needs native regulatory review"
+ },
+ "Registration No.:": {
+  "es": "N.º de registro:",
+  "pt-BR": "Nº de registro:",
+  "note": "needs native regulatory review"
+ },
+ "Registration Number": {
+  "es": "Número de registro",
+  "pt-BR": "Número de registro",
+  "note": "needs native regulatory review"
+ },
+ "Regulators require documented evidence of regular literature monitoring for any product under PV surveillance. All searches should be logged here promptly after completion.": {
+  "es": "Las autoridades sanitarias exigen evidencia documentada de la vigilancia bibliográfica periódica de todo producto bajo farmacovigilancia. Registre aquí cada búsqueda en cuanto termine.",
+  "pt-BR": "As autoridades sanitárias exigem evidência documentada do monitoramento bibliográfico periódico de todo produto sob farmacovigilância. Registre aqui cada busca assim que terminar.",
+  "note": "needs native regulatory review"
  },
  "Regulatory": {
   "es": "Regulatorio",
@@ -13356,9 +13663,10 @@
   "es": "Empresa que libera",
   "pt-BR": "Empresa liberadora"
  },
- "Releasing Company TGA Licence / Clearance No.": {
-  "es": "N.º de licencia / autorización TGA de la empresa que libera",
-  "pt-BR": "N.º da licença / autorização TGA da empresa liberadora"
+ "Releasing Company Manufacturing Licence No.": {
+  "es": "N.º de licencia de fabricación de la empresa que libera",
+  "pt-BR": "Nº da licença de fabricação da empresa liberadora",
+  "note": "needs native regulatory review"
  },
  "Releasing Company:": {
   "es": "Empresa que libera:",
@@ -13529,13 +13837,15 @@
   "es": "Tipo de reporte",
   "pt-BR": "Tipo de relato"
  },
- "Reportable to TGA": {
-  "es": "Notificable a la TGA",
-  "pt-BR": "Notificável à TGA"
+ "Reportable to Authority": {
+  "es": "Notificable a la autoridad",
+  "pt-BR": "Notificável à autoridade",
+  "note": "needs native regulatory review"
  },
- "Reportable to TGA?": {
-  "es": "¿Notificable a la TGA?",
-  "pt-BR": "Notificável à TGA?"
+ "Reportable to Authority?": {
+  "es": "¿Notificable a la autoridad?",
+  "pt-BR": "Notificável à autoridade?",
+  "note": "needs native regulatory review"
  },
  "Reporter": {
   "es": "Notificador",
@@ -13568,6 +13878,21 @@
  "Reporter Type": {
   "es": "Tipo de notificador",
   "pt-BR": "Tipo de notificador"
+ },
+ "Reporting Deadline": {
+  "es": "Plazo de notificación",
+  "pt-BR": "Prazo de notificação",
+  "note": "needs native regulatory review"
+ },
+ "Reporting Deadline Passed": {
+  "es": "Plazo de notificación vencido",
+  "pt-BR": "Prazo de notificação vencido",
+  "note": "needs native regulatory review"
+ },
+ "Reporting Deadline:": {
+  "es": "Plazo de notificación:",
+  "pt-BR": "Prazo de notificação:",
+  "note": "needs native regulatory review"
  },
  "Reporting Decision Rationale": {
   "es": "Justificación de la decisión de notificar",
@@ -13997,6 +14322,11 @@
   "es": "revisión aún no vencida",
   "pt-BR": "revisão ainda não vencida"
  },
+ "Review of Another Authority's Inspection (CV)": {
+  "es": "Revisión de la inspección de otra autoridad (CV)",
+  "pt-BR": "Revisão da inspeção de outra autoridade (CV)",
+  "note": "needs native regulatory review"
+ },
  "Review of related processes, procedures, or controls": {
   "es": "Revisión de procesos, procedimientos o controles relacionados",
   "pt-BR": "Revisão de processos, procedimentos ou controles relacionados"
@@ -14196,6 +14526,11 @@
   "es": "Gestión de riesgos",
   "pt-BR": "Gestão de riscos"
  },
+ "Risk Management File reviewed; no new hazards or risks identified that affect device safety or performance for this batch": {
+  "es": "Expediente de gestión de riesgos revisado; no se identificaron nuevos peligros o riesgos que afecten la seguridad o el desempeño del dispositivo para este lote",
+  "pt-BR": "Arquivo de gerenciamento de risco revisado; nenhum novo perigo ou risco identificado que afete a segurança ou o desempenho do dispositivo para este lote",
+  "note": "needs native regulatory review"
+ },
  "Risk Matrix (Severity × Probability)": {
   "es": "Matriz de riesgo (gravedad × probabilidad)",
   "pt-BR": "Matriz de risco (gravidade × probabilidade)"
@@ -14391,20 +14726,20 @@
   "es": "SAR",
   "pt-BR": "SAR"
  },
- "SAS Category A": {
-  "es": "SAS categoría A",
-  "pt-BR": "SAS categoria A",
-  "note": "TGA Special Access Scheme category"
+ "SAS Category A (AU)": {
+  "es": "SAS categoría A (AU)",
+  "pt-BR": "SAS categoria A (AU)",
+  "note": "needs native regulatory review"
  },
- "SAS Category B": {
-  "es": "SAS categoría B",
-  "pt-BR": "SAS categoria B",
-  "note": "TGA Special Access Scheme category"
+ "SAS Category B (AU)": {
+  "es": "SAS categoría B (AU)",
+  "pt-BR": "SAS categoria B (AU)",
+  "note": "needs native regulatory review"
  },
- "SAS Category C": {
-  "es": "SAS categoría C",
-  "pt-BR": "SAS categoria C",
-  "note": "TGA Special Access Scheme category"
+ "SAS Category C (AU)": {
+  "es": "SAS categoría C (AU)",
+  "pt-BR": "SAS categoria C (AU)",
+  "note": "needs native regulatory review"
  },
  "SAS Reference Number": {
   "es": "Número de referencia SAS",
@@ -14680,6 +15015,11 @@
  "Serious": {
   "es": "Grave",
   "pt-BR": "Grave"
+ },
+ "Serious Adverse Event Reporting Deadline (days)": {
+  "es": "Plazo de notificación de eventos adversos graves (días)",
+  "pt-BR": "Prazo de notificação de eventos adversos graves (dias)",
+  "note": "needs native regulatory review"
  },
  "Serious Cases": {
   "es": "Casos graves",
@@ -15052,6 +15392,11 @@
   "es": "Software / sistemas de TI",
   "pt-BR": "Software / sistemas de TI"
  },
+ "Software verification and validation status confirmed current (if device includes software / firmware)": {
+  "es": "Estado de verificación y validación del software confirmado como vigente (si el dispositivo incluye software / firmware)",
+  "pt-BR": "Status de verificação e validação do software confirmado como vigente (se o dispositivo incluir software / firmware)",
+  "note": "needs native regulatory review"
+ },
  "Solid": {
   "es": "Sólido",
   "pt-BR": "Sólido"
@@ -15314,6 +15659,11 @@
   "es": "Esterilización",
   "pt-BR": "Esterilização"
  },
+ "Sterilisation cycle records reviewed and batch release criteria met (if applicable)": {
+  "es": "Registros del ciclo de esterilización revisados y criterios de liberación del lote cumplidos (si aplica)",
+  "pt-BR": "Registros do ciclo de esterilização revisados e critérios de liberação do lote atendidos (se aplicável)",
+  "note": "needs native regulatory review"
+ },
  "Sterilisation Equipment": {
   "es": "Equipos de esterilización",
   "pt-BR": "Equipamentos de esterilização"
@@ -15330,9 +15680,24 @@
   "es": "Almacenamiento / distribución / cadena de frío",
   "pt-BR": "Armazenamento / distribuição / cadeia fria"
  },
+ "Storage and distribution conditions confirmed appropriate for batch dispatch": {
+  "es": "Condiciones de almacenamiento y distribución confirmadas como adecuadas para el despacho del lote",
+  "pt-BR": "Condições de armazenamento e distribuição confirmadas como adequadas para a expedição do lote",
+  "note": "needs native regulatory review"
+ },
+ "Storage and transport conditions confirmed appropriate upon receipt": {
+  "es": "Condiciones de almacenamiento y transporte confirmadas como adecuadas a la recepción",
+  "pt-BR": "Condições de armazenamento e transporte confirmadas como adequadas no recebimento",
+  "note": "needs native regulatory review"
+ },
  "Storage Conditions": {
   "es": "Condiciones de almacenamiento",
   "pt-BR": "Condições de armazenamento"
+ },
+ "Storage conditions during quarantine confirmed appropriate; no adverse environmental exposure identified": {
+  "es": "Condiciones de almacenamiento durante la cuarentena confirmadas como adecuadas; sin exposición ambiental adversa identificada",
+  "pt-BR": "Condições de armazenamento durante a quarentena confirmadas como adequadas; nenhuma exposição ambiental adversa identificada",
+  "note": "needs native regulatory review"
  },
  "Storage Equipment": {
   "es": "Equipos de almacenamiento",
@@ -15536,10 +15901,6 @@
  "Submitted to Authority": {
   "es": "Presentado a la autoridad",
   "pt-BR": "Enviado à autoridade"
- },
- "Submitted to TGA": {
-  "es": "Enviado a la TGA",
-  "pt-BR": "Enviado à TGA"
  },
  "Summarise how the complaint was resolved, confirm all actions are complete, and document the outcome for the customer.": {
   "es": "Resuma cómo se resolvió la reclamación, confirme que todas las acciones están completas y documente el resultado para el cliente.",
@@ -15898,10 +16259,20 @@
   "es": "Técnico",
   "pt-BR": "Técnico"
  },
+ "Technical / Quality Agreement confirmed in place with contract manufacturer or critical component supplier (if applicable)": {
+  "es": "Acuerdo técnico / de calidad confirmado con el fabricante por contrato o el proveedor de componentes críticos (si aplica)",
+  "pt-BR": "Acordo técnico / de qualidade confirmado com o fabricante contratado ou o fornecedor de componentes críticos (se aplicável)",
+  "note": "needs native regulatory review"
+ },
  "Technical Agreement": {
   "es": "Acuerdo técnico",
   "pt-BR": "Acordo técnico",
   "note": "used through a variable: Views/Release/_DocumentsTab.cshtml (categories)"
+ },
+ "Technical Agreement in place and current (if applicable)": {
+  "es": "Acuerdo técnico establecido y vigente (si aplica)",
+  "pt-BR": "Acordo técnico estabelecido e vigente (se aplicável)",
+  "note": "needs native regulatory review"
  },
  "Technical Agreement Ref.": {
   "es": "Ref. del acuerdo técnico",
@@ -16004,88 +16375,6 @@
  "Testing/Laboratory": {
   "es": "Ensayos / laboratorio",
   "pt-BR": "Ensaios / laboratório"
- },
- "TGA ADRS Reference": {
-  "es": "Referencia ADRS de la TGA",
-  "pt-BR": "Referência ADRS da TGA"
- },
- "TGA ADRS Reference Number": {
-  "es": "N.º de referencia ADRS de la TGA",
-  "pt-BR": "Nº de referência ADRS da TGA"
- },
- "TGA Deadline": {
-  "es": "Plazo de la TGA",
-  "pt-BR": "Prazo da TGA"
- },
- "TGA Deadline Date": {
-  "es": "Fecha límite de la TGA",
-  "pt-BR": "Prazo da TGA"
- },
- "TGA Deadline Passed": {
-  "es": "Plazo de la TGA vencido",
-  "pt-BR": "Prazo da TGA vencido"
- },
- "TGA Inspection": {
-  "es": "Inspección de la TGA",
-  "pt-BR": "Inspeção da TGA"
- },
- "TGA Licence / Clearance": {
-  "es": "Licencia / autorización TGA",
-  "pt-BR": "Licença / autorização TGA"
- },
- "TGA Licence / Clearance: {0}": {
-  "es": "Licencia / autorización de la TGA: {0}",
-  "pt-BR": "Licença / autorização da TGA: {0}",
-  "note": "Issued document (certificate / attendance list) or exported record — wording needs native regulatory review."
- },
- "TGA Licence/Clearance Ref": {
-  "es": "Ref. de licencia / autorización de la TGA",
-  "pt-BR": "Ref. da licença / autorização da TGA",
-  "note": "Exported record — wording needs native regulatory review."
- },
- "TGA On-Site Inspection": {
-  "es": "Inspección in situ de la TGA",
-  "pt-BR": "Inspeção presencial da TGA"
- },
- "TGA Reference": {
-  "es": "Referencia de la TGA",
-  "pt-BR": "Referência da TGA"
- },
- "TGA Reference Number": {
-  "es": "Número de referencia de la TGA",
-  "pt-BR": "Número de referência da TGA"
- },
- "TGA Reporting Deadline:": {
-  "es": "Plazo de notificación a la TGA:",
-  "pt-BR": "Prazo de notificação à TGA:"
- },
- "TGA requires documented evidence of regular literature monitoring for any product under PV surveillance. All searches should be logged here promptly after completion.": {
-  "es": "La TGA exige evidencia documentada de la vigilancia bibliográfica periódica de todo producto bajo farmacovigilancia. Registre aquí cada búsqueda en cuanto termine.",
-  "pt-BR": "A TGA exige evidência documentada do monitoramento bibliográfico periódico de todo produto sob farmacovigilância. Registre aqui cada busca assim que terminar."
- },
- "TGA Submission Date": {
-  "es": "Fecha de envío a la TGA",
-  "pt-BR": "Data de envio à TGA"
- },
- "TGA submission deadline: {0}.": {
-  "es": "Plazo de presentación a la TGA: {0}.",
-  "pt-BR": "Prazo de envio à TGA: {0}."
- },
- "TGA Submission Method": {
-  "es": "Método de presentación a la TGA",
-  "pt-BR": "Método de envio à TGA"
- },
- "TGA submission recorded successfully.": {
-  "es": "Presentación a la TGA registrada correctamente.",
-  "pt-BR": "Envio à TGA registrado com sucesso."
- },
- "TGA Submissions": {
-  "es": "Presentaciones a la TGA",
-  "pt-BR": "Envios à TGA"
- },
- "TGA Submitted": {
-  "es": "Presentado a la TGA",
-  "pt-BR": "Enviado à TGA"
  },
  "Thank you for confirming your email change.": {
   "es": "Gracias por confirmar el cambio de correo electrónico.",
@@ -17002,6 +17291,11 @@
   "es": "Trazabilidad",
   "pt-BR": "Rastreabilidade"
  },
+ "Traceability records complete — lot / batch, serial numbers, and component / raw material traceability documented": {
+  "es": "Registros de trazabilidad completos — lote, números de serie y trazabilidad de componentes / materias primas documentados",
+  "pt-BR": "Registros de rastreabilidade completos — lote, números de série e rastreabilidade de componentes / matérias-primas documentados",
+  "note": "needs native regulatory review"
+ },
  "Trading Name": {
   "es": "Nombre comercial",
   "pt-BR": "Nome fantasia"
@@ -17339,6 +17633,11 @@
   "es": "Error inesperado al establecer el número de teléfono.",
   "pt-BR": "Erro inesperado ao definir o número de telefone.",
   "note": "status message"
+ },
+ "Unique Device Identifier (UDI) confirmed assigned, labelled and reported to the applicable regulatory database as required": {
+  "es": "Identificador único del dispositivo (UDI) confirmado como asignado, etiquetado y notificado a la base de datos regulatoria aplicable según se requiera",
+  "pt-BR": "Identificador único do dispositivo (UDI) confirmado como atribuído, rotulado e informado ao banco de dados regulatório aplicável conforme exigido",
+  "note": "needs native regulatory review"
  },
  "Unit": {
   "es": "Unidad",
@@ -17716,6 +18015,16 @@
   "pt-BR": "Acesso somente leitura a registros, painéis e detalhes nos módulos acessíveis. Não pode criar, editar, enviar, carregar, excluir nem aprovar nada. Destinado a auditores internos (somente leitura), pessoal autorizado de fora da qualidade ou observadores.",
   "note": "Role description seeded in Data/SeedData.cs, shown with L.Message — keep even though the check lists it as unused; update if the seed text changes."
  },
+ "Visual Inspection": {
+  "es": "Inspección visual",
+  "pt-BR": "Inspeção visual",
+  "note": "needs native regulatory review"
+ },
+ "Visual inspection completed; packaging intact, no visible damage, contamination or deterioration observed": {
+  "es": "Inspección visual completada; envase íntegro, sin daños, contaminación ni deterioro visibles",
+  "pt-BR": "Inspeção visual concluída; embalagem íntegra, sem danos, contaminação ou deterioração visíveis",
+  "note": "needs native regulatory review"
+ },
  "Void Adverse Event": {
   "es": "Anular evento adverso",
   "pt-BR": "Anular evento adverso"
@@ -17760,9 +18069,10 @@
   "es": "Almacenaje / almacenamiento",
   "pt-BR": "Armazenagem / armazenamento"
  },
- "WARNING — TGA deadline in {0} day(s) ({1}).": {
-  "es": "AVISO — Plazo de la TGA en {0} día(s) ({1}).",
-  "pt-BR": "AVISO — Prazo da TGA em {0} dia(s) ({1})."
+ "WARNING — reporting deadline in {0} day(s) ({1}).": {
+  "es": "AVISO — Plazo de notificación en {0} día(s) ({1}).",
+  "pt-BR": "AVISO — Prazo de notificação em {0} dia(s) ({1}).",
+  "note": "needs native regulatory review"
  },
  "Warning:": {
   "es": "Advertencia:",
@@ -18401,9 +18711,10 @@
   "es": "— un portal web de la autoridad que no es eCTD (p. ej., sistemas de carga propios de cada país).",
   "pt-BR": "— um portal web da autoridade que não é eCTD (p. ex., sistemas de envio próprios de cada país)."
  },
- "— an on-site TGA inspection, used where no MRA/CV pathway is available.": {
-  "es": "— una inspección in situ de la TGA, cuando no hay vía MRA/CV disponible.",
-  "pt-BR": "— uma inspeção local da TGA, quando não há via MRA/CV disponível."
+ "— an on-site inspection by the authority, used where no MRA/CV pathway is available.": {
+  "es": "— una inspección in situ de la autoridad, cuando no hay vía MRA/CV disponible.",
+  "pt-BR": "— uma inspeção presencial da autoridade, quando não há via MRA/CV disponível.",
+  "note": "needs native regulatory review"
  },
  "— AP submission is blocked until these are resolved.": {
   "es": "— el envío a la PA está bloqueado hasta resolverlos.",
@@ -18494,9 +18805,10 @@
   "es": "— puede afectar a la seguridad o eficacia, a un registro o condición, o al cumplimiento de las BPM (p. ej., nuevo origen del API, cambio de planta)",
   "pt-BR": "— pode afetar a segurança ou eficácia, um registro ou condição, ou o cumprimento das BPF (p. ex., nova origem do IFA, mudança de local)"
  },
- "— Mutual Recognition Agreement: the site is in a country whose GMP inspections the TGA recognises.": {
-  "es": "— Acuerdo de reconocimiento mutuo: el sitio está en un país cuyas inspecciones BPF reconoce la TGA.",
-  "pt-BR": "— Acordo de reconhecimento mútuo: o local está em um país cujas inspeções de BPF a TGA reconhece."
+ "— Mutual Recognition Agreement: the site is in a country whose GMP inspections your authority recognises.": {
+  "es": "— Acuerdo de reconocimiento mutuo: el sitio está en un país cuyas inspecciones BPF reconoce su autoridad.",
+  "pt-BR": "— Acordo de reconhecimento mútuo: o local está em um país cujas inspeções de BPF a sua autoridade reconhece.",
+  "note": "needs native regulatory review"
  },
  "— no impact on approved requirements, product quality or validated state (e.g. like-for-like, editorial)": {
   "es": "— sin impacto en los requisitos aprobados, la calidad del producto o el estado validado (p. ej., equivalente, editorial)",

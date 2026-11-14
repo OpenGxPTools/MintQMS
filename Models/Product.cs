@@ -49,7 +49,7 @@ namespace OpenQMS.Models
         public string? BrandName { get; set; }
         [Display(Name = "Dosage Form")]
         public string? DosageForm { get; set; }
-        [Display(Name = "ARTG Entry / Regulatory Reference")]
+        [Display(Name = "Registration Number")]
         public string? ArtgReference { get; set; }
 
         // Cosmetics

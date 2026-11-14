@@ -154,7 +154,7 @@ namespace OpenQMS.Controllers
                 AuditDiffHelper.TrackDate(diff, "Period End",              existing.PeriodEnd,             report.PeriodEnd);
                 AuditDiffHelper.TrackDate(diff, "Due Date",                existing.DueDate,               report.DueDate);
                 AuditDiffHelper.TrackDate(diff, "Submission Date",         existing.SubmissionDate,        report.SubmissionDate);
-                AuditDiffHelper.Track(diff,     "TGA Reference Number",    existing.TGAReferenceNumber,    report.TGAReferenceNumber);
+                AuditDiffHelper.Track(diff,     "Authority Reference Number",    existing.TGAReferenceNumber,    report.TGAReferenceNumber);
                 AuditDiffHelper.Track(diff,     "Exposure Data",           existing.ExposureData,          report.ExposureData);
                 AuditDiffHelper.Track(diff,     "Benefit/Risk Conclusion", existing.BenefitRiskConclusion, report.BenefitRiskConclusion);
 
@@ -237,7 +237,7 @@ namespace OpenQMS.Controllers
                 (R("Period End"),            report.PeriodEnd?.ToString("dd MMM yyyy") ?? ""),
                 (R("Due Date"),              report.DueDate?.ToString("dd MMM yyyy") ?? ""),
                 (R("Submission Date"),       report.SubmissionDate?.ToString("dd MMM yyyy") ?? ""),
-                (R("TGA Reference"),         report.TGAReferenceNumber ?? ""),
+                (R("Authority Reference"),         report.TGAReferenceNumber ?? ""),
                 (R("Status"),                RE(report.Status)),
                 (R("Total Linked AE Cases"), (report.LinkedAECases?.Count ?? 0).ToString()),
                 (R("Serious Cases"),         (report.LinkedAECases?.Count(r => r.AdverseEvent?.IsSerious == true) ?? 0).ToString()),
@@ -264,7 +264,7 @@ namespace OpenQMS.Controllers
                 R("Dose / Route"), R("Treatment Start"), R("Treatment End"),
                 R("Reaction (MedDRA PT)"), R("MedDRA SOC"), R("AE Start"), R("AE End"),
                 R("Serious"), R("Seriousness Criteria"), R("Outcome"), R("Causality"),
-                R("Expectedness"), R("Regulatory Status"), R("TGA Submission Date")
+                R("Expectedness"), R("Regulatory Status"), R("Authority Submission Date")
             };
 
             for (int i = 0; i < headers.Length; i++)

@@ -25,7 +25,7 @@ namespace OpenQMS.Models
 
         [Display(Name = "Site Time Zone")]
         [MaxLength(64)]
-        public string TimeZoneId { get; set; } = "Australia/Brisbane";
+        public string TimeZoneId { get; set; } = SiteTime.DefaultZoneId;
 
         [Display(Name = "Default Page Size")]
         [Range(5, 200)]
@@ -60,6 +60,16 @@ namespace OpenQMS.Models
         [Display(Name = "Critical Complaint Resolution (days)")]
         [Range(1, 90)]
         public int CriticalComplaintResolutionDays { get; set; } = 7;
+
+        // ── Adverse event reporting deadlines (calendar days after Day 0) ──
+        // Set to the rules of the authority the site reports to; the defaults are 15 and 7 days.
+        [Display(Name = "Serious Adverse Event Reporting Deadline (days)")]
+        [Range(1, 90)]
+        public int SeriousAEReportingDays { get; set; } = 15;
+
+        [Display(Name = "Fatal / Life-Threatening Adverse Event Reporting Deadline (days)")]
+        [Range(1, 90)]
+        public int FatalAEReportingDays { get; set; } = 7;
 
         // ── Interface language ────────────────────────────────────────────
         // The language every screen is shown in, for every user (installed languages: appsettings
