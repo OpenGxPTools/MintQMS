@@ -34,6 +34,8 @@ using OpenQMS.Services;
 using static OpenQMS.Models.Process;
 using static OpenQMS.Models.Product;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -678,6 +680,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Processes/DownloadDocument/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadDocument(int id, bool deleted = false)
         {
             var doc = await _context.ProcessDocument.ForDownload(deleted).FirstOrDefaultAsync(e => e.Id == id);
@@ -803,6 +806,7 @@ namespace OpenQMS.Controllers
 
             return Json(new { dataSet = dataSets, labels });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportProcessDetail(int id)
         {
@@ -828,51 +832,46 @@ namespace OpenQMS.Controllers
             var capaList = process.Capas != null ? process.Capas.ToList() : new List<Capa>();
             var fields = new List<(string, string?)>
             {
-                ("Process ID",  process.ProcessId),
-                ("Name",        process.Name),
-                ("Status",      process.Status.ToString()),
-                ("Category",    process.Category.HasValue
-                                ? process.Category.Value.GetType()
-                                    .GetField(process.Category.Value.ToString())
-                                    ?.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
-                                    .Cast<System.ComponentModel.DataAnnotations.DisplayAttribute>()
-                                    .FirstOrDefault()?.Name ?? process.Category.Value.ToString()
-                                : null),
-                ("Description", process.Description),
-                ("Product",     process.LinkedProducts?.Any() == true
+                (R("Process ID"),  process.ProcessId),
+                (R("Name"),        process.Name),
+                (R("Status"),      RE(process.Status)),
+                (R("Category"),    process.Category.HasValue ? RD(process.Category.Value) : null),
+                (R("Description"), process.Description),
+                (R("Product"),     process.LinkedProducts?.Any() == true
                                 ? string.Join(", ", process.LinkedProducts.Select(x => x.Product?.Name ?? ""))
                                 : process.Product?.Name),
-                ("Edited By",   process.EditedBy),
-                ("Edited On",   process.EditedOn.ToSite().ToShortDateString()),
-                ("Approved By", process.ApprovedBy),
-                ("Approved On", process.ApprovedOn.ToSite()?.ToShortDateString()),
+                (R("Edited By"),   process.EditedBy),
+                (R("Edited On"),   process.EditedOn.ToSite().ToShortDateString()),
+                (R("Approved By"), process.ApprovedBy),
+                (R("Approved On"), process.ApprovedOn.ToSite()?.ToShortDateString()),
             };
 
             var tables = new List<(string, string[], IEnumerable<string[]>)>
             {
-                ("Assets",
-                 new[] { "Asset ID", "Name", "Status" },
-                 assetList.Select(a => new[] { a.AssetId, a.Name, a.Status.ToString() })),
-                ("Materials",
-                 new[] { "Material ID", "Name", "Status" },
-                 materialList.Select(m => new[] { m.MaterialId, m.Name, m.Status.ToString() })),
-                ("Changes",
-                 new[] { "Change ID", "Title", "Status" },
-                 changeList.Select(c => new[] { c.ChangeId, c.Title, c.Status.ToString() })),
-                ("Deviations",
-                 new[] { "Deviation ID", "Title", "Status" },
-                 deviationList.Select(d => new[] { d.DeviationId, d.Title, d.Status.ToString() })),
-                ("CAPAs",
-                 new[] { "CAPA ID", "Title", "Status" },
-                 capaList.Select(c => new[] { c.CapaId, c.Title, c.Status.ToString() })),
+                (R("Assets"),
+                 new[] { R("Asset ID"), R("Name"), R("Status") },
+                 assetList.Select(a => new[] { a.AssetId, a.Name, RE(a.Status) })),
+                (R("Materials"),
+                 new[] { R("Material ID"), R("Name"), R("Status") },
+                 materialList.Select(m => new[] { m.MaterialId, m.Name, RE(m.Status) })),
+                (R("Changes"),
+                 new[] { R("Change ID"), R("Title"), R("Status") },
+                 changeList.Select(c => new[] { c.ChangeId, c.Title, RE(c.Status) })),
+                (R("Deviations"),
+                 new[] { R("Deviation ID"), R("Title"), R("Status") },
+                 deviationList.Select(d => new[] { d.DeviationId, d.Title, RE(d.Status) })),
+                (R("CAPAs"),
+                 new[] { R("CAPA ID"), R("Title"), R("Status") },
+                 capaList.Select(c => new[] { c.CapaId, c.Title, RE(c.Status) })),
             };
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Process Detail Report", process.ProcessId, process.Status.ToString(), fields, tables,
+            var result = PdfReportService.Generate(R("Process Detail Report"), process.ProcessId, RE(process.Status), fields, tables,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Process-{process.ProcessId}.pdf");
         }
+        [RecordLanguage]
 
         public ActionResult ExportDetailInCSV(int id)
         {
@@ -884,13 +883,13 @@ namespace OpenQMS.Controllers
             }
 
             var builder = new StringBuilder();
-            builder.AppendLine("Process Id,Name,Description,Category,Product,Version,Status,Edited By,Edited On,Approved By,Approved On");
+            builder.AppendLine(CsvHeader("Process Id", "Name", "Description", "Category", "Product", "Version", "Status", "Edited By", "Edited On", "Approved By", "Approved On"));
             var processProductNames = process.LinkedProducts?.Any() == true
                 ? string.Join("|", process.LinkedProducts.Select(x => x.Product?.Name ?? ""))
                 : (process.Product?.Name ?? string.Empty);
-            builder.AppendLine($"{process.ProcessId},{process.Name},{process.Description},{process.Category?.ToString() ?? ""},{processProductNames},{process.Version},{process.Status},{(process.EditedBy != null ? process.EditedBy : String.Empty)},{process.EditedOn.ToSite().ToShortDateString()},{(process.ApprovedBy != null ? process.ApprovedBy : String.Empty)},{(process.ApprovedOn != null ? process.ApprovedOn.Value.ToSite().ToShortDateString() : String.Empty)}");
+            builder.AppendLine($"{process.ProcessId},{process.Name},{process.Description},{RE(process.Category) ?? ""},{processProductNames},{process.Version},{RE(process.Status)},{(process.EditedBy != null ? process.EditedBy : String.Empty)},{process.EditedOn.ToSite().ToShortDateString()},{(process.ApprovedBy != null ? process.ApprovedBy : String.Empty)},{(process.ApprovedOn != null ? process.ApprovedOn.Value.ToSite().ToShortDateString() : String.Empty)}");
 
-            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "Process.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", "Process.csv");
         }
 
         private bool ProcessExists(int id)

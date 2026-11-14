@@ -12,6 +12,8 @@ using OpenQMS.Models.LC;
 using OpenQMS.Models.RI;
 using OpenQMS.Services;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize(Roles = "Administrator,QualityManager,QualityUser,RegulatoryManager,RegulatoryUser,AuthorisedPerson,Auditor,Trainer,ReadOnly")]
@@ -793,6 +795,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET /LicencesCertifications/DownloadDocument/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadDocument(int id, bool deleted = false)
         {
             var doc = await _context.LCDocuments.ForDownload(deleted).FirstOrDefaultAsync(e => e.Id == id);
@@ -1279,6 +1282,7 @@ namespace OpenQMS.Controllers
         }
 
         // ── EXPORT REGISTER ───────────────────────────────────────────────────
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportRegister()
         {
@@ -1300,14 +1304,14 @@ namespace OpenQMS.Controllers
             using var wb = new XLWorkbook();
 
             // Sheet 1: LC Register
-            var ws = wb.Worksheets.Add("LC Register");
+            var ws = wb.Worksheets.Add(Sheet(R("LC Register")));
             var headers = new[]
             {
-                "LC Number","Status","Category","Holder Type","Holder Name",
-                "Licence Number","Jurisdiction","Licence Type","Issue Date","Expiry Date",
-                "Renewal Lead Days","Next Renewal Due","Scope","Responsible Person",
-                "Certification Body","Standard Version","Last Inspection","RFI Due Date",
-                "Open Conditions","Documents","Created By","Created At"
+                R("LC Number"),R("Status"),R("Category"),R("Holder Type"),R("Holder Name"),
+                R("Licence Number"),R("Jurisdiction"),R("Licence Type"),R("Issue Date"),R("Expiry Date"),
+                R("Renewal Lead Days"),R("Next Renewal Due"),R("Scope"),R("Responsible Person"),
+                R("Certification Body"),R("Standard Version"),R("Last Inspection"),R("RFI Due Date"),
+                R("Open Conditions"),R("Documents"),R("Created By"),R("Created At")
             };
             for (int i = 0; i < headers.Length; i++)
                 ws.Cell(1, i + 1).Value = headers[i];
@@ -1317,9 +1321,9 @@ namespace OpenQMS.Controllers
             foreach (var r in records)
             {
                 ws.Cell(row,  1).Value = r.LCNumber;
-                ws.Cell(row,  2).Value = r.Status.ToString();
-                ws.Cell(row,  3).Value = r.Category.ToString();
-                ws.Cell(row,  4).Value = r.HolderType.ToString();
+                ws.Cell(row,  2).Value = RE(r.Status);
+                ws.Cell(row,  3).Value = RE(r.Category);
+                ws.Cell(row,  4).Value = RE(r.HolderType);
                 ws.Cell(row,  5).Value = r.HolderName ?? r.Supplier?.LegalName ?? "";
                 ws.Cell(row,  6).Value = r.LicenceNumber ?? "";
                 ws.Cell(row,  7).Value = r.LicenceType?.ApplicableJurisdiction ?? "";
@@ -1351,8 +1355,8 @@ namespace OpenQMS.Controllers
                 .Where(c => c.CapaId != null)
                 .ToDictionaryAsync(c => c.Id, c => c.CapaId!);
 
-            var ws2 = wb.Worksheets.Add("Conditions");
-            var condHeaders = new[] { "LC Number","Description","Status","Due Date","Completed At","CAPA ID","Completion Notes" };
+            var ws2 = wb.Worksheets.Add(Sheet(R("Conditions")));
+            var condHeaders = new[] { R("LC Number"),R("Description"),R("Status"),R("Due Date"),R("Completed At"),R("CAPA ID"),R("Completion Notes") };
             for (int i = 0; i < condHeaders.Length; i++)
                 ws2.Cell(1, i + 1).Value = condHeaders[i];
 
@@ -1363,7 +1367,7 @@ namespace OpenQMS.Controllers
                 {
                     ws2.Cell(crow, 1).Value = r.LCNumber;
                     ws2.Cell(crow, 2).Value = c.ConditionDescription;
-                    ws2.Cell(crow, 3).Value = c.Status.ToString();
+                    ws2.Cell(crow, 3).Value = RE(c.Status);
                     ws2.Cell(crow, 4).Value = c.DueDate.HasValue ? c.DueDate.Value.ToString("dd/MM/yyyy") : "";
                     ws2.Cell(crow, 5).Value = c.CompletedAt.HasValue ? c.CompletedAt.Value.ToSite().ToString("dd/MM/yyyy") : "";
                     ws2.Cell(crow, 6).Value = c.LinkedCAPAId.HasValue && capaDisplayIds.TryGetValue(c.LinkedCAPAId.Value, out var cid) ? cid : "";
@@ -1386,6 +1390,7 @@ namespace OpenQMS.Controllers
         }
 
         // ── EXPIRY REPORT ─────────────────────────────────────────────────────
+        [RecordLanguage]
 
         public async Task<IActionResult> ExpiryReport(int days = 90)
         {
@@ -1410,11 +1415,11 @@ namespace OpenQMS.Controllers
                 uid != null && userDisplayNames.TryGetValue(uid, out var n) && n.Length > 0 ? n : (uid ?? "");
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add($"Expiring Within {days} Days");
+            var ws = wb.Worksheets.Add(Sheet(R("Expiring Within {0} Days", days)));
             var headers = new[]
             {
-                "LC Number","Status","Category","Holder Name","Jurisdiction","Licence Type",
-                "Expiry Date","Days To Expiry","Renewal Lead Days","Scope","Responsible Person"
+                R("LC Number"),R("Status"),R("Category"),R("Holder Name"),R("Jurisdiction"),R("Licence Type"),
+                R("Expiry Date"),R("Days To Expiry"),R("Renewal Lead Days"),R("Scope"),R("Responsible Person")
             };
             for (int i = 0; i < headers.Length; i++)
                 ws.Cell(1, i + 1).Value = headers[i];
@@ -1425,8 +1430,8 @@ namespace OpenQMS.Controllers
                 int daysLeft = r.ExpiryDate.HasValue ? (r.ExpiryDate.Value.Date - today).Days : 0;
 
                 ws.Cell(row,  1).Value = r.LCNumber;
-                ws.Cell(row,  2).Value = r.Status.ToString();
-                ws.Cell(row,  3).Value = r.Category.ToString();
+                ws.Cell(row,  2).Value = RE(r.Status);
+                ws.Cell(row,  3).Value = RE(r.Category);
                 ws.Cell(row,  4).Value = r.HolderName ?? "";
                 ws.Cell(row,  5).Value = r.LicenceType?.ApplicableJurisdiction ?? "";
                 ws.Cell(row,  6).Value = r.LicenceType?.DisplayName ?? "";

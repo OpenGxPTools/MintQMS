@@ -10,6 +10,7 @@ using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using OpenQMS.Models;
+using static OpenQMS.Localization.RecordText;
 
 namespace OpenQMS.Services
 {
@@ -116,7 +117,7 @@ namespace OpenQMS.Services
                 .SetMarginBottom(2));
 
             doc.Add(new Paragraph(
-                    $"Record: {recordId}   |   Status: {status}   |   Generated: {SiteTime.Now:dd MMM yyyy}")
+                    R("Record: {0}   |   Status: {1}   |   Generated: {2}", recordId, status, SiteTime.Now.ToString("dd MMM yyyy")))
                 .SetFont(normal).SetFontSize(8.5f)
                 .SetFontColor(ColorConstants.GRAY)
                 .SetTextAlignment(TextAlignment.CENTER)
@@ -178,7 +179,7 @@ namespace OpenQMS.Services
                     if (rowList.Count == 0)
                     {
                         t.AddCell(new Cell(1, headers.Length)
-                            .Add(new Paragraph("No records.")
+                            .Add(new Paragraph(R("No records."))
                                 .SetFont(normal).SetFontSize(8.5f)
                                 .SetFontColor(ColorConstants.GRAY))
                             .SetBorder(new SolidBorder(BorderColor, 0.5f))
@@ -269,7 +270,7 @@ namespace OpenQMS.Services
             }
 
             // ── Title ────────────────────────────────────────────────────────────
-            doc.Add(new Paragraph("Document Control Sheet")
+            doc.Add(new Paragraph(R("Document Control Sheet"))
                 .SetFont(bold).SetFontSize(14)
                 .SetFontColor(HeaderColor)
                 .SetTextAlignment(TextAlignment.CENTER)
@@ -311,53 +312,53 @@ namespace OpenQMS.Services
             }
 
             // Document Details
-            AddSectionHeader("Document Details");
-            AddRow("Document ID", document.DocumentId);
-            AddRow("Title", document.Title);
+            AddSectionHeader(R("Document Details"));
+            AddRow(R("Document ID"), document.DocumentId);
+            AddRow(R("Title"), document.Title);
             if (!string.IsNullOrWhiteSpace(document.Description))
-                AddRow("Description", document.Description);
+                AddRow(R("Description"), document.Description);
             if (document.Category.HasValue)
-                AddRow("Category", EnumHelper.Display(document.Category.Value));
+                AddRow(R("Category"), R(EnumHelper.Display(document.Category.Value)));
             if (document.DocType.HasValue)
-                AddRow("Document Type", EnumHelper.Display(document.DocType.Value));
-            AddRow("Version", $"v{document.Version:0.00}");
-            AddRow("Status", EnumHelper.Display(document.Status));
+                AddRow(R("Document Type"), R(EnumHelper.Display(document.DocType.Value)));
+            AddRow(R("Version"), $"v{document.Version:0.00}");
+            AddRow(R("Status"), R(EnumHelper.Display(document.Status)));
 
             // Workflow / Acceptance Trail
-            AddSectionHeader(document.IsExternal ? "System Acceptance Trail" : "Workflow Trail");
-            AddRow(document.IsExternal ? "Uploaded By"        : "Authored By",
+            AddSectionHeader(document.IsExternal ? R("System Acceptance Trail") : R("Workflow Trail"));
+            AddRow(document.IsExternal ? R("Uploaded By")        : R("Authored By"),
                    document.AuthoredBy);
-            AddRow(document.IsExternal ? "Uploaded On"        : "Authored On",
+            AddRow(document.IsExternal ? R("Uploaded On")        : R("Authored On"),
                    document.AuthoredOn.ToSite().ToString("dd MMM yyyy HH:mm"));
-            AddRow(document.IsExternal ? "Accepted into QMS By" : "Approved By",
+            AddRow(document.IsExternal ? R("Accepted into QMS By") : R("Approved By"),
                    document.ApprovedBy ?? "—");
-            AddRow(document.IsExternal ? "Accepted into QMS On" : "Approved On",
+            AddRow(document.IsExternal ? R("Accepted into QMS On") : R("Approved On"),
                    document.ApprovedOn.ToSite()?.ToString("dd MMM yyyy HH:mm") ?? "—");
             if (!string.IsNullOrEmpty(document.IssuedBy))
-                AddRow("Issued By", document.IssuedBy);
+                AddRow(R("Issued By"), document.IssuedBy);
             if (document.IssuedOn.HasValue)
-                AddRow("Issued On", document.IssuedOn.Value.ToSite().ToString("dd MMM yyyy"));
+                AddRow(R("Issued On"), document.IssuedOn.Value.ToSite().ToString("dd MMM yyyy"));
             if (document.PeriodicReviewRequired && document.ReviewDueDate.HasValue)
-                AddRow("Next Review Date", document.ReviewDueDate.Value.ToString("dd MMM yyyy"));
+                AddRow(R("Next Review Date"), document.ReviewDueDate.Value.ToString("dd MMM yyyy"));
 
             // Document Provenance (external docs only)
             if (document.IsExternal)
             {
-                AddSectionHeader("Document Provenance (Original)");
-                AddRow("Source / Origin",    document.ExternalSource ?? "—");
+                AddSectionHeader(R("Document Provenance (Original)"));
+                AddRow(R("Source / Origin"),    document.ExternalSource ?? "—");
                 if (!string.IsNullOrEmpty(document.ExternalVersion))
-                    AddRow("Original Version / Reference", document.ExternalVersion);
-                AddRow("Original Author",        document.ExternalAuthorName ?? "—");
-                AddRow("Originally Authored On", document.ExternalAuthoredOn?.ToString("dd MMM yyyy") ?? "—");
-                AddRow("Original Approver",      document.ExternalApproverName ?? "—");
-                AddRow("Originally Approved On", document.ExternalApprovedOn?.ToString("dd MMM yyyy") ?? "—");
+                    AddRow(R("Original Version / Reference"), document.ExternalVersion);
+                AddRow(R("Original Author"),        document.ExternalAuthorName ?? "—");
+                AddRow(R("Originally Authored On"), document.ExternalAuthoredOn?.ToString("dd MMM yyyy") ?? "—");
+                AddRow(R("Original Approver"),      document.ExternalApproverName ?? "—");
+                AddRow(R("Originally Approved On"), document.ExternalApprovedOn?.ToString("dd MMM yyyy") ?? "—");
             }
 
             doc.Add(table);
 
             // ── Footer ───────────────────────────────────────────────────────────
             doc.Add(new Paragraph(
-                    $"This page was automatically generated by the Quality Management System on {SiteTime.Now:dd MMM yyyy HH:mm} {SiteTime.Label}.")
+                    R("This page was automatically generated by the Quality Management System on {0}.", $"{SiteTime.Now:dd MMM yyyy HH:mm} {SiteTime.Label}"))
                 .SetFont(normal).SetFontSize(7)
                 .SetFontColor(ColorConstants.GRAY)
                 .SetTextAlignment(TextAlignment.CENTER)

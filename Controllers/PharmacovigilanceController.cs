@@ -746,6 +746,7 @@ namespace OpenQMS.Controllers
             TempData["Success"] = this.T("File '{0}' uploaded successfully.", file.FileName);
             return RedirectToDetailsAttachments(aeId);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> DownloadAttachment(int? id, bool deleted = false)
         {
@@ -967,6 +968,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Pharmacovigilance/ExportCIOMS/5
+        [RecordLanguage]
         [HttpGet]
         public async Task<IActionResult> ExportCIOMS(int id)
         {

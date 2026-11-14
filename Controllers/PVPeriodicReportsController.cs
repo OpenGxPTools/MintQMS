@@ -9,6 +9,8 @@ using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Services;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize(Roles = "Administrator,QualityManager,QualityUser,RegulatoryManager,RegulatoryUser,AuthorisedPerson,Auditor,Trainer,ReadOnly")]
@@ -191,6 +193,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: PVPeriodicReports/ExportPSURData/5
+        [RecordLanguage]
         [HttpGet]
         public async Task<IActionResult> ExportPSURData(int id)
         {
@@ -221,26 +224,26 @@ namespace OpenQMS.Controllers
             using var wb = new XLWorkbook();
 
             // ── Sheet 1: PSUR Summary ──────────────────────────────────────
-            var ws1 = wb.Worksheets.Add("PSUR Summary");
-            ws1.Cell(1, 1).Value = "PSUR — Periodic Safety Update Report";
+            var ws1 = wb.Worksheets.Add(Sheet(R("PSUR Summary")));
+            ws1.Cell(1, 1).Value = R("PSUR — Periodic Safety Update Report");
             ws1.Cell(1, 1).Style.Font.Bold = true;
             ws1.Cell(1, 1).Style.Font.FontSize = 14;
 
             var summaryRows = new[]
             {
-                ("PSUR Title",            report.Title),
-                ("Product",               report.Product?.Name ?? "All Products"),
-                ("Period Start",          report.PeriodStart?.ToString("dd MMM yyyy") ?? ""),
-                ("Period End",            report.PeriodEnd?.ToString("dd MMM yyyy") ?? ""),
-                ("Due Date",              report.DueDate?.ToString("dd MMM yyyy") ?? ""),
-                ("Submission Date",       report.SubmissionDate?.ToString("dd MMM yyyy") ?? ""),
-                ("TGA Reference",         report.TGAReferenceNumber ?? ""),
-                ("Status",                report.Status.ToString()),
-                ("Total Linked AE Cases", (report.LinkedAECases?.Count ?? 0).ToString()),
-                ("Serious Cases",         (report.LinkedAECases?.Count(r => r.AdverseEvent?.IsSerious == true) ?? 0).ToString()),
-                ("Exposure Data",         report.ExposureData ?? ""),
-                ("Benefit-Risk Conclusion", report.BenefitRiskConclusion ?? ""),
-                ("Export Date",           SiteTime.Now.ToString("dd MMM yyyy HH:mm") + " " + SiteTime.Label)
+                (R("PSUR Title"),            report.Title),
+                (R("Product"),               report.Product?.Name ?? "All Products"),
+                (R("Period Start"),          report.PeriodStart?.ToString("dd MMM yyyy") ?? ""),
+                (R("Period End"),            report.PeriodEnd?.ToString("dd MMM yyyy") ?? ""),
+                (R("Due Date"),              report.DueDate?.ToString("dd MMM yyyy") ?? ""),
+                (R("Submission Date"),       report.SubmissionDate?.ToString("dd MMM yyyy") ?? ""),
+                (R("TGA Reference"),         report.TGAReferenceNumber ?? ""),
+                (R("Status"),                RE(report.Status)),
+                (R("Total Linked AE Cases"), (report.LinkedAECases?.Count ?? 0).ToString()),
+                (R("Serious Cases"),         (report.LinkedAECases?.Count(r => r.AdverseEvent?.IsSerious == true) ?? 0).ToString()),
+                (R("Exposure Data"),         report.ExposureData ?? ""),
+                (R("Benefit-Risk Conclusion"), report.BenefitRiskConclusion ?? ""),
+                (R("Export Date"),           SiteTime.Now.ToString("dd MMM yyyy HH:mm") + " " + SiteTime.Label)
             };
 
             for (int i = 0; i < summaryRows.Length; i++)
@@ -253,15 +256,15 @@ namespace OpenQMS.Controllers
             ws1.Column(2).Width = 55;
 
             // ── Sheet 2: ICH E2C(R2) Case Tabulation ──────────────────────
-            var ws2 = wb.Worksheets.Add("Case Tabulation");
+            var ws2 = wb.Worksheets.Add(Sheet(R("Case Tabulation")));
             var headers = new[]
             {
-                "Case #", "AE Number", "Country", "Report Date", "Report Type",
-                "Patient Age", "Patient Sex", "Suspect Drug", "Indication",
-                "Dose / Route", "Treatment Start", "Treatment End",
-                "Reaction (MedDRA PT)", "MedDRA SOC", "AE Start", "AE End",
-                "Serious", "Seriousness Criteria", "Outcome", "Causality",
-                "Expectedness", "Regulatory Status", "TGA Submission Date"
+                R("Case #"), R("AE Number"), R("Country"), R("Report Date"), R("Report Type"),
+                R("Patient Age"), R("Patient Sex"), R("Suspect Drug"), R("Indication"),
+                R("Dose / Route"), R("Treatment Start"), R("Treatment End"),
+                R("Reaction (MedDRA PT)"), R("MedDRA SOC"), R("AE Start"), R("AE End"),
+                R("Serious"), R("Seriousness Criteria"), R("Outcome"), R("Causality"),
+                R("Expectedness"), R("Regulatory Status"), R("TGA Submission Date")
             };
 
             for (int i = 0; i < headers.Length; i++)
@@ -285,10 +288,10 @@ namespace OpenQMS.Controllers
                 ws2.Cell(row, 2).Value  = ae.AENumber;
                 ws2.Cell(row, 3).Value  = rep?.Country ?? "";
                 ws2.Cell(row, 4).Value  = ae.ReportDate.ToSite().ToString("dd MMM yyyy");
-                ws2.Cell(row, 5).Value  = ae.ReportType.ToString();
+                ws2.Cell(row, 5).Value  = RE(ae.ReportType);
                 ws2.Cell(row, 6).Value  = pat?.Age.HasValue == true
-                    ? $"{pat.Age} {pat.AgeUnit}" : "";
-                ws2.Cell(row, 7).Value  = pat?.Sex?.ToString() ?? "";
+                    ? $"{pat.Age} {RE(pat.AgeUnit)}" : "";
+                ws2.Cell(row, 7).Value  = RE(pat.Sex) ?? "";
                 ws2.Cell(row, 8).Value  = sp?.ProductName ?? "";
                 ws2.Cell(row, 9).Value  = sp?.Indication ?? "";
                 ws2.Cell(row, 10).Value = string.Join(" ", new[]
@@ -300,12 +303,12 @@ namespace OpenQMS.Controllers
                 ws2.Cell(row, 14).Value = ae.MedDRASOC ?? "";
                 ws2.Cell(row, 15).Value = ae.AEStartDate?.ToString("dd MMM yyyy") ?? "";
                 ws2.Cell(row, 16).Value = ae.AEEndDate?.ToString("dd MMM yyyy") ?? "";
-                ws2.Cell(row, 17).Value = ae.IsSerious ? "Yes" : "No";
-                ws2.Cell(row, 18).Value = ae.SeriousnessCriteria.ToString();
-                ws2.Cell(row, 19).Value = ae.Outcome?.ToString() ?? "";
-                ws2.Cell(row, 20).Value = ae.Causality?.ToString() ?? "";
-                ws2.Cell(row, 21).Value = ae.Expectedness?.ToString() ?? "";
-                ws2.Cell(row, 22).Value = regRep.Status.ToString();
+                ws2.Cell(row, 17).Value = ae.IsSerious ? R("Yes") : R("No");
+                ws2.Cell(row, 18).Value = RE(ae.SeriousnessCriteria);
+                ws2.Cell(row, 19).Value = RE(ae.Outcome) ?? "";
+                ws2.Cell(row, 20).Value = RE(ae.Causality) ?? "";
+                ws2.Cell(row, 21).Value = RE(ae.Expectedness) ?? "";
+                ws2.Cell(row, 22).Value = RE(regRep.Status);
                 ws2.Cell(row, 23).Value = regRep.TGASubmissionDate?.ToString("dd MMM yyyy") ?? "";
 
                 if (ae.IsSerious)
@@ -318,12 +321,12 @@ namespace OpenQMS.Controllers
             ws2.Columns().AdjustToContents(8, 50);
 
             // ── Sheet 3: Literature Search Log ────────────────────────────
-            var ws3 = wb.Worksheets.Add("Literature Searches");
+            var ws3 = wb.Worksheets.Add(Sheet(R("Literature Searches")));
             var litHeaders = new[]
             {
-                "Search Date", "Searched By", "Databases", "Search Terms",
-                "Date Range From", "Date Range To", "Total Results",
-                "Relevant Results", "AEs Identified", "Notes"
+                R("Search Date"), R("Searched By"), R("Databases"), R("Search Terms"),
+                R("Date Range From"), R("Date Range To"), R("Total Results"),
+                R("Relevant Results"), R("AEs Identified"), R("Notes")
             };
 
             for (int i = 0; i < litHeaders.Length; i++)
@@ -432,6 +435,7 @@ namespace OpenQMS.Controllers
             TempData["Success"] = this.T("File '{0}' uploaded.", file.FileName);
             return RedirectToAction(nameof(Details), new { id = psurId });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> DownloadAttachment(int? id, bool deleted = false)
         {

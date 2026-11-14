@@ -6,8 +6,8 @@
 
 - Every page of the Documents and Training modules (registers, create/edit, approval and its signature
   statements, review register, library, dashboards, My Training, compliance matrix), their messages and
-  validation errors, dropdown prompts and field labels. Training certificates and attendance lists — printable
-  records — stay in the server's language for now.
+  validation errors, dropdown prompts and field labels. Training certificates and attendance lists: see *Generated
+  records and issued documents* below.
 - Deviations, Complaints and CAPA in Spanish and Portuguese: pages, guidance texts (what each section must
   document), severity and event-type definitions, alerts, messages and validation errors. Dashboard chart labels
   follow with the reports batch.
@@ -16,20 +16,20 @@
   The suggested actions loaded into an action plan stay in English, because they become part of the record.
 - Suppliers, Maintenance, Batch Release (with certification statements settings) and Data Disposal in
   Spanish and Portuguese: pages, dashboards, signature dialogs, checklists, test results, alerts, messages
-  and validation errors. Printed release certificates stay in English, as signed records; checklist item
+  and validation errors. Release certificates: see *Generated records and issued documents* below; checklist item
   names and certification statement texts are record content and also stay as entered.
 - Pharmacovigilance (adverse events, literature monitoring, signal review, PSUR), Regulatory Intelligence
   (applications, conditions, variations, milestones, access pathways) and Licences & Certifications (register,
   calendar, dashboard) in Spanish and Portuguese: pages, guidance texts (seriousness, MedDRA, causality, Day 0,
   RFI, ISO cycle…), signature dialogs, alerts, workflow refusals, messages and validation errors. The CIOMS-I
-  form and exports stay in English, as records.
+  form and exports: see *Generated records and issued documents* below.
 - Master data — Products, Materials, Processes, Assets, Customers (with its dashboard) and Services — in
   Spanish and Portuguese: pages, approval dialogs, field labels, messages and the option lists (dosage and
   presentation forms, device and material categories, customer industries). Options are stored in English
   whatever the language, and a stored value is shown translated.
 - Reports (hub, management review, overdue items, training compliance, attachment expiry register) and
-  System Settings (with its audit log) in Spanish and Portuguese; the time zone list too. Excel exports stay
-  in English, as records.
+  System Settings (with its audit log) in Spanish and Portuguese; the time zone list too. Excel exports: see
+  *Generated records and issued documents* below.
 - Dashboard charts in every module show their labels (statuses, types, categories, series names) and month
   names in the user's language; the "All" choice in table page-size menus is translated everywhere.
 - Home page, user and role administration (with role descriptions), login history, the account pages
@@ -42,8 +42,30 @@
   module (before, only some lists were translated).
 - Messages after an action are translated where they are shown (all modules), so the code that sets them —
   and anything recorded — is unchanged.
+- The remaining English in signature dialogs, counters ("Attached Files (3)", "Aged (>30 days)", "Due Within 10
+  Days"), severity and status badges, document category and type names and Edit-page section headings.
+
+**Generated records and issued documents**
+
+- Exports (detail PDF and CSV, Excel registers, reports, the CIOMS-I form) and the text stamped on downloaded
+  files are produced in the **site language** at the moment they are made — not a user's own language choice.
+  With the site language English they are exactly as before. The audit trail stays in English.
+- Release certificates, training certificates and attendance lists are now **stored exactly as issued** (site
+  language at issue, organisation name and logo embedded, SHA-256 checksum) and always shown from that copy, so a
+  later change of language, organisation name, logo, user name or software version never alters them. A copy
+  that fails its checksum is not shown and the event is audited. Certificates issued earlier are fixed once, in
+  English, on the first start after upgrading. A training certificate is issued when that trainee completes; the
+  attendance list is shown as NOT FINAL until the training is completed; re-opening supersedes it.
 
 **Fixes (also in English)**
+
+- Training: a trainee could open a "certificate" for training they had not completed; the certificate's "Date of
+  Issue" was the day it was viewed; release certificates showed the current organisation name and logo instead
+  of those at issue. All fixed by the stored copies above.
+- Excel exports: the Export Info sheet said "Exported On (UTC)" but showed the site time; it now says "Exported
+  On". Its note no longer calls MintQMS "a validated QMS" (validation is each user's responsibility).
+- CSV exports now start with the UTF-8 mark, so Excel shows accented text (e.g. "José") correctly.
+- Data Disposal audit log: times were labelled UTC but shown in the site time zone; the label is now correct.
 
 - CAPA Dashboard: the Status Distribution chart drew oversized; it is now the same size as on the other
   dashboards.

@@ -14,6 +14,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text.Json;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize(Roles = "Administrator,QualityManager,QualityUser,RegulatoryManager,RegulatoryUser,AuthorisedPerson,Auditor,Trainer,ReadOnly,OperationsUser")]
@@ -23,6 +25,7 @@ namespace OpenQMS.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IPasswordHasher<AppUser> _passwordHasher;
         private readonly ReleaseWorkflowService _workflow;
+        private readonly IssuedDocumentsService _issuedDocs;
 
         // Default AP certification statement (PIC/S Annex 16 compliant)
         private const string DefaultAPStatement =
@@ -138,12 +141,14 @@ namespace OpenQMS.Controllers
             ApplicationDbContext context,
             UserManager<AppUser> userManager,
             IPasswordHasher<AppUser> passwordHasher,
-            ReleaseWorkflowService workflow)
+            ReleaseWorkflowService workflow,
+            IssuedDocumentsService issuedDocs)
         {
             _context = context;
             _userManager = userManager;
             _passwordHasher = passwordHasher;
             _workflow = workflow;
+            _issuedDocs = issuedDocs;
         }
 
         // ── Helpers ──────────────────────────────────────────────────────────
@@ -1238,6 +1243,7 @@ namespace OpenQMS.Controllers
             TempData["ActiveTab"] = "tabDocs";
             return RedirectToAction(nameof(Details), new { id = recordId });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> DownloadDocument(int documentId, bool deleted = false)
         {
@@ -1335,10 +1341,18 @@ namespace OpenQMS.Controllers
                 APFullNameQualification = issuerFullName
             };
 
-            _context.ReleaseCertificates.Add(cert);
-            AddAudit(releaseRecordId, "Certificate Issued", null, null,
-                $"Certificate {certNumber} ({type}) issued by {CurrentUser}");
-            await _context.SaveChangesAsync();
+            // The certificate and its fixed copy (site language, checksum) are saved together: a certificate
+            // is never issued without its copy.
+            await using (var tx = await _context.Database.BeginTransactionAsync())
+            {
+                _context.ReleaseCertificates.Add(cert);
+                AddAudit(releaseRecordId, "Certificate Issued", null, null,
+                    $"Certificate {certNumber} ({type}) issued by {CurrentUser}");
+                await _context.SaveChangesAsync();
+                await _issuedDocs.IssueReleaseCertificateAsync(cert, CurrentUser, HttpContext);
+                await _context.SaveChangesAsync();
+                await tx.CommitAsync();
+            }
 
             TempData["Success"] = this.T("Certificate {0} issued.", certNumber);
             return RedirectToAction(nameof(ViewCertificate), new { certificateId = cert.Id });
@@ -1352,12 +1366,17 @@ namespace OpenQMS.Controllers
 
             if (cert == null) return NotFound();
 
-            CertificateSnapshot? snapshot = null;
-            if (!string.IsNullOrEmpty(cert.ContentSnapshot))
-                snapshot = JsonSerializer.Deserialize<CertificateSnapshot>(cert.ContentSnapshot);
+            // Shown from the stored copy made at issue (one issued before copies were kept is fixed now, in English).
+            var copy = await _issuedDocs.ReleaseCertificateAsync(cert, HttpContext);
+            if (copy.Copy != null && !copy.IntegrityOk)
+            {
+                AddAudit(cert.ReleaseRecordId, "Certificate Integrity Check Failed", null, null,
+                    $"Stored copy of certificate {cert.CertificateNumber} does not match its checksum — not shown.");
+                await _context.SaveChangesAsync();
+            }
 
             ViewBag.Certificate = cert;
-            return View(snapshot);
+            return View(copy);
         }
 
         // ── Release Register ─────────────────────────────────────────────────
@@ -1370,6 +1389,7 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
             return View(certs);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportRegister()
         {
@@ -1380,19 +1400,19 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var workbook = new XLWorkbook();
-            var ws = workbook.Worksheets.Add("Release Register");
+            var ws = workbook.Worksheets.Add(Sheet(R("Release Register")));
 
             // Headers
-            ws.Cell(1, 1).Value = "Certificate No.";
-            ws.Cell(1, 2).Value = "Record No.";
-            ws.Cell(1, 3).Value = "Product";
-            ws.Cell(1, 4).Value = "Batch No.";
-            ws.Cell(1, 5).Value = "Release Type";
-            ws.Cell(1, 6).Value = "Cert Type";
-            ws.Cell(1, 7).Value = "AP Name";
-            ws.Cell(1, 8).Value = "Certification Date";
-            ws.Cell(1, 9).Value = "Issue Date";
-            ws.Cell(1, 10).Value = "Status";
+            ws.Cell(1, 1).Value = R("Certificate No.");
+            ws.Cell(1, 2).Value = R("Record No.");
+            ws.Cell(1, 3).Value = R("Product");
+            ws.Cell(1, 4).Value = R("Batch No.");
+            ws.Cell(1, 5).Value = R("Release Type");
+            ws.Cell(1, 6).Value = R("Cert Type");
+            ws.Cell(1, 7).Value = R("AP Name");
+            ws.Cell(1, 8).Value = R("Certification Date");
+            ws.Cell(1, 9).Value = R("Issue Date");
+            ws.Cell(1, 10).Value = R("Status");
 
             var row = 2;
             foreach (var c in certs)
@@ -1401,12 +1421,12 @@ namespace OpenQMS.Controllers
                 ws.Cell(row, 2).Value = c.ReleaseRecord?.RecordNumber;
                 ws.Cell(row, 3).Value = c.ReleaseRecord?.ProductName;
                 ws.Cell(row, 4).Value = c.ReleaseRecord?.BatchNumber;
-                ws.Cell(row, 5).Value = c.ReleaseRecord?.ReleaseType.ToString();
-                ws.Cell(row, 6).Value = c.CertificateType.ToString();
+                ws.Cell(row, 5).Value = RE(c.ReleaseRecord.ReleaseType);
+                ws.Cell(row, 6).Value = RE(c.CertificateType);
                 ws.Cell(row, 7).Value = c.APFullNameQualification;
                 ws.Cell(row, 8).Value = c.ReleaseRecord?.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy");
                 ws.Cell(row, 9).Value = c.IssuedDate.ToSite().ToString("dd-MMM-yyyy");
-                ws.Cell(row, 10).Value = c.Status.ToString();
+                ws.Cell(row, 10).Value = RE(c.Status);
                 row++;
             }
 
@@ -1422,6 +1442,7 @@ namespace OpenQMS.Controllers
         }
 
         // ── Detail Export ────────────────────────────────────────────────────
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportDetailPdf(int id)
         {
@@ -1436,73 +1457,73 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("Record Number",              record.RecordNumber),
-                ("Release Type",               record.ReleaseType.ToString()),
-                ("Status",                     ReleaseStatusLabel(record.Status)),
-                ("Product Name",               record.ProductName),
-                ("Product Type",              record.ProductType?.ToString()),
-                ("INN / Generic",              record.InnName),
-                ("INCI Name / Ingredient Ref.", record.InciName),
-                ("Standard / Scientific Name", record.StandardScientificName),
-                ("Brand Name",                 record.BrandName),
-                ("Dosage Form",                record.DosageForm),
-                ("Presentation / Form",        record.PresentationForm),
-                ("Device Type / Category",     record.DeviceTypeCategory),
-                ("Model / Version",            record.ModelVersion),
-                ("Material Type / Category",   record.RawMaterialTypeCategory),
-                ("Grade",                      record.Grade),
-                ("Strength / Presentation",    record.Strength),
-                ("ARTG Reference",             record.ArtgReference),
-                ("Batch Number",               record.BatchNumber),
-                ("Batch Size",                 record.BatchSize),
-                ("Pack Size",                  record.PackSize),
-                ("Manufacturing Date",         record.ManufacturingDate?.ToString("dd-MMM-yyyy")),
-                ("Expiry Date",                record.ExpiryDate?.ToString("dd-MMM-yyyy")),
-                ("Retest Date",                record.RetestDate?.ToString("dd-MMM-yyyy")),
-                ("Manufacturing Site",         record.ManufacturingSite),
-                ("Manufacturing GMP Ref.",     record.ManufacturingSiteGmpRef),
-                ("Packaging Site",             record.PackagingSite),
-                ("Packaging GMP Ref.",         record.PackagingSiteGmpRef),
-                ("Testing Laboratories",       string.Join("; ", (record.TestingLabs ?? new List<ReleaseTestingLab>()).Select(t => string.IsNullOrEmpty(t.GmpLicenceRef) ? t.LaboratoryName : $"{t.LaboratoryName} [{t.GmpLicenceRef}]"))),
-                ("Releasing Company",          record.ReleasingCompany),
-                ("TGA Licence / Clearance",    record.ReleasingCompanyLicenceRef),
-                ("Final Release Party",        record.FinalReleaseParty),
-                ("Technical Agreement Ref.",   record.TechnicalAgreementRef),
-                ("Specification Ref.",         record.SpecificationReference),
-                ("Storage Conditions",         record.StorageConditions),
-                ("Distribution Conditions",    record.DistributionConditions),
-                ("Open Deviations / Exceptions", record.OpenDeviationsNotes),
-                ("Limitations / Conditions",   record.LimitationsNotes),
-                ("Notes",                      record.Notes),
-                ("AP Name & Qualification",    record.APFullNameQualification),
-                ("AP Certification Statement", record.APCertificationStatement),
-                ("Certification Date",         record.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy")),
-                ("Release Reference Number",   record.ReleaseRegisterRef),
-                ("Created By",                 record.CreatedBy),
-                ("Created Date",               record.CreatedDate.ToSite().ToString("dd-MMM-yyyy HH:mm")),
-                ("Last Modified By",           record.LastModifiedBy),
-                ("Last Modified Date",         record.LastModifiedDate.ToSite()?.ToString("dd-MMM-yyyy HH:mm")),
+                (R("Record Number"),              record.RecordNumber),
+                (R("Release Type"),               RE(record.ReleaseType)),
+                (R("Status"),                     R(ReleaseStatusLabel(record.Status))),
+                (R("Product Name"),               record.ProductName),
+                (R("Product Type"),              RE(record.ProductType)),
+                (R("INN / Generic"),              record.InnName),
+                (R("INCI Name / Ingredient Ref."), record.InciName),
+                (R("Standard / Scientific Name"), record.StandardScientificName),
+                (R("Brand Name"),                 record.BrandName),
+                (R("Dosage Form"),                record.DosageForm),
+                (R("Presentation / Form"),        record.PresentationForm),
+                (R("Device Type / Category"),     record.DeviceTypeCategory),
+                (R("Model / Version"),            record.ModelVersion),
+                (R("Material Type / Category"),   record.RawMaterialTypeCategory),
+                (R("Grade"),                      record.Grade),
+                (R("Strength / Presentation"),    record.Strength),
+                (R("ARTG Reference"),             record.ArtgReference),
+                (R("Batch Number"),               record.BatchNumber),
+                (R("Batch Size"),                 record.BatchSize),
+                (R("Pack Size"),                  record.PackSize),
+                (R("Manufacturing Date"),         record.ManufacturingDate?.ToString("dd-MMM-yyyy")),
+                (R("Expiry Date"),                record.ExpiryDate?.ToString("dd-MMM-yyyy")),
+                (R("Retest Date"),                record.RetestDate?.ToString("dd-MMM-yyyy")),
+                (R("Manufacturing Site"),         record.ManufacturingSite),
+                (R("Manufacturing GMP Ref."),     record.ManufacturingSiteGmpRef),
+                (R("Packaging Site"),             record.PackagingSite),
+                (R("Packaging GMP Ref."),         record.PackagingSiteGmpRef),
+                (R("Testing Laboratories"),       string.Join("; ", (record.TestingLabs ?? new List<ReleaseTestingLab>()).Select(t => string.IsNullOrEmpty(t.GmpLicenceRef) ? t.LaboratoryName : $"{t.LaboratoryName} [{t.GmpLicenceRef}]"))),
+                (R("Releasing Company"),          record.ReleasingCompany),
+                (R("TGA Licence / Clearance"),    record.ReleasingCompanyLicenceRef),
+                (R("Final Release Party"),        record.FinalReleaseParty),
+                (R("Technical Agreement Ref."),   record.TechnicalAgreementRef),
+                (R("Specification Ref."),         record.SpecificationReference),
+                (R("Storage Conditions"),         record.StorageConditions),
+                (R("Distribution Conditions"),    record.DistributionConditions),
+                (R("Open Deviations / Exceptions"), record.OpenDeviationsNotes),
+                (R("Limitations / Conditions"),   record.LimitationsNotes),
+                (R("Notes"),                      record.Notes),
+                (R("AP Name & Qualification"),    record.APFullNameQualification),
+                (R("AP Certification Statement"), record.APCertificationStatement),
+                (R("Certification Date"),         record.CertificationDate.ToSite()?.ToString("dd-MMM-yyyy")),
+                (R("Release Reference Number"),   record.ReleaseRegisterRef),
+                (R("Created By"),                 record.CreatedBy),
+                (R("Created Date"),               record.CreatedDate.ToSite().ToString("dd-MMM-yyyy HH:mm")),
+                (R("Last Modified By"),           record.LastModifiedBy),
+                (R("Last Modified Date"),         record.LastModifiedDate.ToSite()?.ToString("dd-MMM-yyyy HH:mm")),
             };
 
             var tables = new List<(string, string[], IEnumerable<string[]>)>
             {
-                ("Batch Release Checklist",
-                 new[] { "Category", "Item", "Status", "Comment" },
+                (R("Batch Release Checklist"),
+                 new[] { R("Category"), R("Item"), R("Status"), R("Comment") },
                  (record.ChecklistItems ?? new List<ReleaseChecklistItem>())
                      .OrderBy(c => c.DisplayOrder)
-                     .Select(c => new[] { c.Category ?? "", c.ItemText, c.Status.ToString(), c.Comment ?? "" })),
+                     .Select(c => new[] { c.Category ?? "", c.ItemText, RE(c.Status), c.Comment ?? "" })),
             };
 
-            tables.Add(("Analytical Results",
-                new[] { "Test Parameter", "Method", "Acceptance Criterion", "Result", "Status" },
+            tables.Add((R("Analytical Results"),
+                new[] { R("Test Parameter"), R("Method"), R("Acceptance Criterion"), R("Result"), R("Status") },
                 (record.TestResults ?? new List<ReleaseTestResult>())
                     .OrderBy(t => t.DisplayOrder)
-                    .Select(t => new[] { t.TestParameter, t.TestMethod ?? "", t.AcceptanceCriterion ?? "", t.Result ?? "", t.Status.ToString() })));
+                    .Select(t => new[] { t.TestParameter, t.TestMethod ?? "", t.AcceptanceCriterion ?? "", t.Result ?? "", RE(t.Status) })));
 
-            tables.Add(("Certificates",
-                new[] { "Certificate No.", "Type", "AP Name", "Issued Date", "Status" },
+            tables.Add((R("Certificates"),
+                new[] { R("Certificate No."), R("Type"), R("AP Name"), R("Issued Date"), R("Status") },
                 (record.Certificates ?? new List<ReleaseCertificate>())
-                    .Select(c => new[] { c.CertificateNumber, c.CertificateType.ToString(), c.APFullNameQualification ?? "", c.IssuedDate.ToSite().ToString("dd-MMM-yyyy"), c.Status.ToString() })));
+                    .Select(c => new[] { c.CertificateNumber, RE(c.CertificateType), c.APFullNameQualification ?? "", c.IssuedDate.ToSite().ToString("dd-MMM-yyyy"), RE(c.Status) })));
 
             AddAudit(record.Id, "Exported (PDF)", null, null);
             await _context.SaveChangesAsync();
@@ -1510,9 +1531,9 @@ namespace OpenQMS.Controllers
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
             var result = PdfReportService.Generate(
-                "Release Record — Batch Release Report",
+                R("Release Record — Batch Release Report"),
                 record.RecordNumber,
-                ReleaseStatusLabel(record.Status),
+                R(ReleaseStatusLabel(record.Status)),
                 fields,
                 tables,
                 orgName: _s?.OrganisationName,
@@ -1521,6 +1542,7 @@ namespace OpenQMS.Controllers
 
             return File(result, "application/pdf", $"Release-{record.RecordNumber}.pdf");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportDetailCsv(int id)
         {
@@ -1536,24 +1558,15 @@ namespace OpenQMS.Controllers
             var labsSummary = string.Join(" | ", (record.TestingLabs ?? new List<ReleaseTestingLab>())
                 .Select(t => string.IsNullOrEmpty(t.GmpLicenceRef) ? t.LaboratoryName : $"{t.LaboratoryName} [{t.GmpLicenceRef}]"));
 
-            builder.AppendLine(
-                "Record Number,Release Type,Status,Product Name,Product Type,INN/Generic,INCI Name,Standard/Scientific Name," +
-                "Brand Name,Dosage Form,Presentation/Form,Device Type/Category,Model/Version," +
-                "Material Type/Category,Grade,Strength/Presentation,ARTG Reference," +
-                "Batch Number,Batch Size,Pack Size," +
-                "Manufacturing Date,Expiry Date,Retest Date,Manufacturing Site,Manufacturing GMP Ref," +
-                "Packaging Site,Packaging GMP Ref,Testing Laboratories,Releasing Company,TGA Licence/Clearance Ref," +
-                "Final Release Party,Technical Agreement,Specification Ref,Storage Conditions," +
-                "Distribution Conditions,Open Deviations Notes,Limitations Notes,Notes," +
-                "AP Name & Qualification,Certification Date,Release Reference Number," +
-                "Created By,Created Date");
+            builder.AppendLine(CsvHeader(
+                "Record Number", "Release Type", "Status", "Product Name", "Product Type", "INN/Generic", "INCI Name", "Standard/Scientific Name", "Brand Name", "Dosage Form", "Presentation/Form", "Device Type/Category", "Model/Version", "Material Type/Category", "Grade", "Strength/Presentation", "ARTG Reference", "Batch Number", "Batch Size", "Pack Size", "Manufacturing Date", "Expiry Date", "Retest Date", "Manufacturing Site", "Manufacturing GMP Ref", "Packaging Site", "Packaging GMP Ref", "Testing Laboratories", "Releasing Company", "TGA Licence/Clearance Ref", "Final Release Party", "Technical Agreement", "Specification Ref", "Storage Conditions", "Distribution Conditions", "Open Deviations Notes", "Limitations Notes", "Notes", "AP Name & Qualification", "Certification Date", "Release Reference Number", "Created By", "Created Date"));
 
             builder.AppendLine(string.Join(",",
                 CsvSafe(record.RecordNumber),
-                record.ReleaseType.ToString(),
-                ReleaseStatusLabel(record.Status),
+                RE(record.ReleaseType),
+                R(ReleaseStatusLabel(record.Status)),
                 CsvSafe(record.ProductName),
-                CsvSafe(record.ProductType?.ToString()),
+                CsvSafe(RE(record.ProductType)),
                 CsvSafe(record.InnName),
                 CsvSafe(record.InciName),
                 CsvSafe(record.StandardScientificName),
@@ -1594,7 +1607,7 @@ namespace OpenQMS.Controllers
                 record.CreatedDate.ToSite().ToString("dd-MMM-yyyy HH:mm")));
 
             return File(
-                System.Text.Encoding.UTF8.GetBytes(builder.ToString()),
+                CsvBytes(builder.ToString()),
                 "text/csv",
                 $"Release-{record.RecordNumber}.csv");
         }

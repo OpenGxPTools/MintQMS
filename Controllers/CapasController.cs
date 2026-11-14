@@ -36,6 +36,8 @@ using OpenQMS.Services;
 using static OpenQMS.Models.Capa;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -1061,6 +1063,7 @@ namespace OpenQMS.Controllers
             TempData["Success"] = this.T("CAPA returned for rework ({0}).", this.T(action));   // action stays English: it is also the audit entry
             return RedirectToAction(nameof(Details), new { id });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportCAPADetail(int id)
         {
@@ -1097,38 +1100,38 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("CAPA ID",              capa.CapaId),
-                ("Title",                capa.Title),
-                ("Status",               capa.Status.ToString()),
-                ("Products",             JoinLinked(capa.LinkedProducts,  x => x.Product?.Name,       capa.Product?.Name)),
-                ("Processes",            JoinLinked(capa.LinkedProcesses, x => x.Process?.Name,       capa.Process?.Name)),
-                ("Assets",               JoinLinked(capa.LinkedAssets,    x => x.Asset?.Name,         capa.Asset?.Name)),
-                ("Materials",            JoinLinked(capa.LinkedMaterials, x => x.Material?.Name,      capa.Material?.Name)),
-                ("Suppliers",            JoinLinked(capa.LinkedSuppliers, x => x.Supplier?.LegalName, capa.Supplier?.LegalName)),
-                ("Linked Deviations",    JoinLinked(capa.LinkedDeviations, x => x.Deviation?.Title,   capa.Deviation?.Title)),
-                ("Linked Complaints",    JoinLinked(capa.LinkedComplaints, x => x.Complaint?.Title,   capa.Complaint?.Title)),
-                ("Linked Audits",        JoinLinked(capa.LinkedAudits,     x => x.Audit?.Title,       capa.Audit?.Title)),
-                ("Corrective Action",    capa.CorrectiveAction),
-                ("Preventive Action",    capa.PreventiveAction),
-                ("Determined By",        capa.DeterminedBy),
-                ("Determined On",        capa.DeterminedOn.ToSite().ToShortDateString()),
-                ("Assessment",           capa.Assessment),
-                ("Assessed By",          capa.AssessedBy),
-                ("Assessed On",          capa.AssessedOn.ToSite()?.ToShortDateString()),
-                ("Accepted By",          capa.AcceptedBy),
-                ("Accepted On",          capa.AcceptedOn.ToSite()?.ToShortDateString()),
-                ("Implementation",       capa.Implementation),
-                ("Implemented By",       capa.ImplementedBy),
-                ("Implemented On",       capa.ImplementedOn.ToSite()?.ToShortDateString()),
-                ("Approved By",          capa.ApprovedBy),
-                ("Approved On",          capa.ApprovedOn.ToSite()?.ToShortDateString()),
+                (R("CAPA ID"),              capa.CapaId),
+                (R("Title"),                capa.Title),
+                (R("Status"),               RE(capa.Status)),
+                (R("Products"),             JoinLinked(capa.LinkedProducts,  x => x.Product?.Name,       capa.Product?.Name)),
+                (R("Processes"),            JoinLinked(capa.LinkedProcesses, x => x.Process?.Name,       capa.Process?.Name)),
+                (R("Assets"),               JoinLinked(capa.LinkedAssets,    x => x.Asset?.Name,         capa.Asset?.Name)),
+                (R("Materials"),            JoinLinked(capa.LinkedMaterials, x => x.Material?.Name,      capa.Material?.Name)),
+                (R("Suppliers"),            JoinLinked(capa.LinkedSuppliers, x => x.Supplier?.LegalName, capa.Supplier?.LegalName)),
+                (R("Linked Deviations"),    JoinLinked(capa.LinkedDeviations, x => x.Deviation?.Title,   capa.Deviation?.Title)),
+                (R("Linked Complaints"),    JoinLinked(capa.LinkedComplaints, x => x.Complaint?.Title,   capa.Complaint?.Title)),
+                (R("Linked Audits"),        JoinLinked(capa.LinkedAudits,     x => x.Audit?.Title,       capa.Audit?.Title)),
+                (R("Corrective Action"),    capa.CorrectiveAction),
+                (R("Preventive Action"),    capa.PreventiveAction),
+                (R("Determined By"),        capa.DeterminedBy),
+                (R("Determined On"),        capa.DeterminedOn.ToSite().ToShortDateString()),
+                (R("Assessment"),           capa.Assessment),
+                (R("Assessed By"),          capa.AssessedBy),
+                (R("Assessed On"),          capa.AssessedOn.ToSite()?.ToShortDateString()),
+                (R("Accepted By"),          capa.AcceptedBy),
+                (R("Accepted On"),          capa.AcceptedOn.ToSite()?.ToShortDateString()),
+                (R("Implementation"),       capa.Implementation),
+                (R("Implemented By"),       capa.ImplementedBy),
+                (R("Implemented On"),       capa.ImplementedOn.ToSite()?.ToShortDateString()),
+                (R("Approved By"),          capa.ApprovedBy),
+                (R("Approved On"),          capa.ApprovedOn.ToSite()?.ToShortDateString()),
             };
 
             var tables = new List<(string, string[], IEnumerable<string[]>)>
             {
-                ("Linked Changes",
-                 new[] { "Change ID", "Title", "Status" },
-                 changeList.Select(c => new[] { c.ChangeId, c.Title, c.Status.ToString() })),
+                (R("Linked Changes"),
+                 new[] { R("Change ID"), R("Title"), R("Status") },
+                 changeList.Select(c => new[] { c.ChangeId, c.Title, RE(c.Status) })),
             };
 
             _context.CapaAuditLog.Add(new CapaAuditLog
@@ -1143,10 +1146,11 @@ namespace OpenQMS.Controllers
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var pdfResult = PdfReportService.Generate("CAPA Detail Report", capa.CapaId, capa.Status.ToString(), fields, tables,
+            var pdfResult = PdfReportService.Generate(R("CAPA Detail Report"), capa.CapaId, RE(capa.Status), fields, tables,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(pdfResult, "application/pdf", $"CAPA-{capa.CapaId}.pdf");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportDetailInCSV(int id)
         {
@@ -1180,10 +1184,10 @@ namespace OpenQMS.Controllers
             await _context.SaveChangesAsync();
 
             var builder = new StringBuilder();
-            builder.AppendLine("CAPA Id,Title,Status,Products,Processes,Assets,Materials,Suppliers,Deviations,Complaints,Audits,CorrectiveAction,PreventiveAction,TargetCompletionDate,Determined By,Determined On,Assessment,Assessed By,Assessed On,Accepted By,Accepted On,Implementation,Implemented By,Implemented On,Approved By,Approved On");
-            builder.AppendLine($"{CsvSafe(capa.CapaId)},{CsvSafe(capa.Title)},{capa.Status},{CsvSafe(JoinLinked(capa.LinkedProducts,x=>x.Product?.Name,capa.Product?.Name))},{CsvSafe(JoinLinked(capa.LinkedProcesses,x=>x.Process?.Name,capa.Process?.Name))},{CsvSafe(JoinLinked(capa.LinkedAssets,x=>x.Asset?.Name,capa.Asset?.Name))},{CsvSafe(JoinLinked(capa.LinkedMaterials,x=>x.Material?.Name,capa.Material?.Name))},{CsvSafe(JoinLinked(capa.LinkedSuppliers,x=>x.Supplier?.LegalName,capa.Supplier?.LegalName))},{CsvSafe(JoinLinked(capa.LinkedDeviations,x=>x.Deviation?.Title,capa.Deviation?.Title))},{CsvSafe(JoinLinked(capa.LinkedComplaints,x=>x.Complaint?.Title,capa.Complaint?.Title))},{CsvSafe(JoinLinked(capa.LinkedAudits,x=>x.Audit?.Title,capa.Audit?.Title))},{CsvSafe(capa.CorrectiveAction)},{CsvSafe(capa.PreventiveAction)},{(capa.TargetCompletionDate.HasValue ? capa.TargetCompletionDate.Value.ToShortDateString() : "")},{CsvSafe(capa.DeterminedBy)},{capa.DeterminedOn.ToSite().ToShortDateString()},{CsvSafe(capa.Assessment)},{CsvSafe(capa.AssessedBy)},{(capa.AssessedOn.HasValue ? capa.AssessedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(capa.AcceptedBy)},{(capa.AcceptedOn.HasValue ? capa.AcceptedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(capa.Implementation)},{CsvSafe(capa.ImplementedBy)},{(capa.ImplementedOn.HasValue ? capa.ImplementedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(capa.ApprovedBy)},{(capa.ApprovedOn.HasValue ? capa.ApprovedOn.Value.ToSite().ToShortDateString() : "")}");
+            builder.AppendLine(CsvHeader("CAPA Id", "Title", "Status", "Products", "Processes", "Assets", "Materials", "Suppliers", "Deviations", "Complaints", "Audits", "CorrectiveAction", "PreventiveAction", "TargetCompletionDate", "Determined By", "Determined On", "Assessment", "Assessed By", "Assessed On", "Accepted By", "Accepted On", "Implementation", "Implemented By", "Implemented On", "Approved By", "Approved On"));
+            builder.AppendLine($"{CsvSafe(capa.CapaId)},{CsvSafe(capa.Title)},{RE(capa.Status)},{CsvSafe(JoinLinked(capa.LinkedProducts,x=>x.Product?.Name,capa.Product?.Name))},{CsvSafe(JoinLinked(capa.LinkedProcesses,x=>x.Process?.Name,capa.Process?.Name))},{CsvSafe(JoinLinked(capa.LinkedAssets,x=>x.Asset?.Name,capa.Asset?.Name))},{CsvSafe(JoinLinked(capa.LinkedMaterials,x=>x.Material?.Name,capa.Material?.Name))},{CsvSafe(JoinLinked(capa.LinkedSuppliers,x=>x.Supplier?.LegalName,capa.Supplier?.LegalName))},{CsvSafe(JoinLinked(capa.LinkedDeviations,x=>x.Deviation?.Title,capa.Deviation?.Title))},{CsvSafe(JoinLinked(capa.LinkedComplaints,x=>x.Complaint?.Title,capa.Complaint?.Title))},{CsvSafe(JoinLinked(capa.LinkedAudits,x=>x.Audit?.Title,capa.Audit?.Title))},{CsvSafe(capa.CorrectiveAction)},{CsvSafe(capa.PreventiveAction)},{(capa.TargetCompletionDate.HasValue ? capa.TargetCompletionDate.Value.ToShortDateString() : "")},{CsvSafe(capa.DeterminedBy)},{capa.DeterminedOn.ToSite().ToShortDateString()},{CsvSafe(capa.Assessment)},{CsvSafe(capa.AssessedBy)},{(capa.AssessedOn.HasValue ? capa.AssessedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(capa.AcceptedBy)},{(capa.AcceptedOn.HasValue ? capa.AcceptedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(capa.Implementation)},{CsvSafe(capa.ImplementedBy)},{(capa.ImplementedOn.HasValue ? capa.ImplementedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(capa.ApprovedBy)},{(capa.ApprovedOn.HasValue ? capa.ApprovedOn.Value.ToSite().ToShortDateString() : "")}");
 
-            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "CAPA.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", "CAPA.csv");
         }
 
         // GET: Capas/Dashboard
@@ -1247,6 +1251,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Capas/ExportRegister
+        [RecordLanguage]
         public async Task<IActionResult> ExportRegister()
         {
             var capas = await _context.Capa
@@ -1270,19 +1275,19 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("CAPA Register");
+            var ws = wb.Worksheets.Add(Sheet(R("CAPA Register")));
 
             var headers = new[]
             {
-                "CAPA ID", "Title", "Status", "Target Completion",
-                "Product", "Process", "Asset", "Material", "Supplier",
-                "Linked Deviation", "Linked Complaint", "Linked Audit",
-                "Corrective Action", "Preventive Action",
-                "Determined By", "Determined On",
-                "Assessment", "Assessed By", "Assessed On",
-                "Accepted By", "Accepted On",
-                "Implementation", "Implemented By", "Implemented On",
-                "Approved By", "Approved On"
+                R("CAPA ID"), R("Title"), R("Status"), R("Target Completion"),
+                R("Product"), R("Process"), R("Asset"), R("Material"), R("Supplier"),
+                R("Linked Deviation"), R("Linked Complaint"), R("Linked Audit"),
+                R("Corrective Action"), R("Preventive Action"),
+                R("Determined By"), R("Determined On"),
+                R("Assessment"), R("Assessed By"), R("Assessed On"),
+                R("Accepted By"), R("Accepted On"),
+                R("Implementation"), R("Implemented By"), R("Implemented On"),
+                R("Approved By"), R("Approved On")
             };
 
             for (int i = 0; i < headers.Length; i++)
@@ -1298,7 +1303,7 @@ namespace OpenQMS.Controllers
             {
                 ws.Cell(row, 1).Value  = c.CapaId;
                 ws.Cell(row, 2).Value  = c.Title;
-                ws.Cell(row, 3).Value  = c.Status.ToString();
+                ws.Cell(row, 3).Value  = RE(c.Status);
                 ws.Cell(row, 4).Value  = c.TargetCompletionDate?.ToString("yyyy-MM-dd") ?? "";
                 ws.Cell(row, 5).Value  = JoinLinked(c.LinkedProducts,  x => x.Product?.Name,       c.Product?.Name)  ?? "";
                 ws.Cell(row, 6).Value  = JoinLinked(c.LinkedProcesses, x => x.Process?.Name,       c.Process?.Name)  ?? "";
@@ -1335,7 +1340,7 @@ namespace OpenQMS.Controllers
             // Register exports are recorded in the workbook's Export Info sheet (who / when / count).
             // No per-record audit entry: there is no parent record, and id 0 violates the audit-log FK.
 
-            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", "CAPA Register", capas.Count);
+            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", R("CAPA Register"), capas.Count);
 
             using var stream = new MemoryStream();
             wb.SaveAs(stream);
@@ -1472,6 +1477,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Capas/DownloadAttachment/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadAttachment(int? id, bool deleted = false)
         {
             if (id == null)
@@ -1527,6 +1533,7 @@ namespace OpenQMS.Controllers
                 memory.ToArray(), Path.GetExtension(attachment.FileName), wmCtx);
             return File(watermarked, attachment.ContentType ?? "application/octet-stream", attachment.FileName);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ViewAttachment(int? id)
         {

@@ -3081,6 +3081,60 @@ namespace OpenQMS.Migrations
                     b.ToTable("DocumentAuditLog");
                 });
 
+            modelBuilder.Entity("OpenQMS.Models.IssuedRecordCopy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Html")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Origin")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Sha256")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SourceId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("SupersededOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SupersededReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Kind", "SourceId");
+
+                    b.ToTable("IssuedRecordCopies");
+                });
+
             modelBuilder.Entity("OpenQMS.Models.LC.LCApprovalSnapshot", b =>
                 {
                     b.Property<int>("Id")
@@ -7696,6 +7750,9 @@ namespace OpenQMS.Migrations
 
                     b.Property<int>("IdleTimeoutMinutes")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("IssuedCopiesSince")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("LCRetentionYears")
                         .HasColumnType("INTEGER");

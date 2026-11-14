@@ -42,10 +42,12 @@ RESX_HEAD = """<?xml version="1.0" encoding="utf-8"?>
 """
 
 # --- keys used in code -------------------------------------------------------------------------
-L_LITERAL = re.compile(r'(?:\b[LHl]\[|\b_l\[|\bStatusMessage\s*=\s*\$?(?=")|\bthis\.T\(|\b(?:Workflow|Transition)Result\.Fail\(|\bT\(base\.\w+\([^)]*\),)\s*"((?:[^"\\]|\\.)*)"\s*[\]),;]')
+L_LITERAL = re.compile(r'(?:\b[LHl]\[|\b_l\[|(?<![\w.])R\(|\bRecordText\.R\(|\bStatusMessage\s*=\s*\$?(?=")|\bthis\.T\(|\b(?:Workflow|Transition)Result\.Fail\(|\bT\(base\.\w+\([^)]*\),)\s*"((?:[^"\\]|\\.)*)"\s*[\]),;]')
 
 
 OPTION_LIST = re.compile(r"new\[\]\s*\{\s*/\* i18n \*/(.*?)\}", re.S)
+# record CSV headers: RecordText.CsvHeader("Complaint ID", "Title", ...) — every literal is a key
+CSV_HEADER = re.compile(r'\bCsvHeader\(((?:\s*"(?:[^"\\]|\\.)*"\s*,?)*)\)', re.S)
 
 
 def unescape_cs(s):
@@ -70,6 +72,9 @@ def literal_keys():
         text = re.sub(r"(?m)^\s*//.*$", "", text)                             # whole-line // and /// comments
         for m in L_LITERAL.finditer(text):
             used.setdefault(unescape_cs(m.group(1)), set()).add(os.path.relpath(f, ROOT))
+        for block in CSV_HEADER.findall(text):
+            for item in re.findall(r'"((?:[^"\\]|\\.)*)"', block):
+                used.setdefault(unescape_cs(item), set()).add(os.path.relpath(f, ROOT))
     return used
 
 

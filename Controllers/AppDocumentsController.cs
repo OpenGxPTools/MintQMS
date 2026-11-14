@@ -44,6 +44,8 @@ using OpenQMS.Services;
 //**Microsoft Word 16.0 Object Library COM reference**
 //using Word = Microsoft.Office.Interop.Word;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -194,6 +196,7 @@ namespace OpenQMS.Controllers
 
             return View(document);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> DownloadFile(int id)
         {
@@ -290,6 +293,7 @@ namespace OpenQMS.Controllers
         // No control sheet and no internal approval trail — only a discreet right-margin
         // "Uncontrolled copy" mark (placed so it won't collide with the attachment watermark
         // if the completed copy is later re-uploaded). The act of issuing is still audited.
+        [RecordLanguage]
         public async Task<IActionResult> DownloadWorkingCopy(int id)
         {
             var document = await _context.AppDocument.FirstOrDefaultAsync(m => m.Id == id);
@@ -338,6 +342,7 @@ namespace OpenQMS.Controllers
             var fileName = $"{document.Title} v{version}{document.FileExtension}";
             return File(bytes, document.FileType ?? "application/octet-stream", fileName);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ViewFile(int id)
         {
@@ -1827,6 +1832,7 @@ namespace OpenQMS.Controllers
                 return Forbid();
             }
         }
+        [RecordLanguage]
 
         public ActionResult ExportDetailInCSV(int id)
         {
@@ -1846,10 +1852,10 @@ namespace OpenQMS.Controllers
                 return Forbid();
 
             var builder = new StringBuilder();
-            builder.AppendLine("Document ID,Title,Category,Document Type,Description,Version,Status,File Type,Authored By,Authored On,Approved By,Approved On,Issued On,Reason for Change,Next Review Date");
-            builder.AppendLine($"{document.DocumentId},{EscapeCsv(document.Title)},{EscapeCsv(document.Category.HasValue ? GetCategoryDisplayName(document.Category.Value) : string.Empty)},{EscapeCsv(document.DocType.HasValue ? GetDocTypeDisplayName(document.DocType.Value) : string.Empty)},{EscapeCsv(document.Description)},{document.Version:0.00},{document.Status},{document.FileExtension?.TrimStart('.').ToUpperInvariant()},{document.AuthoredBy},{document.AuthoredOn.ToSite():dd/MM/yyyy},{document.ApprovedBy ?? string.Empty},{(document.ApprovedOn.HasValue ? document.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy") : string.Empty)},{(document.IssuedOn.HasValue ? document.IssuedOn.Value.ToSite().ToString("dd/MM/yyyy") : string.Empty)},{EscapeCsv(document.ReasonForChange)},{(document.ReviewDueDate.HasValue ? document.ReviewDueDate.Value.ToString("dd/MM/yyyy") : string.Empty)}");
+            builder.AppendLine(CsvHeader("Document ID", "Title", "Category", "Document Type", "Description", "Version", "Status", "File Type", "Authored By", "Authored On", "Approved By", "Approved On", "Issued On", "Reason for Change", "Next Review Date"));
+            builder.AppendLine($"{document.DocumentId},{EscapeCsv(document.Title)},{EscapeCsv(document.Category.HasValue ? R(GetCategoryDisplayName(document.Category.Value)) : string.Empty)},{EscapeCsv(document.DocType.HasValue ? R(GetDocTypeDisplayName(document.DocType.Value)) : string.Empty)},{EscapeCsv(document.Description)},{document.Version:0.00},{RE(document.Status)},{document.FileExtension?.TrimStart('.').ToUpperInvariant()},{document.AuthoredBy},{document.AuthoredOn.ToSite():dd/MM/yyyy},{document.ApprovedBy ?? string.Empty},{(document.ApprovedOn.HasValue ? document.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy") : string.Empty)},{(document.IssuedOn.HasValue ? document.IssuedOn.Value.ToSite().ToString("dd/MM/yyyy") : string.Empty)},{EscapeCsv(document.ReasonForChange)},{(document.ReviewDueDate.HasValue ? document.ReviewDueDate.Value.ToString("dd/MM/yyyy") : string.Empty)}");
 
-            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", $"{document.DocumentId}.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", $"{document.DocumentId}.csv");
         }
 
         private static string EscapeCsv(string? value)
@@ -1952,6 +1958,7 @@ namespace OpenQMS.Controllers
             ViewBag.CurrentCount = docs.Count(d => d.ReviewDueDate!.Value.Date > today.AddDays(30));
             return View(docs);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportRegister()
         {
@@ -1966,14 +1973,14 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var workbook = new XLWorkbook();
-            var ws = workbook.Worksheets.Add("Documents");
+            var ws = workbook.Worksheets.Add(Sheet(R("Documents")));
 
             // Header row
             var headers = new[] {
-                "Document ID", "Title", "Category", "Document Type", "Description", "Version", "Status",
-                "File Type", "Is Locked", "Generated From",
-                "Authored By", "Authored On", "Approved By", "Approved On", "Issued On", "Reason for Change",
-                "Next Review Date"
+                R("Document ID"), R("Title"), R("Category"), R("Document Type"), R("Description"), R("Version"), R("Status"),
+                R("File Type"), R("Is Locked"), R("Generated From"),
+                R("Authored By"), R("Authored On"), R("Approved By"), R("Approved On"), R("Issued On"), R("Reason for Change"),
+                R("Next Review Date")
             };
             for (int i = 0; i < headers.Length; i++)
             {
@@ -1988,13 +1995,13 @@ namespace OpenQMS.Controllers
             {
                 ws.Cell(row, 1).Value = d.DocumentId;
                 ws.Cell(row, 2).Value = d.Title;
-                ws.Cell(row, 3).Value = d.Category.HasValue ? GetCategoryDisplayName(d.Category.Value) : string.Empty;
-                ws.Cell(row, 4).Value = d.DocType.HasValue ? GetDocTypeDisplayName(d.DocType.Value) : string.Empty;
+                ws.Cell(row, 3).Value = d.Category.HasValue ? R(GetCategoryDisplayName(d.Category.Value)) : string.Empty;
+                ws.Cell(row, 4).Value = d.DocType.HasValue ? R(GetDocTypeDisplayName(d.DocType.Value)) : string.Empty;
                 ws.Cell(row, 5).Value = d.Description ?? string.Empty;
                 ws.Cell(row, 6).Value = d.Version.ToString("0.00");
-                ws.Cell(row, 7).Value = d.Status.ToString();
+                ws.Cell(row, 7).Value = RE(d.Status);
                 ws.Cell(row, 8).Value = d.FileExtension?.TrimStart('.').ToUpperInvariant() ?? string.Empty;
-                ws.Cell(row, 9).Value = d.IsLocked ? "Yes" : "No";
+                ws.Cell(row, 9).Value = d.IsLocked ? R("Yes") : R("No");
                 ws.Cell(row, 10).Value = d.GeneratedFrom ?? string.Empty;
                 ws.Cell(row, 11).Value = d.AuthoredBy ?? string.Empty;
                 ws.Cell(row, 12).Value = d.AuthoredOn.ToSite().ToString("dd/MM/yyyy");

@@ -10,6 +10,8 @@ using OpenQMS.Models;
 using OpenQMS.Models.LC;
 using OpenQMS.Services;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -505,6 +507,7 @@ namespace OpenQMS.Controllers
         // ============================================================
         // EXPORT
         // ============================================================
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportRegister()
         {
@@ -516,13 +519,13 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Supplier Register");
+            var ws = wb.Worksheets.Add(Sheet(R("Supplier Register")));
 
             var headers = new[] {
-                "Supplier ID","Legal Name","Trading Name","Type","Risk Level","Status","Workflow Status",
-                "Assessed By","Assessed On","Approved By","Approved On","Qualified By","Qualified On",
-                "Review Frequency","Last Review","Next Review","Effective Date","Approval Expiry",
-                "Qualification Required","Country","Created By","Created On"
+                R("Supplier ID"),R("Legal Name"),R("Trading Name"),R("Type"),R("Risk Level"),R("Status"),R("Workflow Status"),
+                R("Assessed By"),R("Assessed On"),R("Approved By"),R("Approved On"),R("Qualified By"),R("Qualified On"),
+                R("Review Frequency"),R("Last Review"),R("Next Review"),R("Effective Date"),R("Approval Expiry"),
+                R("Qualification Required"),R("Country"),R("Created By"),R("Created On")
             };
 
             for (int i = 0; i < headers.Length; i++)
@@ -547,22 +550,22 @@ namespace OpenQMS.Controllers
                 ws.Cell(row, 1).Value = s.SupplierCode;
                 ws.Cell(row, 2).Value = s.LegalName;
                 ws.Cell(row, 3).Value = s.TradingName ?? "";
-                ws.Cell(row, 4).Value = s.SupplierType.ToString();
-                ws.Cell(row, 5).Value = s.ApprovalStatus != null && s.RiskLevel != SupplierRiskLevel.NotAssessed ? s.RiskLevel.ToString() : "-";
-                ws.Cell(row, 6).Value = s.ApprovalStatus?.ToString() ?? "Pending";
-                ws.Cell(row, 7).Value = s.Status.ToString();
+                ws.Cell(row, 4).Value = RE(s.SupplierType);
+                ws.Cell(row, 5).Value = s.ApprovalStatus != null && s.RiskLevel != SupplierRiskLevel.NotAssessed ? RE(s.RiskLevel) : "-";
+                ws.Cell(row, 6).Value = RE(s.ApprovalStatus) ?? R("Pending");
+                ws.Cell(row, 7).Value = RE(s.Status);
                 ws.Cell(row, 8).Value = s.AssessedBy ?? "";
                 ws.Cell(row, 9).Value = s.AssessedOn.HasValue ? s.AssessedOn.Value.ToSite().ToString("dd/MM/yyyy") : "";
                 ws.Cell(row, 10).Value = s.ApprovedBy ?? "";
                 ws.Cell(row, 11).Value = s.ApprovedOn.HasValue ? s.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy") : "";
                 ws.Cell(row, 12).Value = s.QualifiedBy ?? "";
                 ws.Cell(row, 13).Value = s.QualifiedOn.HasValue ? s.QualifiedOn.Value.ToSite().ToString("dd/MM/yyyy") : "";
-                ws.Cell(row, 14).Value = s.ReviewFrequency.ToString();
+                ws.Cell(row, 14).Value = RE(s.ReviewFrequency);
                 ws.Cell(row, 15).Value = s.LastReviewDate.HasValue ? s.LastReviewDate.Value.ToSite().ToString("dd/MM/yyyy") : "";
                 ws.Cell(row, 16).Value = s.NextReviewDate.HasValue ? s.NextReviewDate.Value.ToString("dd/MM/yyyy") : "";
                 ws.Cell(row, 17).Value = s.EffectiveDate.HasValue ? s.EffectiveDate.Value.ToSite().ToString("dd/MM/yyyy") : "";
                 ws.Cell(row, 18).Value = s.ExpiryDate.HasValue ? s.ExpiryDate.Value.ToString("dd/MM/yyyy") : "";
-                ws.Cell(row, 19).Value = s.QualificationRequired ? "Yes" : "No";
+                ws.Cell(row, 19).Value = s.QualificationRequired ? R("Yes") : R("No");
                 ws.Cell(row, 20).Value = s.Country ?? "";
                 ws.Cell(row, 21).Value = s.CreatedBy ?? "";
                 ws.Cell(row, 22).Value = s.CreatedOn.ToSite().ToString("dd/MM/yyyy");
@@ -1271,6 +1274,7 @@ namespace OpenQMS.Controllers
             return RedirectToAction(nameof(Documents), new { id = supplierId });
         }
 
+        [RecordLanguage]
         [Authorize(Roles = "Administrator,QualityManager,QualityUser,AuthorisedPerson,OperationsUser,CommercialUser")]
         public async Task<IActionResult> DownloadDocument(int? id, bool deleted = false)
         {
@@ -1345,6 +1349,7 @@ namespace OpenQMS.Controllers
         // ============================================================
         // REVIEWS
         // ============================================================
+        [RecordLanguage]
 
         public async Task<IActionResult> DownloadSnapshotDocument(int? id)
         {
@@ -1612,6 +1617,7 @@ namespace OpenQMS.Controllers
             };
             return $"{r.RecordType} {code ?? "(unknown)"}";
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportSupplierDetail(int id)
         {
@@ -1623,39 +1629,40 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("Supplier Code",         supplier.SupplierCode),
-                ("Legal Name",            supplier.LegalName),
-                ("Trading Name",          supplier.TradingName),
-                ("Status",                supplier.Status.ToString()),
-                ("Supplier Type",         supplier.SupplierType.ToString()),
-                ("Risk Level",            supplier.RiskLevel.ToString()),
-                ("Country",               supplier.Country),
-                ("City",                  supplier.City),
-                ("Contact Name",          supplier.ContactName),
-                ("Contact Email",         supplier.ContactEmail),
-                ("Contact Phone",         supplier.ContactPhone),
-                ("Created By",            supplier.CreatedBy),
-                ("Created On",            supplier.CreatedOn.ToSite().ToShortDateString()),
-                ("Assessed By",           supplier.AssessedBy),
-                ("Assessed On",           supplier.AssessedOn.ToSite()?.ToShortDateString()),
-                ("Risk Justification",    supplier.RiskJustification),
-                ("Review Frequency",      supplier.ReviewFrequency.ToString()),
-                ("Qualification Required", supplier.QualificationRequired ? "Yes" : "No"),
-                ("Approved By",           supplier.ApprovedBy),
-                ("Approved On",           supplier.ApprovedOn.ToSite()?.ToShortDateString()),
-                ("Effective Date",        supplier.EffectiveDate.ToSite()?.ToShortDateString()),
-                ("Next Review",           supplier.NextReviewDate?.ToShortDateString()),
-                ("Last Review",           supplier.LastReviewDate?.ToShortDateString()),
-                ("Qualified By",          supplier.QualifiedBy),
-                ("Qualified On",          supplier.QualifiedOn.ToSite()?.ToShortDateString()),
+                (R("Supplier Code"),         supplier.SupplierCode),
+                (R("Legal Name"),            supplier.LegalName),
+                (R("Trading Name"),          supplier.TradingName),
+                (R("Status"),                RE(supplier.Status)),
+                (R("Supplier Type"),         RE(supplier.SupplierType)),
+                (R("Risk Level"),            RE(supplier.RiskLevel)),
+                (R("Country"),               supplier.Country),
+                (R("City"),                  supplier.City),
+                (R("Contact Name"),          supplier.ContactName),
+                (R("Contact Email"),         supplier.ContactEmail),
+                (R("Contact Phone"),         supplier.ContactPhone),
+                (R("Created By"),            supplier.CreatedBy),
+                (R("Created On"),            supplier.CreatedOn.ToSite().ToShortDateString()),
+                (R("Assessed By"),           supplier.AssessedBy),
+                (R("Assessed On"),           supplier.AssessedOn.ToSite()?.ToShortDateString()),
+                (R("Risk Justification"),    supplier.RiskJustification),
+                (R("Review Frequency"),      RE(supplier.ReviewFrequency)),
+                (R("Qualification Required"), supplier.QualificationRequired ? R("Yes") : R("No")),
+                (R("Approved By"),           supplier.ApprovedBy),
+                (R("Approved On"),           supplier.ApprovedOn.ToSite()?.ToShortDateString()),
+                (R("Effective Date"),        supplier.EffectiveDate.ToSite()?.ToShortDateString()),
+                (R("Next Review"),           supplier.NextReviewDate?.ToShortDateString()),
+                (R("Last Review"),           supplier.LastReviewDate?.ToShortDateString()),
+                (R("Qualified By"),          supplier.QualifiedBy),
+                (R("Qualified On"),          supplier.QualifiedOn.ToSite()?.ToShortDateString()),
             };
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Supplier Detail Report", supplier.SupplierCode, supplier.Status.ToString(), fields,
+            var result = PdfReportService.Generate(R("Supplier Detail Report"), supplier.SupplierCode, RE(supplier.Status), fields,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Supplier-{supplier.SupplierCode}.pdf");
         }
+        [RecordLanguage]
 
         public ActionResult ExportDetailInCSV(int id)
         {
@@ -1666,10 +1673,10 @@ namespace OpenQMS.Controllers
             if (supplier == null) return NotFound();
 
             var builder = new System.Text.StringBuilder();
-            builder.AppendLine("Supplier Code,Legal Name,Trading Name,Status,Supplier Type,Risk Level,Country,City,Contact Name,Contact Email,Assessed By,Assessed On,Review Frequency,Qualification Required,Approved By,Approved On,Effective Date,Next Review,Qualified By,Qualified On");
-            builder.AppendLine($"{supplier.SupplierCode},{supplier.LegalName},{supplier.TradingName ?? ""},{supplier.Status},{supplier.SupplierType},{supplier.RiskLevel},{supplier.Country ?? ""},{supplier.City ?? ""},{supplier.ContactName ?? ""},{supplier.ContactEmail ?? ""},{supplier.AssessedBy ?? ""},{supplier.AssessedOn.ToSite()?.ToShortDateString() ?? ""},{supplier.ReviewFrequency},{(supplier.QualificationRequired ? "Yes" : "No")},{supplier.ApprovedBy ?? ""},{supplier.ApprovedOn.ToSite()?.ToShortDateString() ?? ""},{supplier.EffectiveDate.ToSite()?.ToShortDateString() ?? ""},{supplier.NextReviewDate?.ToShortDateString() ?? ""},{supplier.QualifiedBy ?? ""},{supplier.QualifiedOn.ToSite()?.ToShortDateString() ?? ""}");
+            builder.AppendLine(CsvHeader("Supplier Code", "Legal Name", "Trading Name", "Status", "Supplier Type", "Risk Level", "Country", "City", "Contact Name", "Contact Email", "Assessed By", "Assessed On", "Review Frequency", "Qualification Required", "Approved By", "Approved On", "Effective Date", "Next Review", "Qualified By", "Qualified On"));
+            builder.AppendLine($"{supplier.SupplierCode},{supplier.LegalName},{supplier.TradingName ?? ""},{RE(supplier.Status)},{RE(supplier.SupplierType)},{RE(supplier.RiskLevel)},{supplier.Country ?? ""},{supplier.City ?? ""},{supplier.ContactName ?? ""},{supplier.ContactEmail ?? ""},{supplier.AssessedBy ?? ""},{supplier.AssessedOn.ToSite()?.ToShortDateString() ?? ""},{RE(supplier.ReviewFrequency)},{(supplier.QualificationRequired ? R("Yes") : R("No"))},{supplier.ApprovedBy ?? ""},{supplier.ApprovedOn.ToSite()?.ToShortDateString() ?? ""},{supplier.EffectiveDate.ToSite()?.ToShortDateString() ?? ""},{supplier.NextReviewDate?.ToShortDateString() ?? ""},{supplier.QualifiedBy ?? ""},{supplier.QualifiedOn.ToSite()?.ToShortDateString() ?? ""}");
 
-            return File(System.Text.Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", $"Supplier-{supplier.SupplierCode}.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", $"Supplier-{supplier.SupplierCode}.csv");
         }
 
         private bool SupplierExists(int id) => _context.Supplier.Any(e => e.Id == id);

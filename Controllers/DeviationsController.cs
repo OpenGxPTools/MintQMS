@@ -35,6 +35,8 @@ using OpenQMS.Models.ViewModels;
 using OpenQMS.Services;
 using static OpenQMS.Models.Deviation;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -954,6 +956,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Deviations/ExportRegister
+        [RecordLanguage]
         public async Task<IActionResult> ExportRegister()
         {
             var deviations = await _context.Deviation
@@ -968,17 +971,17 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Deviations");
+            var ws = wb.Worksheets.Add(Sheet(R("Deviations")));
 
             var headers = new[]
             {
-                "Deviation ID", "Title", "Status", "Severity", "Products", "Processes", "Assets", "Materials", "Suppliers",
-                "Identification", "Identified By", "Identified On",
-                "Evaluation", "Evaluated By", "Evaluated On",
-                "Investigation", "Root Cause", "Root Cause Category", "Corrective Action",
-                "Accepted By", "Accepted On",
-                "Resolution", "Resolved By", "Resolved On",
-                "Approved By", "Approved On"
+                R("Deviation ID"), R("Title"), R("Status"), R("Severity"), R("Products"), R("Processes"), R("Assets"), R("Materials"), R("Suppliers"),
+                R("Identification"), R("Identified By"), R("Identified On"),
+                R("Evaluation"), R("Evaluated By"), R("Evaluated On"),
+                R("Investigation"), R("Root Cause"), R("Root Cause Category"), R("Corrective Action"),
+                R("Accepted By"), R("Accepted On"),
+                R("Resolution"), R("Resolved By"), R("Resolved On"),
+                R("Approved By"), R("Approved On")
             };
 
             for (int i = 0; i < headers.Length; i++)
@@ -994,8 +997,8 @@ namespace OpenQMS.Controllers
             {
                 ws.Cell(row, 1).Value = d.DeviationId;
                 ws.Cell(row, 2).Value = d.Title;
-                ws.Cell(row, 3).Value = d.Status.ToString();
-                ws.Cell(row, 4).Value = d.Severity?.ToString() ?? "";
+                ws.Cell(row, 3).Value = RE(d.Status);
+                ws.Cell(row, 4).Value = RE(d.Severity) ?? "";
                 ws.Cell(row, 5).Value = JoinLinked(d.LinkedProducts,  x => x.Product?.Name,     d.Product?.Name);
                 ws.Cell(row, 6).Value = JoinLinked(d.LinkedProcesses, x => x.Process?.Name,    d.Process?.Name);
                 ws.Cell(row, 7).Value = JoinLinked(d.LinkedAssets,    x => x.Asset?.Name,      d.Asset?.Name);
@@ -1009,7 +1012,7 @@ namespace OpenQMS.Controllers
                 ws.Cell(row, 15).Value = d.EvaluatedOn.ToSite()?.ToShortDateString() ?? "";
                 ws.Cell(row, 16).Value = d.Investigation ?? "";
                 ws.Cell(row, 17).Value = d.RootCause ?? "";
-                ws.Cell(row, 18).Value = d.RootCauseCategory?.ToString() ?? "";
+                ws.Cell(row, 18).Value = RE(d.RootCauseCategory) ?? "";
                 ws.Cell(row, 19).Value = d.CorrectiveAction ?? "";
                 ws.Cell(row, 20).Value = d.AcceptedBy ?? "";
                 ws.Cell(row, 21).Value = d.AcceptedOn.ToSite()?.ToShortDateString() ?? "";
@@ -1027,7 +1030,7 @@ namespace OpenQMS.Controllers
             ws.SheetView.FreezeRows(1);
             ws.Columns().AdjustToContents();
 
-            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", "Deviations Register", deviations.Count);
+            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", R("Deviations Register"), deviations.Count);
 
             // Register exports are recorded in the workbook's Export Info sheet (who / when / count).
             // No per-record audit entry: there is no parent record, and id 0 violates the audit-log FK.
@@ -1038,6 +1041,7 @@ namespace OpenQMS.Controllers
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"Deviations-Register-{SiteTime.Today:yyyy-MM-dd}.xlsx");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportDeviationDetail(int id)
         {
@@ -1060,36 +1064,36 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("Deviation ID",    deviation.DeviationId),
-                ("Title",           deviation.Title),
-                ("Status",          deviation.Status.ToString()),
-                ("Event Type",      deviation.EventType?.ToString()),
-                ("Severity",        deviation.Severity?.ToString()),
-                ("Products",        JoinLinked(deviation.LinkedProducts,  x => x.Product?.Name,     deviation.Product?.Name)),
-                ("Processes",       JoinLinked(deviation.LinkedProcesses, x => x.Process?.Name,    deviation.Process?.Name)),
-                ("Assets",          JoinLinked(deviation.LinkedAssets,    x => x.Asset?.Name,      deviation.Asset?.Name)),
-                ("Materials",       JoinLinked(deviation.LinkedMaterials, x => x.Material?.Name,   deviation.Material?.Name)),
-                ("Suppliers",       JoinLinked(deviation.LinkedSuppliers, x => x.Supplier?.LegalName, deviation.Supplier?.LegalName)),
-                ("Identification",  deviation.Identification),
-                ("Identified By",   deviation.IdentifiedBy),
-                ("Identified On",   deviation.IdentifiedOn.ToSite().ToShortDateString()),
-                ("Evaluation",      deviation.Evaluation),
-                ("Evaluated By",    deviation.EvaluatedBy),
-                ("Evaluated On",    deviation.EvaluatedOn.ToSite()?.ToShortDateString()),
-                ("Accepted By",     deviation.AcceptedBy),
-                ("Accepted On",     deviation.AcceptedOn.ToSite()?.ToShortDateString()),
-                ("Resolution",      deviation.Resolution),
-                ("Resolved By",     deviation.ResolvedBy),
-                ("Resolved On",     deviation.ResolvedOn.ToSite()?.ToShortDateString()),
-                ("Approved By",     deviation.ApprovedBy),
-                ("Approved On",     deviation.ApprovedOn.ToSite()?.ToShortDateString()),
+                (R("Deviation ID"),    deviation.DeviationId),
+                (R("Title"),           deviation.Title),
+                (R("Status"),          RE(deviation.Status)),
+                (R("Event Type"),      RE(deviation.EventType)),
+                (R("Severity"),        RE(deviation.Severity)),
+                (R("Products"),        JoinLinked(deviation.LinkedProducts,  x => x.Product?.Name,     deviation.Product?.Name)),
+                (R("Processes"),       JoinLinked(deviation.LinkedProcesses, x => x.Process?.Name,    deviation.Process?.Name)),
+                (R("Assets"),          JoinLinked(deviation.LinkedAssets,    x => x.Asset?.Name,      deviation.Asset?.Name)),
+                (R("Materials"),       JoinLinked(deviation.LinkedMaterials, x => x.Material?.Name,   deviation.Material?.Name)),
+                (R("Suppliers"),       JoinLinked(deviation.LinkedSuppliers, x => x.Supplier?.LegalName, deviation.Supplier?.LegalName)),
+                (R("Identification"),  deviation.Identification),
+                (R("Identified By"),   deviation.IdentifiedBy),
+                (R("Identified On"),   deviation.IdentifiedOn.ToSite().ToShortDateString()),
+                (R("Evaluation"),      deviation.Evaluation),
+                (R("Evaluated By"),    deviation.EvaluatedBy),
+                (R("Evaluated On"),    deviation.EvaluatedOn.ToSite()?.ToShortDateString()),
+                (R("Accepted By"),     deviation.AcceptedBy),
+                (R("Accepted On"),     deviation.AcceptedOn.ToSite()?.ToShortDateString()),
+                (R("Resolution"),      deviation.Resolution),
+                (R("Resolved By"),     deviation.ResolvedBy),
+                (R("Resolved On"),     deviation.ResolvedOn.ToSite()?.ToShortDateString()),
+                (R("Approved By"),     deviation.ApprovedBy),
+                (R("Approved On"),     deviation.ApprovedOn.ToSite()?.ToShortDateString()),
             };
 
             var tables = new List<(string, string[], IEnumerable<string[]>)>
             {
-                ("Linked CAPAs",
-                 new[] { "CAPA ID", "Title", "Status" },
-                 capaList.Select(c => new[] { c.CapaId, c.Title, c.Status.ToString() })),
+                (R("Linked CAPAs"),
+                 new[] { R("CAPA ID"), R("Title"), R("Status") },
+                 capaList.Select(c => new[] { c.CapaId, c.Title, RE(c.Status) })),
             };
 
             AddAuditLog(deviation.Id, "Exported (PDF)", deviation.Status.ToString(), deviation.Status.ToString());
@@ -1097,10 +1101,11 @@ namespace OpenQMS.Controllers
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Deviation Detail Report", deviation.DeviationId, deviation.Status.ToString(), fields, tables,
+            var result = PdfReportService.Generate(R("Deviation Detail Report"), deviation.DeviationId, RE(deviation.Status), fields, tables,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Deviation-{deviation.DeviationId}.pdf");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportDetailInCSV(int id)
         {
@@ -1121,10 +1126,10 @@ namespace OpenQMS.Controllers
             await _context.SaveChangesAsync();
 
             var builder = new System.Text.StringBuilder();
-            builder.AppendLine("Deviation ID,Title,Event Type,Status,Severity,Products,Processes,Assets,Materials,Suppliers,Identification,Identified By,Identified On,Evaluation,Evaluated By,Evaluated On,Investigation,Root Cause,Root Cause Category,Corrective Action,Accepted By,Accepted On,Resolution,Resolved By,Resolved On,Approved By,Approved On");
-            builder.AppendLine($"{CsvSafe(deviation.DeviationId)},{CsvSafe(deviation.Title)},{deviation.EventType?.ToString() ?? ""},{deviation.Status},{deviation.Severity?.ToString() ?? ""},{CsvSafe(JoinLinked(deviation.LinkedProducts, x => x.Product?.Name, deviation.Product?.Name))},{CsvSafe(JoinLinked(deviation.LinkedProcesses, x => x.Process?.Name, deviation.Process?.Name))},{CsvSafe(JoinLinked(deviation.LinkedAssets, x => x.Asset?.Name, deviation.Asset?.Name))},{CsvSafe(JoinLinked(deviation.LinkedMaterials, x => x.Material?.Name, deviation.Material?.Name))},{CsvSafe(JoinLinked(deviation.LinkedSuppliers, x => x.Supplier?.LegalName, deviation.Supplier?.LegalName))},{CsvSafe(deviation.Identification)},{CsvSafe(deviation.IdentifiedBy)},{deviation.IdentifiedOn.ToSite().ToShortDateString()},{CsvSafe(deviation.Evaluation)},{CsvSafe(deviation.EvaluatedBy)},{deviation.EvaluatedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(deviation.Investigation)},{CsvSafe(deviation.RootCause)},{deviation.RootCauseCategory?.ToString() ?? ""},{CsvSafe(deviation.CorrectiveAction)},{CsvSafe(deviation.AcceptedBy)},{deviation.AcceptedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(deviation.Resolution)},{CsvSafe(deviation.ResolvedBy)},{deviation.ResolvedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(deviation.ApprovedBy)},{deviation.ApprovedOn.ToSite()?.ToShortDateString() ?? ""}");
+            builder.AppendLine(CsvHeader("Deviation ID", "Title", "Event Type", "Status", "Severity", "Products", "Processes", "Assets", "Materials", "Suppliers", "Identification", "Identified By", "Identified On", "Evaluation", "Evaluated By", "Evaluated On", "Investigation", "Root Cause", "Root Cause Category", "Corrective Action", "Accepted By", "Accepted On", "Resolution", "Resolved By", "Resolved On", "Approved By", "Approved On"));
+            builder.AppendLine($"{CsvSafe(deviation.DeviationId)},{CsvSafe(deviation.Title)},{RE(deviation.EventType) ?? ""},{RE(deviation.Status)},{RE(deviation.Severity) ?? ""},{CsvSafe(JoinLinked(deviation.LinkedProducts, x => x.Product?.Name, deviation.Product?.Name))},{CsvSafe(JoinLinked(deviation.LinkedProcesses, x => x.Process?.Name, deviation.Process?.Name))},{CsvSafe(JoinLinked(deviation.LinkedAssets, x => x.Asset?.Name, deviation.Asset?.Name))},{CsvSafe(JoinLinked(deviation.LinkedMaterials, x => x.Material?.Name, deviation.Material?.Name))},{CsvSafe(JoinLinked(deviation.LinkedSuppliers, x => x.Supplier?.LegalName, deviation.Supplier?.LegalName))},{CsvSafe(deviation.Identification)},{CsvSafe(deviation.IdentifiedBy)},{deviation.IdentifiedOn.ToSite().ToShortDateString()},{CsvSafe(deviation.Evaluation)},{CsvSafe(deviation.EvaluatedBy)},{deviation.EvaluatedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(deviation.Investigation)},{CsvSafe(deviation.RootCause)},{RE(deviation.RootCauseCategory) ?? ""},{CsvSafe(deviation.CorrectiveAction)},{CsvSafe(deviation.AcceptedBy)},{deviation.AcceptedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(deviation.Resolution)},{CsvSafe(deviation.ResolvedBy)},{deviation.ResolvedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(deviation.ApprovedBy)},{deviation.ApprovedOn.ToSite()?.ToShortDateString() ?? ""}");
 
-            return File(System.Text.Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", $"Deviation-{deviation.DeviationId}.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", $"Deviation-{deviation.DeviationId}.csv");
         }
 
         public ActionResult GetDocuments()
@@ -1250,6 +1255,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Deviations/DownloadAttachment/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadAttachment(int? id, bool deleted = false)
         {
             if (id == null) return NotFound();
@@ -1288,6 +1294,7 @@ namespace OpenQMS.Controllers
                 memory.ToArray(), Path.GetExtension(attachment.FileName), wmCtx);
             return File(watermarked, attachment.ContentType ?? "application/octet-stream", attachment.FileName);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ViewAttachment(int? id)
         {

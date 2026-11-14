@@ -72,6 +72,11 @@ namespace OpenQMS.Models
         [Display(Name = "Let Users Choose Their Language")]
         public bool AllowUserLanguageChoice { get; set; } = false;
 
+        // When this installation started keeping fixed copies of issued documents (IssuedRecordCopy).
+        // Documents issued before this moment are fixed once, in English, as "frozen on upgrade";
+        // anything issued after it is issued in the site language. Set once by the start-up back-fill.
+        public DateTime? IssuedCopiesSince { get; set; }
+
         // ── Security Policy ───────────────────────────────────────────────
         [Display(Name = "Password Expiry (days)")]
         [Range(0, 365)]

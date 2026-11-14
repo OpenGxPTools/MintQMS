@@ -11,6 +11,8 @@ using OpenQMS.Models;
 using OpenQMS.Models.ViewModels;
 using static OpenQMS.Models.Service;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -563,6 +565,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Services/DownloadDocument/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadDocument(int id, bool deleted = false)
         {
             var doc = await _context.ServiceDocument.ForDownload(deleted)
@@ -680,6 +683,7 @@ namespace OpenQMS.Controllers
             dataSets.Add(dataSet);
             return Json(new { dataSet = dataSets, labels });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportServiceDetail(int id)
         {
@@ -690,24 +694,25 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("Service ID",  service.ServiceId),
-                ("Name",        service.Name),
-                ("Status",      service.Status.ToString()),
-                ("Category",    service.Category.ToString()),
-                ("Version",     service.Version.ToString()),
-                ("Description", service.Description),
-                ("Edited By",   service.EditedBy),
-                ("Edited On",   service.EditedOn.ToSite().ToShortDateString()),
-                ("Approved By", service.ApprovedBy),
-                ("Approved On", service.ApprovedOn.ToSite()?.ToShortDateString()),
+                (R("Service ID"),  service.ServiceId),
+                (R("Name"),        service.Name),
+                (R("Status"),      RE(service.Status)),
+                (R("Category"),    RE(service.Category)),
+                (R("Version"),     service.Version.ToString()),
+                (R("Description"), service.Description),
+                (R("Edited By"),   service.EditedBy),
+                (R("Edited On"),   service.EditedOn.ToSite().ToShortDateString()),
+                (R("Approved By"), service.ApprovedBy),
+                (R("Approved On"), service.ApprovedOn.ToSite()?.ToShortDateString()),
             };
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Service Detail Report", service.ServiceId, service.Status.ToString(), fields,
+            var result = PdfReportService.Generate(R("Service Detail Report"), service.ServiceId, RE(service.Status), fields,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Service-{service.ServiceId}.pdf");
         }
+        [RecordLanguage]
 
         public ActionResult ExportDetailInCSV(int id)
         {
@@ -717,10 +722,10 @@ namespace OpenQMS.Controllers
                 return NotFound();
 
             var builder = new StringBuilder();
-            builder.AppendLine("Service Id,Name,Description,Category,Version,Status,Edited By,Edited On,Approved By,Approved On");
-            builder.AppendLine($"{service.ServiceId},{service.Name},{service.Description},{service.Category},{service.Version},{service.Status},{(service.EditedBy != null ? service.EditedBy : String.Empty)},{service.EditedOn.ToSite().ToShortDateString()},{(service.ApprovedBy != null ? service.ApprovedBy : String.Empty)},{(service.ApprovedOn != null ? service.ApprovedOn.Value.ToSite().ToShortDateString() : String.Empty)}");
+            builder.AppendLine(CsvHeader("Service Id", "Name", "Description", "Category", "Version", "Status", "Edited By", "Edited On", "Approved By", "Approved On"));
+            builder.AppendLine($"{service.ServiceId},{service.Name},{service.Description},{RE(service.Category)},{service.Version},{RE(service.Status)},{(service.EditedBy != null ? service.EditedBy : String.Empty)},{service.EditedOn.ToSite().ToShortDateString()},{(service.ApprovedBy != null ? service.ApprovedBy : String.Empty)},{(service.ApprovedOn != null ? service.ApprovedOn.Value.ToSite().ToShortDateString() : String.Empty)}");
 
-            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "Service.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", "Service.csv");
         }
 
         private bool ServiceExists(int id)

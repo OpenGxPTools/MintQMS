@@ -15,6 +15,8 @@ using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Services;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     // Class open to every role except OperationsUser & CommercialUser (they have no
@@ -840,6 +842,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Risks/DownloadAttachment/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadAttachment(int? id, bool deleted = false)
         {
             if (id == null) return NotFound();
@@ -875,6 +878,7 @@ namespace OpenQMS.Controllers
                 memory.ToArray(), Path.GetExtension(attachment.FileName), wmCtx);
             return File(watermarked, attachment.ContentType ?? "application/octet-stream", attachment.FileName);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ViewAttachment(int? id)
         {
@@ -949,6 +953,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Risks/ExportRegister
+        [RecordLanguage]
         public async Task<IActionResult> ExportRegister()
         {
             var risks = await _context.Risk
@@ -964,12 +969,12 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Risk Register");
+            var ws = wb.Worksheets.Add(Sheet(R("Risk Register")));
 
             // Header
-            var headers = new[] { "Risk ID", "Title", "Category", "Status", "Severity", "Probability", "Detectability",
-                "Initial RPN", "Residual RPN", "Risk Acceptable", "Risk Owner", "Identified By", "Identified On",
-                "Target Completion", "Product", "Process", "Asset", "Material", "Supplier" };
+            var headers = new[] { R("Risk ID"), R("Title"), R("Category"), R("Status"), R("Severity"), R("Probability"), R("Detectability"),
+                R("Initial RPN"), R("Residual RPN"), R("Risk Acceptable"), R("Risk Owner"), R("Identified By"), R("Identified On"),
+                R("Target Completion"), R("Product"), R("Process"), R("Asset"), R("Material"), R("Supplier") };
             for (int i = 0; i < headers.Length; i++)
             {
                 ws.Cell(1, i + 1).Value = headers[i];
@@ -986,14 +991,14 @@ namespace OpenQMS.Controllers
                 var fill = i % 2 == 0 ? XLColor.White : XLColor.FromHtml("#F2F2F2");
                 ws.Cell(row, 1).Value = r.RiskId;
                 ws.Cell(row, 2).Value = r.Title;
-                ws.Cell(row, 3).Value = r.Category.ToString();
-                ws.Cell(row, 4).Value = r.Status.ToString();
+                ws.Cell(row, 3).Value = RE(r.Category);
+                ws.Cell(row, 4).Value = RE(r.Status);
                 ws.Cell(row, 5).Value = r.Severity;
                 ws.Cell(row, 6).Value = r.Probability;
                 ws.Cell(row, 7).Value = r.Detectability;
                 ws.Cell(row, 8).Value = r.InitialRPN;
                 ws.Cell(row, 9).Value = r.ResidualRPN?.ToString() ?? "";
-                ws.Cell(row, 10).Value = r.RiskAcceptable.HasValue ? (r.RiskAcceptable.Value ? "Yes" : "No") : "";
+                ws.Cell(row, 10).Value = r.RiskAcceptable.HasValue ? (r.RiskAcceptable.Value ? R("Yes") : R("No")) : "";
                 ws.Cell(row, 11).Value = r.RiskOwner ?? "";
                 ws.Cell(row, 12).Value = r.IdentifiedBy;
                 ws.Cell(row, 13).Value = r.IdentifiedOn.ToSite().ToShortDateString();
@@ -1009,7 +1014,7 @@ namespace OpenQMS.Controllers
 
             ws.Columns().AdjustToContents();
 
-            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", "Risk Register", risks.Count);
+            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", R("Risk Register"), risks.Count);
 
             using var stream = new MemoryStream();
             wb.SaveAs(stream);
@@ -1021,6 +1026,7 @@ namespace OpenQMS.Controllers
             return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"RiskRegister_{SiteTime.Now:yyyyMMdd}.xlsx");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportRiskDetail(int id)
         {
@@ -1040,35 +1046,35 @@ namespace OpenQMS.Controllers
             string? L(string s) => s.Length > 0 ? s : null;
             var fields = new List<(string, string?)>
             {
-                ("Risk ID",              risk.RiskId),
-                ("Title",                risk.Title),
-                ("Status",               risk.Status.ToString()),
-                ("Category",             risk.Category.ToString()),
-                ("Description",          risk.Description),
-                ("Risk Owner",           risk.RiskOwner),
-                ("Product",  L(JoinLinked(risk.LinkedProducts,  x => x.Product?.Name,       risk.Product?.Name))),
-                ("Process",  L(JoinLinked(risk.LinkedProcesses, x => x.Process?.Name,       risk.Process?.Name))),
-                ("Asset",    L(JoinLinked(risk.LinkedAssets,    x => x.Asset?.Name,         risk.Asset?.Name))),
-                ("Material", L(JoinLinked(risk.LinkedMaterials, x => x.Material?.Name,      risk.Material?.Name))),
-                ("Supplier", L(JoinLinked(risk.LinkedSuppliers, x => x.Supplier?.LegalName, risk.Supplier?.LegalName))),
-                ("Identified By",        risk.IdentifiedBy),
-                ("Identified On",        risk.IdentifiedOn.ToSite().ToShortDateString()),
-                ("Severity",             risk.Severity.ToString()),
-                ("Probability",          risk.Probability.ToString()),
-                ("Detectability",        risk.Detectability.ToString()),
-                ("Initial RPN",          risk.InitialRPN.ToString()),
-                ("Mitigation Strategy",  risk.MitigationStrategy),
-                ("Target Completion",    risk.TargetCompletionDate?.ToShortDateString()),
-                ("Actual Completion",    risk.ActualCompletionDate?.ToShortDateString()),
-                ("Mitigated By",         risk.MitigatedBy),
-                ("Mitigated On",         risk.MitigatedOn?.ToShortDateString()),
-                ("Residual RPN",         risk.ResidualRPN?.ToString()),
-                ("Risk Acceptable",      risk.RiskAcceptable.HasValue ? (risk.RiskAcceptable.Value ? "Yes" : "No") : null),
-                ("Justification",        risk.Justification),
-                ("Reviewed By",          risk.ReviewedBy),
-                ("Reviewed On",          risk.ReviewedOn.ToSite()?.ToShortDateString()),
-                ("Closed By",            risk.ClosedBy),
-                ("Closed On",            risk.ClosedOn.ToSite()?.ToShortDateString()),
+                (R("Risk ID"),              risk.RiskId),
+                (R("Title"),                risk.Title),
+                (R("Status"),               RE(risk.Status)),
+                (R("Category"),             RE(risk.Category)),
+                (R("Description"),          risk.Description),
+                (R("Risk Owner"),           risk.RiskOwner),
+                (R("Product"),  L(JoinLinked(risk.LinkedProducts,  x => x.Product?.Name,       risk.Product?.Name))),
+                (R("Process"),  L(JoinLinked(risk.LinkedProcesses, x => x.Process?.Name,       risk.Process?.Name))),
+                (R("Asset"),    L(JoinLinked(risk.LinkedAssets,    x => x.Asset?.Name,         risk.Asset?.Name))),
+                (R("Material"), L(JoinLinked(risk.LinkedMaterials, x => x.Material?.Name,      risk.Material?.Name))),
+                (R("Supplier"), L(JoinLinked(risk.LinkedSuppliers, x => x.Supplier?.LegalName, risk.Supplier?.LegalName))),
+                (R("Identified By"),        risk.IdentifiedBy),
+                (R("Identified On"),        risk.IdentifiedOn.ToSite().ToShortDateString()),
+                (R("Severity"),             risk.Severity.ToString()),
+                (R("Probability"),          risk.Probability.ToString()),
+                (R("Detectability"),        risk.Detectability.ToString()),
+                (R("Initial RPN"),          risk.InitialRPN.ToString()),
+                (R("Mitigation Strategy"),  risk.MitigationStrategy),
+                (R("Target Completion"),    risk.TargetCompletionDate?.ToShortDateString()),
+                (R("Actual Completion"),    risk.ActualCompletionDate?.ToShortDateString()),
+                (R("Mitigated By"),         risk.MitigatedBy),
+                (R("Mitigated On"),         risk.MitigatedOn?.ToShortDateString()),
+                (R("Residual RPN"),         risk.ResidualRPN?.ToString()),
+                (R("Risk Acceptable"),      risk.RiskAcceptable.HasValue ? (risk.RiskAcceptable.Value ? R("Yes") : R("No")) : null),
+                (R("Justification"),        risk.Justification),
+                (R("Reviewed By"),          risk.ReviewedBy),
+                (R("Reviewed On"),          risk.ReviewedOn.ToSite()?.ToShortDateString()),
+                (R("Closed By"),            risk.ClosedBy),
+                (R("Closed On"),            risk.ClosedOn.ToSite()?.ToShortDateString()),
             };
 
             AddAuditLog(risk.Id, "Exported (PDF)", risk.Status.ToString(), risk.Status.ToString());
@@ -1076,10 +1082,11 @@ namespace OpenQMS.Controllers
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Risk Detail Report", risk.RiskId, risk.Status.ToString(), fields,
+            var result = PdfReportService.Generate(R("Risk Detail Report"), risk.RiskId, RE(risk.Status), fields,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Risk-{risk.RiskId}.pdf");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportDetailInCSV(int id)
         {
@@ -1100,10 +1107,10 @@ namespace OpenQMS.Controllers
             await _context.SaveChangesAsync();
 
             var builder = new System.Text.StringBuilder();
-            builder.AppendLine("Risk ID,Title,Status,Category,Description,Risk Owner,Product,Process,Asset,Material,Supplier,Identified By,Identified On,Severity,Probability,Detectability,Initial RPN,Mitigation Strategy,Target Completion,Residual RPN,Risk Acceptable,Reviewed By,Reviewed On,Closed By,Closed On");
-            builder.AppendLine($"{CsvSafe(risk.RiskId)},{CsvSafe(risk.Title)},{risk.Status},{risk.Category},{CsvSafe(risk.Description)},{CsvSafe(risk.RiskOwner)},{CsvSafe(JoinLinked(risk.LinkedProducts, x => x.Product?.Name, risk.Product?.Name))},{CsvSafe(JoinLinked(risk.LinkedProcesses, x => x.Process?.Name, risk.Process?.Name))},{CsvSafe(JoinLinked(risk.LinkedAssets, x => x.Asset?.Name, risk.Asset?.Name))},{CsvSafe(JoinLinked(risk.LinkedMaterials, x => x.Material?.Name, risk.Material?.Name))},{CsvSafe(JoinLinked(risk.LinkedSuppliers, x => x.Supplier?.LegalName, risk.Supplier?.LegalName))},{CsvSafe(risk.IdentifiedBy)},{risk.IdentifiedOn.ToSite().ToShortDateString()},{risk.Severity},{risk.Probability},{risk.Detectability},{risk.InitialRPN},{CsvSafe(risk.MitigationStrategy)},{risk.TargetCompletionDate?.ToShortDateString() ?? ""},{risk.ResidualRPN?.ToString() ?? ""},{(risk.RiskAcceptable.HasValue ? (risk.RiskAcceptable.Value ? "Yes" : "No") : "")},{CsvSafe(risk.ReviewedBy)},{risk.ReviewedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(risk.ClosedBy)},{risk.ClosedOn.ToSite()?.ToShortDateString() ?? ""}");
+            builder.AppendLine(CsvHeader("Risk ID", "Title", "Status", "Category", "Description", "Risk Owner", "Product", "Process", "Asset", "Material", "Supplier", "Identified By", "Identified On", "Severity", "Probability", "Detectability", "Initial RPN", "Mitigation Strategy", "Target Completion", "Residual RPN", "Risk Acceptable", "Reviewed By", "Reviewed On", "Closed By", "Closed On"));
+            builder.AppendLine($"{CsvSafe(risk.RiskId)},{CsvSafe(risk.Title)},{RE(risk.Status)},{RE(risk.Category)},{CsvSafe(risk.Description)},{CsvSafe(risk.RiskOwner)},{CsvSafe(JoinLinked(risk.LinkedProducts, x => x.Product?.Name, risk.Product?.Name))},{CsvSafe(JoinLinked(risk.LinkedProcesses, x => x.Process?.Name, risk.Process?.Name))},{CsvSafe(JoinLinked(risk.LinkedAssets, x => x.Asset?.Name, risk.Asset?.Name))},{CsvSafe(JoinLinked(risk.LinkedMaterials, x => x.Material?.Name, risk.Material?.Name))},{CsvSafe(JoinLinked(risk.LinkedSuppliers, x => x.Supplier?.LegalName, risk.Supplier?.LegalName))},{CsvSafe(risk.IdentifiedBy)},{risk.IdentifiedOn.ToSite().ToShortDateString()},{risk.Severity},{risk.Probability},{risk.Detectability},{risk.InitialRPN},{CsvSafe(risk.MitigationStrategy)},{risk.TargetCompletionDate?.ToShortDateString() ?? ""},{risk.ResidualRPN?.ToString() ?? ""},{(risk.RiskAcceptable.HasValue ? (risk.RiskAcceptable.Value ? R("Yes") : R("No")) : "")},{CsvSafe(risk.ReviewedBy)},{risk.ReviewedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(risk.ClosedBy)},{risk.ClosedOn.ToSite()?.ToShortDateString() ?? ""}");
 
-            return File(System.Text.Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", $"Risk-{risk.RiskId}.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", $"Risk-{risk.RiskId}.csv");
         }
 
         private bool RiskExists(int id) =>

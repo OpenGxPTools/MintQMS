@@ -155,6 +155,9 @@ builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
 builder.Services.AddScoped<PVWorkflowService>();
 builder.Services.AddScoped<PVRegulatoryService>();
 builder.Services.AddScoped<CIOMSFormService>();
+// Issued documents (release / training certificates, attendance lists): fixed copies in the site language.
+builder.Services.AddScoped<IssuedRecordService>();
+builder.Services.AddScoped<IssuedDocumentsService>();
 builder.Services.AddHostedService<PVDeadlineMonitorService>();
 
 // RegIntel Services
@@ -191,6 +194,9 @@ builder.Services.AddSingleton<IAuthorizationHandler,
 
 var app = builder.Build();
 
+// Text in generated records (exports, download stamps) — see Localization/RecordText.cs.
+RecordText.Init(app.Services);
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -207,6 +213,17 @@ using (var scope = app.Services.CreateScope())
 
     // Site time zone for displaying stored UTC timestamps (System Settings; default Australia/Brisbane)
     OpenQMS.SiteTime.Configure(await context.SystemSettings.Select(s => s.TimeZoneId).FirstOrDefaultAsync());
+
+    // Issued documents that have no fixed copy yet (issued before copies were kept) are fixed now, once,
+    // in English. A failure is logged and retried on the next start; it never stops the application.
+    try
+    {
+        await services.GetRequiredService<IssuedDocumentsService>().BackfillAsync();
+    }
+    catch (Exception ex)
+    {
+        services.GetRequiredService<ILogger<Program>>().LogError(ex, "Issued documents back-fill failed; will retry on next start.");
+    }
 
     // Clear all active sessions on startup.
     // qms-sid cookies from any previous run are orphaned once the process restarts,

@@ -1,3 +1,4 @@
+using OpenQMS.Localization;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,8 @@ using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Models.Navigation;
 using OpenQMS.Models.ViewModels;
+
+using static OpenQMS.Localization.RecordText;
 
 namespace OpenQMS.Controllers
 {
@@ -102,6 +105,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Reports/ExportManagementReview
+        [RecordLanguage]
         public async Task<IActionResult> ExportManagementReview(DateTime from, DateTime to)
         {
             var today = SiteTime.Today;
@@ -119,15 +123,15 @@ namespace OpenQMS.Controllers
                 .ToList();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Management Review");
+            var ws = wb.Worksheets.Add(Sheet(R("Management Review")));
 
-            ws.Cell(1, 1).Value = "Management Review Input Report";
+            ws.Cell(1, 1).Value = R("Management Review Input Report");
             ws.Cell(1, 1).Style.Font.Bold = true;
             ws.Cell(1, 1).Style.Font.FontSize = 16;
             ws.Cell(1, 1).Style.Font.FontColor = XLColor.FromHtml("#00467F");
-            ws.Cell(2, 1).Value = $"Period: {from:dd MMM yyyy} to {to:dd MMM yyyy}";
+            ws.Cell(2, 1).Value = R("Period: {0} to {1}", from.ToString("dd MMM yyyy"), to.ToString("dd MMM yyyy"));
             ws.Cell(2, 1).Style.Font.Italic = true;
-            ws.Cell(3, 1).Value = $"Generated: {SiteTime.Now:dd MMM yyyy HH:mm} {SiteTime.Label}";
+            ws.Cell(3, 1).Value = R("Generated: {0}", $"{SiteTime.Now:dd MMM yyyy HH:mm} {SiteTime.Label}");
             ws.Cell(3, 1).Style.Font.Italic = true;
 
             int row = 5;
@@ -151,68 +155,68 @@ namespace OpenQMS.Controllers
                 row++;
             }
 
-            WriteSection("CAPAs (Corrective & Preventive Actions)", new[]
+            WriteSection(R("CAPAs (Corrective & Preventive Actions)"), new[]
             {
-                ("Total CAPAs (all time)", capas.Count.ToString()),
-                ("Opened in Period", capas.Count(c => c.DeterminedOn.ToSite() >= from && c.DeterminedOn.ToSite() < toExclusive).ToString()),
-                ("Closed in Period", capas.Count(c => c.ApprovedOn.HasValue && c.ApprovedOn.ToSite() >= from && c.ApprovedOn.ToSite() < toExclusive).ToString()),
-                ("Currently Open", capas.Count(c => c.Status != Capa.CapaStatus.Approved).ToString()),
-                ("Overdue", capas.Count(c => c.Status != Capa.CapaStatus.Approved && c.TargetCompletionDate.HasValue && c.TargetCompletionDate < today).ToString())
+                (R("Total CAPAs (all time)"), capas.Count.ToString()),
+                (R("Opened in Period"), capas.Count(c => c.DeterminedOn.ToSite() >= from && c.DeterminedOn.ToSite() < toExclusive).ToString()),
+                (R("Closed in Period"), capas.Count(c => c.ApprovedOn.HasValue && c.ApprovedOn.ToSite() >= from && c.ApprovedOn.ToSite() < toExclusive).ToString()),
+                (R("Currently Open"), capas.Count(c => c.Status != Capa.CapaStatus.Approved).ToString()),
+                (R("Overdue"), capas.Count(c => c.Status != Capa.CapaStatus.Approved && c.TargetCompletionDate.HasValue && c.TargetCompletionDate < today).ToString())
             });
 
             var devEventRows = Enum.GetValues<DeviationEventType>()
-                .Select(et => ($"  Event Type: {et}", devs.Count(d => d.EventType == et).ToString()))
+                .Select(et => ("  " + R("Event Type: {0}", RE(et)!), devs.Count(d => d.EventType == et).ToString()))
                 .ToArray();
 
-            WriteSection("Deviations", new (string, string)[]
+            WriteSection(R("Deviations"), new (string, string)[]
             {
-                ("Total Deviations (all time)", devs.Count.ToString()),
-                ("Identified in Period", devs.Count(d => d.IdentifiedOn.ToSite() >= from && d.IdentifiedOn.ToSite() < toExclusive).ToString()),
-                ("Closed in Period", devs.Count(d => d.ApprovedOn.HasValue && d.ApprovedOn.ToSite() >= from && d.ApprovedOn.ToSite() < toExclusive).ToString()),
-                ("Currently Open", devs.Count(d => d.Status != Deviation.DeviationStatus.Approved).ToString()),
-                ("Severity: Critical (all time)", devs.Count(d => d.Severity == DeviationSeverity.Critical).ToString()),
-                ("Severity: Major (all time)",    devs.Count(d => d.Severity == DeviationSeverity.Major).ToString()),
-                ("Severity: Minor (all time)",    devs.Count(d => d.Severity == DeviationSeverity.Minor).ToString()),
+                (R("Total Deviations (all time)"), devs.Count.ToString()),
+                (R("Identified in Period"), devs.Count(d => d.IdentifiedOn.ToSite() >= from && d.IdentifiedOn.ToSite() < toExclusive).ToString()),
+                (R("Closed in Period"), devs.Count(d => d.ApprovedOn.HasValue && d.ApprovedOn.ToSite() >= from && d.ApprovedOn.ToSite() < toExclusive).ToString()),
+                (R("Currently Open"), devs.Count(d => d.Status != Deviation.DeviationStatus.Approved).ToString()),
+                (R("Severity: Critical (all time)"), devs.Count(d => d.Severity == DeviationSeverity.Critical).ToString()),
+                (R("Severity: Major (all time)"),    devs.Count(d => d.Severity == DeviationSeverity.Major).ToString()),
+                (R("Severity: Minor (all time)"),    devs.Count(d => d.Severity == DeviationSeverity.Minor).ToString()),
             }.Concat(devEventRows).ToArray());
 
-            WriteSection("Changes", new[]
+            WriteSection(R("Changes"), new[]
             {
-                ("Total Changes (all time)", changes.Count.ToString()),
-                ("Proposed in Period", changes.Count(c => c.ProposedOn.ToSite() >= from && c.ProposedOn.ToSite() < toExclusive).ToString()),
-                ("Approved in Period", changes.Count(c => c.ApprovedOn.HasValue && c.ApprovedOn.ToSite() >= from && c.ApprovedOn.ToSite() < toExclusive).ToString()),
-                ("Currently Open", changes.Count(c => c.Status != Change.ChangeStatus.Approved).ToString()),
-                ("Overdue", changes.Count(c => c.Status != Change.ChangeStatus.Approved && c.TargetImplementationDate.HasValue && c.TargetImplementationDate < today).ToString())
+                (R("Total Changes (all time)"), changes.Count.ToString()),
+                (R("Proposed in Period"), changes.Count(c => c.ProposedOn.ToSite() >= from && c.ProposedOn.ToSite() < toExclusive).ToString()),
+                (R("Approved in Period"), changes.Count(c => c.ApprovedOn.HasValue && c.ApprovedOn.ToSite() >= from && c.ApprovedOn.ToSite() < toExclusive).ToString()),
+                (R("Currently Open"), changes.Count(c => c.Status != Change.ChangeStatus.Approved).ToString()),
+                (R("Overdue"), changes.Count(c => c.Status != Change.ChangeStatus.Approved && c.TargetImplementationDate.HasValue && c.TargetImplementationDate < today).ToString())
             });
 
-            WriteSection("Complaints", new[]
+            WriteSection(R("Complaints"), new[]
             {
-                ("Total Complaints (all time)", complaints.Count.ToString()),
-                ("Received in Period", complaints.Count(c => c.ReceivedOn.ToSite() >= from && c.ReceivedOn.ToSite() < toExclusive).ToString()),
-                ("Closed in Period", complaints.Count(c => c.ClosedOn.HasValue && c.ClosedOn.ToSite() >= from && c.ClosedOn.ToSite() < toExclusive).ToString()),
-                ("Currently Open", complaints.Count(c => c.Status != Complaint.ComplaintStatus.Closed).ToString()),
-                ("Critical Severity (all time)", complaints.Count(c => c.Severity == Complaint.ComplaintSeverity.Critical).ToString()),
-                ("Major Severity (all time)", complaints.Count(c => c.Severity == Complaint.ComplaintSeverity.Major).ToString()),
-                ("Minor Severity (all time)", complaints.Count(c => c.Severity == Complaint.ComplaintSeverity.Minor).ToString())
+                (R("Total Complaints (all time)"), complaints.Count.ToString()),
+                (R("Received in Period"), complaints.Count(c => c.ReceivedOn.ToSite() >= from && c.ReceivedOn.ToSite() < toExclusive).ToString()),
+                (R("Closed in Period"), complaints.Count(c => c.ClosedOn.HasValue && c.ClosedOn.ToSite() >= from && c.ClosedOn.ToSite() < toExclusive).ToString()),
+                (R("Currently Open"), complaints.Count(c => c.Status != Complaint.ComplaintStatus.Closed).ToString()),
+                (R("Critical Severity (all time)"), complaints.Count(c => c.Severity == Complaint.ComplaintSeverity.Critical).ToString()),
+                (R("Major Severity (all time)"), complaints.Count(c => c.Severity == Complaint.ComplaintSeverity.Major).ToString()),
+                (R("Minor Severity (all time)"), complaints.Count(c => c.Severity == Complaint.ComplaintSeverity.Minor).ToString())
             });
 
-            WriteSection("Audits (planned start within period)", new[]
+            WriteSection(R("Audits (planned start within period)"), new[]
             {
-                ("Scheduled in Period", auditsInPeriod.Count.ToString()),
-                ("Completed in Period", auditsInPeriod.Count(a => a.Status == Audit.AuditStatus.Closed || a.Status == Audit.AuditStatus.Approved).ToString()),
-                ("Total Critical Findings", auditsInPeriod.Sum(a => a.CriticalFindings).ToString()),
-                ("Total Major Findings", auditsInPeriod.Sum(a => a.MajorFindings).ToString()),
-                ("Total Minor Findings", auditsInPeriod.Sum(a => a.MinorFindings).ToString()),
-                ("Requiring CAPA", auditsInPeriod.Count(a => a.CAPARequired).ToString())
+                (R("Scheduled in Period"), auditsInPeriod.Count.ToString()),
+                (R("Completed in Period"), auditsInPeriod.Count(a => a.Status == Audit.AuditStatus.Closed || a.Status == Audit.AuditStatus.Approved).ToString()),
+                (R("Total Critical Findings"), auditsInPeriod.Sum(a => a.CriticalFindings).ToString()),
+                (R("Total Major Findings"), auditsInPeriod.Sum(a => a.MajorFindings).ToString()),
+                (R("Total Minor Findings"), auditsInPeriod.Sum(a => a.MinorFindings).ToString()),
+                (R("Requiring CAPA"), auditsInPeriod.Count(a => a.CAPARequired).ToString())
             });
 
-            WriteSection("Risks (current register snapshot)", new[]
+            WriteSection(R("Risks (current register snapshot)"), new[]
             {
-                ("Total Risks", risks.Count.ToString()),
-                ("High RPN (≥80)", risks.Count(r => (r.ResidualRPN ?? r.InitialRPN) >= 80).ToString()),
-                ("Medium RPN (40–79)", risks.Count(r => (r.ResidualRPN ?? r.InitialRPN) >= 40 && (r.ResidualRPN ?? r.InitialRPN) < 80).ToString()),
-                ("Low RPN (<40)", risks.Count(r => (r.ResidualRPN ?? r.InitialRPN) < 40).ToString()),
-                ("Currently Open", risks.Count(r => r.Status != Risk.RiskStatus.Closed).ToString()),
-                ("Closed", risks.Count(r => r.Status == Risk.RiskStatus.Closed).ToString())
+                (R("Total Risks"), risks.Count.ToString()),
+                (R("High RPN (≥80)"), risks.Count(r => (r.ResidualRPN ?? r.InitialRPN) >= 80).ToString()),
+                (R("Medium RPN (40–79)"), risks.Count(r => (r.ResidualRPN ?? r.InitialRPN) >= 40 && (r.ResidualRPN ?? r.InitialRPN) < 80).ToString()),
+                (R("Low RPN (<40)"), risks.Count(r => (r.ResidualRPN ?? r.InitialRPN) < 40).ToString()),
+                (R("Currently Open"), risks.Count(r => r.Status != Risk.RiskStatus.Closed).ToString()),
+                (R("Closed"), risks.Count(r => r.Status == Risk.RiskStatus.Closed).ToString())
             });
 
             ws.Column(1).Width = 38;
@@ -253,6 +257,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Reports/ExportTrainingCompliance
+        [RecordLanguage]
         public async Task<IActionResult> ExportTrainingCompliance(DateTime from, DateTime to)
         {
             var trainings = await _context.Training
@@ -265,15 +270,15 @@ namespace OpenQMS.Controllers
             using var wb = new XLWorkbook();
 
             // Sheet 1: By Session
-            var ws1 = wb.Worksheets.Add("By Session");
-            ws1.Cell(1, 1).Value = "Training Compliance Report — By Session";
+            var ws1 = wb.Worksheets.Add(Sheet(R("By Session")));
+            ws1.Cell(1, 1).Value = R("Training Compliance Report — By Session");
             ws1.Cell(1, 1).Style.Font.Bold = true;
             ws1.Cell(1, 1).Style.Font.FontSize = 14;
             ws1.Cell(1, 1).Style.Font.FontColor = XLColor.FromHtml("#00467F");
-            ws1.Cell(2, 1).Value = $"Period: {from:dd MMM yyyy} to {to:dd MMM yyyy}";
-            ws1.Cell(3, 1).Value = $"Generated: {SiteTime.Now:dd MMM yyyy HH:mm} {SiteTime.Label}";
+            ws1.Cell(2, 1).Value = R("Period: {0} to {1}", from.ToString("dd MMM yyyy"), to.ToString("dd MMM yyyy"));
+            ws1.Cell(3, 1).Value = R("Generated: {0}", $"{SiteTime.Now:dd MMM yyyy HH:mm} {SiteTime.Label}");
 
-            var headers1 = new[] { "Training ID", "Name", "Due Date", "Status", "No. of Attendees" };
+            var headers1 = new[] { R("Training ID"), R("Name"), R("Due Date"), R("Status"), R("No. of Attendees") };
             for (int i = 0; i < headers1.Length; i++)
             {
                 var cell = ws1.Cell(5, i + 1);
@@ -288,7 +293,7 @@ namespace OpenQMS.Controllers
                 ws1.Cell(r1, 1).Value = t.TrainingId;
                 ws1.Cell(r1, 2).Value = t.Name;
                 ws1.Cell(r1, 3).Value = t.DueDate?.ToString("dd MMM yyyy") ?? "-";
-                ws1.Cell(r1, 4).Value = t.Status.ToString();
+                ws1.Cell(r1, 4).Value = RE(t.Status);
                 ws1.Cell(r1, 5).Value = t.Trainees?.Count ?? 0;
                 if (t.Status != Training.TrainingStatus.Completed)
                     ws1.Row(r1).Style.Fill.BackgroundColor = XLColor.FromHtml("#FFF3F3");
@@ -297,15 +302,15 @@ namespace OpenQMS.Controllers
             ws1.Columns().AdjustToContents(10, 60);
 
             // Sheet 2: By User
-            var ws2 = wb.Worksheets.Add("By User");
-            ws2.Cell(1, 1).Value = "Training Compliance Report — By User";
+            var ws2 = wb.Worksheets.Add(Sheet(R("By User")));
+            ws2.Cell(1, 1).Value = R("Training Compliance Report — By User");
             ws2.Cell(1, 1).Style.Font.Bold = true;
             ws2.Cell(1, 1).Style.Font.FontSize = 14;
             ws2.Cell(1, 1).Style.Font.FontColor = XLColor.FromHtml("#00467F");
-            ws2.Cell(2, 1).Value = $"Period: {from:dd MMM yyyy} to {to:dd MMM yyyy}";
-            ws2.Cell(3, 1).Value = $"Generated: {SiteTime.Now:dd MMM yyyy HH:mm} {SiteTime.Label}";
+            ws2.Cell(2, 1).Value = R("Period: {0} to {1}", from.ToString("dd MMM yyyy"), to.ToString("dd MMM yyyy"));
+            ws2.Cell(3, 1).Value = R("Generated: {0}", $"{SiteTime.Now:dd MMM yyyy HH:mm} {SiteTime.Label}");
 
-            var headers2 = new[] { "Name", "Email", "Sessions Attended", "Sessions Completed", "Compliance %" };
+            var headers2 = new[] { R("Name"), R("Email"), R("Sessions Attended"), R("Sessions Completed"), R("Compliance %") };
             for (int i = 0; i < headers2.Length; i++)
             {
                 var cell = ws2.Cell(5, i + 1);

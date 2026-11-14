@@ -144,3 +144,18 @@ def any_language(english):
     except OSError:
         entry = {}
     return [english] + [v for k, v in entry.items() if k != "note" and v]
+
+
+def shows(html, english, *args):
+    """True when the page shows the sentence `english` (a translations.json key, {0}-style placeholders filled
+    with `args`, each arg itself looked up when it is a key) in English or any installed translation."""
+    import html as _h, json
+    page = _h.unescape(html)
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "Resources", "Localization", "translations.json")
+    data = json.load(open(path, encoding="utf-8"))
+    for lang in ("en", "es", "pt-BR"):
+        tmpl = english if lang == "en" else data.get(english, {}).get(lang) or english
+        vals = [a if lang == "en" or not isinstance(a, str) else data.get(a, {}).get(lang) or a for a in args]
+        if tmpl.format(*vals) in page:
+            return True
+    return False

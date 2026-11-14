@@ -12,6 +12,8 @@ using OpenQMS.Models;
 using OpenQMS.Models.ViewModels;
 using static OpenQMS.Models.Customer;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -74,6 +76,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Customers/ContractExpiryReport
+        [RecordLanguage]
         public async Task<IActionResult> ContractExpiryReport(int days = 90)
         {
             var today  = SiteTime.Today;
@@ -88,13 +91,13 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add($"Expiring Within {days} Days");
+            var ws = wb.Worksheets.Add(Sheet(R("Expiring Within {0} Days", days)));
 
             var headers = new[]
             {
-                "Customer ID", "Legal Name", "Trading Name", "Type", "Industry",
-                "Contract Reference", "Contract Expiry", "Days To Expiry",
-                "Contact Name", "Contact Email", "Status"
+                R("Customer ID"), R("Legal Name"), R("Trading Name"), R("Type"), R("Industry"),
+                R("Contract Reference"), R("Contract Expiry"), R("Days To Expiry"),
+                R("Contact Name"), R("Contact Email"), R("Status")
             };
             for (int i = 0; i < headers.Length; i++)
                 ws.Cell(1, i + 1).Value = headers[i];
@@ -107,14 +110,14 @@ namespace OpenQMS.Controllers
                 ws.Cell(row,  1).Value = c.CustomerId;
                 ws.Cell(row,  2).Value = c.LegalName;
                 ws.Cell(row,  3).Value = c.TradingName ?? "";
-                ws.Cell(row,  4).Value = c.CustomerType.ToString();
+                ws.Cell(row,  4).Value = RE(c.CustomerType);
                 ws.Cell(row,  5).Value = c.Industry ?? "";
                 ws.Cell(row,  6).Value = c.ContractReference ?? "";
                 ws.Cell(row,  7).Value = c.ContractExpiryDate.Value.ToString("dd/MM/yyyy");
                 ws.Cell(row,  8).Value = daysLeft;
                 ws.Cell(row,  9).Value = c.ContactName ?? "";
                 ws.Cell(row, 10).Value = c.ContactEmail ?? "";
-                ws.Cell(row, 11).Value = c.Status.ToString();
+                ws.Cell(row, 11).Value = RE(c.Status);
 
                 var fill = daysLeft < 0    ? XLColor.FromHtml("#f8d7da")
                          : daysLeft <= 30  ? XLColor.FromHtml("#ffe5d0")
@@ -710,6 +713,7 @@ namespace OpenQMS.Controllers
             TempData["Success"] = this.T("Document uploaded successfully.");
             return RedirectToAction(nameof(Documents), new { id = customerId });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> DownloadDocument(int id, bool deleted = false)
         {
@@ -784,6 +788,7 @@ namespace OpenQMS.Controllers
         // ============================================================
         // EXPORT
         // ============================================================
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportCustomerDetail(int id)
         {
@@ -801,42 +806,43 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("Customer ID",        customer.CustomerId),
-                ("Status",             customer.Status.ToString()),
-                ("Version",            customer.Version.ToString()),
-                ("Legal Name",         customer.LegalName),
-                ("Trading Name",       customer.TradingName),
-                ("Customer Type",      customer.CustomerType.ToString()),
-                ("Industry",           customer.Industry),
-                ("Legal ID",           customer.LegalId),
-                ("Website",            customer.Website),
-                ("Address",            string.Join(", ", new[] { customer.Street, customer.City, customer.State, customer.PostCode, customer.Country }.Where(s => !string.IsNullOrEmpty(s)))),
-                ("Contact Name",       customer.ContactName),
-                ("Contact Email",      customer.ContactEmail),
-                ("Contact Phone",      customer.ContactPhone),
-                ("Account Number",     customer.AccountNumber),
-                ("Contract Reference", customer.ContractReference),
-                ("Contract Expiry",    customer.ContractExpiryDate?.ToString("dd/MM/yyyy")),
-                ("Special Requirements", customer.SpecialRequirements),
-                ("Edited By",          customer.EditedBy),
-                ("Edited On",          customer.EditedOn.ToSite().ToString("dd/MM/yyyy")),
-                ("Approved By",        customer.ApprovedBy),
-                ("Approved On",        customer.ApprovedOn.ToSite()?.ToString("dd/MM/yyyy")),
+                (R("Customer ID"),        customer.CustomerId),
+                (R("Status"),             RE(customer.Status)),
+                (R("Version"),            customer.Version.ToString()),
+                (R("Legal Name"),         customer.LegalName),
+                (R("Trading Name"),       customer.TradingName),
+                (R("Customer Type"),      RE(customer.CustomerType)),
+                (R("Industry"),           customer.Industry),
+                (R("Legal ID"),           customer.LegalId),
+                (R("Website"),            customer.Website),
+                (R("Address"),            string.Join(", ", new[] { customer.Street, customer.City, customer.State, customer.PostCode, customer.Country }.Where(s => !string.IsNullOrEmpty(s)))),
+                (R("Contact Name"),       customer.ContactName),
+                (R("Contact Email"),      customer.ContactEmail),
+                (R("Contact Phone"),      customer.ContactPhone),
+                (R("Account Number"),     customer.AccountNumber),
+                (R("Contract Reference"), customer.ContractReference),
+                (R("Contract Expiry"),    customer.ContractExpiryDate?.ToString("dd/MM/yyyy")),
+                (R("Special Requirements"), customer.SpecialRequirements),
+                (R("Edited By"),          customer.EditedBy),
+                (R("Edited On"),          customer.EditedOn.ToSite().ToString("dd/MM/yyyy")),
+                (R("Approved By"),        customer.ApprovedBy),
+                (R("Approved On"),        customer.ApprovedOn.ToSite()?.ToString("dd/MM/yyyy")),
             };
 
             var tables = new List<(string, string[], IEnumerable<string[]>)>
             {
-                ("Complaints",
-                 new[] { "Complaint ID", "Title", "Severity", "Status" },
-                 complaints.Select(c => new[] { c.ComplaintId, c.Title, c.Severity.ToString(), c.Status.ToString() })),
+                (R("Complaints"),
+                 new[] { R("Complaint ID"), R("Title"), R("Severity"), R("Status") },
+                 complaints.Select(c => new[] { c.ComplaintId, c.Title, RE(c.Severity), RE(c.Status) })),
             };
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Customer Detail Report", customer.CustomerId, customer.Status.ToString(), fields, tables,
+            var result = PdfReportService.Generate(R("Customer Detail Report"), customer.CustomerId, RE(customer.Status), fields, tables,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Customer-{customer.CustomerId}.pdf");
         }
+        [RecordLanguage]
 
         public ActionResult ExportDetailInCSV(int id)
         {
@@ -845,10 +851,10 @@ namespace OpenQMS.Controllers
                 return NotFound();
 
             var builder = new StringBuilder();
-            builder.AppendLine("Customer Id,Legal Name,Trading Name,Type,Industry,Contact Name,Contact Email,Version,Status,Edited By,Edited On,Approved By,Approved On");
-            builder.AppendLine($"{customer.CustomerId},{customer.LegalName},{customer.TradingName ?? ""},{customer.CustomerType},{customer.Industry ?? ""},{customer.ContactName ?? ""},{customer.ContactEmail ?? ""},{customer.Version},{customer.Status},{customer.EditedBy ?? ""},{customer.EditedOn.ToSite().ToShortDateString()},{customer.ApprovedBy ?? ""},{(customer.ApprovedOn.HasValue ? customer.ApprovedOn.Value.ToSite().ToShortDateString() : "")}");
+            builder.AppendLine(CsvHeader("Customer Id", "Legal Name", "Trading Name", "Type", "Industry", "Contact Name", "Contact Email", "Version", "Status", "Edited By", "Edited On", "Approved By", "Approved On"));
+            builder.AppendLine($"{customer.CustomerId},{customer.LegalName},{customer.TradingName ?? ""},{RE(customer.CustomerType)},{customer.Industry ?? ""},{customer.ContactName ?? ""},{customer.ContactEmail ?? ""},{customer.Version},{RE(customer.Status)},{customer.EditedBy ?? ""},{customer.EditedOn.ToSite().ToShortDateString()},{customer.ApprovedBy ?? ""},{(customer.ApprovedOn.HasValue ? customer.ApprovedOn.Value.ToSite().ToShortDateString() : "")}");
 
-            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "Customer.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", "Customer.csv");
         }
 
         public ActionResult GetDocuments()

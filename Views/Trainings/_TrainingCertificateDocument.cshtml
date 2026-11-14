@@ -1,0 +1,138 @@
+@model OpenQMS.ViewModels.Trainings.TrainingCertificateDocumentModel
+@using OpenQMS.Models.Navigation
+@*
+    A trainee's training certificate as ISSUED: rendered once, in the site language, when that trainee's
+    training is completed (IssuedDocumentsService), stored with a checksum and shown from the stored copy.
+    Everything comes from the model — never read live data or settings here.
+*@
+@{
+    var t          = Model.Training;
+    var ut         = Model.Row;
+    var trainee    = Model.Trainee;
+    var policyDoc  = Model.PolicyDocument;
+    var isCA       = t.TrainingType == TrainingType.CompetencyAssessment;
+
+    var completedDate = (isCA ? ut.CompetencyVerifiedOn : ut.ReadAcknowledgedOn).ToSite();
+    var docVersion    = t.SourceDocumentVersion ?? policyDoc?.Version;
+    var traineeName   = trainee != null ? $"{trainee.FirstName} {trainee.LastName}".Trim() : "-";
+    if (string.IsNullOrWhiteSpace(traineeName)) traineeName = trainee?.UserName ?? "-";
+    var completedText = completedDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-";
+    var docRef = policyDoc != null
+        ? $"{policyDoc.DocumentId} v{docVersion?.ToString("0.00")} — {policyDoc.Title}"
+        : (t.PolicyTitle ?? "-");
+}
+<style>
+    .cert-header   { border-bottom: 3px solid #0d6efd; padding-bottom: 12px; }
+    .cert-section  { border-top: 1px solid #dee2e6; padding-top: 12px; margin-top: 12px; }
+    .cert-signature { border: 1px solid #333; padding: 16px; margin-top: 24px; background: #f8f9fa; }
+</style>
+<div class="card p-4" id="certificate-content" lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
+    <partial name="~/Views/Shared/_IssuedOrgHeader.cshtml" model="Model.Org" />
+
+    @* Title *@
+    <div class="cert-header d-flex justify-content-between align-items-start">
+        <div>
+            <h3 class="mb-1">@L["Training Completion Certificate"]</h3>
+            <div><strong>@L["Training ID:"]</strong> @t.TrainingId</div>
+            <div><strong>@L["Date of Issue:"]</strong> @Model.IssuedOn.ToSite().ToString("dd-MMM-yyyy", DisplayDates.Culture)</div>
+        </div>
+        <div class="text-end">
+            <span class="badge @(isCA ? "bg-primary" : "bg-info text-dark") fs-6">
+                @L.Enum(t.TrainingType)
+            </span>
+        </div>
+    </div>
+
+    @* Trainee *@
+    <div class="cert-section">
+        <h6 class="text-uppercase text-muted small mb-2">@L["Trainee"]</h6>
+        <div class="row">
+            <div class="col-md-6"><strong>@L["Name:"]</strong> @traineeName</div>
+            <div class="col-md-6"><strong>@L["Email:"]</strong> @(trainee?.Email ?? "-")</div>
+        </div>
+    </div>
+
+    @* Training Details *@
+    <div class="cert-section">
+        <h6 class="text-uppercase text-muted small mb-2">@L["Training Details"]</h6>
+        <div class="row">
+            <div class="col-md-12"><strong>@L["Training Name:"]</strong> @t.Name</div>
+        </div>
+        @if (!string.IsNullOrEmpty(t.Description))
+        {
+            <div class="row mt-1">
+                <div class="col-md-12"><strong>@L["Description:"]</strong> @t.Description</div>
+            </div>
+        }
+        <div class="row mt-1">
+            <div class="col-md-6">
+                <strong>@(isCA ? L["Competency Verified On:"] : L["Acknowledged On:"])</strong>
+                @completedText
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(t.TrainerEmail))
+        {
+            <div class="row mt-1">
+                <div class="col-md-6"><strong>@L["Trainer:"]</strong> @t.TrainerEmail</div>
+            </div>
+        }
+    </div>
+
+    @* Source Document *@
+    <div class="cert-section">
+        <h6 class="text-uppercase text-muted small mb-2">@L["Source Document"]</h6>
+        @if (policyDoc != null)
+        {
+            <div class="row">
+                <div class="col-md-3"><strong>@L["Document ID:"]</strong> @policyDoc.DocumentId</div>
+                <div class="col-md-6"><strong>@L["Title:"]</strong> @policyDoc.Title</div>
+                <div class="col-md-3">
+                    <strong>@L["Version:"]</strong>
+                    v@(docVersion?.ToString("0.00"))
+                </div>
+            </div>
+        }
+        else
+        {
+            <div>@(t.PolicyTitle ?? "-")</div>
+        }
+    </div>
+
+    @* Competency Notes (CA only) *@
+    @if (isCA && !string.IsNullOrEmpty(ut.CompetencyNotes))
+    {
+        <div class="cert-section">
+            <h6 class="text-uppercase text-muted small mb-2">@L["Assessor Notes"]</h6>
+            <p>@ut.CompetencyNotes</p>
+        </div>
+    }
+
+    @* Certification Statement *@
+    <div class="cert-signature mt-4">
+        <h6 class="text-uppercase small mb-3">@L["Certification"]</h6>
+        <p>
+            @if (isCA)
+            {
+                @H["This is to certify that <strong>{0}</strong> has successfully completed and passed the competency assessment for <strong>{1}</strong> on <strong>{2}</strong>.", traineeName, docRef, completedText]
+            }
+            else
+            {
+                @H["This is to certify that <strong>{0}</strong> has read and acknowledged <strong>{1}</strong> on <strong>{2}</strong>.", traineeName, docRef, completedText]
+            }
+        </p>
+        <div class="row mt-3">
+            <div class="col-md-5">
+                <strong>@L["Trainee:"]</strong><br />
+                @traineeName
+            </div>
+            <div class="col-md-4">
+                <strong>@L["Completion Date:"]</strong><br />
+                @completedText
+            </div>
+            <div class="col-md-3">
+                <strong>@L["Training ID:"]</strong><br />
+                @t.TrainingId
+            </div>
+        </div>
+    </div>
+</div>

@@ -111,7 +111,7 @@ for mod, table, code_f, name_f, extra in MODULES:
     ok = r.status_code == 302 and "/Details/" in loc and after[name_f] == f"E2E {mod} {run} v2" and after["Status"] == UNDER_REVIEW
     msg = get(s, loc).text if loc else ""
     check(f"{mod}: under review -> redirect + no change", ok, f"status {r.status_code} loc={loc} name={after[name_f]}")
-    check(f"{mod}: under review message shown", "currently under review and cannot be edited" in msg)
+    check(f"{mod}: under review message shown", shows(msg, f"This {mod[:-1].lower() if mod != 'Processes' else 'process'} is currently under review and cannot be edited."))
     exec_sql(f"update {table} set Status=? where Id=?", (DRAFT, rid))
 
     # 5. Draft edit still works after all that

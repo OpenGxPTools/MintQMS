@@ -35,6 +35,8 @@ using OpenQMS.Models.ViewModels;
 using OpenQMS.Services;
 using static OpenQMS.Models.Change;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -1164,6 +1166,7 @@ namespace OpenQMS.Controllers
         };
 
         // GET: Changes/ExportRegister
+        [RecordLanguage]
         public async Task<IActionResult> ExportRegister()
         {
             var changes = await _context.Change
@@ -1184,18 +1187,18 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Changes");
+            var ws = wb.Worksheets.Add(Sheet(R("Changes")));
 
             // Header
             var headers = new[]
             {
-                "Change ID", "Title", "Status", "Product", "Process", "Asset", "Material", "Supplier", "Linked CAPA",
-                "Proposal", "Target Implementation Date",
-                "Proposed By", "Proposed On",
-                "Assessment", "Assessed By", "Assessed On",
-                "Accepted By", "Accepted On",
-                "Implementation", "Implemented By", "Implemented On",
-                "Approved By", "Approved On"
+                R("Change ID"), R("Title"), R("Status"), R("Product"), R("Process"), R("Asset"), R("Material"), R("Supplier"), R("Linked CAPA"),
+                R("Proposal"), R("Target Implementation Date"),
+                R("Proposed By"), R("Proposed On"),
+                R("Assessment"), R("Assessed By"), R("Assessed On"),
+                R("Accepted By"), R("Accepted On"),
+                R("Implementation"), R("Implemented By"), R("Implemented On"),
+                R("Approved By"), R("Approved On")
             };
 
             for (int i = 0; i < headers.Length; i++)
@@ -1211,7 +1214,7 @@ namespace OpenQMS.Controllers
             {
                 ws.Cell(row, 1).Value = c.ChangeId;
                 ws.Cell(row, 2).Value = c.Title;
-                ws.Cell(row, 3).Value = StatusLabel(c.Status);
+                ws.Cell(row, 3).Value = R(StatusLabel(c.Status));
                 ws.Cell(row, 4).Value = JoinLinked(c.LinkedProducts, x => x.Product?.Name, c.Product?.Name);
                 ws.Cell(row, 5).Value = JoinLinked(c.LinkedProcesses, x => x.Process?.Name, null);
                 ws.Cell(row, 6).Value = JoinLinked(c.LinkedAssets, x => x.Asset?.Name, null);
@@ -1242,7 +1245,7 @@ namespace OpenQMS.Controllers
             ws.SheetView.FreezeRows(1);
             ws.Columns().AdjustToContents();
 
-            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", "Changes Register", changes.Count);
+            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", R("Changes Register"), changes.Count);
 
             // Register exports are recorded in the workbook's Export Info sheet (who / when / count).
             // No per-record audit entry: there is no parent record, and id 0 violates the audit-log FK.
@@ -1253,6 +1256,7 @@ namespace OpenQMS.Controllers
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"Changes-Register-{SiteTime.Today:yyyy-MM-dd}.xlsx");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportChangeDetail(int id)
         {
@@ -1280,28 +1284,28 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("Change ID",       change.ChangeId),
-                ("Title",           change.Title),
-                ("Status",          StatusLabel(change.Status)),
-                ("Product",         JoinLinked(change.LinkedProducts, x => x.Product?.Name, change.Product?.Name)),
-                ("Process",         JoinLinked(change.LinkedProcesses, x => x.Process?.Name, null)),
-                ("Asset",           JoinLinked(change.LinkedAssets, x => x.Asset?.Name, null)),
-                ("Material",        JoinLinked(change.LinkedMaterials, x => x.Material?.Name, null)),
-                ("Supplier",        JoinLinked(change.LinkedSuppliers, x => x.Supplier?.LegalName, change.Supplier?.LegalName)),
-                ("Linked CAPAs",    JoinLinked(change.LinkedCapas, x => x.Capa != null ? $"{x.Capa.CapaId} - {x.Capa.Title}" : null, change.Capa?.Title)),
-                ("Proposal",        change.Proposal),
-                ("Proposed By",     change.ProposedBy),
-                ("Proposed On",     change.ProposedOn.ToSite().ToShortDateString()),
-                ("Assessment",      change.Assessment),
-                ("Assessed By",     change.AssessedBy),
-                ("Assessed On",     change.AssessedOn.ToSite()?.ToShortDateString()),
-                ("Accepted By",     change.AcceptedBy),
-                ("Accepted On",     change.AcceptedOn.ToSite()?.ToShortDateString()),
-                ("Implementation",  change.Implementation),
-                ("Implemented By",  change.ImplementedBy),
-                ("Implemented On",  change.ImplementedOn.ToSite()?.ToShortDateString()),
-                ("Approved By",     change.ApprovedBy),
-                ("Approved On",     change.ApprovedOn.ToSite()?.ToShortDateString()),
+                (R("Change ID"),       change.ChangeId),
+                (R("Title"),           change.Title),
+                (R("Status"),          R(StatusLabel(change.Status))),
+                (R("Product"),         JoinLinked(change.LinkedProducts, x => x.Product?.Name, change.Product?.Name)),
+                (R("Process"),         JoinLinked(change.LinkedProcesses, x => x.Process?.Name, null)),
+                (R("Asset"),           JoinLinked(change.LinkedAssets, x => x.Asset?.Name, null)),
+                (R("Material"),        JoinLinked(change.LinkedMaterials, x => x.Material?.Name, null)),
+                (R("Supplier"),        JoinLinked(change.LinkedSuppliers, x => x.Supplier?.LegalName, change.Supplier?.LegalName)),
+                (R("Linked CAPAs"),    JoinLinked(change.LinkedCapas, x => x.Capa != null ? $"{x.Capa.CapaId} - {x.Capa.Title}" : null, change.Capa?.Title)),
+                (R("Proposal"),        change.Proposal),
+                (R("Proposed By"),     change.ProposedBy),
+                (R("Proposed On"),     change.ProposedOn.ToSite().ToShortDateString()),
+                (R("Assessment"),      change.Assessment),
+                (R("Assessed By"),     change.AssessedBy),
+                (R("Assessed On"),     change.AssessedOn.ToSite()?.ToShortDateString()),
+                (R("Accepted By"),     change.AcceptedBy),
+                (R("Accepted On"),     change.AcceptedOn.ToSite()?.ToShortDateString()),
+                (R("Implementation"),  change.Implementation),
+                (R("Implemented By"),  change.ImplementedBy),
+                (R("Implemented On"),  change.ImplementedOn.ToSite()?.ToShortDateString()),
+                (R("Approved By"),     change.ApprovedBy),
+                (R("Approved On"),     change.ApprovedOn.ToSite()?.ToShortDateString()),
             };
 
             AddAuditLog(change.Id, "Exported (PDF)", change.Status.ToString(), change.Status.ToString());
@@ -1309,10 +1313,11 @@ namespace OpenQMS.Controllers
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Change Detail Report", change.ChangeId, StatusLabel(change.Status), fields,
+            var result = PdfReportService.Generate(R("Change Detail Report"), change.ChangeId, R(StatusLabel(change.Status)), fields,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Change-{change.ChangeId}.pdf");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportDetailInCSV(int id)
         {
@@ -1339,10 +1344,10 @@ namespace OpenQMS.Controllers
             await _context.SaveChangesAsync();
 
             var builder = new StringBuilder();
-            builder.AppendLine("Change Id,Title,Status,Product,Process,Asset,Material,Supplier,Linked CAPAs,Proposal,Proposed By,Proposed On,Assessment,Assessed By,Assessed On,Accepted By,Accepted On,Implementation,Implemented By,Implemented On,Approved By,Approved On");
-            builder.AppendLine($"{CsvSafe(change.ChangeId)},{CsvSafe(change.Title)},{StatusLabel(change.Status)},{CsvSafe(JoinLinked(change.LinkedProducts, x => x.Product?.Name, change.Product?.Name))},{CsvSafe(JoinLinked(change.LinkedProcesses, x => x.Process?.Name, null))},{CsvSafe(JoinLinked(change.LinkedAssets, x => x.Asset?.Name, null))},{CsvSafe(JoinLinked(change.LinkedMaterials, x => x.Material?.Name, null))},{CsvSafe(JoinLinked(change.LinkedSuppliers, x => x.Supplier?.LegalName, change.Supplier?.LegalName))},{CsvSafe(JoinLinked(change.LinkedCapas, x => x.Capa != null ? $"{x.Capa.CapaId} - {x.Capa.Title}" : null, change.Capa?.Title))},{CsvSafe(change.Proposal)},{CsvSafe(change.ProposedBy)},{change.ProposedOn.ToSite().ToShortDateString()},{CsvSafe(change.Assessment)},{CsvSafe(change.AssessedBy)},{(change.AssessedOn.HasValue ? change.AssessedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(change.AcceptedBy)},{(change.AcceptedOn.HasValue ? change.AcceptedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(change.Implementation)},{CsvSafe(change.ImplementedBy)},{(change.ImplementedOn.HasValue ? change.ImplementedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(change.ApprovedBy)},{(change.ApprovedOn.HasValue ? change.ApprovedOn.Value.ToSite().ToShortDateString() : "")}");
+            builder.AppendLine(CsvHeader("Change Id", "Title", "Status", "Product", "Process", "Asset", "Material", "Supplier", "Linked CAPAs", "Proposal", "Proposed By", "Proposed On", "Assessment", "Assessed By", "Assessed On", "Accepted By", "Accepted On", "Implementation", "Implemented By", "Implemented On", "Approved By", "Approved On"));
+            builder.AppendLine($"{CsvSafe(change.ChangeId)},{CsvSafe(change.Title)},{R(StatusLabel(change.Status))},{CsvSafe(JoinLinked(change.LinkedProducts, x => x.Product?.Name, change.Product?.Name))},{CsvSafe(JoinLinked(change.LinkedProcesses, x => x.Process?.Name, null))},{CsvSafe(JoinLinked(change.LinkedAssets, x => x.Asset?.Name, null))},{CsvSafe(JoinLinked(change.LinkedMaterials, x => x.Material?.Name, null))},{CsvSafe(JoinLinked(change.LinkedSuppliers, x => x.Supplier?.LegalName, change.Supplier?.LegalName))},{CsvSafe(JoinLinked(change.LinkedCapas, x => x.Capa != null ? $"{x.Capa.CapaId} - {x.Capa.Title}" : null, change.Capa?.Title))},{CsvSafe(change.Proposal)},{CsvSafe(change.ProposedBy)},{change.ProposedOn.ToSite().ToShortDateString()},{CsvSafe(change.Assessment)},{CsvSafe(change.AssessedBy)},{(change.AssessedOn.HasValue ? change.AssessedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(change.AcceptedBy)},{(change.AcceptedOn.HasValue ? change.AcceptedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(change.Implementation)},{CsvSafe(change.ImplementedBy)},{(change.ImplementedOn.HasValue ? change.ImplementedOn.Value.ToSite().ToShortDateString() : "")},{CsvSafe(change.ApprovedBy)},{(change.ApprovedOn.HasValue ? change.ApprovedOn.Value.ToSite().ToShortDateString() : "")}");
 
-            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "Change.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", "Change.csv");
         }
 
         public ActionResult GetDocuments()
@@ -1496,6 +1501,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Changes/DownloadAttachment/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadAttachment(int? id, bool deleted = false)
         {
             if (id == null)
@@ -1537,6 +1543,7 @@ namespace OpenQMS.Controllers
                 memory.ToArray(), Path.GetExtension(attachment.FileName), wmCtx);
             return File(watermarked, attachment.ContentType ?? "application/octet-stream", attachment.FileName);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ViewAttachment(int? id)
         {

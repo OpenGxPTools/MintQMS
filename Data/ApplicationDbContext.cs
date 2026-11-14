@@ -48,6 +48,8 @@ namespace OpenQMS.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<IssuedRecordCopy>().HasIndex(c => new { c.Kind, c.SourceId });
+
             // Adverse Event <-> CAPA and Adverse Event <-> Complaint are two INDEPENDENT
             // one-way links: each entity keeps its own FK, kept in sync by the controllers.
             // The matching navigation types made EF try to merge each pair into a single
@@ -399,6 +401,9 @@ namespace OpenQMS.Data
         public DbSet<SystemSettings>    SystemSettings    { get; set; }
         public DbSet<SettingsAuditLog>  SettingsAuditLog  { get; set; }
         public DbSet<PasswordHistory>   PasswordHistory   { get; set; }
+
+        // ── Issued documents: fixed copies (release / training certificates, attendance lists) ──
+        public DbSet<IssuedRecordCopy>  IssuedRecordCopies { get; set; }
 
         // ── Security ─────────────────────────────────────────────────────
         public DbSet<LoginAuditLog>     LoginAuditLog     { get; set; }

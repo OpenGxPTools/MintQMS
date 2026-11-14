@@ -15,6 +15,8 @@ using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Services;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -848,6 +850,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Complaints/ExportRegister
+        [RecordLanguage]
         public async Task<IActionResult> ExportRegister()
         {
             var complaints = await _context.Complaint
@@ -861,20 +864,20 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Complaints");
+            var ws = wb.Worksheets.Add(Sheet(R("Complaints")));
 
             var headers = new[]
             {
-                "Complaint ID", "Title", "Status", "Severity",
-                "Product", "Process", "Material", "Customer",
-                "Customer Contact", "Customer Reference",
-                "Description", "Evaluation",
-                "Received By", "Received On",
-                "Investigation", "Evaluation Started By", "Evaluation Started On",
-                "Root Cause Category", "Corrective Action",
-                "Submitted for Acceptance By", "Submitted for Acceptance On",
-                "Accepted By", "Accepted On",
-                "Resolution", "Closed By", "Closed On"
+                R("Complaint ID"), R("Title"), R("Status"), R("Severity"),
+                R("Product"), R("Process"), R("Material"), R("Customer"),
+                R("Customer Contact"), R("Customer Reference"),
+                R("Description"), R("Evaluation"),
+                R("Received By"), R("Received On"),
+                R("Investigation"), R("Evaluation Started By"), R("Evaluation Started On"),
+                R("Root Cause Category"), R("Corrective Action"),
+                R("Submitted for Acceptance By"), R("Submitted for Acceptance On"),
+                R("Accepted By"), R("Accepted On"),
+                R("Resolution"), R("Closed By"), R("Closed On")
             };
 
             for (int i = 0; i < headers.Length; i++)
@@ -890,8 +893,8 @@ namespace OpenQMS.Controllers
             {
                 ws.Cell(row, 1).Value = c.ComplaintId;
                 ws.Cell(row, 2).Value = c.Title;
-                ws.Cell(row, 3).Value = c.Status.ToString();
-                ws.Cell(row, 4).Value = c.Severity.ToString();
+                ws.Cell(row, 3).Value = RE(c.Status);
+                ws.Cell(row, 4).Value = RE(c.Severity);
                 ws.Cell(row, 5).Value = JoinLinked(c.LinkedProducts,  x => x.Product?.Name,       c.Product?.Name);
                 ws.Cell(row, 6).Value = JoinLinked(c.LinkedProcesses, x => x.Process?.Name,      c.Process?.Name);
                 ws.Cell(row, 7).Value = JoinLinked(c.LinkedMaterials, x => x.Material?.Name,     c.Material?.Name);
@@ -905,7 +908,7 @@ namespace OpenQMS.Controllers
                 ws.Cell(row, 15).Value = c.Investigation ?? "";
                 ws.Cell(row, 16).Value = c.InvestigatedBy ?? "";
                 ws.Cell(row, 17).Value = c.InvestigatedOn.ToSite()?.ToShortDateString() ?? "";
-                ws.Cell(row, 18).Value = c.RootCauseCategory?.ToString() ?? "";
+                ws.Cell(row, 18).Value = RE(c.RootCauseCategory) ?? "";
                 ws.Cell(row, 19).Value = c.CorrectiveAction ?? "";
                 ws.Cell(row, 20).Value = c.ActionBy ?? "";
                 ws.Cell(row, 21).Value = c.ActionOn.ToSite()?.ToShortDateString() ?? "";
@@ -923,7 +926,7 @@ namespace OpenQMS.Controllers
             ws.SheetView.FreezeRows(1);
             ws.Columns().AdjustToContents();
 
-            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", "Complaints Register", complaints.Count);
+            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", R("Complaints Register"), complaints.Count);
 
             using var ms = new MemoryStream();
             wb.SaveAs(ms);
@@ -1019,6 +1022,7 @@ namespace OpenQMS.Controllers
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = complaintId });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> DownloadAttachment(int? id, bool deleted = false)
         {
@@ -1058,6 +1062,7 @@ namespace OpenQMS.Controllers
                 memory.ToArray(), Path.GetExtension(attachment.FileName), wmCtx);
             return File(watermarked, attachment.ContentType ?? "application/octet-stream", attachment.FileName);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ViewAttachment(int? id)
         {
@@ -1246,6 +1251,7 @@ namespace OpenQMS.Controllers
 
             return RedirectToAction("Create", "Capas", new { complaintId = id });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportComplaintDetail(int id)
         {
@@ -1263,33 +1269,33 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("Complaint ID",                complaint.ComplaintId),
-                ("Title",                       complaint.Title),
-                ("Status",                      complaint.Status.ToString()),
-                ("Severity",                    complaint.Severity.ToString()),
-                ("Customer",                    complaint.Customer?.LegalName),
-                ("Contact",                     complaint.CustomerContact),
-                ("Reference",                   complaint.CustomerReference),
-                ("Received On",                 complaint.ReceivedOn.ToSite().ToShortDateString()),
-                ("Received By",                 complaint.ReceivedBy),
-                ("Product",                     JoinLinked(complaint.LinkedProducts,  x => x.Product?.Name,    complaint.Product?.Name)),
-                ("Process",                     JoinLinked(complaint.LinkedProcesses, x => x.Process?.Name,   complaint.Process?.Name)),
-                ("Material",                    JoinLinked(complaint.LinkedMaterials, x => x.Material?.Name,  complaint.Material?.Name)),
-                ("Supplier",                    JoinLinked(complaint.LinkedSuppliers, x => x.Supplier?.LegalName, complaint.Supplier?.LegalName)),
-                ("Description",                 complaint.Description),
-                ("Evaluation",                  complaint.Evaluation),
-                ("Investigation",               complaint.Investigation),
-                ("Root Cause Category",         complaint.RootCauseCategory?.ToString()),
-                ("Corrective Action",           complaint.CorrectiveAction),
-                ("Evaluation Started By",       complaint.InvestigatedBy),
-                ("Evaluation Started On",       complaint.InvestigatedOn.ToSite()?.ToShortDateString()),
-                ("Submitted for Acceptance By", complaint.ActionBy),
-                ("Submitted for Acceptance On", complaint.ActionOn.ToSite()?.ToShortDateString()),
-                ("Accepted By",                 complaint.AcceptedBy),
-                ("Accepted On",                 complaint.AcceptedOn.ToSite()?.ToShortDateString()),
-                ("Resolution",                  complaint.Resolution),
-                ("Closed By",                   complaint.ClosedBy),
-                ("Closed On",                   complaint.ClosedOn.ToSite()?.ToShortDateString()),
+                (R("Complaint ID"),                complaint.ComplaintId),
+                (R("Title"),                       complaint.Title),
+                (R("Status"),                      RE(complaint.Status)),
+                (R("Severity"),                    RE(complaint.Severity)),
+                (R("Customer"),                    complaint.Customer?.LegalName),
+                (R("Contact"),                     complaint.CustomerContact),
+                (R("Reference"),                   complaint.CustomerReference),
+                (R("Received On"),                 complaint.ReceivedOn.ToSite().ToShortDateString()),
+                (R("Received By"),                 complaint.ReceivedBy),
+                (R("Product"),                     JoinLinked(complaint.LinkedProducts,  x => x.Product?.Name,    complaint.Product?.Name)),
+                (R("Process"),                     JoinLinked(complaint.LinkedProcesses, x => x.Process?.Name,   complaint.Process?.Name)),
+                (R("Material"),                    JoinLinked(complaint.LinkedMaterials, x => x.Material?.Name,  complaint.Material?.Name)),
+                (R("Supplier"),                    JoinLinked(complaint.LinkedSuppliers, x => x.Supplier?.LegalName, complaint.Supplier?.LegalName)),
+                (R("Description"),                 complaint.Description),
+                (R("Evaluation"),                  complaint.Evaluation),
+                (R("Investigation"),               complaint.Investigation),
+                (R("Root Cause Category"),         RE(complaint.RootCauseCategory)),
+                (R("Corrective Action"),           complaint.CorrectiveAction),
+                (R("Evaluation Started By"),       complaint.InvestigatedBy),
+                (R("Evaluation Started On"),       complaint.InvestigatedOn.ToSite()?.ToShortDateString()),
+                (R("Submitted for Acceptance By"), complaint.ActionBy),
+                (R("Submitted for Acceptance On"), complaint.ActionOn.ToSite()?.ToShortDateString()),
+                (R("Accepted By"),                 complaint.AcceptedBy),
+                (R("Accepted On"),                 complaint.AcceptedOn.ToSite()?.ToShortDateString()),
+                (R("Resolution"),                  complaint.Resolution),
+                (R("Closed By"),                   complaint.ClosedBy),
+                (R("Closed On"),                   complaint.ClosedOn.ToSite()?.ToShortDateString()),
             };
 
             AddAuditLog(complaint.Id, "Exported (PDF)", complaint.Status.ToString(), complaint.Status.ToString());
@@ -1297,10 +1303,11 @@ namespace OpenQMS.Controllers
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Complaint Detail Report", complaint.ComplaintId, complaint.Status.ToString(), fields,
+            var result = PdfReportService.Generate(R("Complaint Detail Report"), complaint.ComplaintId, RE(complaint.Status), fields,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Complaint-{complaint.ComplaintId}.pdf");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportDetailInCSV(int id)
         {
@@ -1320,10 +1327,10 @@ namespace OpenQMS.Controllers
             await _context.SaveChangesAsync();
 
             var builder = new System.Text.StringBuilder();
-            builder.AppendLine("Complaint ID,Title,Status,Severity,Customer,Received On,Received By,Product,Process,Material,Supplier,Description,Evaluation,Root Cause Category,Corrective Action,Accepted By,Accepted On,Resolution,Closed By,Closed On");
-            builder.AppendLine($"{CsvSafe(complaint.ComplaintId)},{CsvSafe(complaint.Title)},{complaint.Status},{complaint.Severity},{CsvSafe(complaint.Customer?.LegalName)},{complaint.ReceivedOn.ToSite().ToShortDateString()},{CsvSafe(complaint.ReceivedBy)},{CsvSafe(JoinLinked(complaint.LinkedProducts, x => x.Product?.Name, complaint.Product?.Name))},{CsvSafe(JoinLinked(complaint.LinkedProcesses, x => x.Process?.Name, complaint.Process?.Name))},{CsvSafe(JoinLinked(complaint.LinkedMaterials, x => x.Material?.Name, complaint.Material?.Name))},{CsvSafe(JoinLinked(complaint.LinkedSuppliers, x => x.Supplier?.LegalName, complaint.Supplier?.LegalName))},{CsvSafe(complaint.Description)},{CsvSafe(complaint.Evaluation)},{CsvSafe(complaint.RootCauseCategory?.ToString())},{CsvSafe(complaint.CorrectiveAction)},{CsvSafe(complaint.AcceptedBy)},{complaint.AcceptedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(complaint.Resolution)},{CsvSafe(complaint.ClosedBy)},{complaint.ClosedOn.ToSite()?.ToShortDateString() ?? ""}");
+            builder.AppendLine(CsvHeader("Complaint ID", "Title", "Status", "Severity", "Customer", "Received On", "Received By", "Product", "Process", "Material", "Supplier", "Description", "Evaluation", "Root Cause Category", "Corrective Action", "Accepted By", "Accepted On", "Resolution", "Closed By", "Closed On"));
+            builder.AppendLine($"{CsvSafe(complaint.ComplaintId)},{CsvSafe(complaint.Title)},{RE(complaint.Status)},{RE(complaint.Severity)},{CsvSafe(complaint.Customer?.LegalName)},{complaint.ReceivedOn.ToSite().ToShortDateString()},{CsvSafe(complaint.ReceivedBy)},{CsvSafe(JoinLinked(complaint.LinkedProducts, x => x.Product?.Name, complaint.Product?.Name))},{CsvSafe(JoinLinked(complaint.LinkedProcesses, x => x.Process?.Name, complaint.Process?.Name))},{CsvSafe(JoinLinked(complaint.LinkedMaterials, x => x.Material?.Name, complaint.Material?.Name))},{CsvSafe(JoinLinked(complaint.LinkedSuppliers, x => x.Supplier?.LegalName, complaint.Supplier?.LegalName))},{CsvSafe(complaint.Description)},{CsvSafe(complaint.Evaluation)},{CsvSafe(RE(complaint.RootCauseCategory))},{CsvSafe(complaint.CorrectiveAction)},{CsvSafe(complaint.AcceptedBy)},{complaint.AcceptedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(complaint.Resolution)},{CsvSafe(complaint.ClosedBy)},{complaint.ClosedOn.ToSite()?.ToShortDateString() ?? ""}");
 
-            return File(System.Text.Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", $"Complaint-{complaint.ComplaintId}.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", $"Complaint-{complaint.ComplaintId}.csv");
         }
 
         private static string CsvSafe(string? value)

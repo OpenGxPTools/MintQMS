@@ -1,0 +1,264 @@
+@model OpenQMS.ViewModels.Release.CertificateDocumentModel
+@using OpenQMS.Models.Release
+@using OpenQMS.Models
+@*
+    The release certificate as ISSUED. Rendered once, in the site language, when the certificate is issued
+    (IssuedRecordService), stored with a checksum and from then on shown from the stored copy. Everything it
+    shows must come from the model (snapshot taken at issue) — never read live data or settings here.
+*@
+@{
+    var snap = Model.Snapshot;
+    var type = Model.CertificateType;
+    var certTitle = type switch
+    {
+        CertificateType.CoA      => L["Certificate of Analysis"].Value,
+        CertificateType.CoC      => L["Certificate of Conformance"].Value,
+        CertificateType.Combined => L["Certificate of Analysis and Conformance"].Value,
+        _                        => L["Quality Oversight Review Report"].Value
+    };
+}
+<style>
+    .cert-header { border-bottom: 3px solid #0d6efd; padding-bottom: 12px; }
+    .cert-section { border-top: 1px solid #dee2e6; padding-top: 12px; margin-top: 12px; }
+    .cert-signature { border: 1px solid #333; padding: 16px; margin-top: 24px; background: #f8f9fa; }
+</style>
+<div class="card p-4" id="certificate-content" lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
+    <partial name="~/Views/Shared/_IssuedOrgHeader.cshtml" model="Model.Org" />
+
+    <!-- Header -->
+    <div class="cert-header d-flex justify-content-between align-items-start">
+        <div>
+            <h3 class="mb-1">@certTitle</h3>
+            <div><strong>@L["Certificate No.:"]</strong> @snap.CertificateNumber</div>
+            <div><strong>@L["Record No.:"]</strong> @snap.RecordNumber</div>
+            <div><strong>@L["Date of Issue:"]</strong> @snap.IssuedDate.ToSite().ToString("dd-MMM-yyyy", DisplayDates.Culture)</div>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-primary fs-6">@L.Enum(snap.ReleaseType)</span>
+        </div>
+    </div>
+
+    <!-- Product & Batch Identification -->
+    <div class="cert-section">
+        <h6 class="text-uppercase text-muted small mb-2">@L["Product Identification"]</h6>
+        @{
+            var cpt = snap.ProductType;
+        }
+        <div class="row">
+            <div class="col-md-4"><strong>@L["Product Name:"]</strong> @snap.ProductName</div>
+            <div class="col-md-4"><strong>@L["Brand Name:"]</strong> @(snap.BrandName ?? "-")</div>
+            <div class="col-md-4"><strong>@L["ARTG Ref.:"]</strong> @(snap.ArtgReference ?? "-")</div>
+        </div>
+        @if (!cpt.HasValue || cpt == ProductType.Pharmaceutical || cpt == ProductType.Biological || cpt == ProductType.ConsumerHealth)
+        {
+            <div class="row mt-1">
+                <div class="col-md-4"><strong>@L["INN / Generic:"]</strong> @(snap.InnName ?? "-")</div>
+                <div class="col-md-4"><strong>@L["Dosage Form:"]</strong> @(snap.DosageForm ?? "-")</div>
+                <div class="col-md-4"><strong>@L["Strength / Presentation:"]</strong> @(snap.Strength ?? "-")</div>
+            </div>
+        }
+        @if (cpt == ProductType.Cosmetic)
+        {
+            <div class="row mt-1">
+                <div class="col-md-6"><strong>@L["INCI Name / Ingredient Ref.:"]</strong> @(snap.InciName ?? "-")</div>
+                <div class="col-md-3"><strong>@L["Presentation / Form:"]</strong> @(snap.PresentationForm ?? "-")</div>
+                <div class="col-md-3"><strong>@L["Strength / Presentation:"]</strong> @(snap.Strength ?? "-")</div>
+            </div>
+        }
+        @if (cpt == ProductType.MedicalDevice)
+        {
+            <div class="row mt-1">
+                <div class="col-md-6"><strong>@L["Device Type / Category:"]</strong> @(snap.DeviceTypeCategory ?? "-")</div>
+                <div class="col-md-6"><strong>@L["Model / Version:"]</strong> @(snap.ModelVersion ?? "-")</div>
+            </div>
+        }
+        @if (cpt == ProductType.RawMaterial)
+        {
+            <div class="row mt-1">
+                <div class="col-md-4"><strong>@L["Standard / Scientific Name:"]</strong> @(snap.StandardScientificName ?? "-")</div>
+                <div class="col-md-4"><strong>@L["Material Type / Category:"]</strong> @(snap.RawMaterialTypeCategory ?? "-")</div>
+                <div class="col-md-4"><strong>@L["Grade:"]</strong> @(snap.Grade ?? "-")</div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-4"><strong>@L["Presentation / Form:"]</strong> @(snap.PresentationForm ?? "-")</div>
+            </div>
+        }
+    </div>
+
+    <div class="cert-section">
+        <h6 class="text-uppercase text-muted small mb-2">@L["Batch Details"]</h6>
+        <div class="row">
+            <div class="col-md-3"><strong>@L["Batch No.:"]</strong> @snap.BatchNumber</div>
+            <div class="col-md-3"><strong>@L["Batch Size:"]</strong> @(snap.BatchSize ?? "-")</div>
+            <div class="col-md-3"><strong>@L["Mfg Date:"]</strong> @(snap.ManufacturingDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")</div>
+            <div class="col-md-3">
+                @if (snap.ExpiryDate.HasValue)
+                {
+                    <strong>@L["Expiry Date:"]</strong> @snap.ExpiryDate.Value.ToString("dd-MMM-yyyy", DisplayDates.Culture)
+                }
+                else if (snap.RetestDate.HasValue)
+                {
+                    <strong>@L["Retest Date:"]</strong> @snap.RetestDate.Value.ToString("dd-MMM-yyyy", DisplayDates.Culture)
+                }
+                else { <strong>@L["Expiry / Retest Date:"]</strong> <span>-</span> }
+            </div>
+        </div>
+        @if (type == CertificateType.CoC || type == CertificateType.Combined)
+        {
+            <div class="row mt-1">
+                <div class="col-md-3"><strong>@L["Pack Size:"]</strong> @(snap.PackSize ?? "-")</div>
+            </div>
+        }
+    </div>
+
+    <div class="cert-section">
+        <h6 class="text-uppercase text-muted small mb-2">@L["Manufacturing & Testing Sites"]</h6>
+        <div class="row g-2">
+            <div class="col-md-6">
+                <strong>@L["Manufacturing Site:"]</strong> @(snap.ManufacturingSite ?? "-")<br />
+                <small class="text-muted">@L["GMP Licence / Clearance: {0}", snap.ManufacturingSiteGmpRef ?? "-"]</small>
+            </div>
+            @if (!string.IsNullOrEmpty(snap.PackagingSite))
+            {
+                <div class="col-md-6">
+                    <strong>@L["Packaging Site:"]</strong> @snap.PackagingSite<br />
+                    <small class="text-muted">@L["GMP Licence / Clearance: {0}", snap.PackagingSiteGmpRef ?? "-"]</small>
+                </div>
+            }
+            <div class="col-md-6">
+                <strong>@L["Testing Laboratory / Laboratories:"]</strong><br />
+                @if (snap.TestingLabs != null && snap.TestingLabs.Any())
+                {
+                    @foreach (var lab in snap.TestingLabs)
+                    {
+                        <div>@lab.LaboratoryName <small class="text-muted">@(string.IsNullOrEmpty(lab.GmpLicenceRef) ? "" : $"[{lab.GmpLicenceRef}]")</small></div>
+                    }
+                }
+                else if (!string.IsNullOrEmpty(snap.TestingLaboratory))
+                {
+                    <span>@snap.TestingLaboratory</span>
+                }
+                else { <span>-</span> }
+            </div>
+            <div class="col-md-6">
+                <strong>@L["Releasing Company:"]</strong> @(snap.ReleasingCompany ?? "-")<br />
+                <small class="text-muted">@L["TGA Licence / Clearance: {0}", snap.ReleasingCompanyLicenceRef ?? "-"]</small>
+            </div>
+        </div>
+    </div>
+
+    @if (type == CertificateType.CoA || type == CertificateType.Combined)
+    {
+        <!-- Analytical Results -->
+        <div class="cert-section">
+            <h6 class="text-uppercase text-muted small mb-2">@L["Analytical Results"]</h6>
+            @if (snap.TestResults.Any())
+            {
+                bool anyFail = snap.TestResults.Any(t => t.Status == TestResultStatus.Fail);
+                bool anyPend = snap.TestResults.Any(t => t.Status == TestResultStatus.Pending);
+                string conclusionLabel = anyFail ? L["OUT OF SPECIFICATION"].Value
+                                      : anyPend  ? L["RESULTS PENDING"].Value
+                                      : L["CONFORMS TO SPECIFICATION"].Value;
+                string conclusionClass = anyFail ? "bg-danger"
+                                      : anyPend  ? "bg-warning text-dark"
+                                      : "bg-success";
+                <div class="d-flex align-items-center mb-2">
+                    <span class="fw-semibold me-2 small">@L["Overall Conclusion:"]</span>
+                    <span class="badge @conclusionClass fs-6">@conclusionLabel</span>
+                </div>
+                <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>@L["Test Parameter"]</th>
+                            <th>@L["Test Method"]</th>
+                            <th>@L["Acceptance Criterion"]</th>
+                            <th>@L["Result"]</th>
+                            <th>@L["Status"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in snap.TestResults)
+                        {
+                            var tbadge = t.Status == TestResultStatus.Pass ? "bg-success"
+                                       : t.Status == TestResultStatus.Fail ? "bg-danger"
+                                       : "bg-secondary";
+                            <tr>
+                                <td>@t.TestParameter</td>
+                                <td><small>@t.TestMethod</small></td>
+                                <td>@t.AcceptanceCriterion</td>
+                                <td>@t.Result</td>
+                                <td><span class="badge @tbadge">@L.Enum(t.Status)</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">@L["No analytical results recorded."]</p>
+            }
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(snap.OpenDeviationsNotes))
+    {
+        <div class="cert-section">
+            <h6 class="text-uppercase text-muted small mb-2">@L["Open Deviations / Exceptions"]</h6>
+            <p>@snap.OpenDeviationsNotes</p>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(snap.LimitationsNotes))
+    {
+        <div class="cert-section">
+            <h6 class="text-uppercase text-muted small mb-2">@L["Limitations / Conditions on Release"]</h6>
+            <p>@snap.LimitationsNotes</p>
+        </div>
+    }
+
+    <!-- Signature Block -->
+    <div class="cert-signature mt-4">
+        @{
+            string sigTitle = type switch
+            {
+                CertificateType.CoA      => L["Certificate of Analysis — Signatory"].Value,
+                CertificateType.CoC      => L["Certificate of Conformance — Signatory"].Value,
+                CertificateType.Combined => L["Certificate of Analysis and Conformance — Signatory"].Value,
+                _                        => L["Quality Oversight — Signatory"].Value
+            };
+            string displayStatement = snap.CertificateIssuanceStatement
+                ?? snap.APCertificationStatement
+                ?? L["I hereby certify that the information contained in this certificate is accurate."].Value;
+            string displayName = snap.IssuedByFullName ?? snap.APName ?? Model.APFullNameQualification ?? "-";
+            DateTime? displayDate = (snap.IssuedDate != default ? snap.IssuedDate : snap.CertificationDate).ToSite();
+        }
+        <h6 class="text-uppercase small mb-3">@sigTitle</h6>
+        <p>@displayStatement</p>
+        <div class="row mt-3">
+            <div class="col-md-5">
+                <strong>@L["Signed By:"]</strong><br />
+                @displayName
+            </div>
+            <div class="col-md-3">
+                <strong>@L["Date of Issue:"]</strong><br />
+                @(displayDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "-")
+            </div>
+            @if (!string.IsNullOrEmpty(snap.ReleaseRegisterRef))
+            {
+                <div class="col-md-4">
+                    <strong>@L["Register Ref.:"]</strong> @snap.ReleaseRegisterRef
+                </div>
+            }
+        </div>
+        @if (!string.IsNullOrEmpty(snap.APName) && snap.APName != displayName)
+        {
+            <div class="mt-2 pt-2 border-top small text-muted">
+                <strong>@L["Batch Certified By (AP):"]</strong> @snap.APName
+                @if (snap.CertificationDate.HasValue)
+                {
+                    <span>@L["on {0}", snap.CertificationDate.Value.ToSite().ToString("dd-MMM-yyyy", DisplayDates.Culture)]</span>
+                }
+            </div>
+        }
+    </div>
+</div>

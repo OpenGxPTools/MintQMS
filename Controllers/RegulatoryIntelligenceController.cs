@@ -11,6 +11,8 @@ using OpenQMS.Models.LC;
 using OpenQMS.Models.RI;
 using OpenQMS.Services;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize(Roles = "Administrator,QualityManager,QualityUser,RegulatoryManager,RegulatoryUser,AuthorisedPerson,Auditor,Trainer,ReadOnly")]
@@ -146,6 +148,7 @@ namespace OpenQMS.Controllers
         // ── EXPORTS ───────────────────────────────────────────────────────────
 
         // GET /RegulatoryIntelligence/ExportApplications
+        [RecordLanguage]
         public async Task<IActionResult> ExportApplications()
         {
             var apps = await _context.RegulatoryApplications
@@ -156,16 +159,16 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("RI Applications");
+            var ws = wb.Worksheets.Add(Sheet(R("RI Applications")));
 
             string[] headers =
             {
-                "RI Number", "Jurisdiction", "Authority", "Application Type", "Product",
-                "Active Substance", "Indication", "Status", "Submission Date",
-                "Day 0", "Target Decision Date", "Actual Decision Date",
-                "Approval Date", "Expiry Date", "Next Renewal Due",
-                "Authority Ref No.", "Internal RA Lead", "Designations",
-                "Created By", "Created At"
+                R("RI Number"), R("Jurisdiction"), R("Authority"), R("Application Type"), R("Product"),
+                R("Active Substance"), R("Indication"), R("Status"), R("Submission Date"),
+                R("Day 0"), R("Target Decision Date"), R("Actual Decision Date"),
+                R("Approval Date"), R("Expiry Date"), R("Next Renewal Due"),
+                R("Authority Ref No."), R("Internal RA Lead"), R("Designations"),
+                R("Created By"), R("Created At")
             };
             for (int i = 0; i < headers.Length; i++)
             {
@@ -199,7 +202,7 @@ namespace OpenQMS.Controllers
                 ws.Cell(row, 5).Value  = app.ProductName;
                 ws.Cell(row, 6).Value  = app.ActiveSubstance ?? "";
                 ws.Cell(row, 7).Value  = app.Indication ?? "";
-                ws.Cell(row, 8).Value  = app.Status.ToString();
+                ws.Cell(row, 8).Value  = RE(app.Status);
                 ws.Cell(row, 9).Value  = app.SubmissionDate?.ToString("dd/MM/yyyy") ?? "";
                 ws.Cell(row, 10).Value = app.Day0Date?.ToString("dd/MM/yyyy") ?? "";
                 ws.Cell(row, 11).Value = app.TargetDecisionDate?.ToString("dd/MM/yyyy") ?? "";
@@ -224,6 +227,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET /RegulatoryIntelligence/ExportAccessPathways
+        [RecordLanguage]
         public async Task<IActionResult> ExportAccessPathways()
         {
             var pathways = await _context.RIAccessPathwayRecords
@@ -235,13 +239,13 @@ namespace OpenQMS.Controllers
             using var wb = new XLWorkbook();
 
             // Sheet 1 — Access Pathways
-            var ws = wb.Worksheets.Add("Access Pathways");
+            var ws = wb.Worksheets.Add(Sheet(R("Access Pathways")));
             string[] h1 =
             {
-                "AP Number", "RI Application", "Jurisdiction", "Pathway Type",
-                "Patient ID", "Prescriber Name", "Prescriber ID", "Status",
-                "Approval Letter Ref", "Approval Date", "Expiry Date",
-                "Next Report Due", "AE Reporting", "Clinical Justification", "Created By"
+                R("AP Number"), R("RI Application"), R("Jurisdiction"), R("Pathway Type"),
+                R("Patient ID"), R("Prescriber Name"), R("Prescriber ID"), R("Status"),
+                R("Approval Letter Ref"), R("Approval Date"), R("Expiry Date"),
+                R("Next Report Due"), R("AE Reporting"), R("Clinical Justification"), R("Created By")
             };
             for (int i = 0; i < h1.Length; i++)
             {
@@ -256,16 +260,16 @@ namespace OpenQMS.Controllers
                 ws.Cell(r, 1).Value  = ap.AccessNumber;
                 ws.Cell(r, 2).Value  = ap.Application?.RINumber ?? "";
                 ws.Cell(r, 3).Value  = ap.Application?.Jurisdiction?.Authority ?? "";
-                ws.Cell(r, 4).Value  = ap.PathwayType.ToString();
+                ws.Cell(r, 4).Value  = RE(ap.PathwayType);
                 ws.Cell(r, 5).Value  = ap.PatientIdentifier ?? "";
                 ws.Cell(r, 6).Value  = ap.PrescriberName ?? "";
                 ws.Cell(r, 7).Value  = ap.PrescriberId ?? "";
-                ws.Cell(r, 8).Value  = ap.Status.ToString();
+                ws.Cell(r, 8).Value  = RE(ap.Status);
                 ws.Cell(r, 9).Value  = ap.TGAApprovalLetterNumber ?? "";
                 ws.Cell(r, 10).Value = ap.ApprovalDate?.ToString("dd/MM/yyyy") ?? "";
                 ws.Cell(r, 11).Value = ap.ExpiryDate?.ToString("dd/MM/yyyy") ?? "";
                 ws.Cell(r, 12).Value = ap.NextSixMonthlyReportDue?.ToString("dd/MM/yyyy") ?? "";
-                ws.Cell(r, 13).Value = ap.AEReportingRequired ? "Yes" : "No";
+                ws.Cell(r, 13).Value = ap.AEReportingRequired ? R("Yes") : R("No");
                 ws.Cell(r, 14).Value = ap.ClinicalJustification ?? "";
                 ws.Cell(r, 15).Value = ap.CreatedBy;
                 r++;
@@ -273,11 +277,11 @@ namespace OpenQMS.Controllers
             ws.Columns().AdjustToContents(8, 50);
 
             // Sheet 2 — Supply Reports
-            var ws2 = wb.Worksheets.Add("Supply Reports");
+            var ws2 = wb.Worksheets.Add(Sheet(R("Supply Reports")));
             string[] h2 =
             {
-                "AP Number", "Period Start", "Period End", "Qty Supplied", "Unit",
-                "Submitted to Authority", "Authority Ref #", "Status", "Notes", "Created By"
+                R("AP Number"), R("Period Start"), R("Period End"), R("Qty Supplied"), R("Unit"),
+                R("Submitted to Authority"), R("Authority Ref #"), R("Status"), R("Notes"), R("Created By")
             };
             for (int i = 0; i < h2.Length; i++)
             {
@@ -298,7 +302,7 @@ namespace OpenQMS.Controllers
                     ws2.Cell(r2, 5).Value  = sr.Unit ?? "";
                     ws2.Cell(r2, 6).Value  = sr.SubmittedToAuthorityDate?.ToString("dd/MM/yyyy") ?? "";
                     ws2.Cell(r2, 7).Value  = sr.AuthorityReferenceNumber ?? "";
-                    ws2.Cell(r2, 8).Value  = sr.Status.ToString();
+                    ws2.Cell(r2, 8).Value  = RE(sr.Status);
                     ws2.Cell(r2, 9).Value  = sr.Notes ?? "";
                     ws2.Cell(r2, 10).Value = sr.CreatedBy;
                     r2++;
@@ -829,6 +833,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET /RegulatoryIntelligence/DownloadDocument/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadDocument(int id, bool deleted = false)
         {
             var doc = await _context.RIDocuments.ForDownload(deleted).FirstOrDefaultAsync(e => e.Id == id);

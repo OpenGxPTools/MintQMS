@@ -51,7 +51,7 @@ exec_sql("update SystemSettings set MaintenanceDueWarningDays=45, LcExpiryWarnin
 m40 = raw_insert("Maintenance", {"AssetId": raw_insert("Asset"), "ScheduledDate": day(40), "Status": 0,
                                  "MaintenanceId": f"MNT-W{run}"})
 page = get(s, "/Maintenances/Dashboard").text
-check("maintenance dashboard heading uses the setting", "Due Within 45 Days" in page)
+check("maintenance dashboard heading uses the setting", shows(page, "Due Within {0} Days", 45))
 check("maintenance due in 40 days listed (window 45)", f"MNT-W{run}" in page)
 exec_sql("update SystemSettings set MaintenanceDueWarningDays=30")
 page = get(s, "/Maintenances/Dashboard").text
@@ -60,10 +60,10 @@ check("maintenance due in 40 days not listed (window 30)", f"MNT-W{run}" not in 
 lc = raw_insert("LicenceCertificationRecords", {"LCNumber": f"LC-W{run}", "Status": 4, "ExpiryDate": day(100),
                                                 "LicenceTypeId": raw_insert("LCLicenceTypes")})
 page = get(s, "/LicencesCertifications/Dashboard").text
-check("LC dashboard heading uses the setting", "Expiring Within 120 Days" in page)
+check("LC dashboard heading uses the setting", shows(page, "Expiring Within {0} Days", 120))
 check("LC expiring in 100 days listed (window 120)", f"LC-W{run}" in page)
 home = get(s, "/").text
-check("home dashboard LC heading uses the setting", "Expiring (120 days)" in home)
+check("home dashboard LC heading uses the setting", shows(home, "Licences & Certs Expiring ({0} days)", 120))
 exec_sql("update SystemSettings set LcExpiryWarningDays=90")
 page = get(s, "/LicencesCertifications/Dashboard").text
 check("LC expiring in 100 days not listed (window 90)", f"LC-W{run}" not in page)
@@ -71,7 +71,7 @@ check("LC expiring in 100 days not listed (window 90)", f"LC-W{run}" not in page
 t5 = raw_insert("Training", {"Name": f"TRN-SOON-{run}", "Status": 0, "DueDate": day(5), "IsDeleted": 0})
 t20 = raw_insert("Training", {"Name": f"TRN-LATER-{run}", "Status": 0, "DueDate": day(20), "IsDeleted": 0})
 page = get(s, "/Trainings/Dashboard").text
-check("training dashboard heading uses the setting", "Due Within 10 Days" in page)
+check("training dashboard heading uses the setting", shows(page, "Due Within {0} Days", 10))
 check("training due in 5 days listed (window 10)", f"TRN-SOON-{run}" in page)
 check("training due in 20 days not listed (window 10)", f"TRN-LATER-{run}" not in page)
 
@@ -152,7 +152,7 @@ so = login(ops)
 mid = raw_insert("Maintenance", {"AssetId": raw_insert("Asset"), "ScheduledDate": day(1), "Status": 1,
                                  "MaintenanceId": f"MNT-R{run}"})
 page = get(so, f"/Maintenances/Details/{mid}").text
-check("operations user sees Record Work on an In Progress job", "Record Work" in page)
+check("operations user sees Record Work on an In Progress job", shows(page, "Record Work"))
 post_form(so, f"/Maintenances/RecordWork/{mid}", f"/Maintenances/Details/{mid}",
           {"workPerformed": "Replaced filter; leak test passed", "partsUsed": "Filter F-100", "cost": "125.50"})
 row = q1("select WorkPerformed, PartsUsed, Cost from Maintenance where Id=?", (mid,))

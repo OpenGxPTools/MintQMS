@@ -34,6 +34,8 @@ using OpenQMS.Services;
 using static OpenQMS.Models.Asset;
 using static OpenQMS.Models.Process;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -675,6 +677,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Assets/DownloadDocument/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadDocument(int id, bool deleted = false)
         {
             var doc = await _context.AssetDocument.ForDownload(deleted)
@@ -802,6 +805,7 @@ namespace OpenQMS.Controllers
 
             return Json(new { dataSet = dataSets, labels });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportAssetDetail(int id)
         {
@@ -824,45 +828,40 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("Asset ID",    asset.AssetId),
-                ("Name",        asset.Name),
-                ("Status",      asset.Status.ToString()),
-                ("Category",    asset.Category.HasValue
-                                ? asset.Category.Value.GetType()
-                                    .GetField(asset.Category.Value.ToString())
-                                    ?.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
-                                    .Cast<System.ComponentModel.DataAnnotations.DisplayAttribute>()
-                                    .FirstOrDefault()?.Name ?? asset.Category.Value.ToString()
-                                : null),
-                ("Description", asset.Description),
-                ("Process",     asset.LinkedProcesses?.Any() == true
+                (R("Asset ID"),    asset.AssetId),
+                (R("Name"),        asset.Name),
+                (R("Status"),      RE(asset.Status)),
+                (R("Category"),    asset.Category.HasValue ? RD(asset.Category.Value) : null),
+                (R("Description"), asset.Description),
+                (R("Process"),     asset.LinkedProcesses?.Any() == true
                                 ? string.Join(", ", asset.LinkedProcesses.Select(x => x.Process?.Name ?? ""))
                                 : asset.Process?.Name),
-                ("Edited By",   asset.EditedBy),
-                ("Edited On",   asset.EditedOn.ToSite().ToShortDateString()),
-                ("Approved By", asset.ApprovedBy),
-                ("Approved On", asset.ApprovedOn.ToSite()?.ToShortDateString()),
+                (R("Edited By"),   asset.EditedBy),
+                (R("Edited On"),   asset.EditedOn.ToSite().ToShortDateString()),
+                (R("Approved By"), asset.ApprovedBy),
+                (R("Approved On"), asset.ApprovedOn.ToSite()?.ToShortDateString()),
             };
 
             var tables = new List<(string, string[], IEnumerable<string[]>)>
             {
-                ("Changes",
-                 new[] { "Change ID", "Title", "Status" },
-                 changeList.Select(c => new[] { c.ChangeId, c.Title, c.Status.ToString() })),
-                ("Deviations",
-                 new[] { "Deviation ID", "Title", "Status" },
-                 deviationList.Select(d => new[] { d.DeviationId, d.Title, d.Status.ToString() })),
-                ("CAPAs",
-                 new[] { "CAPA ID", "Title", "Status" },
-                 capaList.Select(c => new[] { c.CapaId, c.Title, c.Status.ToString() })),
+                (R("Changes"),
+                 new[] { R("Change ID"), R("Title"), R("Status") },
+                 changeList.Select(c => new[] { c.ChangeId, c.Title, RE(c.Status) })),
+                (R("Deviations"),
+                 new[] { R("Deviation ID"), R("Title"), R("Status") },
+                 deviationList.Select(d => new[] { d.DeviationId, d.Title, RE(d.Status) })),
+                (R("CAPAs"),
+                 new[] { R("CAPA ID"), R("Title"), R("Status") },
+                 capaList.Select(c => new[] { c.CapaId, c.Title, RE(c.Status) })),
             };
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Asset Detail Report", asset.AssetId, asset.Status.ToString(), fields, tables,
+            var result = PdfReportService.Generate(R("Asset Detail Report"), asset.AssetId, RE(asset.Status), fields, tables,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Asset-{asset.AssetId}.pdf");
         }
+        [RecordLanguage]
 
         public ActionResult ExportDetailInCSV(int id)
         {
@@ -874,13 +873,13 @@ namespace OpenQMS.Controllers
             }
 
             var builder = new StringBuilder();
-            builder.AppendLine("Asset Id,Name,Description,Category,Process,Version,Status,Edited By,Edited On,Approved By,Approved On");
+            builder.AppendLine(CsvHeader("Asset Id", "Name", "Description", "Category", "Process", "Version", "Status", "Edited By", "Edited On", "Approved By", "Approved On"));
             var assetProcessNames = asset.LinkedProcesses?.Any() == true
                 ? string.Join("|", asset.LinkedProcesses.Select(x => x.Process?.Name ?? ""))
                 : (asset.Process?.Name ?? string.Empty);
-            builder.AppendLine($"{asset.AssetId},{asset.Name},{asset.Description},{asset.Category?.ToString() ?? ""},{assetProcessNames},{asset.Version},{asset.Status},{(asset.EditedBy != null ? asset.EditedBy : String.Empty)},{asset.EditedOn.ToSite().ToShortDateString()},{(asset.ApprovedBy != null ? asset.ApprovedBy : String.Empty)},{(asset.ApprovedOn != null ? asset.ApprovedOn.Value.ToSite().ToShortDateString() : String.Empty)}");
+            builder.AppendLine($"{asset.AssetId},{asset.Name},{asset.Description},{RE(asset.Category) ?? ""},{assetProcessNames},{asset.Version},{RE(asset.Status)},{(asset.EditedBy != null ? asset.EditedBy : String.Empty)},{asset.EditedOn.ToSite().ToShortDateString()},{(asset.ApprovedBy != null ? asset.ApprovedBy : String.Empty)},{(asset.ApprovedOn != null ? asset.ApprovedOn.Value.ToSite().ToShortDateString() : String.Empty)}");
 
-            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "Asset.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", "Asset.csv");
         }
 
         private bool AssetExists(int id)

@@ -1,0 +1,12 @@
+@model OpenQMS.Models.IssuedRecordCopy
+@* Printed under every issued document: which stored copy this is. Outside the stored copy itself. *@
+<div class="small text-muted mt-2 issued-copy-note">
+    @if (Model.Origin == OpenQMS.Models.IssuedRecordOrigins.FrozenOnUpgrade)
+    {
+        @L["Stored copy, fixed on {0} (issued before stored copies were kept). Language: {1}. Checksum (SHA-256): {2}", Model.CreatedOn.ToSite().ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture) + " " + SiteTime.Label, OpenQMS.Localization.Languages.Known.TryGetValue(Model.Language, out var n1) ? n1 : Model.Language, Model.Sha256[..16] + "…"]
+    }
+    else
+    {
+        @L["Stored copy, issued on {0}. Language: {1}. Checksum (SHA-256): {2}", Model.CreatedOn.ToSite().ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture) + " " + SiteTime.Label, OpenQMS.Localization.Languages.Known.TryGetValue(Model.Language, out var n2) ? n2 : Model.Language, Model.Sha256[..16] + "…"]
+    }
+</div>

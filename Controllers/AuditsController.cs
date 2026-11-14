@@ -15,6 +15,8 @@ using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Services;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize(Roles = "Administrator,QualityManager,QualityUser,AuthorisedPerson,Auditor,ReadOnly")]
@@ -847,6 +849,7 @@ namespace OpenQMS.Controllers
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = auditId });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> DownloadAttachment(int? id, bool deleted = false)
         {
@@ -883,6 +886,7 @@ namespace OpenQMS.Controllers
                 memory.ToArray(), Path.GetExtension(attachment.FileName), wmCtx);
             return File(watermarked, attachment.ContentType ?? "application/octet-stream", attachment.FileName);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ViewAttachment(int? id)
         {
@@ -984,6 +988,7 @@ namespace OpenQMS.Controllers
         }
 
         // Export
+        [RecordLanguage]
         public async Task<IActionResult> ExportRegister()
         {
             var audits = await _context.Audit
@@ -998,12 +1003,12 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Audit Register");
+            var ws = wb.Worksheets.Add(Sheet(R("Audit Register")));
 
-            var headers = new[] { "Audit ID", "Title", "Type", "Scope", "Status", "Lead Auditor", "Auditee",
-                "Planned Start", "Planned End", "Actual Start", "Actual End", "Rating",
-                "Critical Findings", "Major Findings", "Minor Findings", "Observations",
-                "CAPA Required", "Linked CAPA ID", "Follow-Up Date", "Scheduled By", "Product", "Process", "Supplier" };
+            var headers = new[] { R("Audit ID"), R("Title"), R("Type"), R("Scope"), R("Status"), R("Lead Auditor"), R("Auditee"),
+                R("Planned Start"), R("Planned End"), R("Actual Start"), R("Actual End"), R("Rating"),
+                R("Critical Findings"), R("Major Findings"), R("Minor Findings"), R("Observations"),
+                R("CAPA Required"), R("Linked CAPA ID"), R("Follow-Up Date"), R("Scheduled By"), R("Product"), R("Process"), R("Supplier") };
 
             for (int i = 0; i < headers.Length; i++)
             {
@@ -1021,21 +1026,21 @@ namespace OpenQMS.Controllers
                 var fill = i % 2 == 0 ? XLColor.White : XLColor.FromHtml("#F2F2F2");
                 ws.Cell(row, 1).Value = a.AuditId;
                 ws.Cell(row, 2).Value = a.Title;
-                ws.Cell(row, 3).Value = a.Type.ToString();
-                ws.Cell(row, 4).Value = a.Scope.ToString();
-                ws.Cell(row, 5).Value = a.Status.ToString();
+                ws.Cell(row, 3).Value = RE(a.Type);
+                ws.Cell(row, 4).Value = RE(a.Scope);
+                ws.Cell(row, 5).Value = RE(a.Status);
                 ws.Cell(row, 6).Value = a.LeadAuditor ?? "";
                 ws.Cell(row, 7).Value = a.Auditee ?? "";
                 ws.Cell(row, 8).Value = a.PlannedStartDate?.ToShortDateString() ?? "";
                 ws.Cell(row, 9).Value = a.PlannedEndDate?.ToShortDateString() ?? "";
                 ws.Cell(row, 10).Value = a.ActualStartDate?.ToShortDateString() ?? "";
                 ws.Cell(row, 11).Value = a.ActualEndDate?.ToShortDateString() ?? "";
-                ws.Cell(row, 12).Value = a.OverallRating?.ToString() ?? "";
+                ws.Cell(row, 12).Value = RE(a.OverallRating) ?? "";
                 ws.Cell(row, 13).Value = a.CriticalFindings;
                 ws.Cell(row, 14).Value = a.MajorFindings;
                 ws.Cell(row, 15).Value = a.MinorFindings;
                 ws.Cell(row, 16).Value = a.Observations;
-                ws.Cell(row, 17).Value = a.CAPARequired ? "Yes" : "No";
+                ws.Cell(row, 17).Value = a.CAPARequired ? R("Yes") : R("No");
                 ws.Cell(row, 18).Value = a.LinkedCapaId?.ToString() ?? "";
                 ws.Cell(row, 19).Value = a.FollowUpDate?.ToShortDateString() ?? "";
                 ws.Cell(row, 20).Value = a.ScheduledBy;
@@ -1048,7 +1053,7 @@ namespace OpenQMS.Controllers
 
             ws.Columns().AdjustToContents();
 
-            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", "Audit Register", audits.Count);
+            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", R("Audit Register"), audits.Count);
 
             using var stream = new MemoryStream();
             wb.SaveAs(stream);
@@ -1060,6 +1065,7 @@ namespace OpenQMS.Controllers
             return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"AuditRegister_{SiteTime.Now:yyyyMMdd}.xlsx");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportAuditDetail(int id)
         {
@@ -1078,38 +1084,38 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("Audit ID",          audit.AuditId),
-                ("Title",             audit.Title),
-                ("Status",            audit.Status.ToString()),
-                ("Type",              audit.Type.ToString()),
-                ("Scope",             audit.Scope.ToString()),
-                ("Description",       audit.Description),
-                ("Audit Location",    audit.AuditLocation),
-                ("Lead Auditor",      audit.LeadAuditor),
-                ("Audit Team",        audit.AuditTeam),
-                ("Auditee",           audit.Auditee),
-                ("Auditee Contact",   audit.AuditeeContact),
-                ("Planned Start",     audit.PlannedStartDate?.ToShortDateString()),
-                ("Planned End",       audit.PlannedEndDate?.ToShortDateString()),
-                ("Actual Start",      audit.ActualStartDate?.ToShortDateString()),
-                ("Actual End",        audit.ActualEndDate?.ToShortDateString()),
-                ("Scheduled By",      audit.ScheduledBy),
-                ("Conducted By",      audit.ConductedBy),
-                ("Critical Findings", audit.CriticalFindings.ToString()),
-                ("Major Findings",    audit.MajorFindings.ToString()),
-                ("Minor Findings",    audit.MinorFindings.ToString()),
-                ("Observations",      audit.Observations.ToString()),
-                ("Products",          JoinLinked(audit.LinkedProducts,  x => x.Product?.Name,       audit.Product?.Name)),
-                ("Processes",         JoinLinked(audit.LinkedProcesses, x => x.Process?.Name,      audit.Process?.Name)),
-                ("Assets",            JoinLinked(audit.LinkedAssets,    x => x.Asset?.Name,        audit.Asset?.Name)),
-                ("Materials",         JoinLinked(audit.LinkedMaterials, x => x.Material?.Name,     audit.Material?.Name)),
-                ("Suppliers",         JoinLinked(audit.LinkedSuppliers, x => x.Supplier?.LegalName, audit.Supplier?.LegalName)),
-                ("Overall Rating",    audit.OverallRating?.ToString()),
-                ("Corrective Action", audit.CorrectiveAction),
-                ("CAPA Required",     audit.CAPARequired ? "Yes" : "No"),
-                ("Reviewed By",       audit.ReviewedBy),
-                ("Approved By",       audit.ApprovedBy),
-                ("Closed By",         audit.ClosedBy),
+                (R("Audit ID"),          audit.AuditId),
+                (R("Title"),             audit.Title),
+                (R("Status"),            RE(audit.Status)),
+                (R("Type"),              RE(audit.Type)),
+                (R("Scope"),             RE(audit.Scope)),
+                (R("Description"),       audit.Description),
+                (R("Audit Location"),    audit.AuditLocation),
+                (R("Lead Auditor"),      audit.LeadAuditor),
+                (R("Audit Team"),        audit.AuditTeam),
+                (R("Auditee"),           audit.Auditee),
+                (R("Auditee Contact"),   audit.AuditeeContact),
+                (R("Planned Start"),     audit.PlannedStartDate?.ToShortDateString()),
+                (R("Planned End"),       audit.PlannedEndDate?.ToShortDateString()),
+                (R("Actual Start"),      audit.ActualStartDate?.ToShortDateString()),
+                (R("Actual End"),        audit.ActualEndDate?.ToShortDateString()),
+                (R("Scheduled By"),      audit.ScheduledBy),
+                (R("Conducted By"),      audit.ConductedBy),
+                (R("Critical Findings"), audit.CriticalFindings.ToString()),
+                (R("Major Findings"),    audit.MajorFindings.ToString()),
+                (R("Minor Findings"),    audit.MinorFindings.ToString()),
+                (R("Observations"),      audit.Observations.ToString()),
+                (R("Products"),          JoinLinked(audit.LinkedProducts,  x => x.Product?.Name,       audit.Product?.Name)),
+                (R("Processes"),         JoinLinked(audit.LinkedProcesses, x => x.Process?.Name,      audit.Process?.Name)),
+                (R("Assets"),            JoinLinked(audit.LinkedAssets,    x => x.Asset?.Name,        audit.Asset?.Name)),
+                (R("Materials"),         JoinLinked(audit.LinkedMaterials, x => x.Material?.Name,     audit.Material?.Name)),
+                (R("Suppliers"),         JoinLinked(audit.LinkedSuppliers, x => x.Supplier?.LegalName, audit.Supplier?.LegalName)),
+                (R("Overall Rating"),    RE(audit.OverallRating)),
+                (R("Corrective Action"), audit.CorrectiveAction),
+                (R("CAPA Required"),     audit.CAPARequired ? R("Yes") : R("No")),
+                (R("Reviewed By"),       audit.ReviewedBy),
+                (R("Approved By"),       audit.ApprovedBy),
+                (R("Closed By"),         audit.ClosedBy),
             };
 
             AddAuditLog(audit.Id, "Exported (PDF)", audit.Status.ToString(), audit.Status.ToString());
@@ -1117,10 +1123,11 @@ namespace OpenQMS.Controllers
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Audit Detail Report", audit.AuditId, audit.Status.ToString(), fields,
+            var result = PdfReportService.Generate(R("Audit Detail Report"), audit.AuditId, RE(audit.Status), fields,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Audit-{audit.AuditId}.pdf");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportDetailInCSV(int id)
         {
@@ -1136,10 +1143,10 @@ namespace OpenQMS.Controllers
             await _context.SaveChangesAsync();
 
             var builder = new System.Text.StringBuilder();
-            builder.AppendLine("Audit ID,Title,Status,Type,Scope,Lead Auditor,Planned Start,Planned End,Actual Start,Actual End,Critical Findings,Major Findings,Minor Findings,Observations,Overall Rating,CAPA Required,Reviewed By,Approved By,Closed By");
-            builder.AppendLine($"{CsvSafe(audit.AuditId)},{CsvSafe(audit.Title)},{audit.Status},{audit.Type},{audit.Scope},{CsvSafe(audit.LeadAuditor)},{audit.PlannedStartDate?.ToShortDateString() ?? ""},{audit.PlannedEndDate?.ToShortDateString() ?? ""},{audit.ActualStartDate?.ToShortDateString() ?? ""},{audit.ActualEndDate?.ToShortDateString() ?? ""},{audit.CriticalFindings},{audit.MajorFindings},{audit.MinorFindings},{audit.Observations},{audit.OverallRating?.ToString() ?? ""},{(audit.CAPARequired ? "Yes" : "No")},{CsvSafe(audit.ReviewedBy)},{CsvSafe(audit.ApprovedBy)},{CsvSafe(audit.ClosedBy)}");
+            builder.AppendLine(CsvHeader("Audit ID", "Title", "Status", "Type", "Scope", "Lead Auditor", "Planned Start", "Planned End", "Actual Start", "Actual End", "Critical Findings", "Major Findings", "Minor Findings", "Observations", "Overall Rating", "CAPA Required", "Reviewed By", "Approved By", "Closed By"));
+            builder.AppendLine($"{CsvSafe(audit.AuditId)},{CsvSafe(audit.Title)},{RE(audit.Status)},{RE(audit.Type)},{RE(audit.Scope)},{CsvSafe(audit.LeadAuditor)},{audit.PlannedStartDate?.ToShortDateString() ?? ""},{audit.PlannedEndDate?.ToShortDateString() ?? ""},{audit.ActualStartDate?.ToShortDateString() ?? ""},{audit.ActualEndDate?.ToShortDateString() ?? ""},{audit.CriticalFindings},{audit.MajorFindings},{audit.MinorFindings},{audit.Observations},{RE(audit.OverallRating) ?? ""},{(audit.CAPARequired ? R("Yes") : R("No"))},{CsvSafe(audit.ReviewedBy)},{CsvSafe(audit.ApprovedBy)},{CsvSafe(audit.ClosedBy)}");
 
-            return File(System.Text.Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", $"Audit-{audit.AuditId}.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", $"Audit-{audit.AuditId}.csv");
         }
 
         private bool AuditExists(int id) =>

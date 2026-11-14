@@ -33,6 +33,8 @@ using OpenQMS.Models.ViewModels;
 using OpenQMS.Services;
 using static OpenQMS.Models.Product;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -653,6 +655,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Products/DownloadDocument/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadDocument(int id, bool deleted = false)
         {
             var doc = await _context.ProductDocument.ForDownload(deleted).FirstOrDefaultAsync(e => e.Id == id);
@@ -930,6 +933,7 @@ namespace OpenQMS.Controllers
 
             return Json(new { dataSet = dataSets, labels });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportProductDetail(int id)
         {
@@ -953,59 +957,60 @@ namespace OpenQMS.Controllers
             var capaList      = product.Capas?.ToList()      ?? new List<Capa>();
 
             var ptLabel = product.ProductType.HasValue ? product.ProductType.Value switch {
-                Models.ProductType.MedicalDevice  => "Medical Device",
-                Models.ProductType.ConsumerHealth => "Consumer Health",
-                Models.ProductType.RawMaterial    => "Raw Material",
-                _ => product.ProductType.Value.ToString()
+                Models.ProductType.MedicalDevice  => R("Medical Device"),
+                Models.ProductType.ConsumerHealth => R("Consumer Health"),
+                Models.ProductType.RawMaterial    => R("Raw Material"),
+                _ => RE(product.ProductType.Value)
             } : null;
 
             var fields = new List<(string, string?)>
             {
-                ("Product ID",                    product.ProductId),
-                ("Name",                          product.Name),
-                ("Product Type",                  ptLabel),
-                ("INN / Generic Name",            product.InnName),
-                ("INCI Name / Ingredient Ref.",   product.InciName),
-                ("Standard / Scientific Name",    product.StandardScientificName),
-                ("Brand / Trade Name",            product.BrandName),
-                ("Dosage Form",                   product.DosageForm),
-                ("Presentation / Form",           product.PresentationForm),
-                ("Device Type / Category",        product.DeviceTypeCategory),
-                ("Model / Version",               product.ModelVersion),
-                ("Material Type / Category",      product.RawMaterialTypeCategory),
-                ("Grade",                         product.Grade),
-                ("ARTG / Regulatory Reference",   product.ArtgReference),
-                ("Strength / Presentation",       string.Join(", ", product.Strengths?.Select(s => s.Value) ?? Enumerable.Empty<string>())),
-                ("Status",                        product.Status.ToString()),
-                ("Description",                   product.Description),
-                ("Edited By",                     product.EditedBy),
-                ("Edited On",                     product.EditedOn.ToSite().ToShortDateString()),
-                ("Approved By",                   product.ApprovedBy),
-                ("Approved On",                   product.ApprovedOn.ToSite()?.ToShortDateString()),
+                (R("Product ID"),                    product.ProductId),
+                (R("Name"),                          product.Name),
+                (R("Product Type"),                  ptLabel),
+                (R("INN / Generic Name"),            product.InnName),
+                (R("INCI Name / Ingredient Ref."),   product.InciName),
+                (R("Standard / Scientific Name"),    product.StandardScientificName),
+                (R("Brand / Trade Name"),            product.BrandName),
+                (R("Dosage Form"),                   product.DosageForm),
+                (R("Presentation / Form"),           product.PresentationForm),
+                (R("Device Type / Category"),        product.DeviceTypeCategory),
+                (R("Model / Version"),               product.ModelVersion),
+                (R("Material Type / Category"),      product.RawMaterialTypeCategory),
+                (R("Grade"),                         product.Grade),
+                (R("ARTG / Regulatory Reference"),   product.ArtgReference),
+                (R("Strength / Presentation"),       string.Join(", ", product.Strengths?.Select(s => s.Value) ?? Enumerable.Empty<string>())),
+                (R("Status"),                        RE(product.Status)),
+                (R("Description"),                   product.Description),
+                (R("Edited By"),                     product.EditedBy),
+                (R("Edited On"),                     product.EditedOn.ToSite().ToShortDateString()),
+                (R("Approved By"),                   product.ApprovedBy),
+                (R("Approved On"),                   product.ApprovedOn.ToSite()?.ToShortDateString()),
             };
 
             var tables = new List<(string, string[], IEnumerable<string[]>)>
             {
-                ("Processes",
-                 new[] { "Process ID", "Name", "Status" },
-                 processList.Select(p => new[] { p.ProcessId, p.Name, p.Status.ToString() })),
-                ("Changes",
-                 new[] { "Change ID", "Title", "Status" },
-                 changeList.Select(c => new[] { c.ChangeId, c.Title, c.Status.ToString() })),
-                ("Deviations",
-                 new[] { "Deviation ID", "Title", "Status" },
-                 deviationList.Select(d => new[] { d.DeviationId, d.Title, d.Status.ToString() })),
-                ("CAPAs",
-                 new[] { "CAPA ID", "Title", "Status" },
-                 capaList.Select(c => new[] { c.CapaId, c.Title, c.Status.ToString() })),
+                (R("Processes"),
+                 new[] { R("Process ID"), R("Name"), R("Status") },
+                 processList.Select(p => new[] { p.ProcessId, p.Name, RE(p.Status) })),
+                (R("Changes"),
+                 new[] { R("Change ID"), R("Title"), R("Status") },
+                 changeList.Select(c => new[] { c.ChangeId, c.Title, RE(c.Status) })),
+                (R("Deviations"),
+                 new[] { R("Deviation ID"), R("Title"), R("Status") },
+                 deviationList.Select(d => new[] { d.DeviationId, d.Title, RE(d.Status) })),
+                (R("CAPAs"),
+                 new[] { R("CAPA ID"), R("Title"), R("Status") },
+                 capaList.Select(c => new[] { c.CapaId, c.Title, RE(c.Status) })),
             };
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Product Detail Report", product.ProductId, product.Status.ToString(), fields, tables,
+            var result = PdfReportService.Generate(R("Product Detail Report"), product.ProductId, RE(product.Status), fields, tables,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Product-{product.ProductId}.pdf");
         }
+        [RecordLanguage]
 
         public ActionResult ExportDetailInCSV(int id)
         {
@@ -1017,11 +1022,11 @@ namespace OpenQMS.Controllers
 
             var strengths = string.Join(" | ", product.Strengths?.Select(s => s.Value) ?? Enumerable.Empty<string>());
             var builder = new StringBuilder();
-            builder.AppendLine("Product Id,Name,Product Type,INN/Generic Name,INCI Name,Standard/Scientific Name,Brand/Trade Name,Dosage Form,Presentation/Form,Device Type/Category,Model/Version,Material Type/Category,Grade,ARTG Reference,Strength/Presentation,Description,Version,Status,Edited By,Edited On,Approved By,Approved On");
+            builder.AppendLine(CsvHeader("Product Id", "Name", "Product Type", "INN/Generic Name", "INCI Name", "Standard/Scientific Name", "Brand/Trade Name", "Dosage Form", "Presentation/Form", "Device Type/Category", "Model/Version", "Material Type/Category", "Grade", "ARTG Reference", "Strength/Presentation", "Description", "Version", "Status", "Edited By", "Edited On", "Approved By", "Approved On"));
             builder.AppendLine(string.Join(",",
                 product.ProductId,
                 $"\"{product.Name}\"",
-                $"\"{product.ProductType?.ToString() ?? ""}\"",
+                $"\"{RE(product.ProductType) ?? ""}\"",
                 $"\"{product.InnName ?? ""}\"",
                 $"\"{product.InciName ?? ""}\"",
                 $"\"{product.StandardScientificName ?? ""}\"",
@@ -1042,7 +1047,7 @@ namespace OpenQMS.Controllers
                 product.ApprovedBy ?? "",
                 product.ApprovedOn.ToSite()?.ToShortDateString() ?? ""));
 
-            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "Product.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", "Product.csv");
         }
 
         private bool ProductExists(int id)

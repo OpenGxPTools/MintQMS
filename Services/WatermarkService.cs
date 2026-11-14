@@ -12,6 +12,7 @@ using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas;
 using iText.Kernel.Pdf.Extgstate;
 using OpenQMS.Models;
+using static OpenQMS.Localization.RecordText;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
@@ -148,20 +149,20 @@ public static class WatermarkService
     private static (string? Header, string? Diagonal) ResolveMarks(WatermarkContext ctx)
     {
         if (ctx.Deleted && ctx.Kind != WatermarkKind.Document)
-            return (null, "DELETED ATTACHMENT - RETAINED FOR TRACEABILITY");
+            return (null, R("DELETED ATTACHMENT - RETAINED FOR TRACEABILITY"));
 
         if (ctx.Kind == WatermarkKind.Attachment)
-            return ("SUPPORTING GMP RECORD ATTACHMENT", null);
+            return (R("SUPPORTING GMP RECORD ATTACHMENT"), null);
 
         if (ctx.Kind == WatermarkKind.RegulatoryAttachment)
-            return ("SUPPORTING REGULATORY RECORD ATTACHMENT", null);
+            return (R("SUPPORTING REGULATORY RECORD ATTACHMENT"), null);
 
         return ctx.DocStatus switch
         {
             AppDocument.DocumentStatus.Approved  or
-            AppDocument.DocumentStatus.Effective => ("APPROVED COPY - VALID AT TIME OF DOWNLOAD", null),
-            AppDocument.DocumentStatus.Obsolete  => (null, "OBSOLETE DOCUMENT - FOR REVIEW ONLY"),
-            _                                    => (null, "UNAPPROVED DOCUMENT - FOR REVIEW ONLY")
+            AppDocument.DocumentStatus.Effective => (R("APPROVED COPY - VALID AT TIME OF DOWNLOAD"), null),
+            AppDocument.DocumentStatus.Obsolete  => (null, R("OBSOLETE DOCUMENT - FOR REVIEW ONLY")),
+            _                                    => (null, R("UNAPPROVED DOCUMENT - FOR REVIEW ONLY"))
         };
     }
 
@@ -188,9 +189,9 @@ public static class WatermarkService
     private static string ResolveStatusTag(WatermarkContext ctx) => ctx.DocStatus switch
     {
         AppDocument.DocumentStatus.Approved  or
-        AppDocument.DocumentStatus.Effective => "APPROVED COPY - VALID AT TIME OF DOWNLOAD",
-        AppDocument.DocumentStatus.Obsolete  => "OBSOLETE DOCUMENT - FOR REVIEW ONLY",
-        _                                    => "UNAPPROVED DOCUMENT - FOR REVIEW ONLY"
+        AppDocument.DocumentStatus.Effective => R("APPROVED COPY - VALID AT TIME OF DOWNLOAD"),
+        AppDocument.DocumentStatus.Obsolete  => R("OBSOLETE DOCUMENT - FOR REVIEW ONLY"),
+        _                                    => R("UNAPPROVED DOCUMENT - FOR REVIEW ONLY")
     };
 
     private static string BuildFooter(WatermarkContext ctx)
@@ -199,20 +200,29 @@ public static class WatermarkService
         {
             // Document version now lives in the watermark header identity line, so
             // the footer carries only download provenance and the uncontrolled notice.
-            return $"Downloaded by {ctx.UserName} on {ctx.DownloadTime.ToSite():dd-MMM-yyyy HH:mm} {SiteTime.Label} from MintQMS. " +
-                   "Printed/downloaded copies are uncontrolled and may become outdated. " +
-                   "Verify current approval status in the system prior to use.";
+            return R("Downloaded by {0} on {1} from MintQMS.", ctx.UserName, $"{ctx.DownloadTime.ToSite():dd-MMM-yyyy HH:mm} {SiteTime.Label}") + " " +
+                   R("Printed/downloaded copies are uncontrolled and may become outdated.") + " " +
+                   R("Verify current approval status in the system prior to use.");
         }
 
-        string ver = ctx.Version != null ? $" Version {ctx.Version}" : "";
         string electronicRecord = ctx.Kind == WatermarkKind.RegulatoryAttachment
-            ? "This file forms part of the regulatory electronic record."
-            : "This file forms part of the GMP electronic record.";
-        return $"Downloaded from {ctx.RecordType} {ctx.RecordId}{ver} in MintQMS. " +
-               $"Downloaded by {ctx.UserName} on {ctx.DownloadTime.ToSite():dd-MMM-yyyy HH:mm} {SiteTime.Label}. " +
-               $"{electronicRecord} " +
-               "Printed/downloaded copies are uncontrolled.";
+            ? R("This file forms part of the regulatory electronic record.")
+            : R("This file forms part of the GMP electronic record.");
+        string source = ctx.Version != null
+            ? R("Downloaded from {0} {1} Version {2} in MintQMS.", R(ctx.RecordType), ctx.RecordId, ctx.Version)
+            : R("Downloaded from {0} {1} in MintQMS.", R(ctx.RecordType), ctx.RecordId);
+        return source + " " +
+               R("Downloaded by {0} on {1}.", ctx.UserName, $"{ctx.DownloadTime.ToSite():dd-MMM-yyyy HH:mm} {SiteTime.Label}") + " " +
+               electronicRecord + " " +
+               R("Printed/downloaded copies are uncontrolled.");
     }
+
+    // Record-type names passed by the controllers (translated in the footer above; listed so the
+    // translation check knows them).
+    internal static readonly string[] RecordTypeNames = new[] { /* i18n */
+        "Asset", "Audit", "CAPA", "Change", "Complaint", "Customer", "Deviation", "Licence/Certification",
+        "Maintenance", "Material", "Pharmacovigilance", "Process", "Product", "PSUR", "Regulatory Intelligence",
+        "Release", "Risk", "Service", "Supplier", "Training" };
 
     // ─────────────────────────────────────────────────────────────────
     // PDF — iText 8

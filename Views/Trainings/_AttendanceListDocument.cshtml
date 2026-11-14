@@ -1,0 +1,186 @@
+@model OpenQMS.ViewModels.Trainings.AttendanceListDocumentModel
+@using OpenQMS.Models.Navigation
+@*
+    A training's attendance list (completion record). Once the training is completed it is rendered once, in
+    the site language, stored with a checksum and shown from the stored copy (IssuedDocumentsService). While the
+    training is still open it is rendered live and marked as not final (Model.IsLive).
+    Everything comes from the model — never read live data or settings here.
+*@
+@{
+    var t          = Model.Training;
+    var policyDoc  = Model.PolicyDocument;
+    var isCA       = t.TrainingType == TrainingType.CompetencyAssessment;
+    var docVersion = t.SourceDocumentVersion ?? policyDoc?.Version;
+    var rows       = Model.Rows;
+    var issued     = Model.IssuedOn.ToSite();
+}
+<style>
+    .att-header  { border-bottom: 3px solid #0d6efd; padding-bottom: 12px; }
+    .att-section { border-top: 1px solid #dee2e6; padding-top: 12px; margin-top: 12px; }
+</style>
+<div class="card p-4" id="attendance-content" lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
+    <partial name="~/Views/Shared/_IssuedOrgHeader.cshtml" model="Model.Org" />
+
+    @* Title *@
+    <div class="att-header d-flex justify-content-between align-items-start">
+        <div>
+            <h3 class="mb-1">@L["Training Completion Record"]</h3>
+            <div><strong>@L["Training ID:"]</strong> @t.TrainingId</div>
+            <div><strong>@L["Generated:"]</strong> @issued.ToString("dd-MMM-yyyy", DisplayDates.Culture)</div>
+        </div>
+        <div class="text-end">
+            <span class="badge @(isCA ? "bg-primary" : "bg-info text-dark") fs-6">
+                @L.Enum(t.TrainingType)
+            </span>
+            <br />
+            <span class="badge @(t.Status == Training.TrainingStatus.Completed ? "bg-success" : "bg-warning text-dark") mt-1">
+                @L.Enum(t.Status)
+            </span>
+        </div>
+    </div>
+
+    @* Training Details *@
+    <div class="att-section">
+        <h6 class="text-uppercase text-muted small mb-2">@L["Training Details"]</h6>
+        <div class="row">
+            <div class="col-md-8"><strong>@L["Name:"]</strong> @t.Name</div>
+            <div class="col-md-4"><strong>@L["Training ID:"]</strong> @t.TrainingId</div>
+        </div>
+        @if (!string.IsNullOrEmpty(t.Description))
+        {
+            <div class="row mt-1">
+                <div class="col-12"><strong>@L["Description:"]</strong> @t.Description</div>
+            </div>
+        }
+        <div class="row mt-1">
+            <div class="col-md-6">
+                <strong>@L["Source Document:"]</strong>
+                @if (policyDoc != null)
+                {
+                    <span>@policyDoc.DocumentId — @policyDoc.Title</span>
+                    @if (docVersion.HasValue) { <span class="badge bg-light text-dark border ms-1">v@(docVersion.Value.ToString("0.00"))</span> }
+                }
+                else
+                {
+                    <span>@(t.PolicyTitle ?? "-")</span>
+                }
+            </div>
+            <div class="col-md-3"><strong>@L["Due Date:"]</strong> @(t.DueDate?.ToString("dd-MMM-yyyy", DisplayDates.Culture) ?? "—")</div>
+            <div class="col-md-3"><strong>@L["Trainer:"]</strong> @(t.TrainerEmail ?? "—")</div>
+        </div>
+        @if (t.CompletedOn.HasValue)
+        {
+            <div class="row mt-1">
+                <div class="col-md-6">
+                    <strong>@L["Completed On:"]</strong> @t.CompletedOn.Value.ToSite().ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture)
+                </div>
+                <div class="col-md-6">
+                    <strong>@L["Completed By:"]</strong>
+                    @(Model.CompletedByUser != null
+                        ? $"{Model.CompletedByUser.FirstName} {Model.CompletedByUser.LastName}".Trim()
+                        : L["Auto-completed"].Value)
+                </div>
+            </div>
+        }
+    </div>
+
+    @* Trainee completion table *@
+    <div class="att-section">
+        <h6 class="text-uppercase text-muted small mb-2">
+            @L["Trainees — {0} enrolled, {1} completed", rows.Count, rows.Count(r => r.Status == UserTrainingStatus.Completed)]
+        </h6>
+
+        @if (isCA)
+        {
+            <table class="table table-bordered table-sm mt-2">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>@L["Name"]</th>
+                        <th>@L["Email"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Competency Verified On"]</th>
+                        <th>@L["Verified By"]</th>
+                        <th>@L["Notes"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 1; }
+                    @foreach (var ut in rows)
+                    {
+                        var trainee  = ut.Trainee;
+                        var fullName = trainee != null ? $"{trainee.FirstName} {trainee.LastName}".Trim() : null;
+                        if (string.IsNullOrWhiteSpace(fullName)) fullName = trainee?.UserName ?? "-";
+                        var statusBadge = ut.Status switch {
+                            UserTrainingStatus.Completed                 => "bg-success",
+                            UserTrainingStatus.Failed                    => "bg-danger",
+                            UserTrainingStatus.PendingTrainerConfirmation => "bg-info text-dark",
+                            UserTrainingStatus.InProgress                => "bg-warning text-dark",
+                            _                                            => "bg-secondary"
+                        };
+                        <tr>
+                            <td class="text-center">@(i++)</td>
+                            <td>@fullName</td>
+                            <td class="small text-muted">@(trainee?.Email ?? "-")</td>
+                            <td><span class="badge @statusBadge">@L.Enum(ut.Status)</span></td>
+                            <td>@(ut.CompetencyVerifiedOn.ToSite()?.ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture) ?? "—")</td>
+                            <td class="small">@(ut.CompetencyVerifiedBy ?? "—")</td>
+                            <td class="small">@(ut.CompetencyNotes ?? "")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <table class="table table-bordered table-sm mt-2">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>@L["Name"]</th>
+                        <th>@L["Email"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Acknowledged On"]</th>
+                        <th>@L["Electronic Signature Ref"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int j = 1; }
+                    @foreach (var ut in rows)
+                    {
+                        var trainee  = ut.Trainee;
+                        var fullName = trainee != null ? $"{trainee.FirstName} {trainee.LastName}".Trim() : null;
+                        if (string.IsNullOrWhiteSpace(fullName)) fullName = trainee?.UserName ?? "-";
+                        var statusBadge = ut.Status switch {
+                            UserTrainingStatus.Completed => "bg-success",
+                            UserTrainingStatus.InProgress => "bg-warning text-dark",
+                            _ => "bg-secondary"
+                        };
+                        <tr>
+                            <td class="text-center">@(j++)</td>
+                            <td>@fullName</td>
+                            <td class="small text-muted">@(trainee?.Email ?? "-")</td>
+                            <td><span class="badge @statusBadge">@L.Enum(ut.Status)</span></td>
+                            <td>@(ut.ReadAcknowledgedOn.ToSite()?.ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture) ?? "—")</td>
+                            <td class="small text-muted font-monospace">
+                                @if (!string.IsNullOrEmpty(ut.ReadAcknowledgedSignature))
+                                {
+                                    @ut.ReadAcknowledgedSignature[..Math.Min(16, ut.ReadAcknowledgedSignature.Length)]<text>…</text>
+                                }
+                                else { <span>—</span> }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    @* Footer note *@
+    <div class="att-section">
+        <p class="small text-muted mb-0">
+            @L["This record was generated from the Quality Management System on {0}.", issued.ToString("dd-MMM-yyyy HH:mm", DisplayDates.Culture)]
+            @L["Electronic signatures and completion timestamps are stored in the system audit log."]
+        </p>
+    </div>
+</div>

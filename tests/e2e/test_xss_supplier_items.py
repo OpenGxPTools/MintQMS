@@ -24,7 +24,7 @@ html = get(s, "/PVSignalReview").text
 check("6 PVSignalReview: raw assignee markup not rendered", f'id="xss1{run}"' not in html)
 check("6 PVSignalReview: assignee shown encoded", f"&lt;b id=&quot;xss1{run}&quot;&gt;" in html or f'&lt;b id="xss1{run}"&gt;' in html)
 exec_sql("insert into PVSignalReview (MedDRAPT, DetectedOn, DetectedBy, TriggerCount, Status, CreatedOn) values ('E2E PT2', ?, 'e2e', 1, 0, ?)", (now, now))
-check("6 PVSignalReview: Unassigned still shown", "Unassigned" in get(s, "/PVSignalReview").text)
+check("6 PVSignalReview: Unassigned still shown", shows(get(s, "/PVSignalReview").text, "Unassigned"))
 
 P2 = f'<b id="xss2{run}">p</b>'
 exec_sql("""insert into Product (ProductId, Name, Description, Version, EditedOn, IsLocked, Status, IsDeleted)
@@ -134,7 +134,7 @@ r = post_form(s, "/Suppliers/LinkQualityRecord", qr_page, {"supplierId": sid, "r
 n = q1("select count(*) c from SupplierQualityRecord where SupplierId=?", (sid,))["c"]
 check("9 link while Approved: refused", n == 1, n)
 msg = get(s, r.headers.get("Location", qr_page)).text
-check("9 link while Approved: error shown on QualityRecords", "Quality records are locked while the supplier is Approved" in msg)
+check("9 link while Approved: error shown on QualityRecords", shows(msg, "Quality records are locked while the supplier is {0} — start a new review to change them.", "Approved"))
 
 # delete while locked, even posting another (unlocked) supplier's id
 r = post_form(s, "/Suppliers/DeleteQualityRecord", qr_page, {"id": link["Id"], "supplierId": other})

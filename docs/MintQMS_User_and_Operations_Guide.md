@@ -914,11 +914,21 @@ is **Certified** (or **Released**):
 - **Who & how.** Only an **Administrator or the Authorised Person** can issue a certificate, and issuance is
   **electronically signed**. Each certificate is given a unique **certificate number**, and the AP can add a
   **certification/issuance statement** in their name.
-- **Point-in-time snapshot.** Issuing freezes a **snapshot** of everything the certificate shows — product and
-  batch details, manufacturing and packaging sites with their GMP references, testing laboratories, the
-  releasing company and its licence reference, the test results, and the AP's statement — and renders it to a
-  **PDF** that can be viewed and downloaded. Because the snapshot is frozen, the certificate keeps reflecting the
-  data as it stood at issue even if the record is later re-opened.
+- **Fixed at issue.** Issuing saves the **complete certificate** exactly as issued — product and batch details,
+  manufacturing and packaging sites with their GMP references, testing laboratories, the releasing company and
+  its licence reference, the test results, the AP's statement, and your organisation's name, address and logo —
+  in the **site language** of that moment, with a **SHA-256 checksum**. The certificate is always shown (and
+  printed or saved as PDF from the browser) from that stored copy, after checking the checksum: re-opening the
+  record, renaming the organisation, changing the logo, changing the site language or a user's own language,
+  or a software update never alter an issued certificate. A copy that fails the checksum is not shown and the
+  event is recorded in the audit trail. The certificate's current status (*Superseded*, *Withdrawn*) is shown
+  above it. Certificates issued before stored copies were introduced are fixed once, in English, the first time
+  the upgraded system starts (marked "issued before stored copies were kept").
+- **Content follows Australian (TGA) requirements.** Field names and statements refer to the ARTG, TGA licences
+  and the Authorised Person (PIC/S Annex 16). Translating the certificate does **not** make it meet another
+  country's rules (for example COFEPRIS in Mexico, which expects Spanish GMP documentation and a *Responsable
+  Sanitario*): check your local requirements, and have the certificate wording in another language reviewed by
+  a native-speaking regulatory professional before use.
 - **Re-issue & supersession.** Issuing a new certificate of the same type **supersedes** the previous one; the
   earlier certificate is retained (marked *Superseded*, with a version number) so the certificate history stays
   auditable.
@@ -1513,6 +1523,15 @@ everyone what they owe, and compliance views let managers see who is outstanding
 - **Re-opening:** an Administrator can re-open a completed training (it returns to Scheduled and the completion
   is cleared, but the prior completion remains in the audit trail).
 
+**Training certificates and attendance lists.** A trainee's **training certificate** (*My Certificate*) is issued
+the moment that trainee's training is completed — when they acknowledge reading, or when the trainer confirms
+their competency — and not before (a failed competency attempt gets none). The **attendance list** (*Completion
+Record*) is fixed the moment the whole training is completed; while the training is open it is shown live and
+marked **NOT FINAL**. Both are saved exactly as issued, in the site language of that moment, with a SHA-256
+checksum, and always shown from that copy: renaming a trainee, changing the organisation or logo, or changing
+the language never alters them. If an Administrator re-opens the training, its attendance list is marked
+superseded (kept, never deleted) and a new one is fixed when the training is completed again.
+
 **Notes.** A trainee can only act on **their own** assignment — no one can acknowledge training on someone else's
 behalf. Trainers and managers confirm competency; administrators manage exceptions.
 
@@ -1667,7 +1686,13 @@ Spanish-speaking site); each user then gets a language menu, and every language 
 your validation. Both settings are Administrator-only and logged like all others. **The language never changes
 stored records:** states and choices are stored as codes, audit-trail entries and signature meanings are
 recorded in English, and free text is kept exactly as typed — your procedures should say which language
-records are written in. **Dates on screens follow the site language** ("09 nov. 2026", "lunes, 9 de noviembre
+records are written in. **Documents the system produces are written in the site language at the moment they
+are produced**, whatever language a user has chosen for their own screens: exports (detail PDF and CSV, Excel
+registers and reports, the CIOMS form), the text stamped on downloaded files, and issued certificates and
+attendance lists. Exports are dated copies (each one is logged in the audit trail; the record in the system
+stays the master). Issued certificates and attendance lists are stored once as issued and never change
+afterwards — see *Release certificates* (§6.3) and *Training* (§8.2). With the site language English, exports are
+exactly as in earlier versions. **Dates on screens follow the site language** ("09 nov. 2026", "lunes, 9 de noviembre
 de 2026"); numbers keep the server's format, and dates written into records, exports and PDFs keep the server's
 format too.
 
@@ -1736,7 +1761,9 @@ before anyone else uses it:
    site time zone; enter the e-mail (SMTP) server and sender address; review password expiry,
    idle time-out, warning periods, default resolution times and retention periods against your procedures.
 3. **Release Certification Statements** (*Settings → Release Certification Statements*): review the wording used
-   on batch-release certificates.
+   on batch-release certificates. The statements are stored text, supplied in English: if your site language is
+   not English, replace them with your approved wording in that language (have it reviewed by a native-speaking
+   regulatory professional), because the statement is printed exactly as stored on every certificate issued.
 4. **Users and roles** (*Settings → Users*): create a personal account for each person (§11.1) and give each the
    roles they need (§3). Create a personal Administrator account for yourself and keep `admin@trial.local` for
    emergencies only.

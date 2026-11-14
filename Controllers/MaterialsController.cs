@@ -35,6 +35,8 @@ using static OpenQMS.Models.Material;
 using static OpenQMS.Models.Process;
 using static OpenQMS.Models.Product;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -700,6 +702,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Materials/DownloadDocument/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadDocument(int id, bool deleted = false)
         {
             var doc = await _context.MaterialDocument.ForDownload(deleted).FirstOrDefaultAsync(e => e.Id == id);
@@ -825,6 +828,7 @@ namespace OpenQMS.Controllers
 
             return Json(new { dataSet = dataSets, labels });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportMaterialDetail(int id)
         {
@@ -848,42 +852,43 @@ namespace OpenQMS.Controllers
 
             var fields = new List<(string, string?)>
             {
-                ("Material ID",      material.MaterialId),
-                ("Name",             material.Name),
-                ("Type / Category",  material.MaterialCategory),
-                ("Status",           material.Status.ToString()),
-                ("Description",      material.Description),
-                ("Products",    material.LinkedProducts?.Any() == true
+                (R("Material ID"),      material.MaterialId),
+                (R("Name"),             material.Name),
+                (R("Type / Category"),  material.MaterialCategory),
+                (R("Status"),           RE(material.Status)),
+                (R("Description"),      material.Description),
+                (R("Products"),    material.LinkedProducts?.Any() == true
                                 ? string.Join(", ", material.LinkedProducts.Select(x => x.Product?.Name ?? ""))
                                 : "-"),
-                ("Process",     material.LinkedProcesses?.Any() == true
+                (R("Process"),     material.LinkedProcesses?.Any() == true
                                 ? string.Join(", ", material.LinkedProcesses.Select(x => x.Process?.Name ?? ""))
                                 : material.Process?.Name),
-                ("Edited By",   material.EditedBy),
-                ("Edited On",   material.EditedOn.ToSite().ToShortDateString()),
-                ("Approved By", material.ApprovedBy),
-                ("Approved On", material.ApprovedOn.ToSite()?.ToShortDateString()),
+                (R("Edited By"),   material.EditedBy),
+                (R("Edited On"),   material.EditedOn.ToSite().ToShortDateString()),
+                (R("Approved By"), material.ApprovedBy),
+                (R("Approved On"), material.ApprovedOn.ToSite()?.ToShortDateString()),
             };
 
             var tables = new List<(string, string[], IEnumerable<string[]>)>
             {
-                ("Changes",
-                 new[] { "Change ID", "Title", "Status" },
-                 changeList.Select(c => new[] { c.ChangeId, c.Title, c.Status.ToString() })),
-                ("Deviations",
-                 new[] { "Deviation ID", "Title", "Status" },
-                 deviationList.Select(d => new[] { d.DeviationId, d.Title, d.Status.ToString() })),
-                ("CAPAs",
-                 new[] { "CAPA ID", "Title", "Status" },
-                 capaList.Select(c => new[] { c.CapaId, c.Title, c.Status.ToString() })),
+                (R("Changes"),
+                 new[] { R("Change ID"), R("Title"), R("Status") },
+                 changeList.Select(c => new[] { c.ChangeId, c.Title, RE(c.Status) })),
+                (R("Deviations"),
+                 new[] { R("Deviation ID"), R("Title"), R("Status") },
+                 deviationList.Select(d => new[] { d.DeviationId, d.Title, RE(d.Status) })),
+                (R("CAPAs"),
+                 new[] { R("CAPA ID"), R("Title"), R("Status") },
+                 capaList.Select(c => new[] { c.CapaId, c.Title, RE(c.Status) })),
             };
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Material Detail Report", material.MaterialId, material.Status.ToString(), fields, tables,
+            var result = PdfReportService.Generate(R("Material Detail Report"), material.MaterialId, RE(material.Status), fields, tables,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Material-{material.MaterialId}.pdf");
         }
+        [RecordLanguage]
 
         public ActionResult ExportDetailInCSV(int id)
         {
@@ -901,10 +906,10 @@ namespace OpenQMS.Controllers
                 ? string.Join("|", material.LinkedProcesses.Select(x => x.Process?.Name ?? ""))
                 : (material.Process?.Name ?? string.Empty);
             var builder = new StringBuilder();
-            builder.AppendLine("Material Id,Name,Type / Category,Description,Products,Process,Version,Status,Edited By,Edited On,Approved By,Approved On");
-            builder.AppendLine($"{material.MaterialId},{material.Name},{material.MaterialCategory ?? string.Empty},{material.Description},{materialProductNames},{materialProcessNames},{material.Version},{material.Status},{(material.EditedBy != null ? material.EditedBy : String.Empty)},{material.EditedOn.ToSite().ToShortDateString()},{(material.ApprovedBy != null ? material.ApprovedBy : String.Empty)},{(material.ApprovedOn != null ? material.ApprovedOn.Value.ToSite().ToShortDateString() : String.Empty)}");
+            builder.AppendLine(CsvHeader("Material Id", "Name", "Type / Category", "Description", "Products", "Process", "Version", "Status", "Edited By", "Edited On", "Approved By", "Approved On"));
+            builder.AppendLine($"{material.MaterialId},{material.Name},{material.MaterialCategory ?? string.Empty},{material.Description},{materialProductNames},{materialProcessNames},{material.Version},{RE(material.Status)},{(material.EditedBy != null ? material.EditedBy : String.Empty)},{material.EditedOn.ToSite().ToShortDateString()},{(material.ApprovedBy != null ? material.ApprovedBy : String.Empty)},{(material.ApprovedOn != null ? material.ApprovedOn.Value.ToSite().ToShortDateString() : String.Empty)}");
 
-            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "Material.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", "Material.csv");
         }
 
         private bool MaterialExists(int id)

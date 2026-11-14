@@ -9,6 +9,8 @@ using OpenQMS.Localization;
 using OpenQMS.Models;
 using OpenQMS.Services;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     // Gap 13: Cross-module data retention and disposal management.
@@ -204,6 +206,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: /Disposal/ExportReport
+        [RecordLanguage]
         public async Task<IActionResult> ExportReport()
         {
             var items    = await _retention.GetEligibleItemsAsync();
@@ -211,15 +214,15 @@ namespace OpenQMS.Controllers
             var now      = DateTime.UtcNow;
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Disposal Eligible Records");
+            var ws = wb.Worksheets.Add(Sheet(R("Disposal Eligible Records")));
 
             // Header
             var headers = new[]
             {
-                "Module", "Reference", "Title", "Terminal Status",
-                "Terminal Date", "Retain Until", "Retention Hold",
-                "Hold Reason", "Hold Comments", "Hold Set By", "Hold Set On",
-                "Cooldown Until", "Eligible for Disposal"
+                R("Module"), R("Reference"), R("Title"), R("Terminal Status"),
+                R("Terminal Date"), R("Retain Until"), R("Retention Hold"),
+                R("Hold Reason"), R("Hold Comments"), R("Hold Set By"), R("Hold Set On"),
+                R("Cooldown Until"), R("Eligible for Disposal")
             };
             for (int i = 0; i < headers.Length; i++)
             {
@@ -237,12 +240,12 @@ namespace OpenQMS.Controllers
                 ws.Cell(row, 5).Value  = item.TerminalDate.ToSite().ToString("yyyy-MM-dd");
                 ws.Cell(row, 6).Value  = item.RetainUntil.ToString("yyyy-MM-dd");
                 ws.Cell(row, 7).Value  = item.RetentionExtended ? "YES" : "No";
-                ws.Cell(row, 8).Value  = item.RetentionExtendedReason?.ToString() ?? "";
+                ws.Cell(row, 8).Value  = RE(item.RetentionExtendedReason) ?? "";
                 ws.Cell(row, 9).Value  = item.RetentionExtendedComments ?? "";
                 ws.Cell(row, 10).Value = item.RetentionExtendedBy ?? "";
                 ws.Cell(row, 11).Value = item.RetentionExtendedOn?.ToString("yyyy-MM-dd") ?? "";
                 ws.Cell(row, 12).Value = item.RetentionHoldCooldownUntil?.ToString("yyyy-MM-dd") ?? "";
-                ws.Cell(row, 13).Value = item.IsEligibleForDisposal ? "Yes" : "No";
+                ws.Cell(row, 13).Value = item.IsEligibleForDisposal ? R("Yes") : R("No");
 
                 // Highlight held records
                 if (item.RetentionExtended)

@@ -15,6 +15,8 @@ using OpenQMS.Localization;
 using OpenQMS.Models;
 using OpenQMS.Services;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize(Roles = "Administrator,QualityManager,QualityUser,AuthorisedPerson,Auditor,Trainer,ReadOnly,OperationsUser")]
@@ -995,6 +997,7 @@ namespace OpenQMS.Controllers
             TempData["ActiveTab"] = "attachments";
             return RedirectToAction(nameof(Details), new { id = maintenanceId });
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> DownloadAttachment(int? id, bool deleted = false)
         {
@@ -1032,6 +1035,7 @@ namespace OpenQMS.Controllers
                 memory.ToArray(), Path.GetExtension(attachment.FileName), wmCtx);
             return File(watermarked, attachment.ContentType ?? "application/octet-stream", attachment.FileName);
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ViewAttachment(int? id)
         {
@@ -1111,6 +1115,7 @@ namespace OpenQMS.Controllers
         }
 
         // Export
+        [RecordLanguage]
         public async Task<IActionResult> ExportRegister()
         {
             var maintenances = await _context.Maintenance
@@ -1121,11 +1126,11 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Maintenance Register");
+            var ws = wb.Worksheets.Add(Sheet(R("Maintenance Register")));
 
-            var headers = new[] { "Maintenance ID", "Title", "Asset", "Type", "Frequency", "Status",
-                "Scheduled Date", "Performed By", "Performed On", "Actual Start", "Actual End",
-                "Downtime (h)", "Parts Used", "Cost", "Reviewed By", "Next Scheduled", "Process" };
+            var headers = new[] { R("Maintenance ID"), R("Title"), R("Asset"), R("Type"), R("Frequency"), R("Status"),
+                R("Scheduled Date"), R("Performed By"), R("Performed On"), R("Actual Start"), R("Actual End"),
+                R("Downtime (h)"), R("Parts Used"), R("Cost"), R("Reviewed By"), R("Next Scheduled"), R("Process") };
 
             for (int i = 0; i < headers.Length; i++)
             {
@@ -1144,9 +1149,9 @@ namespace OpenQMS.Controllers
                 ws.Cell(row, 1).Value = m.MaintenanceId;
                 ws.Cell(row, 2).Value = m.Title;
                 ws.Cell(row, 3).Value = m.Asset?.Name ?? "";
-                ws.Cell(row, 4).Value = m.Type.ToString();
-                ws.Cell(row, 5).Value = m.Frequency.ToString();
-                ws.Cell(row, 6).Value = m.Status.ToString();
+                ws.Cell(row, 4).Value = RE(m.Type);
+                ws.Cell(row, 5).Value = RE(m.Frequency);
+                ws.Cell(row, 6).Value = RE(m.Status);
                 ws.Cell(row, 7).Value = m.ScheduledDate.ToShortDateString();
                 ws.Cell(row, 8).Value = m.PerformedBy ?? "";
                 ws.Cell(row, 9).Value = m.PerformedOn.ToSite()?.ToShortDateString() ?? "";
@@ -1164,7 +1169,7 @@ namespace OpenQMS.Controllers
 
             ws.Columns().AdjustToContents();
 
-            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", "Maintenance Register", maintenances.Count);
+            OpenQMS.Services.ExcelExportHelper.AddExportInfoSheet(wb, _userManager.GetUserName(User) ?? "Unknown", R("Maintenance Register"), maintenances.Count);
 
             using var stream = new MemoryStream();
             wb.SaveAs(stream);
@@ -1173,6 +1178,7 @@ namespace OpenQMS.Controllers
             return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"MaintenanceRegister_{SiteTime.Now:yyyyMMdd}.xlsx");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportMaintenanceDetail(int id)
         {
@@ -1189,29 +1195,29 @@ namespace OpenQMS.Controllers
             string? L(string s) => s.Length > 0 ? s : null;
             var fields = new List<(string, string?)>
             {
-                ("Maintenance ID",  maintenance.MaintenanceId),
-                ("Title",           maintenance.Title),
-                ("Status",          maintenance.Status.ToString()),
-                ("Type",            maintenance.Type.ToString()),
-                ("Frequency",       maintenance.Frequency.ToString()),
-                ("Asset",           maintenance.Asset?.Name),
-                ("Process",         maintenance.Process?.Name),
-                ("Linked Deviations", L(JoinLinked(maintenance.LinkedDeviations, x => x.Deviation != null ? x.Deviation.DeviationId + " — " + x.Deviation.Title : null, maintenance.Deviation != null ? maintenance.Deviation.DeviationId + " — " + maintenance.Deviation.Title : null))),
-                ("Linked CAPAs",    L(JoinLinked(maintenance.LinkedCapas,    x => x.Capa != null ? x.Capa.CapaId + " — " + x.Capa.Title : null, maintenance.Capa != null ? maintenance.Capa.CapaId + " — " + maintenance.Capa.Title : null))),
-                ("Description",     maintenance.Description),
-                ("Scheduled Date",  maintenance.ScheduledDate.ToShortDateString()),
-                ("Scheduled By",    maintenance.ScheduledBy),
-                ("Performed By",    maintenance.PerformedBy),
-                ("Performed On",    maintenance.PerformedOn.ToSite()?.ToShortDateString()),
-                ("Actual Start",    maintenance.ActualStartTime.ToSite()?.ToString("yyyy-MM-dd HH:mm")),
-                ("Actual End",      maintenance.ActualEndTime.ToSite()?.ToString("yyyy-MM-dd HH:mm")),
-                ("Downtime (hrs)",  maintenance.DowntimeHours?.ToString("F2")),
-                ("Work Performed",  maintenance.WorkPerformed),
-                ("Parts Used",      maintenance.PartsUsed),
-                ("Cost",            maintenance.Cost?.ToString("C")),
-                ("Review Comments", maintenance.ReviewComments),
-                ("Reviewed By",     maintenance.ReviewedBy),
-                ("Reviewed On",     maintenance.ReviewedOn.ToSite()?.ToShortDateString()),
+                (R("Maintenance ID"),  maintenance.MaintenanceId),
+                (R("Title"),           maintenance.Title),
+                (R("Status"),          RE(maintenance.Status)),
+                (R("Type"),            RE(maintenance.Type)),
+                (R("Frequency"),       RE(maintenance.Frequency)),
+                (R("Asset"),           maintenance.Asset?.Name),
+                (R("Process"),         maintenance.Process?.Name),
+                (R("Linked Deviations"), L(JoinLinked(maintenance.LinkedDeviations, x => x.Deviation != null ? x.Deviation.DeviationId + " — " + x.Deviation.Title : null, maintenance.Deviation != null ? maintenance.Deviation.DeviationId + " — " + maintenance.Deviation.Title : null))),
+                (R("Linked CAPAs"),    L(JoinLinked(maintenance.LinkedCapas,    x => x.Capa != null ? x.Capa.CapaId + " — " + x.Capa.Title : null, maintenance.Capa != null ? maintenance.Capa.CapaId + " — " + maintenance.Capa.Title : null))),
+                (R("Description"),     maintenance.Description),
+                (R("Scheduled Date"),  maintenance.ScheduledDate.ToShortDateString()),
+                (R("Scheduled By"),    maintenance.ScheduledBy),
+                (R("Performed By"),    maintenance.PerformedBy),
+                (R("Performed On"),    maintenance.PerformedOn.ToSite()?.ToShortDateString()),
+                (R("Actual Start"),    maintenance.ActualStartTime.ToSite()?.ToString("yyyy-MM-dd HH:mm")),
+                (R("Actual End"),      maintenance.ActualEndTime.ToSite()?.ToString("yyyy-MM-dd HH:mm")),
+                (R("Downtime (hrs)"),  maintenance.DowntimeHours?.ToString("F2")),
+                (R("Work Performed"),  maintenance.WorkPerformed),
+                (R("Parts Used"),      maintenance.PartsUsed),
+                (R("Cost"),            maintenance.Cost?.ToString("C")),
+                (R("Review Comments"), maintenance.ReviewComments),
+                (R("Reviewed By"),     maintenance.ReviewedBy),
+                (R("Reviewed On"),     maintenance.ReviewedOn.ToSite()?.ToShortDateString()),
             };
 
             AddAuditLog(maintenance.Id, "Exported (PDF)", maintenance.Status.ToString(), maintenance.Status.ToString());
@@ -1219,10 +1225,11 @@ namespace OpenQMS.Controllers
 
             var _s = await _context.SystemSettings.FindAsync(1);
             string? _logo = PdfReportService.ResolveLogoPath(_s?.LogoPath);
-            var result = PdfReportService.Generate("Maintenance Detail Report", maintenance.MaintenanceId, maintenance.Status.ToString(), fields,
+            var result = PdfReportService.Generate(R("Maintenance Detail Report"), maintenance.MaintenanceId, RE(maintenance.Status), fields,
                 orgName: _s?.OrganisationName, orgAddress: _s?.OrganisationAddress, logoPhysicalPath: _logo);
             return File(result, "application/pdf", $"Maintenance-{maintenance.MaintenanceId}.pdf");
         }
+        [RecordLanguage]
 
         public async Task<IActionResult> ExportDetailInCSV(int id)
         {
@@ -1240,10 +1247,10 @@ namespace OpenQMS.Controllers
             await _context.SaveChangesAsync();
 
             var builder = new System.Text.StringBuilder();
-            builder.AppendLine("Maintenance ID,Title,Status,Type,Frequency,Asset,Process,Linked Deviations,Linked CAPAs,Description,Scheduled Date,Scheduled By,Performed By,Performed On,Work Performed,Parts Used,Cost,Review Comments,Reviewed By,Reviewed On");
-            builder.AppendLine($"{CsvSafe(maintenance.MaintenanceId)},{CsvSafe(maintenance.Title)},{maintenance.Status},{maintenance.Type},{maintenance.Frequency},{CsvSafe(maintenance.Asset?.Name)},{CsvSafe(maintenance.Process?.Name)},{CsvSafe(JoinLinked(maintenance.LinkedDeviations, x => x.Deviation != null ? x.Deviation.DeviationId + " — " + x.Deviation.Title : null, maintenance.Deviation != null ? maintenance.Deviation.DeviationId + " — " + maintenance.Deviation.Title : null))},{CsvSafe(JoinLinked(maintenance.LinkedCapas, x => x.Capa != null ? x.Capa.CapaId + " — " + x.Capa.Title : null, maintenance.Capa != null ? maintenance.Capa.CapaId + " — " + maintenance.Capa.Title : null))},{CsvSafe(maintenance.Description)},{maintenance.ScheduledDate.ToShortDateString()},{CsvSafe(maintenance.ScheduledBy)},{CsvSafe(maintenance.PerformedBy)},{maintenance.PerformedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(maintenance.WorkPerformed)},{CsvSafe(maintenance.PartsUsed)},{maintenance.Cost?.ToString("F2") ?? ""},{CsvSafe(maintenance.ReviewComments)},{CsvSafe(maintenance.ReviewedBy)},{maintenance.ReviewedOn.ToSite()?.ToShortDateString() ?? ""}");
+            builder.AppendLine(CsvHeader("Maintenance ID", "Title", "Status", "Type", "Frequency", "Asset", "Process", "Linked Deviations", "Linked CAPAs", "Description", "Scheduled Date", "Scheduled By", "Performed By", "Performed On", "Work Performed", "Parts Used", "Cost", "Review Comments", "Reviewed By", "Reviewed On"));
+            builder.AppendLine($"{CsvSafe(maintenance.MaintenanceId)},{CsvSafe(maintenance.Title)},{RE(maintenance.Status)},{RE(maintenance.Type)},{RE(maintenance.Frequency)},{CsvSafe(maintenance.Asset?.Name)},{CsvSafe(maintenance.Process?.Name)},{CsvSafe(JoinLinked(maintenance.LinkedDeviations, x => x.Deviation != null ? x.Deviation.DeviationId + " — " + x.Deviation.Title : null, maintenance.Deviation != null ? maintenance.Deviation.DeviationId + " — " + maintenance.Deviation.Title : null))},{CsvSafe(JoinLinked(maintenance.LinkedCapas, x => x.Capa != null ? x.Capa.CapaId + " — " + x.Capa.Title : null, maintenance.Capa != null ? maintenance.Capa.CapaId + " — " + maintenance.Capa.Title : null))},{CsvSafe(maintenance.Description)},{maintenance.ScheduledDate.ToShortDateString()},{CsvSafe(maintenance.ScheduledBy)},{CsvSafe(maintenance.PerformedBy)},{maintenance.PerformedOn.ToSite()?.ToShortDateString() ?? ""},{CsvSafe(maintenance.WorkPerformed)},{CsvSafe(maintenance.PartsUsed)},{maintenance.Cost?.ToString("F2") ?? ""},{CsvSafe(maintenance.ReviewComments)},{CsvSafe(maintenance.ReviewedBy)},{maintenance.ReviewedOn.ToSite()?.ToShortDateString() ?? ""}");
 
-            return File(System.Text.Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", $"Maintenance-{maintenance.MaintenanceId}.csv");
+            return File(CsvBytes(builder.ToString()), "text/csv", $"Maintenance-{maintenance.MaintenanceId}.csv");
         }
 
         private bool MaintenanceExists(int id) =>

@@ -34,6 +34,8 @@ using OpenQMS.Models.Navigation;
 using OpenQMS.Models.ViewModels;
 using OpenQMS.Services;
 
+using static OpenQMS.Localization.RecordText;
+
 namespace OpenQMS.Controllers
 {
     [Authorize]
@@ -44,19 +46,22 @@ namespace OpenQMS.Controllers
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IPasswordHasher<AppUser> _passwordHasher;
         private readonly DocumentWorkflowService _docWorkflow;
+        private readonly IssuedDocumentsService _issuedDocs;
 
         public TrainingsController(
             ApplicationDbContext context,
             UserManager<AppUser> userManager,
             RoleManager<AppRole> roleManager,
             IPasswordHasher<AppUser> passwordHasher,
-            DocumentWorkflowService docWorkflow)
+            DocumentWorkflowService docWorkflow,
+            IssuedDocumentsService issuedDocs)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
             _passwordHasher = passwordHasher;
             _docWorkflow = docWorkflow;
+            _issuedDocs = issuedDocs;
         }
 
         // GET: Trainings
@@ -499,6 +504,7 @@ namespace OpenQMS.Controllers
             training.RetainUntil = training.CompletedOn.Value.AddYears(_trainSets.TrainingRetentionYears);
             AddAuditLog(training.Id, "Completed", "Scheduled", "Completed",
                 $"Completed by: {currentUser.UserName}; Notes: {CompletionNotes.Trim()}");
+            await _issuedDocs.SyncTrainingAsync(training.Id, currentUser.UserName, HttpContext);
             await _context.SaveChangesAsync();
 
             TempData["Success"] = this.T("Training {0} competency verified and marked as Completed.", training.TrainingId);
@@ -506,6 +512,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Trainings/ExportRegister
+        [RecordLanguage]
         [Authorize(Roles = "Administrator,QualityManager,RegulatoryManager,Trainer,AuthorisedPerson")]
         public async Task<IActionResult> ExportRegister()
         {
@@ -517,9 +524,9 @@ namespace OpenQMS.Controllers
                 .ToListAsync();
 
             using var wb = new XLWorkbook();
-            var ws = wb.AddWorksheet("Training Register");
+            var ws = wb.AddWorksheet(Sheet(R("Training Register")));
 
-            var headers = new[] { "Training ID", "Name", "Description", "Date Created", "Policy", "Trainer", "Trainees", "Status", "Completed By", "Completed On" };
+            var headers = new[] { R("Training ID"), R("Name"), R("Description"), R("Date Created"), R("Policy"), R("Trainer"), R("Trainees"), R("Status"), R("Completed By"), R("Completed On") };
             for (int i = 0; i < headers.Length; i++)
                 ws.Cell(1, i + 1).SetValue(headers[i]);
 
@@ -538,7 +545,7 @@ namespace OpenQMS.Controllers
                 ws.Cell(row, 5).SetValue(t.PolicyTitle);
                 ws.Cell(row, 6).SetValue(t.TrainerEmail);
                 ws.Cell(row, 7).SetValue(t.Trainees?.Count ?? 0);
-                ws.Cell(row, 8).SetValue(t.Status.ToString());
+                ws.Cell(row, 8).SetValue(RE(t.Status));
                 ws.Cell(row, 9).SetValue(t.CompletedByUser?.UserName ?? "-");
                 ws.Cell(row, 10).SetValue(t.CompletedOn.HasValue ? t.CompletedOn.Value.ToSite().ToString("dd/MM/yyyy HH:mm") : "-");
 
@@ -577,15 +584,20 @@ namespace OpenQMS.Controllers
                 .OrderByDescending(t => t.Id)
                 .FirstOrDefault();
 
-            var policyDoc = training.PolicyId > 0
-                ? await _context.AppDocument.AsNoTracking()
-                    .FirstOrDefaultAsync(d => d.Id == training.PolicyId)
-                : null;
+            // The certificate is the copy fixed when this trainee's training was completed (site language,
+            // checksum). Until then there is no certificate.
+            IssuedCopyResult copy = ut != null
+                ? await _issuedDocs.TrainingCertificateAsync(ut, HttpContext)
+                : new IssuedCopyResult(null, true);
+            if (copy.Copy != null && !copy.IntegrityOk)
+            {
+                AddAuditLog(training.Id, "Certificate Integrity Check Failed", null, null,
+                    $"Stored copy of the training certificate of {trainee!.UserName} does not match its checksum — not shown.");
+                await _context.SaveChangesAsync();
+            }
 
-            ViewBag.Trainee    = trainee;
-            ViewBag.UserTraining = ut;
-            ViewBag.PolicyDocument = policyDoc;
-            return View("TrainingCertificate", training);
+            ViewBag.Training = training;
+            return View("TrainingCertificate", copy);
         }
 
         // GET: Attendance list (managers)
@@ -599,11 +611,17 @@ namespace OpenQMS.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (training == null) return NotFound();
 
-            ViewBag.PolicyDocument = await _context.AppDocument
-                .AsNoTracking()
-                .FirstOrDefaultAsync(d => d.Id == training.PolicyId);
-
-            return View("AttendanceList", training);
+            // A completed training shows the list fixed at completion; an open one shows it live (not final).
+            var copy = await _issuedDocs.AttendanceListAsync(training, HttpContext);
+            if (copy.Copy != null && !copy.IntegrityOk)
+            {
+                AddAuditLog(training.Id, "Attendance List Integrity Check Failed", null, null,
+                    "Stored copy of the attendance list does not match its checksum — not shown.");
+                await _context.SaveChangesAsync();
+            }
+            ViewBag.LiveHtml = copy.Copy == null ? await _issuedDocs.RenderLiveAttendanceAsync(training, HttpContext) : null;
+            ViewBag.Training = training;
+            return View("AttendanceList", copy);
         }
 
         private bool TrainingExists(int id) => _context.Training.Any(e => e.Id == id);
@@ -643,6 +661,7 @@ namespace OpenQMS.Controllers
 
             training.Status = Training.TrainingStatus.Cancelled;
             AddAuditLog(training.Id, "Cancelled", Training.TrainingStatus.Scheduled.ToString(), Training.TrainingStatus.Cancelled.ToString(), reason);
+            await _issuedDocs.SyncTrainingAsync(training.Id, currentUser?.UserName, HttpContext, "Training cancelled: " + reason);
             await _context.SaveChangesAsync();
 
             TempData["Success"] = this.T("Training {0} has been cancelled.", training.TrainingId);
@@ -687,6 +706,7 @@ namespace OpenQMS.Controllers
             training.RetainUntil     = null;
 
             AddAuditLog(training.Id, "Administrative Reopen", Training.TrainingStatus.Completed.ToString(), Training.TrainingStatus.Scheduled.ToString(), reason);
+            await _issuedDocs.SyncTrainingAsync(training.Id, currentUser.UserName, HttpContext, "Administrative reopen: " + reason);
             await _context.SaveChangesAsync();
 
             TempData["Success"] = this.T("Training record has been administratively reopened to Scheduled stage.");
@@ -820,6 +840,7 @@ namespace OpenQMS.Controllers
                 row.Status.ToString(),
                 $"Trainee: {currentUser.UserName}");
 
+            await _issuedDocs.SyncTrainingAsync(training.Id, currentUser.UserName, HttpContext);
             await _context.SaveChangesAsync();
 
             // Check if document auto-transitions to Effective
@@ -905,6 +926,7 @@ namespace OpenQMS.Controllers
                 $"Trainee: {traineeUser?.UserName ?? row.TraineeId.ToString()}; Verifier: {_userManager.GetUserName(User)}" +
                 (string.IsNullOrEmpty(Notes) ? "" : $"; Notes: {Notes}"));
 
+            await _issuedDocs.SyncTrainingAsync(training.Id, currentUser.UserName, HttpContext);
             await _context.SaveChangesAsync();
 
             if (passed)
@@ -995,6 +1017,7 @@ namespace OpenQMS.Controllers
         }
 
         // GET: Trainings/DownloadAttachment/5
+        [RecordLanguage]
         public async Task<IActionResult> DownloadAttachment(int id)
         {
             var att = await _context.TrainingAttachment
