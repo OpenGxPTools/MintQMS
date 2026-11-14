@@ -1,6 +1,7 @@
 """Country-neutral wording and settings (any site, any language).
 
-  * adverse-event reporting deadlines come from System Settings (defaults 15 / 7 calendar days after Day 0);
+  * adverse-event reporting deadlines come from System Settings (defaults 15 / 7 calendar days after Day 0),
+    for cases made with the Create form, edited cases and follow-ups;
     an existing case keeps its deadline when the settings change, and is recalculated only when its Day 0
     or seriousness changes (the change is in the case's audit trail);
   * screens show general wording ("Reporting Deadline", "Registration Number") — no Australian regulator
@@ -61,7 +62,49 @@ check("deadline change is in the case audit trail (English)", any("Reporting Dea
 edit(SeriousnessCriteria="1")   # Death
 check("fatal case: deadline uses the fatal setting (5 days)", deadline() == "2026-10-07", deadline())
 
+# ── a case created through the Create form, and a follow-up, use the settings ───────────────────────
+from datetime import date
+
+
+def days_after_day0(case_id):
+    r = q1("select Day0Date, TGADeadlineDate from AdverseEvent where Id=?", (case_id,))
+    if not r or not r["Day0Date"] or not r["TGADeadlineDate"]:
+        return None
+    return (date.fromisoformat(r["TGADeadlineDate"][:10]) - date.fromisoformat(r["Day0Date"][:10])).days
+
+
+def create_case(seriousness, desc):
+    pg = get(s, "/Pharmacovigilance/Create")
+    data = form_fields(pg.text, "Pharmacovigilance/Create") or {}
+    data.update({"Day0Date": "2026-10-05", "SeriousnessCriteria": str(seriousness), "AEDescription": desc,
+                 "MedicalNarrative": "E2E narrative", "reporter.ReporterName": "E2E Reporter",
+                 "patient.PatientIdentifier": "E2E-P2", "suspectProduct.ProductName": "E2E Product"})
+    r = post_form(s, "/Pharmacovigilance/Create", "/Pharmacovigilance/Create", data)
+    row = q1("select Id from AdverseEvent where AEDescription=? order by Id desc", (desc,))
+    return r, row and row["Id"]
+
+
+r, c1 = create_case(4, f"E2E created serious {run}")          # Hospitalisation
+check("Create form: serious case saved", c1 is not None, getattr(r, "status_code", None))
+check("Create form: serious deadline = Day 0 + setting (10)", c1 and days_after_day0(c1) == 10, c1 and days_after_day0(c1))
+r, c2 = create_case(2, f"E2E created fatal {run}")            # Life-threatening
+check("Create form: life-threatening deadline = Day 0 + fatal setting (5)", c2 and days_after_day0(c2) == 5, c2 and days_after_day0(c2))
+
+if c1:
+    exec_sql("update AdverseEvent set Status=3, IsLocked=1 where Id=?", (c1,))   # Approved
+    post_form(s, f"/Pharmacovigilance/CreateFollowUp/{c1}", f"/Pharmacovigilance/Details/{c1}", {"email": ADMIN, "pwd": "wrong-password"})
+    check("follow-up refused with a wrong password", q1("select count(*) n from AdverseEvent where ParentAEId=?", (c1,))["n"] == 0)
+    post_form(s, f"/Pharmacovigilance/CreateFollowUp/{c1}", f"/Pharmacovigilance/Details/{c1}", {"email": ADMIN, "pwd": PW})
+    fu = q1("select Id, Status from AdverseEvent where ParentAEId=? order by Id desc", (c1,))
+    check("follow-up created (Draft)", fu is not None and fu["Status"] == 0, fu and dict(fu))
+    check("follow-up deadline = its Day 0 (today) + setting (10)", fu and days_after_day0(fu["Id"]) == 10, fu and days_after_day0(fu["Id"]))
+    if fu:
+        html = get(s, f"/Pharmacovigilance/Details/{fu['Id']}").text
+        check("follow-up page renders", "An unhandled exception" not in html and shows(html, "Reporting Deadline:"))
+
 exec_sql("update SystemSettings set SeriousAEReportingDays=15, FatalAEReportingDays=7")
+r, c3 = create_case(4, f"E2E created default {run}")
+check("Create form with default settings: serious deadline = Day 0 + 15", c3 and days_after_day0(c3) == 15, c3 and days_after_day0(c3))
 
 # ── general wording on screens ───────────────────────────────────────────────────────────────────────
 html = get(s, f"/Pharmacovigilance/Details/{ae}").text
