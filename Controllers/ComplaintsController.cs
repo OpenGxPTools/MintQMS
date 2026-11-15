@@ -14,6 +14,7 @@ using OpenQMS.Authorization;
 using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Services;
+using OpenQMS.Services.Workflow;
 
 using static OpenQMS.Localization.RecordText;
 
@@ -616,6 +617,12 @@ namespace OpenQMS.Controllers
                 return RedirectToAction(nameof(Details), new { id });
             }
 
+            if (await this.RefusalAsync("Complaints", nameof(Accept), complaint) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             var fromStatus = complaint.Status.ToString();
             complaint.AcceptedBy = _userManager.GetUserName(User);
             complaint.AcceptedOn = DateTime.UtcNow;
@@ -694,6 +701,12 @@ namespace OpenQMS.Controllers
             if (!await VerifyCredentials(email, pwd))
             {
                 TempData["WorkflowError"] = this.T("Invalid email or password.");
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            if (await this.RefusalAsync("Complaints", nameof(Closed), complaint) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
                 return RedirectToAction(nameof(Details), new { id });
             }
 

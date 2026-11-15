@@ -278,6 +278,20 @@
         <div class="card-body">
             <p class="text-muted small mb-3">@L["Controls password expiry and reuse prevention (21 CFR 11.300 / EU Annex 11 §12). Set either value to 0 to disable that control."]</p>
             <div class="mb-3 row">
+                <div class="col-sm-4 col-form-label">@L["Four-eyes rule"]</div>
+                <div class="col-sm-8">
+                    <div class="form-check">
+                        <input asp-for="EnforceFourEyes" class="form-check-input" disabled="@dis" />
+                        <label asp-for="EnforceFourEyes" class="form-check-label"></label>
+                    </div>
+                    <div class="form-text">@L["On (recommended): a review, acceptance, approval, closure or certification must be signed by someone who did not do the work being reviewed. The person who raised a record may approve it when its review or acceptance was signed by someone else. Turn off only if your site is too small to separate these duties, and record that decision in your procedures."]</div>
+                    @if (!Model.EnforceFourEyes)
+                    {
+                        <div class="form-text text-warning"><i class="bi bi-exclamation-triangle-fill"></i> @L["GMP note: with the four-eyes rule off, one person can do and approve the same work."]</div>
+                    }
+                </div>
+            </div>
+            <div class="mb-3 row">
                 <label asp-for="PasswordExpiryDays" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-3">
                     <div class="input-group">

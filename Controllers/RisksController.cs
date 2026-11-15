@@ -14,6 +14,7 @@ using OpenQMS.Authorization;
 using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Services;
+using OpenQMS.Services.Workflow;
 
 using static OpenQMS.Localization.RecordText;
 
@@ -601,6 +602,12 @@ namespace OpenQMS.Controllers
             risk.AcceptedBy      = _userManager.GetUserName(User);
             risk.AcceptedOn      = DateTime.UtcNow;
             risk.AssessmentNotes = string.IsNullOrWhiteSpace(assessmentNotes) ? null : assessmentNotes;
+            if (await this.RefusalAsync("Risks", nameof(AcceptAssessment), risk) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             risk.Status          = Risk.RiskStatus.Mitigation;
 
             AddAuditLog(risk.Id, "Assessment Accepted — Mitigation Started", from, risk.Status.ToString(),
@@ -729,6 +736,12 @@ namespace OpenQMS.Controllers
             risk.ReviewConclusion = reviewConclusion;
             risk.ClosedBy         = _userManager.GetUserName(User);
             risk.ClosedOn         = DateTime.UtcNow;
+            if (await this.RefusalAsync("Risks", nameof(CloseRisk), risk) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             risk.Status           = Risk.RiskStatus.Closed;
             var settings = await _context.SystemSettings.FindAsync(1) ?? new OpenQMS.Models.SystemSettings();
             risk.RetainUntil = risk.ClosedOn.Value.AddYears(settings.RiskRetentionYears);

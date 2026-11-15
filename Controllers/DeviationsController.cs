@@ -33,6 +33,7 @@ using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Models.ViewModels;
 using OpenQMS.Services;
+using OpenQMS.Services.Workflow;
 using static OpenQMS.Models.Deviation;
 
 using static OpenQMS.Localization.RecordText;
@@ -738,6 +739,12 @@ namespace OpenQMS.Controllers
                 return RedirectToAction(nameof(Details), new { id });
             }
 
+            if (await this.RefusalAsync("Deviations", nameof(AcceptDeviation), deviation) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             var fromStatus = deviation.Status.ToString();
             deviation.Status     = DeviationStatus.Accepted;
             deviation.AcceptedBy = _userManager.GetUserName(User);
@@ -868,6 +875,12 @@ namespace OpenQMS.Controllers
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
                 TempData["WorkflowError"] = this.T("Invalid email or password.");
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            if (await this.RefusalAsync("Deviations", nameof(ApproveDeviation), deviation) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
                 return RedirectToAction(nameof(Details), new { id });
             }
 

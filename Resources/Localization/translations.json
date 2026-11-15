@@ -6624,6 +6624,11 @@
   "es": "Usuario final",
   "pt-BR": "Usuário final"
  },
+ "Enforce Four-Eyes Rule": {
+  "es": "Aplicar el principio de los cuatro ojos",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "Aplicar o princípio dos quatro olhos"
+ },
  "Engineering / Technical Services": {
   "es": "Ingeniería / servicios técnicos",
   "pt-BR": "Engenharia / serviços técnicos"
@@ -7452,6 +7457,16 @@
   "es": "Base de maquillaje",
   "pt-BR": "Base"
  },
+ "Four-eyes rule": {
+  "es": "Principio de los cuatro ojos",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "Princípio dos quatro olhos"
+ },
+ "Four-eyes rule: {0}, so another person must sign this step.": {
+  "es": "Principio de los cuatro ojos: {0}, por lo que otra persona debe firmar este paso.",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "Princípio dos quatro olhos: {0}, portanto outra pessoa deve assinar esta etapa."
+ },
  "Free software (AGPLv3), provided without warranty and not validated for regulated use": {
   "es": "Software libre (AGPLv3), sin garantía y no validado para uso regulado",
   "pt-BR": "Software livre (AGPLv3), sem garantia e não validado para uso regulado"
@@ -7605,6 +7620,11 @@
  "GMP note: disabling idle timeout is not recommended under 21 CFR Part 11 / EU Annex 11.": {
   "es": "Nota GMP: no se recomienda desactivar el cierre por inactividad según 21 CFR Part 11 / EU Anexo 11.",
   "pt-BR": "Nota BPF: não é recomendado desativar o encerramento por inatividade segundo o 21 CFR Part 11 / EU Anexo 11."
+ },
+ "GMP note: with the four-eyes rule off, one person can do and approve the same work.": {
+  "es": "Nota GMP: con el principio de los cuatro ojos desactivado, una misma persona puede realizar y aprobar el mismo trabajo.",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "Nota BPF: com o princípio dos quatro olhos desativado, uma mesma pessoa pode executar e aprovar o mesmo trabalho."
  },
  "GMP: Critical severity complaints require expedited resolution (typically 7 days).": {
   "es": "GMP: las reclamaciones de gravedad crítica requieren una resolución urgente (normalmente 7 días).",
@@ -11003,6 +11023,11 @@
  "Old:": {
   "es": "Anterior:",
   "pt-BR": "Anterior:"
+ },
+ "On (recommended): a review, acceptance, approval, closure or certification must be signed by someone who did not do the work being reviewed. The person who raised a record may approve it when its review or acceptance was signed by someone else. Turn off only if your site is too small to separate these duties, and record that decision in your procedures.": {
+  "es": "Activado (recomendado): una revisión, aceptación, aprobación, cierre o certificación debe firmarla alguien que no haya realizado el trabajo revisado. Quien registró un registro puede aprobarlo cuando su revisión o aceptación la firmó otra persona. Desactívelo solo si su sitio es demasiado pequeño para separar estas funciones, y deje constancia de esa decisión en sus procedimientos.",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "Ativado (recomendado): uma revisão, aceitação, aprovação, encerramento ou certificação deve ser assinada por alguém que não tenha executado o trabalho revisado. Quem abriu um registro pode aprová-lo quando sua revisão ou aceitação foi assinada por outra pessoa. Desative somente se o seu site for pequeno demais para separar essas funções, e registre essa decisão nos seus procedimentos."
  },
  "On Hold": {
   "es": "En espera",
@@ -18297,6 +18322,11 @@
   "pt-BR": "Você está enviando <strong>{0}</strong> v{1} para revisão. O documento ficará bloqueado para novas edições.",
   "note": "SIGNATURE context — review"
  },
+ "you are the author of this document": {
+  "es": "usted es el autor de este documento",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você é o autor deste documento"
+ },
  "You can <a href=\"{0}\">generate a new set of recovery codes</a>.": {
   "es": "Puede <a href=\"{0}\">generar un nuevo juego de códigos de recuperación</a>.",
   "pt-BR": "Você pode <a href=\"{0}\">gerar um novo conjunto de códigos de recuperação</a>."
@@ -18386,9 +18416,59 @@
   "es": "Debe aceptar la política antes de poder activar la autenticación de dos factores.",
   "pt-BR": "Você deve aceitar a política antes de poder ativar a autenticação de dois fatores."
  },
+ "you raised this record and its acceptance was not signed by someone else": {
+  "es": "usted registró este registro y su aceptación no la firmó otra persona",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você abriu este registro e a aceitação dele não foi assinada por outra pessoa"
+ },
  "You should <a href=\"{0}\">generate a new set of recovery codes</a>.": {
   "es": "Debería <a href=\"{0}\">generar un nuevo juego de códigos de recuperación</a>.",
   "pt-BR": "Você deveria <a href=\"{0}\">gerar um novo conjunto de códigos de recuperação</a>."
+ },
+ "you started the assessment": {
+  "es": "usted inició la evaluación",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você iniciou a avaliação"
+ },
+ "you started the audit": {
+  "es": "usted inició la auditoría",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você iniciou a auditoria"
+ },
+ "you started the work": {
+  "es": "usted inició el trabajo",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você iniciou o trabalho"
+ },
+ "you submitted the assessment": {
+  "es": "usted presentó la evaluación",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você enviou a avaliação"
+ },
+ "you submitted the evaluation": {
+  "es": "usted presentó la evaluación",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você enviou a avaliação"
+ },
+ "you submitted the implementation": {
+  "es": "usted presentó la implementación",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você enviou a implementação"
+ },
+ "you submitted the mitigation for review": {
+  "es": "usted envió la mitigación a revisión",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você enviou a mitigação para revisão"
+ },
+ "you submitted the report for review": {
+  "es": "usted envió el informe a revisión",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você enviou o relatório para revisão"
+ },
+ "you submitted the resolution": {
+  "es": "usted presentó la resolución",
+  "note": "four-eyes rule (1.2.0)",
+  "pt-BR": "você enviou a resolução"
  },
  "You've successfully authenticated with <strong>{0}</strong>. Please enter an email address for this site below and click the Register button to finish logging in.": {
   "es": "Se ha autenticado correctamente con <strong>{0}</strong>. Introduzca abajo una dirección de correo para este sitio y haga clic en el botón Registrar para terminar de iniciar sesión.",

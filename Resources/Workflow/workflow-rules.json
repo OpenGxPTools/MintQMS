@@ -1,0 +1,884 @@
+{
+ "_about": "Who may sign each workflow step, and the four-eyes rule. Roles mirror the checks in the controllers (tests/e2e/test_four_eyes.py proves they match). notBy: the signer may not be the user recorded in these fields. raiserReview: a signer who raised the record may sign only if this review/acceptance field holds someone else. alsoUserIn: the user recorded in this field may sign whatever their role. Embedded in the program; not a deployment setting.",
+ "modules": [
+  {
+   "module": "Deviations",
+   "entity": "Deviation",
+   "raisedBy": "IdentifiedBy",
+   "steps": [
+    {
+     "action": "SubmitForEvaluation",
+     "from": 0,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "SubmitEvaluation",
+     "from": 1,
+     "to": 5,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "AcceptDeviation",
+     "from": 5,
+     "to": 2,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "EvaluatedBy"
+      ]
+     }
+    },
+    {
+     "action": "SubmitForResolution",
+     "from": 2,
+     "to": 3,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "ApproveDeviation",
+     "from": 3,
+     "to": 4,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "EvaluatedBy",
+       "ResolvedBy"
+      ],
+      "raiserReview": "AcceptedBy"
+     }
+    },
+    {
+     "action": "ReturnDeviation",
+     "from": 1,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnDeviation",
+     "from": 5,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnDeviation",
+     "from": 2,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnDeviation",
+     "from": 3,
+     "to": 2,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "AdminReopen",
+     "from": 4,
+     "to": 3,
+     "roles": [
+      "Administrator"
+     ]
+    }
+   ]
+  },
+  {
+   "module": "Complaints",
+   "entity": "Complaint",
+   "raisedBy": "ReceivedBy",
+   "steps": [
+    {
+     "action": "Evaluation",
+     "from": 0,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "PendingAcceptance",
+     "from": 1,
+     "to": 2,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "Accept",
+     "from": 2,
+     "to": 5,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "ActionBy"
+      ]
+     }
+    },
+    {
+     "action": "SubmitForResolution",
+     "from": 5,
+     "to": 3,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "Closed",
+     "from": 3,
+     "to": 4,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "ResolvedBy"
+      ],
+      "raiserReview": "AcceptedBy"
+     }
+    },
+    {
+     "action": "ReturnComplaint",
+     "from": 1,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnComplaint",
+     "from": 2,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnComplaint",
+     "from": 5,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnComplaint",
+     "from": 3,
+     "to": 5,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "AdminReopen",
+     "from": 4,
+     "to": 3,
+     "roles": [
+      "Administrator"
+     ]
+    }
+   ]
+  },
+  {
+   "module": "Capas",
+   "entity": "Capa",
+   "raisedBy": "DeterminedBy",
+   "steps": [
+    {
+     "action": "SubmitForAcceptance",
+     "from": 0,
+     "to": 5,
+     "roles": [
+      "Administrator",
+      "Auditor",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "AcceptCapa",
+     "from": 5,
+     "to": 3,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "AssessedBy"
+      ]
+     }
+    },
+    {
+     "action": "SubmitForApproval",
+     "from": 3,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "Auditor",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "ApproveCapa",
+     "from": 6,
+     "to": 4,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "ImplementedBy",
+       "AssessedBy"
+      ],
+      "raiserReview": "AcceptedBy"
+     }
+    },
+    {
+     "action": "ReturnCapa",
+     "from": 5,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnCapa",
+     "from": 3,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnCapa",
+     "from": 6,
+     "to": 3,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "AdminReopen",
+     "from": 4,
+     "to": 3,
+     "roles": [
+      "Administrator"
+     ]
+    }
+   ]
+  },
+  {
+   "module": "Changes",
+   "entity": "Change",
+   "raisedBy": "ProposedBy",
+   "steps": [
+    {
+     "action": "SubmitForAssessment",
+     "from": 0,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "SubmitForAcceptance",
+     "from": 1,
+     "to": 5,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "AcceptChange",
+     "from": 5,
+     "to": 3,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "AssessedBy"
+      ]
+     }
+    },
+    {
+     "action": "SubmitForApproval",
+     "from": 3,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "ApproveChange",
+     "from": 6,
+     "to": 4,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "ImplementedBy",
+       "AssessedBy"
+      ],
+      "raiserReview": "AcceptedBy"
+     }
+    },
+    {
+     "action": "ReturnChange",
+     "from": 5,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnChange",
+     "from": 3,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnChange",
+     "from": 6,
+     "to": 3,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "AdminReopen",
+     "from": 4,
+     "to": 3,
+     "roles": [
+      "Administrator"
+     ]
+    }
+   ]
+  },
+  {
+   "module": "Audits",
+   "entity": "Audit",
+   "raisedBy": "ScheduledBy",
+   "steps": [
+    {
+     "action": "InProgress",
+     "from": 0,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "Auditor",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReportDraft",
+     "from": 1,
+     "to": 2,
+     "roles": [
+      "Administrator",
+      "Auditor",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "UnderReview",
+     "from": 2,
+     "to": 3,
+     "roles": [
+      "Administrator",
+      "Auditor",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "Approved",
+     "from": 3,
+     "to": 4,
+     "roles": [
+      "Administrator",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "ConductedBy",
+       "ReviewedBy"
+      ]
+     }
+    },
+    {
+     "action": "Closed",
+     "from": 4,
+     "to": 5,
+     "roles": [
+      "Administrator",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnForRevision",
+     "from": 3,
+     "to": 2,
+     "roles": [
+      "Administrator",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnToReview",
+     "from": 4,
+     "to": 3,
+     "roles": [
+      "Administrator",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "AdminReopen",
+     "from": 5,
+     "to": 4,
+     "roles": [
+      "Administrator"
+     ]
+    }
+   ]
+  },
+  {
+   "module": "Risks",
+   "entity": "Risk",
+   "raisedBy": "IdentifiedBy",
+   "steps": [
+    {
+     "action": "SubmitForAssessment",
+     "from": 0,
+     "to": 5,
+     "roles": [
+      "Administrator",
+      "Auditor",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser",
+      "RegulatoryManager",
+      "RegulatoryUser",
+      "Trainer"
+     ]
+    },
+    {
+     "action": "AcceptAssessment",
+     "from": 5,
+     "to": 2,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "AssessedBy"
+      ]
+     }
+    },
+    {
+     "action": "SubmitForReview",
+     "from": 2,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "Auditor",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser",
+      "RegulatoryManager",
+      "RegulatoryUser",
+      "Trainer"
+     ]
+    },
+    {
+     "action": "CloseRisk",
+     "from": 6,
+     "to": 4,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "ReviewedBy"
+      ],
+      "raiserReview": "AcceptedBy"
+     }
+    },
+    {
+     "action": "ReturnFromAssessment",
+     "from": 5,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ReturnFromReview",
+     "from": 6,
+     "to": 2,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "AdminReopen",
+     "from": 4,
+     "to": 2,
+     "roles": [
+      "Administrator"
+     ]
+    }
+   ]
+  },
+  {
+   "module": "Maintenances",
+   "entity": "Maintenance",
+   "raisedBy": "ScheduledBy",
+   "steps": [
+    {
+     "action": "StartWork",
+     "from": 0,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "OperationsUser",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "CompleteWork",
+     "from": 1,
+     "to": 2,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "OperationsUser",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "ReviewWork",
+     "from": 2,
+     "to": 3,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "PerformedBy"
+      ]
+     }
+    },
+    {
+     "action": "SendBackToScheduled",
+     "from": 1,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "OperationsUser",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "SendBackToInProgress",
+     "from": 2,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "OperationsUser",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "SendBackToCompleted",
+     "from": 3,
+     "to": 2,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "Suspend",
+     "from": 0,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "Reactivate",
+     "from": 6,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "AdminReopen",
+     "from": 3,
+     "to": 3,
+     "roles": [],
+     "note": "refused for every role in 1.1.0 (Maintenance admin re-open bug)"
+    }
+   ]
+  },
+  {
+   "module": "AppDocuments",
+   "entity": "AppDocument",
+   "raisedBy": "AuthoredBy",
+   "steps": [
+    {
+     "action": "SubmitForReview",
+     "from": 0,
+     "to": 4,
+     "roles": [
+      "Administrator"
+     ],
+     "alsoUserIn": "AuthoredBy"
+    },
+    {
+     "action": "Approve",
+     "from": 4,
+     "to": 5,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "AuthoredBy"
+      ]
+     }
+    },
+    {
+     "action": "ReturnForRework",
+     "from": 4,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "ObsoleteDocument",
+     "from": 5,
+     "to": 3,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    }
+   ]
+  },
+  {
+   "module": "Suppliers",
+   "entity": "Supplier",
+   "raisedBy": "CreatedBy",
+   "steps": [
+    {
+     "action": "StartAssessment",
+     "from": 0,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser"
+     ]
+    },
+    {
+     "action": "Approve",
+     "from": 1,
+     "to": 4,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "AssessedBy"
+      ]
+     }
+    },
+    {
+     "action": "ReturnToAssessment",
+     "from": 1,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "Suspend",
+     "from": 4,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "Cancel",
+     "from": 4,
+     "to": 7,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "Reactivate",
+     "from": 6,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ]
+    },
+    {
+     "action": "Qualify",
+     "from": 4,
+     "to": 5,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "AssessedBy"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

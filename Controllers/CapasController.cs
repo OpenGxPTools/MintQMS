@@ -33,6 +33,7 @@ using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Models.ViewModels;
 using OpenQMS.Services;
+using OpenQMS.Services.Workflow;
 using static OpenQMS.Models.Capa;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -759,6 +760,12 @@ namespace OpenQMS.Controllers
                 return RedirectToAction(nameof(Details), new { id });
             }
 
+            if (await this.RefusalAsync("Capas", nameof(AcceptCapa), capa) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             var fromStatus = capa.Status;
             capa.Status = CapaStatus.Implementation;
             capa.AcceptedBy = _userManager.GetUserName(User);
@@ -811,6 +818,12 @@ namespace OpenQMS.Controllers
             {
                 TempData["WorkflowError"] = this.T("Not authorised to approve this CAPA in its current status.");
                 TempData["ActiveTab"] = "workflow";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            if (await this.RefusalAsync("Capas", nameof(ApproveCapa), capa) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
                 return RedirectToAction(nameof(Details), new { id });
             }
 

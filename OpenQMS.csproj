@@ -60,6 +60,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Who may sign each workflow step and the four-eyes rules: built into the program, not a deployment file. -->
+    <EmbeddedResource Include="Resources\Workflow\workflow-rules.json" />
+    <Content Remove="Resources\Workflow\workflow-rules.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="QRCoder" Version="1.6.0" />
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.7.0" />
     <PackageReference Include="ClosedXML" Version="0.102.3" />

@@ -14,6 +14,7 @@ using OpenQMS.Authorization;
 using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Services;
+using OpenQMS.Services.Workflow;
 
 using static OpenQMS.Localization.RecordText;
 
@@ -654,6 +655,12 @@ namespace OpenQMS.Controllers
             var from = audit.Status.ToString();
             audit.ApprovedBy = _userManager.GetUserName(User);
             audit.ApprovedOn = DateTime.UtcNow;
+            if (await this.RefusalAsync("Audits", nameof(Approved), audit) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             audit.Status = Audit.AuditStatus.Approved;
 
             AddAuditLog(audit.Id, "Approved", from, audit.Status.ToString(), notes);

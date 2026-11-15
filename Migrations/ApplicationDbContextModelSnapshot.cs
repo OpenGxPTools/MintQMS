@@ -7748,6 +7748,9 @@ namespace OpenQMS.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("EnforceFourEyes")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("FatalAEReportingDays")
                         .HasColumnType("INTEGER");
 

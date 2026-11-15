@@ -1597,6 +1597,7 @@
   <data name="Emulsion" xml:space="preserve"><value>Emulsión</value></data>
   <data name="End this authorisation — e.g. a decision not to renew." xml:space="preserve"><value>Finalizar esta autorización — p. ej., por la decisión de no renovarla.</value></data>
   <data name="End User" xml:space="preserve"><value>Usuario final</value></data>
+  <data name="Enforce Four-Eyes Rule" xml:space="preserve"><value>Aplicar el principio de los cuatro ojos</value></data>
   <data name="Engineering / Technical Services" xml:space="preserve"><value>Ingeniería / servicios técnicos</value></data>
   <data name="Ensure MedDRA coding, causality, and medical narrative are complete before proceeding." xml:space="preserve"><value>Asegúrese de que la codificación MedDRA, la causalidad y la narrativa médica estén completas antes de continuar.</value></data>
   <data name="Ensure Risk Level, Review Frequency and other assessment fields are saved in the Edit view before submitting." xml:space="preserve"><value>Asegúrese de guardar el nivel de riesgo, la frecuencia de revisión y los demás campos de evaluación en Editar antes de enviar.</value></data>
@@ -1797,6 +1798,8 @@
   <data name="Form" xml:space="preserve"><value>Formulario</value></data>
   <data name="Formal AP register — all issued certificates (required by GMP batch-certification rules, e.g. PIC/S Annex 16 section 1.10)." xml:space="preserve"><value>Registro formal de la PA — todos los certificados emitidos (exigido por las normas BPF de certificación de lotes, p. ej., Anexo 16 de PIC/S, sección 1.10).</value></data>
   <data name="Foundation" xml:space="preserve"><value>Base de maquillaje</value></data>
+  <data name="Four-eyes rule" xml:space="preserve"><value>Principio de los cuatro ojos</value></data>
+  <data name="Four-eyes rule: {0}, so another person must sign this step." xml:space="preserve"><value>Principio de los cuatro ojos: {0}, por lo que otra persona debe firmar este paso.</value></data>
   <data name="Free software (AGPLv3), provided without warranty and not validated for regulated use" xml:space="preserve"><value>Software libre (AGPLv3), sin garantía y no validado para uso regulado</value></data>
   <data name="Frequency" xml:space="preserve"><value>Frecuencia</value></data>
   <data name="From" xml:space="preserve"><value>Desde</value></data>
@@ -1833,6 +1836,7 @@
   <data name="GMP Evidence Pathway guidance" xml:space="preserve"><value>Ayuda sobre la vía de evidencia BPF</value></data>
   <data name="GMP Licence / Clearance: {0}" xml:space="preserve"><value>Licencia / autorización BPF: {0}</value></data>
   <data name="GMP note: disabling idle timeout is not recommended under 21 CFR Part 11 / EU Annex 11." xml:space="preserve"><value>Nota GMP: no se recomienda desactivar el cierre por inactividad según 21 CFR Part 11 / EU Anexo 11.</value></data>
+  <data name="GMP note: with the four-eyes rule off, one person can do and approve the same work." xml:space="preserve"><value>Nota GMP: con el principio de los cuatro ojos desactivado, una misma persona puede realizar y aprobar el mismo trabajo.</value></data>
   <data name="GMP: Critical severity complaints require expedited resolution (typically 7 days)." xml:space="preserve"><value>GMP: las reclamaciones de gravedad crítica requieren una resolución urgente (normalmente 7 días).</value></data>
   <data name="Government" xml:space="preserve"><value>Gobierno</value></data>
   <data name="Government &amp; Regulatory" xml:space="preserve"><value>Gobierno y organismos reguladores</value></data>
@@ -2651,6 +2655,7 @@
   <data name="Ointment" xml:space="preserve"><value>Pomada</value></data>
   <data name="OK" xml:space="preserve"><value>Aceptar</value></data>
   <data name="Old:" xml:space="preserve"><value>Anterior:</value></data>
+  <data name="On (recommended): a review, acceptance, approval, closure or certification must be signed by someone who did not do the work being reviewed. The person who raised a record may approve it when its review or acceptance was signed by someone else. Turn off only if your site is too small to separate these duties, and record that decision in your procedures." xml:space="preserve"><value>Activado (recomendado): una revisión, aceptación, aprobación, cierre o certificación debe firmarla alguien que no haya realizado el trabajo revisado. Quien registró un registro puede aprobarlo cuando su revisión o aceptación la firmó otra persona. Desactívelo solo si su sitio es demasiado pequeño para separar estas funciones, y deje constancia de esa decisión en sus procedimientos.</value></data>
   <data name="On Hold" xml:space="preserve"><value>En espera</value></data>
   <data name="on {0}" xml:space="preserve"><value>el {0}</value></data>
   <data name="On-Site Inspection by the Authority" xml:space="preserve"><value>Inspección in situ de la autoridad</value></data>
@@ -4413,6 +4418,7 @@
   <data name="You are marking &lt;strong&gt;{0} — {1}&lt;/strong&gt; as Completed." xml:space="preserve"><value>Está marcando &lt;strong&gt;{0} — {1}&lt;/strong&gt; como Completado.</value></data>
   <data name="You are rejecting &lt;strong&gt;{0}&lt;/strong&gt; v{1}." xml:space="preserve"><value>Está rechazando &lt;strong&gt;{0}&lt;/strong&gt; v{1}.</value></data>
   <data name="You are submitting &lt;strong&gt;{0}&lt;/strong&gt; v{1} for review. The document will be locked from further editing." xml:space="preserve"><value>Está enviando &lt;strong&gt;{0}&lt;/strong&gt; v{1} a revisión. El documento quedará bloqueado para nuevas ediciones.</value></data>
+  <data name="you are the author of this document" xml:space="preserve"><value>usted es el autor de este documento</value></data>
   <data name="You can &lt;a href=&quot;{0}&quot;&gt;generate a new set of recovery codes&lt;/a&gt;." xml:space="preserve"><value>Puede &lt;a href="{0}"&gt;generar un nuevo juego de códigos de recuperación&lt;/a&gt;.</value></data>
   <data name="You can edit individual milestone dates after applying the template." xml:space="preserve"><value>Puede editar las fechas de cada hito después de aplicar la plantilla.</value></data>
   <data name="You can only acknowledge your own training record." xml:space="preserve"><value>Solo puede confirmar su propio registro de capacitación.</value></data>
@@ -4435,7 +4441,17 @@
   <data name="You have {0} recovery codes left." xml:space="preserve"><value>Le quedan {0} códigos de recuperación.</value></data>
   <data name="You must &lt;a href=&quot;{0}&quot;&gt;generate a new set of recovery codes&lt;/a&gt; before you can log in with a recovery code." xml:space="preserve"><value>Debe &lt;a href="{0}"&gt;generar un nuevo juego de códigos de recuperación&lt;/a&gt; antes de poder iniciar sesión con un código de recuperación.</value></data>
   <data name="You must accept the policy before you can enable two factor authentication." xml:space="preserve"><value>Debe aceptar la política antes de poder activar la autenticación de dos factores.</value></data>
+  <data name="you raised this record and its acceptance was not signed by someone else" xml:space="preserve"><value>usted registró este registro y su aceptación no la firmó otra persona</value></data>
   <data name="You should &lt;a href=&quot;{0}&quot;&gt;generate a new set of recovery codes&lt;/a&gt;." xml:space="preserve"><value>Debería &lt;a href="{0}"&gt;generar un nuevo juego de códigos de recuperación&lt;/a&gt;.</value></data>
+  <data name="you started the assessment" xml:space="preserve"><value>usted inició la evaluación</value></data>
+  <data name="you started the audit" xml:space="preserve"><value>usted inició la auditoría</value></data>
+  <data name="you started the work" xml:space="preserve"><value>usted inició el trabajo</value></data>
+  <data name="you submitted the assessment" xml:space="preserve"><value>usted presentó la evaluación</value></data>
+  <data name="you submitted the evaluation" xml:space="preserve"><value>usted presentó la evaluación</value></data>
+  <data name="you submitted the implementation" xml:space="preserve"><value>usted presentó la implementación</value></data>
+  <data name="you submitted the mitigation for review" xml:space="preserve"><value>usted envió la mitigación a revisión</value></data>
+  <data name="you submitted the report for review" xml:space="preserve"><value>usted envió el informe a revisión</value></data>
+  <data name="you submitted the resolution" xml:space="preserve"><value>usted presentó la resolución</value></data>
   <data name="You've successfully authenticated with &lt;strong&gt;{0}&lt;/strong&gt;. Please enter an email address for this site below and click the Register button to finish logging in." xml:space="preserve"><value>Se ha autenticado correctamente con &lt;strong&gt;{0}&lt;/strong&gt;. Introduzca abajo una dirección de correo para este sitio y haga clic en el botón Registrar para terminar de iniciar sesión.</value></data>
   <data name="Your account contains personal data that you have given us. This page allows you to download that data." xml:space="preserve"><value>Su cuenta contiene datos personales que usted nos proporcionó. Esta página le permite descargarlos.</value></data>
   <data name="Your authenticator app has been verified." xml:space="preserve"><value>Se verificó su aplicación de autenticación.</value></data>

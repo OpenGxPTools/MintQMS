@@ -15,6 +15,8 @@ TR = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..
 
 run = uuid.uuid4().hex[:6]
 NOW = "2026-09-01 00:00:00"
+# The Administrator walks every step alone, so the four-eyes rule (test_four_eyes.py) is off for this suite.
+exec_sql("update SystemSettings set EnforceFourEyes=0")
 s = login()
 
 
@@ -97,4 +99,5 @@ drive("Complaints", "Complaint", cmp_, "pwd",
       [("Evaluation", 1), ("PendingAcceptance", 2), ("Accept", 5), ("SubmitForResolution", 3), ("Closed", 4)],
       "ComplaintAuditLog", "ParentId", 1, "Evaluation")
 
+exec_sql("update SystemSettings set EnforceFourEyes=1")
 sys.exit(summary())

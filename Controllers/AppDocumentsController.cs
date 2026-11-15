@@ -36,6 +36,7 @@ using OpenQMS.Models;
 using OpenQMS.Models.Navigation;
 using OpenQMS.Models.ViewModels;
 using OpenQMS.Services;
+using OpenQMS.Services.Workflow;
 
 //**DocumentFormat.OpenXml nuget package**
 //using DocumentFormat.OpenXml.Packaging;
@@ -976,6 +977,13 @@ namespace OpenQMS.Controllers
             var isAuthorized = await _authorizationService.AuthorizeAsync(User, document, DocumentOperations.Approve);
             if (!isAuthorized.Succeeded) return Forbid();
 
+            // Four-eyes: tell an author straight away, before the approval form is filled in.
+            if (await this.RefusalAsync("AppDocuments", nameof(Approve), document) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             await PopulateApproveViewData(document);
             var vm = new ApproveDocumentViewModel
             {
@@ -1021,6 +1029,12 @@ namespace OpenQMS.Controllers
                 TempData["WorkflowError"] = this.T("Invalid email or password.");
                 await PopulateApproveViewData(document);
                 return View(vm);
+            }
+
+            if (await this.RefusalAsync("AppDocuments", nameof(Approve), document) is { } fourEyesAtSigning)
+            {
+                TempData["WorkflowError"] = fourEyesAtSigning;
+                return RedirectToAction(nameof(Details), new { id });
             }
 
             // Validate periodic review date if required

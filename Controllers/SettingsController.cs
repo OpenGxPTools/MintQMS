@@ -123,6 +123,7 @@ namespace OpenQMS.Controllers
             LogChange(settings.CriticalComplaintResolutionDays.ToString(), model.CriticalComplaintResolutionDays.ToString(), "CriticalComplaintResolutionDays", changedBy, now);
             LogChange(settings.SeriousAEReportingDays.ToString(), model.SeriousAEReportingDays.ToString(), "SeriousAEReportingDays", changedBy, now);
             LogChange(settings.FatalAEReportingDays.ToString(), model.FatalAEReportingDays.ToString(), "FatalAEReportingDays", changedBy, now);
+            LogChange(settings.EnforceFourEyes.ToString(), model.EnforceFourEyes.ToString(), "EnforceFourEyes", changedBy, now);
             LogChange(settings.PasswordExpiryDays.ToString(), model.PasswordExpiryDays.ToString(), "PasswordExpiryDays", changedBy, now);
             LogChange(settings.PasswordHistoryCount.ToString(), model.PasswordHistoryCount.ToString(), "PasswordHistoryCount", changedBy, now);
             LogChange(settings.IdleTimeoutMinutes.ToString(), model.IdleTimeoutMinutes.ToString(), "IdleTimeoutMinutes", changedBy, now);
@@ -178,6 +179,7 @@ namespace OpenQMS.Controllers
             settings.CriticalComplaintResolutionDays     = model.CriticalComplaintResolutionDays;
             settings.SeriousAEReportingDays         = model.SeriousAEReportingDays;
             settings.FatalAEReportingDays           = model.FatalAEReportingDays;
+            settings.EnforceFourEyes                = model.EnforceFourEyes;
             settings.PasswordExpiryDays             = model.PasswordExpiryDays;
             settings.PasswordHistoryCount           = model.PasswordHistoryCount;
             settings.IdleTimeoutMinutes             = model.IdleTimeoutMinutes;

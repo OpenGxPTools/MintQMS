@@ -9,6 +9,7 @@ using OpenQMS.Localization;
 using OpenQMS.Models;
 using OpenQMS.Models.LC;
 using OpenQMS.Services;
+using OpenQMS.Services.Workflow;
 
 using static OpenQMS.Localization.RecordText;
 
@@ -762,6 +763,12 @@ namespace OpenQMS.Controllers
                 }
 
                 string toStatus;
+                if (await this.RefusalAsync("Suppliers", nameof(Approve), supplier) is { } fourEyes)
+                {
+                    TempData["WorkflowError"] = fourEyes;
+                    return RedirectToAction(nameof(Details), new { id });
+                }
+
                 supplier.Status = SupplierStatus.Approved;
                 supplier.ApprovalStatus = SupplierStatus.Approved;
                 if (supplier.SupplierType != SupplierType.Service)
@@ -826,6 +833,12 @@ namespace OpenQMS.Controllers
                     TempData["WorkflowError"] = this.T("Cannot qualify: the supplier has no future next review date. Start a new review to re-establish the review schedule.");
                     return RedirectToAction(nameof(Details), new { id });
                 }
+                if (await this.RefusalAsync("Suppliers", nameof(Qualify), supplier) is { } fourEyes)
+                {
+                    TempData["WorkflowError"] = fourEyes;
+                    return RedirectToAction(nameof(Details), new { id });
+                }
+
                 var fromStatus = supplier.Status.ToString();
                 supplier.Status = SupplierStatus.Qualified;
                 supplier.ApprovalStatus = SupplierStatus.Qualified;

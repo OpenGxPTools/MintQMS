@@ -88,6 +88,12 @@ namespace OpenQMS.Models
         public DateTime? IssuedCopiesSince { get; set; }
 
         // ── Security Policy ───────────────────────────────────────────────
+        // Four-eyes rule: a review, acceptance, approval, closure or certification must be signed by someone
+        // who did not do the work being reviewed (rules: Resources/Workflow/workflow-rules.json). On by default;
+        // a very small site may turn it off. Changes are audited like every other setting.
+        [Display(Name = "Enforce Four-Eyes Rule")]
+        public bool EnforceFourEyes { get; set; } = true;
+
         [Display(Name = "Password Expiry (days)")]
         [Range(0, 365)]
         public int PasswordExpiryDays { get; set; } = 90;   // 0 = disabled

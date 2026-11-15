@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+**Four-eyes rule on signed workflow steps**
+
+- A review, acceptance, approval, closure or certification must now be signed by someone who did not do the work
+  being reviewed — for example, whoever submitted a deviation's evaluation cannot accept it, and a document's
+  author cannot approve it. The step is refused, nothing changes, and the message says why ("Four-eyes rule: you
+  submitted the evaluation, so another person must sign this step."). The person who raised a record may approve
+  or close it when its acceptance was signed by someone else.
+- Applies to Deviations, Complaints, CAPA, Change Control, Audits, Risk, Maintenance, Documents and Suppliers
+  (15 steps; the rules are in `Resources/Workflow/workflow-rules.json`, built into the program).
+- **On by default, also on upgrade.** An Administrator can turn it off in *System Settings → Security Policy →
+  Enforce Four-Eyes Rule* (logged in the settings audit trail), for a site too small to separate these duties.
+  After upgrading, a record already half-way through may need a different person for its next acceptance or
+  approval. Database change: one settings field.
+- Tests: `test_workflow_baseline.py` records every signed step of these nine modules and who may sign it (the
+  behaviour of 1.1.0, unchanged with the rule off); `test_four_eyes.py` checks every rule.
+
 ## MintQMS 1.1.0 (2026-11-15)
 
 MintQMS now runs in **English, Spanish and Portuguese (Brazil)**, and can be used outside Australia.

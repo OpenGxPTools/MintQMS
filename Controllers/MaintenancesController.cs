@@ -14,6 +14,7 @@ using OpenQMS.Data;
 using OpenQMS.Localization;
 using OpenQMS.Models;
 using OpenQMS.Services;
+using OpenQMS.Services.Workflow;
 
 using static OpenQMS.Localization.RecordText;
 
@@ -658,6 +659,12 @@ namespace OpenQMS.Controllers
             }
 
             var from = maintenance.Status.ToString();
+            if (await this.RefusalAsync("Maintenances", nameof(ReviewWork), maintenance) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             maintenance.Status = Maintenance.MaintenanceStatus.Reviewed;
             maintenance.ReviewedBy = _userManager.GetUserName(User) ?? email;
             maintenance.ReviewedOn = DateTime.UtcNow;

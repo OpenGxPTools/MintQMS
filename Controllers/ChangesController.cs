@@ -33,6 +33,7 @@ using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Models.ViewModels;
 using OpenQMS.Services;
+using OpenQMS.Services.Workflow;
 using static OpenQMS.Models.Change;
 
 using static OpenQMS.Localization.RecordText;
@@ -701,6 +702,12 @@ namespace OpenQMS.Controllers
                 return RedirectToAction(nameof(Details), new { id });
             }
 
+            if (await this.RefusalAsync("Changes", nameof(AcceptChange), change) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             var fromStatus = change.Status.ToString();
             change.Status     = ChangeStatus.Implementation;
             change.AcceptedBy = _userManager.GetUserName(User);
@@ -824,6 +831,12 @@ namespace OpenQMS.Controllers
                 _passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash!, pwd) != PasswordVerificationResult.Success)
             {
                 TempData["WorkflowError"] = this.T("Invalid email or password.");
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            if (await this.RefusalAsync("Changes", nameof(ApproveChange), change) is { } fourEyes)
+            {
+                TempData["WorkflowError"] = fourEyes;
                 return RedirectToAction(nameof(Details), new { id });
             }
 
