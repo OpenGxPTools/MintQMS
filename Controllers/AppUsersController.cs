@@ -194,6 +194,9 @@ namespace OpenQMS.Controllers
                     PerformedBy = performedBy,
                     PerformedOn = now
                 });
+                // The person's open tasks become unassigned (noted in each record's audit trail).
+                await HttpContext.RequestServices.GetRequiredService<OpenQMS.Services.Workflow.TaskAssignmentService>()
+                    .EndForDeactivatedUserAsync(user, performedBy);
             }
 
             foreach (var role in toAdd)

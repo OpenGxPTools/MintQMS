@@ -165,6 +165,8 @@ else if (isApproaching)
     </div>
 }
 
+@await Component.InvokeAsync("Assignment", new { module = "Capas", recordId = Model.Id })
+
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-3" id="capaTabs">
     <li class="nav-item"><button class="nav-link @(activeTab == "overview" ? "active" : "")" type="button" data-bs-toggle="tab" data-bs-target="#pane-overview">@L["Overview"]</button></li>

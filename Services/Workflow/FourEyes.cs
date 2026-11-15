@@ -53,9 +53,22 @@ namespace OpenQMS.Services.Workflow
             if (user == null)
                 return null;   // the signature check before this has already refused an unknown user
 
+            return ExcludedReason(module, step, record, user) is { } reason ? Message(controller, reason) : null;
+        }
+
+        /// <summary>
+        /// Why the four-eyes rule excludes this user from signing this step of this record (English reason, a
+        /// translations.json key), or null. Does not look at the setting: callers check EnforceFourEyes.
+        /// Used for the signed step and for the list of people a step can be assigned to.
+        /// </summary>
+        public static string? ExcludedReason(string module, WorkflowRules.Step step, object record, AppUser user)
+        {
+            if (step.FourEyes is not { } rule)
+                return null;
+
             foreach (var field in rule.NotBy)
                 if (IsUser(Value(record, field), user))
-                    return Message(controller, Reasons.GetValueOrDefault($"{module}.{field}") ?? Reasons[field]);
+                    return Reasons.GetValueOrDefault($"{module}.{field}") ?? Reasons[field];
 
             if (rule.RaiserReview is { } review
                 && WorkflowRules.Modules[module].RaisedBy is { Length: > 0 } raisedBy
@@ -63,7 +76,7 @@ namespace OpenQMS.Services.Workflow
             {
                 var reviewer = Value(record, review);
                 if (string.IsNullOrWhiteSpace(reviewer) || IsUser(reviewer, user))
-                    return Message(controller, Reasons["raiser"]);
+                    return Reasons["raiser"];
             }
             return null;
         }
@@ -74,14 +87,14 @@ namespace OpenQMS.Services.Workflow
             return L["Four-eyes rule: {0}, so another person must sign this step.", L[reason].Value].Value;
         }
 
-        private static int StateOf(object record) =>
+        internal static int StateOf(object record) =>
             Convert.ToInt32(record.GetType().GetProperty("Status")!.GetValue(record));
 
-        private static string? Value(object record, string field) =>
+        internal static string? Value(object record, string field) =>
             record.GetType().GetProperty(field)?.GetValue(record) as string;
 
         // "…By" fields hold the user name (= e-mail in MintQMS); some modules store the e-mail typed at signing.
-        private static bool IsUser(string? value, AppUser user) =>
+        internal static bool IsUser(string? value, AppUser user) =>
             !string.IsNullOrWhiteSpace(value)
             && (string.Equals(value.Trim(), user.UserName, StringComparison.OrdinalIgnoreCase)
                 || string.Equals(value.Trim(), user.Email, StringComparison.OrdinalIgnoreCase));

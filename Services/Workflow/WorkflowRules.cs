@@ -28,6 +28,28 @@ namespace OpenQMS.Services.Workflow
             /// <summary>The user recorded in this field may also sign, whatever their role (e.g. the author).</summary>
             [JsonPropertyName("alsoUserIn")] public string? AlsoUserIn { get; set; }
             [JsonPropertyName("fourEyes")] public FourEyesRule? FourEyes { get; set; }
+            /// <summary>"task": a forward step people are assigned to; "other": send back, re-open, suspend…</summary>
+            [JsonPropertyName("kind")] public string Kind { get; set; } = "other";
+            /// <summary>The step applies only when this record field has this value (e.g. qualification required).</summary>
+            [JsonPropertyName("onlyIf")] public Condition? OnlyIf { get; set; }
+
+            public bool IsTask => Kind == "task";
+
+            public bool AppliesTo(object record) =>
+                OnlyIf is not { } c
+                || Equals(record.GetType().GetProperty(c.Field)?.GetValue(record), c.EqualsValue.ValueKind switch
+                   {
+                       JsonValueKind.True => true,
+                       JsonValueKind.False => false,
+                       JsonValueKind.Number => (object)c.EqualsValue.GetInt32(),
+                       _ => c.EqualsValue.GetString(),
+                   });
+        }
+
+        public sealed class Condition
+        {
+            [JsonPropertyName("field")] public string Field { get; set; } = "";
+            [JsonPropertyName("equals")] public JsonElement EqualsValue { get; set; }
         }
 
         public sealed class Module
@@ -35,6 +57,8 @@ namespace OpenQMS.Services.Workflow
             [JsonPropertyName("module")] public string Name { get; set; } = "";
             [JsonPropertyName("entity")] public string Entity { get; set; } = "";
             [JsonPropertyName("raisedBy")] public string RaisedBy { get; set; } = "";
+            [JsonPropertyName("auditTable")] public string AuditTable { get; set; } = "";
+            [JsonPropertyName("auditKey")] public string AuditKey { get; set; } = "";
             [JsonPropertyName("steps")] public List<Step> Steps { get; set; } = new();
         }
 
@@ -52,6 +76,12 @@ namespace OpenQMS.Services.Workflow
             Modules.TryGetValue(module, out var m)
                 ? m.Steps.FirstOrDefault(s => s.Action == action && s.From == fromState)
                 : null;
+
+        /// <summary>The forward steps (tasks) a record can take from its current state.</summary>
+        public static IReadOnlyList<Step> TasksFrom(string module, int state, object record) =>
+            Modules.TryGetValue(module, out var m)
+                ? m.Steps.Where(s => s.IsTask && s.From == state && s.AppliesTo(record)).ToList()
+                : Array.Empty<Step>();
 
         private static IReadOnlyDictionary<string, Module> Load()
         {

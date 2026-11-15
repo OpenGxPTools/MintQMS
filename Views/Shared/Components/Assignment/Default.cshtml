@@ -1,0 +1,109 @@
+@model OpenQMS.ViewComponents.AssignmentViewComponent.Model
+@using OpenQMS.Localization
+@using OpenQMS.Services
+@using OpenQMS.Services.Workflow
+@{
+    var c = Model.Current;
+    var modalId = $"assignModal-{Model.Module}-{Model.RecordId}";
+    var dueOverdue = c?.DueDate != null && c.DueDate.Value.Date < SiteTime.Today;
+}
+@if (Model.Message != null)
+{
+    <div class="alert alert-@(Model.MessageType) alert-dismissible fade show" role="alert" id="assignment-message">
+        @L[Model.Message]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="@L["Close"]"></button>
+    </div>
+}
+@if (Model.HasTasks || c != null)
+{
+    <div class="card mb-3" id="assignment-panel">
+        <div class="card-body py-2 d-flex flex-wrap align-items-center gap-2">
+            <span class="fw-semibold"><i class="bi bi-person-check me-1"></i>@L["Responsible for the next step"]:</span>
+            @if (c?.AssignedToUser != null)
+            {
+                <span id="assigned-to">@TaskAssignmentService.DisplayName(c.AssignedToUser)</span>
+                <span class="text-muted small">(@L["since {0}", c.AssignedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)]@if (c.DueDate != null){<text>; </text><span class="@(dueOverdue ? "text-danger fw-semibold" : "")">@L["due {0}", c.DueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]</span>})</span>
+                @if (!string.IsNullOrEmpty(c.Note))
+                {
+                    <span class="text-muted small fst-italic" id="assignment-note">“@c.Note”</span>
+                }
+            }
+            else
+            {
+                <span class="text-muted" id="assigned-to">@L["No one named — anyone allowed can do it"]</span>
+            }
+            @if (Model.CanAssign && Model.HasTasks)
+            {
+                <span class="ms-auto d-flex gap-2">
+                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#@modalId" id="assign-button">
+                        @(c == null ? L["Assign"] : L["Reassign"])
+                    </button>
+                    @if (c != null)
+                    {
+                        <form method="post" asp-controller="TaskAssignments" asp-action="Unassign" class="d-inline">
+                            <input type="hidden" name="module" value="@Model.Module" />
+                            <input type="hidden" name="recordId" value="@Model.RecordId" />
+                            <button type="submit" class="btn btn-outline-secondary btn-sm" id="unassign-button">@L["Unassign"]</button>
+                        </form>
+                    }
+                </span>
+            }
+        </div>
+        <div class="card-footer py-1 small text-muted">@L["Naming someone records who is responsible; anyone allowed to sign the step can still do it."]</div>
+    </div>
+
+    @if (Model.CanAssign && Model.HasTasks)
+    {
+        <div class="modal fade" id="@modalId" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="post" asp-controller="TaskAssignments" asp-action="Assign" class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">@L["Responsible for the next step"] — @L[Model.Stage]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@L["Close"]"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="module" value="@Model.Module" />
+                        <input type="hidden" name="recordId" value="@Model.RecordId" />
+                        <div class="mb-3">
+                            <label class="form-label" for="assign-user">@L["Person"]</label>
+                            <select class="form-select" name="userId" id="assign-user" required>
+                                <option value="">@L["-- Select --"]</option>
+                                @foreach (var p in Model.Eligible)
+                                {
+                                    <option value="@p.Id" selected="@(c?.AssignedToUserId == p.Id)">@p.Name (@p.Email)</option>
+                                }
+                            </select>
+                            <div class="form-text">@L["Only people who can do this step are listed (role, active account and four-eyes rule)."]</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="assign-due">@L["Due date (optional)"]</label>
+                            <input type="date" class="form-control" name="dueDate" id="assign-due" value="@(c?.DueDate?.ToString("yyyy-MM-dd"))" />
+                        </div>
+                        <div class="mb-1">
+                            <label class="form-label" for="assign-note">@L["Note (optional)"]</label>
+                            <textarea class="form-control" name="note" id="assign-note" rows="2" maxlength="500">@c?.Note</textarea>
+                            <div class="form-text">@L["The note is sent in the notification e-mail: do not include confidential details."]</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                        <button type="submit" class="btn btn-primary" id="assign-save">@L["Save"]</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+}
+@if (Model.Next.Count > 0)
+{
+    @* For the signature dialogs: script adds an optional "Assign the next step to" list to each dialog whose form
+       posts to one of these actions. The server checks the choice again after the step. *@
+    <script type="application/json" id="assign-next-data">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(new
+    {
+        label = L["Assign the next step to (optional)"].Value,
+        none = L["No one — anyone allowed can do it"].Value,
+        field = AssignmentFilter.NextField,
+        actions = Model.Next.ToDictionary(kv => kv.Key, kv => kv.Value.Select(p => new { id = p.Id, name = $"{p.Name} ({p.Email})" })),
+    }))</script>
+    <script src="~/js/assignment.js" asp-append-version="true"></script>
+}

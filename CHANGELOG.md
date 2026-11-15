@@ -15,6 +15,21 @@
   Enforce Four-Eyes Rule* (logged in the settings audit trail), for a site too small to separate these duties.
   After upgrading, a record already half-way through may need a different person for its next acceptance or
   approval. Database change: one settings field.
+**Task assignment: who is responsible for the next step**
+
+- Each record of Deviations, Complaints, CAPA, Change Control, Audits, Risk, Maintenance, Documents and Suppliers
+  shows **Responsible for the next step** under its workflow actions, with **Assign**, **Reassign** and
+  **Unassign** (optional due date and note). Assigning is information for accountability, not a lock: anyone
+  allowed to sign the step still can, and the assignment then ends, recording who actually did it.
+- Only people who can do the next step are offered: a role that can sign it, an active account, and not excluded
+  by the four-eyes rule (a document's author for "submit for review"; supplier qualification only when required).
+- Each signature dialog has an optional **Assign the next step to** list, so the next person can be named while
+  signing — no extra step. The person signing is never offered for a step that reviews their own work.
+- Who may assign: anyone who can do the stage's next step, and Administrators, Quality Managers and Regulatory
+  Managers. Every assignment change is written to the record's audit trail; the history of assignments is kept
+  (never deleted). Deactivating a user unassigns their tasks, noted in each record's audit trail.
+- Database change: a new TaskAssignments table.
+
 **Fixes**
 
 - Maintenance: an Administrator could never re-open a reviewed maintenance record (the re-open required the
@@ -26,7 +41,7 @@
 
 - `test_workflow_baseline.py` records every signed step of these nine modules and who may sign it (the
   behaviour of 1.1.0, unchanged with the rule off, except the Maintenance re-open fix); `test_four_eyes.py` checks
-  every rule; `test_maintenance_reopen.py` the re-open fix.
+  every rule; `test_maintenance_reopen.py` the re-open fix; `test_assignment.py` task assignment.
 
 ## MintQMS 1.1.0 (2026-11-15)
 

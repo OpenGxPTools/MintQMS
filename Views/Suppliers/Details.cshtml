@@ -185,6 +185,8 @@
     </div>
 }
 
+@await Component.InvokeAsync("Assignment", new { module = "Suppliers", recordId = Model.Id })
+
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-3" id="supplierTabs">
     <li class="nav-item">

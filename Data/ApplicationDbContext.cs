@@ -46,6 +46,14 @@ namespace OpenQMS.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Task assignments: one current row per record and stage; lists read by assignee or by record.
+            modelBuilder.Entity<TaskAssignment>(e =>
+            {
+                e.HasIndex(t => new { t.Module, t.RecordId, t.IsCurrent });
+                e.HasIndex(t => new { t.AssignedToUserId, t.IsCurrent });
+                e.HasOne(t => t.AssignedToUser).WithMany().HasForeignKey(t => t.AssignedToUserId).OnDelete(DeleteBehavior.Restrict);
+            });
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<IssuedRecordCopy>().HasIndex(c => new { c.Kind, c.SourceId });
@@ -400,6 +408,7 @@ namespace OpenQMS.Data
         // ── Settings Module ───────────────────────────────────────────────
         public DbSet<SystemSettings>    SystemSettings    { get; set; }
         public DbSet<SettingsAuditLog>  SettingsAuditLog  { get; set; }
+        public DbSet<TaskAssignment>    TaskAssignments   { get; set; }
         public DbSet<PasswordHistory>   PasswordHistory   { get; set; }
 
         // ── Issued documents: fixed copies (release / training certificates, attendance lists) ──

@@ -91,6 +91,7 @@ builder.Services.AddSingleton<Microsoft.Extensions.Options.IPostConfigureOptions
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<OpenQMS.Authorization.ReadOnlyActionFilter>();
+    options.Filters.Add<OpenQMS.Services.Workflow.AssignmentFilter>();   // ends / sets task assignments after workflow steps
 })
     .AddViewLocalization()
     .AddDataAnnotationsLocalization(o =>
@@ -152,6 +153,7 @@ builder.Services.AddHsts(options =>
 builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
 
 // PV Services
+builder.Services.AddScoped<OpenQMS.Services.Workflow.TaskAssignmentService>();
 builder.Services.AddScoped<PVWorkflowService>();
 builder.Services.AddScoped<PVRegulatoryService>();
 builder.Services.AddScoped<CIOMSFormService>();

@@ -176,6 +176,8 @@ else if (Model.TargetResolutionDate.HasValue && !isLocked && daysUntilDeadline <
     </div>
 }
 
+@await Component.InvokeAsync("Assignment", new { module = "Complaints", recordId = Model.Id })
+
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-3" id="cmpTabs">
     <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#overview">@L["Overview"]</button></li>

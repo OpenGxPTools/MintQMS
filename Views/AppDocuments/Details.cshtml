@@ -184,6 +184,8 @@
 }
 
 @* Tab navigation *@
+@await Component.InvokeAsync("Assignment", new { module = "AppDocuments", recordId = Model.Id })
+
 <ul class="nav nav-tabs mb-3" id="docTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link @(activeTab == "overview" ? "active" : "")" id="tab-overview"

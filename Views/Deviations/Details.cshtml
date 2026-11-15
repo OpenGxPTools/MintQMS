@@ -184,6 +184,8 @@ else if (isApproaching)
     </div>
 }
 
+@await Component.InvokeAsync("Assignment", new { module = "Deviations", recordId = Model.Id })
+
 <!-- Tabs -->
 <ul class="nav nav-tabs mb-3" id="devTabs">
     <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#overview">@L["Overview"]</button></li>

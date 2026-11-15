@@ -7840,6 +7840,64 @@ namespace OpenQMS.Migrations
                     b.ToTable("SystemSettings");
                 });
 
+            modelBuilder.Entity("OpenQMS.Models.TaskAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AssignedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("AssignedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AssignedToUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EndReason")
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EndedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("EndedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Module")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RecordId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Stage")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedToUserId", "IsCurrent");
+
+                    b.HasIndex("Module", "RecordId", "IsCurrent");
+
+                    b.ToTable("TaskAssignments");
+                });
+
             modelBuilder.Entity("OpenQMS.Models.Training", b =>
                 {
                     b.Property<int>("Id")
@@ -10063,6 +10121,17 @@ namespace OpenQMS.Migrations
                         .IsRequired();
 
                     b.Navigation("Snapshot");
+                });
+
+            modelBuilder.Entity("OpenQMS.Models.TaskAssignment", b =>
+                {
+                    b.HasOne("OpenQMS.Models.AppUser", "AssignedToUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedToUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AssignedToUser");
                 });
 
             modelBuilder.Entity("OpenQMS.Models.Training", b =>

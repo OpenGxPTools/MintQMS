@@ -132,8 +132,9 @@ cid = with_fields(m, rid, {"Status": 5, "EvaluatedBy": X, "AcceptedBy": None})
 s = as_user(X)
 r = post_form(s, f"/Deviations/AcceptDeviation", f"/Deviations/Details/{cid}", {"id": cid, "email": X, "pwd": "wrong"})
 page = get(s, r.headers.get("Location", f"/Deviations/Details/{cid}")).text
+alert = " ".join(e.get_text(" ") for e in BeautifulSoup(page, "html.parser").select(".alert-danger")).lower()
 check("wrong password: refused, and reported as a wrong password (not the rule)",
-      row(m["table"], cid)["Status"] == 5 and not any(w in page.lower() for w in WORDS) and "alert-danger" in page)
+      row(m["table"], cid)["Status"] == 5 and alert and not any(w in alert for w in WORDS), alert)
 d = module("Documents")
 doc = record_at(d, 4, login())
 exec_sql('update AppDocument set AuthoredBy=? where Id=?', (X, doc))
