@@ -1,0 +1,1965 @@
+{
+ "Audits": {
+  "returns": [
+   {
+    "action": "ReturnForRevision",
+    "audit": [
+     "Returned for Revision"
+    ],
+    "changed": [
+     "ReviewedBy",
+     "ReviewedOn"
+    ],
+    "from": 3,
+    "to": 2
+   },
+   {
+    "action": "ReturnToReview",
+    "audit": [
+     "Returned to Review"
+    ],
+    "changed": [
+     "ApprovedBy",
+     "ApprovedOn"
+    ],
+    "from": 4,
+    "to": 3
+   },
+   {
+    "action": "AdminReopen",
+    "audit": [
+     "Administrative Reopen"
+    ],
+    "changed": [],
+    "from": 5,
+    "to": 4
+   }
+  ],
+  "roles": {
+   "AdminReopen@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "refused",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "Approved@3": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "Closed@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "InProgress@0": {
+    "Administrator": "allowed",
+    "Auditor": "allowed",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReportDraft@1": {
+    "Administrator": "allowed",
+    "Auditor": "allowed",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnForRevision@3": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnToReview@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "UnderReview@2": {
+    "Administrator": "allowed",
+    "Auditor": "allowed",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   }
+  },
+  "walk": [
+   {
+    "action": "InProgress",
+    "audit": [
+     "Started (In Progress)"
+    ],
+    "changed": [
+     "ActualStartDate",
+     "ConductedBy",
+     "ConductedOn"
+    ],
+    "from": 0,
+    "to": 1
+   },
+   {
+    "action": "ReportDraft",
+    "audit": [
+     "Report Draft submitted"
+    ],
+    "changed": [
+     "ActualEndDate"
+    ],
+    "from": 1,
+    "to": 2
+   },
+   {
+    "action": "UnderReview",
+    "audit": [
+     "Submitted for Review"
+    ],
+    "changed": [
+     "ReviewedBy",
+     "ReviewedOn"
+    ],
+    "from": 2,
+    "to": 3
+   },
+   {
+    "action": "Approved",
+    "audit": [
+     "Approved"
+    ],
+    "changed": [
+     "ApprovedBy",
+     "ApprovedOn"
+    ],
+    "from": 3,
+    "to": 4
+   },
+   {
+    "action": "Closed",
+    "audit": [
+     "Closed"
+    ],
+    "changed": [
+     "ClosedBy",
+     "ClosedOn",
+     "RetainUntil"
+    ],
+    "from": 4,
+    "to": 5
+   }
+  ]
+ },
+ "CAPA": {
+  "returns": [
+   {
+    "action": "ReturnCapa",
+    "audit": [
+     "Returned to Determination"
+    ],
+    "changed": [
+     "AssessedBy",
+     "AssessedOn"
+    ],
+    "from": 5,
+    "to": 0
+   },
+   {
+    "action": "ReturnCapa",
+    "audit": [
+     "Returned to Determination"
+    ],
+    "changed": [
+     "AcceptedBy",
+     "AcceptedOn",
+     "AssessedBy",
+     "AssessedOn"
+    ],
+    "from": 3,
+    "to": 0
+   },
+   {
+    "action": "ReturnCapa",
+    "audit": [
+     "Returned to Implementation"
+    ],
+    "changed": [
+     "ImplementedBy",
+     "ImplementedOn"
+    ],
+    "from": 6,
+    "to": 3
+   },
+   {
+    "action": "AdminReopen",
+    "audit": [
+     "Administrative Reopen"
+    ],
+    "changed": [],
+    "from": 4,
+    "to": 3
+   }
+  ],
+  "roles": {
+   "AcceptCapa@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "AdminReopen@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "refused",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ApproveCapa@6": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnCapa@3": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnCapa@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnCapa@6": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitForAcceptance@0": {
+    "Administrator": "allowed",
+    "Auditor": "allowed",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitForApproval@3": {
+    "Administrator": "allowed",
+    "Auditor": "allowed",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   }
+  },
+  "walk": [
+   {
+    "action": "SubmitForAcceptance",
+    "audit": [
+     "Submitted for Acceptance"
+    ],
+    "changed": [
+     "AssessedBy",
+     "AssessedOn",
+     "ExportFilePath"
+    ],
+    "from": 0,
+    "to": 5
+   },
+   {
+    "action": "AcceptCapa",
+    "audit": [
+     "CAPA Accepted — Implementation Started"
+    ],
+    "changed": [
+     "AcceptedBy",
+     "AcceptedOn"
+    ],
+    "from": 5,
+    "to": 3
+   },
+   {
+    "action": "SubmitForApproval",
+    "audit": [
+     "Submitted for Approval"
+    ],
+    "changed": [
+     "ImplementedBy",
+     "ImplementedOn"
+    ],
+    "from": 3,
+    "to": 6
+   },
+   {
+    "action": "ApproveCapa",
+    "audit": [
+     "CAPA Approved"
+    ],
+    "changed": [
+     "ApprovedBy",
+     "ApprovedOn",
+     "RetainUntil"
+    ],
+    "from": 6,
+    "to": 4
+   }
+  ]
+ },
+ "Change Control": {
+  "returns": [
+   {
+    "action": "ReturnChange",
+    "audit": [
+     "Returned to Assessment"
+    ],
+    "changed": [
+     "AssessedBy",
+     "AssessedOn"
+    ],
+    "from": 5,
+    "to": 1
+   },
+   {
+    "action": "ReturnChange",
+    "audit": [
+     "Returned to Assessment"
+    ],
+    "changed": [
+     "AcceptedBy",
+     "AcceptedOn",
+     "AssessedBy",
+     "AssessedOn"
+    ],
+    "from": 3,
+    "to": 1
+   },
+   {
+    "action": "ReturnChange",
+    "audit": [
+     "Returned to Implementation"
+    ],
+    "changed": [
+     "ImplementedBy",
+     "ImplementedOn"
+    ],
+    "from": 6,
+    "to": 3
+   },
+   {
+    "action": "AdminReopen",
+    "audit": [
+     "Administrative Reopen"
+    ],
+    "changed": [],
+    "from": 4,
+    "to": 3
+   }
+  ],
+  "roles": {
+   "AcceptChange@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "AdminReopen@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "refused",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ApproveChange@6": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnChange@3": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnChange@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnChange@6": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitForAcceptance@1": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitForApproval@3": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitForAssessment@0": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   }
+  },
+  "walk": [
+   {
+    "action": "SubmitForAssessment",
+    "audit": [
+     "Submitted for Assessment"
+    ],
+    "changed": [
+     "ExportFilePath"
+    ],
+    "from": 0,
+    "to": 1
+   },
+   {
+    "action": "SubmitForAcceptance",
+    "audit": [
+     "Submitted for Acceptance"
+    ],
+    "changed": [
+     "AssessedBy",
+     "AssessedOn"
+    ],
+    "from": 1,
+    "to": 5
+   },
+   {
+    "action": "AcceptChange",
+    "audit": [
+     "Accepted — Implementation Started"
+    ],
+    "changed": [
+     "AcceptedBy",
+     "AcceptedOn"
+    ],
+    "from": 5,
+    "to": 3
+   },
+   {
+    "action": "SubmitForApproval",
+    "audit": [
+     "Submitted for Approval"
+    ],
+    "changed": [
+     "ImplementedBy",
+     "ImplementedOn"
+    ],
+    "from": 3,
+    "to": 6
+   },
+   {
+    "action": "ApproveChange",
+    "audit": [
+     "Approved"
+    ],
+    "changed": [
+     "ApprovedBy",
+     "ApprovedOn",
+     "RetainUntil"
+    ],
+    "from": 6,
+    "to": 4
+   }
+  ]
+ },
+ "Complaints": {
+  "returns": [
+   {
+    "action": "ReturnComplaint",
+    "audit": [
+     "Returned to Received"
+    ],
+    "changed": [
+     "InvestigatedBy",
+     "InvestigatedOn"
+    ],
+    "from": 1,
+    "to": 0
+   },
+   {
+    "action": "ReturnComplaint",
+    "audit": [
+     "Returned to Evaluation"
+    ],
+    "changed": [
+     "ActionBy",
+     "ActionOn"
+    ],
+    "from": 2,
+    "to": 1
+   },
+   {
+    "action": "ReturnComplaint",
+    "audit": [
+     "Returned to Evaluation"
+    ],
+    "changed": [
+     "AcceptedBy",
+     "AcceptedOn",
+     "ActionBy",
+     "ActionOn"
+    ],
+    "from": 5,
+    "to": 1
+   },
+   {
+    "action": "ReturnComplaint",
+    "audit": [
+     "Returned to Accepted"
+    ],
+    "changed": [
+     "ResolvedBy",
+     "ResolvedOn"
+    ],
+    "from": 3,
+    "to": 5
+   },
+   {
+    "action": "AdminReopen",
+    "audit": [
+     "Administrative Reopen"
+    ],
+    "changed": [],
+    "from": 4,
+    "to": 3
+   }
+  ],
+  "roles": {
+   "Accept@2": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "AdminReopen@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "refused",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "Closed@3": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "Evaluation@0": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "PendingAcceptance@1": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnComplaint@1": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnComplaint@2": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnComplaint@3": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnComplaint@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitForResolution@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   }
+  },
+  "walk": [
+   {
+    "action": "Evaluation",
+    "audit": [
+     "Sent for Evaluation"
+    ],
+    "changed": [
+     "InvestigatedBy",
+     "InvestigatedOn"
+    ],
+    "from": 0,
+    "to": 1
+   },
+   {
+    "action": "PendingAcceptance",
+    "audit": [
+     "Submitted for Acceptance"
+    ],
+    "changed": [
+     "ActionBy",
+     "ActionOn"
+    ],
+    "from": 1,
+    "to": 2
+   },
+   {
+    "action": "Accept",
+    "audit": [
+     "Accepted"
+    ],
+    "changed": [
+     "AcceptedBy",
+     "AcceptedOn"
+    ],
+    "from": 2,
+    "to": 5
+   },
+   {
+    "action": "SubmitForResolution",
+    "audit": [
+     "Submitted for Closure"
+    ],
+    "changed": [
+     "ResolvedBy",
+     "ResolvedOn"
+    ],
+    "from": 5,
+    "to": 3
+   },
+   {
+    "action": "Closed",
+    "audit": [
+     "Closed"
+    ],
+    "changed": [
+     "ClosedBy",
+     "ClosedOn",
+     "RetainUntil"
+    ],
+    "from": 3,
+    "to": 4
+   }
+  ]
+ },
+ "Deviations": {
+  "returns": [
+   {
+    "action": "ReturnDeviation",
+    "audit": [
+     "Returned to Identification"
+    ],
+    "changed": [],
+    "from": 1,
+    "to": 0
+   },
+   {
+    "action": "ReturnDeviation",
+    "audit": [
+     "Returned to Evaluation"
+    ],
+    "changed": [
+     "ActionBy",
+     "ActionOn",
+     "EvaluatedBy",
+     "EvaluatedOn",
+     "InvestigatedBy",
+     "InvestigatedOn",
+     "RootCauseBy",
+     "RootCauseOn"
+    ],
+    "from": 5,
+    "to": 1
+   },
+   {
+    "action": "ReturnDeviation",
+    "audit": [
+     "Returned to Evaluation"
+    ],
+    "changed": [
+     "AcceptedBy",
+     "AcceptedOn",
+     "ActionBy",
+     "ActionOn",
+     "EvaluatedBy",
+     "EvaluatedOn",
+     "InvestigatedBy",
+     "InvestigatedOn",
+     "RootCauseBy",
+     "RootCauseOn"
+    ],
+    "from": 2,
+    "to": 1
+   },
+   {
+    "action": "ReturnDeviation",
+    "audit": [
+     "Returned to Accepted"
+    ],
+    "changed": [
+     "ResolvedBy",
+     "ResolvedOn"
+    ],
+    "from": 3,
+    "to": 2
+   },
+   {
+    "action": "AdminReopen",
+    "audit": [
+     "Administrative Reopen"
+    ],
+    "changed": [],
+    "from": 4,
+    "to": 3
+   }
+  ],
+  "roles": {
+   "AcceptDeviation@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "AdminReopen@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "refused",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ApproveDeviation@3": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnDeviation@1": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnDeviation@2": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnDeviation@3": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnDeviation@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitEvaluation@1": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitForEvaluation@0": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitForResolution@2": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   }
+  },
+  "walk": [
+   {
+    "action": "SubmitForEvaluation",
+    "audit": [
+     "Submitted for Evaluation"
+    ],
+    "changed": [
+     "ExportFilePath"
+    ],
+    "from": 0,
+    "to": 1
+   },
+   {
+    "action": "SubmitEvaluation",
+    "audit": [
+     "Evaluation Submitted"
+    ],
+    "changed": [
+     "ActionBy",
+     "ActionOn",
+     "EvaluatedBy",
+     "EvaluatedOn",
+     "InvestigatedBy",
+     "InvestigatedOn",
+     "RootCauseBy",
+     "RootCauseOn"
+    ],
+    "from": 1,
+    "to": 5
+   },
+   {
+    "action": "AcceptDeviation",
+    "audit": [
+     "Accepted"
+    ],
+    "changed": [
+     "AcceptedBy",
+     "AcceptedOn"
+    ],
+    "from": 5,
+    "to": 2
+   },
+   {
+    "action": "SubmitForResolution",
+    "audit": [
+     "Submitted for Approval"
+    ],
+    "changed": [
+     "ResolvedBy",
+     "ResolvedOn"
+    ],
+    "from": 2,
+    "to": 3
+   },
+   {
+    "action": "ApproveDeviation",
+    "audit": [
+     "Approved"
+    ],
+    "changed": [
+     "ApprovedBy",
+     "ApprovedOn",
+     "RetainUntil"
+    ],
+    "from": 3,
+    "to": 4
+   }
+  ]
+ },
+ "Documents": {
+  "returns": [
+   {
+    "action": "ReturnForRework",
+    "audit": [
+     "Returned for Rework"
+    ],
+    "changed": [],
+    "from": 4,
+    "to": 0
+   },
+   {
+    "action": "ObsoleteDocument",
+    "audit": [
+     "Obsoleted"
+    ],
+    "changed": [
+     "IsLocked",
+     "ObsoletedOn",
+     "RetainUntil"
+    ],
+    "from": 5,
+    "to": 3
+   }
+  ],
+  "roles": {
+   "Approve@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ObsoleteDocument@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnForRework@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitForReview@0": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "refused",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   }
+  },
+  "walk": [
+   {
+    "action": "SubmitForReview",
+    "audit": [
+     "Submitted for Review"
+    ],
+    "changed": [
+     "Version"
+    ],
+    "from": 0,
+    "to": 4
+   },
+   {
+    "action": "Approve",
+    "audit": [
+     "Approved"
+    ],
+    "changed": [
+     "ApprovedBy",
+     "ApprovedOn",
+     "IssueCommentary",
+     "IssuedBy",
+     "IssuedOn"
+    ],
+    "from": 4,
+    "to": 5
+   }
+  ]
+ },
+ "Maintenance": {
+  "returns": [
+   {
+    "action": "SendBackToScheduled",
+    "audit": [
+     "Sent Back to Scheduled"
+    ],
+    "changed": [
+     "ActualStartTime",
+     "PerformedBy"
+    ],
+    "from": 1,
+    "to": 0
+   },
+   {
+    "action": "SendBackToInProgress",
+    "audit": [
+     "Sent Back to In Progress"
+    ],
+    "changed": [
+     "ActualEndTime",
+     "DowntimeHours",
+     "PerformedOn"
+    ],
+    "from": 2,
+    "to": 1
+   },
+   {
+    "action": "SendBackToCompleted",
+    "audit": [
+     "Sent Back to Completed"
+    ],
+    "changed": [
+     "RetainUntil",
+     "ReviewComments",
+     "ReviewedBy",
+     "ReviewedOn"
+    ],
+    "from": 3,
+    "to": 2
+   },
+   {
+    "action": "Suspend",
+    "audit": [
+     "Suspended"
+    ],
+    "changed": [
+     "SuspendedBy",
+     "SuspendedOn",
+     "SuspensionReason"
+    ],
+    "from": 0,
+    "to": 6
+   },
+   {
+    "action": "Reactivate",
+    "audit": [
+     "Reactivated"
+    ],
+    "changed": [
+     "SuspendedBy",
+     "SuspendedOn",
+     "SuspensionReason"
+    ],
+    "from": 6,
+    "to": 0
+   },
+   {
+    "action": "AdminReopen",
+    "audit": [],
+    "changed": [],
+    "from": 3,
+    "to": 3
+   }
+  ],
+  "roles": {
+   "AdminReopen@3": {
+    "Administrator": "refused",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "refused",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "CompleteWork@1": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "allowed",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "Reactivate@6": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReviewWork@2": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SendBackToCompleted@3": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SendBackToInProgress@2": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "allowed",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SendBackToScheduled@1": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "allowed",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "StartWork@0": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "allowed",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "Suspend@0": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   }
+  },
+  "walk": [
+   {
+    "action": "StartWork",
+    "audit": [
+     "Work Started"
+    ],
+    "changed": [
+     "ActualStartTime",
+     "PerformedBy"
+    ],
+    "from": 0,
+    "to": 1
+   },
+   {
+    "action": "CompleteWork",
+    "audit": [
+     "Work Completed"
+    ],
+    "changed": [
+     "ActualEndTime",
+     "DowntimeHours",
+     "PerformedOn"
+    ],
+    "from": 1,
+    "to": 2
+   },
+   {
+    "action": "ReviewWork",
+    "audit": [
+     "Reviewed"
+    ],
+    "changed": [
+     "RetainUntil",
+     "ReviewedBy",
+     "ReviewedOn"
+    ],
+    "from": 2,
+    "to": 3
+   }
+  ]
+ },
+ "Risk": {
+  "returns": [
+   {
+    "action": "ReturnFromAssessment",
+    "audit": [
+     "Returned to Identification"
+    ],
+    "changed": [
+     "AssessedBy",
+     "AssessedOn"
+    ],
+    "from": 5,
+    "to": 0
+   },
+   {
+    "action": "ReturnFromReview",
+    "audit": [
+     "Returned to Mitigation"
+    ],
+    "changed": [
+     "ReviewedBy",
+     "ReviewedOn"
+    ],
+    "from": 6,
+    "to": 2
+   },
+   {
+    "action": "AdminReopen",
+    "audit": [
+     "Administrative Reopen"
+    ],
+    "changed": [],
+    "from": 4,
+    "to": 2
+   }
+  ],
+  "roles": {
+   "AcceptAssessment@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "AdminReopen@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "refused",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "refused",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "CloseRisk@6": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnFromAssessment@5": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnFromReview@6": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "SubmitForAssessment@0": {
+    "Administrator": "allowed",
+    "Auditor": "allowed",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "allowed",
+    "RegulatoryUser": "allowed",
+    "Trainer": "allowed"
+   },
+   "SubmitForReview@2": {
+    "Administrator": "allowed",
+    "Auditor": "allowed",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "allowed",
+    "RegulatoryUser": "allowed",
+    "Trainer": "allowed"
+   }
+  },
+  "walk": [
+   {
+    "action": "SubmitForAssessment",
+    "audit": [
+     "Submitted for Assessment"
+    ],
+    "changed": [
+     "AssessedBy",
+     "AssessedOn"
+    ],
+    "from": 0,
+    "to": 5
+   },
+   {
+    "action": "AcceptAssessment",
+    "audit": [
+     "Assessment Accepted — Mitigation Started"
+    ],
+    "changed": [
+     "AcceptedBy",
+     "AcceptedOn",
+     "AssessmentNotes"
+    ],
+    "from": 5,
+    "to": 2
+   },
+   {
+    "action": "SubmitForReview",
+    "audit": [
+     "Submitted for Review"
+    ],
+    "changed": [
+     "ReviewedBy",
+     "ReviewedOn"
+    ],
+    "from": 2,
+    "to": 6
+   },
+   {
+    "action": "CloseRisk",
+    "audit": [
+     "Risk Closed"
+    ],
+    "changed": [
+     "ClosedBy",
+     "ClosedOn",
+     "RetainUntil",
+     "ReviewConclusion"
+    ],
+    "from": 6,
+    "to": 4
+   }
+  ]
+ },
+ "Suppliers": {
+  "returns": [
+   {
+    "action": "ReturnToAssessment",
+    "audit": [
+     "Returned to Assessment"
+    ],
+    "changed": [
+     "AssessedBy",
+     "AssessedOn"
+    ],
+    "from": 1,
+    "to": 0
+   },
+   {
+    "action": "Suspend",
+    "audit": [
+     "Suspended"
+    ],
+    "changed": [
+     "ApprovalStatus",
+     "SuspendedBy",
+     "SuspendedOn",
+     "SuspensionReason"
+    ],
+    "from": 4,
+    "to": 6
+   },
+   {
+    "action": "Cancel",
+    "audit": [
+     "Cancelled"
+    ],
+    "changed": [
+     "ApprovalStatus",
+     "CancellationReason",
+     "CancelledBy",
+     "CancelledOn"
+    ],
+    "from": 4,
+    "to": 7
+   },
+   {
+    "action": "Reactivate",
+    "audit": [
+     "Reactivated"
+    ],
+    "changed": [
+     "ApprovalStatus",
+     "SuspendedBy",
+     "SuspendedOn",
+     "SuspensionReason"
+    ],
+    "from": 6,
+    "to": 0
+   }
+  ],
+  "roles": {
+   "Approve@1": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "Cancel@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "Reactivate@6": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "ReturnToAssessment@1": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "StartAssessment@0": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "Suspend@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   }
+  },
+  "walk": [
+   {
+    "action": "StartAssessment",
+    "audit": [
+     "Assessment Submitted"
+    ],
+    "changed": [
+     "AssessedBy",
+     "AssessedOn"
+    ],
+    "from": 0,
+    "to": 1
+   },
+   {
+    "action": "Approve",
+    "audit": [
+     "Approved"
+    ],
+    "changed": [
+     "ApprovalStatus",
+     "ApprovedBy",
+     "ApprovedOn",
+     "EffectiveDate",
+     "NextReviewDate"
+    ],
+    "from": 1,
+    "to": 4
+   }
+  ]
+ },
+ "Suppliers (qualification)": {
+  "returns": [],
+  "roles": {
+   "Approve@1": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "Qualify@4": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "refused",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   },
+   "StartAssessment@0": {
+    "Administrator": "allowed",
+    "Auditor": "refused",
+    "AuthorisedPerson": "allowed",
+    "CommercialUser": "refused",
+    "OperationsUser": "refused",
+    "QualityManager": "allowed",
+    "QualityUser": "allowed",
+    "ReadOnly": "refused",
+    "RegulatoryManager": "refused",
+    "RegulatoryUser": "refused",
+    "Trainer": "refused"
+   }
+  },
+  "walk": [
+   {
+    "action": "StartAssessment",
+    "audit": [
+     "Assessment Submitted"
+    ],
+    "changed": [
+     "AssessedBy",
+     "AssessedOn"
+    ],
+    "from": 0,
+    "to": 1
+   },
+   {
+    "action": "Approve",
+    "audit": [
+     "Approved"
+    ],
+    "changed": [
+     "ApprovalStatus",
+     "ApprovedBy",
+     "ApprovedOn",
+     "EffectiveDate",
+     "NextReviewDate"
+    ],
+    "from": 1,
+    "to": 4
+   },
+   {
+    "action": "Qualify",
+    "audit": [
+     "Qualified"
+    ],
+    "changed": [
+     "ApprovalStatus",
+     "EffectiveDate",
+     "QualificationBasis",
+     "QualificationComments",
+     "QualificationJustification",
+     "QualificationReferenceDoc",
+     "QualifiedBy",
+     "QualifiedOn",
+     "RiskJustification",
+     "TestingRequirement"
+    ],
+    "from": 4,
+    "to": 5
+   }
+  ]
+ }
+}
