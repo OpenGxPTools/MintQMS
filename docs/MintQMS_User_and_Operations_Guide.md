@@ -83,6 +83,14 @@ you need in the table of contents and follow its walkthrough.
 **Setting up a new installation?** Installation is covered in [DEPLOYMENT.md](../DEPLOYMENT.md); the first
 steps inside the application (settings, users and roles) are in §11.5.
 
+**Do not use your browser's translate feature for records.** Most browsers (Brave, Chrome, Edge, Firefox,
+Safari and others) can machine-translate a page, usually from a button near the address bar. The translation is
+shown only on your screen: what MintQMS stores and signs is never changed. But translated text can be wrong —
+names, units, numbers and wording can change — so read, review, sign, copy or screenshot records only as MintQMS
+shows them. To use MintQMS in Spanish or Portuguese, use its own language setting instead (§11.2): those screens
+are translated in advance, and record content is always shown exactly as stored. The text as stored in MintQMS
+is the controlled version.
+
 **How to use a module section.** Every module is documented with the same six parts:
 1. **Purpose & intent** — what the module is for.
 2. **Who can do what** — which roles may perform each action (this is enforced by the system).

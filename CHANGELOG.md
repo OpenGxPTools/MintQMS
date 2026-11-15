@@ -164,6 +164,16 @@
 - Tests: `tests/e2e/test_language.py` (run as-is, and with `E2E_LANGS=1` against an instance with the
   languages enabled).
 
+## MintQMS 1.0.1 (2026-11-15)
+
+Fixes since 1.0.0. No database changes: replace the program files and restart.
+
+- Batch Release: the help buttons in the workflow dialogs open again.
+- Audits: the edit page no longer shows a script error at the Scheduled stage.
+- Change Control: the Return dialog names the stage the change actually returns to (Assessment).
+- CAPA dashboard: the Status Distribution chart is the same size as on the other dashboards.
+- User guide: new note in §1 not to use the browser's translate feature for records.
+
 ## MintQMS 1.0.0 — first public release (2026-10-26)
 
 MintQMS was originally developed from the free AGPLv3 release of OpenQMS 1.3.0 (see the bottom of this file), which provided
