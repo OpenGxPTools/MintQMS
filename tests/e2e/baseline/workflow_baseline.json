@@ -1353,15 +1353,22 @@
    },
    {
     "action": "AdminReopen",
-    "audit": [],
-    "changed": [],
+    "audit": [
+     "Administrative Reopen"
+    ],
+    "changed": [
+     "RetainUntil",
+     "ReviewComments",
+     "ReviewedBy",
+     "ReviewedOn"
+    ],
     "from": 3,
-    "to": 3
+    "to": 2
    }
   ],
   "roles": {
    "AdminReopen@3": {
-    "Administrator": "refused",
+    "Administrator": "allowed",
     "Auditor": "refused",
     "AuthorisedPerson": "refused",
     "CommercialUser": "refused",

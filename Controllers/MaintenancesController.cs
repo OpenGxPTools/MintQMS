@@ -819,6 +819,19 @@ namespace OpenQMS.Controllers
                 return RedirectToAction(nameof(Details), new { id });
             }
 
+            await ReturnToCompletedAsync(maintenance, "Sent Back to Completed", notes, "sent back to Completed for re-review");
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = this.T("Maintenance sent back to Completed for re-review.");
+            TempData["ActiveTab"] = "auditlog";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        // A reviewed record goes back to Completed for re-review: the review is cleared and the next occurrence that
+        // was scheduled automatically at review is cancelled. Used by Send Back to Completed and Administrative Reopen.
+        private async Task ReturnToCompletedAsync(Maintenance maintenance, string auditAction, string notes, string why)
+        {
             var from = maintenance.Status.ToString();
             maintenance.Status = Maintenance.MaintenanceStatus.Completed;
             maintenance.ReviewedBy = null;
@@ -826,7 +839,7 @@ namespace OpenQMS.Controllers
             maintenance.ReviewComments = null;
             maintenance.RetainUntil = null;
 
-            AddAuditLog(maintenance.Id, "Sent Back to Completed", from, maintenance.Status.ToString(), notes);
+            AddAuditLog(maintenance.Id, auditAction, from, maintenance.Status.ToString(), notes);
 
             // Cancel any auto-spawned next occurrence that was created when this record was reviewed
             var autoSpawnedChild = await _context.Maintenance
@@ -839,14 +852,8 @@ namespace OpenQMS.Controllers
                 autoSpawnedChild.DeletedBy = _userManager.GetUserName(User);
                 autoSpawnedChild.DeletedOn = DateTime.UtcNow;
                 AddAuditLog(autoSpawnedChild.Id, "Auto-cancelled", autoSpawnedChild.Status.ToString(), null,
-                    $"Cancelled because {maintenance.MaintenanceId} was sent back to Completed for re-review.");
+                    $"Cancelled because {maintenance.MaintenanceId} was {why}.");
             }
-
-            await _context.SaveChangesAsync();
-
-            TempData["Success"] = this.T("Maintenance sent back to Completed for re-review.");
-            TempData["ActiveTab"] = "auditlog";
-            return RedirectToAction(nameof(Details), new { id });
         }
 
         // Suspend / Reactivate
@@ -1279,7 +1286,9 @@ namespace OpenQMS.Controllers
             var maintenance = await _context.Maintenance.FindAsync(id);
             if (maintenance == null) return NotFound();
 
-            if (maintenance.Status != Maintenance.MaintenanceStatus.Approved)
+            // Reviewed is the final state of the workflow; Approved is accepted too, for records from older versions.
+            if (maintenance.Status != Maintenance.MaintenanceStatus.Reviewed
+                && maintenance.Status != Maintenance.MaintenanceStatus.Approved)
             {
                 TempData["WorkflowError"] = this.T("This record is not in a state that can be administratively reopened.");
                 return RedirectToAction(nameof(Details), new { id });
@@ -1304,12 +1313,11 @@ namespace OpenQMS.Controllers
                 return RedirectToAction(nameof(Details), new { id });
             }
 
-            var fromStatus = maintenance.Status.ToString();
-            maintenance.Status = Maintenance.MaintenanceStatus.Reviewed;
-            AddAuditLog(maintenance.Id, "Administrative Reopen", fromStatus, Maintenance.MaintenanceStatus.Reviewed.ToString(), reason);
+            await ReturnToCompletedAsync(maintenance, "Administrative Reopen", reason, "administratively reopened");
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = this.T("Record has been administratively reopened to Reviewed stage.");
+            TempData["Success"] = this.T("Record has been administratively reopened to {0} stage.{1}",
+                this.T(EnumHelper.Display(Maintenance.MaintenanceStatus.Completed)), "");
             return RedirectToAction(nameof(Details), new { id });
         }
     }

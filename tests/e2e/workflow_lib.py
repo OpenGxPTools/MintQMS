@@ -164,8 +164,8 @@ MODULES += [
          returns=[(1, "SendBackToScheduled", {"notes": "e2e"}), (2, "SendBackToInProgress", {"notes": "e2e"}),
                   (3, "SendBackToCompleted", {"notes": "e2e"}), (0, "Suspend", {"reason": "e2e"}),
                   (6, "Reactivate", {}),
-                  # known 1.1.0 bug: admin re-open requires Approved, which no step reaches → refused today
-                  (3, "AdminReopen", {"reason": "e2e", "_refused": True})]),
+                  # 1.1.0 refused this (it required Approved, which no step reaches); fixed in 1.2.0: Reviewed → Completed
+                  (3, "AdminReopen", {"reason": "e2e"})]),
     dict(name="Documents", ctrl="AppDocuments", table="AppDocument", uniq="DocumentId", prefix="DOC-BL",
          audit="DocumentAuditLog", audit_key="AppDocumentId", email_f="InputEmail", pwd_f="InputPassword",
          init={"Status": 0, "AuthoredBy": ADMIN, "AuthoredOn": NOW, "Version": 1, "FileType": "application/pdf",

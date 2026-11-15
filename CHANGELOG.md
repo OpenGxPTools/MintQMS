@@ -15,8 +15,18 @@
   Enforce Four-Eyes Rule* (logged in the settings audit trail), for a site too small to separate these duties.
   After upgrading, a record already half-way through may need a different person for its next acceptance or
   approval. Database change: one settings field.
-- Tests: `test_workflow_baseline.py` records every signed step of these nine modules and who may sign it (the
-  behaviour of 1.1.0, unchanged with the rule off); `test_four_eyes.py` checks every rule.
+**Fixes**
+
+- Maintenance: an Administrator could never re-open a reviewed maintenance record (the re-open required the
+  Approved state, which the workflow never reaches). *Administratively Reopen* now appears on a Reviewed record
+  and returns it to Completed for re-review, clearing the review and cancelling the next occurrence that was
+  scheduled automatically at review — as *Send Back to Completed* does.
+
+**Tests**
+
+- `test_workflow_baseline.py` records every signed step of these nine modules and who may sign it (the
+  behaviour of 1.1.0, unchanged with the rule off, except the Maintenance re-open fix); `test_four_eyes.py` checks
+  every rule; `test_maintenance_reopen.py` the re-open fix.
 
 ## MintQMS 1.1.0 (2026-11-15)
 
