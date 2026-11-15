@@ -10,11 +10,14 @@
   submitted the evaluation, so another person must sign this step."). The person who raised a record may approve
   or close it when its acceptance was signed by someone else.
 - Applies to Deviations, Complaints, CAPA, Change Control, Audits, Risk, Maintenance, Documents and Suppliers
-  (15 steps; the rules are in `Resources/Workflow/workflow-rules.json`, built into the program).
+  (the rules are in `Resources/Workflow/workflow-rules.json`, built into the program). For suppliers this includes
+  the decision on a recommended suspension or cancellation: whoever recommended it in the assessment cannot also
+  decide it. Risk records still in the older *Review* state are covered too.
 - **On by default, also on upgrade.** An Administrator can turn it off in *System Settings → Security Policy →
   Enforce Four-Eyes Rule* (logged in the settings audit trail), for a site too small to separate these duties.
   After upgrading, a record already half-way through may need a different person for its next acceptance or
   approval. Database change: one settings field.
+
 **Task assignment: who is responsible for the next step**
 
 - Each record of Deviations, Complaints, CAPA, Change Control, Audits, Risk, Maintenance, Documents and Suppliers
@@ -28,6 +31,9 @@
 - Who may assign: anyone who can do the stage's next step, and Administrators, Quality Managers and Regulatory
   Managers. Every assignment change is written to the record's audit trail; the history of assignments is kept
   (never deleted). Deactivating a user unassigns their tasks, noted in each record's audit trail.
+- Also covers the supplier *Pending Suspension* / *Pending Cancellation* decisions, and records left in older
+  states (Risk *Assessment* / *Review*, Maintenance *Overdue*). Starting a new supplier review ends the assignment
+  of the stage the supplier leaves.
 - Database change: a new TaskAssignments table.
 
 **Fixes**

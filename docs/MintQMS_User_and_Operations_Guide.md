@@ -3,7 +3,7 @@
 *A guide to every module of MintQMS, for the quality, regulatory and operations staff who log, review,
 approve and oversee controlled records.*
 
-**Version:** 1.0 · **Date:** October 2026 · **Source of truth:** the running application code (this guide
+**Version:** 1.2 · **Date:** November 2026 · **Source of truth:** the running application code (this guide
 describes only what the system actually does).
 
 > **No warranty.** MintQMS is free software provided "as is" and is **not validated** for any regulated use.
@@ -29,6 +29,8 @@ describes only what the system actually does).
    - [2.6 Returning, reopening & correcting records](#26-returning-reopening--correcting-records)
    - [2.7 Retention & disposal](#27-retention--disposal)
    - [2.8 Linking records & affected items](#28-linking-records--affected-items)
+   - [2.9 The four-eyes rule](#29-the-four-eyes-rule)
+   - [2.10 Who is responsible for the next step (task assignment)](#210-who-is-responsible-for-the-next-step-task-assignment)
 3. [Roles & access reference](#3-roles--access-reference)
 4. [Quality Events](#4-quality-events)
    - [4.1 Deviations](#41-deviations)
@@ -235,6 +237,68 @@ record's workflow state):
 
 > Links are for traceability only — they are not approvals, and creating one does not require a signature.
 
+### 2.9 The four-eyes rule
+
+A review, acceptance, approval, closure or certification must be signed by **someone who did not do the work
+being reviewed**. If you did that work, the system refuses your signature, nothing changes, and the message says
+why — for example *"Four-eyes rule: you submitted the evaluation, so another person must sign this step."*
+Another person with the right role then signs it. The check is made on the signed step itself, so it applies
+whoever is assigned to the step (§2.10).
+
+| Module | Step | Cannot be signed by |
+|---|---|---|
+| Deviations | Accept | whoever submitted the evaluation |
+| Deviations | Approve | whoever submitted the evaluation or the resolution |
+| Complaints | Accept | whoever submitted the evaluation |
+| Complaints | Close | whoever submitted the resolution |
+| CAPA, Change Control | Accept | whoever submitted the assessment |
+| CAPA, Change Control | Approve | whoever submitted the assessment or the implementation |
+| Audits | Approve | whoever started the audit or submitted the report for review |
+| Risk | Accept assessment | whoever submitted the assessment |
+| Risk | Close | whoever submitted the mitigation for review |
+| Maintenance | Review work | whoever started the work |
+| Documents | Approve | the document's author |
+| Suppliers | Approve; Qualify | whoever submitted the assessment |
+| Suppliers | Suspend (from *Pending Suspension*); Cancel (from *Pending Cancellation*) | whoever recommended the suspension or cancellation in the assessment |
+
+- **The person who raised the record** (deviations, complaints, CAPA, changes, risks) may approve or close it,
+  **provided its acceptance was signed by someone else**. If they also signed the acceptance, the approval is
+  refused.
+- **After a send-back, the person who redoes the work counts.** A return clears the sign-off of the stage it
+  undoes, so the rule compares with whoever did the current version of the work; earlier attempts stay in the
+  audit trail.
+- **Not covered:** send-backs, administrative re-opens, suspensions and cancellations decided directly by a
+  manager, and the modules not listed above (Batch Release has its own Authorised-Person rules, §6.3).
+- **On by default.** An Administrator can turn the rule off in *Settings → System Settings → Security Policy →
+  Enforce Four-Eyes Rule* (§11.2), for a site too small to separate these duties. The change is logged, and the
+  settings page then warns that one person can do and approve the same work. Your procedures should say whether
+  the rule is on.
+
+### 2.10 Who is responsible for the next step (task assignment)
+
+Records of Deviations, Complaints, CAPA, Change Control, Audits, Risk, Maintenance, Documents and Suppliers show
+**Responsible for the next step** under *Workflow Actions*: the person named, since when, and an optional due
+date (shown in red once passed) and note.
+
+- **Assign / Reassign / Unassign.** Use the buttons in that panel. **Who may assign:** anyone who can do the
+  stage's next step, and Administrators, Quality Managers and Regulatory Managers.
+- **While signing.** Each signature dialog has an optional **Assign the next step to** list, so you can name the
+  next person as you sign, with no extra step. Leave it empty and the step waits for anyone allowed to do it.
+- **Only people who can do the step are offered:** someone with a role that can sign it, an active account (a
+  user briefly locked out after wrong passwords still counts; a deactivated user does not), not Read-Only, and
+  not excluded by the four-eyes rule (§2.9). For a document's *Submit for Review*, its author is offered. The
+  person signing is never offered for a step that reviews their own work. Supplier qualification is offered only
+  when the supplier requires qualification.
+- **It is not a lock.** Naming someone records who is responsible; anyone allowed to sign the step can still do
+  it. When the record moves on — by that person, by someone else, or by a send-back or re-open — the assignment
+  ends automatically and records who actually did the step.
+- **Everything is traced.** Each assign, reassign and unassign is written to the record's own audit trail
+  (*Task Assigned / Task Reassigned / Task Unassigned*, with the person, due date and note). Assignments are
+  never deleted, only ended. Deactivating a user ends their open assignments, with a note in each record (§11.1).
+- **Keep the note short and free of confidential details** (no patient, customer or product specifics).
+- Assignment is not yet available in Batch Release, Pharmacovigilance, Regulatory Intelligence, Licences &
+  Certifications, Training or reference data. Training is assigned per trainee in the Training module (§8.2).
+
 ---
 
 ## 3. Roles & access reference
@@ -331,7 +395,8 @@ resolved in good time. A critical deviation should still be escalated immediatel
   Evaluation. Deletion is a soft delete (retained, hidden).
 
 **Notes.** A Quality User may prepare and submit but cannot Accept or Approve — a built-in separation of duties.
-The same approver may both submit and give final approval (independent approval is not required at this stage).
+Under the **four-eyes rule** (§2.9), whoever submitted the evaluation cannot accept it, and whoever submitted the
+evaluation or the resolution cannot approve it.
 A deviation can spawn a single linked **CAPA** (via **+ Create Linked CAPA**); once linked, an inspector can
 trace the corrective action back to the deviation that triggered it.
 
@@ -390,6 +455,8 @@ is recalculated from the date received. The record and the **Complaint Dashboard
   (signature + reason; logged; prior history retained).
 - **Removing a record:** Administrator only, early states, soft delete.
 
+**Four-eyes rule (§2.9).** Whoever submitted the evaluation cannot accept the complaint, and whoever submitted the resolution cannot close it. Name the next person with **Assign** or in the signature dialog (§2.10).
+
 **Notes.** As with deviations, the Quality User can prepare and submit a complaint but cannot **Accept** or
 **Close** — those decisions are reserved for Manager/AP/Admin. Complaints can spawn a CAPA and can be linked to Adverse Events for
 pharmacovigilance traceability.
@@ -444,6 +511,8 @@ default 30 days). The record and the **CAPA Dashboard** flag it as the target **
 - **Re-opening:** an Administrator can administratively re-open an Approved CAPA back to Implementation (signature
   + reason; logged).
 - **Removing a record:** Administrator only; soft delete.
+
+**Four-eyes rule (§2.9).** Whoever submitted the assessment cannot accept the CAPA; whoever submitted the assessment or the implementation cannot approve it. Name the next person with **Assign** or in the signature dialog (§2.10).
 
 **Notes.** Quality Users and Auditors may raise and submit CAPAs but cannot Accept, Approve or Return — those are
 Manager/AP/Admin decisions. Because CAPAs link to their source records, an inspector can trace any action back to
@@ -512,6 +581,8 @@ the tab.
 - **Re-opening:** an Administrator can administratively re-open an Approved change back to Implementation
   (signature + reason; logged).
 - **Removing a record:** Administrator only; soft delete.
+
+**Four-eyes rule (§2.9).** Whoever submitted the assessment cannot accept the change; whoever submitted the assessment or the implementation cannot approve it. Name the next person with **Assign** or in the signature dialog (§2.10).
 
 **Notes.** As elsewhere, a Quality User may prepare and submit but cannot Accept, Approve or Return — those are
 Manager/AP/Admin decisions. On the Create/Edit screen a change can be tagged with its **affected items**
@@ -596,6 +667,8 @@ the CAPA raised from the audit.
   - type and status summaries, and recent activity
 - **Register:** exports to Excel; each audit exports as PDF or CSV.
 - **No e-mail or on-screen alerts are sent.**
+
+**Four-eyes rule (§2.9).** Whoever started the audit or submitted the report for review cannot approve it. Name the next person with **Assign** or in the signature dialog (§2.10).
 
 **Notes.** Findings are recorded as counts and narrative in the audit report, not as separate records. Track
 each finding's corrective action in the linked CAPA.
@@ -683,6 +756,8 @@ After mitigation, the same three factors are scored again to give the **residual
   - recent activity
 - **Register:** exports to Excel; each risk exports as PDF or CSV.
 - **Next review date:** recorded on the risk; MintQMS does not send reminders for it.
+
+**Four-eyes rule (§2.9).** Whoever submitted the assessment cannot accept it, and whoever submitted the mitigation for review cannot close the risk. This also applies to risks still in the older *Review* state. Name the next person with **Assign** or in the signature dialog (§2.10).
 
 **Notes.** Attachments (e.g. FMEA worksheets) are added on the risk and keep their integrity fingerprint.
 Deleting one needs a reason, and the file remains retrievable. Every change and signature is in the audit trail.
@@ -778,10 +853,13 @@ re-qualifications.
 **Handling exceptions.**
 - **Send back:** **Return to Assessment** sends the supplier back to *Pending* for rework (signed).
 - **Suspend / Cancel:** a Manager/AP can suspend or cancel a supplier (a reason is required and signed); these
-  may route via *Pending Suspension* / *Pending Cancellation* when an assessment is needed first.
+  may route via *Pending Suspension* / *Pending Cancellation* when an assessment is needed first. In that case
+  the person who recommended the suspension or cancellation in the assessment cannot also decide it (§2.9).
 - **Reactivate:** a suspended supplier can be **Reactivated** back to *Pending* (signed); its previous approval
   is cleared, so it must be re-assessed and approved before use.
 - **Removing a record:** Administrator only, early states, soft delete.
+
+**Four-eyes rule (§2.9).** Whoever submitted the assessment cannot approve or qualify the supplier, and whoever recommended a suspension or cancellation cannot decide it. A manager can be assigned to each of these decisions (§2.10); starting a new review ends the assignment of the stage the supplier leaves.
 
 **Notes.** Creating suppliers and maintaining their addresses and documents is open to operational and
 commercial roles, but every
@@ -810,7 +888,7 @@ a job is reviewed, the next one is created automatically.
   User, Authorised Person, Operations User.
 - **Review Work, Send Back to Completed, Suspend, Reactivate:** Administrator, Quality Manager, Authorised
   Person.
-- **Delete:** Administrator.
+- **Administratively re-open a reviewed job; Delete:** Administrator.
 - **Electronically signed:** every workflow step.
 
 **Record lifecycle.** `Scheduled → In Progress → Completed → Reviewed`, plus **Suspended**.
@@ -825,6 +903,7 @@ a job is reviewed, the next one is created automatically.
 | Send Back to Completed | Reviewed → Completed | Admin/QM/AP | Reason required; cancels the auto-scheduled next job |
 | Suspend | Scheduled, In Progress or Completed → Suspended | Admin/QM/AP | Reason required |
 | Reactivate | Suspended → Scheduled | Admin/QM/AP | |
+| Administrative re-open | Reviewed → Completed | Administrator | Reason required; clears the review and cancels the auto-scheduled next job |
 
 **Step-by-step walkthrough.**
 1. **Schedule.** *Quality Operations → Maintenance Register → Create.*
@@ -851,6 +930,9 @@ a job is reviewed, the next one is created automatically.
 - **Send back:** at each stage the work can be sent back one step, signed and with a reason. Sending a reviewed
   job back to Completed also cancels the next job that was created when it was reviewed. A new one is created
   when it is reviewed again.
+- **Re-opening a reviewed job:** an Administrator can **administratively re-open** a Reviewed job back to
+  Completed for re-review (signed, reason required). As with *Send Back to Completed*, the review is cleared and
+  the next job that was scheduled automatically at review is cancelled; both are logged.
 - **Suspend / Reactivate:** put a job on hold, e.g. equipment out of service (signed, reason required).
   Reactivating returns it to Scheduled.
 - **Editing:** a job can be edited while Scheduled, In Progress, Completed or Suspended; once Reviewed it is
@@ -867,8 +949,11 @@ dashboard and register; its status stays *Scheduled*. The dashboard also lists w
   summaries, and recent activity.
 - **Register:** exports to Excel; each job exports as PDF or CSV.
 
+**Four-eyes rule (§2.9).** Whoever started the work cannot review it. Name the next person with **Assign** or in
+the signature dialog (§2.10); jobs still in the older *Overdue* state can be assigned for Start Work too.
+
 **Notes.** Linked deviations and CAPAs appear under *Linked Records* (§2.8). Records with the older status
-*Approved* (from before the current workflow) can be re-opened by an Administrator.
+*Approved* (from before the current workflow) can also be re-opened by an Administrator.
 
 ---
 
@@ -1492,6 +1577,8 @@ and you can always see what was effective at any point.
   separation of duties. Departing users are normally **deactivated, not deleted**, so existing records and
   signatures stay intact.
 
+**Four-eyes rule (§2.9).** A document's author cannot approve it (the approval form does not open for them). Name the next person with **Assign** or in the signature dialog (§2.10).
+
 **Notes.** The approval and issue steps are reserved for Quality Manager/Authorised Person/Administrator; authors manage their own
 drafts. Coupling effectiveness to training completion is the core control of this module.
 
@@ -1664,6 +1751,10 @@ user holds.
    Roles decide what each person can do; give each user only the roles their job needs.
 3. **Review.** Open a user to see their details and sign-in history.
 
+**Deactivating a user.** In **Manage Roles**, turn **Active** off. The person can no longer sign in, keeps their
+history and signatures, and is no longer offered for any task. Any open assignments they had end (§2.10), with a
+*Task Unassigned* line in each affected record's audit trail.
+
 **Notes.** Granting/removing roles is the key access-control action and is reserved for Administrators; other
 senior roles can review users and their login history but cannot change permissions.
 
@@ -1687,6 +1778,10 @@ expiry, maintenance, training); default resolution times; password expiry, passw
 the **adverse-event reporting deadlines** (calendar days after Day 0 for serious and for fatal or
 life-threatening cases; defaults 15 and 7); the e-mail (SMTP) server used for account confirmation and password
 resets; and retention periods.
+**Security Policy → Enforce Four-Eyes Rule** (on by default, also after an upgrade) applies the four-eyes rule
+of §2.9. Turning it off lets one person do and approve the same work; the page then shows a GMP warning, and the
+change is logged like every other setting. After an upgrade from an earlier version, a record already half-way
+through may need a different person for its next acceptance or approval.
 **Display Preferences → Site Time Zone** sets the time zone in which every date/time is shown — screens, audit
 trails, exports and watermarks — and the "today" used for due and overdue flags; stored time-stamps are not
 changed. Choose your site's own time zone from the full world list (a new installation starts on UTC; an
@@ -1798,7 +1893,8 @@ Points of behaviour that are deliberate and worth knowing when you write procedu
 
 | Topic | Behaviour |
 |---|---|
-| Independent approval | The system does not stop the same person from both submitting and giving final approval. If your procedures require a different approver, enforce it through role assignment and review. |
+| Independent approval (four-eyes rule) | Enforced on the signed steps listed in §2.9 while *Enforce Four-Eyes Rule* is on (the default). The person who raised a record may approve it when someone else signed its acceptance. Batch Release, PV, Regulatory Intelligence, Licences & Certifications, Training and reference data are not covered by this rule: there, enforce independence through role assignment and review. |
+| Task assignment | Information for accountability, never a permission: it does not change who may sign. The roles offered for each step come from the same rules file as the four-eyes rule (`Resources/Workflow/workflow-rules.json`, built into the program), which the automated tests check against the real role checks. |
 | Regulatory modules (PV, Regulatory Intelligence, Licences & Certifications) | Most roles can view these records; workflow actions are limited to Administrator, Regulatory Manager and Regulatory User. |
 | Supplier approval | Approve and Qualify are limited to Administrator, Quality Manager and Authorised Person. |
 | Data disposal | Viewing and setting holds: Administrator, Quality Manager, Regulatory Manager. Removing a hold and disposing: Administrator only, with an electronic signature. |
@@ -1831,11 +1927,15 @@ Returns: Under Review→Report Draft; Approved→Under Review. Admin re-open: Cl
 **Risk:** Identification → Pending Assessment → Mitigation → Pending Review → Closed.
 Returns: Pending Assessment→Identification; Pending Review→Mitigation. Admin re-open: Closed→Mitigation.
 
-**Suppliers:** Pending → Under Assessment → Approved → Qualified. Suspend (via Pending Suspension)→Suspended;
-Cancel (via Pending Cancellation)→Cancelled; Rejected; Reactivate: Suspended→Pending.
+**Suppliers:** Pending → Under Assessment → Approved → Qualified. Pending → Pending Suspension / Pending
+Cancellation (when the assessment recommends it); Suspend: Approved, Qualified or Pending Suspension→Suspended;
+Cancel: Approved, Qualified or Pending Cancellation→Cancelled; Return to assessment: Under Assessment, Pending
+Suspension or Pending Cancellation→Pending; Reactivate: Suspended→Pending; Start New Review: Approved, Qualified,
+Suspended or Cancelled→Pending; Rejected.
 
-**Maintenance:** Scheduled → In Progress → Completed → Reviewed → Approved; plus Overdue (auto) and Suspended.
-Send-backs to Scheduled / In Progress / Completed; Admin re-open → Reviewed.
+**Maintenance:** Scheduled → In Progress → Completed → Reviewed; plus Suspended (from Scheduled, In Progress or
+Completed). Send-backs to Scheduled / In Progress / Completed; Admin re-open: Reviewed→Completed. Older records
+may show *Approved* (re-open: →Completed) or *Overdue* (behaves as Scheduled).
 
 **Batch Release (state machine):** Draft → Under Review → Pending AP Decision → Certified → Released; terminal
 Closed, Cancelled. From **Pending AP Decision**: → On Hold, → Certified, → Rejected, → Under Review. On Hold ↔
@@ -1890,6 +1990,8 @@ review). Approved/Effective→Obsolete.
 | **PSUR / PBRER** | Periodic safety report submitted to regulators. |
 | **CIOMS** | An internationally recognised adverse-event reporting form. |
 | **Separation of duties (SoD)** | Splitting a process so that key approvals are made by someone other than the preparer. |
+| **Four-eyes rule** | MintQMS's enforced form of SoD: a review, acceptance, approval or closure must be signed by someone who did not do the work being reviewed (§2.9). |
+| **Task assignment** | Naming the person responsible for a record's next step; information for accountability, not a lock (§2.10). |
 | **Read-Only** | A view-only access level; cannot create or change anything. |
 
 ---

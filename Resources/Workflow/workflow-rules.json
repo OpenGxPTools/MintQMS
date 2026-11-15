@@ -693,6 +693,50 @@
       "Administrator"
      ],
      "kind": "other"
+    },
+    {
+     "action": "SubmitForReview",
+     "from": 1,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "Auditor",
+      "AuthorisedPerson",
+      "QualityManager",
+      "QualityUser",
+      "RegulatoryManager",
+      "RegulatoryUser",
+      "Trainer"
+     ],
+     "kind": "task"
+    },
+    {
+     "action": "CloseRisk",
+     "from": 3,
+     "to": 4,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "ReviewedBy"
+      ],
+      "raiserReview": "AcceptedBy"
+     },
+     "kind": "task"
+    },
+    {
+     "action": "ReturnFromReview",
+     "from": 3,
+     "to": 2,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "kind": "other"
     }
    ],
    "auditTable": "RiskAuditLog",
@@ -810,6 +854,52 @@
      "to": 2,
      "roles": [
       "Administrator"
+     ],
+     "kind": "other"
+    },
+    {
+     "action": "StartWork",
+     "from": 5,
+     "to": 1,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "OperationsUser",
+      "QualityManager",
+      "QualityUser"
+     ],
+     "kind": "task"
+    },
+    {
+     "action": "Suspend",
+     "from": 5,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "kind": "other"
+    },
+    {
+     "action": "Suspend",
+     "from": 1,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "kind": "other"
+    },
+    {
+     "action": "Suspend",
+     "from": 2,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
      ],
      "kind": "other"
     }
@@ -970,6 +1060,82 @@
       "field": "QualificationRequired",
       "equals": true
      }
+    },
+    {
+     "action": "Suspend",
+     "from": 2,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "AssessedBy"
+      ]
+     },
+     "kind": "task"
+    },
+    {
+     "action": "Cancel",
+     "from": 3,
+     "to": 7,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "fourEyes": {
+      "notBy": [
+       "AssessedBy"
+      ]
+     },
+     "kind": "task"
+    },
+    {
+     "action": "Suspend",
+     "from": 5,
+     "to": 6,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "kind": "other"
+    },
+    {
+     "action": "Cancel",
+     "from": 5,
+     "to": 7,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "kind": "other"
+    },
+    {
+     "action": "ReturnToAssessment",
+     "from": 2,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "kind": "other"
+    },
+    {
+     "action": "ReturnToAssessment",
+     "from": 3,
+     "to": 0,
+     "roles": [
+      "Administrator",
+      "AuthorisedPerson",
+      "QualityManager"
+     ],
+     "kind": "other"
     }
    ],
    "auditTable": "SupplierAuditLog",

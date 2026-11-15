@@ -886,6 +886,12 @@ namespace OpenQMS.Controllers
             if (supplier != null)
             {
                 if (!TransitionAllowed(supplier, st => this.T("Cannot suspend: the supplier is {0}.", st), out var rejected, SupplierStatus.Approved, SupplierStatus.Qualified, SupplierStatus.PendingSuspension)) return rejected;
+                // Four-eyes: whoever recommended the suspension in the assessment may not also decide it
+                if (await this.RefusalAsync("Suppliers", nameof(Suspend), supplier) is { } fourEyes)
+                {
+                    TempData["WorkflowError"] = fourEyes;
+                    return RedirectToAction(nameof(Details), new { id });
+                }
                 var fromStatus = supplier.Status.ToString();
                 supplier.Status = SupplierStatus.Suspended;
                 supplier.ApprovalStatus = SupplierStatus.Suspended;
@@ -924,6 +930,12 @@ namespace OpenQMS.Controllers
             if (supplier != null)
             {
                 if (!TransitionAllowed(supplier, st => this.T("Cannot cancel: the supplier is {0}.", st), out var rejected, SupplierStatus.Approved, SupplierStatus.Qualified, SupplierStatus.PendingCancellation)) return rejected;
+                // Four-eyes: whoever recommended the cancellation in the assessment may not also decide it
+                if (await this.RefusalAsync("Suppliers", nameof(Cancel), supplier) is { } fourEyes)
+                {
+                    TempData["WorkflowError"] = fourEyes;
+                    return RedirectToAction(nameof(Details), new { id });
+                }
                 var fromStatus = supplier.Status.ToString();
                 supplier.Status = SupplierStatus.Cancelled;
                 supplier.ApprovalStatus = SupplierStatus.Cancelled;

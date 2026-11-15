@@ -7,7 +7,8 @@ For every rule in Resources/Workflow/workflow-rules.json:
   * with the rule turned off, the person who did the work may sign (1.1.0 behaviour).
 For the "raiser may approve" rule: the person who raised the record is refused when they also signed its
 acceptance, and may approve when someone else did.
-Also: the roles in workflow-rules.json match the role matrix of the workflow baseline; a returned and redone step
+Also: the roles in workflow-rules.json match the role matrix of the workflow baseline (stages the baseline walk
+does not reach — older states, supplier decisions — are tried live with every role); a returned and redone step
 is judged on who did it the second time (walked through the pages); a document's author cannot open its approval
 form; a wrong password is reported before the rule; the setting is on for a new site, changing it is audited, and
 only an Administrator can change it.
@@ -31,7 +32,31 @@ def as_user(email):
 
 
 def spec_for(ctrl, action):
-    return next(m for m in MODULES if m["ctrl"] == ctrl and any(a == action for a, _, _ in m["steps"]))
+    return next((m for m in MODULES if m["ctrl"] == ctrl and any(a == action for a, _, _ in m["steps"])), None) \
+        or next(m for m in MODULES if m["ctrl"] == ctrl and any(a == action for _, a, _ in m["returns"]))
+
+
+def extra_for(m, action):
+    return next((e for a, e, _ in m["steps"] if a == action), None) \
+        or next((e for _, a, e in m["returns"] if a == action), {})
+
+
+# States the normal walk does not reach: older-version states and the supplier decision states. The record is
+# walked to the equivalent state and then put in that state with the fields the real route would leave.
+EQUIV = {("Risks", 1): (2, {}), ("Risks", 3): (6, {}), ("Maintenances", 5): (0, {}),
+         ("Suppliers", 2): (1, {"ApprovalStatus": 4, "SuspensionReason": "e2e"}),
+         ("Suppliers", 3): (1, {"ApprovalStatus": 4, "CancellationReason": "e2e"}),
+         ("Suppliers", 5): (4, {"ApprovalStatus": 5})}
+
+
+def stage_record(module_name, m, state, admin):
+    if (module_name, state) not in EQUIV:
+        return record_at(m, state, admin)
+    eq, fields = EQUIV[(module_name, state)]
+    rid = record_at(m, eq, admin)
+    for k, v in {**fields, "Status": state}.items():
+        exec_sql(f'update "{m["table"]}" set "{k}"=? where Id=?', (v, rid))
+    return rid
 
 
 def record_at(m, state, admin):
@@ -68,9 +93,33 @@ for mod in RULES["modules"]:
     for st in mod["steps"]:
         key = f'{st["action"]}@{st["from"]}'
         got = next((BASE[n]["roles"][key] for n in names[mod["module"]] if key in BASE[n]["roles"]), None)
-        allowed = sorted(r for r, o in (got or {}).items() if o == "allowed")
-        check(f"rules = baseline: {mod['module']} {key} roles", got is not None and allowed == st["roles"],
+        if got is None:
+            continue   # a stage the baseline walk does not reach: measured live below
+        allowed = sorted(r for r, o in got.items() if o == "allowed")
+        check(f"rules = baseline: {mod['module']} {key} roles", allowed == st["roles"],
               f"rules {st['roles']} / baseline {allowed}")
+
+# ── 1b. stages the baseline does not reach (older states, supplier decisions): every role tried live ───
+four_eyes(False)
+role_mail = {r: (ADMIN if r == "Administrator" else f"bl-{r.lower()}@e2e.local") for r in ROLES}
+for r, e in role_mail.items():
+    if r != "Administrator":
+        ensure_user(e, [r], "BL", r)
+for mod in RULES["modules"]:
+    for st in mod["steps"]:
+        key = f'{st["action"]}@{st["from"]}'
+        if any(key in BASE[n]["roles"] for n in names[mod["module"]]):
+            continue
+        m = spec_for(mod["module"], st["action"])
+        src = stage_record(mod["module"], m, st["from"], login())
+        allowed = []
+        for r in ROLES:
+            cid = copy_record(m["table"], m["uniq"], m["prefix"], src)
+            sign(login(role_mail[r]), m, cid, st["action"], extra_for(m, st["action"]), role_mail[r])
+            if row(m["table"], cid)["Status"] == st["to"]:
+                allowed.append(r)
+        check(f"rules = live role check: {mod['module']} {key} roles", sorted(allowed) == st["roles"],
+              f"rules {st['roles']} / live {sorted(allowed)}")
 
 # ── 2. every four-eyes rule ─────────────────────────────────────────────────────────────────────────
 admin = login()
@@ -80,11 +129,11 @@ for mod in RULES["modules"]:
         if not rule:
             continue
         m = spec_for(mod["module"], st["action"])
-        extra = next(e for a, e, _ in m["steps"] if a == st["action"])
-        name = f"{m['name']} {st['action']}"
+        extra = extra_for(m, st["action"])
+        name = f"{m['name']} {st['action']}@{st['from']}"
         four_eyes(False)
         admin = login()
-        src = record_at(m, st["from"], admin)
+        src = stage_record(mod["module"], m, st["from"], admin)
         neutral = {f: OTHER for f in rule["notBy"]}
         if rule.get("raiserReview"):
             neutral[rule["raiserReview"]] = OTHER

@@ -78,7 +78,18 @@ namespace OpenQMS.Services.Workflow
         {
             if (context.ActionArguments.TryGetValue("id", out var v) && v is int i)
                 return i;
-            return int.TryParse(context.RouteData.Values["id"] as string, out var r) ? r : null;
+            if (int.TryParse(context.RouteData.Values["id"] as string, out var r))
+                return r;
+            // Some steps name the record after its type, e.g. Suppliers/CreateReview(supplierId) — which moves the
+            // supplier back to Pending, so its old assignment must end too.
+            var module = context.RouteData.Values["controller"] as string;
+            if (module != null && WorkflowRules.Modules.TryGetValue(module, out var m) && m.Entity.Length > 0)
+            {
+                var name = char.ToLowerInvariant(m.Entity[0]) + m.Entity[1..] + "Id";
+                if (context.ActionArguments.TryGetValue(name, out var t) && t is int ti)
+                    return ti;
+            }
+            return null;
         }
 
         private async Task<int?> StateAsync(string module, int id)

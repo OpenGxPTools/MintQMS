@@ -196,5 +196,60 @@ t = q1("select * from TaskAssignments where Module='Deviations' and RecordId=? o
 check("deactivation: the task is unassigned (UserDeactivated)", not t["IsCurrent"] and t["EndReason"] == "UserDeactivated", dict(t))
 check("deactivation: noted in the record's audit trail", audit_actions(rec)[-1] == "Task Unassigned")
 
+# ── stages added 2026-11-16: supplier suspension / cancellation decisions ─────────────────────────────
+sm = module("Suppliers")
+for state, action, extra, to, label in ((2, "Suspend", {"suspensionReason": "e2e"}, 6, "Pending Suspension"),
+                                        (3, "Cancel", {"cancellationReason": "e2e"}, 7, "Pending Cancellation")):
+    four_eyes(True)
+    sid = new_record(sm["table"], sm["uniq"], sm["prefix"],
+                     {**sm["init"], "Status": state, "ApprovalStatus": 4, "AssessedBy": QM1, "AssessedOn": NOW})
+    p, people, _, _ = panel(login(), "Suppliers", sid)
+    check(f"supplier {label}: the decision has a next-step panel", p is not None)
+    check(f"…managers listed, but not whoever recommended it (four-eyes)", ids[QM2] in people and ids[QM1] not in people, people)
+    check(f"…Quality Users are not listed (the decision needs a manager)", ids[QU] not in people)
+    _, msg = sign(login(QM1), sm, sid, action, extra, QM1)
+    check(f"{label}: the person who recommended it cannot decide it", row("Supplier", sid)["Status"] == state and "our-eyes" in msg, msg)
+    assign(login(), "Suppliers", sid, ids[QM1])
+    check(f"…and cannot be assigned to it", not current("Suppliers", sid))
+    assign(login(), "Suppliers", sid, ids[QM2])
+    sign(login(QM2), sm, sid, action, extra, QM2)
+    t = q1("select * from TaskAssignments where Module='Suppliers' and RecordId=? order by Id desc", (sid,))
+    check(f"{label}: another manager decides; the assignment ends with who did it",
+          row("Supplier", sid)["Status"] == to and not t["IsCurrent"] and t["EndReason"] == "MovedOn" and t["EndedBy"] == QM2, dict(t))
+    four_eyes(False)
+    sid2 = copy_record("Supplier", sm["uniq"], sm["prefix"], sid)
+    exec_sql("update Supplier set Status=? where Id=?", (state, sid2))
+    sign(login(QM1), sm, sid2, action, extra, QM1)
+    check(f"{label}: with the rule off, the recommender may decide (as in 1.1.0)", row("Supplier", sid2)["Status"] == to)
+four_eyes(True)
+
+# ── a new supplier review ends the assignment of the stage it leaves ──────────────────────────────────
+qm = module("Suppliers (qualification)")
+sid = new_record(qm["table"], qm["uniq"], qm["prefix"], {**qm["init"], "Status": 4, "ApprovalStatus": 4,
+                                                          "AssessedBy": QM1, "ApprovedBy": QM1})
+assign(login(), "Suppliers", sid, ids[QM2])
+check("set-up: qualification of an approved supplier assigned", current("Suppliers", sid))
+post_form(login(), "/Suppliers/CreateReview", f"/Suppliers/CreateReview/{sid}",
+          {"supplierId": sid, "ReviewTrigger": "0", "ReviewSummary": "e2e"})
+t = q1("select * from TaskAssignments where Module='Suppliers' and RecordId=? order by Id desc", (sid,))
+check("new review: supplier back to Pending and the old assignment ended",
+      row("Supplier", sid)["Status"] == 0 and not t["IsCurrent"] and t["EndReason"] == "MovedOn", dict(t))
+
+# ── records left in older states: Risk Assessment / Review, Maintenance Overdue ───────────────────────
+rm = module("Risk")
+rk = new_record(rm["table"], rm["uniq"], rm["prefix"], {**rm["init"], "Status": 1})
+p, people, _, _ = panel(login(), "Risks", rk)
+check("risk in the old Assessment state: next-step panel (submit for review)", p is not None and ids[QU] in people, people)
+rk = new_record(rm["table"], rm["uniq"], rm["prefix"], {**rm["init"], "Status": 3, "ReviewedBy": QM1, "AcceptedBy": QM2})
+p, people, _, _ = panel(login(), "Risks", rk)
+check("risk in the old Review state: next-step panel (close), without who submitted it for review",
+      p is not None and ids[QM2] in people and ids[QM1] not in people, people)
+_, msg = sign(login(QM1), rm, rk, "CloseRisk", {"reviewConclusion": "e2e"}, QM1)
+check("…and the four-eyes rule now applies there too", row("Risk", rk)["Status"] == 3 and "our-eyes" in msg, msg)
+mm = module("Maintenance")
+mt = new_record(mm["table"], mm["uniq"], mm["prefix"], {**mm["init"], "Status": 5})
+p, people, _, _ = panel(login(), "Maintenances", mt)
+check("maintenance in the old Overdue state: next-step panel (start work), operations users listed", p is not None and ids[OPS] in people, people)
+
 four_eyes(True)
 sys.exit(summary())
