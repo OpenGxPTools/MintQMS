@@ -359,7 +359,7 @@ Settings can go in `/etc/mintqms/mintqms.env` (use `__` for nested names, as sho
 | `AllowedHosts` | The host name(s) users type, separated by `;` |
 | `DataProtectionKeysPath` | Folder that keeps users signed in across restarts |
 | `SourceCodeUrl` | Link to the source code of the version you run (AGPLv3); defaults to the MintQMS project |
-| `Localization__Languages__N` | Extra interface languages **installed** on this server, e.g. `Localization__Languages__1=es`, `Localization__Languages__2=pt-BR`. English is always installed. Which language is used is set by an Administrator in **Settings → System Settings** (Site Language; optionally *Let Users Choose Their Language*), and changes are logged. The language changes the words and dates on screen only — numbers keep the server's format, and records, exports and PDFs are stored and produced exactly as before |
+| `Localization__Languages__N` | Extra interface languages **installed** on this server, e.g. `Localization__Languages__1=es`, `Localization__Languages__2=pt-BR`. English is always installed. Which language is used is set by an Administrator in **Settings → System Settings** (Site Language; optionally *Let Users Choose Their Language*), and changes are logged. The language changes the words and dates on screen; numbers keep the server's format, and stored records and audit trails never change language. Exports, PDFs and issued certificates are produced in the site language at the moment they are made (with English, exactly as before) |
 | `CertPassword` | Password of `cert.pfx` |
 | `SeedAdminPW` | First start only: creates `admin@trial.local` with this password |
 | `BackupStatusFile` | Where the Settings page reads the backup result |

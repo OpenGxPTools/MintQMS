@@ -1,168 +1,92 @@
 # Changelog
 
-## Unreleased
+## MintQMS 1.1.0 (2026-11-15)
 
-**Usable outside Australia**
+MintQMS now runs in **English, Spanish and Portuguese (Brazil)**, and can be used outside Australia.
 
-- **Site time zone:** System Settings now offers every time zone in the world, grouped by continent (before:
-  Australian cities, Auckland and UTC only). A new installation starts on UTC until the Administrator chooses;
-  an existing installation keeps the zone it was using, including one that never saved its settings (Brisbane).
-- **Adverse-event reporting deadlines** are System Settings (calendar days after Day 0: serious, default 15;
-  fatal or life-threatening, default 7) instead of fixed in the program. An existing case keeps its deadline when
-  the settings change; it is recalculated only when its Day 0 or seriousness changes, and the change is now in
-  the case's audit trail.
-- **General wording instead of Australian terms**, in English, Spanish and Portuguese:
-  *ARTG Number / ARTG Reference / ARTG Entry* → **Registration Number** (one wording everywhere: products, batch
-  release, release certificate, adverse-event suspect product, CIOMS form, exports); *Reportable to TGA, TGA
-  Deadline, TGA Submission…, Log TGA Submission, Submitted to / Acknowledged by TGA* → **Authority** wording
-  and **Reporting Deadline**; *TGA ADRS Reference* → **Authority Case Reference**; *AEMS Portal* → **Authority
-  Online Portal**; PSUR *TGA Reference* → **Authority Reference**; *Releasing Company TGA Licence / Clearance No.*
-  → **Releasing Company Manufacturing Licence No.**; *Legal ID (ABN/ACN/Other)* → **Company Registration / Tax
-  ID**; the licence *GMP Clearance Pathway* → **GMP Evidence Pathway** (MRA, review of another authority's
-  inspection, on-site inspection by the authority); help texts and the AP signature note refer to "the
-  authority" / "e.g. PIC/S Annex 16". Australian-only access pathways are marked **(AU)** (SAS A/B/C,
-  Authorised Prescriber, CTN). The default release checklist and the Consumer Health certification statement
-  no longer name the TGA. Database fields are unchanged (no data conversion). Exports and CSV/Excel column
-  headings use the new wording; audit entries written before keep the old field names; release certificates
-  already issued keep their wording (they are stored exactly as issued).
+**Before you upgrade:** take a backup (DEPLOYMENT.md §5) — this version changes the database (three changes,
+applied automatically at start-up). After the upgrade the site stays in English until an Administrator
+installs and selects another language. To go back to 1.0.1, stop the service, put back the 1.0.1 program and
+restore the backup taken before the upgrade (DEPLOYMENT.md §6); work entered after the upgrade is then lost.
 
-**Documents and Training in Spanish and Portuguese**
+**Languages**
 
-- Every page of the Documents and Training modules (registers, create/edit, approval and its signature
-  statements, review register, library, dashboards, My Training, compliance matrix), their messages and
-  validation errors, dropdown prompts and field labels. Training certificates and attendance lists: see *Generated
-  records and issued documents* below.
-- Deviations, Complaints and CAPA in Spanish and Portuguese: pages, guidance texts (what each section must
-  document), severity and event-type definitions, alerts, messages and validation errors. Dashboard chart labels
-  follow with the reports batch.
-- Change Control, Audits and Risk in Spanish and Portuguese: pages, guidance texts, the action plan, the
-  signature dialogs (what each step does and where the record goes), alerts, messages and validation errors.
-  The suggested actions loaded into an action plan stay in English, because they become part of the record.
-- Suppliers, Maintenance, Batch Release (with certification statements settings) and Data Disposal in
-  Spanish and Portuguese: pages, dashboards, signature dialogs, checklists, test results, alerts, messages
-  and validation errors. Release certificates: see *Generated records and issued documents* below. The standard
-  checklist lines are stored in English and shown in the screen language (they cannot be edited, so the
-  record itself does not change); certification statement texts are record content and stay as entered.
-- Pharmacovigilance (adverse events, literature monitoring, signal review, PSUR), Regulatory Intelligence
-  (applications, conditions, variations, milestones, access pathways) and Licences & Certifications (register,
-  calendar, dashboard) in Spanish and Portuguese: pages, guidance texts (seriousness, MedDRA, causality, Day 0,
-  RFI, ISO cycle…), signature dialogs, alerts, workflow refusals, messages and validation errors. The CIOMS-I
-  form and exports: see *Generated records and issued documents* below.
-- Master data — Products, Materials, Processes, Assets, Customers (with its dashboard) and Services — in
-  Spanish and Portuguese: pages, approval dialogs, field labels, messages and the option lists (dosage and
-  presentation forms, device and material categories, customer industries). Options are stored in English
-  whatever the language, and a stored value is shown translated.
-- Reports (hub, management review, overdue items, training compliance, attachment expiry register) and
-  System Settings (with its audit log) in Spanish and Portuguese. Excel exports: see
-  *Generated records and issued documents* below.
-- Dashboard charts in every module show their labels (statuses, types, categories, series names) and month
-  names in the user's language; the "All" choice in table page-size menus is translated everywhere.
-- Home page, user and role administration (with role descriptions), login history, the account pages
-  (profile, e-mail, password, two-factor authentication) and the error page in Spanish and Portuguese. The
-  About page stays in English: it holds the licence and disclaimer.
-- Deviations, Complaints, CAPA, Documents and Training: the signature dialog titles, the status shown on
-  edit and detail pages, the "Click to remove" hint and the remaining messages after an action are now
-  translated too.
-- Drop-down lists of types, categories, ratings and similar options now show their translated names in every
-  module (before, only some lists were translated).
-- Messages after an action are translated where they are shown (all modules), so the code that sets them —
-  and anything recorded — is unchanged.
-- The remaining English in signature dialogs, counters ("Attached Files (3)", "Aged (>30 days)", "Due Within 10
-  Days"), severity and status badges, document category and type names and Edit-page section headings.
+- Languages are installed on the server with the `Localization:Languages` setting (`en`, `es`, `pt-BR`; only
+  English by default). An Administrator sets the **Site Language** for everyone in *Settings → System
+  Settings*. **Let Users Choose Their Language** (off by default) adds a language menu for each user, for
+  example an English-speaking auditor at a Spanish-speaking site. Both settings are logged in the settings
+  audit trail. ReadOnly users may change their own language; every other change remains refused for them.
+- Every module is translated: pages, guidance texts, signature dialogs, option lists, dashboard charts,
+  messages, validation errors, sign-in and account pages. Each page declares its language (`<html lang>`).
+  The About page stays in English: it holds the licence and disclaimer. A text without a translation is
+  shown in English, so a screen never breaks.
+- **The language changes what is shown, never what is stored.** Workflow states, options and stored values
+  are kept in English and shown translated; free text is kept exactly as typed; the audit trail is written
+  in English. Numbers keep the server's format, so a typed number is always read the same way. Dates on
+  screens follow the site language ("lunes, 9 de noviembre de 2026"); tables still sort them by date.
+- Translations were prepared for this release and reviewed by the maintainer. If your site uses Spanish or
+  Portuguese, check the wording — especially signature and workflow steps — as part of your own validation.
 
 **Generated records and issued documents**
 
 - Exports (detail PDF and CSV, Excel registers, reports, the CIOMS-I form) and the text stamped on downloaded
-  files are produced in the **site language** at the moment they are made — not a user's own language choice.
-  With the site language English they are exactly as before. The audit trail stays in English.
+  files are produced in the **site language** at the moment they are made, not in a user's own choice. With
+  the site language English they are exactly as before.
 - Release certificates, training certificates and attendance lists are now **stored exactly as issued** (site
-  language at issue, organisation name and logo embedded, SHA-256 checksum) and always shown from that copy, so a
-  later change of language, organisation name, logo, user name or software version never alters them. A copy
-  that fails its checksum is not shown and the event is audited. Certificates issued earlier are fixed once, in
-  English, on the first start after upgrading. A training certificate is issued when that trainee completes; the
-  attendance list is shown as NOT FINAL until the training is completed; re-opening supersedes it.
+  language at issue, organisation name and logo embedded, SHA-256 checksum) and always shown from that copy, so
+  a later change of language, organisation name, logo, user name or software version never alters them. A copy
+  that fails its checksum is not shown, and the event is audited. Certificates issued earlier are fixed once,
+  in English, on the first start after upgrading. A training certificate is issued when that trainee
+  completes; the attendance list is marked NOT FINAL until the training is completed; re-opening supersedes it.
 
-**Fixes (also in English)**
+**Usable outside Australia**
+
+- **Site time zone:** System Settings offers every time zone in the world, grouped by continent (before:
+  Australian cities, Auckland and UTC only). A new installation starts on UTC until the Administrator chooses;
+  an existing installation keeps the zone it was using, including one that never saved its settings (Brisbane).
+- **Adverse-event reporting deadlines** are System Settings (calendar days after Day 0: serious, default 15;
+  fatal or life-threatening, default 7) instead of fixed in the program. An existing case keeps its deadline
+  when the settings change; it is recalculated only when its Day 0 or seriousness changes, and that change is
+  in the case's audit trail.
+- **General wording instead of Australian terms**, in every language: *ARTG Number / Reference / Entry* →
+  **Registration Number**; *Reportable to TGA, TGA Deadline, TGA Submission…* → **Authority** wording and
+  **Reporting Deadline**; *TGA ADRS Reference* → **Authority Case Reference**; *AEMS Portal* → **Authority
+  Online Portal**; PSUR *TGA Reference* → **Authority Reference**; *Releasing Company TGA Licence / Clearance
+  No.* → **Releasing Company Manufacturing Licence No.**; *Legal ID (ABN/ACN/Other)* → **Company Registration
+  / Tax ID**; *GMP Clearance Pathway* → **GMP Evidence Pathway**. Australian-only access pathways are marked
+  **(AU)** (SAS A/B/C, Authorised Prescriber, CTN). The default release checklist and the Consumer Health
+  certification statement no longer name the TGA. Database fields are unchanged (no data conversion); export
+  column headings use the new wording; audit entries written before keep the old field names; certificates
+  already issued keep their wording.
+
+**Fixes**
 
 - Training: a trainee could open a "certificate" for training they had not completed; the certificate's "Date of
   Issue" was the day it was viewed; release certificates showed the current organisation name and logo instead
   of those at issue. All fixed by the stored copies above.
+- Suppliers register: the *Under Assessment* filter always showed an empty list. It now filters the Workflow
+  column and finds both first assessments and re-reviews.
 - Excel exports: the Export Info sheet said "Exported On (UTC)" but showed the site time; it now says "Exported
   On". Its note no longer calls MintQMS "a validated QMS" (validation is each user's responsibility).
-- CSV exports now start with the UTF-8 mark, so Excel shows accented text (e.g. "José") correctly.
-- Data Disposal audit log: times were labelled UTC but shown in the site time zone; the label is now correct.
-
-- CAPA Dashboard: the Status Distribution chart drew oversized; it is now the same size as on the other
-  dashboards.
-- Change Control: the *Return for Rework* dialog said the change goes back to Proposal; it goes back to
-  Assessment, and now says so.
-- Batch Release: the "?" help buttons in the workflow dialogs did nothing (their script ran before the page's
-  Bootstrap library had loaded); they open again.
-- Audits: the edit page raised a script error while the audit was still Scheduled (harmless, but it showed
-  in the browser console).
-- Option and type names that showed as code (e.g. "NeedsImprovement", "QualitySystem", "ProductQuality") in
-  audit and risk drop-downs and details now read properly; likewise in Suppliers, Maintenance and Batch
-  Release ("NotAssessed", "OneTime", "NotApplicable", "QualitySystemsCertificate"; maintenance types now
-  read e.g. "Preventive Maintenance"). The Suppliers register's browser tab reads "Suppliers" instead of
-  "Index". A supplier review snapshot showed its review trigger by code name; it now shows the proper name.
-- Pharmacovigilance, Regulatory Intelligence and Licences & Certifications: option and status names that
-  showed as code now read properly — e.g. reporter types ("Healthcare Professional"), actions taken,
-  outcomes, causality, the status filters on the three registers, PSUR and signal statuses, document types
-  and condition/variation/pathway types. A refused workflow step names the states properly too ("Cannot
-  transition from 'Conditions Active' …" instead of 'ConditionsActive').
-- Master data: browser tabs on the registers and on the create, edit and delete pages read e.g. "Assets",
-  "New Asset", "Edit Asset" instead of "Index", "Create", "Edit"; material and service details showed the
-  status "UnderReview", now "Under Review".
-- Dashboard charts in Audits, Risks, Maintenance, Documents and Pharmacovigilance labelled some states by
-  code name ("InProgress", "UnderReview", "PendingApproval"); they now read "In Progress", "Under Review",
-  "Pending Approval".
-- Settings audit log: the time column was headed "(UTC)" but showed the site's time zone; it now names the
-  site's zone. The attachment expiry register likewise said "UTC" after a time shown in the site's zone.
-- Complaints register: the browser tab reads "Complaints" instead of "Index".
-- Create user page: a leftover developer note about "external authentication services" no longer links to
-  an ASP.NET setup article.
-- Suppliers register: the *Under Assessment* filter always showed an empty list. It searched the
-  Approval Status column, but "Under Assessment" is a workflow stage shown in the Workflow column. It now
-  filters the Workflow column and finds both first assessments and re-reviews.
-- A complaint returned to an earlier stage could name it by its code ("PendingAcceptance"); it now shows
-  "Pending Acceptance".
-- A training reminder showed the document type's code name (e.g. "StandardOperatingProcedure"); it now shows
-  the type's proper name.
-- Option names that showed as code fragments now read properly: CoA, CoC (were "Co A", "Co C"),
-  CoA Template ("Co ATemplate"), ISO / Private Certification ("ISOPrivate Certification"), GMP Evidence
-  Package ("GMPEvidence Package"), TGA On-Site Inspection ("TGAInspection"), sNDA / sBLA ("sNDA_sBLA"),
-  SAS Category A / B / C ("SAS_A" …). Stored values are unchanged. Note for audit trails: a supplier
-  document upload records the document type's name, so new entries read "(CoA Template)" while earlier
-  entries keep "(Co ATemplate)" — history is never rewritten.
-
-**Spanish and Portuguese (Brazil) — shared parts translated**
-
-- Translated: menu bar, page layout, sign-in and account pages, every state/type/role name, the 417
-  words and phrases shared across screens (buttons, column headings, common labels), table controls
-  (search, paging), built-in validation messages and password rules — 1,035 entries in each language.
-  Module-specific page text follows in later releases; until then it shows in English.
-- Each page declares the language it is shown in (`<html lang>`), for screen readers and browsers.
-- Records never change language: audit trails, record fields, PDFs and stored values stay English
-  whatever language the user has chosen (tested).
-- The menu bar wraps onto a second row when it does not fit, instead of pushing *Logout* off-screen
-  (this also affected English on screens narrower than about 1600 pixels).
-- Status filters on registers keep working in every language (tested in a browser on all 15 registers).
-- Tools for contributors: `tools/i18n.py` (build/check/report/review) and `tools/i18n_wrap.py`;
-  see CONTRIBUTING.md.
-
-**Groundwork for Spanish and Portuguese**
-
-- Languages are installed on the server with the `Localization:Languages` setting (`en`, `es`, `pt-BR`). An
-  Administrator sets the **Site Language** for everyone in *Settings → System Settings*; **Let Users Choose
-  Their Language** (off by default) adds a language menu for users. Both changes are logged in the settings
-  audit trail. Database change: two settings fields (existing sites stay English, user choice off).
-- The language affects what is shown only: words, and dates on screens ("lunes, 9 de noviembre de 2026";
-  tables still sort dates chronologically). Numbers keep the server's format, so a typed number is always
-  read the same way; stored records, audit trails, e-signatures, exports and PDFs are unchanged.
-- ReadOnly users may change their own language; every other change remains refused for them.
+- CSV exports start with the UTF-8 mark, so Excel shows accented text (e.g. "José") correctly.
+- Times labelled "UTC" but shown in the site time zone now name the site's zone (Settings audit log, Data
+  Disposal audit log, attachment expiry register).
+- Option, type and status names that showed as code now read properly in every module (e.g. "InProgress" →
+  "In Progress", "Co ATemplate" → "CoA Template", "sNDA_sBLA" → "sNDA / sBLA", "SAS_A" → "SAS Category A",
+  maintenance types such as "Preventive Maintenance"), including dashboard charts, refused workflow steps and
+  training reminders. Stored values are unchanged. In audit trails, new entries use the proper name while earlier
+  entries keep theirs — history is never rewritten.
+- Browser tabs on registers and on create, edit and delete pages read e.g. "Suppliers", "New Asset", "Edit
+  Asset" instead of "Index", "Create", "Edit".
+- The menu bar wraps onto a second row when it does not fit, instead of pushing *Logout* off-screen.
 - Field labels: "DocType" now reads "Document Type", "HolderType" reads "Holder Type".
-- Tests: `tests/e2e/test_language.py` (run as-is, and with `E2E_LANGS=1` against an instance with the
-  languages enabled).
+- Create user page: a leftover developer note no longer links to an ASP.NET setup article.
+
+**For contributors**
+
+- `tools/i18n.py` (build, check, report, review) and `tools/i18n_wrap.py`; see CONTRIBUTING.md.
+- Tests: the whole e2e suite runs in any site language (`E2E_LANGS=1`); new suites `test_language`,
+  `test_record_language`, `test_workflows_language`, `test_issued_documents`, `test_regional_neutral`.
 
 ## MintQMS 1.0.1 (2026-11-15)
 

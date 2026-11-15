@@ -27,6 +27,7 @@ tamper-resistant history. It runs in an ordinary web browser and you host it you
 | Reference data | Products · Materials · Processes · Assets · Services · Customers |
 | Oversight | Dashboards per module · Management review, training compliance and overdue-items reports · Excel, CSV and PDF exports |
 | Administration | Users and 11 pre-defined roles · System settings · Login history · Retention and controlled disposal |
+| Languages | English, Spanish and Portuguese (Brazil), set by an Administrator for the whole site |
 
 **Built for regulated work:**
 
@@ -44,6 +45,8 @@ tamper-resistant history. It runs in an ordinary web browser and you host it you
   and when.
 - **Retention.** Retention periods are set per record type, with holds and e-signed disposal.
 - **Time zone.** Times are stored in UTC and displayed in your site's time zone.
+- **Languages.** The language changes what is shown, never what is stored: audit trails and stored values stay
+  the same, and issued certificates are kept exactly as issued.
 
 ## Who it is for
 
