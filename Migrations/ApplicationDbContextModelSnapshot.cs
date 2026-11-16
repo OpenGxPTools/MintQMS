@@ -3081,6 +3081,66 @@ namespace OpenQMS.Migrations
                     b.ToTable("DocumentAuditLog");
                 });
 
+            modelBuilder.Entity("OpenQMS.Models.EmailOutboxMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HtmlBody")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Module")
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("NextAttemptOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("RecordId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("SentOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ToAddress")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Status", "NextAttemptOn");
+
+                    b.ToTable("EmailOutbox");
+                });
+
             modelBuilder.Entity("OpenQMS.Models.IssuedRecordCopy", b =>
                 {
                     b.Property<int>("Id")
@@ -7801,12 +7861,19 @@ namespace OpenQMS.Migrations
                     b.Property<int>("RiskRetentionYears")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("SendAssignmentEmails")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("SeriousAEReportingDays")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("SiteLanguage")
                         .IsRequired()
                         .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SiteWebAddress")
+                        .HasMaxLength(300)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SmtpHost")

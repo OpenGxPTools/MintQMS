@@ -151,6 +151,9 @@ builder.Services.AddHsts(options =>
 
 // Email sender
 builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
+builder.Services.AddSingleton<OpenQMS.Services.Email.SmtpSecret>();
+builder.Services.AddTransient<OpenQMS.Services.Email.SmtpTransport>();
+builder.Services.AddHostedService<OpenQMS.Services.Email.EmailOutboxSender>();
 
 // PV Services
 builder.Services.AddScoped<OpenQMS.Services.Workflow.TaskAssignmentService>();
@@ -226,6 +229,22 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         services.GetRequiredService<ILogger<Program>>().LogError(ex, "Issued documents back-fill failed; will retry on next start.");
+    }
+
+    // An SMTP password stored as plain text (before 1.2.0) is protected now, once (Data Protection keys).
+    try
+    {
+        var smtp = await context.SystemSettings.FirstOrDefaultAsync();
+        if (smtp != null && !string.IsNullOrEmpty(smtp.SmtpPassword) && !OpenQMS.Services.Email.SmtpSecret.IsProtected(smtp.SmtpPassword))
+        {
+            smtp.SmtpPassword = services.GetRequiredService<OpenQMS.Services.Email.SmtpSecret>().Protect(smtp.SmtpPassword);
+            await context.SaveChangesAsync();
+            services.GetRequiredService<ILogger<Program>>().LogInformation("SMTP password now stored protected.");
+        }
+    }
+    catch (Exception ex)
+    {
+        services.GetRequiredService<ILogger<Program>>().LogError(ex, "Protecting the stored SMTP password failed; will retry on next start.");
     }
 
     // Clear all active sessions on startup.

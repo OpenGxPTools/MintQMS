@@ -26,6 +26,14 @@
     </div>
 }
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="settings-error">
+        @L.Message(TempData["Error"])
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
 <form asp-action="Save" method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
 
@@ -336,7 +344,7 @@
         <div class="card-header fw-semibold">@L["Email Configuration"]</div>
         <div class="card-body">
             <p class="text-muted small mb-3">
-                @L["Used to send password reset and account confirmation emails."]
+                @L["Used for account e-mails (address confirmation, password reset) and, when turned on, assignment e-mails."]
                 @if (canEdit)
                 {
                     <span>@H["For Gmail, use <strong>smtp.gmail.com</strong>, port <strong>587</strong>, and an <a href=\"https://myaccount.google.com/apppasswords\" target=\"_blank\">App Password</a> (not your regular Gmail password)."]</span>
@@ -400,6 +408,45 @@
                         </div>
                     </div>
                 </div>
+            }
+            <div class="form-text mb-3">@L["The password is stored encrypted and is never shown. After restoring the database without its data-protection keys folder, enter it again."]</div>
+            <hr />
+            <div class="mb-3 row">
+                <label asp-for="SiteWebAddress" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-5">
+                    <input asp-for="SiteWebAddress" class="form-control" placeholder="https://qms.example.com" disabled="@dis" />
+                    <span asp-validation-for="SiteWebAddress" class="text-danger small"></span>
+                    <div class="form-text">@L["The address people use to open MintQMS; e-mails link to records with it."]</div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <div class="col-sm-3 col-form-label">@L["Assignment e-mails"]</div>
+                <div class="col-sm-9">
+                    <div class="form-check form-switch mt-2">
+                        <input asp-for="SendAssignmentEmails" class="form-check-input" disabled="@dis" />
+                        <label asp-for="SendAssignmentEmails" class="form-check-label"></label>
+                    </div>
+                    <span asp-validation-for="SendAssignmentEmails" class="text-danger small"></span>
+                    <div class="form-text">@L["E-mail a person when a task is assigned to them: type of record, number, next step, due date, who assigned it, the note and a link — no record content. Turn on after a successful test e-mail."]</div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <div class="col-sm-3 col-form-label">@L["E-mail outbox"]</div>
+                <div class="col-sm-9 pt-2 small" id="outbox-status">
+                    @L["{0} waiting, {1} sent, {2} failed.", (int)(ViewBag.OutboxPending ?? 0), (int)(ViewBag.OutboxSent ?? 0), (int)(ViewBag.OutboxFailed ?? 0)]
+                    @if (ViewBag.OutboxLastError is OpenQMS.Models.EmailOutboxMessage last)
+                    {
+                        <div class="text-danger" id="outbox-last-error">@L["Last problem ({0}): {1}", last.CreatedOn.ToSite().ToString("dd MMM yyyy HH:mm", DisplayDates.Culture), last.LastError ?? ""]</div>
+                    }
+                    <div class="text-muted">@L["Messages are retried after 1, 5, 15, 60 and 240 minutes, then marked failed."]</div>
+                </div>
+            </div>
+            @if (canEdit)
+            {
+                <button type="submit" formaction="@Url.Action("SendTestEmail")" formnovalidate class="btn btn-outline-secondary btn-sm" id="send-test-email">
+                    <i class="bi bi-envelope me-1"></i>@L["Send test e-mail to me"]
+                </button>
+                <span class="form-text ms-2">@L["Uses the saved settings: save changes first."]</span>
             }
         </div>
     </div>

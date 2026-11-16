@@ -295,7 +295,13 @@ date (shown in red once passed) and note.
 - **Everything is traced.** Each assign, reassign and unassign is written to the record's own audit trail
   (*Task Assigned / Task Reassigned / Task Unassigned*, with the person, due date and note). Assignments are
   never deleted, only ended. Deactivating a user ends their open assignments, with a note in each record (§11.1).
-- **Keep the note short and free of confidential details** (no patient, customer or product specifics).
+- **Keep the note short and free of confidential details** (no patient, customer or product specifics): it is
+  included in the assignment e-mail.
+- **E-mail.** When *Send Assignment E-mails* is on (§11.2), the person named receives an e-mail in the site
+  language with the type of record, its number, the next step, the stage, the due date, who assigned it, the note
+  and a link — never the record's content (no title, description, product, patient or customer details). No e-mail
+  is sent when you assign yourself. E-mails are queued with the assignment and sent in the background, so a mail
+  server problem never stops the work.
 - **Where you see your work.** The **Home** page has three tabs:
   - **My Tasks** — records assigned to you (an overdue due date is shown in red), plus the trainings you are
     scheduled to attend;
@@ -1791,8 +1797,15 @@ which are recorded in the settings audit log. The page covers the organisation's
 preferences; the **warning periods** that decide what the dashboards show as due soon (licence and certificate
 expiry, maintenance, training); default resolution times; password expiry, password history and idle time-out;
 the **adverse-event reporting deadlines** (calendar days after Day 0 for serious and for fatal or
-life-threatening cases; defaults 15 and 7); the e-mail (SMTP) server used for account confirmation and password
-resets; and retention periods.
+life-threatening cases; defaults 15 and 7); the e-mail (SMTP) server used for account confirmation, password
+resets and assignment e-mails; and retention periods.
+**E-mail.** The SMTP password is stored encrypted and never shown (after restoring a database without its
+data-protection keys, enter it again). **Site Web Address** is the address people use to open MintQMS; e-mails
+link to records with it. **Send test e-mail to me** sends a message with the saved settings to the
+Administrator's own address and reports the result (logged). **Send Assignment E-mails** (off by default; needs
+the SMTP host and From address) e-mails a person when a task is assigned to them (§2.10). The **E-mail outbox**
+line shows how many e-mails are waiting, sent and failed, and the last problem; a message that cannot be sent is
+retried after 1, 5, 15, 60 and 240 minutes, then marked failed.
 **Security Policy → Enforce Four-Eyes Rule** (on by default, also after an upgrade) applies the four-eyes rule
 of §2.9. Turning it off lets one person do and approve the same work; the page then shows a GMP warning, and the
 change is logged like every other setting. After an upgrade from an earlier version, a record already half-way

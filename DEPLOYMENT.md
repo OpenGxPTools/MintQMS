@@ -256,7 +256,10 @@ sudo ufw allow OpenSSH && sudo ufw allow 80,443/tcp && sudo ufw enable
 3. Under **Settings → System Settings**, set at least:
    - organisation name, address and logo (the logo appears on certificates and reports);
    - **site time zone** — every date and time is shown in this zone;
-   - **e-mail (SMTP)** server and sender address — needed for account confirmation and password resets;
+   - **e-mail (SMTP)** server and sender address — needed for account confirmation and password resets — and
+     the **Site Web Address** (the address users type, used for links in e-mails). Use **Send test e-mail to me**;
+     once it arrives, you may turn on **Send Assignment E-mails** (off by default). The SMTP password is stored
+     encrypted with the keys in `DataProtectionKeysPath`;
    - retention periods, password expiry, idle time-out and the warning periods used by the dashboards, to
      match your procedures.
 4. Under **Settings → Release Certification Statements**, review the batch-release certification statements.
@@ -326,6 +329,10 @@ sudo -u mintqms tar -xzf /var/backups/mintqms/OpenQMS_uploads_<timestamp>.tar.gz
 sudo systemctl start mintqms
 ```
 
+The backup script does not copy the data-protection keys folder (`/var/lib/mintqms/keys`). Keep a copy of it
+with your backups (it rarely changes). If it is not restored with the database, users simply sign in again, but
+the SMTP password must be re-entered in **Settings → System Settings**: it is stored encrypted with those keys.
+
 ---
 
 ## 6. Upgrading to a new version
@@ -357,7 +364,8 @@ Settings can go in `/etc/mintqms/mintqms.env` (use `__` for nested names, as sho
 |---|---|
 | `ConnectionStrings__DefaultConnection` | Database location, e.g. `Data Source=/var/lib/mintqms/OpenQMS.db` |
 | `AllowedHosts` | The host name(s) users type, separated by `;` |
-| `DataProtectionKeysPath` | Folder that keeps users signed in across restarts |
+| `DataProtectionKeysPath` | Folder that keeps users signed in across restarts, and the keys that encrypt the stored SMTP password. Keep a copy with your backups: without it, re-enter the SMTP password after a restore |
+| `EmailOutbox__IntervalSeconds` | How often queued e-mails are sent (default 30) |
 | `SourceCodeUrl` | Link to the source code of the version you run (AGPLv3); defaults to the MintQMS project |
 | `Localization__Languages__N` | Extra interface languages **installed** on this server, e.g. `Localization__Languages__1=es`, `Localization__Languages__2=pt-BR`. English is always installed. Which language is used is set by an Administrator in **Settings → System Settings** (Site Language; optionally *Let Users Choose Their Language*), and changes are logged. The language changes the words and dates on screen; numbers keep the server's format, and stored records and audit trails never change language. Exports, PDFs and issued certificates are produced in the site language at the moment they are made (with English, exactly as before) |
 | `CertPassword` | Password of `cert.pfx` |

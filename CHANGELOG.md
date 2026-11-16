@@ -43,7 +43,15 @@
 - **Reports → Task Assignments** (Administrator, Quality Manager, Authorised Person, Auditor): open and overdue tasks
   by person, tasks no one is named for by module and stage, filters and Excel export. *Overdue Items* shows who is
   assigned to each record.
-- Database change: a new TaskAssignments table.
+- **Assignment e-mails** (System Settings → *Send Assignment E-mails*, off by default; needs SMTP): the person named
+  gets an e-mail in the site language with the type of record, number, next step, stage, due date, who assigned it,
+  the note and a link (new setting *Site Web Address*) — no record content. E-mails are written to an outbox in the
+  same save as the assignment and sent in the background with retries (1, 5, 15, 60, 240 minutes, then failed); the
+  settings page shows waiting / sent / failed and the last problem. **Send test e-mail to me** (Administrator,
+  logged).
+- **SMTP password stored encrypted** (ASP.NET Data Protection, keys in `DataProtectionKeysPath`); an existing plain
+  password is encrypted at the first start. After restoring a database without its keys folder, re-enter it.
+- Database change: a new TaskAssignments table; a new EmailOutbox table and two settings fields.
 
 **Fixes**
 

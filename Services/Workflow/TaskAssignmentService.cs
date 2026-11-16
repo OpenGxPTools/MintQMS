@@ -167,9 +167,25 @@ namespace OpenQMS.Services.Workflow
                 + (current?.AssignedToUser is { } prev ? $", instead of {DisplayName(prev)} ({prev.Email})" : "")
                 + (dueDate.HasValue ? $". Due {dueDate:yyyy-MM-dd}" : "") + (note != null ? $". Note: {note}" : "") + ".",
                 assignedBy, now);
+            await QueueEmailAsync(module, record, assignee, assignedBy, dueDate, note, reassigned: current != null);
             await _db.SaveChangesAsync();
             await tx.CommitAsync();
             return null;
+        }
+
+        /// <summary>Queues the "task assigned to you" e-mail (same save as the assignment) when System Settings → Send
+        /// Assignment E-mails is on and the person has an address; not when people assign themselves.</summary>
+        private async Task QueueEmailAsync(string module, object record, AppUser assignee, string assignedBy,
+                                           DateTime? dueDate, string? note, bool reassigned)
+        {
+            var settings = await _db.SystemSettings.FindAsync(1);
+            if (settings?.SendAssignmentEmails != true || string.IsNullOrWhiteSpace(assignee.Email)
+                || string.Equals(assignee.UserName, assignedBy, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(assignee.Email, assignedBy, StringComparison.OrdinalIgnoreCase))
+                return;
+            var assigner = await _users.FindByNameAsync(assignedBy) ?? await _users.FindByEmailAsync(assignedBy);
+            _db.EmailOutbox.Add(OpenQMS.Services.Email.AssignmentEmail.Compose(module, record, assignee,
+                assigner != null ? DisplayName(assigner) : assignedBy, dueDate, note, reassigned, settings));
         }
 
         public async Task<bool> UnassignAsync(string module, object record, string by)

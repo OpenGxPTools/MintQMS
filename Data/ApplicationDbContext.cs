@@ -53,6 +53,7 @@ namespace OpenQMS.Data
                 e.HasIndex(t => new { t.AssignedToUserId, t.IsCurrent });
                 e.HasOne(t => t.AssignedToUser).WithMany().HasForeignKey(t => t.AssignedToUserId).OnDelete(DeleteBehavior.Restrict);
             });
+            modelBuilder.Entity<EmailOutboxMessage>(e => e.HasIndex(m => new { m.Status, m.NextAttemptOn }));
 
             base.OnModelCreating(modelBuilder);
 
@@ -409,6 +410,7 @@ namespace OpenQMS.Data
         public DbSet<SystemSettings>    SystemSettings    { get; set; }
         public DbSet<SettingsAuditLog>  SettingsAuditLog  { get; set; }
         public DbSet<TaskAssignment>    TaskAssignments   { get; set; }
+        public DbSet<EmailOutboxMessage> EmailOutbox     { get; set; }
         public DbSet<PasswordHistory>   PasswordHistory   { get; set; }
 
         // ── Issued documents: fixed copies (release / training certificates, attendance lists) ──

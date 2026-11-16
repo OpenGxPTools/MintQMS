@@ -132,6 +132,15 @@ namespace OpenQMS.Models
         [MaxLength(200)]
         public string? EmailFromName { get; set; }
 
+        /// <summary>The address people use to open MintQMS (e.g. https://qms.example.com), for links in e-mails.</summary>
+        [Display(Name = "Site Web Address")]
+        [MaxLength(300)]
+        public string? SiteWebAddress { get; set; }
+
+        /// <summary>E-mail people when a task is assigned to them. Off until SMTP is set up and tested.</summary>
+        [Display(Name = "Send Assignment E-mails")]
+        public bool SendAssignmentEmails { get; set; }
+
         // ── Gap 13: Data Retention Periods ────────────────────────────────────
         [Display(Name = "Retention Hold Cooldown (days)")]
         [Range(1, 365)]

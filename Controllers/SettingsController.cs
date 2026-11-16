@@ -16,13 +16,18 @@ namespace OpenQMS.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly string _backupStatusFile;
         private readonly OpenQMS.Localization.Languages _languages;
+        private readonly OpenQMS.Services.Email.SmtpSecret _smtpSecret;
+        private readonly OpenQMS.Services.Email.SmtpTransport _smtp;
 
         private static readonly string[] AllowedLogoExtensions = { ".png", ".jpg", ".jpeg", ".gif" };
         private const long MaxLogoBytes = 2 * 1024 * 1024; // 2 MB
 
         public SettingsController(ApplicationDbContext context, IWebHostEnvironment env, IConfiguration configuration,
-            OpenQMS.Localization.Languages languages)
+            OpenQMS.Localization.Languages languages, OpenQMS.Services.Email.SmtpSecret smtpSecret,
+            OpenQMS.Services.Email.SmtpTransport smtp)
         {
+            _smtpSecret = smtpSecret;
+            _smtp = smtp;
             _context = context;
             _languages = languages;
             _env = env;
@@ -35,6 +40,7 @@ namespace OpenQMS.Controllers
             var settings = await GetOrCreateSettingsAsync();
             ViewBag.CanEdit = User.IsInRole(Constants.AdministratorsRole);
             ViewBag.BackupStatus = ReadBackupStatus();
+            await SetOutboxStatusAsync();
             return View(settings);
         }
 
@@ -56,6 +62,17 @@ namespace OpenQMS.Controllers
             ModelState.Remove(nameof(SystemSettings.SmtpPassword));
             ModelState.Remove(nameof(SystemSettings.EmailFromAddress));
             ModelState.Remove(nameof(SystemSettings.EmailFromName));
+            ModelState.Remove(nameof(SystemSettings.SiteWebAddress));
+
+            // Site web address: an absolute http(s) address, stored without a trailing slash (used for e-mail links).
+            model.SiteWebAddress = string.IsNullOrWhiteSpace(model.SiteWebAddress) ? null : model.SiteWebAddress.Trim().TrimEnd('/');
+            if (model.SiteWebAddress != null
+                && (!Uri.TryCreate(model.SiteWebAddress, UriKind.Absolute, out var site) || (site.Scheme != "https" && site.Scheme != "http")
+                    || model.SiteWebAddress.Length > 300))
+                ModelState.AddModelError(nameof(SystemSettings.SiteWebAddress), this.T("Enter the full web address, e.g. https://qms.example.com"));
+            // Assignment e-mails need a mail server and a sender address.
+            if (model.SendAssignmentEmails && (string.IsNullOrWhiteSpace(model.SmtpHost) || string.IsNullOrWhiteSpace(model.EmailFromAddress)))
+                ModelState.AddModelError(nameof(SystemSettings.SendAssignmentEmails), this.T("Set the SMTP host and the From address before turning on assignment e-mails."));
 
             if (!SiteTime.IsValid(model.TimeZoneId))
                 ModelState.AddModelError(nameof(SystemSettings.TimeZoneId), this.T("Unknown time zone."));
@@ -71,6 +88,8 @@ namespace OpenQMS.Controllers
             {
                 ViewBag.CanEdit = true;
                 model.LogoPath = settings.LogoPath; // preserve current logo on re-render
+                model.SmtpPassword = settings.SmtpPassword;   // only "set / not set" is shown
+                await SetOutboxStatusAsync();
                 return View("Index", model);
             }
 
@@ -146,18 +165,20 @@ namespace OpenQMS.Controllers
             LogChange(settings.SmtpUsername, model.SmtpUsername, "SmtpUsername", changedBy, now);
             LogChange(settings.EmailFromAddress, model.EmailFromAddress, "EmailFromAddress", changedBy, now);
             LogChange(settings.EmailFromName, model.EmailFromName, "EmailFromName", changedBy, now);
+            LogChange(settings.SiteWebAddress, model.SiteWebAddress, "SiteWebAddress", changedBy, now);
+            LogChange(settings.SendAssignmentEmails.ToString(), model.SendAssignmentEmails.ToString(), "SendAssignmentEmails", changedBy, now);
 
             // Log password change without recording the actual value
             if (!string.IsNullOrWhiteSpace(model.SmtpPassword))
             {
                 var oldPasswordStatus = string.IsNullOrWhiteSpace(settings.SmtpPassword) ? "not set" : "set";
                 var newPasswordStatus = "set";
-                if (oldPasswordStatus != newPasswordStatus || settings.SmtpPassword != model.SmtpPassword)
+                // A new password is always logged as a change ("set"); the value itself is never recorded.
                     _context.SettingsAuditLog.Add(new SettingsAuditLog
                     {
                         FieldName  = "SmtpPassword",
                         OldValue   = oldPasswordStatus,
-                        NewValue   = newPasswordStatus,
+                        NewValue   = oldPasswordStatus == "set" ? "changed" : newPasswordStatus,
                         ChangedBy  = changedBy,
                         ChangedOn  = now
                     });
@@ -200,15 +221,62 @@ namespace OpenQMS.Controllers
             settings.SmtpUsername                   = model.SmtpUsername;
             settings.EmailFromAddress               = model.EmailFromAddress;
             settings.EmailFromName                  = model.EmailFromName;
-            // Only update password if a new one was provided — blank means "keep existing"
+            settings.SiteWebAddress                 = model.SiteWebAddress;
+            settings.SendAssignmentEmails           = model.SendAssignmentEmails;
+            // Only update password if a new one was provided — blank means "keep existing". Stored protected.
             if (!string.IsNullOrWhiteSpace(model.SmtpPassword))
-                settings.SmtpPassword = model.SmtpPassword;
+                settings.SmtpPassword = _smtpSecret.Protect(model.SmtpPassword);
 
             await _context.SaveChangesAsync();
             SiteTime.Configure(settings.TimeZoneId);
 
             TempData["Success"] = this.T("Settings saved successfully.");
             return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Settings/SendTestEmail — sends one message now, with the SAVED settings, to the Administrator's own address.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> SendTestEmail()
+        {
+            var settings = await GetOrCreateSettingsAsync();
+            var user = await HttpContext.RequestServices.GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<AppUser>>().GetUserAsync(User);
+            var to = user?.Email;
+            string result;
+            if (string.IsNullOrWhiteSpace(to))
+            {
+                TempData["Error"] = this.T("Your account has no e-mail address.");
+                return RedirectToAction(nameof(Index));
+            }
+            try
+            {
+                await _smtp.SendAsync(settings, to, "MintQMS test e-mail",
+                    "<p>This is a test e-mail from MintQMS. If you received it, the e-mail settings work.</p>");
+                TempData["Success"] = this.T("Test e-mail sent to {0}. Check that it arrived.", to);
+                result = "sent";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = this.T("The test e-mail could not be sent: {0}", ex.Message);
+                result = "failed: " + (ex.Message.Length > 200 ? ex.Message[..200] : ex.Message);
+            }
+            _context.SettingsAuditLog.Add(new SettingsAuditLog
+            {
+                FieldName = "TestEmail", OldValue = null, NewValue = $"to {to}: {result}",
+                ChangedBy = User.Identity?.Name ?? "System", ChangedOn = DateTime.UtcNow,
+            });
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private async Task SetOutboxStatusAsync()
+        {
+            ViewBag.OutboxPending = await _context.EmailOutbox.CountAsync(m => m.Status == EmailOutboxStatus.Pending);
+            ViewBag.OutboxFailed = await _context.EmailOutbox.CountAsync(m => m.Status == EmailOutboxStatus.Failed);
+            ViewBag.OutboxSent = await _context.EmailOutbox.CountAsync(m => m.Status == EmailOutboxStatus.Sent);
+            ViewBag.OutboxLastError = await _context.EmailOutbox.Where(m => m.LastError != null)
+                .OrderByDescending(m => m.Id).AsNoTracking().FirstOrDefaultAsync();
         }
 
         // GET: Settings/AuditLog
