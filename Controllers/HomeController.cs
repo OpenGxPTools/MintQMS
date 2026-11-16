@@ -32,6 +32,7 @@ using OpenQMS.Models;
 using OpenQMS.Models.LC;
 using OpenQMS.Models.RI;
 using OpenQMS.Models.ViewModels;
+using OpenQMS.Services.Workflow;
 
 namespace OpenQMS.Controllers
 {
@@ -41,12 +42,15 @@ namespace OpenQMS.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly WorkQueueService _workQueue;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<AppUser> userManager)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<AppUser> userManager,
+                              WorkQueueService workQueue)
         {
             _logger = logger;
             _context = context;
             _userManager = userManager;
+            _workQueue = workQueue;
         }
 
         public async Task<IActionResult> Index()
@@ -57,118 +61,22 @@ namespace OpenQMS.Controllers
             var cutoff90 = today.AddDays(lcWarnDays);   // LC expiry warning window (System Settings)
             ViewBag.LcExpiryWarningDays = lcWarnDays;
 
-            // ── Current user for My Items ─────────────────────────────────
-            var currentUserName = _userManager.GetUserName(User) ?? string.Empty;
-            var currentUser     = await _userManager.GetUserAsync(User);
-
-            // ── My Items ──────────────────────────────────────────────────
-
-            if (_context.Capa != null)
-            {
-                vm.MyCAPAs = await _context.Capa
-                    .CountAsync(c => !c.IsDeleted
-                                  && c.DeterminedBy == currentUserName
-                                  && c.Status != Capa.CapaStatus.Approved);
-
-                vm.MyRecentCAPAs = (await _context.Capa
-                    .Where(c => !c.IsDeleted
-                             && c.DeterminedBy == currentUserName
-                             && c.Status != Capa.CapaStatus.Approved)
-                    .OrderByDescending(c => c.DeterminedOn)
-                    .Take(5).ToListAsync())
-                    .Select(c => new HomeActivityItem
-                    {
-                        Id = c.Id, RecordId = c.CapaId, Title = c.Title,
-                        Status = c.Status switch
-                        {
-                            Capa.CapaStatus.PendingAssessment => "Pending Assessment",
-                            Capa.CapaStatus.PendingApproval   => "Pending Approval",
-                            _ => EnumHelper.Display(c.Status)
-                        },
-                        BadgeClass = c.Status switch
-                        {
-                            Capa.CapaStatus.Determination  => "primary",
-                            Capa.CapaStatus.Assessment     => "warning",
-                            Capa.CapaStatus.Accepted       => "info",
-                            Capa.CapaStatus.Implementation => "info",
-                            _ => "secondary"
-                        },
-                        Date = c.DeterminedOn
-                    }).ToList();
-            }
-
-            if (_context.Deviation != null)
-            {
-                vm.MyDeviations = await _context.Deviation
-                    .CountAsync(d => !d.IsDeleted
-                                  && d.IdentifiedBy == currentUserName
-                                  && d.Status != Deviation.DeviationStatus.Approved);
-
-                vm.MyRecentDeviations = (await _context.Deviation
-                    .Where(d => !d.IsDeleted
-                             && d.IdentifiedBy == currentUserName
-                             && d.Status != Deviation.DeviationStatus.Approved)
-                    .OrderByDescending(d => d.IdentifiedOn)
-                    .Take(5).ToListAsync())
-                    .Select(d => new HomeActivityItem
-                    {
-                        Id = d.Id, RecordId = d.DeviationId, Title = d.Title,
-                        Status = d.Status switch
-                        {
-                            Deviation.DeviationStatus.PendingAcceptance => "Pending Acceptance",
-                            _ => EnumHelper.Display(d.Status)
-                        },
-                        BadgeClass = d.Status switch
-                        {
-                            Deviation.DeviationStatus.Identification    => "primary",
-                            Deviation.DeviationStatus.Evaluation        => "info",
-                            Deviation.DeviationStatus.PendingAcceptance => "warning",
-                            Deviation.DeviationStatus.Accepted          => "info",
-                            Deviation.DeviationStatus.Resolution        => "warning",
-                            _ => "secondary"
-                        },
-                        Date = d.IdentifiedOn
-                    }).ToList();
-            }
-
-            vm.MyDocuments = await _context.AppDocument
-                .CountAsync(d => !d.IsDeleted
-                              && d.AuthoredBy == currentUserName
-                              && (d.Status == AppDocument.DocumentStatus.Draft
-                               || d.Status == AppDocument.DocumentStatus.UnderReview));
-
-            vm.MyRecentDocuments = (await _context.AppDocument
-                .Where(d => !d.IsDeleted
-                         && d.AuthoredBy == currentUserName
-                         && (d.Status == AppDocument.DocumentStatus.Draft
-                          || d.Status == AppDocument.DocumentStatus.UnderReview))
-                .OrderByDescending(d => d.AuthoredOn)
-                .Take(5).ToListAsync())
-                .Select(d => new HomeActivityItem
-                {
-                    Id = d.Id, RecordId = d.DocumentId, Title = d.Title,
-                    Status = EnumHelper.Display(d.Status),
-                    BadgeClass = d.Status switch
-                    {
-                        AppDocument.DocumentStatus.Draft       => "primary",
-                        AppDocument.DocumentStatus.UnderReview => "warning",
-                        _ => "secondary"
-                    },
-                    Date = d.AuthoredOn
-                }).ToList();
-
+            // ── My work: tasks assigned to me, waiting for my roles, raised by me (workflow rules) ──
+            var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser != null)
             {
-                vm.MyTrainings = await _context.UserTraining
-                    .CountAsync(ut => ut.TraineeId == currentUser.Id
-                                   && ut.Training.Status == Training.TrainingStatus.Scheduled);
+                var open = await _workQueue.OpenItemsAsync();
+                vm.MyTasks = WorkQueueService.AssignedTo(open, currentUser);
+                vm.WaitingForMyRoles = await _workQueue.WaitingForAsync(open, currentUser);
+                vm.RaisedByMe = WorkQueueService.RaisedBy(open, currentUser);
 
+                // Trainings I attend are assigned per trainee in the Training module: they are my tasks too.
                 vm.MyRecentTrainings = (await _context.UserTraining
                     .Where(ut => ut.TraineeId == currentUser.Id
                               && ut.Training.Status == Training.TrainingStatus.Scheduled)
                     .Include(ut => ut.Training)
                     .OrderBy(ut => ut.Training.DueDate)
-                    .Take(5).ToListAsync())
+                    .ToListAsync())
                     .Select(ut => new HomeActivityItem
                     {
                         Id = ut.Training.Id,
@@ -178,210 +86,12 @@ namespace OpenQMS.Controllers
                         BadgeClass = "primary",
                         Date = ut.Training.DueDate ?? ut.Training.CreatedOn
                     }).ToList();
+                vm.MyTrainings = vm.MyRecentTrainings.Count;
             }
 
-            if (_context.Change != null)
-            {
-                vm.MyChanges = await _context.Change
-                    .CountAsync(c => !c.IsDeleted
-                                   && c.ProposedBy == currentUserName
-                                   && c.Status != Change.ChangeStatus.Approved);
-
-                vm.MyRecentChanges = (await _context.Change
-                    .Where(c => !c.IsDeleted
-                             && c.ProposedBy == currentUserName
-                             && c.Status != Change.ChangeStatus.Approved)
-                    .OrderByDescending(c => c.ProposedOn)
-                    .Take(5).ToListAsync())
-                    .Select(c => new HomeActivityItem
-                    {
-                        Id = c.Id, RecordId = c.ChangeId, Title = c.Title,
-                        Status = c.Status switch
-                        {
-                            Change.ChangeStatus.PendingAssessment => "Pending Assessment",
-                            Change.ChangeStatus.PendingApproval   => "Pending Approval",
-                            _ => EnumHelper.Display(c.Status)
-                        },
-                        BadgeClass = c.Status switch
-                        {
-                            Change.ChangeStatus.Proposal          => "primary",
-                            Change.ChangeStatus.Assessment        => "warning",
-                            Change.ChangeStatus.PendingAssessment => "warning",
-                            Change.ChangeStatus.Accepted          => "info",
-                            Change.ChangeStatus.Implementation    => "info",
-                            Change.ChangeStatus.PendingApproval   => "danger",
-                            _ => "secondary"
-                        },
-                        Date = c.ProposedOn
-                    }).ToList();
-            }
-
-            vm.MyRisks = await _context.Risk
-                .CountAsync(r => !r.IsDeleted
-                               && r.IdentifiedBy == currentUserName
-                               && r.Status != Risk.RiskStatus.Closed);
-
-            vm.MyRecentRisks = (await _context.Risk
-                .Where(r => !r.IsDeleted
-                         && r.IdentifiedBy == currentUserName
-                         && r.Status != Risk.RiskStatus.Closed)
-                .OrderByDescending(r => r.IdentifiedOn)
-                .Take(5).ToListAsync())
-                .Select(r => new HomeActivityItem
-                {
-                    Id = r.Id, RecordId = r.RiskId, Title = r.Title,
-                    Status = r.Status switch
-                    {
-                        Risk.RiskStatus.PendingAssessment => "Pending Assessment",
-                        Risk.RiskStatus.PendingReview     => "Pending Review",
-                        _                                  => EnumHelper.Display(r.Status)
-                    },
-                    BadgeClass = r.Status switch
-                    {
-                        Risk.RiskStatus.Identification    => "secondary",
-                        Risk.RiskStatus.Assessment        => "warning",
-                        Risk.RiskStatus.PendingAssessment => "warning",
-                        Risk.RiskStatus.Mitigation        => "info",
-                        Risk.RiskStatus.PendingReview     => "warning",
-                        Risk.RiskStatus.Review            => "warning",
-                        _                                  => "secondary"
-                    },
-                    Date = r.IdentifiedOn
-                }).ToList();
-
-            // ── Pending My Action ─────────────────────────────────────────
-
-            var isQM = User.IsInRole(Constants.QualityManagerRole) || User.IsInRole(Constants.AdministratorsRole);
+            // Regulatory items outside the workflow rules stay in "Waiting for my roles" for Regulatory Managers.
             var isRM = User.IsInRole(Constants.RegulatoryManagerRole) || User.IsInRole(Constants.AdministratorsRole);
-
-            vm.IsQualityManager    = isQM;
             vm.IsRegulatoryManager = isRM;
-
-            if (isQM)
-            {
-                if (_context.Capa != null)
-                    vm.PendingCAPAs = (await _context.Capa
-                        .Where(c => !c.IsDeleted
-                                 && (c.Status == Capa.CapaStatus.PendingAssessment
-                                  || c.Status == Capa.CapaStatus.PendingApproval))
-                        .OrderBy(c => c.DeterminedOn)
-                        .Take(5).ToListAsync())
-                        .Select(c => new HomeActivityItem
-                        {
-                            Id = c.Id, RecordId = c.CapaId, Title = c.Title,
-                            Status = c.Status switch
-                            {
-                                Capa.CapaStatus.PendingAssessment => "Needs Acceptance",
-                                Capa.CapaStatus.PendingApproval   => "Needs Approval",
-                                _ => EnumHelper.Display(c.Status)
-                            },
-                            BadgeClass = c.Status == Capa.CapaStatus.PendingApproval ? "danger" : "warning",
-                            Date = c.DeterminedOn
-                        }).ToList();
-
-                if (_context.Deviation != null)
-                    vm.PendingDeviations = (await _context.Deviation
-                        .Where(d => !d.IsDeleted
-                                 && (d.Status == Deviation.DeviationStatus.PendingAcceptance
-                                  || d.Status == Deviation.DeviationStatus.Resolution))
-                        .OrderBy(d => d.IdentifiedOn)
-                        .Take(5).ToListAsync())
-                        .Select(d => new HomeActivityItem
-                        {
-                            Id = d.Id, RecordId = d.DeviationId, Title = d.Title,
-                            Status = d.Status switch
-                            {
-                                Deviation.DeviationStatus.PendingAcceptance => "Needs Acceptance",
-                                Deviation.DeviationStatus.Resolution        => "Needs Approval",
-                                _ => EnumHelper.Display(d.Status)
-                            },
-                            BadgeClass = d.Status == Deviation.DeviationStatus.Resolution ? "danger" : "warning",
-                            Date = d.IdentifiedOn
-                        }).ToList();
-
-                if (_context.Change != null)
-                    vm.PendingChanges = (await _context.Change
-                        .Where(c => !c.IsDeleted
-                                 && (c.Status == Change.ChangeStatus.PendingAssessment
-                                  || c.Status == Change.ChangeStatus.PendingApproval))
-                        .OrderBy(c => c.ProposedOn)
-                        .Take(5).ToListAsync())
-                        .Select(c => new HomeActivityItem
-                        {
-                            Id = c.Id, RecordId = c.ChangeId, Title = c.Title,
-                            Status = c.Status switch
-                            {
-                                Change.ChangeStatus.PendingAssessment => "Needs Acceptance",
-                                Change.ChangeStatus.PendingApproval   => "Needs Approval",
-                                _ => EnumHelper.Display(c.Status)
-                            },
-                            BadgeClass = c.Status == Change.ChangeStatus.PendingApproval ? "danger" : "warning",
-                            Date = c.ProposedOn
-                        }).ToList();
-
-                vm.PendingAudits = (await _context.Audit
-                    .Where(a => !a.IsDeleted
-                             && (a.Status == Audit.AuditStatus.UnderReview
-                              || a.Status == Audit.AuditStatus.Approved))
-                    .OrderBy(a => a.ScheduledOn)
-                    .Take(5).ToListAsync())
-                    .Select(a => new HomeActivityItem
-                    {
-                        Id = a.Id, RecordId = a.AuditId, Title = a.Title,
-                        Status = a.Status == Audit.AuditStatus.Approved ? "Needs Closure" : "Needs Approval",
-                        BadgeClass = a.Status == Audit.AuditStatus.Approved ? "warning" : "danger",
-                        Date = a.ScheduledOn
-                    }).ToList();
-
-                vm.PendingDocuments = (await _context.AppDocument
-                    .Where(d => !d.IsDeleted && d.Status == AppDocument.DocumentStatus.UnderReview)
-                    .OrderBy(d => d.AuthoredOn)
-                    .Take(5).ToListAsync())
-                    .Select(d => new HomeActivityItem
-                    {
-                        Id = d.Id, RecordId = d.DocumentId, Title = d.Title,
-                        Status = "Needs Approval", BadgeClass = "danger",
-                        Date = d.AuthoredOn
-                    }).ToList();
-
-                vm.PendingComplaints = (await _context.Complaint
-                    .Where(c => !c.IsDeleted
-                             && (c.Status == Complaint.ComplaintStatus.PendingAcceptance
-                              || c.Status == Complaint.ComplaintStatus.Resolution))
-                    .OrderBy(c => c.ReceivedOn)
-                    .Take(5).ToListAsync())
-                    .Select(c => new HomeActivityItem
-                    {
-                        Id = c.Id, RecordId = c.ComplaintId, Title = c.Title,
-                        Status = c.Status switch
-                        {
-                            Complaint.ComplaintStatus.PendingAcceptance => "Needs Acceptance",
-                            Complaint.ComplaintStatus.Resolution        => "Needs Closure",
-                            _ => EnumHelper.Display(c.Status)
-                        },
-                        BadgeClass = c.Status == Complaint.ComplaintStatus.Resolution ? "danger" : "warning",
-                        Date = c.ReceivedOn
-                    }).ToList();
-
-                vm.PendingRisks = (await _context.Risk
-                    .Where(r => !r.IsDeleted
-                             && (r.Status == Risk.RiskStatus.PendingAssessment
-                              || r.Status == Risk.RiskStatus.PendingReview))
-                    .OrderBy(r => r.IdentifiedOn)
-                    .Take(5).ToListAsync())
-                    .Select(r => new HomeActivityItem
-                    {
-                        Id = r.Id, RecordId = r.RiskId, Title = r.Title,
-                        Status = r.Status switch
-                        {
-                            Risk.RiskStatus.PendingAssessment => "Needs Acceptance",
-                            Risk.RiskStatus.PendingReview     => "Needs Closure",
-                            _                                  => EnumHelper.Display(r.Status)
-                        },
-                        BadgeClass = r.Status == Risk.RiskStatus.PendingReview ? "danger" : "warning",
-                        Date = r.IdentifiedOn
-                    }).ToList();
-            }
 
             if (isRM)
             {

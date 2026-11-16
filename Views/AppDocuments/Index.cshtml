@@ -1,17 +1,22 @@
 @model IEnumerable<OpenQMS.Models.AppDocument>
+@inject OpenQMS.Services.Workflow.TaskAssignmentService AssignSvc
 @using OpenQMS.Authorization
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService
 
 @{
+    var assignedMap = await AssignSvc.CurrentByRecordAsync("AppDocuments");
+    ViewData["MeId"] = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     ViewData["Title"] = L["Documents"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section Scripts {
+<script src="~/js/assigned-filter.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
             var table = $('#docsTable').DataTable({ stateSave: true,
                 initComplete: function () {
+                    MintAssignedFilter(this.api());
                     // Status filter pills
                     $('.status-filter').on('click', function () {
                         $('.status-filter').removeClass('active');
@@ -42,6 +47,7 @@
                     { visible: false }, // Approved On
                     null,               // Status
                     { visible: false }, // IsExternal (filter col)
+                    null,               // Assigned to
                     null                // Action
                 ],
                 paging: true,
@@ -52,8 +58,8 @@
                 displayLength: 10,
                 buttons: [
                     'colvis',
-                    { extend: 'pdf', footer: false, exportOptions: { columns: [0,1,2,3,4,5,6,7,8,9] } },
-                    { extend: 'excel', footer: false, exportOptions: { columns: [0,1,2,3,4,5,6,7,8,9] } }
+                    { extend: 'pdf', footer: false, exportOptions: { columns: [0,1,2,3,4,5,6,7,8,9,11] } },
+                    { extend: 'excel', footer: false, exportOptions: { columns: [0,1,2,3,4,5,6,7,8,9,11] } }
                 ]
             });
         });
@@ -78,6 +84,7 @@
     <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Effective"]">@L["Effective"]</button>
     <button class="btn btn-outline-danger btn-sm status-filter" data-status="@L["Rejected"]">@L["Rejected"]</button>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Obsolete"]">@L["Obsolete"]</button>
+    <partial name="_AssignedToMeFilter" model="11" />
     <button class="btn btn-outline-warning btn-sm ms-3" id="externalFilterBtn" data-external="false">
         <i class="fas fa-file-import me-1"></i>@L["External Only"]
     </button>
@@ -97,6 +104,7 @@
             <th>@L["Approved On"]</th>
             <th>@L["Status"]</th>
             <th>@L["IsExternal"]</th>
+            <th>@L["Assigned to"]</th>
             <th>@L["Action"]</th>
         </tr>
     </thead>
@@ -143,6 +151,7 @@
                 <td>@(item.ApprovedOn.HasValue ? item.ApprovedOn.Value.ToSite().ToString("dd/MM/yyyy") : "-")</td>
                 <td>@L.Enum(item.Status)</td>
                 <td style="display:none">@item.IsExternal.ToString().ToLower()</td>
+                <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assignedMap, item.Id, (int)item.Status))" />
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if ((await AuthorizationService.AuthorizeAsync(User, item, DocumentOperations.Update)).Succeeded && item.IsLocked != true && item.Status == AppDocument.DocumentStatus.Draft)

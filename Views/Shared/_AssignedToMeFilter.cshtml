@@ -1,0 +1,5 @@
+@* "Assigned to me" toggle for a register: filters the DataTable on the "Assigned to" column marker. Model = column index. *@
+@model int
+<button type="button" class="btn btn-outline-dark btn-sm ms-2" id="assigned-to-me-filter" data-column="@Model" aria-pressed="false">
+    <i class="bi bi-person-check me-1"></i>@L["Assigned to me"]
+</button>

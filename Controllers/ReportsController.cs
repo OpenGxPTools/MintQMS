@@ -7,6 +7,7 @@ using OpenQMS.Data;
 using OpenQMS.Models;
 using OpenQMS.Models.Navigation;
 using OpenQMS.Models.ViewModels;
+using OpenQMS.Services.Workflow;
 
 using static OpenQMS.Localization.RecordText;
 
@@ -16,10 +17,93 @@ namespace OpenQMS.Controllers
     public class ReportsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly WorkQueueService _workQueue;
 
-        public ReportsController(ApplicationDbContext context)
+        /// <summary>Who may see the Task Assignments report (the people who distribute and oversee work).</summary>
+        public const string TaskReportRoles = "Administrator,QualityManager,AuthorisedPerson,Auditor";
+
+        public ReportsController(ApplicationDbContext context, WorkQueueService workQueue)
         {
             _context = context;
+            _workQueue = workQueue;
+        }
+
+        /// <summary>Open tasks of the workflow modules, filtered: module, person (user id, or 0 = no one named) and
+        /// overdue only.</summary>
+        private async Task<List<WorkItem>> TaskItemsAsync(string? module, int? person, bool overdue)
+        {
+            var today = SiteTime.Today;
+            var items = await _workQueue.OpenItemsAsync(TaskAssignmentService.IsWorkflowModule(module) ? module : null);
+            return items
+                .Where(i => person == null || (person == 0 ? i.Assignment == null : i.Assignment?.AssignedToUserId == person))
+                .Where(i => !overdue || i.IsOverdue(today))
+                .OrderBy(i => i.Assignment == null)
+                .ThenBy(i => i.Assignment?.DueDate ?? DateTime.MaxValue)
+                .ThenBy(i => i.Assignment?.AssignedOn ?? i.RaisedOn ?? DateTime.MaxValue)
+                .ToList();
+        }
+
+        // GET: Reports/TaskAssignments
+        [Authorize(Roles = TaskReportRoles)]
+        public async Task<IActionResult> TaskAssignments(string? module, int? person, bool overdue = false)
+        {
+            var all = await _workQueue.OpenItemsAsync();
+            ViewBag.All = all;
+            ViewBag.Items = await TaskItemsAsync(module, person, overdue);
+            ViewBag.Module = module;
+            ViewBag.Person = person;
+            ViewBag.Overdue = overdue;
+            ViewBag.Today = SiteTime.Today;
+            return View();
+        }
+
+        // GET: Reports/ExportTaskAssignments
+        [Authorize(Roles = TaskReportRoles)]
+        [RecordLanguage]
+        public async Task<IActionResult> ExportTaskAssignments(string? module, int? person, bool overdue = false)
+        {
+            var items = await TaskItemsAsync(module, person, overdue);
+            var today = SiteTime.Today;
+            using var wb = new XLWorkbook();
+            var ws = wb.Worksheets.Add(Sheet(R("Task Assignments")));
+            ws.Cell(1, 1).Value = R("Task Assignments");
+            ws.Cell(1, 1).Style.Font.Bold = true;
+            ws.Cell(1, 1).Style.Font.FontSize = 14;
+            ws.Cell(1, 1).Style.Font.FontColor = XLColor.FromHtml("#00467F");
+            ws.Cell(2, 1).Value = R("Generated: {0}", $"{SiteTime.Now:dd MMM yyyy HH:mm} {SiteTime.Label}");
+            var headers = new[] { R("Module"), R("Record"), R("Title"), R("Status"), R("Next Step"), R("Assigned to"),
+                                  R("Assigned On"), R("Due Date"), R("Overdue"), R("Note") };
+            for (int i = 0; i < headers.Length; i++)
+            {
+                var cell = ws.Cell(4, i + 1);
+                cell.Value = headers[i];
+                cell.Style.Font.Bold = true;
+                cell.Style.Fill.BackgroundColor = XLColor.FromHtml("#00467F");
+                cell.Style.Font.FontColor = XLColor.White;
+            }
+            int row = 5;
+            foreach (var i in items)
+            {
+                var a = i.Assignment;
+                ws.Cell(row, 1).Value = R(i.ModuleName);
+                ws.Cell(row, 2).Value = i.Number;
+                ws.Cell(row, 3).Value = i.Title;
+                ws.Cell(row, 4).Value = RE(i.StageValue);
+                ws.Cell(row, 5).Value = string.Join(", ", i.Steps.Select(st => R(st)));
+                ws.Cell(row, 6).Value = a?.AssignedToUser is { } u ? TaskAssignmentService.DisplayName(u) : R("No one named");
+                ws.Cell(row, 7).Value = a?.AssignedOn.ToSite().ToString("dd MMM yyyy") ?? "";
+                ws.Cell(row, 8).Value = a?.DueDate?.ToString("dd MMM yyyy") ?? "";
+                ws.Cell(row, 9).Value = i.IsOverdue(today) ? R("Yes") : "";
+                ws.Cell(row, 10).Value = a?.Note ?? "";
+                if (i.IsOverdue(today))
+                    ws.Row(row).Style.Fill.BackgroundColor = XLColor.FromHtml("#FFF3F3");
+                row++;
+            }
+            ws.Columns().AdjustToContents(10, 60);
+            using var ms = new MemoryStream();
+            wb.SaveAs(ms);
+            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        $"TaskAssignments_{SiteTime.Today:yyyyMMdd}.xlsx");
         }
 
         // GET: Reports

@@ -1,15 +1,20 @@
 @model IEnumerable<OpenQMS.Models.Change>
+@inject OpenQMS.Services.Workflow.TaskAssignmentService AssignSvc
 @using OpenQMS.Authorization
 
 @{
+    var assignedMap = await AssignSvc.CurrentByRecordAsync("Changes");
+    ViewData["MeId"] = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     ViewData["Title"] = L["Change Register"].Value;
 }
 
 @section Scripts {
+<script src="~/js/assigned-filter.js" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
         var table = $('#changesTable').DataTable({ stateSave: true,
             initComplete: function () {
+                MintAssignedFilter(this.api());
                 $('.status-filter').on('click', function () {
                     $('.status-filter').removeClass('active');
                     $(this).addClass('active');
@@ -26,6 +31,7 @@
                 { "visible": false },
                 null,
                 null,
+                null,
                 null
             ],
             paging: true,
@@ -39,12 +45,12 @@
                 {
                     extend: 'pdf',
                     footer: false,
-                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] }
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7] }
                 },
                 {
                     extend: 'excel',
                     footer: false,
-                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] }
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7] }
                 }
             ]
         });
@@ -70,6 +76,7 @@
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Implementation"]">@L["Implementation"]</button>
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Pending Approval"]">@L["Pending Approval"]</button>
     <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Approved"]">@L["Approved"]</button>
+    <partial name="_AssignedToMeFilter" model="7" />
 </div>
 
 <table id="changesTable" class="table" style="width:100%;">
@@ -82,6 +89,7 @@
             <th>@L["Proposed On"]</th>
             <th>@L["Target Date"]</th>
             <th>@L["Status"]</th>
+            <th>@L["Assigned to"]</th>
             <th>@L["Action"]</th>
         </tr>
     </thead>
@@ -122,6 +130,7 @@
                 <td>@item.ProposedOn.ToSite().ToShortDateString()</td>
                 <td>@(item.TargetImplementationDate.HasValue ? item.TargetImplementationDate.Value.ToShortDateString() : "")</td>
                 <td>@statusLabel</td>
+                <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assignedMap, item.Id, (int)item.Status))" />
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if (canEdit)

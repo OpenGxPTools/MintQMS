@@ -1,5 +1,5 @@
 {
- "_about": "Who may sign each workflow step, and the four-eyes rule. Roles mirror the checks in the controllers (tests/e2e/test_four_eyes.py proves they match). notBy: the signer may not be the user recorded in these fields. raiserReview: a signer who raised the record may sign only if this review/acceptance field holds someone else. alsoUserIn: the user recorded in this field may sign whatever their role. Embedded in the program; not a deployment setting. kind: task = a forward step people are assigned to (send-back, re-open, suspend… are other). onlyIf: the step applies only when the record field has this value. auditTable/auditKey: where assignment changes are written in the record's audit trail.",
+ "_about": "Who may sign each workflow step, and the four-eyes rule. Roles mirror the checks in the controllers (tests/e2e/test_four_eyes.py proves they match). notBy: the signer may not be the user recorded in these fields. raiserReview: a signer who raised the record may sign only if this review/acceptance field holds someone else. alsoUserIn: the user recorded in this field may sign whatever their role. Embedded in the program; not a deployment setting. kind: task = a forward step people are assigned to (send-back, re-open, suspend… are other). onlyIf: the step applies only when the record field has this value. auditTable/auditKey: where assignment changes are written in the record's audit trail. label: the step's button text (English key; translated on screen). numberField/titleField/raisedOnField: how lists show a record. displayName: the module's name on screen (English key).",
  "modules": [
   {
    "module": "Deviations",
@@ -16,7 +16,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Evaluation"
     },
     {
      "action": "SubmitEvaluation",
@@ -28,7 +29,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Acceptance"
     },
     {
      "action": "AcceptDeviation",
@@ -44,7 +46,8 @@
        "EvaluatedBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Accept Deviation"
     },
     {
      "action": "SubmitForResolution",
@@ -56,7 +59,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Approval"
     },
     {
      "action": "ApproveDeviation",
@@ -74,7 +78,8 @@
       ],
       "raiserReview": "AcceptedBy"
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Approve Deviation"
     },
     {
      "action": "ReturnDeviation",
@@ -131,7 +136,11 @@
     }
    ],
    "auditTable": "DeviationAuditLog",
-   "auditKey": "ParentId"
+   "auditKey": "ParentId",
+   "numberField": "DeviationId",
+   "titleField": "Title",
+   "raisedOnField": "IdentifiedOn",
+   "displayName": "Deviations"
   },
   {
    "module": "Complaints",
@@ -148,7 +157,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Evaluation"
     },
     {
      "action": "PendingAcceptance",
@@ -160,7 +170,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Acceptance"
     },
     {
      "action": "Accept",
@@ -176,7 +187,8 @@
        "ActionBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Accept Complaint"
     },
     {
      "action": "SubmitForResolution",
@@ -188,7 +200,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Closure"
     },
     {
      "action": "Closed",
@@ -205,7 +218,8 @@
       ],
       "raiserReview": "AcceptedBy"
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Close Complaint"
     },
     {
      "action": "ReturnComplaint",
@@ -262,7 +276,11 @@
     }
    ],
    "auditTable": "ComplaintAuditLog",
-   "auditKey": "ParentId"
+   "auditKey": "ParentId",
+   "numberField": "ComplaintId",
+   "titleField": "Title",
+   "raisedOnField": "ReceivedOn",
+   "displayName": "Complaints"
   },
   {
    "module": "Capas",
@@ -280,7 +298,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Acceptance"
     },
     {
      "action": "AcceptCapa",
@@ -296,7 +315,8 @@
        "AssessedBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Accept CAPA"
     },
     {
      "action": "SubmitForApproval",
@@ -309,7 +329,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Approval"
     },
     {
      "action": "ApproveCapa",
@@ -327,7 +348,8 @@
       ],
       "raiserReview": "AcceptedBy"
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Approve CAPA"
     },
     {
      "action": "ReturnCapa",
@@ -373,7 +395,11 @@
     }
    ],
    "auditTable": "CapaAuditLog",
-   "auditKey": "CapaId"
+   "auditKey": "CapaId",
+   "numberField": "CapaId",
+   "titleField": "Title",
+   "raisedOnField": "DeterminedOn",
+   "displayName": "CAPA"
   },
   {
    "module": "Changes",
@@ -390,7 +416,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Assessment"
     },
     {
      "action": "SubmitForAcceptance",
@@ -402,7 +429,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Acceptance"
     },
     {
      "action": "AcceptChange",
@@ -418,7 +446,8 @@
        "AssessedBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Accept Change"
     },
     {
      "action": "SubmitForApproval",
@@ -430,7 +459,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Approval"
     },
     {
      "action": "ApproveChange",
@@ -448,7 +478,8 @@
       ],
       "raiserReview": "AcceptedBy"
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Approve Change"
     },
     {
      "action": "ReturnChange",
@@ -494,7 +525,11 @@
     }
    ],
    "auditTable": "ChangeAuditLog",
-   "auditKey": "ParentId"
+   "auditKey": "ParentId",
+   "numberField": "ChangeId",
+   "titleField": "Title",
+   "raisedOnField": "ProposedOn",
+   "displayName": "Change Control"
   },
   {
    "module": "Audits",
@@ -510,7 +545,8 @@
       "Auditor",
       "QualityManager"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Start Audit"
     },
     {
      "action": "ReportDraft",
@@ -521,7 +557,8 @@
       "Auditor",
       "QualityManager"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit Report Draft"
     },
     {
      "action": "UnderReview",
@@ -532,7 +569,8 @@
       "Auditor",
       "QualityManager"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Review"
     },
     {
      "action": "Approved",
@@ -548,7 +586,8 @@
        "ReviewedBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Approve Audit Report"
     },
     {
      "action": "Closed",
@@ -558,7 +597,8 @@
       "Administrator",
       "QualityManager"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Close Audit"
     },
     {
      "action": "ReturnForRevision",
@@ -591,7 +631,11 @@
     }
    ],
    "auditTable": "AuditAuditLog",
-   "auditKey": "ParentId"
+   "auditKey": "ParentId",
+   "numberField": "AuditId",
+   "titleField": "Title",
+   "raisedOnField": "ScheduledOn",
+   "displayName": "Audits"
   },
   {
    "module": "Risks",
@@ -612,7 +656,8 @@
       "RegulatoryUser",
       "Trainer"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Assessment"
     },
     {
      "action": "AcceptAssessment",
@@ -628,7 +673,8 @@
        "AssessedBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Accept Assessment"
     },
     {
      "action": "SubmitForReview",
@@ -644,7 +690,8 @@
       "RegulatoryUser",
       "Trainer"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Review"
     },
     {
      "action": "CloseRisk",
@@ -661,7 +708,8 @@
       ],
       "raiserReview": "AcceptedBy"
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Close Risk"
     },
     {
      "action": "ReturnFromAssessment",
@@ -708,7 +756,8 @@
       "RegulatoryUser",
       "Trainer"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Review"
     },
     {
      "action": "CloseRisk",
@@ -725,7 +774,8 @@
       ],
       "raiserReview": "AcceptedBy"
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Close Risk"
     },
     {
      "action": "ReturnFromReview",
@@ -740,7 +790,11 @@
     }
    ],
    "auditTable": "RiskAuditLog",
-   "auditKey": "ParentId"
+   "auditKey": "ParentId",
+   "numberField": "RiskId",
+   "titleField": "Title",
+   "raisedOnField": "IdentifiedOn",
+   "displayName": "Risk"
   },
   {
    "module": "Maintenances",
@@ -758,7 +812,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Start Work"
     },
     {
      "action": "CompleteWork",
@@ -771,7 +826,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Complete Work"
     },
     {
      "action": "ReviewWork",
@@ -787,7 +843,8 @@
        "PerformedBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Review & Close"
     },
     {
      "action": "SendBackToScheduled",
@@ -868,7 +925,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Start Work"
     },
     {
      "action": "Suspend",
@@ -905,7 +963,11 @@
     }
    ],
    "auditTable": "MaintenanceAuditLog",
-   "auditKey": "ParentId"
+   "auditKey": "ParentId",
+   "numberField": "MaintenanceId",
+   "titleField": "Title",
+   "raisedOnField": "ScheduledOn",
+   "displayName": "Maintenance"
   },
   {
    "module": "AppDocuments",
@@ -920,7 +982,8 @@
       "Administrator"
      ],
      "alsoUserIn": "AuthoredBy",
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit for Review"
     },
     {
      "action": "Approve",
@@ -936,7 +999,8 @@
        "AuthoredBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Approve Document"
     },
     {
      "action": "ReturnForRework",
@@ -962,7 +1026,11 @@
     }
    ],
    "auditTable": "DocumentAuditLog",
-   "auditKey": "AppDocumentId"
+   "auditKey": "AppDocumentId",
+   "numberField": "DocumentId",
+   "titleField": "Title",
+   "raisedOnField": "AuthoredOn",
+   "displayName": "Documents"
   },
   {
    "module": "Suppliers",
@@ -979,7 +1047,8 @@
       "QualityManager",
       "QualityUser"
      ],
-     "kind": "task"
+     "kind": "task",
+     "label": "Submit Assessment"
     },
     {
      "action": "Approve",
@@ -995,7 +1064,8 @@
        "AssessedBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Approve Supplier"
     },
     {
      "action": "ReturnToAssessment",
@@ -1059,7 +1129,8 @@
      "onlyIf": {
       "field": "QualificationRequired",
       "equals": true
-     }
+     },
+     "label": "Qualify"
     },
     {
      "action": "Suspend",
@@ -1075,7 +1146,8 @@
        "AssessedBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Suspend Supplier"
     },
     {
      "action": "Cancel",
@@ -1091,7 +1163,8 @@
        "AssessedBy"
       ]
      },
-     "kind": "task"
+     "kind": "task",
+     "label": "Cancel Supplier"
     },
     {
      "action": "Suspend",
@@ -1139,7 +1212,11 @@
     }
    ],
    "auditTable": "SupplierAuditLog",
-   "auditKey": "ParentId"
+   "auditKey": "ParentId",
+   "numberField": "SupplierCode",
+   "titleField": "LegalName",
+   "raisedOnField": "CreatedOn",
+   "displayName": "Suppliers"
   }
  ]
 }

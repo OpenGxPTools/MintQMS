@@ -1,14 +1,19 @@
 @model IEnumerable<OpenQMS.Models.Audit>
+@inject OpenQMS.Services.Workflow.TaskAssignmentService AssignSvc
 
 @{
+    var assignedMap = await AssignSvc.CurrentByRecordAsync("Audits");
+    ViewData["MeId"] = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     ViewData["Title"] = L["Audits"].Value;
 }
 
 @section Scripts {
+<script src="~/js/assigned-filter.js" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
         var table = $('#auditsTable').DataTable({ stateSave: true,
             initComplete: function () {
+                MintAssignedFilter(this.api());
                 $('.status-filter').on('click', function () {
                     $('.status-filter').removeClass('active');
                     $(this).addClass('active');
@@ -26,6 +31,7 @@
                 null,
                 null,
                 null,
+                null,
                 null
             ],
             paging: true,
@@ -39,12 +45,12 @@
                 {
                     extend: 'pdf',
                     footer: false,
-                    exportOptions: { columns: [0, 1, 4, 5, 6, 7] }
+                    exportOptions: { columns: [0, 1, 4, 5, 6, 7, 8] }
                 },
                 {
                     extend: 'excel',
                     footer: false,
-                    exportOptions: { columns: [0, 1, 4, 5, 6, 7] }
+                    exportOptions: { columns: [0, 1, 4, 5, 6, 7, 8] }
                 }
             ]
         });
@@ -67,6 +73,7 @@
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="@L["Under Review"]">@L["Under Review"]</button>
     <button class="btn btn-outline-primary btn-sm status-filter" data-status="@L["Approved"]">@L["Approved"]</button>
     <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Closed"]">@L["Closed"]</button>
+    <partial name="_AssignedToMeFilter" model="8" />
 </div>
 
 <table id="auditsTable" class="table" style="width:100%;">
@@ -80,6 +87,7 @@
             <th>@L["Planned Start"]</th>
             <th>@L["Rating"]</th>
             <th>@L["Status"]</th>
+            <th>@L["Assigned to"]</th>
             <th>@L["Action"]</th>
         </tr>
     </thead>
@@ -124,6 +132,7 @@
                 <td>@(item.PlannedStartDate?.ToShortDateString() ?? "-")</td>
                 <td>@ratingLabel</td>
                 <td><span class="badge @statusBadge">@statusLabel</span></td>
+                <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assignedMap, item.Id, (int)item.Status))" />
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if (canEdit)

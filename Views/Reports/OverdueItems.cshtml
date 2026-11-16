@@ -1,4 +1,5 @@
 @using OpenQMS.Models
+@inject OpenQMS.Services.Workflow.TaskAssignmentService AssignSvc
 @{
     ViewData["Title"] = L["Overdue Items"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,6 +13,10 @@
     var overdueComplaints = (List<Complaint>)ViewBag.OverdueComplaints;
     var overdueDocReviews = (List<AppDocument>)ViewBag.OverdueDocReviews;
     var dueSoonDocReviews = (List<AppDocument>)ViewBag.DueSoonDocReviews;
+
+    var assigned = new Dictionary<string, Dictionary<int, List<TaskAssignment>>>();
+    foreach (var m in new[] { "Capas", "Changes", "Audits", "Risks", "Deviations", "Complaints" })
+        assigned[m] = await AssignSvc.CurrentByRecordAsync(m);
 
     int DaysOverdue(DateTime dueDate) => (int)(today - dueDate).TotalDays;
     string RowClass(int days) => days > 60 ? "table-danger" : days > 30 ? "table-warning" : "";
@@ -68,6 +73,7 @@
                         <th>@L["Status"]</th>
                         <th>@L["Target Date"]</th>
                         <th>@L["Days Overdue"]</th>
+                        <th>@L["Assigned to"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -80,6 +86,7 @@
                             <td><span class="badge bg-secondary">@L.Enum(c.Status)</span></td>
                             <td>@c.TargetCompletionDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
+                            <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assigned["Capas"], c.Id, (int)c.Status))" />
                         </tr>
                     }
                 </tbody>
@@ -109,6 +116,7 @@
                         <th>@L["Status"]</th>
                         <th>@L["Target Date"]</th>
                         <th>@L["Days Overdue"]</th>
+                        <th>@L["Assigned to"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -121,6 +129,7 @@
                             <td><span class="badge bg-secondary">@L.Enum(c.Status)</span></td>
                             <td>@c.TargetImplementationDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
+                            <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assigned["Changes"], c.Id, (int)c.Status))" />
                         </tr>
                     }
                 </tbody>
@@ -151,6 +160,7 @@
                         <th>@L["Status"]</th>
                         <th>@L["Planned End"]</th>
                         <th>@L["Days Overdue"]</th>
+                        <th>@L["Assigned to"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -164,6 +174,7 @@
                             <td><span class="badge bg-secondary">@L.Enum(a.Status)</span></td>
                             <td>@a.PlannedEndDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
+                            <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assigned["Audits"], a.Id, (int)a.Status))" />
                         </tr>
                     }
                 </tbody>
@@ -194,6 +205,7 @@
                         <th>@L["RPN"]</th>
                         <th>@L["Target Date"]</th>
                         <th>@L["Days Overdue"]</th>
+                        <th>@L["Assigned to"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -210,6 +222,7 @@
                             </td>
                             <td>@r.TargetCompletionDate!.Value.ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
+                            <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assigned["Risks"], r.Id, (int)r.Status))" />
                         </tr>
                     }
                 </tbody>
@@ -239,6 +252,7 @@
                         <th>@L["Status"]</th>
                         <th>@L["Identified On"]</th>
                         <th>@L["Days Open"]</th>
+                        <th>@L["Assigned to"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -251,6 +265,7 @@
                             <td><span class="badge bg-secondary">@L.Enum(d.Status)</span></td>
                             <td>@d.IdentifiedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
+                            <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assigned["Deviations"], d.Id, (int)d.Status))" />
                         </tr>
                     }
                 </tbody>
@@ -281,6 +296,7 @@
                         <th>@L["Status"]</th>
                         <th>@L["Received On"]</th>
                         <th>@L["Days Open"]</th>
+                        <th>@L["Assigned to"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -298,6 +314,7 @@
                             <td><span class="badge bg-secondary">@L.Enum(c.Status)</span></td>
                             <td>@c.ReceivedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</td>
                             <td><strong>@days</strong></td>
+                            <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assigned["Complaints"], c.Id, (int)c.Status))" />
                         </tr>
                     }
                 </tbody>

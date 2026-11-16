@@ -1,14 +1,19 @@
 @model IEnumerable<OpenQMS.Models.Maintenance>
+@inject OpenQMS.Services.Workflow.TaskAssignmentService AssignSvc
 
 @{
+    var assignedMap = await AssignSvc.CurrentByRecordAsync("Maintenances");
+    ViewData["MeId"] = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     ViewData["Title"] = L["Maintenances"].Value;
 }
 
 @section Scripts {
+<script src="~/js/assigned-filter.js" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
         var table = $('#maintenancesTable').DataTable({ stateSave: true,
             initComplete: function () {
+                MintAssignedFilter(this.api());
                 $('.status-filter').on('click', function () {
                     $('.status-filter').removeClass('active');
                     $(this).addClass('active');
@@ -22,6 +27,7 @@
                 null,
                 null,
                 { "visible": false },
+                null,
                 null,
                 null,
                 null
@@ -65,6 +71,7 @@
     <button class="btn btn-outline-success btn-sm status-filter" data-status="@L["Reviewed"]">@L["Reviewed"]</button>
     <button class="btn btn-outline-danger btn-sm status-filter" data-status="@L["Overdue"]">@L["Overdue"]</button>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="@L["Suspended"]">@L["Suspended"]</button>
+    <partial name="_AssignedToMeFilter" model="6" />
 </div>
 
 <table id="maintenancesTable" class="table" style="width:100%;">
@@ -76,6 +83,7 @@
             <th>@L["Type"]</th>
             <th>@L["Scheduled Date"]</th>
             <th>@L["Status"]</th>
+            <th>@L["Assigned to"]</th>
             <th>@L["Action"]</th>
         </tr>
     </thead>
@@ -89,6 +97,7 @@
                 <td>@L.Enum(item.Type)</td>
                 <td>@item.ScheduledDate.ToShortDateString()</td>
                 <td>@L.Enum(item.Status)</td>
+                <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assignedMap, item.Id, (int)item.Status))" />
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if (item.Status != OpenQMS.Models.Maintenance.MaintenanceStatus.Reviewed

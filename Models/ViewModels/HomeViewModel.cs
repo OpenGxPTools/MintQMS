@@ -35,6 +35,11 @@ namespace OpenQMS.Models.ViewModels
     public class HomeViewModel
     {
         // ── My Items (personalised to the logged-in user) ─────────────────
+        // ── My work (workflow rules: assigned to me / waiting for my roles / raised by me) ──
+        public List<OpenQMS.Services.Workflow.WorkItem> MyTasks { get; set; } = new();
+        public List<OpenQMS.Services.Workflow.WorkItem> WaitingForMyRoles { get; set; } = new();
+        public List<OpenQMS.Services.Workflow.WorkItem> RaisedByMe { get; set; } = new();
+
         public int MyCAPAs { get; set; }
         public int MyDeviations { get; set; }
         public int MyDocuments { get; set; }

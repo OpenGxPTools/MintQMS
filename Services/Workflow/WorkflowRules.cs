@@ -32,6 +32,8 @@ namespace OpenQMS.Services.Workflow
             [JsonPropertyName("kind")] public string Kind { get; set; } = "other";
             /// <summary>The step applies only when this record field has this value (e.g. qualification required).</summary>
             [JsonPropertyName("onlyIf")] public Condition? OnlyIf { get; set; }
+            /// <summary>The step's button text (an English translation key), for task lists.</summary>
+            [JsonPropertyName("label")] public string Label { get; set; } = "";
 
             public bool IsTask => Kind == "task";
 
@@ -59,6 +61,11 @@ namespace OpenQMS.Services.Workflow
             [JsonPropertyName("raisedBy")] public string RaisedBy { get; set; } = "";
             [JsonPropertyName("auditTable")] public string AuditTable { get; set; } = "";
             [JsonPropertyName("auditKey")] public string AuditKey { get; set; } = "";
+            /// <summary>How lists show a record: its number, its title and when it was raised.</summary>
+            [JsonPropertyName("displayName")] public string DisplayName { get; set; } = "";
+            [JsonPropertyName("numberField")] public string NumberField { get; set; } = "";
+            [JsonPropertyName("titleField")] public string TitleField { get; set; } = "";
+            [JsonPropertyName("raisedOnField")] public string RaisedOnField { get; set; } = "";
             [JsonPropertyName("steps")] public List<Step> Steps { get; set; } = new();
         }
 

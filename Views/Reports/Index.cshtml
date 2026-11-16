@@ -56,4 +56,22 @@
             </div>
         </div>
     </div>
+
+    @if (OpenQMS.Controllers.ReportsController.TaskReportRoles.Split(',').Any(User.IsInRole))
+    {
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm" id="task-assignments-card">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <span class="badge bg-primary fs-6 px-3 py-2">@L["Operational"]</span>
+                    </div>
+                    <h5 class="card-title">@L["Task Assignments"]</h5>
+                    <p class="card-text text-muted flex-grow-1">
+                        @L["Who is responsible for the next step of each open record: open and overdue tasks per person, and the tasks no one is named for, by module and stage."]
+                    </p>
+                    <a asp-action="TaskAssignments" class="btn btn-primary mt-3">@L["View Report"]</a>
+                </div>
+            </div>
+        </div>
+    }
 </div>

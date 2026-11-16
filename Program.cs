@@ -154,6 +154,7 @@ builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
 
 // PV Services
 builder.Services.AddScoped<OpenQMS.Services.Workflow.TaskAssignmentService>();
+builder.Services.AddScoped<OpenQMS.Services.Workflow.WorkQueueService>();
 builder.Services.AddScoped<PVWorkflowService>();
 builder.Services.AddScoped<PVRegulatoryService>();
 builder.Services.AddScoped<CIOMSFormService>();

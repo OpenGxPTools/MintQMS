@@ -1,0 +1,179 @@
+@using OpenQMS.Services.Workflow
+@{
+    ViewData["Title"] = L["Task Assignments"].Value;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var all = (List<WorkItem>)ViewBag.All;
+    var items = (List<WorkItem>)ViewBag.Items;
+    var today = (DateTime)ViewBag.Today;
+    var module = ViewBag.Module as string;
+    var person = ViewBag.Person as int?;
+    var overdueOnly = (bool)ViewBag.Overdue;
+
+    // By person: open, overdue, oldest assignment
+    var byPerson = all.Where(i => i.Assignment?.AssignedToUser != null)
+        .GroupBy(i => i.Assignment!.AssignedToUserId)
+        .Select(g => new
+        {
+            Id = g.Key,
+            Name = TaskAssignmentService.DisplayName(g.First().Assignment!.AssignedToUser!),
+            Open = g.Count(),
+            Overdue = g.Count(i => i.IsOverdue(today)),
+            Oldest = g.Min(i => i.Assignment!.AssignedOn),
+        })
+        .OrderByDescending(p => p.Overdue).ThenByDescending(p => p.Open).ThenBy(p => p.Name).ToList();
+    var unassigned = all.Where(i => i.Assignment == null)
+        .GroupBy(i => (i.Module, i.ModuleName, i.Stage))
+        .Select(g => new { g.Key.Module, g.Key.ModuleName, Stage = g.First().StageValue, Count = g.Count(),
+                           Oldest = g.Min(i => i.RaisedOn) })
+        .OrderBy(g => g.ModuleName).ThenBy(g => g.Stage.ToString()).ToList();
+    var modules = OpenQMS.Services.Workflow.WorkflowRules.Modules.Values.OrderBy(m => L[m.DisplayName].Value).ToList();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">@L["Task Assignments"]</h4>
+    <a asp-action="Index" class="btn btn-outline-secondary">@L["Reports Hub"]</a>
+</div>
+
+<p class="text-muted mb-3">
+    @L["Who is responsible for the next step of each open record. Assignment is information for accountability, never a permission: anyone allowed may still sign a step. This is a live snapshot — refresh the page to see the current state."]
+</p>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-4"><div class="card border-0 shadow-sm"><div class="card-body">
+        <div class="text-uppercase text-muted small fw-semibold">@L["Open tasks"]</div>
+        <h3 class="fw-bold mb-0" id="total-open">@all.Count</h3>
+    </div></div></div>
+    <div class="col-sm-4"><div class="card border-0 shadow-sm"><div class="card-body">
+        <div class="text-uppercase text-muted small fw-semibold">@L["No one named"]</div>
+        <h3 class="fw-bold mb-0" id="total-unassigned">@all.Count(i => i.Assignment == null)</h3>
+    </div></div></div>
+    <div class="col-sm-4"><div class="card border-0 shadow-sm"><div class="card-body">
+        <div class="text-uppercase text-muted small fw-semibold">@L["Overdue"]</div>
+        <h3 class="fw-bold mb-0 @(all.Any(i => i.IsOverdue(today)) ? "text-danger" : "")" id="total-overdue">@all.Count(i => i.IsOverdue(today))</h3>
+    </div></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header fw-semibold">@L["By person"]</div>
+            @if (!byPerson.Any())
+            {
+                <div class="card-body text-muted small">@L["Nothing is assigned to anyone."]</div>
+            }
+            else
+            {
+                <table class="table table-sm table-hover mb-0" id="table-by-person">
+                    <thead class="table-light"><tr><th class="ps-3">@L["Person"]</th><th>@L["Open"]</th><th>@L["Overdue"]</th><th class="pe-3">@L["Oldest assignment"]</th></tr></thead>
+                    <tbody>
+                        @foreach (var p in byPerson)
+                        {
+                            <tr data-person="@p.Id">
+                                <td class="ps-3"><a asp-action="TaskAssignments" asp-route-person="@p.Id">@p.Name</a></td>
+                                <td>@p.Open</td>
+                                <td class="@(p.Overdue > 0 ? "text-danger fw-semibold" : "")">@p.Overdue</td>
+                                <td class="pe-3 text-muted small">@p.Oldest.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header fw-semibold">@L["No one named — by module and stage"]</div>
+            @if (!unassigned.Any())
+            {
+                <div class="card-body text-muted small">@L["Every open task has someone named."]</div>
+            }
+            else
+            {
+                <table class="table table-sm table-hover mb-0" id="table-unassigned">
+                    <thead class="table-light"><tr><th class="ps-3">@L["Module"]</th><th>@L["Status"]</th><th>@L["Records"]</th><th class="pe-3">@L["Oldest raised"]</th></tr></thead>
+                    <tbody>
+                        @foreach (var u in unassigned)
+                        {
+                            <tr>
+                                <td class="ps-3"><a asp-action="TaskAssignments" asp-route-module="@u.Module" asp-route-person="0">@L[u.ModuleName]</a></td>
+                                <td>@L.Enum(u.Stage)</td>
+                                <td>@u.Count</td>
+                                <td class="pe-3 text-muted small">@(u.Oldest?.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) ?? "—")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+<form method="get" asp-action="TaskAssignments" class="row g-2 align-items-end mb-3" id="task-filter">
+    <div class="col-auto">
+        <label class="form-label small mb-0" for="module">@L["Module"]</label>
+        <select class="form-select form-select-sm" id="module" name="module">
+            <option value="">@L["All"]</option>
+            @foreach (var m in modules)
+            {
+                <option value="@m.Name" selected="@(m.Name == module)">@L[m.DisplayName]</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <label class="form-label small mb-0" for="person">@L["Person"]</label>
+        <select class="form-select form-select-sm" id="person" name="person">
+            <option value="">@L["All"]</option>
+            <option value="0" selected="@(person == 0)">@L["No one named"]</option>
+            @foreach (var p in byPerson.OrderBy(p => p.Name))
+            {
+                <option value="@p.Id" selected="@(p.Id == person)">@p.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto form-check ms-2 mb-1">
+        <input class="form-check-input" type="checkbox" id="overdue" name="overdue" value="true" checked="@overdueOnly" />
+        <label class="form-check-label small" for="overdue">@L["Overdue only"]</label>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-sm btn-primary">@L["Filter"]</button>
+        <a asp-action="TaskAssignments" class="btn btn-sm btn-outline-secondary">@L["Clear"]</a>
+        <a asp-action="ExportTaskAssignments" asp-route-module="@module" asp-route-person="@person" asp-route-overdue="@overdueOnly"
+           class="btn btn-sm btn-outline-success" id="export-tasks"><i class="bi bi-file-earmark-excel me-1"></i>@L["Export to Excel"]</a>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        @if (!items.Any())
+        {
+            <div class="p-3 text-muted">@L["No open tasks match the filter."]</div>
+        }
+        else
+        {
+            <div class="table-responsive"><table class="table table-sm table-hover mb-0" id="table-tasks">
+                <thead class="table-light">
+                    <tr><th class="ps-3">@L["Module"]</th><th>@L["Record"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Next Step"]</th>
+                        <th>@L["Assigned to"]</th><th>@L["Assigned On"]</th><th class="pe-3">@L["Due Date"]</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var i in items)
+                    {
+                        var a = i.Assignment;
+                        var od = i.IsOverdue(today);
+                        <tr class="@(od ? "table-danger" : "")" data-module="@i.Module" data-record="@i.RecordId">
+                            <td class="ps-3 small">@L[i.ModuleName]</td>
+                            <td class="text-nowrap"><a asp-controller="@i.Module" asp-action="Details" asp-route-id="@i.RecordId">@i.Number</a></td>
+                            <td class="text-truncate" style="max-width:240px;">@i.Title</td>
+                            <td class="small">@L.Enum(i.StageValue)</td>
+                            <td>@foreach (var st in i.Steps) { <span class="badge bg-secondary me-1">@L[st]</span> }</td>
+                            <td>@(a?.AssignedToUser is { } u ? TaskAssignmentService.DisplayName(u) : L["No one named"].Value)</td>
+                            <td class="small text-muted text-nowrap">@(a?.AssignedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) ?? "")</td>
+                            <td class="small pe-3 text-nowrap @(od ? "text-danger fw-semibold" : "text-muted")">@(a?.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table></div>
+        }
+    </div>
+</div>

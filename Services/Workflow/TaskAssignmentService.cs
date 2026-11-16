@@ -91,6 +91,32 @@ namespace OpenQMS.Services.Workflow
         }
 
         /// <summary>
+        /// Whether this user may do a task of a record's current stage: holds one of the task's roles (or is the user the
+        /// task names), is active and not ReadOnly, and — with the four-eyes rule on — is not excluded by it. One role
+        /// look-up for many records (the work lists).
+        /// </summary>
+        public async Task<Func<string, object, bool>> UserCanDoAsync(AppUser user)
+        {
+            var roles = (await _users.GetRolesAsync(user)).ToHashSet();
+            if (!IsActive(user) || roles.Contains(Constants.ReadOnlyRole))
+                return (_, _) => false;
+            var fourEyes = await FourEyesOnAsync();
+            return (module, record) => WorkflowRules.TasksFrom(module, StateOf(record), record).Any(t =>
+                (t.Roles.Any(roles.Contains) || (t.AlsoUserIn is { } f && FourEyes.IsUser(FourEyes.Value(record, f), user)))
+                && (!fourEyes || FourEyes.ExcludedReason(module, t, record, user) == null));
+        }
+
+        /// <summary>Current assignments of a module by record (any stage; match the record's state when showing one).</summary>
+        public async Task<Dictionary<int, List<TaskAssignment>>> CurrentByRecordAsync(string module) =>
+            (await _db.TaskAssignments.AsNoTracking().Include(t => t.AssignedToUser)
+                .Where(t => t.IsCurrent && t.Module == module).ToListAsync())
+            .GroupBy(t => t.RecordId).ToDictionary(g => g.Key, g => g.OrderByDescending(t => t.Id).ToList());
+
+        /// <summary>The assignment in <paramref name="map"/> for this record at this state, or null.</summary>
+        public static TaskAssignment? For(Dictionary<int, List<TaskAssignment>> map, int recordId, int state) =>
+            map.TryGetValue(recordId, out var list) ? list.FirstOrDefault(t => t.Stage == state) : null;
+
+        /// <summary>
         /// Who may assign or unassign: anyone who may do a task of this stage, and Administrators, Quality Managers and
         /// Regulatory Managers (who distribute work). ReadOnly users never.
         /// </summary>

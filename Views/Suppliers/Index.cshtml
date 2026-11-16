@@ -1,14 +1,19 @@
 @model IEnumerable<OpenQMS.Models.Supplier>
+@inject OpenQMS.Services.Workflow.TaskAssignmentService AssignSvc
 
 @{
+    var assignedMap = await AssignSvc.CurrentByRecordAsync("Suppliers");
+    ViewData["MeId"] = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     ViewData["Title"] = L["Suppliers"].Value;
 }
 
 @section Scripts {
+<script src="~/js/assigned-filter.js" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
         var table = $('#suppliersTable').DataTable({ stateSave: true,
             initComplete: function () {
+                MintAssignedFilter(this.api());
                 $('.status-filter').on('click', function () {
                     $('.status-filter').removeClass('active');
                     $(this).addClass('active');
@@ -36,6 +41,7 @@
                 null,
                 { "visible": false },
                 { "visible": false },
+                null,
                 null
             ],
             paging: true,
@@ -49,12 +55,12 @@
                 {
                     extend: 'pdf',
                     footer: false,
-                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] }
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7] }
                 },
                 {
                     extend: 'excel',
                     footer: false,
-                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] }
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7] }
                 }
             ]
         });
@@ -77,6 +83,7 @@
     <button class="btn btn-outline-primary btn-sm status-filter" data-status="Qualified">@L["Qualified"]</button>
     <button class="btn btn-outline-warning btn-sm status-filter" data-status="Suspended">@L["Suspended"]</button>
     <button class="btn btn-outline-secondary btn-sm status-filter" data-status="Cancelled">@L["Cancelled"]</button>
+    <partial name="_AssignedToMeFilter" model="7" />
 </div>
 
 <table id="suppliersTable" class="table" style="width:100%;">
@@ -89,6 +96,7 @@
             <th>@L["Approval Status"]</th>
             <th>@L["Workflow"]</th>
             <th>@L["Next Review"]</th>
+            <th>@L["Assigned to"]</th>
             <th>@L["Action"]</th>
         </tr>
     </thead>
@@ -126,6 +134,7 @@
                 <td>@L[approvalLabel]</td>
                 <td>@workflowLabel</td>
                 <td>@(item.NextReviewDate.HasValue ? item.NextReviewDate.Value.ToString("dd/MM/yyyy") : "-")</td>
+                <partial name="_AssignedToCell" model="@(OpenQMS.Services.Workflow.TaskAssignmentService.For(assignedMap, item.Id, (int)item.Status))" />
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">@L["Details"]</a>
                     @if (item.Status == OpenQMS.Models.SupplierStatus.Pending)

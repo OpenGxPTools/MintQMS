@@ -296,6 +296,17 @@ date (shown in red once passed) and note.
   (*Task Assigned / Task Reassigned / Task Unassigned*, with the person, due date and note). Assignments are
   never deleted, only ended. Deactivating a user ends their open assignments, with a note in each record (§11.1).
 - **Keep the note short and free of confidential details** (no patient, customer or product specifics).
+- **Where you see your work.** The **Home** page has three tabs:
+  - **My Tasks** — records assigned to you (an overdue due date is shown in red), plus the trainings you are
+    scheduled to attend;
+  - **Waiting for my roles** — records no one is assigned to whose next step you may sign (your roles, the
+    four-eyes rule respected), oldest first; Regulatory Managers also see adverse events pending approval,
+    confirmed signals and licences with renewal due here;
+  - **Raised by me** — records you raised that are still waiting for a step, with who is responsible.
+
+  Each register has an **Assigned to** column and an **Assigned to me** button that shows only your rows (the
+  register remembers it, like its other filters). *Reports → Task Assignments* gives managers the overall picture
+  (§10.1).
 - Assignment is not yet available in Batch Release, Pharmacovigilance, Regulatory Intelligence, Licences &
   Certifications, Training or reference data. Training is assigned per trainee in the Training module (§8.2).
 
@@ -1702,14 +1713,18 @@ changed here.
 **Who can do what.** Viewing and exporting is open to Admin, Quality Manager, Quality User, Authorised Person,
 Auditor, Trainer and Read-Only.
 
-**Available reports** (each can be exported to Excel):
-- **Management Review** — a consolidated quality overview for management-review meetings.
-- **Training Compliance** — who is up to date and who is outstanding on training.
-- **Overdue Items** — records past their due dates across modules.
+**Available reports:**
+- **Management Review** — a consolidated quality overview for management-review meetings (Excel export).
+- **Training Compliance** — who is up to date and who is outstanding on training (Excel export).
+- **Overdue Items** — records past their due dates across modules, with who is **assigned** to each (§2.10).
 - **Supporting Document Expiry** — supporting documents approaching or past expiry.
+- **Task Assignments** — who is responsible for the next step of every open record in the nine workflow modules:
+  open and overdue tasks **by person** (with their oldest assignment), the tasks **no one is named for** by module
+  and stage, and the full list, filtered by module, person (or *No one named*) and *Overdue only* (Excel export).
+  Open to Administrator, Quality Manager, Authorised Person and Auditor.
 
-**How to use.** *Reports → (choose a report).* Apply any filters, review on screen, and **Export** to Excel for
-distribution or records.
+**How to use.** *Reports → (choose a report).* Apply any filters, review on screen, and use **Export** where the
+report offers it.
 
 ---
 
@@ -1722,7 +1737,7 @@ awaiting action — and the **Home** page aggregates highlights across the syste
 Admin, Quality Manager, Regulatory Manager, Trainer, Authorised Person and Auditor.
 
 **How to use.** Open a module and choose its **Dashboard** view, or start from **Home** for the cross-module
-summary. Use the figures to find work needing attention, then click through to the records.
+summary; the Home page starts with your own work (*My Tasks*, *Waiting for my roles*, *Raised by me* — §2.10). Use the figures to find work needing attention, then click through to the records.
 
 ---
 

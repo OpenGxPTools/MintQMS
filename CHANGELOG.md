@@ -34,6 +34,15 @@
 - Also covers the supplier *Pending Suspension* / *Pending Cancellation* decisions, and records left in older
   states (Risk *Assessment* / *Review*, Maintenance *Overdue*). Starting a new supplier review ends the assignment
   of the stage the supplier leaves.
+- **Home page: your work in three tabs.** *My Tasks* (assigned to you, overdue in red, plus trainings you attend),
+  *Waiting for my roles* (unassigned records whose next step you may sign, four-eyes respected; Regulatory Managers
+  also see adverse events pending approval, confirmed signals and licence renewals here) and *Raised by me*. They
+  replace the "My Items" cards and the managers' "Pending My Action" tables.
+- **Registers:** an *Assigned to* column (with the due date) and an *Assigned to me* button in all nine registers;
+  the column is included in the register's PDF/Excel buttons.
+- **Reports → Task Assignments** (Administrator, Quality Manager, Authorised Person, Auditor): open and overdue tasks
+  by person, tasks no one is named for by module and stage, filters and Excel export. *Overdue Items* shows who is
+  assigned to each record.
 - Database change: a new TaskAssignments table.
 
 **Fixes**

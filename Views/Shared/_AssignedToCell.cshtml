@@ -1,0 +1,19 @@
+@model OpenQMS.Models.TaskAssignment?
+@* "Assigned to" cell of a register row: who is responsible for the record's current stage (if anyone). The search text
+   carries a marker for the signed-in user's own rows, used by the register's "Assigned to me" filter. *@
+@{
+    var meId = ViewData["MeId"] as string;
+    var mine = Model != null && Model.AssignedToUserId.ToString() == meId;
+    var name = Model?.AssignedToUser is { } u ? OpenQMS.Services.Workflow.TaskAssignmentService.DisplayName(u) : "";
+    var overdue = Model?.DueDate is { } d && d.Date < SiteTime.Today;
+}
+<td class="assigned-to" data-search="@name@(mine ? " ~assigned-to-me~" : "")">
+    @if (Model != null)
+    {
+        <span>@name</span>
+        @if (Model.DueDate is { } due)
+        {
+            <div class="small @(overdue ? "text-danger fw-semibold" : "text-muted")">@L["due {0}", due.ToString("dd MMM yyyy", DisplayDates.Culture)]</div>
+        }
+    }
+</td>

@@ -35,544 +35,218 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </div>
 
 @* ══════════════════════════════════════════════════════════════════
-   MY ITEMS  (personalised)
+   MY WORK  (tasks assigned to me · waiting for my roles · raised by me)
    ══════════════════════════════════════════════════════════════════ *@
+@{
+    var regWaiting = Model.IsRegulatoryManager
+        ? Model.PendingAdverseEvents.Count + Model.PendingSignalReviews.Count + Model.PendingLCRenewals.Count : 0;
+    var myCount = Model.MyTasks.Count + Model.MyRecentTrainings.Count;
+    var waitCount = Model.WaitingForMyRoles.Count + regWaiting;
+    var firstTab = myCount > 0 || waitCount == 0 ? "tasks" : "waiting";
+    var today = SiteTime.Today;
+}
+<div class="card border-0 shadow-sm mb-5" id="my-work">
+    <div class="card-header bg-transparent pb-0">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link @(firstTab == "tasks" ? "active" : "")" id="tab-my-tasks" data-bs-toggle="tab" data-bs-target="#pane-my-tasks" type="button" role="tab">
+                    @L["My Tasks"] <span class="badge bg-primary ms-1" id="count-my-tasks">@myCount</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link @(firstTab == "waiting" ? "active" : "")" id="tab-waiting" data-bs-toggle="tab" data-bs-target="#pane-waiting" type="button" role="tab">
+                    @L["Waiting for my roles"] <span class="badge bg-secondary ms-1" id="count-waiting">@waitCount</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-raised" data-bs-toggle="tab" data-bs-target="#pane-raised" type="button" role="tab">
+                    @L["Raised by me"] <span class="badge bg-secondary ms-1" id="count-raised">@Model.RaisedByMe.Count</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content">
 
-<p class="text-uppercase text-muted fw-semibold small mb-2">@L["My Items"]</p>
-<div class="row g-3 mb-3">
+        @* ── My Tasks: assigned to me, plus trainings I attend ── *@
+        <div class="tab-pane fade @(firstTab == "tasks" ? "show active" : "")" id="pane-my-tasks" role="tabpanel">
+            @if (myCount == 0)
+            {
+                <div class="card-body text-muted small">@L["Nothing is assigned to you."]</div>
+            }
+            else
+            {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0" id="table-my-tasks">
+                    <thead class="table-light"><tr><th class="ps-3">@L["Record"]</th><th>@L["Title"]</th><th>@L["Module"]</th><th>@L["Next Step"]</th><th>@L["Assigned"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
+                    <tbody>
+                        @foreach (var w in Model.MyTasks)
+                        {
+                            var overdue = w.IsOverdue(today);
+                            <tr class="@(overdue ? "table-danger" : "")" data-module="@w.Module" data-record="@w.RecordId">
+                                <td class="ps-3 text-nowrap"><a asp-controller="@w.Module" asp-action="Details" asp-route-id="@w.RecordId" class="text-decoration-none fw-semibold">@w.Number</a></td>
+                                <td class="text-truncate" style="max-width:220px;">@w.Title</td>
+                                <td class="small">@L[w.ModuleName]</td>
+                                <td>@foreach (var st in w.Steps) { <span class="badge bg-primary me-1">@L[st]</span> }<div class="small text-muted">@L.Enum(w.StageValue)</div></td>
+                                <td class="text-muted small text-nowrap">@w.Assignment!.AssignedOn.ToSite().ToString("dd MMM yy", DisplayDates.Culture)
+                                    @if (!string.IsNullOrEmpty(w.Assignment.Note)) { <i class="bi bi-chat-left-text ms-1" title="@w.Assignment.Note"></i> }</td>
+                                <td class="small pe-3 text-nowrap @(overdue ? "text-danger fw-semibold" : "text-muted")">@(w.Assignment.DueDate?.ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
+                            </tr>
+                        }
+                        @foreach (var t in Model.MyRecentTrainings)
+                        {
+                            var overdue = t.Date.Date < today;
+                            <tr class="@(overdue ? "table-danger" : "")" data-module="Trainings" data-record="@t.Id">
+                                <td class="ps-3 text-nowrap"><a asp-controller="Trainings" asp-action="Details" asp-route-id="@t.Id" class="text-decoration-none fw-semibold">@t.RecordId</a></td>
+                                <td class="text-truncate" style="max-width:220px;">@t.Title</td>
+                                <td class="small">@L["Training"]</td>
+                                <td><span class="badge bg-success">@L["Attend training"]</span><div class="small text-muted">@L.Message(t.Status)</div></td>
+                                <td class="text-muted small">—</td>
+                                <td class="small pe-3 text-nowrap @(overdue ? "text-danger fw-semibold" : "text-muted")">@t.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
 
-    <div class="col-sm-6 col-lg-3">
-        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #fd7e14 !important;">
-            <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Open CAPAs"]</p>
-                <h2 class="fw-bold mb-0">@Model.MyCAPAs</h2>
-            </div>
-            <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
+        @* ── Waiting for my roles: unassigned records whose next step I may sign ── *@
+        <div class="tab-pane fade @(firstTab == "waiting" ? "show active" : "")" id="pane-waiting" role="tabpanel">
+            @if (waitCount == 0)
+            {
+                <div class="card-body text-muted small">@L["Nothing is waiting for your roles."]</div>
+            }
+            @if (Model.WaitingForMyRoles.Any())
+            {
+                <div class="card-body small text-muted pb-0">@L["Records no one is assigned to, whose next step you may sign. Oldest first."]</div>
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0" id="table-waiting">
+                    <thead class="table-light"><tr><th class="ps-3">@L["Record"]</th><th>@L["Title"]</th><th>@L["Module"]</th><th>@L["Next Step"]</th><th class="pe-3">@L["Raised"]</th></tr></thead>
+                    <tbody>
+                        @foreach (var w in Model.WaitingForMyRoles)
+                        {
+                            <tr data-module="@w.Module" data-record="@w.RecordId">
+                                <td class="ps-3 text-nowrap"><a asp-controller="@w.Module" asp-action="Details" asp-route-id="@w.RecordId" class="text-decoration-none fw-semibold">@w.Number</a></td>
+                                <td class="text-truncate" style="max-width:220px;">@w.Title</td>
+                                <td class="small">@L[w.ModuleName]</td>
+                                <td>@foreach (var st in w.Steps) { <span class="badge bg-warning text-dark me-1">@L[st]</span> }<div class="small text-muted">@L.Enum(w.StageValue)</div></td>
+                                <td class="text-muted small pe-3 text-nowrap">@(w.RaisedOn?.ToSite().ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+            @if (Model.IsRegulatoryManager && regWaiting > 0)
+            {
+                <div class="row g-4 p-3">
+
+        @* Pending Adverse Events *@
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">@L["Adverse Events Pending Approval"]</span>
+                    <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
+                </div>
+                @if (!Model.PendingAdverseEvents.Any()) { <div class="card-body text-muted small">@L["No adverse events pending approval."]</div> }
+                else {
+                    <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                        <thead class="table-light"><tr><th class="ps-3">@L["AE#"]</th><th>@L["MedDRA Term"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Deadline"]</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.PendingAdverseEvents) {
+                                <tr>
+                                    <td class="ps-3"><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                    <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                    <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
+                                    <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table></div>
+                }
             </div>
         </div>
-    </div>
 
-    <div class="col-sm-6 col-lg-3">
-        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #fd7e14 !important;">
-            <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Open Deviations"]</p>
-                <h2 class="fw-bold mb-0">@Model.MyDeviations</h2>
-            </div>
-            <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
+        @* Pending Signal Reviews *@
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">@L["Confirmed Signals — Action Required"]</span>
+                    <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
+                </div>
+                @if (!Model.PendingSignalReviews.Any()) { <div class="card-body text-muted small">@L["No confirmed signals requiring action."]</div> }
+                else {
+                    <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                        <thead class="table-light"><tr><th class="ps-3">@L["SIG#"]</th><th>@L["MedDRA Term"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Detected"]</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.PendingSignalReviews) {
+                                <tr>
+                                    <td class="ps-3"><a asp-controller="PVSignalReview" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                    <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                    <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
+                                    <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table></div>
+                }
             </div>
         </div>
-    </div>
 
-    <div class="col-sm-6 col-lg-3">
-        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #6c757d !important;">
-            <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Documents"]</p>
-                <h2 class="fw-bold mb-0">@Model.MyDocuments</h2>
-            </div>
-            <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
+        @* Pending LC Renewals *@
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">@L["Licences & Certs — Renewal Due"]</span>
+                    <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
+                </div>
+                @if (!Model.PendingLCRenewals.Any()) { <div class="card-body text-muted small">@L["No licences or certifications with renewal due."]</div> }
+                else {
+                    <div class="table-responsive"><table class="table table-sm table-hover mb-0">
+                        <thead class="table-light"><tr><th class="ps-3">@L["LC#"]</th><th>@L["Holder"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Expiry"]</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.PendingLCRenewals) {
+                                <tr>
+                                    <td class="ps-3"><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
+                                    <td class="text-truncate" style="max-width:160px;">@item.Title</td>
+                                    <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
+                                    <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table></div>
+                }
             </div>
         </div>
-    </div>
-
-    <div class="col-sm-6 col-lg-3">
-        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #198754 !important;">
-            <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Trainings"]</p>
-                <h2 class="fw-bold mb-0">@Model.MyTrainings</h2>
-            </div>
-            <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
-            </div>
+                </div>
+            }
         </div>
-    </div>
 
-    <div class="col-sm-6 col-lg-3">
-        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0d6efd !important;">
-            <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Open Changes"]</p>
-                <h2 class="fw-bold mb-0">@Model.MyChanges</h2>
-            </div>
-            <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
-            </div>
+        @* ── Raised by me: records I raised that are still waiting for a step ── *@
+        <div class="tab-pane fade" id="pane-raised" role="tabpanel">
+            @if (!Model.RaisedByMe.Any())
+            {
+                <div class="card-body text-muted small">@L["No records you raised are in progress."]</div>
+            }
+            else
+            {
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0" id="table-raised">
+                    <thead class="table-light"><tr><th class="ps-3">@L["Record"]</th><th>@L["Title"]</th><th>@L["Module"]</th><th>@L["Status"]</th><th>@L["Responsible for the next step"]</th><th class="pe-3">@L["Raised"]</th></tr></thead>
+                    <tbody>
+                        @foreach (var w in Model.RaisedByMe)
+                        {
+                            <tr data-module="@w.Module" data-record="@w.RecordId">
+                                <td class="ps-3 text-nowrap"><a asp-controller="@w.Module" asp-action="Details" asp-route-id="@w.RecordId" class="text-decoration-none fw-semibold">@w.Number</a></td>
+                                <td class="text-truncate" style="max-width:220px;">@w.Title</td>
+                                <td class="small">@L[w.ModuleName]</td>
+                                <td class="small">@L.Enum(w.StageValue)</td>
+                                <td class="small">@(w.Assignment?.AssignedToUser is { } u ? OpenQMS.Services.Workflow.TaskAssignmentService.DisplayName(u) : L["No one named"].Value)</td>
+                                <td class="text-muted small pe-3 text-nowrap">@(w.RaisedOn?.ToSite().ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
         </div>
-    </div>
 
-    <div class="col-sm-6 col-lg-3">
-        <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #dc3545 !important;">
-            <div class="card-body pb-2">
-                <p class="text-uppercase text-muted small fw-semibold mb-1">@L["My Open Risks"]</p>
-                <h2 class="fw-bold mb-0">@Model.MyRisks</h2>
-            </div>
-            <div class="card-footer bg-transparent border-0 pt-0">
-                <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">@L["View register"] &rarr;</a>
-            </div>
-        </div>
     </div>
-
 </div>
-
-@if (Model.MyCAPAs > 0 || Model.MyDeviations > 0 || Model.MyDocuments > 0 || Model.MyTrainings > 0 || Model.MyChanges > 0 || Model.MyRisks > 0)
-{
-    <div class="row g-4 mb-5">
-
-        @if (Model.MyRecentCAPAs.Any())
-        {
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["My Open CAPAs"]</span>
-                        <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.MyRecentCAPAs)
-                                {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        }
-
-        @if (Model.MyRecentDeviations.Any())
-        {
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["My Open Deviations"]</span>
-                        <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.MyRecentDeviations)
-                                {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        }
-
-        @if (Model.MyRecentDocuments.Any())
-        {
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["My Documents for Review"]</span>
-                        <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Authored"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.MyRecentDocuments)
-                                {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        }
-
-        @if (Model.MyRecentTrainings.Any())
-        {
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["My Scheduled Trainings"]</span>
-                        <a asp-controller="Trainings" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Name"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.MyRecentTrainings)
-                                {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Trainings" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        }
-
-        @if (Model.MyRecentChanges.Any())
-        {
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["My Open Changes"]</span>
-                        <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Proposed"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.MyRecentChanges)
-                                {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Changes" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        }
-
-        @if (Model.MyRecentRisks.Any())
-        {
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["My Open Risks"]</span>
-                        <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Identified"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.MyRecentRisks)
-                                {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:180px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        }
-
-    </div>
-}
-else
-{
-    <p class="text-muted small mb-5">@L["Nothing currently assigned to you."]</p>
-}
-
-@* ══════════════════════════════════════════════════════════════════
-   PENDING MY ACTION  (Quality Manager / Regulatory Manager)
-   ══════════════════════════════════════════════════════════════════ *@
-
-@if (Model.IsQualityManager || Model.IsRegulatoryManager)
-{
-    <p class="text-uppercase text-muted fw-semibold small mb-3">@L["Pending My Action"]</p>
-    <div class="row g-4 mb-5">
-
-        @* ── Quality Manager tables ── *@
-        @if (Model.IsQualityManager)
-        {
-            @* Pending CAPAs *@
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["CAPAs Pending Action"]</span>
-                        <a asp-controller="Capas" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    @if (!Model.PendingCAPAs.Any()) { <div class="card-body text-muted small">@L["No CAPAs pending your action."]</div> }
-                    else {
-                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.PendingCAPAs) {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table></div>
-                    }
-                </div>
-            </div>
-
-            @* Pending Deviations *@
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["Deviations Pending Action"]</span>
-                        <a asp-controller="Deviations" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    @if (!Model.PendingDeviations.Any()) { <div class="card-body text-muted small">@L["No deviations pending your action."]</div> }
-                    else {
-                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.PendingDeviations) {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table></div>
-                    }
-                </div>
-            </div>
-
-            @* Pending Changes *@
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["Changes Pending Action"]</span>
-                        <a asp-controller="Changes" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    @if (!Model.PendingChanges.Any()) { <div class="card-body text-muted small">@L["No changes pending your action."]</div> }
-                    else {
-                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.PendingChanges) {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Changes" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table></div>
-                    }
-                </div>
-            </div>
-
-            @* Pending Audits *@
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["Audits Pending Action"]</span>
-                        <a asp-controller="Audits" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    @if (!Model.PendingAudits.Any()) { <div class="card-body text-muted small">@L["No audits pending action."]</div> }
-                    else {
-                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Scheduled"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.PendingAudits) {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Audits" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table></div>
-                    }
-                </div>
-            </div>
-
-            @* Pending Documents *@
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["Documents Pending Approval"]</span>
-                        <a asp-controller="AppDocuments" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    @if (!Model.PendingDocuments.Any()) { <div class="card-body text-muted small">@L["No documents pending approval."]</div> }
-                    else {
-                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Authored"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.PendingDocuments) {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="AppDocuments" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table></div>
-                    }
-                </div>
-            </div>
-
-            @* Pending Complaints *@
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["Complaints Pending Action"]</span>
-                        <a asp-controller="Complaints" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    @if (!Model.PendingComplaints.Any()) { <div class="card-body text-muted small">@L["No complaints pending your action."]</div> }
-                    else {
-                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Received"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.PendingComplaints) {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Complaints" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table></div>
-                    }
-                </div>
-            </div>
-
-            @* Pending Risks *@
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["Risks Pending Action"]</span>
-                        <a asp-controller="Risks" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    @if (!Model.PendingRisks.Any()) { <div class="card-body text-muted small">@L["No risks pending your action."]</div> }
-                    else {
-                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Identified"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.PendingRisks) {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table></div>
-                    }
-                </div>
-            </div>
-        }
-
-        @* ── Regulatory Manager tables ── *@
-        @if (Model.IsRegulatoryManager)
-        {
-            @* Pending Adverse Events *@
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["Adverse Events Pending Approval"]</span>
-                        <a asp-controller="Pharmacovigilance" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    @if (!Model.PendingAdverseEvents.Any()) { <div class="card-body text-muted small">@L["No adverse events pending approval."]</div> }
-                    else {
-                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["AE#"]</th><th>@L["MedDRA Term"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Deadline"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.PendingAdverseEvents) {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="Pharmacovigilance" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table></div>
-                    }
-                </div>
-            </div>
-
-            @* Pending Signal Reviews *@
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["Confirmed Signals — Action Required"]</span>
-                        <a asp-controller="PVSignalReview" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    @if (!Model.PendingSignalReviews.Any()) { <div class="card-body text-muted small">@L["No confirmed signals requiring action."]</div> }
-                    else {
-                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["SIG#"]</th><th>@L["MedDRA Term"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Detected"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.PendingSignalReviews) {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="PVSignalReview" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table></div>
-                    }
-                </div>
-            </div>
-
-            @* Pending LC Renewals *@
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">@L["Licences & Certs — Renewal Due"]</span>
-                        <a asp-controller="LicencesCertifications" asp-action="Index" class="small text-muted text-decoration-none">@L["View all"] &rarr;</a>
-                    </div>
-                    @if (!Model.PendingLCRenewals.Any()) { <div class="card-body text-muted small">@L["No licences or certifications with renewal due."]</div> }
-                    else {
-                        <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                            <thead class="table-light"><tr><th class="ps-3">@L["LC#"]</th><th>@L["Holder"]</th><th>@L["Action Required"]</th><th class="pe-3">@L["Expiry"]</th></tr></thead>
-                            <tbody>
-                                @foreach (var item in Model.PendingLCRenewals) {
-                                    <tr>
-                                        <td class="ps-3"><a asp-controller="LicencesCertifications" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
-                                        <td class="text-truncate" style="max-width:160px;">@item.Title</td>
-                                        <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                        <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table></div>
-                    }
-                </div>
-            </div>
-        }
-
-    </div>
-}
 
 @* ══════════════════════════════════════════════════════════════════
    QUALITY EVENTS
