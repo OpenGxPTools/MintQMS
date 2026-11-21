@@ -1,0 +1,24 @@
+# Weekly check of the browser libraries bundled in wwwroot/lib (see tools/check_libraries.py):
+# file integrity, no page loading code from other websites, newer versions, and known vulnerabilities.
+# A failed run (changed file, outside code, or a known vulnerability) is e-mailed by GitHub to the repository's
+# owners; the report is on the run's summary page. Run it by hand from the Actions tab ("Run workflow").
+name: Library check
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"     # every Monday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check bundled libraries
+        run: python3 tools/check_libraries.py

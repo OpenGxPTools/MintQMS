@@ -1,6 +1,21 @@
 # Changelog
 
-## Unreleased
+## MintQMS 1.2.0 (2026-11-16)
+
+MintQMS now enforces the **four-eyes rule** on signed workflow steps and lets you name **who is responsible for
+the next step** of a record, with work lists on the home page, an *Assigned to* column in the registers, a Task
+Assignments report and optional e-mails.
+
+**Before you upgrade:** take a backup (DEPLOYMENT.md §5) — this version changes the database (three changes,
+applied automatically at start-up: a four-eyes settings field, a TaskAssignments table, an EmailOutbox table with
+two e-mail settings). Also keep a copy of the data-protection keys folder (`DataProtectionKeysPath`): the SMTP
+password is now encrypted with those keys at the first start. **After the upgrade the four-eyes rule is on**: a
+record already half-way through may need a different person for its next acceptance or approval (an
+Administrator can turn the rule off in *System Settings → Security Policy*). Assignment e-mails stay **off**
+until an Administrator turns them on. The home page's "My Items" cards and the managers' "Pending My Action"
+tables are replaced by the *My Tasks / Waiting for my roles / Raised by me* tabs. To go back to 1.1.0, stop the
+service, put back the 1.1.0 program and restore the backup taken before the upgrade (DEPLOYMENT.md §6); work
+entered after the upgrade is then lost.
 
 **Four-eyes rule on signed workflow steps**
 
@@ -59,12 +74,45 @@
   Approved state, which the workflow never reaches). *Administratively Reopen* now appears on a Reviewed record
   and returns it to Completed for re-review, clearing the review and cancelling the next occurrence that was
   scheduled automatically at review — as *Send Back to Completed* does.
+- Data Disposal: the page failed to open once a reviewed maintenance record passed its retention date (it looked
+  for an approval date, which the maintenance workflow never sets), and likewise for any record with a retention
+  date but no closing date. Maintenance records are now listed as *Reviewed* with their review date, and a missing
+  date no longer breaks the page.
+- Account pages (e-mail, password, two-factor): their form checks loaded scripts that the application does not
+  serve, or from an outside website in production; they now use the application's own copies.
 
-**Tests**
+**Browser libraries: no code from other websites**
 
-- `test_workflow_baseline.py` records every signed step of these nine modules and who may sign it (the
+- Charts on the module dashboards, the searchable drop-down lists and the Licences & Certifications calendar
+  loaded their libraries from an outside website (cdn.jsdelivr.net) on 21 pages, so they failed without internet
+  access and ran code MintQMS did not control. Chart.js 4.4.0, Select2 4.1.0-rc.0 and FullCalendar 6.1.11 are now
+  bundled (exact files from the npm registry, fingerprints checked; MIT licences included). MintQMS no longer
+  contacts any outside website (apart from your mail server).
+- Security updates of two bundled libraries with known vulnerabilities: jQuery Validation 1.17.0 → 1.22.1
+  (cross-site scripting and slow-pattern issues) and the older Chart.js 2.3.0 → 2.9.4 (prototype pollution).
+- `wwwroot/lib/libraries.json` lists every bundled library (version, licence, source, file fingerprints).
+  `tools/check_libraries.py` checks the files are unchanged, that no page loads outside code, and — online —
+  newer versions and known vulnerabilities; a GitHub workflow runs it every Monday.
+
+**Documentation**
+
+- User guide 1.2: the four-eyes rule (§2.9) and task assignment, work lists and e-mails (§2.10); the reports list
+  is corrected (only Management Review, Training Compliance and Task Assignments export to Excel).
+- DEPLOYMENT.md: Site Web Address, test e-mail, and keeping the keys folder with the backups.
+- New texts in Spanish and Portuguese (Brazil) are first translations, to be reviewed by native speakers.
+
+**For contributors**
+
+- Who may sign each step, and the four-eyes rules, are in `Resources/Workflow/workflow-rules.json` (embedded); the
+  tests check it against the real role checks of every step.
+- Tests: `test_workflow_baseline.py` records every signed step of the nine modules and who may sign it (the
   behaviour of 1.1.0, unchanged with the rule off, except the Maintenance re-open fix); `test_four_eyes.py` checks
-  every rule; `test_maintenance_reopen.py` the re-open fix; `test_assignment.py` task assignment.
+  every rule (stages the baseline cannot reach are tried live with every role); `test_maintenance_reopen.py`,
+  `test_assignment.py`, `test_work_lists.py` (including each register's DataTables column list) and
+  `test_email.py` with a small STARTTLS test mail server (`tests/e2e/smtp_test_server.py`; delivery checks need
+  `E2E_SMTP_CERT_DIR`, see the test); `test_module_walks.py` walks Batch Release, Licences & Certifications,
+  Regulatory Intelligence, pharmacovigilance, Data Disposal and the remaining quality-module actions through
+  their pages; `test_libraries.py` guards the bundled libraries.
 
 ## MintQMS 1.1.0 (2026-11-15)
 

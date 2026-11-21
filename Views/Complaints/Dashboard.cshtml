@@ -310,7 +310,7 @@
 </div>
 
 @section Scripts {
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="~/lib/chartjs-4.4.0/chart.umd.js" asp-append-version="true"></script>
 <script>
 (function () {
     var labels = @Json.Serialize(statusCounts.Keys.Select(k => L.Message(k)).ToList());

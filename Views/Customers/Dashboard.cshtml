@@ -155,7 +155,7 @@
 </div>
 
 @section Scripts {
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="~/lib/chartjs-4.4.0/chart.umd.js" asp-append-version="true"></script>
 <script>
 (function () {
     var typeLabels = @Json.Serialize(typeCounts.Keys.Select(k => L.Enum(Enum.Parse<OpenQMS.Models.CustomerType>(k))).ToArray());

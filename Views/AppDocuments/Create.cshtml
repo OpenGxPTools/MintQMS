@@ -129,8 +129,8 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="~/lib/select2-4.1.0-rc.0/select2.min.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/lib/select2-4.1.0-rc.0/select2.min.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
             $('#categorySelect').select2({ theme: 'classic', width: '100%', placeholder: @Json.Serialize(L["-- Select category --"].Value), allowClear: true });

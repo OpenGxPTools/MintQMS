@@ -174,5 +174,5 @@ r = post_form(login(QU), "/Settings/SendTestEmail", "/", {})
 check("test e-mail: only an Administrator", r.status_code == 403 or "AccessDenied" in r.headers.get("Location", ""), r.headers.get("Location"))
 
 # leave the site as found: e-mails off, no SMTP (other suites run after this one)
-exec_sql("update SystemSettings set SendAssignmentEmails=0, SmtpHost=null, EmailFromAddress=null, SmtpPassword=null, SiteWebAddress=null, SmtpUsername=null")
+exec_sql("update SystemSettings set SendAssignmentEmails=0, SmtpHost=null, EmailFromAddress=null, SmtpPassword=null, SiteWebAddress=null, SmtpUsername=null, EmailFromName=null, SmtpPort=587")
 sys.exit(summary())

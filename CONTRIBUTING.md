@@ -23,6 +23,11 @@ or screenshots.
 4. Run the end-to-end tests in [`tests/e2e`](tests/e2e) (see its README) and add tests for what you change.
 5. Update the [User & Operations Guide](docs/MintQMS_User_and_Operations_Guide.md) or
    [DEPLOYMENT.md](DEPLOYMENT.md) when behaviour or installation changes.
+6. **Never load code from another website.** Browser libraries live in `wwwroot/lib`, listed in
+   `wwwroot/lib/libraries.json`. To add or update one: take the exact files from the npm registry (check the
+   package's published integrity), keep its licence file, update the manifest entry, run
+   `python3 tools/check_libraries.py --record`, then `python3 tools/check_libraries.py` (newer versions and known
+   vulnerabilities) and the e2e tests. The *Library check* workflow repeats the online check every week.
 
 ## Interface text and translations
 

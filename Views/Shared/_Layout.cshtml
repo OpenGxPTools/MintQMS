@@ -128,8 +128,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
     <script src="~/lib/ChartJs/chart.min.js"></script>
 
-@*     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
- *@    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 
 @* ── Gap 7: Idle session timeout ────────────────────────────────────────── *@
 @if (User.Identity?.IsAuthenticated == true && (_layoutSettings?.IdleTimeoutMinutes ?? 0) > 0)

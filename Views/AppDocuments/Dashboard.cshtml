@@ -272,7 +272,7 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+    <script src="~/lib/chartjs-4.4.0/chart.umd.js" asp-append-version="true"></script>
     <script>
         var labels  = @Json.Serialize(statusCounts.Keys.Select(k => L.Enum(k)).ToList());
         var counts  = [@string.Join(",", statusCounts.Values)];

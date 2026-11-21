@@ -33,6 +33,10 @@ day-to-day use, including HTTPS, backups, upgrades and a go-live checklist.
 | Web server | Not needed | nginx or Caddy, to provide HTTPS |
 | Other | — | A host name (e.g. `qms.example.com`), an HTTPS certificate (Caddy obtains one automatically), and fonts (`fonts-liberation`) for reports and image watermarks |
 
+MintQMS works without internet access: every script, style sheet and font it uses is part of the program, and
+the only outside server it contacts is your mail server (if you set one up). The bundled third-party libraries
+are listed, with licences and versions, in `wwwroot/lib/libraries.json`.
+
 Install .NET from <https://dotnet.microsoft.com/download/dotnet/10.0>. On Ubuntu:
 
 ```bash

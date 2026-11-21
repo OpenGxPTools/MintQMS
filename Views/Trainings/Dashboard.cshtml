@@ -185,7 +185,7 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+    <script src="~/lib/chartjs-4.4.0/chart.umd.js" asp-append-version="true"></script>
     <script>
         var labels = [@Json.Serialize(L["Scheduled"].Value), @Json.Serialize(L["Completed"].Value)];
         var counts = [@ViewBag.ScheduledCount, @ViewBag.CompletedCount];

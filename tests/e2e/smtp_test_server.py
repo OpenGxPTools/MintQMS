@@ -5,14 +5,14 @@ from email import policy
 
 
 class SmtpTestServer:
-    def __init__(self, certfile, keyfile, user="mailer", password="s3cret-Pw!"):
+    def __init__(self, certfile, keyfile, user="mailer", password="s3cret-Pw!", port=0):
         self.user, self.password = user, password
         self.ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         self.ctx.load_cert_chain(certfile, keyfile)
         self.messages, self.refuse, self.logins = [], False, []
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.sock.bind(("127.0.0.1", 0))
+        self.sock.bind(("127.0.0.1", port))
         self.port = self.sock.getsockname()[1]
         self.sock.listen(5)
         self._stop = False
