@@ -1,6 +1,6 @@
 # Changelog
 
-## MintQMS 1.2.0 (2026-11-16)
+## MintQMS 1.2.0 (2026-11-22)
 
 MintQMS now enforces the **four-eyes rule** on signed workflow steps and lets you name **who does each step** of
 a record — the step it is at now, and planned ahead for the steps after it — with work lists on the home page, an
