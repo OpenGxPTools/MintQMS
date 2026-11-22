@@ -61,3 +61,6 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# Bundled browser libraries are kept byte-for-byte as published (fingerprints in wwwroot/lib/libraries.json).
+wwwroot/lib/** -text

@@ -356,7 +356,7 @@ relevant operational roles; final approval is more tightly restricted. Read-Only
 | Risk | Quality, Regulatory, AP, Auditor, Trainer | **Admin / Quality Manager / AP** (accept & close) |
 | Suppliers | Quality, AP, Ops, Commercial | **Admin / Quality Manager / AP** (approve/qualify) |
 | Maintenance | Quality, AP, **Operations** | **Admin / Quality Manager / AP** (review) |
-| Batch Release | Quality, AP, Operations | **Admin / Authorised Person** (certify) |
+| Batch Release | Quality, AP, Operations | **Authorised Person** (certify) |
 | Disposal | — | **Administrator** (dispose) |
 | Pharmacovigilance / RI / Licences | Regulatory (RU/RM) | **Admin / Regulatory Manager / Regulatory User** (Quality Manager can also move Signal Reviews and Periodic Reports) |
 | Documents | any user (author) | **Quality Manager / Authorised Person / Administrator** (approve/issue) |
@@ -1010,7 +1010,7 @@ test data, and the AP makes the certification decision. Released records are loc
 | Create / Edit; enter checklist, test results, specs, documents, cross-references | Admin, Quality Manager, Quality User, Authorised Person, **Operations User** |
 | Submit for review; submit to AP | Admin, Quality Manager, Quality User, Authorised Person |
 | Place on hold; lift hold | Admin, Quality Manager, Authorised Person |
-| **Certify; Reject; Issue Certificate** | **Admin, Authorised Person only** |
+| **Certify; Reject; Override Rejection; Issue Certificate** | **Authorised Person only** |
 | Confirm release | Admin, Authorised Person, Quality Manager |
 | Close | Admin, Quality Manager, Quality User, Authorised Person |
 | Cancel | Admin, Quality Manager, Quality User |
@@ -1024,8 +1024,8 @@ move the record to **On Hold**, **Certified**, **Rejected**, or back to **Under 
 |---|---|---|
 | Submit for review | Draft → Under Review | Admin/QM/QU/AP |
 | Submit to AP | Under Review → Pending AP Decision | Admin/QM/QU/AP |
-| **Certify** | Pending AP Decision → Certified | **Admin/AP** |
-| **Reject** | Pending AP Decision → Rejected | **Admin/AP** |
+| **Certify** | Pending AP Decision → Certified | **AP** |
+| **Reject** | Pending AP Decision → Rejected | **AP** |
 | Confirm release | Certified → Released | Admin/AP/QM |
 
 **Step-by-step walkthrough.**
@@ -1044,7 +1044,7 @@ is **Certified** (or **Released**):
 - **Types.** A **Certificate of Analysis (CoA)** — product and batch details with the **test results against
   their specifications**; a **Certificate of Conformity (CoC)** — the conformance statement; or a **Combined**
   CoA + CoC.
-- **Who & how.** Only an **Administrator or the Authorised Person** can issue a certificate, and issuance is
+- **Who & how.** Only the **Authorised Person** can issue a certificate, and issuance is
   **electronically signed**. Each certificate is given a unique **certificate number**, and the AP can add a
   **certification/issuance statement** in their name.
 - **Fixed at issue.** Issuing saves the **complete certificate** exactly as issued — product and batch details,
@@ -1073,8 +1073,8 @@ is **Certified** (or **Released**):
   re-entered to review via **Return From Rejection** (AP override).
 - **Cancel:** the record can be **Cancelled** (Quality), or **Administratively re-opened** by an Administrator.
 
-**Notes.** This is the strictest separation of duties in the system: **only an Administrator or the Authorised
-Person may Certify or Reject** a batch. Quality staff prepare; operations enter test data; the AP certifies.
+**Notes.** This is the strictest separation of duties in the system: **only the Authorised Person may Certify or
+Reject** a batch (or override a rejection) — not even the Administrator, a technical role. Quality staff prepare; operations enter test data; the AP certifies.
 
 ---
 

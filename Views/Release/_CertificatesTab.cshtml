@@ -6,11 +6,11 @@
 @{
     var canIssueCert = (Model.Status == ReleaseStatus.Certified || Model.Status == ReleaseStatus.Released)
                      && Model.ReleaseType != ReleaseType.QualityOversight
-                     && (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole));
+                     && User.IsInRole(Constants.AuthorisedPersonRole);
 
     var canIssueQO = (Model.Status == ReleaseStatus.Certified || Model.Status == ReleaseStatus.Released)
                    && Model.ReleaseType == ReleaseType.QualityOversight
-                   && (User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole));
+                   && User.IsInRole(Constants.AuthorisedPersonRole);
 
     bool hasFailedTests = Model.TestResults?.Any(t => t.Status == TestResultStatus.Fail) == true;
 

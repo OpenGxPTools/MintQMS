@@ -69,7 +69,11 @@ check("6 Release/Edit: lab row call carries JSON-encoded name",
 check("6 Release/Edit: Strength JSON-encoded", "var currentStrength = \"\\u003C/script\\u003E" in html)
 
 exec_sql("update ReleaseRecords set Status=5 where Id=?", (rid,))
-r = get(s, f"/Release/Details/{rid}")
+# the certificate statements are shown to the Authorised Person (only they can issue certificates)
+AP = f"xss-ap-{run}@e2e.local"
+ensure_user(AP, ["AuthorisedPerson"], "Xss", "AuthorisedPerson")
+r = get(login(AP), f"/Release/Details/{rid}")
+s = login()
 check("6 Release/Details (certified): page 200", r.status_code == 200, r.status_code)
 bad = scripts_parse(r.text)
 check("6 Release/Details: certificate-statement script parses", not bad, bad)

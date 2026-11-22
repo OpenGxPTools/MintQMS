@@ -1,5 +1,28 @@
 # Changelog
 
+## MintQMS 1.2.1 (2026-11-22)
+
+A small update to 1.2.0: batch-release decisions are reserved to the Authorised Person, and one bundled library
+is stored exactly as published. **No database change**; upgrade by replacing the program (take your usual backup
+first, DEPLOYMENT.md §5). To go back to 1.2.0, put back the 1.2.0 program.
+If batches at your site were certified by an Administrator account, give the person who certifies the
+**Authorised Person** role before upgrading.
+
+**Batch Release: disposition decisions by the Authorised Person only**
+
+- **Certify**, **Reject**, **Override Rejection** and **Issue Certificate** are now reserved to the **Authorised
+  Person** role. The Administrator — a technical role — can no longer take these GMP decisions (the buttons are
+  not shown and the actions are refused). An Administrator who is also an Authorised Person keeps them through
+  the Authorised Person role. The Administrator can still place a record on hold, send it back to review and
+  re-open it administratively.
+- User guide §6.3 updated.
+
+**Fixes**
+
+- Bundled Chart.js 2.9.4: the repository stored its files with converted line endings, so the library check
+  (`tools/check_libraries.py`) reported them as changed in a fresh download. The files are now stored exactly as
+  published (`wwwroot/lib/** -text` in `.gitattributes`); the program behaves the same.
+
 ## MintQMS 1.2.0 (2026-11-22)
 
 MintQMS now enforces the **four-eyes rule** on signed workflow steps and lets you name **who does each step** of

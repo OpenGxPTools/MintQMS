@@ -17,8 +17,10 @@
 }
 
 @{
-    // isAP: can certify, reject, issue certificates, override rejection
+    // isAP: can place on hold / return from the AP stage (Administrator too)
     var isAP = User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.AuthorisedPersonRole);
+    // isRealAP: the disposition decisions — certify, reject, override rejection — are the Authorised Person's only
+    var isRealAP = User.IsInRole(Constants.AuthorisedPersonRole);
     // isQO: all quality roles — Admin, QualityManager, QualityUser
     var isQO = User.IsInRole(Constants.AdministratorsRole) || User.IsInRole(Constants.QualityManagerRole) ||
                User.IsInRole(Constants.QualityUserRole);
@@ -57,8 +59,11 @@
 
             @if (Model.Status == ReleaseStatus.PendingAPDecision && isAP)
             {
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#certifyModal">@L["Certify Batch"]</button>
-                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">@L["Reject"]</button>
+                @if (isRealAP)
+                {
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#certifyModal">@L["Certify Batch"]</button>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">@L["Reject"]</button>
+                }
                 <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#holdModal">@L["Place on Hold"]</button>
                 <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#returnReviewModal">@L["Return for Rework"]</button>
             }
@@ -75,7 +80,7 @@
                     <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#closeModal">@L["Close"]</button>
                 }
                 @* Finding 5: AP can override rejection *@
-                @if (isAP)
+                @if (isRealAP)
                 {
                     <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#returnFromRejectionModal">@L["Override Rejection"]</button>
                 }
@@ -298,6 +303,9 @@
         </div></div>
     </div>
 
+    @* Certify and Reject: the Authorised Person only *@
+    @if (isRealAP)
+    {
     <div class="modal fade" id="certifyModal" tabindex="-1">
         <div class="modal-dialog modal-lg"><div class="modal-content">
             <form asp-action="Certify" asp-route-id="@Model.Id" method="post">
@@ -359,6 +367,7 @@
             </form>
         </div></div>
     </div>
+    }
 
     <div class="modal fade" id="confirmReleaseModal" tabindex="-1">
         <div class="modal-dialog"><div class="modal-content">
@@ -488,6 +497,8 @@
     </div>
 
     @* Finding 5: AP override of rejection modal *@
+    @if (isRealAP)
+    {
     <div class="modal fade" id="returnFromRejectionModal" tabindex="-1">
         <div class="modal-dialog"><div class="modal-content">
             <form asp-action="ReturnFromRejection" asp-route-id="@Model.Id" method="post">
@@ -517,4 +528,5 @@
             </form>
         </div></div>
     </div>
+    }
 }

@@ -766,7 +766,8 @@ namespace OpenQMS.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator,AuthorisedPerson")]
+        // GMP disposition decision: the Authorised Person only (the Administrator is a technical role).
+        [Authorize(Roles = "AuthorisedPerson")]
         public async Task<IActionResult> Certify(int id, string? statement, string? pwd, string? apFullName, string email)
         {
             if (!await VerifyCredentials(email, pwd ?? string.Empty))
@@ -788,7 +789,8 @@ namespace OpenQMS.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator,AuthorisedPerson")]
+        // GMP disposition decision: the Authorised Person only (the Administrator is a technical role).
+        [Authorize(Roles = "AuthorisedPerson")]
         public async Task<IActionResult> Reject(int id, string? reason, string? pwd, string email)
         {
             if (!await VerifyCredentials(email, pwd ?? string.Empty))
@@ -903,7 +905,8 @@ namespace OpenQMS.Controllers
 
         // Finding 5: AP can override a rejection and return the record to Under Review
         [HttpPost, ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator,AuthorisedPerson")]
+        // GMP disposition decision: the Authorised Person only (the Administrator is a technical role).
+        [Authorize(Roles = "AuthorisedPerson")]
         public async Task<IActionResult> ReturnFromRejection(int id, string? comments, string email, string pwd)
         {
             if (!await VerifyCredentials(email, pwd))
@@ -1283,7 +1286,8 @@ namespace OpenQMS.Controllers
         // ── Certificates ─────────────────────────────────────────────────────
 
         [HttpPost, ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator,AuthorisedPerson")]
+        // GMP disposition decision: the Authorised Person only (the Administrator is a technical role).
+        [Authorize(Roles = "AuthorisedPerson")]
         public async Task<IActionResult> IssueCertificate(int releaseRecordId, CertificateType type, string? email, string? pwd, string? statement)
         {
             if (!await VerifyCredentials(email ?? string.Empty, pwd ?? string.Empty))

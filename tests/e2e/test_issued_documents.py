@@ -73,9 +73,17 @@ rid = q1("select Id from ReleaseRecords where RecordNumber=?", (rn,))["Id"]
 exec_sql("insert into ReleaseTestResults (ReleaseRecordId, DisplayOrder, TestParameter, TestMethod, AcceptanceCriterion, Result, Status, IsLocked) values (?,1,'Assay','HPLC','95-105%','99%',1,0)", (rid,))
 
 
+AP = f"issued-ap-{run}@e2e.local"
+ensure_user(AP, ["AuthorisedPerson"], "Issued", "AuthorisedPerson")
+
+
 def issue(ctype, statement="Cert statement"):
-    post_form(s, "/Release/IssueCertificate", f"/Release/Details/{rid}",
-              {"releaseRecordId": rid, "type": ctype, "email": ADMIN, "pwd": PW, "statement": statement})
+    """Certificates are issued by the Authorised Person only; the Administrator session is restored afterwards."""
+    global s
+    sap = login(AP)
+    post_form(sap, "/Release/IssueCertificate", f"/Release/Details/{rid}",
+              {"releaseRecordId": rid, "type": ctype, "email": AP, "pwd": PW, "statement": statement})
+    s = login()
     return q1("select * from ReleaseCertificates where ReleaseRecordId=? order by Id desc", (rid,))
 
 
