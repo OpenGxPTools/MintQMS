@@ -7,7 +7,7 @@ using OpenQMS.Services.Workflow;
 
 namespace OpenQMS.Controllers
 {
-    /// <summary>Assign, reassign and unassign the person responsible for a record's next step (no e-signature:
+    /// <summary>Assign, reassign, unassign and plan the people responsible for a record's steps (no e-signature:
     /// assignment is information for accountability, not a GMP signature; each change is in the record's audit trail).</summary>
     [Authorize]
     public class TaskAssignmentsController : Controller
@@ -31,7 +31,7 @@ namespace OpenQMS.Controllers
 
             var why = await _svc.AssignAsync(module, record, userId, dueDate, note, _users.GetUserName(User)!);
             TempData[AssignmentFilter.MessageKey] = why == null
-                ? "success|" + "The person responsible for the next step has been saved."
+                ? "success|" + "The responsibilities have been saved."
                 : "danger|" + why;
             return Redirect($"/{module}/Details/{recordId}");
         }
@@ -46,8 +46,26 @@ namespace OpenQMS.Controllers
 
             var done = await _svc.UnassignAsync(module, record, _users.GetUserName(User)!);
             TempData[AssignmentFilter.MessageKey] = done
-                ? "success|" + "No one is named for the next step now."
-                : "warning|" + "No one was named for the next step.";
+                ? "success|" + "The responsibilities have been saved."
+                : "warning|" + "Nothing was changed.";
+            return Redirect($"/{module}/Details/{recordId}");
+        }
+
+        /// <summary>Saves the responsibilities form: who does the step the record is at now and the steps still ahead.</summary>
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Plan(string module, int recordId, List<TaskAssignmentService.PlanEntry> steps)
+        {
+            if (!TaskAssignmentService.IsWorkflowModule(module)) return NotFound();
+            var record = await _svc.LoadRecordAsync(module, recordId);
+            if (record == null) return NotFound();
+            if (!await _svc.CanAssignAsync(module, record, User)) return Forbid();
+
+            var (error, warnings, changed) = await _svc.SavePlanAsync(module, record, steps ?? new(), _users.GetUserName(User)!);
+            TempData[AssignmentFilter.MessageKey] =
+                error != null ? "danger|" + error
+                : warnings.Count > 0 ? "warning|" + warnings[0]
+                : changed ? "success|" + "The responsibilities have been saved."
+                : "info|" + "Nothing was changed.";
             return Redirect($"/{module}/Details/{recordId}");
         }
     }

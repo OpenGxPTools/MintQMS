@@ -34,6 +34,14 @@ namespace OpenQMS.Services.Workflow
             [JsonPropertyName("onlyIf")] public Condition? OnlyIf { get; set; }
             /// <summary>The step's button text (an English translation key), for task lists.</summary>
             [JsonPropertyName("label")] public string Label { get; set; } = "";
+            /// <summary>What the person at this stage does, in plain words (an English translation key, e.g. "Evaluate").
+            /// Falls back to the button text.</summary>
+            [JsonPropertyName("task")] public string? TaskName { get; set; }
+
+            public string Task => string.IsNullOrEmpty(TaskName) ? Label : TaskName;
+            /// <summary>The record field in which this step records who did it (e.g. "EvaluatedBy"), if a four-eyes rule
+            /// of a later step can name it.</summary>
+            [JsonPropertyName("records")] public string? Records { get; set; }
 
             public bool IsTask => Kind == "task";
 
@@ -66,6 +74,8 @@ namespace OpenQMS.Services.Workflow
             [JsonPropertyName("numberField")] public string NumberField { get; set; } = "";
             [JsonPropertyName("titleField")] public string TitleField { get; set; } = "";
             [JsonPropertyName("raisedOnField")] public string RaisedOnField { get; set; } = "";
+            /// <summary>The record's own target/due date field (optional), shown when a step has no due date.</summary>
+            [JsonPropertyName("targetDateField")] public string? TargetDateField { get; set; }
             [JsonPropertyName("steps")] public List<Step> Steps { get; set; } = new();
         }
 
@@ -89,6 +99,23 @@ namespace OpenQMS.Services.Workflow
             Modules.TryGetValue(module, out var m)
                 ? m.Steps.Where(s => s.IsTask && s.From == state && s.AppliesTo(record)).ToList()
                 : Array.Empty<Step>();
+
+        /// <summary>
+        /// The record's route from its current state: the forward step of each stage still ahead, in order, starting with
+        /// the current stage (empty when nothing is left to do). Every module's forward route is a straight line; where a
+        /// stage has more than one forward step (none today) the first is followed.
+        /// </summary>
+        public static IReadOnlyList<Step> Route(string module, int state, object record)
+        {
+            var route = new List<Step>();
+            var seen = new HashSet<int>();
+            while (seen.Add(state) && TasksFrom(module, state, record).FirstOrDefault() is { } step)
+            {
+                route.Add(step);
+                state = step.To;
+            }
+            return route;
+        }
 
         private static IReadOnlyDictionary<string, Module> Load()
         {

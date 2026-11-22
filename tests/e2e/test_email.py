@@ -4,7 +4,7 @@
     Site Web Address must be a full http(s) address;
   * the SMTP password is stored protected ("dp1:…"), never shown on the settings page, never in the settings log;
   * assigning a task queues one e-mail in the same save (not when the setting is off, not to oneself); the e-mail holds
-    the type of record, number, next step, due date, who assigned it, the note and a link — and NO record content
+    the type of record, number, the task, due date, who assigned it, the note and a link — and NO record content
     (title, description); written in the site language;
   * with a mail server: the message is delivered over STARTTLS with sign-in; when the server refuses, the workflow is
     unaffected, the error is kept and shown in System Settings, retried after a back-off, and marked Failed after the
@@ -96,8 +96,8 @@ check("assigning queues one e-mail", len(rows) == 1 and rows[0]["Status"] == "Pe
 mail = rows[0] if rows else {"Subject": "", "HtmlBody": ""}
 num = row(m["table"], dev)["DeviationId"]
 body = mail["HtmlBody"]
-check("e-mail: record type and number, next step", num in mail["Subject"] and "Deviations" in mail["Subject"]
-      and "Submit for Acceptance" in body, mail["Subject"])
+check("e-mail: record type and number, the task", num in mail["Subject"] and "Deviations" in mail["Subject"]
+      and "Evaluate" in mail["Subject"] and "Evaluate" in body, mail["Subject"])
 check("e-mail: due date, who assigned it, the note", "24 Dec 2026" in body and "Elsa Manager" in body and "see batch 7" in body)
 check("e-mail: link to the record", f"http://localhost:5099/Deviations/Details/{dev}" in body)
 check("e-mail: no record content (title, description)", "SECRET-TITLE" not in body + mail["Subject"] and "SECRET-DESCRIPTION" not in body)
@@ -109,7 +109,7 @@ exec_sql("update SystemSettings set SiteLanguage='es'")
 dev3 = new_dev()
 assign(login(QM1), dev3, ids[QU])
 es = outbox(dev3)
-check("e-mail in the site language (Spanish)", es and "Desviaciones" in es[0]["Subject"] and "Siguiente paso" in es[0]["HtmlBody"],
+check("e-mail in the site language (Spanish)", es and "Desviaciones" in es[0]["Subject"] and "Tarea" in es[0]["HtmlBody"] and "Evaluar" in es[0]["Subject"],
       es[0]["Subject"] if es else None)
 exec_sql("update SystemSettings set SiteLanguage='en'")
 

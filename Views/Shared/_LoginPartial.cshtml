@@ -181,6 +181,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Reports" asp-action="ManagementReview"><i class="bi bi-person-workspace me-1 text-muted"></i>@L["Management Review"]</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Reports" asp-action="TrainingCompliance"><i class="bi bi-clipboard2-data me-1 text-muted"></i>@L["Training Compliance"]</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Reports" asp-action="OverdueItems"><i class="bi bi-clock-history me-1 text-muted"></i>@L["Overdue Items"]</a></li>
+                                @if (InAny(OpenQMS.Controllers.ReportsController.TaskReportRoles.Split(',')))
+                                {
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Reports" asp-action="TaskAssignments"><i class="bi bi-person-check me-1 text-muted"></i>@L["Task Assignments"]</a></li>
+                                }
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Reports" asp-action="SupportingDocumentExpiry"><i class="bi bi-calendar-x me-1 text-muted"></i>@L["Record Attachments — Expiry Register"]</a></li>
                             </ul>
                         </li>

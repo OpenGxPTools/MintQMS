@@ -68,6 +68,7 @@ namespace OpenQMS.Controllers
                 var open = await _workQueue.OpenItemsAsync();
                 vm.MyTasks = WorkQueueService.AssignedTo(open, currentUser);
                 vm.WaitingForMyRoles = await _workQueue.WaitingForAsync(open, currentUser);
+                vm.ComingUp = await _workQueue.PlannedForAsync(currentUser);
                 vm.RaisedByMe = WorkQueueService.RaisedBy(open, currentUser);
 
                 // Trainings I attend are assigned per trainee in the Training module: they are my tasks too.
@@ -89,7 +90,7 @@ namespace OpenQMS.Controllers
                 vm.MyTrainings = vm.MyRecentTrainings.Count;
             }
 
-            // Regulatory items outside the workflow rules stay in "Waiting for my roles" for Regulatory Managers.
+            // Regulatory items outside the workflow rules stay in "Available Tasks" for Regulatory Managers.
             var isRM = User.IsInRole(Constants.RegulatoryManagerRole) || User.IsInRole(Constants.AdministratorsRole);
             vm.IsRegulatoryManager = isRM;
 
@@ -233,7 +234,7 @@ namespace OpenQMS.Controllers
             {
                 vm.RecentCAPAs = (await _context.Capa
                     .Where(c => !c.IsDeleted && c.Status != Capa.CapaStatus.Approved)
-                    .OrderByDescending(c => c.DeterminedOn)
+                    .OrderBy(c => c.TargetCompletionDate == null).ThenBy(c => c.TargetCompletionDate).ThenByDescending(c => c.DeterminedOn)
                     .Take(5).ToListAsync())
                     .Select(c => new HomeActivityItem
                     {
@@ -252,7 +253,8 @@ namespace OpenQMS.Controllers
                             Capa.CapaStatus.Implementation => "info",
                             _ => "secondary"
                         },
-                        Date = c.DeterminedOn
+                        Date = c.DeterminedOn,
+                        DueDate = c.TargetCompletionDate
                     }).ToList();
             }
 
@@ -260,7 +262,7 @@ namespace OpenQMS.Controllers
             {
                 vm.RecentDeviations = (await _context.Deviation
                     .Where(d => !d.IsDeleted && d.Status != Deviation.DeviationStatus.Approved)
-                    .OrderByDescending(d => d.IdentifiedOn)
+                    .OrderBy(d => d.TargetResolutionDate == null).ThenBy(d => d.TargetResolutionDate).ThenByDescending(d => d.IdentifiedOn)
                     .Take(5).ToListAsync())
                     .Select(d => new HomeActivityItem
                     {
@@ -279,13 +281,14 @@ namespace OpenQMS.Controllers
                             Deviation.DeviationStatus.Resolution        => "warning",
                             _ => "secondary"
                         },
-                        Date = d.IdentifiedOn
+                        Date = d.IdentifiedOn,
+                        DueDate = d.TargetResolutionDate
                     }).ToList();
             }
 
             vm.RecentComplaints = (await _context.Complaint
                 .Where(c => !c.IsDeleted && c.Status != Complaint.ComplaintStatus.Closed)
-                .OrderByDescending(c => c.ReceivedOn)
+                .OrderBy(c => c.TargetResolutionDate == null).ThenBy(c => c.TargetResolutionDate).ThenByDescending(c => c.ReceivedOn)
                 .Take(5).ToListAsync())
                 .Select(c => new HomeActivityItem
                 {
@@ -303,12 +306,13 @@ namespace OpenQMS.Controllers
                         Complaint.ComplaintStatus.Resolution        => "warning",
                         _ => "secondary"
                     },
-                    Date = c.ReceivedOn
+                    Date = c.ReceivedOn,
+                    DueDate = c.TargetResolutionDate
                 }).ToList();
 
             vm.RecentRisks = (await _context.Risk
                 .Where(r => !r.IsDeleted && r.Status != Risk.RiskStatus.Closed)
-                .OrderByDescending(r => r.IdentifiedOn)
+                .OrderBy(r => r.TargetCompletionDate == null).ThenBy(r => r.TargetCompletionDate).ThenByDescending(r => r.IdentifiedOn)
                 .Take(5).ToListAsync())
                 .Select(r => new HomeActivityItem
                 {
@@ -329,7 +333,8 @@ namespace OpenQMS.Controllers
                         Risk.RiskStatus.Review            => "warning",
                         _                                  => "secondary"
                     },
-                    Date = r.IdentifiedOn
+                    Date = r.IdentifiedOn,
+                    DueDate = r.TargetCompletionDate
                 }).ToList();
 
             vm.RecentAudits = (await _context.Audit

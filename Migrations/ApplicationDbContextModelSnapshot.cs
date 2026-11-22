@@ -7927,6 +7927,9 @@ namespace OpenQMS.Migrations
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("DueDays")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("EndReason")
                         .HasMaxLength(20)
                         .HasColumnType("TEXT");
@@ -7955,6 +7958,9 @@ namespace OpenQMS.Migrations
 
                     b.Property<int>("Stage")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("StartedOn")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

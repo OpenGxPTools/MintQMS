@@ -3,87 +3,166 @@
 @using OpenQMS.Services
 @using OpenQMS.Services.Workflow
 @{
-    var c = Model.Current;
     var modalId = $"assignModal-{Model.Module}-{Model.RecordId}";
-    var dueOverdue = c?.DueDate != null && c.DueDate.Value.Date < SiteTime.Today;
+    var today = SiteTime.Today;
+    var nowRow = Model.Rows.FirstOrDefault(r => r.IsNow);
+    var c = nowRow?.Assignment;
 }
 @if (Model.Message != null)
 {
     <div class="alert alert-@(Model.MessageType) alert-dismissible fade show" role="alert" id="assignment-message">
-        @L[Model.Message]
+        @{
+            var parts = Model.Message.Split(TaskAssignmentService.ArgSeparator);
+            var args = parts.Skip(1).Select(a => (object)L[a].Value).ToArray();
+        }
+        @L[parts[0], args]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="@L["Close"]"></button>
     </div>
 }
-@if (Model.HasTasks || c != null)
+@if (Model.Rows.Count > 0)
 {
     <div class="card mb-3" id="assignment-panel">
-        <div class="card-body py-2 d-flex flex-wrap align-items-center gap-2">
-            <span class="fw-semibold"><i class="bi bi-person-check me-1"></i>@L["Responsible for the next step"]:</span>
-            @if (c?.AssignedToUser != null)
+        <div class="card-header bg-transparent d-flex flex-wrap align-items-center gap-2 py-2">
+            <span class="fw-semibold"><i class="bi bi-people me-1"></i>@L["Responsibilities"]</span>
+            @if (Model.CanAssign)
             {
-                <span id="assigned-to">@TaskAssignmentService.DisplayName(c.AssignedToUser)</span>
-                <span class="text-muted small">(@L["since {0}", c.AssignedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture)]@if (c.DueDate != null){<text>; </text><span class="@(dueOverdue ? "text-danger fw-semibold" : "")">@L["due {0}", c.DueDate.Value.ToString("dd MMM yyyy", DisplayDates.Culture)]</span>})</span>
-                @if (!string.IsNullOrEmpty(c.Note))
-                {
-                    <span class="text-muted small fst-italic" id="assignment-note">“@c.Note”</span>
-                }
-            }
-            else
-            {
-                <span class="text-muted" id="assigned-to">@L["No one named — anyone allowed can do it"]</span>
-            }
-            @if (Model.CanAssign && Model.HasTasks)
-            {
-                <span class="ms-auto d-flex gap-2">
-                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#@modalId" id="assign-button">
-                        @(c == null ? L["Assign"] : L["Reassign"])
-                    </button>
-                    @if (c != null)
-                    {
-                        <form method="post" asp-controller="TaskAssignments" asp-action="Unassign" class="d-inline">
-                            <input type="hidden" name="module" value="@Model.Module" />
-                            <input type="hidden" name="recordId" value="@Model.RecordId" />
-                            <button type="submit" class="btn btn-outline-secondary btn-sm" id="unassign-button">@L["Unassign"]</button>
-                        </form>
-                    }
-                </span>
+                <button type="button" class="btn btn-outline-primary btn-sm ms-auto" data-bs-toggle="modal" data-bs-target="#@modalId" id="assign-button">
+                    <i class="bi bi-pencil-square me-1"></i>@L["Assign / plan"]
+                </button>
             }
         </div>
-        <div class="card-footer py-1 small text-muted">@L["Naming someone records who is responsible; anyone allowed to sign the step can still do it."]</div>
+        <div class="table-responsive">
+            <table class="table table-sm mb-0 align-middle" id="responsibilities">
+                <tbody>
+                    @foreach (var r in Model.Rows)
+                    {
+                        var a = r.Assignment;
+                        var overdue = r.IsNow && a?.DueDate is { } d && d.Date < today;
+                        <tr class="@(r.IsNow ? "table-primary" : "")" data-stage="@r.Stage">
+                            <td class="ps-3" style="width:30%">
+                                <span class="fw-semibold">@L[r.Task]</span>
+                                <div class="small text-muted">@L.Enum(r.StageValue)</div>
+                            </td>
+                            <td style="width:14%">
+                                @if (r.IsNow) { <span class="badge bg-primary">@L["Now"]</span> }
+                                else { <span class="badge bg-light text-dark border">@L["Later"]</span> }
+                            </td>
+                            <td id="@(r.IsNow ? "assigned-to" : null)">
+                                @if (a?.AssignedToUser != null)
+                                {
+                                    <span>@TaskAssignmentService.DisplayName(a.AssignedToUser)</span>
+                                    @if (!string.IsNullOrEmpty(a.Note))
+                                    {
+                                        <span class="text-muted small fst-italic ms-1" id="@(r.IsNow ? "assignment-note" : null)">“@a.Note”</span>
+                                    }
+                                }
+                                else if (r.IsNow)
+                                {
+                                    <span class="text-muted">@L["No one named — anyone allowed can do it"]</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            <td class="small pe-3 text-nowrap @(overdue ? "text-danger fw-semibold" : "text-muted")">
+                                @if (r.IsNow && a?.DueDate is { } due) { @L["due {0}", due.ToString("dd MMM yyyy", DisplayDates.Culture)] }
+                                else if (!r.IsNow && a?.DueDays is { } days) { @L["due {0} day(s) after it starts", days] }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer py-1 small text-muted">@L["The person named for a later step is told by e-mail when the record reaches that step. Naming someone records who is responsible; anyone allowed to sign the step can still do it."]</div>
     </div>
 
-    @if (Model.CanAssign && Model.HasTasks)
+    @if (Model.CanAssign)
     {
-        <div class="modal fade" id="@modalId" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <form method="post" asp-controller="TaskAssignments" asp-action="Assign" class="modal-content">
+        <div class="modal fade" id="@modalId" tabindex="-1" aria-hidden="true" data-open="@(Model.OpenDialog ? "1" : "0")">
+            <div class="modal-dialog modal-lg">
+                <form method="post" asp-controller="TaskAssignments" asp-action="Plan" class="modal-content" id="plan-form">
                     <div class="modal-header">
-                        <h5 class="modal-title">@L["Responsible for the next step"] — @L[Model.Stage]</h5>
+                        <h5 class="modal-title">@L["Responsibilities"]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@L["Close"]"></button>
                     </div>
                     <div class="modal-body">
                         <input type="hidden" name="module" value="@Model.Module" />
                         <input type="hidden" name="recordId" value="@Model.RecordId" />
-                        <div class="mb-3">
-                            <label class="form-label" for="assign-user">@L["Person"]</label>
-                            <select class="form-select" name="userId" id="assign-user" required>
-                                <option value="">@L["-- Select --"]</option>
-                                @foreach (var p in Model.Eligible)
-                                {
-                                    <option value="@p.Id" selected="@(c?.AssignedToUserId == p.Id)">@p.Name (@p.Email)</option>
-                                }
-                            </select>
-                            <div class="form-text">@L["Only people who can do this step are listed (role, active account and four-eyes rule)."]</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="assign-due">@L["Due date (optional)"]</label>
-                            <input type="date" class="form-control" name="dueDate" id="assign-due" value="@(c?.DueDate?.ToString("yyyy-MM-dd"))" />
-                        </div>
-                        <div class="mb-1">
-                            <label class="form-label" for="assign-note">@L["Note (optional)"]</label>
-                            <textarea class="form-control" name="note" id="assign-note" rows="2" maxlength="500">@c?.Note</textarea>
-                            <div class="form-text">@L["The note is sent in the notification e-mail: do not include confidential details."]</div>
-                        </div>
+                        <p class="small text-muted">@L["Name who does each step. The step the record is at now is assigned at once; a later step starts, and its person is told, when the record reaches it."]</p>
+                        @for (var i = 0; i < Model.Rows.Count; i++)
+                        {
+                            var r = Model.Rows[i];
+                            var a = r.Assignment;
+                            var sid = r.IsNow ? "assign-user" : $"plan-user-{r.Stage}";
+                            <div class="border rounded p-2 mb-2 plan-step @(r.IsNow ? "border-primary" : "")" data-stage="@r.Stage" data-task="@L[r.Task]"
+                                 data-not-same="@string.Join(",", Model.FourEyesOn ? r.NotSameAs.Select(x => x.Stage) : Enumerable.Empty<int>())"
+                                 data-raiser-other="@(Model.FourEyesOn && r.RaiserOnlyIfOtherAt is { } ro ? ro.Stage.ToString() : "")">
+                                <input type="hidden" name="steps[@i].Stage" value="@r.Stage" />
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="fw-semibold">@L[r.Task]</span>
+                                    <span class="small text-muted">@L.Enum(r.StageValue)</span>
+                                    @if (r.IsNow) { <span class="badge bg-primary ms-auto">@L["Now"]</span> }
+                                </div>
+                                <div class="small text-muted mb-2 plan-rules">
+                                    <i class="bi bi-person-badge me-1"></i>@L["Who can do it:"] @string.Join(", ", r.Roles.Select(x => L.Role(x)))@if (r.AuthorToo) {<text>, @L["the document's author"]</text>}.
+                                    @if (Model.FourEyesOn && r.NotSameAs.Count > 0)
+                                    {
+                                        <br /><i class="bi bi-eye me-1"></i>@L["Four-eyes rule: not the person who does {0}.", string.Join(" / ", r.NotSameAs.Select(x => "“" + L[x.Task].Value + "”"))]
+                                    }
+                                    @if (Model.FourEyesOn && r.RaiserOnlyIfOtherAt is { } ro2)
+                                    {
+                                        <br /><i class="bi bi-eye me-1"></i>@L["The person who raised the record only if someone else does “{0}”.", L[ro2.Task].Value]
+                                    }
+                                    @if (Model.FourEyesOn)
+                                    {
+                                        foreach (var (outName, outTask) in r.AlreadyOut)
+                                        {
+                                            <br /><i class="bi bi-info-circle me-1"></i><span class="already-out">@L["Not listed: {0}, who already did “{1}”.", outName, L[outTask].Value]</span>
+                                        }
+                                    }
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-md-5">
+                                        <label class="form-label small mb-0" for="@sid">@L["Person"]</label>
+                                        <select class="form-select form-select-sm plan-user" name="steps[@i].UserId" id="@sid">
+                                            <option value="0">@L["No one — anyone allowed can do it"]</option>
+                                            @foreach (var p in r.Eligible)
+                                            {
+                                                <option value="@p.Id" selected="@(a?.AssignedToUserId == p.Id)">@p.Name (@p.Email)</option>
+                                            }
+                                        </select>
+                                        <div class="invalid-feedback plan-clash"></div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @if (r.IsNow)
+                                        {
+                                            <label class="form-label small mb-0" for="assign-due">@L["Due date (optional)"]</label>
+                                            <input type="date" class="form-control form-control-sm" name="steps[@i].DueDate" id="assign-due"
+                                                   min="@today.ToString("yyyy-MM-dd")" value="@(a?.DueDate?.ToString("yyyy-MM-dd"))" />
+                                        }
+                                        else
+                                        {
+                                            <label class="form-label small mb-0" for="plan-days-@r.Stage">@L["Days to complete (optional)"]</label>
+                                            <input type="number" class="form-control form-control-sm" name="steps[@i].DueDays" id="plan-days-@r.Stage"
+                                                   min="1" max="365" value="@a?.DueDays" />
+                                        }
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small mb-0" for="@(r.IsNow ? "assign-note" : $"plan-note-{r.Stage}")">@L["Note (optional)"]</label>
+                                        <input type="text" class="form-control form-control-sm" name="steps[@i].Note" maxlength="500"
+                                               id="@(r.IsNow ? "assign-note" : $"plan-note-{r.Stage}")" value="@a?.Note" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="form-text">@L["Only people who can do each step are listed (role, active account and four-eyes rule). The note is sent in the notification e-mail: do not include confidential details."]</div>
+                        <script type="application/json" id="plan-texts">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            clash = L["{0} is also named for {1}: the four-eyes rule needs someone else here."].Value,
+                            raiser = L["{0} raised this record and is also named for {1}: choose someone else for one of the two."].Value,
+                            raiserId = Model.RaiserId,
+                        }))</script>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
@@ -94,16 +173,19 @@
         </div>
     }
 }
-@if (Model.Next.Count > 0)
+@if (Model.Next.Count > 0 || Model.CanAssign)
 {
     @* For the signature dialogs: script adds an optional "Assign the next step to" list to each dialog whose form
-       posts to one of these actions. The server checks the choice again after the step. *@
+       posts to one of these actions, with the planned person chosen already. The server checks the choice again after
+       the step. The script also opens the responsibilities dialog when the page was opened with ?plan. *@
     <script type="application/json" id="assign-next-data">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(new
     {
         label = L["Assign the next step to (optional)"].Value,
         none = L["No one — anyone allowed can do it"].Value,
         field = AssignmentFilter.NextField,
         actions = Model.Next.ToDictionary(kv => kv.Key, kv => kv.Value.Select(p => new { id = p.Id, name = $"{p.Name} ({p.Email})" })),
+        planned = Model.Planned,
+        modal = Model.CanAssign ? modalId : null,
     }))</script>
     <script src="~/js/assignment.js" asp-append-version="true"></script>
 }

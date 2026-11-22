@@ -153,8 +153,8 @@
         {
             <div class="table-responsive"><table class="table table-sm table-hover mb-0" id="table-tasks">
                 <thead class="table-light">
-                    <tr><th class="ps-3">@L["Module"]</th><th>@L["Record"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Next Step"]</th>
-                        <th>@L["Assigned to"]</th><th>@L["Assigned On"]</th><th class="pe-3">@L["Due Date"]</th></tr>
+                    <tr><th class="ps-3">@L["Module"]</th><th>@L["Record"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Task"]</th>
+                        <th>@L["Assigned to"]</th><th>@L["Planned next"]</th><th>@L["Assigned On"]</th><th>@L["Due Date"]</th><th class="pe-3"></th></tr>
                 </thead>
                 <tbody>
                     @foreach (var i in items)
@@ -168,8 +168,10 @@
                             <td class="small">@L.Enum(i.StageValue)</td>
                             <td>@foreach (var st in i.Steps) { <span class="badge bg-secondary me-1">@L[st]</span> }</td>
                             <td>@(a?.AssignedToUser is { } u ? TaskAssignmentService.DisplayName(u) : L["No one named"].Value)</td>
+                            <td class="small planned-next">@foreach (var (task, plan) in i.PlannedAhead) { <div class="text-nowrap"><span class="text-muted">@L[task]:</span> @(plan.AssignedToUser is { } pu ? TaskAssignmentService.DisplayName(pu) : "")</div> }</td>
                             <td class="small text-muted text-nowrap">@(a?.AssignedOn.ToSite().ToString("dd MMM yyyy", DisplayDates.Culture) ?? "")</td>
-                            <td class="small pe-3 text-nowrap @(od ? "text-danger fw-semibold" : "text-muted")">@(a?.DueDate?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "")</td>
+                            <td class="small text-nowrap @(od ? "text-danger fw-semibold" : "text-muted")">@(i.Due?.ToString("dd MMM yyyy", DisplayDates.Culture) ?? "")@if (a?.DueDate == null && i.TargetDate != null) { <div class="small text-muted fw-normal">@L["Target date"]</div> }</td>
+                            <td class="pe-3 text-nowrap"><a class="btn btn-outline-primary btn-sm py-0 assign-link" href="/@i.Module/Details/@i.RecordId?plan=1#assignment-panel">@L["Assign / plan"]</a></td>
                         </tr>
                     }
                 </tbody>

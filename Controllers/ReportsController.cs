@@ -71,8 +71,8 @@ namespace OpenQMS.Controllers
             ws.Cell(1, 1).Style.Font.FontSize = 14;
             ws.Cell(1, 1).Style.Font.FontColor = XLColor.FromHtml("#00467F");
             ws.Cell(2, 1).Value = R("Generated: {0}", $"{SiteTime.Now:dd MMM yyyy HH:mm} {SiteTime.Label}");
-            var headers = new[] { R("Module"), R("Record"), R("Title"), R("Status"), R("Next Step"), R("Assigned to"),
-                                  R("Assigned On"), R("Due Date"), R("Overdue"), R("Note") };
+            var headers = new[] { R("Module"), R("Record"), R("Title"), R("Status"), R("Task"), R("Assigned to"),
+                                  R("Assigned On"), R("Due Date"), R("Overdue"), R("Note"), R("Planned next") };
             for (int i = 0; i < headers.Length; i++)
             {
                 var cell = ws.Cell(4, i + 1);
@@ -92,9 +92,10 @@ namespace OpenQMS.Controllers
                 ws.Cell(row, 5).Value = string.Join(", ", i.Steps.Select(st => R(st)));
                 ws.Cell(row, 6).Value = a?.AssignedToUser is { } u ? TaskAssignmentService.DisplayName(u) : R("No one named");
                 ws.Cell(row, 7).Value = a?.AssignedOn.ToSite().ToString("dd MMM yyyy") ?? "";
-                ws.Cell(row, 8).Value = a?.DueDate?.ToString("dd MMM yyyy") ?? "";
+                ws.Cell(row, 8).Value = i.Due?.ToString("dd MMM yyyy") ?? "";
                 ws.Cell(row, 9).Value = i.IsOverdue(today) ? R("Yes") : "";
                 ws.Cell(row, 10).Value = a?.Note ?? "";
+                ws.Cell(row, 11).Value = string.Join("; ", i.PlannedAhead.Select(p => $"{R(p.Task)}: {(p.Plan.AssignedToUser is { } pu ? TaskAssignmentService.DisplayName(pu) : "")}"));
                 if (i.IsOverdue(today))
                     ws.Row(row).Style.Fill.BackgroundColor = XLColor.FromHtml("#FFF3F3");
                 row++;

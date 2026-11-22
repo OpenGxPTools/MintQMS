@@ -81,6 +81,29 @@ namespace OpenQMS.Services.Workflow
             return null;
         }
 
+        /// <summary>
+        /// The same check for PLANNING a later step: fields that steps still ahead of it will record again
+        /// (<paramref name="redone"/>) are ignored, since who did them before no longer counts; the raiser rule then
+        /// applies only when its review step is not ahead (the plan itself is checked for clashes instead).
+        /// </summary>
+        public static string? ExcludedForPlan(string module, WorkflowRules.Step step, object record, AppUser user, IReadOnlyCollection<string> redone)
+        {
+            if (step.FourEyes is not { } rule)
+                return null;
+            foreach (var field in rule.NotBy.Where(f => !redone.Contains(f)))
+                if (IsUser(Value(record, field), user))
+                    return Reasons.GetValueOrDefault($"{module}.{field}") ?? Reasons[field];
+            if (rule.RaiserReview is { } review && !redone.Contains(review)
+                && WorkflowRules.Modules[module].RaisedBy is { Length: > 0 } raisedBy
+                && IsUser(Value(record, raisedBy), user))
+            {
+                var reviewer = Value(record, review);
+                if (string.IsNullOrWhiteSpace(reviewer) || IsUser(reviewer, user))
+                    return Reasons["raiser"];
+            }
+            return null;
+        }
+
         private static string Message(Controller c, string reason)
         {
             var L = c.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<SharedResource>>();

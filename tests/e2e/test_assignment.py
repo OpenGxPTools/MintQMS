@@ -8,7 +8,7 @@
     the record's own audit trail; an ineligible choice is refused; who may assign (a task role, or a manager), and
     ReadOnly / other roles may not;
   * not a lock: someone else allowed signs the step, and the assignment ends with who actually did it;
-  * a send-back also ends it; a stale row (record moved some other way) is never shown;
+  * a send-back puts it back to planned; a stale row (record moved some other way) is never shown;
   * "assign the next step to" in a signature dialog names the person for the new stage, never the signer when the
     next step reviews their work; the dialog data lists the eligible people;
   * deactivating a user unassigns their tasks (with an audit line).
@@ -142,7 +142,8 @@ check("the step itself was still signed", row(m["table"], dev)["ResolvedBy"] == 
 assign(login(), "Deviations", dev, ids[QM1])
 sign(login(), m, dev, "ReturnDeviation", {"reason": "e2e"}, ADMIN)    # → Accepted (2)
 t = q1("select * from TaskAssignments where Module='Deviations' and RecordId=? and Stage=3 order by Id desc", (dev,))
-check("a send-back ends the assignment (MovedOn)", not t["IsCurrent"] and t["EndReason"] == "MovedOn")
+check("a send-back keeps the person planned for the step sent back (it starts again when the record returns)",
+      t["IsCurrent"] and t["StartedOn"] is None and t["AssignedToUserId"] == ids[QM1], t)
 exec_sql("insert into TaskAssignments (Module, RecordId, Stage, AssignedToUserId, AssignedBy, AssignedOn, IsCurrent) values ('Deviations', ?, 4, ?, 'e2e', datetime('now'), 1)",
          (dev, ids[QM2]))
 _, _, _, soup = panel(login(), "Deviations", dev)

@@ -46,3 +46,13 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+
+/* Narrow screens (phones): let the footer text wrap instead of running off the side of the page. */
+@media (max-width: 767.98px) {
+  .footer {
+    position: static;
+    white-space: normal;
+    line-height: 1.5;
+    padding: 1rem 0;
+  }
+}

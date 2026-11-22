@@ -2,7 +2,10 @@
 @model ConfirmEmailModel
 @{
     ViewData["Title"] = L["Confirm email"].Value;
+    Layout = "_AuthLayout";
 }
 
-<h1>@ViewData["Title"]</h1>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
+    <div class="mint-auth-links">
+        <a asp-page="./Login">@L["Back to log in"]</a>
+    </div>

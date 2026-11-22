@@ -109,3 +109,14 @@ body {
         margin-left: 30px;
     }
 }
+/* ── Signed-out account pages (Areas/Identity/Pages/Account/_AuthLayout.cshtml) ── */
+.mint-auth { max-width: 440px; margin: 2rem auto 3rem; }
+.mint-auth-language { min-height: 2rem; margin-bottom: .5rem; }
+.mint-auth-card { border-radius: .75rem; overflow: hidden; }
+.mint-auth-brand { background-color: var(--mint-teal); color: #fff; text-align: center; padding: 1.5rem 1rem 1.25rem; }
+.mint-auth-name { font-size: 1.75rem; font-weight: 600; letter-spacing: .02em; }
+.mint-auth-tagline { font-size: .85rem; opacity: .85; }
+.mint-auth-org { margin-top: .5rem; font-size: .95rem; font-weight: 500; color: var(--mint-teal-100); }
+.mint-auth .form-floating { margin-bottom: .75rem; }
+.mint-auth-links { margin-top: 1rem; font-size: .9rem; display: flex; flex-direction: column; gap: .35rem; text-align: center; }
+.mint-auth-links a { color: var(--mint-teal); }

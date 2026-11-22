@@ -1,0 +1,33 @@
+@inject OpenQMS.Data.ApplicationDbContext _authDb
+@*
+    Layout for the signed-out account pages (log in, forgot / reset password, two-step sign-in, locked out…):
+    a centred card with the MintQMS name, the organisation name from System Settings and the language menu.
+    Pages set ViewData["Title"] (the card heading) and may set ViewData["AuthTitleClass"] (e.g. "text-danger").
+*@
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    var org = (await _authDb.SystemSettings.FindAsync(1))?.OrganisationName;
+}
+<div class="mint-auth">
+    <div class="d-flex justify-content-end mint-auth-language">
+        <partial name="_LanguageMenu" />
+    </div>
+    <div class="card border-0 shadow-sm mint-auth-card">
+        <div class="mint-auth-brand">
+            <div class="mint-auth-name"><i class="bi bi-shield-check me-2" aria-hidden="true"></i>MintQMS</div>
+            <div class="mint-auth-tagline">@L["Quality Management System"]</div>
+            @if (!string.IsNullOrWhiteSpace(org))
+            {
+                <div class="mint-auth-org">@org</div>
+            }
+        </div>
+        <div class="card-body p-4">
+            <h1 class="h4 mb-3 @(ViewData["AuthTitleClass"])">@ViewData["Title"]</h1>
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

@@ -2,9 +2,11 @@
 @model LockoutModel
 @{
     ViewData["Title"] = L["Locked out"].Value;
+    ViewData["AuthTitleClass"] = "text-danger";
+    Layout = "_AuthLayout";
 }
 
-<header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">@L["This account has been locked out, please try again later."]</p>
-</header>
+<p class="text-danger">@L["This account has been locked out, please try again later."]</p>
+    <div class="mint-auth-links">
+        <a asp-page="./Login">@L["Back to log in"]</a>
+    </div>

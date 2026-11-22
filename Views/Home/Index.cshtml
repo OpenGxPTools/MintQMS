@@ -29,13 +29,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 
 @* ── Page header ──────────────────────────────────────────────── *@
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">@L["Quality Overview"]</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0" id="my-work-title">@L["My Work"]</h2>
     <span class="text-muted small">@DisplayDates.Long(SiteTime.Today)</span>
 </div>
 
 @* ══════════════════════════════════════════════════════════════════
-   MY WORK  (tasks assigned to me · waiting for my roles · raised by me)
+   MY WORK  (assigned to me · available tasks · coming up · raised by me)
    ══════════════════════════════════════════════════════════════════ *@
 @{
     var regWaiting = Model.IsRegulatoryManager
@@ -55,7 +55,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link @(firstTab == "waiting" ? "active" : "")" id="tab-waiting" data-bs-toggle="tab" data-bs-target="#pane-waiting" type="button" role="tab">
-                    @L["Waiting for my roles"] <span class="badge bg-secondary ms-1" id="count-waiting">@waitCount</span>
+                    @L["Available Tasks"] <span class="badge bg-secondary ms-1" id="count-waiting">@waitCount</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-coming" data-bs-toggle="tab" data-bs-target="#pane-coming" type="button" role="tab">
+                    @L["Coming Up"] <span class="badge bg-secondary ms-1" id="count-coming">@Model.ComingUp.Count</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -76,7 +81,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             else
             {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0" id="table-my-tasks">
-                    <thead class="table-light"><tr><th class="ps-3">@L["Record"]</th><th>@L["Title"]</th><th>@L["Module"]</th><th>@L["Next Step"]</th><th>@L["Assigned"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["Record"]</th><th>@L["Title"]</th><th>@L["Module"]</th><th>@L["Task"]</th><th>@L["Assigned"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
                     <tbody>
                         @foreach (var w in Model.MyTasks)
                         {
@@ -88,7 +93,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <td>@foreach (var st in w.Steps) { <span class="badge bg-primary me-1">@L[st]</span> }<div class="small text-muted">@L.Enum(w.StageValue)</div></td>
                                 <td class="text-muted small text-nowrap">@w.Assignment!.AssignedOn.ToSite().ToString("dd MMM yy", DisplayDates.Culture)
                                     @if (!string.IsNullOrEmpty(w.Assignment.Note)) { <i class="bi bi-chat-left-text ms-1" title="@w.Assignment.Note"></i> }</td>
-                                <td class="small pe-3 text-nowrap @(overdue ? "text-danger fw-semibold" : "text-muted")">@(w.Assignment.DueDate?.ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
+                                <td class="small pe-3 text-nowrap @(overdue ? "text-danger fw-semibold" : "text-muted")">@(w.Due?.ToString("dd MMM yy", DisplayDates.Culture) ?? "—")@if (w.Assignment.DueDate == null && w.TargetDate != null) { <div class="small text-muted fw-normal">@L["Target date"]</div> }</td>
                             </tr>
                         }
                         @foreach (var t in Model.MyRecentTrainings)
@@ -108,26 +113,29 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             }
         </div>
 
-        @* ── Waiting for my roles: unassigned records whose next step I may sign ── *@
+        @* ── Available Tasks: unassigned records whose next step I may sign ── *@
         <div class="tab-pane fade @(firstTab == "waiting" ? "show active" : "")" id="pane-waiting" role="tabpanel">
             @if (waitCount == 0)
             {
-                <div class="card-body text-muted small">@L["Nothing is waiting for your roles."]</div>
+                <div class="card-body text-muted small">@L["No tasks are available for your roles."]</div>
             }
             @if (Model.WaitingForMyRoles.Any())
             {
-                <div class="card-body small text-muted pb-0">@L["Records no one is assigned to, whose next step you may sign. Oldest first."]</div>
+                <div class="card-body small text-muted pb-0">@L["Tasks your role lets you do that are not assigned to you, with who is named for them now. The earliest due date first."]</div>
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0" id="table-waiting">
-                    <thead class="table-light"><tr><th class="ps-3">@L["Record"]</th><th>@L["Title"]</th><th>@L["Module"]</th><th>@L["Next Step"]</th><th class="pe-3">@L["Raised"]</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["Record"]</th><th>@L["Title"]</th><th>@L["Module"]</th><th>@L["Task"]</th><th>@L["Assigned to"]</th><th>@L["Created"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
                     <tbody>
                         @foreach (var w in Model.WaitingForMyRoles)
                         {
-                            <tr data-module="@w.Module" data-record="@w.RecordId">
+                            var wOver = w.IsOverdue(today);
+                            <tr class="@(wOver ? "table-danger" : "")" data-module="@w.Module" data-record="@w.RecordId">
                                 <td class="ps-3 text-nowrap"><a asp-controller="@w.Module" asp-action="Details" asp-route-id="@w.RecordId" class="text-decoration-none fw-semibold">@w.Number</a></td>
                                 <td class="text-truncate" style="max-width:220px;">@w.Title</td>
                                 <td class="small">@L[w.ModuleName]</td>
                                 <td>@foreach (var st in w.Steps) { <span class="badge bg-warning text-dark me-1">@L[st]</span> }<div class="small text-muted">@L.Enum(w.StageValue)</div></td>
-                                <td class="text-muted small pe-3 text-nowrap">@(w.RaisedOn?.ToSite().ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
+                                <td class="small assigned-now">@(w.Assignment?.AssignedToUser is { } au ? OpenQMS.Services.Workflow.TaskAssignmentService.DisplayName(au) : L["No one named"].Value)</td>
+                                <td class="text-muted small text-nowrap">@(w.RaisedOn?.ToSite().ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
+                                <td class="small pe-3 text-nowrap @(wOver ? "text-danger fw-semibold" : "text-muted")">@(w.Due?.ToString("dd MMM yy", DisplayDates.Culture) ?? "—")@if (w.TargetDate != null) { <div class="small text-muted fw-normal">@L["Target date"]</div> }</td>
                             </tr>
                         }
                     </tbody>
@@ -219,6 +227,35 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
 
         @* ── Raised by me: records I raised that are still waiting for a step ── *@
+        @* ── Coming Up: steps planned for me that the record has not reached yet ── *@
+        <div class="tab-pane fade" id="pane-coming" role="tabpanel">
+            @if (!Model.ComingUp.Any())
+            {
+                <div class="card-body text-muted small">@L["No steps are planned for you."]</div>
+            }
+            else
+            {
+                <div class="card-body small text-muted pb-0">@L["Steps planned for you. They move to My Tasks, and you get an e-mail, when the record reaches them."]</div>
+                <div class="table-responsive"><table class="table table-sm table-hover mb-0" id="table-coming">
+                    <thead class="table-light"><tr><th class="ps-3">@L["Record"]</th><th>@L["Title"]</th><th>@L["Module"]</th><th>@L["Your task"]</th><th>@L["Record now at"]</th><th>@L["Planned by"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
+                    <tbody>
+                        @foreach (var w in Model.ComingUp)
+                        {
+                            <tr data-module="@w.Module" data-record="@w.RecordId">
+                                <td class="ps-3 text-nowrap"><a asp-controller="@w.Module" asp-action="Details" asp-route-id="@w.RecordId" class="text-decoration-none fw-semibold">@w.Number</a></td>
+                                <td class="text-truncate" style="max-width:220px;">@w.Title</td>
+                                <td class="small">@L[w.ModuleName]</td>
+                                <td>@foreach (var st in w.Steps) { <span class="badge bg-light text-dark border me-1">@L[st]</span> }</td>
+                                <td class="small text-muted">@L.Enum(w.StageValue)</td>
+                                <td class="small text-muted">@w.AssignedByName</td>
+                                <td class="small pe-3 text-muted">@(w.Assignment!.DueDays is { } dd ? L["{0} day(s) after it starts", dd].Value : "—")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table></div>
+            }
+        </div>
+
         <div class="tab-pane fade" id="pane-raised" role="tabpanel">
             @if (!Model.RaisedByMe.Any())
             {
@@ -227,7 +264,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             else
             {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0" id="table-raised">
-                    <thead class="table-light"><tr><th class="ps-3">@L["Record"]</th><th>@L["Title"]</th><th>@L["Module"]</th><th>@L["Status"]</th><th>@L["Responsible for the next step"]</th><th class="pe-3">@L["Raised"]</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["Record"]</th><th>@L["Title"]</th><th>@L["Module"]</th><th>@L["Status"]</th><th>@L["Responsible"]</th><th>@L["Created"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
                     <tbody>
                         @foreach (var w in Model.RaisedByMe)
                         {
@@ -237,7 +274,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <td class="small">@L[w.ModuleName]</td>
                                 <td class="small">@L.Enum(w.StageValue)</td>
                                 <td class="small">@(w.Assignment?.AssignedToUser is { } u ? OpenQMS.Services.Workflow.TaskAssignmentService.DisplayName(u) : L["No one named"].Value)</td>
-                                <td class="text-muted small pe-3 text-nowrap">@(w.RaisedOn?.ToSite().ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
+                                <td class="text-muted small text-nowrap">@(w.RaisedOn?.ToSite().ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
+                                <td class="small pe-3 text-nowrap @(w.IsOverdue(today) ? "text-danger fw-semibold" : "text-muted")">@(w.Due?.ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
                             </tr>
                         }
                     </tbody>
@@ -247,6 +285,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
     </div>
 </div>
+
+@* ── Site-wide picture ──────────────────────────────────────────── *@
+<h2 class="mb-3" id="quality-overview-title">@L["Quality Overview"]</h2>
 
 @* ══════════════════════════════════════════════════════════════════
    QUALITY EVENTS
@@ -420,14 +461,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             @if (!Model.RecentCAPAs.Any()) { <div class="card-body text-muted small">@L["No open CAPAs."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Created"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentCAPAs) {
                             <tr>
                                 <td class="ps-3"><a asp-controller="Capas" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                <td class="text-muted small text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                <td class="small pe-3 text-nowrap @(item.DueDate?.Date < SiteTime.Today ? "text-danger fw-semibold" : "text-muted")">@(item.DueDate?.ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
                             </tr>
                         }
                     </tbody>
@@ -446,14 +488,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             @if (!Model.RecentDeviations.Any()) { <div class="card-body text-muted small">@L["No open deviations."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Created"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentDeviations) {
                             <tr>
                                 <td class="ps-3"><a asp-controller="Deviations" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                <td class="text-muted small text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                <td class="small pe-3 text-nowrap @(item.DueDate?.Date < SiteTime.Today ? "text-danger fw-semibold" : "text-muted")">@(item.DueDate?.ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
                             </tr>
                         }
                     </tbody>
@@ -472,14 +515,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             @if (!Model.RecentComplaints.Any()) { <div class="card-body text-muted small">@L["No open complaints."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Received"]</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Created"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentComplaints) {
                             <tr>
                                 <td class="ps-3"><a asp-controller="Complaints" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                <td class="text-muted small text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                <td class="small pe-3 text-nowrap @(item.DueDate?.Date < SiteTime.Today ? "text-danger fw-semibold" : "text-muted")">@(item.DueDate?.ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
                             </tr>
                         }
                     </tbody>
@@ -498,14 +542,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             @if (!Model.RecentRisks.Any()) { <div class="card-body text-muted small">@L["No open risks."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th class="pe-3">@L["Identified"]</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Title"]</th><th>@L["Status"]</th><th>@L["Created"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentRisks) {
                             <tr>
                                 <td class="ps-3"><a asp-controller="Risks" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-semibold">@item.RecordId</a></td>
                                 <td class="text-truncate" style="max-width:180px;">@item.Title</td>
                                 <td><span class="badge @Badge(item.BadgeClass)">@L.Message(item.Status)</span></td>
-                                <td class="text-muted small pe-3 text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                <td class="text-muted small text-nowrap">@item.Date.ToSite().ToString("dd MMM yy", DisplayDates.Culture)</td>
+                                <td class="small pe-3 text-nowrap @(item.DueDate?.Date < SiteTime.Today ? "text-danger fw-semibold" : "text-muted")">@(item.DueDate?.ToString("dd MMM yy", DisplayDates.Culture) ?? "—")</td>
                             </tr>
                         }
                     </tbody>
@@ -576,7 +621,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             @if (!Model.RecentTrainings.Any()) { <div class="card-body text-muted small">@L["No scheduled trainings."]</div> }
             else {
                 <div class="table-responsive"><table class="table table-sm table-hover mb-0">
-                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Name"]</th><th>@L["Status"]</th><th class="pe-3">@L["Date"]</th></tr></thead>
+                    <thead class="table-light"><tr><th class="ps-3">@L["ID"]</th><th>@L["Name"]</th><th>@L["Status"]</th><th class="pe-3">@L["Due"]</th></tr></thead>
                     <tbody>
                         @foreach (var item in Model.RecentTrainings) {
                             <tr>

@@ -8,8 +8,9 @@ namespace OpenQMS.Services.Workflow
 {
     /// <summary>
     /// After every POST to a workflow module, for the record it names ("id"): when the record has moved to another
-    /// state, its assignment for the old stage ends (with who signed the step), and the person chosen in the step's
-    /// signature dialog ("assignNextTo", optional) is named for the new stage. Works in its own scope, so it never
+    /// state, TaskAssignmentService.StageMovedAsync ends the old stage's assignment (with who signed the step) and names
+    /// the new stage's person — the one chosen in the step's signature dialog ("assignNextTo", optional), else the one
+    /// planned for it, else the person who did that step before. Works in its own scope, so it never
     /// touches what the step itself saved; a problem here never undoes or blocks the step.
     /// </summary>
     public class AssignmentFilter : IAsyncActionFilter
@@ -57,16 +58,11 @@ namespace OpenQMS.Services.Workflow
                 var users = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
                 var signer = await users.GetUserAsync(context.HttpContext.User);
                 var by = signer?.UserName ?? context.HttpContext.User.Identity?.Name ?? "system";
-                await svc.EndMovedOnAsync(module!, id, after, by);
-
                 var form = context.HttpContext.Request.HasFormContentType ? context.HttpContext.Request.Form : null;
-                if (form != null && int.TryParse(form[NextField], out var assignee) && assignee > 0)
-                {
-                    // The signer just did the work the next step reviews, so they are never named for it.
-                    var why = await svc.AssignAsync(module!, record, assignee, null, null, by, alsoExclude: signer);
-                    if (why != null)
-                        _tempData.GetTempData(context.HttpContext)[MessageKey] = "warning|" + why;
-                }
+                int? chosen = form != null && int.TryParse(form[NextField], out var assignee) && assignee > 0 ? assignee : null;
+                var why = await svc.StageMovedAsync(module!, record, before.Value, by, signer, chosen);
+                if (why != null)
+                    _tempData.GetTempData(context.HttpContext)[MessageKey] = "warning|" + why;
             }
             catch (Exception ex)
             {

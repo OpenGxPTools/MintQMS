@@ -25,7 +25,7 @@ tamper-resistant history. It runs in an ordinary web browser and you host it you
 | Regulatory | Pharmacovigilance: adverse events, literature monitoring, signal review, periodic reports (PSUR) · Regulatory Intelligence (submissions, access pathways) · Licences & Certifications |
 | Documents & Training | Controlled documents (review, approval, effective dates, periodic review) · Training linked to documents, with read-and-understood acknowledgement and competency sign-off |
 | Reference data | Products · Materials · Processes · Assets · Services · Customers |
-| Oversight | Dashboards per module · Your work on the home page (my tasks, waiting for my roles, raised by me) · Management review, training compliance, overdue-items and task-assignment reports · Excel, CSV and PDF exports |
+| Oversight | Dashboards per module · Your work on the home page (my tasks, available tasks, coming up, raised by me) · Management review, training compliance, overdue-items and task-assignment reports · Excel, CSV and PDF exports |
 | Administration | Users and 11 pre-defined roles · System settings · Login history · Retention and controlled disposal |
 | Languages | English, Spanish and Portuguese (Brazil), set by an Administrator for the whole site |
 
@@ -35,8 +35,8 @@ tamper-resistant history. It runs in an ordinary web browser and you host it you
   bound to the signed-in user.
 - **Four-eyes rule.** A review, acceptance, approval or closure must be signed by someone who did not do the work
   being reviewed (on by default; an Administrator can turn it off for a very small site).
-- **Task assignment.** Name the person responsible for a record's next step, with an optional due date and an
-  optional e-mail. Assignment is accountability, never a lock, and every change is in the record's audit trail.
+- **Task assignment.** Name the person responsible for each step of a record — the step it is at now, and planned
+  ahead for the later ones — with optional due dates and e-mails. Assignment is accountability, never a lock, and every change is in the record's audit trail.
 - **Audit trails.** Every record keeps an append-only history of who changed what, and when, with field-level
   detail. The database itself blocks edits to audit entries.
 - **Locked records.** Approved and closed records cannot be silently changed, only moved on by a defined,

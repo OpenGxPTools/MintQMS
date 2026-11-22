@@ -30,6 +30,8 @@ namespace OpenQMS.Models.ViewModels
         public string Status { get; set; } = string.Empty;
         public string BadgeClass { get; set; } = "secondary";
         public DateTime Date { get; set; }
+        /// <summary>The record's target / due date, when it has one (shown as "Due", overdue in red).</summary>
+        public DateTime? DueDate { get; set; }
     }
 
     public class HomeViewModel
@@ -38,6 +40,8 @@ namespace OpenQMS.Models.ViewModels
         // ── My work (workflow rules: assigned to me / waiting for my roles / raised by me) ──
         public List<OpenQMS.Services.Workflow.WorkItem> MyTasks { get; set; } = new();
         public List<OpenQMS.Services.Workflow.WorkItem> WaitingForMyRoles { get; set; } = new();
+        /// <summary>Steps planned for me that the record has not reached yet.</summary>
+        public List<OpenQMS.Services.Workflow.WorkItem> ComingUp { get; set; } = new();
         public List<OpenQMS.Services.Workflow.WorkItem> RaisedByMe { get; set; } = new();
 
         public int MyCAPAs { get; set; }

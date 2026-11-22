@@ -2,9 +2,10 @@
 
 ## MintQMS 1.2.0 (2026-11-16)
 
-MintQMS now enforces the **four-eyes rule** on signed workflow steps and lets you name **who is responsible for
-the next step** of a record, with work lists on the home page, an *Assigned to* column in the registers, a Task
-Assignments report and optional e-mails.
+MintQMS now enforces the **four-eyes rule** on signed workflow steps and lets you name **who does each step** of
+a record — the step it is at now, and planned ahead for the steps after it — with work lists on the home page, an
+*Assigned to* column in the registers, a Task Assignments report and optional e-mails. The sign-in pages have a
+new look.
 
 **Before you upgrade:** take a backup (DEPLOYMENT.md §5) — this version changes the database (three changes,
 applied automatically at start-up: a four-eyes settings field, a TaskAssignments table, an EmailOutbox table with
@@ -13,7 +14,7 @@ password is now encrypted with those keys at the first start. **After the upgrad
 record already half-way through may need a different person for its next acceptance or approval (an
 Administrator can turn the rule off in *System Settings → Security Policy*). Assignment e-mails stay **off**
 until an Administrator turns them on. The home page's "My Items" cards and the managers' "Pending My Action"
-tables are replaced by the *My Tasks / Waiting for my roles / Raised by me* tabs. To go back to 1.1.0, stop the
+tables are replaced by the *My Tasks / Available Tasks / Coming Up / Raised by me* tabs. To go back to 1.1.0, stop the
 service, put back the 1.1.0 program and restore the backup taken before the upgrade (DEPLOYMENT.md §6); work
 entered after the upgrade is then lost.
 
@@ -33,40 +34,66 @@ entered after the upgrade is then lost.
   After upgrading, a record already half-way through may need a different person for its next acceptance or
   approval. Database change: one settings field.
 
-**Task assignment: who is responsible for the next step**
+**Task assignment: who does each step**
 
 - Each record of Deviations, Complaints, CAPA, Change Control, Audits, Risk, Maintenance, Documents and Suppliers
-  shows **Responsible for the next step** under its workflow actions, with **Assign**, **Reassign** and
-  **Unassign** (optional due date and note). Assigning is information for accountability, not a lock: anyone
-  allowed to sign the step still can, and the assignment then ends, recording who actually did it.
-- Only people who can do the next step are offered: a role that can sign it, an active account, and not excluded
-  by the four-eyes rule (a document's author for "submit for review"; supplier qualification only when required).
-- Each signature dialog has an optional **Assign the next step to** list, so the next person can be named while
-  signing — no extra step. The person signing is never offered for a step that reviews their own work.
-- Who may assign: anyone who can do the stage's next step, and Administrators, Quality Managers and Regulatory
-  Managers. Every assignment change is written to the record's audit trail; the history of assignments is kept
-  (never deleted). Deactivating a user unassigns their tasks, noted in each record's audit trail.
+  shows a **Responsibilities** box under its workflow actions: every step still ahead, in order, with its task in
+  plain words (*Evaluate, Accept, Resolve, Approve…*), the step the record is at marked *Now*, and who is named for
+  each. **Assign / plan** names them in one go: the step the record is at is assigned at once (optional due date,
+  never in the past, and a note); later steps are **planned** (optional number of days to complete, counted from
+  when the step starts). Assigning is information for accountability, not a lock: anyone allowed to sign the step
+  still can, and the assignment then ends, recording who actually did it.
+- **A planned step starts when the record reaches it:** it moves to the person's *My Tasks*, gets its due date and
+  the person is e-mailed then — not before. Until then it is listed under their *Home → Coming Up*.
+- Only people who can do a step are offered: a role that can sign it, an active account, and not excluded by the
+  four-eyes rule (a document's author for "submit for review"; supplier qualification only when required). The
+  rule is checked again when a planned step starts: a planned person it now keeps out (e.g. they did the
+  evaluation) is not started, the step is left with no one named, the signer sees a warning and the audit trail
+  records it. The dialog shows for each step who can do it and whom the rule keeps out, marks a clash as names are
+  chosen, and a plan naming one person for two steps the rule keeps apart is refused (the message names the person
+  and both steps).
+- Each signature dialog has an optional **Assign the next step to** list with the planned person already chosen;
+  choosing someone else replaces the plan. The person signing is never offered for a step that checks their own work.
+- **Sent back:** the step the record was at goes back to planned for the same person, and the step it returns to
+  is assigned to the person who did it last time (with an e-mail).
+- Who may assign and plan: anyone who can do the step the record is at, and Administrators, Quality Managers and
+  Regulatory Managers. Every change is written to the record's audit trail; the history of assignments is kept
+  (never deleted). Deactivating a user ends their open and planned tasks, noted in each record's audit trail.
 - Also covers the supplier *Pending Suspension* / *Pending Cancellation* decisions, and records left in older
   states (Risk *Assessment* / *Review*, Maintenance *Overdue*). Starting a new supplier review ends the assignment
   of the stage the supplier leaves.
-- **Home page: your work in three tabs.** *My Tasks* (assigned to you, overdue in red, plus trainings you attend),
-  *Waiting for my roles* (unassigned records whose next step you may sign, four-eyes respected; Regulatory Managers
-  also see adverse events pending approval, confirmed signals and licence renewals here) and *Raised by me*. They
-  replace the "My Items" cards and the managers' "Pending My Action" tables.
+- **Home page: *My Work* in four tabs**, at the top, above the *Quality Overview*. *My Tasks* (assigned to you, the most urgent first, overdue in red, plus
+  trainings you attend), *Available Tasks* (steps your roles let you do that are not assigned to
+  you, four-eyes respected, with who is named for each now, the earliest due date first; Regulatory Managers also see adverse events pending approval,
+  confirmed signals and licence renewals here), *Coming Up* (steps planned for you) and *Raised by me*. They
+  replace the "My Items" cards and the managers' "Pending My Action" tables. Every list shows a **Due** date: the
+  step's own, or the record's target date. The *Active Items* cards show each record's target date (*Due*, overdue
+  in red), the most urgent first, instead of an unlabelled date.
 - **Registers:** an *Assigned to* column (with the due date) and an *Assigned to me* button in all nine registers;
   the column is included in the register's PDF/Excel buttons.
 - **Reports → Task Assignments** (Administrator, Quality Manager, Authorised Person, Auditor): open and overdue tasks
-  by person, tasks no one is named for by module and stage, filters and Excel export. *Overdue Items* shows who is
+  by person, tasks no one is named for by module and stage, and the full list with *Planned next* and an **Assign /
+  plan** button on each row that opens the record's Responsibilities dialog; filters and Excel export. Also in the *Reports* menu. *Overdue Items* shows who is
   assigned to each record.
 - **Assignment e-mails** (System Settings → *Send Assignment E-mails*, off by default; needs SMTP): the person named
-  gets an e-mail in the site language with the type of record, number, next step, stage, due date, who assigned it,
-  the note and a link (new setting *Site Web Address*) — no record content. E-mails are written to an outbox in the
+  gets an e-mail in the site language — when a step is assigned to them, when a step planned for them starts, and
+  when a record comes back to a step they did before — with the type of record, number, task, stage, due date, who
+  assigned or planned it (whoever last changed the plan), the note and a link (new setting *Site Web Address*) — no record content. E-mails are written to an outbox in the
   same save as the assignment and sent in the background with retries (1, 5, 15, 60, 240 minutes, then failed); the
   settings page shows waiting / sent / failed and the last problem. **Send test e-mail to me** (Administrator,
   logged).
 - **SMTP password stored encrypted** (ASP.NET Data Protection, keys in `DataProtectionKeysPath`); an existing plain
   password is encrypted at the first start. After restoring a database without its keys folder, re-enter it.
-- Database change: a new TaskAssignments table; a new EmailOutbox table and two settings fields.
+- Database change: a new TaskAssignments table (with planning fields); a new EmailOutbox table and two settings fields.
+
+**Sign-in and page footer**
+
+- The sign-in page and the other signed-out account pages (forgot / reset password, two-step sign-in, recovery
+  code, locked out, e-mail confirmation) are a centred card with the MintQMS name, your organisation name and the
+  language menu, and work on phones.
+- The page footer is shorter: © MintQMS contributors · *About & disclaimer* · *Source code*. The licence, the "no
+  warranty" statement and the "not validated" notice are on the *About & disclaimer* page. On phones the footer no
+  longer runs off the side of the screen.
 
 **Fixes**
 
@@ -96,7 +123,7 @@ entered after the upgrade is then lost.
 
 **Documentation**
 
-- User guide 1.2: the four-eyes rule (§2.9) and task assignment, work lists and e-mails (§2.10); the reports list
+- User guide 1.2: the four-eyes rule (§2.9) and task assignment and planning, work lists and e-mails (§2.10); the reports list
   is corrected (only Management Review, Training Compliance and Task Assignments export to Excel).
 - DEPLOYMENT.md: Site Web Address, test e-mail, and keeping the keys folder with the backups.
 - New texts in Spanish and Portuguese (Brazil) are first translations, to be reviewed by native speakers.
@@ -108,7 +135,7 @@ entered after the upgrade is then lost.
 - Tests: `test_workflow_baseline.py` records every signed step of the nine modules and who may sign it (the
   behaviour of 1.1.0, unchanged with the rule off, except the Maintenance re-open fix); `test_four_eyes.py` checks
   every rule (stages the baseline cannot reach are tried live with every role); `test_maintenance_reopen.py`,
-  `test_assignment.py`, `test_work_lists.py` (including each register's DataTables column list) and
+  `test_assignment.py`, `test_assignment_planning.py`, `test_work_lists.py` (including each register's DataTables column list) and
   `test_email.py` with a small STARTTLS test mail server (`tests/e2e/smtp_test_server.py`; delivery checks need
   `E2E_SMTP_CERT_DIR`, see the test); `test_module_walks.py` walks Batch Release, Licences & Certifications,
   Regulatory Intelligence, pharmacovigilance, Data Disposal and the remaining quality-module actions through

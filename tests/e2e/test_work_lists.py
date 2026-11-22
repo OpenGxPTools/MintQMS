@@ -1,7 +1,7 @@
 """Work lists built on task assignment (1.2.0 phase 3): home page tabs, register column and filter, reports.
 
   * Home → My Tasks: records assigned to me (overdue due date marked), plus trainings I attend;
-  * Home → Waiting for my roles: records no one is assigned to whose next step my roles allow — not for other roles,
+  * Home → Available Tasks: records not assigned to me whose step my roles allow (with who is assigned now) — not for other roles,
     not for ReadOnly, not when the four-eyes rule excludes me (listed again with the rule off); a document's author
     for "submit for review"; supplier qualification only when required; finished and deleted records never; the
     regulatory items (e.g. licences with renewal due) stay there for Regulatory Managers;
@@ -45,20 +45,23 @@ _, wait, raised, soup = home(QU)
 check("home: the old 'My Items' cards and managers' 'Pending' tables are gone",
       soup.select_one("#my-work") is not None and "Pending My Action" not in soup.get_text() and "My Open CAPAs" not in soup.get_text())
 check("waiting: unassigned evaluation listed for a Quality User", key in wait)
-check("…with its next step", "Submit for Acceptance" in wait[key].get_text() if key in wait else False)
+check("…with its task in plain words", "Evaluate" in wait[key].get_text() if key in wait else False)
 check("raised by me: the deviation the Quality User raised", key in raised)
 check("waiting: listed for a Quality Manager too", key in home(QM1)[1])
 check("waiting: not for an Operations user (role cannot do it)", key not in home(OPS)[1])
 check("waiting: not for a ReadOnly user", key not in home(RO)[1])
 
 # ── my tasks ──────────────────────────────────────────────────────────────────────────────────────────
-assign(ids[QU], "Deviations", A, "2026-01-01")
+assign(ids[QU], "Deviations", A, "2099-01-01")
+exec_sql("update TaskAssignments set DueDate='2026-01-01 00:00:00' where Module='Deviations' and RecordId=? and IsCurrent=1", (A,))   # a due date that has since passed
 mine, wait, _, soup = home(QU)
 check("my tasks: the assigned record is listed for the assignee", key in mine)
 check("…marked overdue (due date passed)", key in mine and "table-danger" in mine[key].get("class", []))
 check("…and no longer in their 'waiting' list", key not in wait)
 check("tab counts match the rows", soup.select_one("#count-my-tasks").get_text().strip() == str(len(mine)))
-check("an assigned record leaves everyone's 'waiting' list", key not in home(QM1)[1])
+w_qm = home(QM1)[1]
+check("an assigned record stays in the others' Available Tasks, showing who is assigned", key in w_qm
+      and "User" in w_qm[key].select_one("td.assigned-now").get_text() and "No one" not in w_qm[key].select_one("td.assigned-now").get_text(), w_qm[key].get_text(" ", strip=True) if key in w_qm else "")
 check("…and is not in another person's 'my tasks'", key not in home(QM1)[0])
 
 # ── four-eyes in 'waiting' ────────────────────────────────────────────────────────────────────────────

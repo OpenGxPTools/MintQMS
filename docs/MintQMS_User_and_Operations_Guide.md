@@ -30,7 +30,7 @@ describes only what the system actually does).
    - [2.7 Retention & disposal](#27-retention--disposal)
    - [2.8 Linking records & affected items](#28-linking-records--affected-items)
    - [2.9 The four-eyes rule](#29-the-four-eyes-rule)
-   - [2.10 Who is responsible for the next step (task assignment)](#210-who-is-responsible-for-the-next-step-task-assignment)
+   - [2.10 Who does each step (task assignment and planning)](#210-who-does-each-step-task-assignment-and-planning)
 3. [Roles & access reference](#3-roles--access-reference)
 4. [Quality Events](#4-quality-events)
    - [4.1 Deviations](#41-deviations)
@@ -274,45 +274,68 @@ whoever is assigned to the step (§2.10).
   settings page then warns that one person can do and approve the same work. Your procedures should say whether
   the rule is on.
 
-### 2.10 Who is responsible for the next step (task assignment)
+### 2.10 Who does each step (task assignment and planning)
 
-Records of Deviations, Complaints, CAPA, Change Control, Audits, Risk, Maintenance, Documents and Suppliers show
-**Responsible for the next step** under *Workflow Actions*: the person named, since when, and an optional due
-date (shown in red once passed) and note.
+Records of Deviations, Complaints, CAPA, Change Control, Audits, Risk, Maintenance, Documents and Suppliers show a
+**Responsibilities** box under *Workflow Actions*. It lists every step still ahead of the record, in order, each
+with its task in plain words (for a deviation at Evaluation: *Evaluate › Accept › Resolve › Approve*). The step the
+record is at is marked **Now**; the others are **Later**. Each line shows the person named and the due date.
 
-- **Assign / Reassign / Unassign.** Use the buttons in that panel. **Who may assign:** anyone who can do the
-  stage's next step, and Administrators, Quality Managers and Regulatory Managers.
-- **While signing.** Each signature dialog has an optional **Assign the next step to** list, so you can name the
-  next person as you sign, with no extra step. Leave it empty and the step waits for anyone allowed to do it.
+- **Assign / plan.** Click **Assign / plan** to name who does each step, in one go. The step the record is at now
+  is assigned at once (with an optional due date, never in the past). A later step is **planned**: its person sees
+  it under *Home → Coming Up*, and it starts — moves to their *My Tasks*, gets its due date and e-mails them — when
+  the record reaches that step. For a later step the due date is a number of days to complete it (1–365), counted
+  from when it starts. Choose *No one* to remove a person. **Who may assign and plan:** anyone who can do the step
+  the record is at, and Administrators, Quality Managers and Regulatory Managers.
+- **While signing.** Each signature dialog has an optional **Assign the next step to** list. The person planned for
+  that step is already chosen; change it to name someone else (the plan for the other person then ends), or leave
+  it as it is.
 - **Only people who can do the step are offered:** someone with a role that can sign it, an active account (a
   user briefly locked out after wrong passwords still counts; a deactivated user does not), not Read-Only, and
   not excluded by the four-eyes rule (§2.9). For a document's *Submit for Review*, its author is offered. The
-  person signing is never offered for a step that reviews their own work. Supplier qualification is offered only
+  person signing is never offered for a step that checks their own work. Supplier qualification is offered only
   when the supplier requires qualification.
+- **The four-eyes rule is checked again when a planned step starts.** If the planned person can no longer do it —
+  for example they did the evaluation the step reviews — they are not started: the step is left with no one named,
+  the person signing sees a warning and the audit trail records it. Planning the same person for two steps the rule
+  keeps apart is not possible: the dialog shows, for each step, who can do it and whom the four-eyes rule keeps out,
+  marks a clash as soon as you choose the names, and saving is refused with a message naming the person and the two
+  steps. People who already did an earlier step that a later one checks are not offered for it (the dialog says so: *Not listed: …, who already did …*).
+- **Sent back.** When a record is sent back, the step it was at goes back to being planned for the same person (it
+  starts again when the record returns), and the step it goes back to is assigned to the person who did it last
+  time, who is e-mailed.
 - **It is not a lock.** Naming someone records who is responsible; anyone allowed to sign the step can still do
-  it. When the record moves on — by that person, by someone else, or by a send-back or re-open — the assignment
-  ends automatically and records who actually did the step.
-- **Everything is traced.** Each assign, reassign and unassign is written to the record's own audit trail
-  (*Task Assigned / Task Reassigned / Task Unassigned*, with the person, due date and note). Assignments are
-  never deleted, only ended. Deactivating a user ends their open assignments, with a note in each record (§11.1).
+  it. When the record moves on — by that person or by someone else — the assignment ends and records who actually
+  did the step. Planned steps the record will no longer reach end automatically.
+- **Everything is traced.** Every change is written to the record's own audit trail (*Task Assigned / Reassigned /
+  Unassigned*, *Step Planned*, *Planned Step Changed / Removed*, *Task Started*, *Planned Step Not Started*, *Task
+  Back to Planned*, with the person, due date and note). Assignments are never deleted, only ended. Deactivating a
+  user ends their open and planned assignments, with a note in each record (§11.1).
 - **Keep the note short and free of confidential details** (no patient, customer or product specifics): it is
   included in the assignment e-mail.
-- **E-mail.** When *Send Assignment E-mails* is on (§11.2), the person named receives an e-mail in the site
-  language with the type of record, its number, the next step, the stage, the due date, who assigned it, the note
-  and a link — never the record's content (no title, description, product, patient or customer details). No e-mail
-  is sent when you assign yourself. E-mails are queued with the assignment and sent in the background, so a mail
+- **E-mail.** When *Send Assignment E-mails* is on (§11.2), the person receives an e-mail in the site language when
+  a step is assigned to them, when a step planned for them starts, and when a record comes back to a step they did
+  before. It holds the type of record, its number, the task, the stage, the due date, who assigned or planned it (whoever last changed the plan), the note and
+  a link — never the record's content (no title, description, product, patient or customer details). No e-mail is
+  sent when you assign yourself. E-mails are queued with the assignment and sent in the background, so a mail
   server problem never stops the work.
-- **Where you see your work.** The **Home** page has three tabs:
-  - **My Tasks** — records assigned to you (an overdue due date is shown in red), plus the trainings you are
-    scheduled to attend;
-  - **Waiting for my roles** — records no one is assigned to whose next step you may sign (your roles, the
-    four-eyes rule respected), oldest first; Regulatory Managers also see adverse events pending approval,
+- **Where you see your work.** The **Home** page starts with **My Work**, in four tabs (the site-wide **Quality
+  Overview** follows below them):
+  - **My Tasks** — steps assigned to you, the most urgent first (due date, or the record's own target date when the
+    step has none; overdue in red), plus the trainings you are scheduled to attend;
+  - **Available Tasks** — steps your roles let you do (the four-eyes rule respected) that are not assigned to you,
+    with an **Assigned to** column showing who is named for each now (or *No one named*), the earliest due date
+    first; Regulatory Managers also see adverse events pending approval,
     confirmed signals and licences with renewal due here;
-  - **Raised by me** — records you raised that are still waiting for a step, with who is responsible.
+  - **Coming Up** — steps planned for you that the record has not reached yet;
+  - **Raised by me** — records you raised that are still waiting for a step, with who is responsible and the due date.
+
+  The *Active Items* cards lower on the Home page show each record's target date in a **Due** column (overdue in
+  red), the most urgent first.
 
   Each register has an **Assigned to** column and an **Assigned to me** button that shows only your rows (the
-  register remembers it, like its other filters). *Reports → Task Assignments* gives managers the overall picture
-  (§10.1).
+  register remembers it, like its other filters). *Reports → Task Assignments* (also in the Reports menu) gives managers the overall
+  picture (§10.1).
 - Assignment is not yet available in Batch Release, Pharmacovigilance, Regulatory Intelligence, Licences &
   Certifications, Training or reference data. Training is assigned per trainee in the Training module (§8.2).
 
@@ -472,7 +495,7 @@ is recalculated from the date received. The record and the **Complaint Dashboard
   (signature + reason; logged; prior history retained).
 - **Removing a record:** Administrator only, early states, soft delete.
 
-**Four-eyes rule (§2.9).** Whoever submitted the evaluation cannot accept the complaint, and whoever submitted the resolution cannot close it. Name the next person with **Assign** or in the signature dialog (§2.10).
+**Four-eyes rule (§2.9).** Whoever submitted the evaluation cannot accept the complaint, and whoever submitted the resolution cannot close it. Name or plan the next people with **Assign / plan** or in the signature dialog (§2.10).
 
 **Notes.** As with deviations, the Quality User can prepare and submit a complaint but cannot **Accept** or
 **Close** — those decisions are reserved for Manager/AP/Admin. Complaints can spawn a CAPA and can be linked to Adverse Events for
@@ -529,7 +552,7 @@ default 30 days). The record and the **CAPA Dashboard** flag it as the target **
   + reason; logged).
 - **Removing a record:** Administrator only; soft delete.
 
-**Four-eyes rule (§2.9).** Whoever submitted the assessment cannot accept the CAPA; whoever submitted the assessment or the implementation cannot approve it. Name the next person with **Assign** or in the signature dialog (§2.10).
+**Four-eyes rule (§2.9).** Whoever submitted the assessment cannot accept the CAPA; whoever submitted the assessment or the implementation cannot approve it. Name or plan the next people with **Assign / plan** or in the signature dialog (§2.10).
 
 **Notes.** Quality Users and Auditors may raise and submit CAPAs but cannot Accept, Approve or Return — those are
 Manager/AP/Admin decisions. Because CAPAs link to their source records, an inspector can trace any action back to
@@ -599,7 +622,7 @@ the tab.
   (signature + reason; logged).
 - **Removing a record:** Administrator only; soft delete.
 
-**Four-eyes rule (§2.9).** Whoever submitted the assessment cannot accept the change; whoever submitted the assessment or the implementation cannot approve it. Name the next person with **Assign** or in the signature dialog (§2.10).
+**Four-eyes rule (§2.9).** Whoever submitted the assessment cannot accept the change; whoever submitted the assessment or the implementation cannot approve it. Name or plan the next people with **Assign / plan** or in the signature dialog (§2.10).
 
 **Notes.** As elsewhere, a Quality User may prepare and submit but cannot Accept, Approve or Return — those are
 Manager/AP/Admin decisions. On the Create/Edit screen a change can be tagged with its **affected items**
@@ -685,7 +708,7 @@ the CAPA raised from the audit.
 - **Register:** exports to Excel; each audit exports as PDF or CSV.
 - **No e-mail or on-screen alerts are sent.**
 
-**Four-eyes rule (§2.9).** Whoever started the audit or submitted the report for review cannot approve it. Name the next person with **Assign** or in the signature dialog (§2.10).
+**Four-eyes rule (§2.9).** Whoever started the audit or submitted the report for review cannot approve it. Name or plan the next people with **Assign / plan** or in the signature dialog (§2.10).
 
 **Notes.** Findings are recorded as counts and narrative in the audit report, not as separate records. Track
 each finding's corrective action in the linked CAPA.
@@ -774,7 +797,7 @@ After mitigation, the same three factors are scored again to give the **residual
 - **Register:** exports to Excel; each risk exports as PDF or CSV.
 - **Next review date:** recorded on the risk; MintQMS does not send reminders for it.
 
-**Four-eyes rule (§2.9).** Whoever submitted the assessment cannot accept it, and whoever submitted the mitigation for review cannot close the risk. This also applies to risks still in the older *Review* state. Name the next person with **Assign** or in the signature dialog (§2.10).
+**Four-eyes rule (§2.9).** Whoever submitted the assessment cannot accept it, and whoever submitted the mitigation for review cannot close the risk. This also applies to risks still in the older *Review* state. Name or plan the next people with **Assign / plan** or in the signature dialog (§2.10).
 
 **Notes.** Attachments (e.g. FMEA worksheets) are added on the risk and keep their integrity fingerprint.
 Deleting one needs a reason, and the file remains retrievable. Every change and signature is in the audit trail.
@@ -1594,7 +1617,7 @@ and you can always see what was effective at any point.
   separation of duties. Departing users are normally **deactivated, not deleted**, so existing records and
   signatures stay intact.
 
-**Four-eyes rule (§2.9).** A document's author cannot approve it (the approval form does not open for them). Name the next person with **Assign** or in the signature dialog (§2.10).
+**Four-eyes rule (§2.9).** A document's author cannot approve it (the approval form does not open for them). Name or plan the next people with **Assign / plan** or in the signature dialog (§2.10).
 
 **Notes.** The approval and issue steps are reserved for Quality Manager/Authorised Person/Administrator; authors manage their own
 drafts. Coupling effectiveness to training completion is the core control of this module.
@@ -1724,9 +1747,11 @@ Auditor, Trainer and Read-Only.
 - **Training Compliance** — who is up to date and who is outstanding on training (Excel export).
 - **Overdue Items** — records past their due dates across modules, with who is **assigned** to each (§2.10).
 - **Supporting Document Expiry** — supporting documents approaching or past expiry.
-- **Task Assignments** — who is responsible for the next step of every open record in the nine workflow modules:
-  open and overdue tasks **by person** (with their oldest assignment), the tasks **no one is named for** by module
-  and stage, and the full list, filtered by module, person (or *No one named*) and *Overdue only* (Excel export).
+- **Task Assignments** — who is responsible for the step every open record in the nine workflow modules is at, and
+  who is planned next: open and overdue tasks **by person** (with their oldest assignment), the tasks **no one is
+  named for** by module and stage, and the full list with the task, the person, *Planned next*, the due date and an
+  **Assign / plan** button that opens the record's Responsibilities dialog — filtered by module, person (or *No one
+  named*) and *Overdue only* (Excel export).
   Open to Administrator, Quality Manager, Authorised Person and Auditor.
 
 **How to use.** *Reports → (choose a report).* Apply any filters, review on screen, and use **Export** where the
@@ -1743,7 +1768,7 @@ awaiting action — and the **Home** page aggregates highlights across the syste
 Admin, Quality Manager, Regulatory Manager, Trainer, Authorised Person and Auditor.
 
 **How to use.** Open a module and choose its **Dashboard** view, or start from **Home** for the cross-module
-summary; the Home page starts with your own work (*My Tasks*, *Waiting for my roles*, *Raised by me* — §2.10). Use the figures to find work needing attention, then click through to the records.
+summary; the Home page starts with your own work (*My Tasks*, *Available Tasks*, *Coming Up*, *Raised by me* — §2.10). Use the figures to find work needing attention, then click through to the records.
 
 ---
 
@@ -2019,7 +2044,7 @@ review). Approved/Effective→Obsolete.
 | **CIOMS** | An internationally recognised adverse-event reporting form. |
 | **Separation of duties (SoD)** | Splitting a process so that key approvals are made by someone other than the preparer. |
 | **Four-eyes rule** | MintQMS's enforced form of SoD: a review, acceptance, approval or closure must be signed by someone who did not do the work being reviewed (§2.9). |
-| **Task assignment** | Naming the person responsible for a record's next step; information for accountability, not a lock (§2.10). |
+| **Task assignment** | Naming the person responsible for a step of a record — the step it is at now, or planned for a later step; information for accountability, not a lock (§2.10). |
 | **Read-Only** | A view-only access level; cannot create or change anything. |
 
 ---

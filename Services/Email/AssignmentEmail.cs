@@ -13,8 +13,12 @@ namespace OpenQMS.Services.Email
     /// </summary>
     public static class AssignmentEmail
     {
-        public static EmailOutboxMessage Compose(string module, object record, AppUser assignee, string assignerName,
-                                                 DateTime? dueDate, string? note, bool reassigned, SystemSettings settings)
+        /// <summary>Why the person is told: named now, named instead of someone, a planned step has started, or the record
+        /// came back to a step they did before.</summary>
+        public enum Kind { Assigned, Reassigned, Started, Returned }
+
+        public static EmailOutboxMessage Compose(string module, object record, int stageCode, AppUser assignee, string assignerName,
+                                                 DateTime? dueDate, string? note, Kind kind, SystemSettings settings)
         {
             var previous = CultureInfo.CurrentUICulture;
             CultureInfo.CurrentUICulture = new CultureInfo(string.IsNullOrWhiteSpace(settings.SiteLanguage) ? "en" : settings.SiteLanguage);
@@ -24,8 +28,7 @@ namespace OpenQMS.Services.Email
                 var recordId = (int)record.GetType().GetProperty("Id")!.GetValue(record)!;
                 var number = record.GetType().GetProperty(m.NumberField)?.GetValue(record)?.ToString() ?? recordId.ToString();
                 var stage = RD((Enum)record.GetType().GetProperty("Status")!.GetValue(record)!) ?? "";
-                var steps = string.Join(", ", WorkflowRules.TasksFrom(module, TaskAssignmentService.StateOf(record), record)
-                                                           .Select(t => R(t.Label)).Distinct());
+                var steps = R(TaskAssignmentService.TaskAt(module, stageCode, record));
                 var type = R(m.DisplayName);
                 var link = string.IsNullOrWhiteSpace(settings.SiteWebAddress)
                     ? null : $"{settings.SiteWebAddress.TrimEnd('/')}/{module}/Details/{recordId}";
@@ -35,7 +38,7 @@ namespace OpenQMS.Services.Email
                 var rows = new List<(string, string)>
                 {
                     (R("Record"), $"{type} {number}"),
-                    (R("Next Step"), steps),
+                    (R("Task"), steps),
                     (R("Status"), stage),
                     (R("Due Date"), dueDate?.ToString("dd MMM yyyy", CultureInfo.CurrentUICulture) ?? "—"),
                     (R("Assigned by"), assignerName),
@@ -44,8 +47,13 @@ namespace OpenQMS.Services.Email
                     rows.Add((R("Note"), note!));
                 var body =
                     $"<p>{E(TaskAssignmentService.DisplayName(assignee))},</p>" +
-                    $"<p>{E(reassigned ? R("{0} has made you responsible for the next step of a record in MintQMS (reassigned).", assignerName)
-                                       : R("{0} has made you responsible for the next step of a record in MintQMS.", assignerName))}</p>" +
+                    $"<p>{E(kind switch
+                    {
+                        Kind.Reassigned => R("{0} has made you responsible for a task in MintQMS (reassigned).", assignerName),
+                        Kind.Started => R("A task {0} planned for you in MintQMS is ready for you now.", assignerName),
+                        Kind.Returned => R("A record has been sent back to a step you did before: the task is yours again in MintQMS."),
+                        _ => R("{0} has made you responsible for a task in MintQMS.", assignerName),
+                    })}</p>" +
                     "<table cellpadding=\"4\" style=\"border-collapse:collapse\">" +
                     string.Concat(rows.Select(r => $"<tr><td><strong>{E(r.Item1)}</strong></td><td>{E(r.Item2)}</td></tr>")) +
                     "</table>" +
@@ -59,7 +67,7 @@ namespace OpenQMS.Services.Email
                     ToAddress = assignee.Email!,
                     Subject = subject.Length > 300 ? subject[..300] : subject,
                     HtmlBody = body,
-                    Kind = "TaskAssigned",
+                    Kind = "TaskAssigned",   // the outbox kind (one for all four reasons)
                     Module = module,
                     RecordId = recordId,
                     CreatedOn = DateTime.UtcNow,

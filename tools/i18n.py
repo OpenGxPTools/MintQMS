@@ -116,6 +116,20 @@ def display_keys():
     return used
 
 
+def workflow_keys():
+    """Step labels, task names and module names in Resources/Workflow/workflow-rules.json (shown with L[…])."""
+    used = {}
+    f = os.path.join(ROOT, "Resources", "Workflow", "workflow-rules.json")
+    if os.path.exists(f):
+        for m in json.load(open(f, encoding="utf-8"))["modules"]:
+            used.setdefault(m["displayName"], set()).add("workflow-rules module")
+            for st in m["steps"]:
+                for k in ("label", "task"):
+                    if st.get(k):
+                        used.setdefault(st[k], set()).add("workflow-rules " + k)
+    return used
+
+
 # Framework validation templates, read at runtime by Localization/ValidationMessages.cs (System.SR).
 FRAMEWORK_KEYS = [
     "The {0} field is required.",
@@ -130,7 +144,7 @@ FRAMEWORK_KEYS = [
 
 def used_keys():
     used = {k: {"framework validation template"} for k in FRAMEWORK_KEYS}
-    for src in (literal_keys(), enum_keys(), role_keys(), display_keys()):
+    for src in (literal_keys(), enum_keys(), role_keys(), display_keys(), workflow_keys()):
         for k, where in src.items():
             used.setdefault(k, set()).update(where)
     return used

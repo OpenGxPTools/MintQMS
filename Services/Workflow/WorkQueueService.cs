@@ -19,15 +19,26 @@ namespace OpenQMS.Services.Workflow
         public int Stage { get; init; }
         /// <summary>The record's state, for display (L.Enum).</summary>
         public Enum StageValue { get; init; } = default!;
-        /// <summary>The step(s) that can be done next (English labels, translated on screen).</summary>
+        /// <summary>The task(s) waiting at this stage, in plain words (English keys, translated on screen).</summary>
         public IReadOnlyList<string> Steps { get; init; } = Array.Empty<string>();
+        /// <summary>The record's own target date (e.g. a deviation's target resolution date), if the module has one.</summary>
+        public DateTime? TargetDate { get; init; }
         public string? RaisedBy { get; init; }
         public DateTime? RaisedOn { get; init; }
         /// <summary>The current assignment for this stage, or null (with AssignedToUser loaded).</summary>
         public TaskAssignment? Assignment { get; init; }
+        /// <summary>People planned for the steps after this one, in route order (with AssignedToUser loaded).</summary>
+        public IReadOnlyList<(string Task, TaskAssignment Plan)> PlannedAhead { get; init; } = Array.Empty<(string, TaskAssignment)>();
+        /// <summary>Display name of whoever assigned or planned it.</summary>
+        public string? AssignedByName { get; init; }
         public object Record { get; init; } = default!;
 
-        public bool IsOverdue(DateTime today) => Assignment?.DueDate is { } d && d.Date < today;
+        /// <summary>The date to work to: the step's due date, else the record's target date.</summary>
+        public DateTime? Due => Assignment?.DueDate ?? TargetDate;
+        /// <summary>A planned step (Coming up): not ready yet; due this many days after it starts.</summary>
+        public bool IsPlanned => Assignment?.IsPlanned == true;
+
+        public bool IsOverdue(DateTime today) => !IsPlanned && Due is { } d && d.Date < today;
     }
 
     /// <summary>
@@ -56,6 +67,7 @@ namespace OpenQMS.Services.Workflow
                 .Where(t => t.IsCurrent && (onlyModule == null || t.Module == onlyModule)).ToListAsync();
             var byRecord = current.GroupBy(t => (t.Module, t.RecordId, t.Stage))
                                   .ToDictionary(g => g.Key, g => g.OrderByDescending(t => t.Id).First());
+            var names = await NamesAsync(current.Select(t => t.AssignedBy));
 
             var items = new List<WorkItem>();
             foreach (var m in WorkflowRules.Modules.Values.Where(m => onlyModule == null || m.Name == onlyModule))
@@ -67,6 +79,10 @@ namespace OpenQMS.Services.Workflow
                     if (tasks.Count == 0)
                         continue;   // e.g. supplier qualification when it is not required
                     byRecord.TryGetValue((m.Name, Id(record), state), out var a);
+                    var ahead = new List<(string, TaskAssignment)>();
+                    foreach (var step in WorkflowRules.Route(m.Name, state, record).Skip(1))
+                        if (byRecord.TryGetValue((m.Name, Id(record), step.From), out var p) && p.IsPlanned)
+                            ahead.Add((step.Task, p));
                     items.Add(new WorkItem
                     {
                         Module = m.Name,
@@ -75,10 +91,13 @@ namespace OpenQMS.Services.Workflow
                         Title = Text(record, m.TitleField),
                         Stage = state,
                         StageValue = (Enum)record.GetType().GetProperty("Status")!.GetValue(record)!,
-                        Steps = tasks.Select(t => t.Label).Distinct().ToList(),
+                        Steps = tasks.Select(t => t.Task).Distinct().ToList(),
+                        TargetDate = Target(record, m),
                         RaisedBy = FourEyes.Value(record, m.RaisedBy),
                         RaisedOn = record.GetType().GetProperty(m.RaisedOnField)?.GetValue(record) as DateTime?,
                         Assignment = a,
+                        AssignedByName = a != null && names.TryGetValue(a.AssignedBy, out var n) ? n : a?.AssignedBy,
+                        PlannedAhead = ahead,
                         Record = record,
                     });
                 }
@@ -86,18 +105,70 @@ namespace OpenQMS.Services.Workflow
             return items;
         }
 
-        /// <summary>Waiting records assigned to this user.</summary>
+        /// <summary>Waiting records assigned to this user, the most urgent first.</summary>
         public static List<WorkItem> AssignedTo(IEnumerable<WorkItem> items, AppUser user) =>
             items.Where(i => i.Assignment?.AssignedToUserId == user.Id)
-                 .OrderBy(i => i.Assignment!.DueDate ?? DateTime.MaxValue).ThenBy(i => i.Assignment!.AssignedOn).ToList();
+                 .OrderBy(i => i.Due ?? DateTime.MaxValue).ThenBy(i => i.Assignment!.AssignedOn).ToList();
 
-        /// <summary>Waiting records that no one is assigned to and that this user may do (role or named user, active,
-        /// not ReadOnly, not excluded by the four-eyes rule), oldest first.</summary>
+        /// <summary>Steps planned for this user that the record has not reached yet (Coming up), oldest plan first.</summary>
+        public async Task<List<WorkItem>> PlannedForAsync(AppUser user)
+        {
+            var plans = await _db.TaskAssignments.AsNoTracking().Include(t => t.AssignedToUser)
+                .Where(t => t.IsCurrent && t.StartedOn == null && t.AssignedToUserId == user.Id)
+                .OrderBy(t => t.AssignedOn).ToListAsync();
+            var names = await NamesAsync(plans.Select(t => t.AssignedBy));
+            var items = new List<WorkItem>();
+            foreach (var t in plans)
+            {
+                if (!WorkflowRules.Modules.TryGetValue(t.Module, out var m) || await _assign.LoadRecordAsync(t.Module, t.RecordId) is not { } record
+                    || record.GetType().GetProperty("IsDeleted")?.GetValue(record) is true)
+                    continue;
+                _db.Entry(record).State = EntityState.Detached;
+                items.Add(new WorkItem
+                {
+                    Module = t.Module,
+                    RecordId = t.RecordId,
+                    Number = Text(record, m.NumberField),
+                    Title = Text(record, m.TitleField),
+                    Stage = t.Stage,
+                    StageValue = (Enum)record.GetType().GetProperty("Status")!.GetValue(record)!,
+                    Steps = new[] { TaskAssignmentService.TaskAt(t.Module, t.Stage, record) }.Where(x => x != "").ToList(),
+                    RaisedBy = FourEyes.Value(record, m.RaisedBy),
+                    RaisedOn = record.GetType().GetProperty(m.RaisedOnField)?.GetValue(record) as DateTime?,
+                    TargetDate = Target(record, m),
+                    Assignment = t,
+                    AssignedByName = names.TryGetValue(t.AssignedBy, out var n) ? n : t.AssignedBy,
+                    Record = record,
+                });
+            }
+            return items;
+        }
+
+        // user name / e-mail → display name, for "assigned by" / "planned by"
+        private async Task<Dictionary<string, string>> NamesAsync(IEnumerable<string> who)
+        {
+            var keys = who.Where(w => !string.IsNullOrEmpty(w)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            var users = await _users.Users.AsNoTracking().Where(u => keys.Contains(u.UserName!) || keys.Contains(u.Email!)).ToListAsync();
+            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var u in users)
+            {
+                if (u.UserName != null) map[u.UserName] = TaskAssignmentService.DisplayName(u);
+                if (u.Email != null) map[u.Email] = TaskAssignmentService.DisplayName(u);
+            }
+            return map;
+        }
+
+        private static DateTime? Target(object record, WorkflowRules.Module m) =>
+            m.TargetDateField is { } f ? record.GetType().GetProperty(f)?.GetValue(record) as DateTime? : null;
+
+        /// <summary>Waiting records whose step this user may do (role or named user, active, not ReadOnly, not excluded by
+        /// the four-eyes rule) and that are not assigned to them (those are in My Tasks) — whether no one or someone else
+        /// is named: the earliest due date first, then the oldest.</summary>
         public async Task<List<WorkItem>> WaitingForAsync(IEnumerable<WorkItem> items, AppUser user)
         {
             var canDo = await _assign.UserCanDoAsync(user);
-            return items.Where(i => i.Assignment == null && canDo(i.Module, i.Record))
-                        .OrderBy(i => i.RaisedOn ?? DateTime.MaxValue).ToList();
+            return items.Where(i => i.Assignment?.AssignedToUserId != user.Id && canDo(i.Module, i.Record))
+                        .OrderBy(i => i.Due ?? DateTime.MaxValue).ThenBy(i => i.RaisedOn ?? DateTime.MaxValue).ToList();
         }
 
         /// <summary>Waiting records this user raised (the module's "raised by" field), newest first.</summary>
